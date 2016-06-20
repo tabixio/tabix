@@ -1,0 +1,4 @@
+server/config.php
+node_modules
+client/source/vendor
+client/build

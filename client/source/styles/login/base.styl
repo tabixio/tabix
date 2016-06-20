@@ -1,0 +1,23 @@
+.login-view
+    position relative
+    .login-checking
+        display flex
+        flex-direction column
+        justify-content center
+        align-items center
+        z-index 10
+        background rgba(0, 0,0, .6)
+        text-align center
+        position absolute
+        width 100%
+        height 100%
+        .loading-text
+            animation pulse .8s linear infinite
+    .card__header
+        border-bottom 1px solid rgba(0, 0, 0, .2)
+    .login-message
+        padding 8px
+        &.error
+            background-color $errorColor
+        &.success
+            background-color $successColor

@@ -1,0 +1,83 @@
+.form
+    display flex
+    flex-flow row wrap
+    +sm()
+        flex-direction column
+    .form-group
+        flex 1
+        margin 16px
+        .form-item
+            padding 8px
+            border-bottom 1px dashed rgba(0, 0, 0, 0.12)
+            .form-label
+                display flex
+                span
+                    flex 1
+                .form-value
+                    +sm()
+                        text-align right
+            .form-field
+                position relative
+                display none
+                .error-message
+                    &.ng-inactive
+                        display none
+                    &.ng-active
+                        display block
+                    border-radius 3px
+                    background-color rgba(0,0,0,.1)
+                    padding 5px
+                    position absolute
+                    right 0
+                    bottom 40px
+                    z-index 1
+                    &:after
+                        content ''
+                        border 7px solid transparent
+                        border-top-color rgba(0,0,0,0.1)
+                        position absolute
+                        right 2px
+                        margin-top 5px
+                .form-control
+                    flex 1
+                .error-icon
+                    align-self flex-end
+                    margin-bottom 6px
+
+    .actions
+        display none
+        border-top 1px solid rgba(0, 0, 0, 0.12)
+        flex 1 100%
+        text-align center
+        +sm()
+            flex 1
+        button
+            width 100px
+            &.btn-cancel
+                margin-right 50px
+            +sm()
+               display block
+               &.btn-cancel
+                   margin auto
+               &.btn-save
+                   margin 10px auto 0
+
+    .form-group + .form-group
+        +sm()
+            margin-top 0
+
+    &.editing, &.adding
+        .form-group > .form-item
+            border-bottom none
+            .form-label
+                display none
+            .form-field
+                display flex
+        .actions
+            display block
+
+    &.adding
+        .actions
+            button.btn-cancel
+                display none
+

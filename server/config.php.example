@@ -1,0 +1,11 @@
+<?php
+
+$config = [
+    'DB_HOST' => 'localhost',
+    'DB_PORT' => 8123,
+    'DB_LOGIN' => 'user',
+    'DB_PASSWORD' => 'pass'
+];
+
+ini_set("error_reporting", "true");
+error_reporting(E_ALL|E_STRICT);

@@ -1,0 +1,11 @@
+.dashboard-view.full-width
+    .card.bgc-blue-100(class="p+")
+        p Welcome {{vm.userInfo.name}}!
+    .boxes
+        a.box.tc-white(ng-repeat="product in ::vm.products",
+            ui-sref="{{::product.link}}",
+            class="{{::vm.colors[$index % vm.colors.length]}}"
+            )
+            i.icon.icon--xl.icon--flat.mdi.mdi-cellphone-android
+            span.count {{::product.count}}
+            p.name {{::product.name}}

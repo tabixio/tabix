@@ -1,0 +1,34 @@
+// simple responsive utility
+
+// pass (min, max) will generate (min-width) and (max-width)
+// pass (min) will generate (min-width)
+generate-media(args...)
+    _min_str = 'only screen and (min-width: %s)'
+    _max_str = ' and (max-width: %s)'
+    if length(args) == 1
+        _condition = _min_str % unit(args[0], 'px')
+    else
+        _condition = (_min_str % unit(args[0], 'px')) + (_max_str % unit(args[1], 'px'))
+    @media _condition
+        {block}
+
+// small device: 0 ~ 600px
+sm()
+    +generate-media(0, $sizes[0])
+        {block}
+
+// middle device: 600px ~ 960px
+md()
+    +generate-media($sizes[0], $sizes[1])
+        {block}
+
+// large device: 960px ~ 1200px
+lg()
+    +generate-media($sizes[1], $sizes[2])
+        {block}
+
+// extra large device: 1200px ~
+xl()
+    +generate-media($sizes[2])
+        {block}
+

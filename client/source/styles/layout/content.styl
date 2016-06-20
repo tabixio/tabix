@@ -1,0 +1,33 @@
+body
+    font-family Helvetica, arial
+    .wrapper
+        display flex
+        flex-direction column
+        min-height 100vh
+        background-image url('../images/layout/bg.jpg')
+        background-size cover
+.content
+    margin-top $headerHeight
+    +sm()
+        margin-top $headerHeightForMobile
+    display flex
+    flex 1
+    .main-content
+        flex 1
+        display flex
+        flex-direction column
+        overflow hidden
+        .main-view
+            flex 1
+            display flex
+            justify-content center
+            align-items center
+            +sm()
+                margin-left 8px
+                margin-right 8px
+            &.ng-enter
+                animation bounceIn .8s
+            .full-width
+                align-self flex-start
+                padding 10px 30px 20px 30px
+                width 100%

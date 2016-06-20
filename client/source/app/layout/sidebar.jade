@@ -1,0 +1,8 @@
+.sidebar
+    ul.sidebar-menu.p
+        li.menu-item.p(ng-repeat="nav in ::vm.navs", ui-sref-active="active")
+            a.tc-black.link(ui-sref="{{::nav.link}}", ng-click="vm.hideSidebar()")
+                i.icon.icon--s.icon--grey.icon--flat.mdi(class="{{::nav.icon}}")
+                span.ml.text {{::nav.text}}
+.sidebar-backdrop.hide-gt-sm(ng-show="showSidebar", ng-click="vm.hideSidebar()")
+

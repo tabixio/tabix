@@ -1,0 +1,16 @@
+# common
+.DS_Store
+# node dependencies
+node_modules
+npm-debug.log
+# bower dependencies
+client/source/vendor
+
+# build file
+client/build
+
+# test folder
+client/source/test/e2e/screenshots/*
+!client/source/test/e2e/screenshots/.gitkeep
+client/source/test/unit/results
+test-results.xml

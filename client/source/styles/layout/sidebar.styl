@@ -1,0 +1,45 @@
+.sidebar-view
+    background-color white
+    border-right 1px solid rgba(0, 0, 0, 0.2)
+    +sm()
+        position fixed
+        height 100%
+        width $sidebarWidth
+        box-shadow 3px 0 6px rgba(0, 0, 0, 0.2)
+        transform translateX(-1 * $sidebarWidth)
+        transition box-shadow, transform .6s cubic-bezier(0.23, 1, 0.32, 1)
+        z-index 999
+        &.show
+            transform none
+    .sidebar
+        width $sidebarWidth
+        .sidebar-menu
+            list-style none
+            .menu-item
+                border-bottom 1px solid rgba(0, 0, 0, 0.2)
+                &.active
+                    border-radius 5px
+                    background-color rgba(146, 205, 255, 0.42)
+                    i
+                        color #4CAF50
+                    &:hover
+                        background-color rgba(146, 205, 255, 0.42)
+                &:hover
+                    text-shadow 1px 1px rgba(0, 0, 0, 0.2)
+                    background-color #eee
+                .link
+                    display block
+                    text-decoration none
+                    .text
+                        line-height 32px
+                        font-size 14pt
+    .sidebar-backdrop
+        +sm()
+            position absolute
+            top 0
+            left $sidebarWidth
+            z-index 990
+            background-color rgba(0, 0, 0, 0.5)
+            height 100%
+            width 100%
+

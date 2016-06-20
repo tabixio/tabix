@@ -1,0 +1,36 @@
+.phone-main-view.full-width
+    a.btn.btn--m.btn--green.btn--raised(ui-sref="root.phone.add", lx-ripple)
+        i.mdi.mdi-plus-box.mr
+        span Add New
+    .card(class="mt+")
+        table.data-table
+            thead
+                tr.heading
+                    th Model
+                    th.hide-sm OS
+                    th.hide-sm Price
+                    th.text-center Action
+                tr
+                    td.divider.divider--dark(colspan="4")
+            tbody
+                tr.empty-row(ng-if="vm.phones.length === 0")
+                    td(colspan="4") No Phones found!
+                tr.data-table__clickable-row.phone-item(ng-repeat="phone in vm.phones track by phone.id")
+                    td
+                        span {{::phone.model}}
+                    td.hide-sm
+                        span {{::phone.os}}
+                    td.hide-sm
+                        span {{::phone.price}}
+                    td.text-center
+                        a.btn.btn--m.btn--blue.btn--fab(
+                            ui-sref="root.phone.detail({id: phone.id})",
+                            lx-ripple, lx-tooltip="View"
+                        )
+                            i.mdi.mdi-information
+                        button.btn.btn--m.btn--red.btn--fab(
+                            ng-click="vm.deletePhone(phone.id, phone.model)",
+                            lx-ripple, lx-tooltip="Delete"
+                        )
+                            i.mdi.mdi-delete
+

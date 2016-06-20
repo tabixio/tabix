@@ -1,0 +1,22 @@
+.phone-main-view
+    .data-table
+        .heading
+            th
+                font-weight bold
+                +sm()
+                    text-align center
+        .phone-item
+            &.ng-enter
+                animation slideInRight .8s
+            &.ng-leave
+                animation slideOutRight .8s
+
+.phone-detail-view, .phone-add-view
+    .card
+        .card-header
+            border-bottom 1px solid rgba(0, 0, 0, 0.12)
+            .title
+                display inline-block
+            button
+                float right
+                margin-top -5px

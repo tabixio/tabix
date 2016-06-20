@@ -1,0 +1,114 @@
+form.form(name="vm.phoneForm",
+    ng-class="{'editing': vm.state === 'edit', 'adding': vm.state === 'add'}")
+    .form-group
+        .form-item
+            .form-label
+                span Model:
+                span.form-value {{vm.phone.model}}
+            .form-field
+                .error-message(ng-messages="vm.phoneForm.modelInput.$error",
+                    ng-show="vm.phoneForm.modelInput.showError")
+                    p(ng-message="required") Model filed is required!
+                lx-text-field.form-control(label="Model", error="vm.phoneForm.modelInput.$invalid && vm.phoneForm.modelInput.$dirty")
+                    input(name="modelInput", type="text", ng-model="vm.phone.model", required)
+                .error-icon(ng-show="vm.phoneForm.modelInput.$invalid && vm.phoneForm.modelInput.$dirty")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.phoneForm.modelInput.showError = true",
+                        ng-mouseleave="vm.phoneForm.modelInput.showError = false"
+                    )
+        .form-item
+            .form-label
+                span OS:
+                span.form-value {{vm.phone.os}}
+            .form-field
+                .error-message(ng-messages="vm.phoneForm.osSelect.$error",
+                    ng-show="vm.phoneForm.osSelect.showError")
+                    p(ng-message="required") OS Type filed is required!
+                lx-select.form-control(name="osSelect" ng-model="vm.phone.os",
+                    placeholder="OS Type", choices="vm.selects.src", floating-label,
+                    selection-to-model="vm.selects.toModel(data, callback)",
+                    model-to-selection="vm.selects.toSelection(data, callback)",
+                    required
+                )
+                    lx-select-selected {{$selected.name}}
+                    lx-select-choices {{$choice.name}}
+                .error-icon(ng-show="vm.phoneForm.osSelect.$invalid && vm.phoneForm.osSelect.$dirty")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.phoneForm.osSelect.showError = true",
+                        ng-mouseleave="vm.phoneForm.osSelect.showError = false"
+                    )
+        .form-item
+            .form-label
+                span Price:
+                span.form-value {{vm.phone.price}}
+            .form-field
+                .error-message(ng-messages="vm.phoneForm.priceInput.$error",
+                    ng-show="vm.phoneForm.priceInput.showError")
+                    p(ng-message="required") Price filed is required!
+                    p(ng-message="number") Price filed must be a valid number!
+                lx-text-field.form-control(label="Price", error="vm.phoneForm.priceInput.$invalid && vm.phoneForm.priceInput.$dirty")
+                    input(name="priceInput", type="text", ng-model="vm.phone.price",
+                        aio-validate-number, required)
+                .error-icon(ng-show="vm.phoneForm.priceInput.$invalid && vm.phoneForm.priceInput.$dirty")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.phoneForm.priceInput.showError = true",
+                        ng-mouseleave="vm.phoneForm.priceInput.showError = false"
+                    )
+    .form-group
+        .form-item
+            .form-label
+                span Screen Size:
+                span.form-value {{vm.phone.size}}
+            .form-field
+                .error-message(ng-messages="vm.phoneForm.sizeInput.$error",
+                    ng-show="vm.phoneForm.sizeInput.showError")
+                    p(ng-message="required") Screen Size filed is required!
+                    p(ng-message="number") Screen Size must be a valid number!
+                lx-text-field.form-control(label="Screen Size", error="vm.phoneForm.sizeInput.$invalid && vm.phoneForm.sizeInput.$dirty")
+                    input(name="sizeInput", type="text", ng-model="vm.phone.size",
+                        aio-validate-number, required)
+                .error-icon(ng-show="vm.phoneForm.sizeInput.$invalid && vm.phoneForm.sizeInput.$dirty")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.phoneForm.sizeInput.showError = true",
+                        ng-mouseleave="vm.phoneForm.sizeInput.showError = false"
+                    )
+        .form-item
+            .form-label
+                span Manufacturer:
+                span.form-value {{vm.phone.manufacturer}}
+            .form-field
+                .error-message(ng-messages="vm.phoneForm.manufacturerInput.$error",
+                    ng-show="vm.phoneForm.manufacturerInput.showError")
+                    p(ng-message="required") Manufacturer filed is required!
+                lx-text-field.form-control(label="Manufacturer", error="vm.phoneForm.manufacturerInput.$invalid && vm.phoneForm.manufacturerInput.$dirty")
+                    input(name="manufacturerInput", type="text",
+                        ng-model="vm.phone.manufacturer", required)
+                .error-icon(ng-show="vm.phoneForm.manufacturerInput.$invalid && vm.phoneForm.manufacturerInput.$dirty")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.phoneForm.manufacturerInput.showError = true",
+                        ng-mouseleave="vm.phoneForm.manufacturerInput.showError = false"
+                    )
+        .form-item
+            .form-label
+                span Release Date:
+                span.form-value {{vm.phone.releaseDate | date: 'MMMM d, yyyy'}}
+            .form-field
+                .error-message(ng-show="vm.releaseDateError")
+                    p Release Date filed is required!
+                lx-date-picker.form-control(label="Release Date", model="vm.phone.releaseDate",
+                    ng-click="vm.hasClicked = true")
+                .error-icon(ng-show="!vm.phone.releaseDate && vm.hasClicked")
+                    i.icon.icon--red.icon--circled.mdi.mdi-minus.icon-breath-animation(
+                        ng-mouseenter="vm.releaseDateError = true",
+                        ng-mouseleave="vm.releaseDateError = false"
+                    )
+    .actions(class="mt p+")
+        button.btn.btn--m.btn--white.btn--raised.btn-cancel(
+            ng-click="vm.cancel()",
+            ng-disabled="vm.isRequest"
+        ) Cancel
+        button.btn.btn--m.btn--green.btn--raised.btn-save(type="submit",
+            ng-click="vm.submitForm(vm.phone)",
+            ng-disabled="vm.phoneForm.$invalid || vm.phoneForm.$pristine || !vm.phone.releaseDate || vm.isRequest",
+            aio-loading-button="vm.isRequest",
+        ) Save

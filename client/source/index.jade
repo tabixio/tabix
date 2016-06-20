@@ -1,0 +1,52 @@
+doctype html
+//- variable `app` here is used by gulp
+html(lang="en", ng-app= app, ng-strict-di)
+    head
+        //- This helps the ng-show/ng-hide animations start at the right place.
+        //- Since Angular has this but needs to load, this gives us the class early.
+        style
+            .ng-hide { display: none!important; }
+        title(ng-bind="title")
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge, chrome=1")
+        meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no")
+        base(href="/")
+
+        //- use HTML native comment syntax cause Jade comment syntax will lose a space
+        // use this to break lines
+        <!-- build:css static/styles/lib.css -->
+        <!-- bower:css -->
+        <!-- endbower -->
+        <!-- endbuild -->
+
+        <!-- build:css static/styles/app.css -->
+        <!-- inject:css -->
+        <!-- endinject -->
+        <!-- endbuild -->
+
+    body(ng-class="_class + '-page'")
+        .wrapper
+            //- header/content/footer view
+            header.header-view(ui-view="header")
+            .content
+                .sidebar-view(ui-view="sidebar", ng-class="{'show': showSidebar}")
+                .main-content
+                    .breadcrumb-view(ui-view="breadcrumb")
+                    .main-view(ui-view="main")
+            footer.footer-view(ui-view="footer")
+
+        // break line
+        <!-- build:js static/js/lib.js -->
+        <!-- bower:js -->
+        <!-- endbower -->
+        <!-- inject:mockDeps:js -->
+        <!-- endinject -->
+        <!-- endbuild -->
+
+        <!-- build:js static/js/app.js -->
+        <!-- inject:js -->
+        <!-- endinject -->
+
+        <!-- inject:templates:js -->
+        <!-- endinject -->
+        <!-- endbuild -->

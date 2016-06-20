@@ -1,0 +1,25 @@
+.header
+    .card.bgc-blue-500.tc-white
+        .toolbar
+            .toolbar__left.mr
+                button.btn.btn--l.btn--white.btn--icon.hide-gt-sm(lx-ripple, ng-if="hasSidebar", ng-click="vm.switchSidebar()")
+                    i.mdi.mdi-menu
+                img.logo(src="static/images/layout/logo.png")
+            .toolbar__label.fs-title.header-title
+                a.tc-white(ui-sref="root.home") Clickhouse
+            .toolbar__right
+                a.btn.btn--l.btn--white.btn--icon.header-login(ui-sref="root.login", lx-ripple="white", ng-if="!vm.isLoggedIn")
+                    i.mdi.mdi-login
+                span.header-user-name.hide-sm(ng-if="vm.isLoggedIn") {{vm.userInfo.name}}
+                lx-dropdown.header-dropdown(position="right", from-top, ng-if="vm.isLoggedIn")
+                    button.btn.btn--xl.btn--white.btn--icon.dropdown-toggle(lx-ripple, lx-dropdown-toggle)
+                        i.mdi.mdi-dots-vertical
+                    lx-dropdown-menu
+                        ul.header-dropdown-menu
+                            li.hide-gt-sm.text-center.tc-grey-500(ng-if="vm.isLoggedIn")
+                                span {{vm.userInfo.name}}
+                            li.hide-gt-sm.dropdown-divider
+                            li
+                                a.dropdown-link.logout-link(ui-sref="root.login({action: 'logout'})")
+                                    i.mdi.mdi-logout.mr
+                                    | Выход
