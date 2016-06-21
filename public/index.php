@@ -80,8 +80,8 @@ switch (trim($_SERVER['REQUEST_URI'])) {
         $info = curl_getinfo($ch);
         curl_close($ch);
         if ($info['http_code'] != 200) {
-            header('HTTP/1.0 401 Unauthorized');
-            $message = ["status" => "error", "message" => $info];
+            header('HTTP/1.0 400 Bad Request');
+            $message = ["status" => "error", "message" => $output];
             echo json_encode($message);
             exit;
         }
