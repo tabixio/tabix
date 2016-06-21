@@ -1,0 +1,7 @@
+
+<div class="sidebar">
+  <ul class="sidebar-menu p">
+    <li ng-repeat="nav in ::vm.navs" ui-sref-active="active" class="menu-item p"><a ui-sref="{{::nav.link}}" ng-click="vm.hideSidebar()" class="tc-black link"><i class="icon icon--s icon--grey icon--flat mdi {{::nav.icon}}"></i><span class="ml text">{{::nav.text}}</span></a></li>
+  </ul>
+</div>
+<div ng-show="showSidebar" ng-click="vm.hideSidebar()" class="sidebar-backdrop hide-gt-sm"></div>

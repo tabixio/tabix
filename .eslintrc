@@ -1,0 +1,24 @@
+{
+  "extends": "eslint:recommended",
+  "plugins": ["angular"],
+  "env": {
+    "browser": true,
+    "jasmine": true
+  },
+  "globals": {
+    "angular": true,
+    "smi2": true,
+    "module": true,
+    "inject": true,
+    "moment": true,
+  },
+    "rules": {
+        "semi": 2,
+        "angular/window-service":0,
+        "angular/controller-as-route":0,
+        "angular/module-getter":0,
+        "angular/di":0,
+        "angular/log":0,
+        "no-console":0
+    }
+}

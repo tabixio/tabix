@@ -1,0 +1,5 @@
+
+<ol class="breadcrumb p+">
+  <li class="home-item"><a ui-sref="root.home" lx-ripple="lx-ripple" class="btn btn--xs btn--white btn--fab"><i class="mdi mdi-home"></i></a></li>
+  <li ng-repeat="nav in vm.breadcrumbs" class="breadcrumb-item"><i class="icon tc-white icon--xs mdi mdi-chevron-right"></i><a ng-if="!$last" ui-sref="{{nav.link}}" class="btn btn--xs btn--white btn--raised">{{nav.text}}</a><span ng-if="$last" class="tc-white">{{nav.text}}</span></li>
+</ol>

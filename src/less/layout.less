@@ -1,0 +1,186 @@
+.breadcrumb-view .breadcrumb {
+  list-style: none;
+}
+.breadcrumb-view .breadcrumb li {
+  display: inline-block;
+}
+.breadcrumb-view .breadcrumb .home-item > a {
+  margin-top: -2px;
+}
+.breadcrumb-view .breadcrumb .breadcrumb-item {
+  margin-left: -5px;
+}
+.breadcrumb-view .breadcrumb .breadcrumb-item > i {
+  margin-top: -1px;
+}
+body {
+  font-family: Helvetica, arial;
+}
+body .wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  min-height: 100vh;
+  background-image: url("../assets/images/bg.jpg");
+  background-size: cover;
+}
+.content {
+  // margin-top: 64px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .content {
+    margin-top: 56px;
+  }
+}
+.content .main-content {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: hidden;
+}
+.content .main-content .main-view {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .content .main-content .main-view {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+}
+.content .main-content .main-view.ng-enter {
+  -webkit-animation: bounceIn 0.8s;
+          animation: bounceIn 0.8s;
+}
+.content .main-content .main-view .full-width {
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  padding: 10px 30px 20px 30px;
+  width: 100%;
+}
+.footer .copyright {
+  margin: auto;
+  text-shadow: 1px 1px rgba(0,0,0,0.2);
+}
+.footer .toolbar {
+  background: #424242 !important;
+}
+.header-view {
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .header-view .toolbar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.header-view .toolbar .logo {
+  width: 40px;
+  height: 40px;
+}
+.header-view .toolbar .fs-title a {
+  text-decoration: none;
+}
+body #loading-bar .bar {
+  background: #2c3e50;
+  height: 3px;
+}
+body #loading-bar .peg {
+  box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50;
+}
+body #loading-bar-spinner .spinner-icon {
+  border-top-color: #2c3e50;
+  border-left-color: #2c3e50;
+}
+.sidebar-view {
+  background-color: #fff;
+  border-right: 1px solid rgba(0,0,0,0.2);
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .sidebar-view {
+    position: fixed;
+    height: 100%;
+    width: 200px;
+    box-shadow: 3px 0 6px rgba(0,0,0,0.2);
+    -webkit-transform: translateX(-200px);
+            transform: translateX(-200px);
+    -webkit-transition: box-shadow, -webkit-transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: box-shadow, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 999;
+  }
+  .sidebar-view.show {
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+.sidebar-view .sidebar {
+  width: 200px;
+}
+.sidebar-view .sidebar .sidebar-menu {
+  list-style: none;
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item {
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item.active {
+  border-radius: 5px;
+  background-color: rgba(146,205,255,0.42);
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item.active i {
+  color: #4caf50;
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item.active:hover {
+  background-color: rgba(146,205,255,0.42);
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item:hover {
+  text-shadow: 1px 1px rgba(0,0,0,0.2);
+  background-color: #eee;
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item .link {
+  display: block;
+  text-decoration: none;
+}
+.sidebar-view .sidebar .sidebar-menu .menu-item .link .text {
+  line-height: 32px;
+  font-size: 14pt;
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .sidebar-view .sidebar-backdrop {
+    position: absolute;
+    top: 0;
+    left: 200px;
+    z-index: 990;
+    background-color: rgba(0,0,0,0.5);
+    height: 100%;
+    width: 100%;
+  }
+}

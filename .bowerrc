@@ -1,3 +1,3 @@
 {
-    "directory": "client/source/vendor"
+  "directory": "bower_components"
 }

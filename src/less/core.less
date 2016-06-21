@@ -1,0 +1,102 @@
+.dissolve-animation.ng-hide-remove,
+.dissolve-animation.ng-hide-add {
+  -webkit-transition: 0.5s linear all;
+          transition: 0.5s linear all;
+}
+.dissolve-animation.ng-hide-remove.ng-hide-remove-active,
+.dissolve-animation.ng-hide-add {
+  opacity: 1;
+}
+.dissolve-animation.ng-hide-add.ng-hide-add-active,
+.dissolve-animation.ng-hide-remove {
+  opacity: 0;
+}
+.icon-breath-animation {
+  -webkit-animation: icon-breath 1.5s ease-in-out infinite;
+          animation: icon-breath 1.5s ease-in-out infinite;
+}
+.icon-rotate-animation {
+  -webkit-animation: icon-rotate 0.8s linear infinite;
+          animation: icon-rotate 0.8s linear infinite;
+  margin-right: 5px;
+}
+@-webkit-keyframes icon-breath {
+  from {
+    box-shadow: 0 0 2px 5px rgba(255,138,138,0.48);
+    opacity: 0.5;
+  }
+  to {
+    box-shadow: none;
+    opacity: 1;
+  }
+}
+@keyframes icon-breath {
+  from {
+    box-shadow: 0 0 2px 5px rgba(255,138,138,0.48);
+    opacity: 0.5;
+  }
+  to {
+    box-shadow: none;
+    opacity: 1;
+  }
+}
+@-webkit-keyframes icon-rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes icon-rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .hide-sm {
+    display: none;
+  }
+}
+@media only screen and (min-width: 600px) {
+  .hide-gt-sm {
+    display: none;
+  }
+}
+@media only screen and (min-width: 600px) and (max-width: 960px) {
+  .hide-md {
+    display: none;
+  }
+}
+@media only screen and (min-width: 960px) {
+  .hide-gt-md {
+    display: none;
+  }
+}
+@media only screen and (min-width: 960px) and (max-width: 1200px) {
+  .hide-lg {
+    display: none;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .hide-gt-lg {
+    display: none;
+  }
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .lx-date-picker__day {
+    line-height: 16px;
+  }
+  .lx-date-picker__day a {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+  }
+}

@@ -1,4 +1,13 @@
-server/config.php
+bower_components
 node_modules
-client/source/vendor
-client/build
+public
+.tmp
+dist
+coverage
+docs
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen

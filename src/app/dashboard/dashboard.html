@@ -1,0 +1,86 @@
+<div class="wrapper wrapper-content animated fadeInRight" ng-if="vars.showType == vars.showTypes.noSiteOrCampaign">
+	<h1 class="no-m-t m-b-lg">Начните работу</h1>
+	<div class="col-md-3 no-p-l">
+		<md-card class="no-m-l">
+			<md-card-title>
+				<md-card-title-text>
+					<div class="m-l-sm m-r-sm">
+						<img src="http://static1.squarespace.com/static/549db876e4b05ce481ee4649/t/54a3a318e4b0a068ceb0e60f/1420010265445/_0003_news-icon.png" style="width:64px; height:64px" class="m-l-sm pull-right"/>
+						<span class="md-title font-thin">Я хочу чтобы мои новости появились на других ресурсах и увеличили мой трафик</span>
+					</div>
+			    </md-card-title-text>
+			</md-card-title>
+			<md-card-content>
+				<md-button class="md-primary md-raised" ui-sref="campaignCreateWizard">Добавить кампанию</md-button>
+			</md-card-content>
+		</md-card>
+	</div>
+	<div class="col-md-3 no-p-l">
+		<md-card class="no-m-l">
+			<md-card-title>
+	        	<md-card-title-text>
+					<div class="m-l-sm m-r-sm">
+					  	<img src="http://xn--80agabaf1aoiubbfj.xn--p1ai/wp-content/uploads/2015/09/1410469109_website_browser_window_web_design_internet_flat_icon_symbol-256.png" style="width:64px; height:64px" class="m-l-sm pull-right"/>
+	            		<span class="md-title font-thin">Я хочу показывать новости на своем сайте и зарабатывать</span>
+					</div>
+	        	</md-card-title-text>
+	        </md-card-title>
+			<md-card-content>
+				<md-button class="md-primary md-raised" ui-sref="siteCreateWizard">Добавить площадку</md-button>
+			</md-card-content>
+		</md-card>
+	</div>
+	<div class="col-md-3 no-p-l">
+		<md-card class="no-m-l">
+			<md-card-title>
+	        	<md-card-title-text>
+					<div class="m-l-sm m-r-sm">
+						<img src="http://www.axis.com/sites/default/files/learning-and-support-icon.png?chunk-nid-38138-chunk-vid-93873" style="width:64px; height:64px" class="m-l-sm pull-right"/>
+	            		<span class="md-title font-thin">Мы можем быстро познакомиить Вас с возможностями системы</span>
+					</div>
+	        	</md-card-title-text>
+	        </md-card-title>
+			<md-card-content>
+				<md-button class="md-raised">Посмотреть тур</md-button>
+			</md-card-content>
+		</md-card>
+	</div>
+</div>
+
+<div id="dashboard" class="wrapper wrapper-content animated fadeInRight" ng-if="vars.showType == vars.showTypes.dashboard">
+	<div as-sortable="dragConfig" ng-model="vars.widgets" is-disabled="!vars.isSettings">
+		<div ng-animate="'animate'" ng-repeat="widget in vars.widgets" class="col-md-{{widget.colSize}}" as-sortable-item ng-class="{'edit-widget':vars.isSettings,}">
+			<div class="text-center">
+				<dr-dashboard options="widget" on-remove="vars.widgets.splice($index,1)">
+				</dr-dashboard>
+			</div>
+			<md-button as-sortable-item-handle class="md-fab arrow-button" aria-label="arrow-button">
+				<i class="fa fa-arrows"></i>
+			</md-button>
+		</div>
+	</div>
+	<div class="clearfix"></div>
+	<span id="dashboard-settings">
+		<md-switch ng-model="vars.isSettings" aria-label="Switch settings">
+			<span>Настройка</span>
+		</md-switch>
+	</span>
+</div>
+
+<div class="dashboard-configure" ng-class="vars.isSettings?'show':''">
+	<md-menu>
+		<md-button aria-label="add_widget" class="md-raised  md-primary" ng-click="$mdOpenMenu($event)">
+			<i class="fa fa-plus"></i>&nbsp;Добавить</i>
+		</md-button>
+		<md-menu-content width="6">
+			<md-menu-item ng-repeat="widget in vars.widgetBase">
+				<md-button ng-click="openWidgetSettings(widget, $event)">
+					{{widget.name}}
+				</md-button>
+			</md-menu-item>
+		</md-menu-content>
+	</md-menu>
+
+	<md-button class="md-raised md-warn pull-right" aria-label="check-default" ng-click="checkDefault()"><i class="fa fa-trash-o"></i>&nbsp;Сбросить всё</i>
+	</md-button>
+</div>

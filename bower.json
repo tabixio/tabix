@@ -1,36 +1,20 @@
 {
-  "name": "clickhouse-frontend",
-  "version": "0.0.1",
-  "description": "Clickhouse Frontend",
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
+  "name": "SMI2-clickhouse",
+  "version": "1.0.0",
   "dependencies": {
-    "angular": "~1.3.15",
-    "angular-ui-router": "~0.2.14",
-    "lumx": "0.3.31",
-    "angular-animate": "~1.3.15",
-    "animate.css": "~3.2.6",
-    "angular-messages": "~1.3.15",
-    "angular-loading-bar": "~0.7.1"
-  },
-  "overrides": {
-    "mdi": {
-      "main": [
-        "css/materialdesignicons.css"
-      ]
-    }
+    "angular-animate": "~1.5.0",
+    "jquery": "~2.1.4",
+    "angular-ui-router": "~0.2.15",
+    "angular": "~1.4.12",
+    "lumx": "~1.0.6"
   },
   "devDependencies": {
-    "angular-mocks": "~1.3.15",
-    "bardjs": "~0.1.2"
+    "angular-mocks": "~1.5.0"
+  },
+  "overrides": {
   },
   "resolutions": {
-    "angular": "1.3.20"
+    "jquery": "~2.1.4",
+    "angular": "~1.4.12"
   }
 }
