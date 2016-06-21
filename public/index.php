@@ -2,33 +2,18 @@
 require_once(__DIR__ . '/config.php');
 session_start();
 
-
-//Заголовки
-header("Access-Control-Allow-Orgin: *");
-header('Content-type: application/json');
-
-
 $method = $_SERVER['REQUEST_METHOD'];
 
 //если что-нить кроме POST - посылаем
 if ($method !== "POST") {
     header("HTTP/1.0 404 Not Found");
-    $message = ["status"=>"error", "message"=>"Not Found"];
-    echo json_encode($message);
-    exit;
-}
-
-//проверяет доступен ли данный URL для запроса
-$rout = trim($_SERVER['REQUEST_URI']);
-if (array_search($rout, $allowPatch) === false) {
-    header("HTTP/1.0 404 Not Found");
-    $message = ["status"=>"error", "message"=>"Not Found"];
+    $message = ["status"=>"error", "message"=>"Not Found Method"];
     echo json_encode($message);
     exit;
 }
 
 //обрабатываем роутинг
-switch ($rout) {
+switch (trim($_SERVER['REQUEST_URI'])) {
     case "/api/login":
         //Проверяем заолнены ли вообще данные
         if (!isset($_POST['login']) || !isset($_POST['password'])) {
@@ -75,6 +60,11 @@ switch ($rout) {
             echo json_encode($message);
         }
         break;
+    default:
+        header("HTTP/1.0 404 Not Found");
+        $message = ["status"=>"error", "message"=>"Not Found"];
+        echo json_encode($message);
+        exit;
 }
 
 function isAutorized()
@@ -86,6 +76,3 @@ function isAutorized()
         return false;
     }
 }
-
-
-
