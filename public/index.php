@@ -68,13 +68,11 @@ switch (trim($_SERVER['REQUEST_URI'])) {
             exit;
         }
         if (!isset($_POST['sql'])) {
-            $message = ["status" => "error", "message" => "data incorrect"];
+            header('HTTP/1.0 400 Bad Request');
+            $message = ["status" => "error", "message" => "Bad Request"];
             echo json_encode($message);
             exit;
         }
-        $data = [
-            "query" => $_POST['sql'],
-        ];
         $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=". urlencode($_POST['sql']));
         curl_setopt($ch, CURLOPT_USERPWD, $_SESSION['login_user'] . ":" . $_SESSION['password']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
