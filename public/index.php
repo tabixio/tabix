@@ -25,7 +25,6 @@ switch (trim($_SERVER['REQUEST_URI'])) {
         //данные есть - пробуем логинится
         $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=SELECT%20'login%20success'");
         curl_setopt($ch, CURLOPT_USERPWD, $_POST['login'] . ":" . $_POST['password']);
-        //curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch);
         $info = curl_getinfo($ch);
