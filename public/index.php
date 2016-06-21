@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/config.php');
+session_set_cookie_params(3600, "/", $_SERVER['HTTP_HOST'], true, true);
 session_start();
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -7,7 +8,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 //если что-нить кроме POST - посылаем
 if ($method !== "POST") {
     header("HTTP/1.0 404 Not Found");
-    $message = ["status"=>"error", "message"=>"Not Found Method"];
+    $message = ["status" => "error", "message" => "Not Found Method"];
     echo json_encode($message);
     exit;
 }
@@ -18,7 +19,7 @@ switch (trim($_SERVER['REQUEST_URI'])) {
         //Проверяем заолнены ли вообще данные
         if (!isset($_POST['login']) || !isset($_POST['password'])) {
             header('HTTP/1.0 401 Unauthorized');
-            $message = ["status"=>"error", "message"=>"Unauthorized"];
+            $message = ["status" => "error", "message" => "Unauthorized"];
             echo json_encode($message);
             exit;
         }
@@ -34,39 +35,71 @@ switch (trim($_SERVER['REQUEST_URI'])) {
 
         if ($info['http_code'] != 200) {
             header('HTTP/1.0 401 Unauthorized');
-            $message = ["status"=>"error", "message"=>"Unauthorized"];
+            $message = ["status" => "error", "message" => "Unauthorized"];
             echo json_encode($message);
             exit;
         }
         //Логиним пользователя
         $_SESSION['login_user'] = $_POST['login'];
-        $message = ["status"=>"ok", "message"=>"authorized"];
+        $_SESSION['password'] = $_POST['password'];
+        $message = ["status" => "ok", "message" => "authorized"];
         echo json_encode($message);
         break;
     case "/api/logout":
         unset($_SESSION['login_user']);
+        unset($_SESSION['password']);
         session_destroy();
-        $message = ["status"=>"ok", "message"=>"logout"];
+        $message = ["status" => "ok", "message" => "logout"];
         echo json_encode($message);
         break;
     case "/api/user":
-        if (isAutorized()) {
-            $message = ["status"=>"ok", "login"=>$_SESSION['login_user']];
+        if (isAuthorized()) {
+            $message = ["status" => "ok", "login" => $_SESSION['login_user']];
+            echo json_encode($message);
+        } else {
+            $message = ["status" => "error", "login" => "Unauthorized"];
             echo json_encode($message);
         }
+        break;
+    case "/api/query":
+        if (!isAuthorized()) {
+            $message = ["status" => "error", "login" => "Unauthorized"];
+            echo json_encode($message);
+            exit;
+        }
+        if (!isset($_POST['sql'])) {
+            $message = ["status" => "error", "message" => "data incorrect"];
+            echo json_encode($message);
+            exit;
+        }
+        $data = [
+            "query" => $_POST['sql'],
+        ];
+        $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=". urlencode($_POST['sql']));
+        curl_setopt($ch, CURLOPT_USERPWD, $_SESSION['login_user'] . ":" . $_SESSION['password']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        if ($info['http_code'] != 200) {
+            header('HTTP/1.0 401 Unauthorized');
+            $message = ["status" => "error", "message" => $info];
+            echo json_encode($message);
+            exit;
+        }
         else{
-            $message = ["status"=>"error", "login"=>"Unauthorized"];
+            $message = ["status" => "ok", "message" => $output];
             echo json_encode($message);
         }
         break;
     default:
         header("HTTP/1.0 404 Not Found");
-        $message = ["status"=>"error", "message"=>"Not Found"];
+        $message = ["status" => "error", "message" => "Not Found"];
         echo json_encode($message);
         exit;
 }
 
-function isAutorized()
+function isAuthorized()
 {
     if (isset($_SESSION['login_user'])) {
         return true;
