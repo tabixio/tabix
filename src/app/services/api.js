@@ -34,7 +34,7 @@
 							defer.reject('некорректный ответ backend');
 						}
 					}, function(response) {
-						defer.reject(response.statusText);
+						defer.reject((response.data.message || response.statusText).substr(0, 300));
 					});
 
 					return defer.promise;

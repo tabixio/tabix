@@ -38,12 +38,8 @@
 			userManager: 'userManager',
 			api: 'api'
 		},
-		directives: {
-			validator: 'drValidator'
-		},
 		messages: {
-			notAuthorized: 'notAuthorized',
-			errorNoticeFocusInput: 'errorNoticeFocusInput'
+			notAuthorized: 'notAuthorized'
 		},
 		states: {
 			base: 'base',

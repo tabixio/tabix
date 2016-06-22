@@ -46,6 +46,7 @@
 						$scope.vars.sqlData = api.dataToHtml(data);
 					}, function (response) {
 						LxNotificationService.error('Ошибка ' + response);
+						$scope.vars.sqlData = 'ошибка запроса';
 					});
 				};
 			}

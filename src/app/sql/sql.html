@@ -9,9 +9,11 @@
                                 <i class="mdi mdi-history"></i>
                             </lx-button>
                         </lx-dropdown-toggle>
-
                         <lx-dropdown-menu>
-                            <ul>
+                            <ul ng-if="vars.sqlHistory.length == 0">
+                                <li class="tc-grey-400 pl fs-body-2">История запросов пуста</li>
+                            </ul>
+                            <ul ng-if="vars.sqlHistory.length > 0">
                                 <li ng-repeat="item in vars.sqlHistory track by $index">
                                     <a class="dropdown-link" ng-click="vars.sql = item">{{item}}</a>
                                 </li>
