@@ -1,5 +1,5 @@
 <div class="pl pr" flex-container="row" flex-column="12">
-    <div flex-item="5">
+    <div flex-item="4">
         <div class="card">
             <div class="pl+ pt+ pb+ pr">
                 <div class="float-right" style="margin-top: -5px">
@@ -33,13 +33,14 @@
             </div>
         </div>
     </div>
-    <div flex-item="7" class="pl+">
+    <div flex-item="8" class="pl+">
         <div class="card">
             <div class="p+">
                 Результат
             </div>
-            <div class="card__actions p+ fs-caption">
-                нет данных
+            <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
+                <span ng-if="vars.sqlData === null" class="fs-caption">нет данных</span>
+                <div ng-if="vars.sqlData !== null" ng-bind-html="vars.sqlData"></div>
             </div>
         </div>
     </div>

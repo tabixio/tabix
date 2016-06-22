@@ -32,7 +32,8 @@
 			errorNotice: 'errorNotice',
 			httpInterceptor: 'httpInterceptor',
 			toolbar: 'toolbar',
-			userManager: 'userManager'
+			userManager: 'userManager',
+			api: 'api'
 		},
 		factories: {
 		},
