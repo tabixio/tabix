@@ -14,16 +14,30 @@
 			'LxNotificationService',
 			smi2.app.services.api,
 			function($scope, $rootScope, localStorageService, LxNotificationService, api) {
+
                 $scope.vars = {
 					sql: '',
 					sqlHistory: localStorageService.get('sqlHistory') || [],
-					sqlData: null
+					sqlData: null,
+					format: {},
+					formats: [{
+						name: 'Таблица',
+						sql: 'format JSON'
+					}, {
+						name: 'JSON',
+						sql: 'format JSON'
+					}, {
+						name: 'JSON compact',
+						sql: 'format JSONCompact'
+					}]
                 };
+				$scope.vars.format = $scope.vars.formats[0];
 
 				$rootScope.breadcrumbs = [{
 					link: 'sql',
 					text: 'SQL'
 				}];
+
 
 				$scope.run = function () {
 					if ($scope.vars.sql === '' || $scope.vars.sql === null) {
@@ -42,8 +56,12 @@
 					$scope.vars.sqlData = 'загрузка...';
 
 					// RUN
-					api.query($scope.vars.sql).then(function (data) {
-						$scope.vars.sqlData = api.dataToHtml(data);
+					api.queryRaw($scope.vars.sql, $scope.vars.format.sql).then(function (data) {
+						if ($scope.vars.format.name == $scope.vars.formats[0].name) {
+							$scope.vars.sqlData = api.dataToHtml(angular.fromJson(data.message));
+						} else {
+							$scope.vars.sqlData = '<pre class="fs-body-2">' + data.message + '</pre>';
+						}
 					}, function (response) {
 						LxNotificationService.error('Ошибка ' + response);
 						$scope.vars.sqlData = 'ошибка запроса';

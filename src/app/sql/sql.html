@@ -3,6 +3,20 @@
         <div class="card">
             <div class="pl+ pt+ pb+ pr">
                 <div class="float-right" style="margin-top: -5px">
+                    <lx-dropdown lx-position="right" lx-over-toggle="true">
+                        <lx-dropdown-toggle>
+                            <lx-button lx-color="black" lx-type="flat">
+                                {{vars.format.name}}
+                            </lx-button>
+                        </lx-dropdown-toggle>
+                        <lx-dropdown-menu>
+                            <ul>
+                                <li ng-repeat="format in vars.formats">
+                                    <a class="dropdown-link" ng-click="vars.format = format">{{format.name}}</a>
+                                </li>
+                            </ul>
+                        </lx-dropdown-menu>
+                    </lx-dropdown>
                     <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="250">
                         <lx-dropdown-toggle>
                             <lx-button lx-color="black" lx-type="icon">
