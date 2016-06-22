@@ -9,7 +9,7 @@
 	.constant(smi2.app.config, {
 
 		// URL API сервера, без слеша в конце
-		apiUrl: location.hostname == 'localhost' ? 'http://clickhouse' : 'http://<input value>',
+		apiUrl: location.hostname == 'localhost' ? 'http://clickhouse' : location.origin
 
 	})
 
@@ -21,19 +21,18 @@
 		'$httpProvider',
 		'$sceProvider',
 		'$urlRouterProvider',
-		smi2.app.config,
-		function($locationProvider, $httpProvider, $sceProvider, $urlRouterProvider, config) {
+		function($locationProvider, $httpProvider, $sceProvider, $urlRouterProvider) {
 
 			// Запуск HTML5 режима HISTORY API, без решетки
 			$locationProvider.html5Mode(true).hashPrefix('!');
 
-			// Добавление токена к HTTP сообщениям, проверка авторизации
+			// Проверка авторизации в httpInterceptor
 			$httpProvider.interceptors.push(smi2.app.services.httpInterceptor);
 
-			// разрешаю ng-bind-html
+			// Разрешаю ng-bind-html
 			$sceProvider.enabled(false);
 
-			//default state
+			// Если state не найден - шлю 404
 			$urlRouterProvider.otherwise(function($injector) {
 				var $state = $injector.get("$state");
 				$state.transitionTo('404');

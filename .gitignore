@@ -4,6 +4,7 @@ node_modules
 dist
 coverage
 docs
+public/config.php
 
 # IntelliJ project files
 .idea

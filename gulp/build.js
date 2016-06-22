@@ -53,32 +53,31 @@ gulp.task('html', ['inject', 'partials'], function() {
 
   return gulp.src(path.join(conf.paths.tmp, '/serve/*.html'))
     .pipe($.inject(partialsInjectFile, partialsInjectOptions))
-	.pipe($.replace('../.tmp/favicons/', '/assets/images/favicons/'))
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
-    .pipe($.sourcemaps.init())
+    .pipe($.replace('assets/', 'app/assets/'))
+    //.pipe($.sourcemaps.init())
     .pipe($.ngAnnotate())
     .pipe($.uglify({
       preserveComments: $.uglifySaveLicense
     })).on('error', conf.errorHandler('Uglify'))
-    .pipe($.sourcemaps.write('maps'))
+    //.pipe($.sourcemaps.write('maps'))
     .pipe(jsFilter.restore)
     .pipe(cssFilter)
-    .pipe($.sourcemaps.init())
-    .pipe($.replace('../../bower_components/bootstrap/fonts/', '../fonts/'))
-    .pipe($.replace('../../bower_components/fontawesome/fonts/', '../fonts/'))
-
+    //.pipe($.sourcemaps.init())
 	//для favicon production
-    .pipe($.minifyCss({
-      processImport: false
-    }))
-    .pipe($.sourcemaps.write('maps'))
+    // .pipe($.minifyCss({
+    //   processImport: false
+    // }))
+    //.pipe($.sourcemaps.write('maps'))
     .pipe(cssFilter.restore)
     .pipe(assets.restore())
     .pipe($.useref())
     .pipe($.revReplace())
     .pipe(htmlFilter)
+    .pipe($.replace('styles/', 'app/styles/'))
+    .pipe($.replace('scripts/', 'app/scripts/'))
     .pipe($.minifyHtml({
       empty: true,
       spare: true,
@@ -115,13 +114,8 @@ gulp.task('other', function() {
     .pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
-gulp.task('build-favicons', ['favicons'], function() {
-  return gulp.src(path.join(conf.paths.tmp, '/favicons/**/*')).
-  pipe(gulp.dest(path.join(conf.paths.dist, '/assets/images/favicons/')));
-});
-
 gulp.task('clean', function() {
   return $.del([path.join(conf.paths.dist, '/'), path.join(conf.paths.tmp, '/')]);
 });
 
-gulp.task('build', ['html', 'fonts', 'other', 'build-favicons']);
+gulp.task('build', ['html', 'fonts', 'other']);

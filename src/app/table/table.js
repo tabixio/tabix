@@ -10,31 +10,31 @@
 		.controller(smi2.app.controllers.table, [
 			'$scope',
 			'$rootScope',
-            '$stateParams',
+			'$stateParams',
 			smi2.app.services.api,
 			function($scope, $rootScope, $stateParams, api) {
 				$rootScope.breadcrumbs = [{
 					text: 'База ' + $stateParams.dbName,
 					link: smi2.app.states.database
-				},{
+				}, {
 					text: 'Таблица ' + $stateParams.tableName,
 					link: smi2.app.states.table
 				}];
 
-                // $scope.$on('$destroy', function () {
-                //     $rootScope.breadcrumbs = [{
-    			// 		text: 'База ' + $stateParams.dbName,
-    			// 		link: smi2.app.states.database
-    			// 	}];
-                // });
+				// $scope.$on('$destroy', function () {
+				//     $rootScope.breadcrumbs = [{
+				// 		text: 'База ' + $stateParams.dbName,
+				// 		link: smi2.app.states.database
+				// 	}];
+				// });
 
 				$scope.vars = {
 					data: {},
-                    name: $stateParams.tableName
+					name: $stateParams.tableName
 				};
 
-				api.query('describe table ' + $stateParams.dbName + '.' +  $stateParams.tableName).then(function (data) {
-                    $scope.vars.data = data;
+				api.query('describe table ' + $stateParams.dbName + '.' + $stateParams.tableName).then(function(data) {
+					$scope.vars.data = data;
 				});
 			}
 		]);

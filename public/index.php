@@ -5,6 +5,12 @@ session_start();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// отдаю index.html
+if ($method == "GET") {
+    readfile($_SERVER['DOCUMENT_ROOT'].'/app/index.html');
+    exit;
+}
+
 //если что-нить кроме POST - посылаем
 if ($method !== "POST") {
     header("HTTP/1.0 404 Not Found");

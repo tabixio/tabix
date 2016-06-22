@@ -13,21 +13,21 @@
 			function($scope, api) {
 				$scope.vars = {
 					databases: [],
-                    selectedDatabase: null,
-                    tables: []
+					selectedDatabase: null,
+					tables: []
 				};
 
-                $scope.changeDatabase = function (database) {
-                    $scope.vars.selectedDatabase = database;
+				$scope.changeDatabase = function(database) {
+					$scope.vars.selectedDatabase = database;
 
-                    api.query('show tables from ' + database.name).then(function (data) {
-                        $scope.vars.tables = data.data;
-    				});
-                };
+					api.query('show tables from ' + database.name).then(function(data) {
+						$scope.vars.tables = data.data;
+					});
+				};
 
-				api.query('show databases').then(function (data) {
+				api.query('show databases').then(function(data) {
 					$scope.vars.databases = data.data;
-                    $scope.changeDatabase(data.data[0]);
+					$scope.changeDatabase(data.data[0]);
 				});
 			}
 		]);

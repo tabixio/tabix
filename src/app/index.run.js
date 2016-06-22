@@ -23,16 +23,9 @@
 					}
 				});
 
-				var stateChangeSuccessUnbind = $rootScope.$on('$stateChangeSuccess',
-					function (event, toState, toParams, fromState, fromParams) {
-						//$rootScope.breadcrumbs = [];
-					}
-				);
-
 				// Требование JSlinter'a (((
 				$rootScope.$on('$destroy', function() {
 					stateChangeErrorUnbind();
-					stateChangeSuccessUnbind();
 				});
 
 			}

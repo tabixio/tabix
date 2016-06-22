@@ -17,9 +17,9 @@
 				/**
 				 * Запрос на выборку данных
 				 */
-                this.query = function (sql) {
-                    var defer = $q.defer();
-                    $http({
+				this.query = function(sql) {
+					var defer = $q.defer();
+					$http({
 						method: 'POST',
 						withCredentials: true,
 						url: config.apiUrl + "/api/query",
@@ -27,29 +27,29 @@
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
-					}).then(function (response) {
-                        if (response.data.status == 'ok' && response.data.message) {
-                            defer.resolve(angular.fromJson(response.data.message));
-                        } else {
-                            defer.reject('некорректный ответ backend');
-                        }
-					}, function (response) {
-					    defer.reject(response.statusText);
+					}).then(function(response) {
+						if (response.data.status == 'ok' && response.data.message) {
+							defer.resolve(angular.fromJson(response.data.message));
+						} else {
+							defer.reject('некорректный ответ backend');
+						}
+					}, function(response) {
+						defer.reject(response.statusText);
 					});
 
-                    return defer.promise;
-                };
+					return defer.promise;
+				};
 
-				this.dataToHtml = function (data) {
+				this.dataToHtml = function(data) {
 					var html = '<table class="sql-table fs-body-1"><tr>';
 					var keys = [];
-					data.meta.forEach(function (cell) {
+					data.meta.forEach(function(cell) {
 						html += '<th>' + cell.name + '<div class="fs-caption tc-grey-400">' + cell.type + '</div></th>';
 						keys.push(cell.name);
 					});
-					data.data.forEach(function (row) {
+					data.data.forEach(function(row) {
 						html += '<tr>';
-						keys.forEach(function (key) {
+						keys.forEach(function(key) {
 							html += '<td>' + row[key] + '</td>';
 						});
 						html += '</tr>';
