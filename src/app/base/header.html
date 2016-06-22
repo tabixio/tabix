@@ -1,23 +1,22 @@
-
 <div class="header">
-  <div class="card bgc-blue-500 tc-white">
-    <div class="toolbar">
-      <div class="toolbar__left mr">
-        <button lx-ripple="lx-ripple" ng-if="hasSidebar" ng-click="vm.switchSidebar()" class="btn btn--l btn--white btn--icon hide-gt-sm"><i class="mdi mdi-menu"></i></button><img src="static/images/layout/logo.png" class="logo"/>
-      </div>
-      <div class="toolbar__label fs-title header-title"><a ui-sref="root.home" class="tc-white">Clickhouse</a></div>
-      <div class="toolbar__right"><a ui-sref="root.login" lx-ripple="white" ng-if="!vm.isLoggedIn" class="btn btn--l btn--white btn--icon header-login"><i class="mdi mdi-login"></i></a><span ng-if="vm.isLoggedIn" class="header-user-name hide-sm">{{vm.userInfo.name}}</span>
-        <lx-dropdown position="right" from-top="from-top" ng-if="vm.isLoggedIn" class="header-dropdown">
-          <button lx-ripple="lx-ripple" lx-dropdown-toggle="lx-dropdown-toggle" class="btn btn--xl btn--white btn--icon dropdown-toggle"><i class="mdi mdi-dots-vertical"></i></button>
-          <lx-dropdown-menu>
-            <ul class="header-dropdown-menu">
-              <li ng-if="vm.isLoggedIn" class="hide-gt-sm text-center tc-grey-500"><span>{{vm.userInfo.name}}</span></li>
-              <li class="hide-gt-sm dropdown-divider"></li>
-              <li><a ui-sref="root.login({action: 'logout'})" class="dropdown-link logout-link"><i class="mdi mdi-logout mr"></i>Выход</a></li>
-            </ul>
-          </lx-dropdown-menu>
-        </lx-dropdown>
-      </div>
+    <div class="card bgc-blue-500 tc-white">
+        <div class="toolbar">
+            <div class="toolbar__left mr">
+                <button lx-ripple="lx-ripple" ng-if="hasSidebar" ng-click="vm.switchSidebar()" class="btn btn--l btn--white btn--icon hide-gt-sm"><i class="mdi mdi-menu"></i></button>
+                <img src="assets/images/logo.png" class="logo"/>
+            </div>
+            <div class="toolbar__label fs-title header-title">
+                <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
+            </div>
+            <div class="toolbar__right">
+                <a ui-sref="sql" href lx-tooltip="SQL" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
+                    <i class="mdi mdi-console"></i>
+                </a>
+                <a ui-sref="logout" href lx-tooltip="Выход" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
+                    <i class="mdi mdi-lock"></i>
+                </a>
+                <span class="header-user-name hide-sm p+">{{user}}</span>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

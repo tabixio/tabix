@@ -13,7 +13,7 @@
 			'$state',
 			function($rootScope, $state) {
 
-				var hostname = location.hostname;
+				$rootScope.breadcrumbs = [];
 
 				// Провеярю в чем ошибка перехода на state
 				var stateChangeErrorUnbind = $rootScope.$on('$stateChangeError', function(toState, toParams, fromState, fromParams, error, reason) {
@@ -23,10 +23,18 @@
 					}
 				});
 
+				var stateChangeSuccessUnbind = $rootScope.$on('$stateChangeSuccess',
+					function (event, toState, toParams, fromState, fromParams) {
+						$rootScope.breadcrumbs = [];
+					}
+				);
+
 				// Требование JSlinter'a (((
 				$rootScope.$on('$destroy', function() {
 					stateChangeErrorUnbind();
+					stateChangeSuccessUnbind();
 				});
+
 			}
 		]);
 })();

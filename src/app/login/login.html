@@ -4,32 +4,10 @@
     <div class="card bgc-blue-500 tc-white">
       <div class="toolbar">
         <div class="toolbar__left mr">
-          <button lx-ripple="lx-ripple" ng-if="hasSidebar" ng-click="vm.switchSidebar()" class="btn btn--l btn--white btn--icon hide-gt-sm">
-            <i class="mdi mdi-menu"></i>
-          </button><img src="assets/images/logo.png" class="logo"/>
+            <img src="assets/images/logo.png" class="logo"/>
         </div>
         <div class="toolbar__label fs-title header-title">
-          <a ui-sref="root.home" class="tc-white">Clickhouse</a>
-        </div>
-        <div class="toolbar__right">
-          <span ng-if="vm.isLoggedIn" class="header-user-name hide-sm">{{vm.userInfo.name}}</span>
-          <lx-dropdown position="right" from-top="from-top" ng-if="vm.isLoggedIn" class="header-dropdown">
-            <button lx-ripple="lx-ripple" lx-dropdown-toggle="lx-dropdown-toggle" class="btn btn--xl btn--white btn--icon dropdown-toggle">
-              <i class="mdi mdi-dots-vertical"></i>
-            </button>
-            <lx-dropdown-menu>
-              <ul class="header-dropdown-menu">
-                <li ng-if="vm.isLoggedIn" class="hide-gt-sm text-center tc-grey-500">
-                  <span>{{vm.userInfo.name}}</span>
-                </li>
-                <li class="hide-gt-sm dropdown-divider"></li>
-                <li>
-                  <a ui-sref="root.login({action: 'logout'})" class="dropdown-link logout-link">
-                    <i class="mdi mdi-logout mr"></i>Выход</a>
-                </li>
-              </ul>
-            </lx-dropdown-menu>
-          </lx-dropdown>
+          <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
         </div>
       </div>
     </div>
@@ -40,24 +18,24 @@
 	  <div class="main-view">
       <div class="login-view">
         <div ng-if="vars.loading" class="login-checking tc-white">
-          <i ng-class="{'mdi-sync icon-rotate-animation': !vm.userInfo, 'mdi-account': vm.userInfo}" class="icon icon--xl icon--flat mdi"></i>
-          <p class="loading-text">{{vm.userInfo ? vm.userInfo.name : 'Проверка...'}}</p>
+          <i class="icon icon--xl icon--flat mdi mdi-sync icon-rotate-animation"></i>
+          <p class="loading-text">{{vars.userInfo ? vars.userInfo.name : 'Проверка...'}}</p>
         </div>
-        <form name="vm.loginForm" ng-submit="vm.login(vm.credential)" novalidate="novalidate" class="card">
+        <form name="vars.loginForm" ng-submit="vars.login()" novalidate="novalidate" class="card">
           <div class="card__header p+">Вход</div>
-          <div ng-if="vm.loginError" class="login-message {{vm.loginError.type}}">
-            <p class="tc-white">{{vm.loginError.text}}</p>
+          <div ng-if="vars.loginError" class="login-message error fs-body-1">
+            <p class="tc-white">Неверный логин/пароль</p>
           </div>
           <div class="card__body p++">
             <lx-text-field label="логин" fixed-label="true" icon="account">
               <input type="text" ng-model="vars.user.login" name="login" required="required"/>
             </lx-text-field>
             <lx-text-field label="пароль" fixed-label="true" icon="key">
-              <input type="password" ng-model="vars.user.password" required="required" onclick="onKeypress($event)"/>
+              <input type="password" ng-model="vars.user.password" required="required" ng-click="onKeypress($event)"/>
             </lx-text-field>
           </div>
           <div class="card__actions text-center p+">
-            <button type="submit" ng-disabled="vm.loginForm.$invalid || vm.isRequest" ng-class="{'btn--is-disabled': vm.loginForm.$invalid}" lx-ripple="lx-ripple" aio-loading-button="vm.isRequest" class="btn btn--l btn--blue btn--raised btn-login">Войти</button>
+            <button type="submit" ng-disabled="vars.loginForm.$invalid" ng-class="{'btn--is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple" class="btn btn--l btn--blue btn--raised btn-login" ng-click="login()">Войти</button>
           </div>
         </form>
       </div>

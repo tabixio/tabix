@@ -12,8 +12,12 @@
 	angular.module(smi2.app.name)
 		.controller(smi2.app.controllers.dashboard, [
 			'$scope',
-			function($scope) {
-
+			'$rootScope',
+			function($scope, $rootScope) {
+				$rootScope.breadcrumbs = [{
+					text: 'Рабочий стол',
+					link: 'dashboard'
+				}];
 
 			}
 		]);

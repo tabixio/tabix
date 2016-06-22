@@ -17,6 +17,7 @@
 				// Переменные, доступные во view
 				$scope.vars = {
 					loading: false,
+					loginError: false,
 					user: {},
 					year: (new Date()).getFullYear()
 				};
@@ -33,23 +34,16 @@
 				 * @methodOf smi2.controller:login
 				 */
 				$scope.login = function () {
-					try {
-						userManager.validate($scope.vars.user);
-						$scope.vars.loading = true;
-						userManager.login($scope.vars.user).then(function () {
-							userManager.my().then(function (user) {
-								$scope.test.user = user;
-								if(!$scope.isUnitTest){
-									$scope.$parent.root.loadUser();
-								}
-								$state.go(smi2.app.states.dashboard);
-							});
-						}, function () {
-							$scope.vars.loading = false;
-						});
-					} catch (errors) {
-						errorNotice.showValidateError(errors, $scope.loginForm, $scope.vars.user);
-					}
+					$scope.vars.loading = true;
+					$scope.vars.loginError = false;
+					userManager.login($scope.vars.user).then(function () {
+						$state.go(smi2.app.states.dashboard);
+						//userManager.my().then(function (user) {
+						//});
+					}, function () {
+						$scope.vars.loginError = true;
+						$scope.vars.loading = false;
+					});
 				};
 
 				/**
@@ -58,6 +52,7 @@
 				 * @param {object} event Данные события
 				 */
 				$scope.onKeypress = function (event) {
+					$scope.vars.loginError = false;
 					if (event.charCode == 13) {
 						$scope.login();
 					}

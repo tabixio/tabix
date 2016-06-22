@@ -24,7 +24,9 @@
 		controllers: {
 			root: 'rootController',
 			login: 'loginController',
-			dashboard: 'dashboardController'
+			dashboard: 'dashboardController',
+			header: 'headerController',
+			sql: 'sqlController'
 		},
 		services: {
 			errorNotice: 'errorNotice',
@@ -43,9 +45,12 @@
 		},
 		states: {
 			base: 'base',
+			layout: 'layout',
 			switch: 'switch',
 			login: 'login',
-			dashboard: 'dashboard'
+			logout: 'logout',
+			dashboard: 'dashboard',
+			sql: 'sql'
 		}
 	};
 
@@ -54,7 +59,9 @@
 		'ngAnimate',
 		'ui.router',
 //		'ngMessages',
-		'lumx'
+		'LocalStorageModule',
+		'lumx',
+		'ui.ace'
 	]);
 
 })();

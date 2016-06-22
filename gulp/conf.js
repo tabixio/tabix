@@ -28,9 +28,12 @@ exports.wiredep = {
 	exclude: [/\/bootstrap\.js$/, /\/bootstrap\.css/],
 	directory: 'bower_components',
 	overrides: {
-		'angular-loggly-logger': {
-			main: 'angular-loggly-logger.js'
-		}
+		// 'angular-loggly-logger': {
+		// 	main: 'angular-loggly-logger.js'
+		// },
+		// 'ace-builds': {
+        //     main: 'bower_components/ace-builds/src-min-noconflict/ace.js'
+        // }
 	}
 };
 

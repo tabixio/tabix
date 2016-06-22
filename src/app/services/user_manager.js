@@ -4,9 +4,7 @@
 	/**
 	 * @ngdoc service
 	 * @name smi2.service:userManager
-	 * @description Менеджер модели User
-	 *
-	 * Формат оформления сервисов {@link smi2.factory:baseManager `smi2.factories.baseManager`}
+	 * @description Менеджер управления авторизацией
 	 */
 	angular
 		.module(smi2.app.name)
@@ -24,40 +22,27 @@
 				 * @name login
 				 * @description Авторизация на сервере
 				 * @methodOf smi2.service:userManager
-				 * @param {object} model Модель {@link smi2.factory:user 'User'}, в которой установлены логин/пароль
+				 * @param {object} user Объект логин/пароль
 				 */
-				this.login = function(model) {
+				this.login = function(user) {
 
 					var defer = $q.defer();
-
-					// Послыка на сервер
-					var data = {
-						grant_type: 'password',
-						username: model.username,
-						password: model.password,
-						client_id: config.clientId
-					};
-
-					// Приведение object->string "key=val&..."
-					data = Object.keys(data).map(function(key) {
-						return key + '=' + encodeURIComponent(data[key]);
-					}).join('&');
 
 					// Отправка запроса авторизации на сервер
 					$http({
 						method: 'POST',
-						url: config.apiUrl + config.authUrl.login,
-						data: data,
+						withCredentials: true,
+						url: config.apiUrl + "/api/login",
+						data: 'login=' + user.login + '&password=' + user.password,
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
 					}).then(function(response) {
-						if (response.data.access_token) {
-							//manager.setToken(response.data.access_token);
+						if (response.data.status == 'ok') {
+							defer.resolve(response.data);
 						} else {
-							//console.error('No access token in ', response.data);
+							defer.reject(response.data);
 						}
-						defer.resolve(response.data);
 					}, function(reason) {
 						defer.reject(reason);
 					});
@@ -74,18 +59,15 @@
 				 */
 				this.logout = function() {
 
-					// Приходится добавлять токен тут,
-					// поскольку в interceptor уже будет пусто
-					$http({
-						method: 'DELETE',
-						url: config.apiUrl + config.authUrl.logout,
-						headers: {
-							Authorization: 'Bearer ' + token
-						}
-					});
-
 					// Сбрасываю юзера
-					//manager.setToken(null);
+					currentUser = null;
+
+					// Говорю серверу что выхожу
+					return $http({
+						method: 'POST',
+						withCredentials: true,
+						url: config.apiUrl + '/api/logout'
+					});
 				};
 
 				/**
@@ -107,10 +89,11 @@
 
 					// Отправка запроса авторизации на сервер
 					return $http({
-						method: 'GET',
-						url: config.apiUrl
+						method: 'POST',
+						withCredentials: true,
+						url: config.apiUrl + '/api/user'
 					}).then(function(response) {
-						currentUser = new user(response.data);
+						currentUser = response.data;
 						return currentUser;
 					});
 				};
@@ -126,13 +109,13 @@
 				this.checkSession = function() {
 					var defer = $q.defer();
 					if (currentUser) {
-						manager.my().then(function() {
+						defer.resolve();
+					} else {
+						this.my().then(function() {
 							defer.resolve();
 						}, function() {
 							defer.reject(smi2.app.messages.notAuthorized);
 						});
-					} else {
-						defer.reject(smi2.app.messages.notAuthorized);
 					}
 
 					return defer.promise;

@@ -1,7 +1,10 @@
-<div class="content">
-	<div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view"></div>
-	<div class="main-content">
-    	<div ui-view="breadcrumb" class="breadcrumb-view"></div>
-    	<div ui-view="main" class="main-view"></div>
+<div class="wrapper">
+	<header ui-view="header" class="header-view"></header>
+	<div class="content">
+		<div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view"></div>
+		<div class="main-content">
+			<div ui-view="breadcrumb" class="breadcrumb-view"></div>
+			<div ui-view="main" class="p"></div>
+		</div>
 	</div>
 </div>
