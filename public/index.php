@@ -79,7 +79,7 @@ switch (trim($_SERVER['REQUEST_URI'])) {
             echo json_encode($message);
             exit;
         }
-        $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=". urlencode($_POST['sql']));
+        $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=". urlencode($_POST['sql']) . (isset($_POST['database']) ? "&database=" . $_POST['database'] : ""));
         curl_setopt($ch, CURLOPT_USERPWD, $_SESSION['login_user'] . ":" . $_SESSION['password']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch);

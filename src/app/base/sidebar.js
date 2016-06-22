@@ -19,13 +19,14 @@
 
 				$scope.changeDatabase = function(database) {
 					$scope.vars.selectedDatabase = database;
-
+					api.setDatabase(database.name);
 					api.query('show tables from ' + database.name).then(function(data) {
 						$scope.vars.tables = data.data;
 					});
 				};
 
 				api.query('show databases').then(function(data) {
+					console.log(data);
 					$scope.vars.databases = data.data;
 					$scope.changeDatabase(data.data[0]);
 				});

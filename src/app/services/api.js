@@ -14,6 +14,8 @@
 			smi2.app.config,
 			function($http, $q, config) {
 
+				var database = null;
+
 				/**
 				 * Запрос на выборку данных
 				 */
@@ -34,10 +36,41 @@
 							defer.reject('некорректный ответ backend');
 						}
 					}, function(response) {
-						defer.reject((response.data.message || response.statusText).substr(0, 300));
+						defer.reject((response.data && response.data.message || response.statusText).substr(0, 300));
 					});
 
 					return defer.promise;
+				};
+
+				this.queryRaw = function(sql, format) {
+					var defer = $q.defer();
+					var data = 'sql=' + encodeURIComponent(sql + ' ' + (format || 'format JSON'));
+					if (database !== null) {
+						data += '&database=' + database;
+					}
+					$http({
+						method: 'POST',
+						withCredentials: true,
+						url: config.apiUrl + "/api/query",
+						data: data,
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					}).then(function(response) {
+						if (response.data.status == 'ok' && response.data.message) {
+							defer.resolve(response.data);
+						} else {
+							defer.reject('некорректный ответ backend');
+						}
+					}, function(response) {
+						defer.reject((response.data && response.data.message || response.statusText).substr(0, 300));
+					});
+
+					return defer.promise;
+				};
+
+				this.setDatabase = function (db) {
+					database = db;
 				};
 
 				this.dataToHtml = function(data) {
