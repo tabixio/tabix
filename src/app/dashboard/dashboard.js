@@ -4,21 +4,26 @@
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:dashboard
-	 * @description Контроллер dashboard страницы.
-	 *
-	 * Контроллер строит сетку dashboard либо показывает
-	 * что у юзера нет ни одной площадки / кампании.
+	 * @description Контроллер dashboard страницы
 	 */
 	angular.module(smi2.app.name)
 		.controller(smi2.app.controllers.dashboard, [
 			'$scope',
 			'$rootScope',
-			function($scope, $rootScope) {
+			smi2.app.services.api,
+			function($scope, $rootScope, api) {
 				$rootScope.breadcrumbs = [{
 					text: 'Рабочий стол',
 					link: 'dashboard'
 				}];
 
+				$scope.vars = {
+					databases: []
+				};
+
+				api.query('show databases').then(function (data) {
+					$scope.vars.databases = data.data;
+				});
 			}
 		]);
 })(angular, smi2);

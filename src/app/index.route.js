@@ -72,8 +72,15 @@
 				parent: smi2.app.states.layout,
 				url: '/sql',
 				templateUrl: 'app/sql/sql.html',
-				controller: smi2.app.controllers.sql,
-				breadcrumb: 'SQL'
+				controller: smi2.app.controllers.sql
+			})
+
+			// одна база
+			.state(smi2.app.states.database, {
+				parent: smi2.app.states.layout,
+				url: '/database/{name}',
+				templateUrl: 'app/database/database.html',
+				controller: smi2.app.controllers.database
 			})
 
 			// not found

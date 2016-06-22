@@ -25,6 +25,7 @@
 			root: 'rootController',
 			login: 'loginController',
 			dashboard: 'dashboardController',
+			database: 'databaseController',
 			header: 'headerController',
 			sql: 'sqlController'
 		},
@@ -51,6 +52,7 @@
 			login: 'login',
 			logout: 'logout',
 			dashboard: 'dashboard',
+			database: 'database',
 			sql: 'sql'
 		}
 	};
