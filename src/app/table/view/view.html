@@ -1,0 +1,16 @@
+<div class="pl+ pt+ pb+ pr fs-title">
+    <div class="float-right" style="margin-top: -5px">
+        <lx-button lx-size="l" lx-color="black" lx-type="icon" ng-click="loadPrev()" ng-disabled="vars.offset === 0">
+            <i class="mdi mdi-arrow-left"></i>
+        </lx-button>
+        <lx-button lx-size="l" lx-color="black" lx-type="icon" ng-click="loadNext()">
+            <i class="mdi mdi-arrow-right"></i>
+        </lx-button>
+    </div>
+    Данные <span class="tc-grey-400">c {{vars.offset}} по {{vars.offset + vars.limit}}</span>
+</div>
+<div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
+    <span ng-if="vars.data === null" class="fs-caption">нет данных</span>
+    <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.data == -1"></lx-progress>
+    <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
+</div>

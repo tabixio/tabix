@@ -5,7 +5,7 @@
   </li>
   <li ng-repeat="nav in $root.breadcrumbs" class="breadcrumb-item">
       <i class="icon tc-white icon--xs mdi mdi-chevron-right"></i>
-      <a ng-if="!$last" ui-sref="{{nav.link}}" class="btn btn--xs btn--white btn--raised">{{nav.text}}</a>
+      <a ng-if="!$last" ui-sref="{{nav.link}}(nav.params)" class="btn btn--xs btn--white btn--raised">{{nav.text}}</a>
       <span ng-if="$last" class="tc-white">{{nav.text}}</span>
   </li>
 </ol>

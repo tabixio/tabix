@@ -1,0 +1,45 @@
+<div class="pl pr" flex-container="row" flex-wrap>
+    <div flex-item="6" class="pr+">
+        <div class="card">
+            <div class="data-table-container">
+                <header class="data-table-header">
+                    <div class="data-table-header__label">
+                        <span class="fs-title">{{vars.name}}</span>
+                    </div>
+                    <div class="data-table-header__actions">
+                        <lx-button lx-size="l" lx-color="black" lx-type="icon" ui-sref="view">
+                            <i class="mdi mdi-eye"></i>
+                        </lx-button>
+                    </div>
+                </header>
+
+                <table class="data-table">
+                    <thead>
+                        <tr class="data-table-row">
+                            <th style="width: 40px"></th>
+                            <th style="width: 40%">Название</th>
+                            <th style="width: 10%">Тип</th>
+                            <th style="width: 10%">Default тип</th>
+                            <th style="width: 10%">Значение</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr class="data-table-row" ng-repeat="field in vars.data.data">
+                            <td class="tc-grey-400">{{$index + 1}}</td>
+                            <td ng-repeat="key in ['name', 'type', 'default_type', 'default_expression'] track by $index">
+                                {{field[key]}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div flex-item="6">
+        <div class="card" flex-item="6">
+            <ui-view/>
+        </div>
+    </div>
+</div>

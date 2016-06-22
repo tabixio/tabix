@@ -14,6 +14,9 @@
 			smi2.app.config,
 			function($http, $q, config) {
 
+				/**
+				 * Запрос на выборку данных
+				 */
                 this.query = function (sql) {
                     var defer = $q.defer();
                     $http({
@@ -36,6 +39,24 @@
 
                     return defer.promise;
                 };
+
+				this.dataToHtml = function (data) {
+					var html = '<table class="sql-table fs-body-1"><tr>';
+					var keys = [];
+					data.meta.forEach(function (cell) {
+						html += '<th>' + cell.name + '<div class="fs-caption tc-grey-400">' + cell.type + '</div></th>';
+						keys.push(cell.name);
+					});
+					data.data.forEach(function (row) {
+						html += '<tr>';
+						keys.forEach(function (key) {
+							html += '<td>' + row[key] + '</td>';
+						});
+						html += '</tr>';
+					});
+					html += '</table>';
+					return html;
+				};
 			}
 		]);
 })(angular, smi2);

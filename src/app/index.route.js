@@ -34,6 +34,7 @@
 					},
 					sidebar: {
 						templateUrl: 'app/base/sidebar.html',
+						controller: smi2.app.controllers.sidebar
 					},
 					breadcrumb: {
 						templateUrl: 'app/base/breadcrumbs.html'
@@ -78,9 +79,25 @@
 			// одна база
 			.state(smi2.app.states.database, {
 				parent: smi2.app.states.layout,
-				url: '/database/{name}',
+				url: '/database/{dbName}',
 				templateUrl: 'app/database/database.html',
 				controller: smi2.app.controllers.database
+			})
+
+			// Одна таблица
+			.state(smi2.app.states.table, {
+				parent: smi2.app.states.database,
+				url: '/table/{tableName}',
+				templateUrl: 'app/table/table.html',
+				controller: smi2.app.controllers.table
+			})
+
+			// Просмотр данных
+			.state(smi2.app.states.view, {
+				parent: smi2.app.states.table,
+				url: '/view',
+				templateUrl: 'app/table/view/view.html',
+				controller: smi2.app.controllers.view
 			})
 
 			// not found

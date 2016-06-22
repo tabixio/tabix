@@ -25,7 +25,7 @@
 
 				var stateChangeSuccessUnbind = $rootScope.$on('$stateChangeSuccess',
 					function (event, toState, toParams, fromState, fromParams) {
-						$rootScope.breadcrumbs = [];
+						//$rootScope.breadcrumbs = [];
 					}
 				);
 

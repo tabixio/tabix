@@ -43,21 +43,7 @@
 
 					// RUN
 					api.query($scope.vars.sql).then(function (data) {
-						var html = '<table class="sql-table fs-body-1"><tr>';
-						var keys = [];
-						data.meta.forEach(function (cell) {
-							html += '<th>' + cell.name + '<div class="fs-caption tc-grey-400">' + cell.type + '</div></th>';
-							keys.push(cell.name);
-						});
-						data.data.forEach(function (row) {
-							html += '<tr>';
-							keys.forEach(function (key) {
-								html += '<td>' + row[key] + '</td>';
-							});
-							html += '</tr>';
-						});
-						html += '</table>';
-						$scope.vars.sqlData = html;
+						$scope.vars.sqlData = api.dataToHtml(data);
 					}, function (response) {
 						LxNotificationService.error('Ошибка ' + response);
 					});

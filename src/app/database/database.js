@@ -14,8 +14,8 @@
 			smi2.app.services.api,
 			function($scope, $rootScope, $stateParams, api) {
 				$rootScope.breadcrumbs = [{
-					text: 'База ' + $stateParams.name,
-					link: 'dashboard',
+					text: 'База ' + $stateParams.dbName,
+					link: smi2.app.states.database,
                     params: $stateParams
 				}];
 
@@ -23,7 +23,7 @@
 					tables: []
 				};
 
-				api.query('show tables from ' + $stateParams.name).then(function (data) {
+				api.query('show tables from ' + $stateParams.dbName).then(function (data) {
                     $scope.vars.tables = data.data;
 				});
 			}

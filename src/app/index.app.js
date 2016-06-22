@@ -13,7 +13,6 @@
 	 *
 	 * * *controllers* - названия контроллеров
 	 * * *services* - названия сервисов (в т.ч. менеджеров моделей)
-	 * * *factories* - названия фабрик (в т.ч. моделей)
 	 * * *directives* - названия директив
 	 * * *messages* - справочник сообщений
 	 * * *states* - названия состояний ui-router
@@ -26,8 +25,11 @@
 			login: 'loginController',
 			dashboard: 'dashboardController',
 			database: 'databaseController',
+			table: 'tableController',
 			header: 'headerController',
-			sql: 'sqlController'
+			view: 'viewController',
+			sql: 'sqlController',
+			sidebar: 'sidebarController'
 		},
 		services: {
 			errorNotice: 'errorNotice',
@@ -35,8 +37,6 @@
 			toolbar: 'toolbar',
 			userManager: 'userManager',
 			api: 'api'
-		},
-		factories: {
 		},
 		directives: {
 			validator: 'drValidator'
@@ -53,6 +53,8 @@
 			logout: 'logout',
 			dashboard: 'dashboard',
 			database: 'database',
+			table: 'table',
+			view: 'view',
 			sql: 'sql'
 		}
 	};
@@ -61,7 +63,6 @@
 	angular.module(smi2.app.name, [
 		'ngAnimate',
 		'ui.router',
-//		'ngMessages',
 		'LocalStorageModule',
 		'lumx',
 		'ui.ace'
