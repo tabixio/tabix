@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . '/config.php');
-session_set_cookie_params(3600, "/", $_SERVER['HTTP_HOST'], true, true);
+session_set_cookie_params(3600, "/", $_SERVER['HTTP_HOST'], false, true);
 session_start();
 
 $method = $_SERVER['REQUEST_METHOD'];
