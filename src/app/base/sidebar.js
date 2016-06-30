@@ -26,7 +26,6 @@
 				};
 
 				api.query('show databases').then(function(data) {
-					console.log(data);
 					$scope.vars.databases = data.data;
 					$scope.changeDatabase(data.data[0]);
 				});

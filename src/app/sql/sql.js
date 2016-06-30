@@ -15,7 +15,7 @@
 			smi2.app.services.api,
 			function($scope, $rootScope, localStorageService, LxNotificationService, api) {
 
-                $scope.vars = {
+				$scope.vars = {
 					sql: '',
 					sqlHistory: localStorageService.get('sqlHistory') || [],
 					sqlData: null,
@@ -30,7 +30,7 @@
 						name: 'JSON compact',
 						sql: 'format JSONCompact'
 					}]
-                };
+				};
 				$scope.vars.format = $scope.vars.formats[0];
 
 				$rootScope.breadcrumbs = [{
@@ -39,7 +39,7 @@
 				}];
 
 
-				$scope.run = function () {
+				$scope.run = function() {
 					if ($scope.vars.sql === '' || $scope.vars.sql === null) {
 						LxNotificationService.warning('Не введен SQL');
 						return;
@@ -56,17 +56,21 @@
 					$scope.vars.sqlData = 'загрузка...';
 
 					// RUN
-					api.queryRaw($scope.vars.sql, $scope.vars.format.sql).then(function (data) {
+					api.queryRaw($scope.vars.sql, $scope.vars.format.sql).then(function(data) {
 						if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 							$scope.vars.sqlData = api.dataToHtml(angular.fromJson(data.message));
 						} else {
 							$scope.vars.sqlData = '<pre class="fs-body-2">' + data.message + '</pre>';
 						}
-					}, function (response) {
+					}, function(response) {
 						LxNotificationService.error('Ошибка ' + response);
 						$scope.vars.sqlData = 'ошибка запроса';
 					});
 				};
+
+				$('#resizable').resizable({
+					handles: 's'
+				});
 			}
 		]);
 })(angular, smi2);

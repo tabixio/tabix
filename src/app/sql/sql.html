@@ -1,63 +1,60 @@
-<div class="pl pr" flex-container="row" flex-column="12">
-    <div flex-item="4">
-        <div class="card">
-            <div class="pl+ pt+ pb+ pr">
-                <div class="float-right" style="margin-top: -5px">
-                    <lx-dropdown lx-position="right" lx-over-toggle="true">
-                        <lx-dropdown-toggle>
-                            <lx-button lx-color="black" lx-type="flat">
-                                {{vars.format.name}}
-                            </lx-button>
-                        </lx-dropdown-toggle>
-                        <lx-dropdown-menu>
-                            <ul>
-                                <li ng-repeat="format in vars.formats">
-                                    <a class="dropdown-link" ng-click="vars.format = format">{{format.name}}</a>
-                                </li>
-                            </ul>
-                        </lx-dropdown-menu>
-                    </lx-dropdown>
-                    <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="250">
-                        <lx-dropdown-toggle>
-                            <lx-button lx-color="black" lx-type="icon">
-                                <i class="mdi mdi-history"></i>
-                            </lx-button>
-                        </lx-dropdown-toggle>
-                        <lx-dropdown-menu>
-                            <ul ng-if="vars.sqlHistory.length == 0">
-                                <li class="tc-grey-400 pl fs-body-2">История запросов пуста</li>
-                            </ul>
-                            <ul ng-if="vars.sqlHistory.length > 0">
-                                <li ng-repeat="item in vars.sqlHistory track by $index">
-                                    <a class="dropdown-link" ng-click="vars.sql = item">{{item}}</a>
-                                </li>
-                            </ul>
-                        </lx-dropdown-menu>
-                    </lx-dropdown>
-                </div>
-                SQL
-            </div>
-            <div class="card__actions">
-                <div ng-model="vars.sql" ui-ace="{
-                useWrapMode : true,
-                mode: 'sql',
-                rendererOptions: { fontSize: 16 }
-                }" style="width: 100%; height: 500px"></div>
-                <lx-button lx-color="green mt" ng-click="run()">
-                    <i class="mdi mdi-play"></i> Выполнить
-                </lx-button>
-            </div>
+<div class="card mb+">
+    <div class="pl+ pt+ pb+ pr">
+        <div class="float-right" style="margin-top: -5px">
+            <lx-dropdown lx-position="right" lx-over-toggle="true">
+                <lx-dropdown-toggle>
+                    <lx-button lx-color="black" lx-type="flat">
+                        {{vars.format.name}}
+                    </lx-button>
+                </lx-dropdown-toggle>
+                <lx-dropdown-menu>
+                    <ul>
+                        <li ng-repeat="format in vars.formats">
+                            <a class="dropdown-link" ng-click="vars.format = format">{{format.name}}</a>
+                        </li>
+                    </ul>
+                </lx-dropdown-menu>
+            </lx-dropdown>
+            <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="250">
+                <lx-dropdown-toggle>
+                    <lx-button lx-color="black" lx-type="icon">
+                        <i class="mdi mdi-history"></i>
+                    </lx-button>
+                </lx-dropdown-toggle>
+                <lx-dropdown-menu>
+                    <ul ng-if="vars.sqlHistory.length == 0">
+                        <li class="tc-grey-400 pl fs-body-2">История запросов пуста</li>
+                    </ul>
+                    <ul ng-if="vars.sqlHistory.length > 0">
+                        <li ng-repeat="item in vars.sqlHistory track by $index">
+                            <a class="dropdown-link" ng-click="vars.sql = item">{{item}}</a>
+                        </li>
+                    </ul>
+                </lx-dropdown-menu>
+            </lx-dropdown>
         </div>
+        SQL
     </div>
-    <div flex-item="8" class="pl+">
-        <div class="card">
-            <div class="p+">
-                Результат
-            </div>
-            <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
-                <span ng-if="vars.sqlData === null" class="fs-caption">нет данных</span>
-                <div ng-if="vars.sqlData !== null" ng-bind-html="vars.sqlData"></div>
-            </div>
-        </div>
+    <div class="card__actions">
+        <div style="min-height: 300px; position: relative;" id="resizable">
+        <div ng-model="vars.sql" ui-ace="{
+        useWrapMode : true,
+        mode: 'sql',
+        rendererOptions: { fontSize: 16 }
+    }" style="min-height: 300px; width: 100%; height: 100%; border-bottom: 3px #eee solid; border-right: 3px #eee solid;"></div>
+    </div>
+        <lx-button lx-color="green mt" ng-click="run()">
+            <i class="mdi mdi-play"></i> Выполнить
+        </lx-button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="p+">
+        Результат
+    </div>
+    <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
+        <span ng-if="vars.sqlData === null" class="fs-caption">нет данных</span>
+        <div ng-if="vars.sqlData !== null" ng-bind-html="vars.sqlData"></div>
     </div>
 </div>
