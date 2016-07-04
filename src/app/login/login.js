@@ -10,53 +10,64 @@
 		.controller(smi2.app.controllers.login, [
 			'$scope',
 			'$state',
-			'$timeout',
+			'$filter',
+			'localStorageService',
 			smi2.app.services.userManager,
-			function($scope, $state, $timeout, userManager) {
+			smi2.app.services.api,
+			function($scope, $state, $filter, localStorageService, userManager, api) {
+
+				var ALL_BASES_KEY = 'basesConfig';
 
 				// Переменные, доступные во view
 				$scope.vars = {
-					loading: false,
-					loginError: false,
-					user: {},
-					year: (new Date()).getFullYear()
+					bases: localStorageService.get(ALL_BASES_KEY) || [],
+					db: {},
+					error: false
 				};
 
-				// Ставлю фокус сразу в поле логина
-				$timeout(function () {
-					angular.element('input[name="login"]').focus();
-				}, 100);
-
 				/**
-				 * @ngdoc method
-				 * @name login
-				 * @description Отправка запроса авторизации
-				 * @methodOf smi2.controller:login
+				 * Вход с сохранением параметров подключения
 				 */
 				$scope.login = function () {
-					$scope.vars.loading = true;
-					$scope.vars.loginError = false;
-					userManager.login($scope.vars.user).then(function () {
+
+					$scope.vars.error = false;
+
+					// сохранение в LS
+					if ($scope.vars.db.id) {
+						for (var i = 0; i < $scope.vars.bases.length; i++) {
+							if ($scope.vars.bases[i].id == $scope.vars.db.id) {
+								$scope.vars.bases[i] = $scope.vars.db;
+								found = true;
+								break;
+							}
+						}
+					} else {
+						$scope.vars.db.id = (new Date()).getTime();
+						$scope.vars.bases.push($scope.vars.db);
+					}
+					localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
+					api.setDb($scope.vars.db);
+					api.query('SELECT \'login success\'').then(function () {
 						$state.go(smi2.app.states.dashboard);
-						//userManager.my().then(function (user) {
-						//});
 					}, function () {
-						$scope.vars.loginError = true;
-						$scope.vars.loading = false;
+						$scope.vars.error = true;
 					});
 				};
 
 				/**
-				 * Обработчик события нажатия клавиши
-				 * в полях логина и пароля
-				 * @param {object} event Данные события
+				 * Удаление элемента из списка
 				 */
-				$scope.onKeypress = function (event) {
-					$scope.vars.loginError = false;
-					if (event.charCode == 13) {
-						$scope.login();
+				$scope.remove = function () {
+					for (var i = 0; i < $scope.vars.bases.length; i++) {
+						if ($scope.vars.bases[i].id == $scope.vars.db.id) {
+							$scope.vars.bases.splice(i, 1);
+							break;
+						}
 					}
+					localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
+					$scope.vars.db = {};
 				};
+
 			}
 		]);
 })(angular, smi2);

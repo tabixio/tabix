@@ -9,13 +9,9 @@
 	angular.module(smi2.app.name)
 		.controller(smi2.app.controllers.header, [
 			'$scope',
-			smi2.app.services.userManager,
-			function($scope, userManager) {
-                $scope.user = '...';
-
-                userManager.my().then(function (user) {
-                    $scope.user = user.login;
-                });
+			smi2.app.services.api,
+			function($scope, api) {
+                $scope.user = api.getConnection().name;
 			}
 		]);
 })(angular, smi2);
