@@ -37,7 +37,6 @@
 						for (var i = 0; i < $scope.vars.bases.length; i++) {
 							if ($scope.vars.bases[i].id == $scope.vars.db.id) {
 								$scope.vars.bases[i] = $scope.vars.db;
-								found = true;
 								break;
 							}
 						}
