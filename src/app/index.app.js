@@ -35,7 +35,6 @@
 			errorNotice: 'errorNotice',
 			httpInterceptor: 'httpInterceptor',
 			toolbar: 'toolbar',
-			userManager: 'userManager',
 			api: 'api'
 		},
 		messages: {

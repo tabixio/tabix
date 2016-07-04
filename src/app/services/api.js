@@ -68,7 +68,16 @@
 					localStorageService.set(CURRENT_BASE_KEY, db);
 					connection = db;
 					auth = base64(db.login + ':' + db.password);
-					console.log(auth);
+				};
+
+				/**
+				 * Сброс данных
+				 */
+				this.clear = function () {
+					var database = null;
+					var connection = {};
+					var auth = '';
+					localStorageService.set(CURRENT_BASE_KEY, {});
 				};
 
 				/**

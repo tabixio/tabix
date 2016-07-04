@@ -11,7 +11,14 @@
 			'$scope',
 			smi2.app.services.api,
 			function($scope, api) {
-                $scope.user = api.getConnection().name;
+                $scope.user = api.getConnectionInfo().name;
+
+				/**
+				 * Сброс настроек подключения БД
+				 */
+				$scope.logout = function () {
+					api.clear();
+				};
 			}
 		]);
 })(angular, smi2);

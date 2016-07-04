@@ -10,10 +10,14 @@
 			.state(smi2.app.states.base, {
 				abstract: true,
 				resolve: {
-					session: [
-						smi2.app.services.userManager,
-						function (userManager) {
-							return userManager.checkSession();
+					session: ['$q', smi2.app.services.api, function ($q, api) {
+						var defer = $q.defer();
+						if (angular.isDefined(api.getConnectionInfo().login)) {
+							defer.resolve();
+						} else {
+							defer.reject(smi2.app.messages.notAuthorized);
+						}
+						return defer.promise;
 					}]
 				},
 				templateUrl: 'app/base/base.html'
@@ -57,15 +61,6 @@
 				url: '/login',
 				templateUrl: 'app/login/login.html',
 				controller: smi2.app.controllers.login
-			})
-
-			// Логин
-			.state(smi2.app.states.logout, {
-				url: '/logout',
-				controller: ['$state', smi2.app.services.userManager, function ($state, userManager) {
-					userManager.logout();
-					$state.go(smi2.app.states.login);
-				}]
 			})
 
 			// SQL

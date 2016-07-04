@@ -12,9 +12,8 @@
 			'$state',
 			'$filter',
 			'localStorageService',
-			smi2.app.services.userManager,
 			smi2.app.services.api,
-			function($scope, $state, $filter, localStorageService, userManager, api) {
+			function($scope, $state, $filter, localStorageService, api) {
 
 				var ALL_BASES_KEY = 'basesConfig';
 
