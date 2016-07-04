@@ -21,7 +21,7 @@
         <li class="menu-item p" ng-repeat="table in vars.tables">
             <a class="tc-black link" href ui-sref="table({dbName: vars.selectedDatabase.name, tableName: table.name})">
                 <i class="icon icon--s icon--grey icon--flat mdi mdi-table"></i>
-                <span style="line-height: 30px">{{table.name}}</span>
+                <div style="line-height: 30px;display: inline-block;width: 132px;overflow: hidden;text-overflow: ellipsis;" class="ng-binding" lx-tooltip="{{table.name}}" lx-tooltip-position="right">{{table.name}}</div>
             </a>
         </li>
     </ul>
