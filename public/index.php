@@ -16,7 +16,7 @@ if ($method == "POST" && trim($_SERVER['REQUEST_URI']) && isset($_POST['sql']) &
         echo json_encode($message);
         exit;
     }
-    $ch = curl_init($configClickhouse["host"] . ":" . $configClickhouse["port"] . "/?query=". urlencode($_POST['sql']) . (isset($_POST['database']) ? "&database=" . $_POST['database'] : ""));
+    $ch = curl_init($_POST["host"] . "/?query=". urlencode($_POST['sql']) . (isset($_POST['database']) ? "&database=" . $_POST['database'] : ""));
     curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Basic " . $_POST['auth']]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $output = curl_exec($ch);
