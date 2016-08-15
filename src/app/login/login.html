@@ -44,10 +44,10 @@
                   <input type="text" ng-model="vars.db.host" name="host" required="required"/>
                 </lx-text-field>
                 <lx-text-field label="логин" fixed-label="true" icon="account">
-                  <input type="text" ng-model="vars.db.login" name="login" required="required"/>
+                  <input type="text" ng-model="vars.db.login" name="login"/>
                 </lx-text-field>
                 <lx-text-field label="пароль" fixed-label="true" icon="key">
-                  <input type="password" ng-model="vars.db.password" required="required" ng-click="onKeypress($event)"/>
+                  <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)"/>
                 </lx-text-field>
               </div>
               <div class="card__actions text-center p+">

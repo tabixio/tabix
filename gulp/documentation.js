@@ -20,8 +20,8 @@ gulp.task('docs:generate', [], function() {
 			loadDefaults: {},
 			html5Mode: false,
 			startPage: '/api',
-			title: "Документация админки SMI2",
-			image: "https://gitlab.smi2.net/uploads/project/avatar/61/icon-smi2.png",
+			title: "Документация Clickhouse Frontend",
+			image: "https://smi2.net/wp-content/uploads/2016/02/icon-smi2.png",
 			imageLink: "http://smi2.net",
 			titleLink: "/api"
 		}))

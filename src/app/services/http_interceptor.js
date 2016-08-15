@@ -1,9 +1,12 @@
 (function(angular, smi2) {
 	'use strict';
 
+	angular.module(smi2.app.name).service('HttpInterceptor', HttpInterceptor);
+	HttpInterceptor.$inject = ['$q', '$injector'];
+
 	/**
 	 * @ngdoc service
-	 * @name smi2.service:httpInterceptor
+	 * @name smi2.service:HttpInterceptor
 	 * @description
 	 * Сервис первичной обработки HTTP запросов.
 	 * Задачами сервиса являются:
@@ -12,37 +15,30 @@
 	 *
 	 * Сервис является частью массива с $httpProvider.interceptors
 	 * ```javascript
-	 * // В angular.config
-	 * $httpProvider.interceptors.push(smi2.app.services.HttpInterceptor);
+	 * // В angular.config()
+	 * $httpProvider.interceptors.push('HttpInterceptor');
 	 * ```
 	 */
-	angular
-		.module(smi2.app.name)
-		.service(smi2.app.services.httpInterceptor, [
-			'$q',
-            '$injector',
-			function($q, $injector) {
-				return {
-                    /**
-    				 * @ngdoc
-    				 * @name responseError
-    				 * @description
-    				 * Метод-обертка, срабатыват перед передачей
-    				 * HTTP ошибки в приложение
-    				 * @param {mixed} rejection Данные HTTP ответа
-                     * @methodOf smi2.service:httpInterceptor
-    				 * @return {promise} $q promise
-    				 */
-					responseError: function(rejection) {
+	function HttpInterceptor($q, $injector) {
+		return {
+			/**
+			 * @ngdoc
+			 * @name responseError
+			 * @description
+			 * Метод-обертка, срабатывает перед передачей
+			 * HTTP ошибки в приложение
+			 * @param {mixed} rejection Данные HTTP ответа
+			 * @methodOf smi2.service:HttpInterceptor
+			 * @return {promise} $q promise
+			 */
+			responseError: function(rejection) {
 
-                        // Не авторизован? - веду пользователя на страницу авторизации
-                        if (rejection.status == 401) {
-                            $injector.get('$state').go(smi2.app.states.login);
-                        }
-						return $q.reject(rejection);
-					}
-				};
+				// Не авторизован? - веду пользователя на страницу авторизации
+				if (rejection.status == 401) {
+					$injector.get('$state').go('login');
+				}
+				return $q.reject(rejection);
 			}
-		]);
-
+		};
+	}
 })(angular, smi2);

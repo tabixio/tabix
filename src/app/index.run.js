@@ -3,7 +3,7 @@
 
 	/**
 	 * @ngdoc controller
-	 * @name smi2.controller:run
+	 * @name smi2.controller:Run
 	 * @description Первый контроллер приложения
 	 */
 	angular
@@ -17,8 +17,8 @@
 
 				// Провеярю в чем ошибка перехода на state
 				var stateChangeErrorUnbind = $rootScope.$on('$stateChangeError', function(toState, toParams, fromState, fromParams, error, reason) {
-					if (reason == smi2.app.messages.notAuthorized) {
-						$state.go(smi2.app.states.login);
+					if (reason == 'notAuthorized') {
+						$state.go('login');
 					}
 				});
 

@@ -1,5 +1,4 @@
 <?php
-require_once(__DIR__ . '/config.php');
 $method = $_SERVER['REQUEST_METHOD'];
 
 // отдаю index.html
@@ -9,7 +8,7 @@ if ($method == "GET") {
 }
 
 // Запрос к БД
-if ($method == "POST" && trim($_SERVER['REQUEST_URI']) && isset($_POST['sql']) && isset($_POST['auth'])) {
+if ($method == "POST" && trim($_SERVER['REQUEST_URI']) && isset($_POST['sql'])) {
     if (!isset($_POST['sql'])) {
         header('HTTP/1.0 400 Bad Request');
         $message = ["status" => "error", "message" => "Bad Request"];
@@ -17,7 +16,9 @@ if ($method == "POST" && trim($_SERVER['REQUEST_URI']) && isset($_POST['sql']) &
         exit;
     }
     $ch = curl_init($_POST["host"] . "/?query=". urlencode($_POST['sql']) . (isset($_POST['database']) ? "&database=" . $_POST['database'] : ""));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Basic " . $_POST['auth']]);
+    if (isset($_POST['auth'])) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Basic " . $_POST['auth']]);
+    }
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $output = curl_exec($ch);
     $info = curl_getinfo($ch);
