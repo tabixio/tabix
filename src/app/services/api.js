@@ -21,9 +21,11 @@
 
 				// Первичная загрузка данных из LS
 				var data = localStorageService.get(CURRENT_BASE_KEY);
-				if (data && data.login) {
+				if (data && data.host) {
 					connection = data;
-					auth = base64(data.login + ':' + data.password);
+					if (data.login) {
+						auth = base64(data.login + ':' + data.password);
+					}
 				}
 
 				/**
