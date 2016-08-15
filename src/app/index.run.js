@@ -3,7 +3,7 @@
 
 	/**
 	 * @ngdoc controller
-	 * @name smi2.controller:run
+	 * @name smi2.controller:Run
 	 * @description Первый контроллер приложения
 	 */
 	angular

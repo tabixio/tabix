@@ -1,29 +1,26 @@
 (function(angular, smi2) {
 	'use strict';
 
+	angular.module(smi2.app.name).controller('DashboardController', DashboardController);
+	DashboardController.$inject = ['$scope', '$rootScope', 'API'];
+
 	/**
 	 * @ngdoc controller
-	 * @name smi2.controller:dashboard
+	 * @name smi2.controller:DashboardController
 	 * @description Контроллер dashboard страницы
 	 */
-	angular.module(smi2.app.name)
-		.controller('DashboardController', [
-			'$scope',
-			'$rootScope',
-			'API',
-			function($scope, $rootScope, API) {
-				$rootScope.breadcrumbs = [{
-					text: 'Рабочий стол',
-					link: 'dashboard'
-				}];
+	function DashboardController($scope, $rootScope, API) {
+		$rootScope.breadcrumbs = [{
+			text: 'Рабочий стол',
+			link: 'dashboard'
+		}];
 
-				$scope.vars = {
-					databases: []
-				};
+		$scope.vars = {
+			databases: []
+		};
 
-				API.query('show databases').then(function (data) {
-					$scope.vars.databases = data.data;
-				});
-			}
-		]);
+		API.query('show databases').then(function(data) {
+			$scope.vars.databases = data.data;
+		});
+	}
 })(angular, smi2);

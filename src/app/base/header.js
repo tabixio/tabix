@@ -1,26 +1,23 @@
 (function(angular, smi2) {
 	'use strict';
 
+	angular.module(smi2.app.name).controller('HeaderController', HeaderController);
+	HeaderController.$inject = ['$scope', '$state', 'API'];
+
 	/**
 	 * @ngdoc controller
-	 * @name smi2.controller:header
-	 * @description
+	 * @name smi2.controller:HeaderController
+	 * @description Контроллер заголовка layout страницы
 	 */
-	angular.module(smi2.app.name)
-		.controller('HeaderController', [
-			'$scope',
-			'$state',
-			'API',
-			function($scope, $state, API) {
-                $scope.user = API.getConnectionInfo().name;
+	function HeaderController($scope, $state, API) {
+		$scope.user = API.getConnectionInfo().name;
 
-				/**
-				 * Сброс настроек подключения БД
-				 */
-				$scope.logout = function () {
-					API.clear();
-					$state.go('login');
-				};
-			}
-		]);
+		/**
+		 * Сброс настроек подключения БД
+		 */
+		$scope.logout = function() {
+			API.clear();
+			$state.go('login');
+		};
+	}
 })(angular, smi2);
