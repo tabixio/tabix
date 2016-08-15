@@ -21,10 +21,6 @@ gulp serve
 <pre>
 gulp build
 </pre>
-Тестирование karma:
-<pre>
-gulp test
-</pre>
 
 ## Документация
 Для сборки документации:
