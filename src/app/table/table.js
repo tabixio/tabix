@@ -7,33 +7,26 @@
 	 * @description Контроллер страницы 1 таблицы БД
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.table, [
+		.controller('TableController', [
 			'$scope',
 			'$rootScope',
 			'$stateParams',
-			smi2.app.services.api,
-			function($scope, $rootScope, $stateParams, api) {
+			'API',
+			function($scope, $rootScope, $stateParams, API) {
 				$rootScope.breadcrumbs = [{
 					text: 'База ' + $stateParams.dbName,
-					link: smi2.app.states.database
+					link: 'database'
 				}, {
 					text: 'Таблица ' + $stateParams.tableName,
-					link: smi2.app.states.table
+					link: 'table'
 				}];
-
-				// $scope.$on('$destroy', function () {
-				//     $rootScope.breadcrumbs = [{
-				// 		text: 'База ' + $stateParams.dbName,
-				// 		link: smi2.app.states.database
-				// 	}];
-				// });
 
 				$scope.vars = {
 					data: {},
 					name: $stateParams.tableName
 				};
 
-				api.query('describe table ' + $stateParams.dbName + '.' + $stateParams.tableName).then(function(data) {
+				API.query('describe table ' + $stateParams.dbName + '.' + $stateParams.tableName).then(function(data) {
 					$scope.vars.data = data;
 				});
 			}

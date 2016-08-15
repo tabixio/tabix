@@ -7,34 +7,24 @@
 	 * @description Контроллер просмотра данных 1 таблицы БД
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.view, [
+		.controller('ViewController', [
 			'$scope',
 			'$rootScope',
 			'$stateParams',
 			'LxNotificationService',
-			smi2.app.services.api,
-			function($scope, $rootScope, $stateParams, LxNotificationService, api) {
+			'API',
+			function($scope, $rootScope, $stateParams, LxNotificationService, API) {
 
 				$rootScope.breadcrumbs = [{
 					text: 'База ' + $stateParams.dbName,
-					link: smi2.app.states.database
+					link: 'database'
 				}, {
 					text: 'Таблица ' + $stateParams.tableName,
-					link: smi2.app.states.table
+					link: 'table'
 				}, {
 					text: 'Просмотр',
-					link: smi2.app.states.view
+					link: 'view'
 				}];
-
-				// $scope.$on('$destroy', function () {
-				//     $rootScope.breadcrumbs = [{
-				// 		text: 'База ' + $stateParams.dbName,
-				// 		link: smi2.app.states.database
-				// 	}, {
-				// 		text: 'Таблица ' + $stateParams.tableName,
-				// 		link: smi2.app.states.table
-				// 	}];
-				// });
 
 				$scope.vars = {
 					data: null,
@@ -44,8 +34,8 @@
 
 				$scope.load = function() {
 					$scope.vars.data = -1;
-					api.query('select * from ' + $stateParams.dbName + '.' + $stateParams.tableName + ' limit ' + $scope.vars.offset + ', ' + $scope.vars.limit).then(function(data) {
-						$scope.vars.data = api.dataToHtml(data);
+					API.query('select * from ' + $stateParams.dbName + '.' + $stateParams.tableName + ' limit ' + $scope.vars.offset + ', ' + $scope.vars.limit).then(function(data) {
+						$scope.vars.data = API.dataToHtml(data);
 					}, function(response) {
 						LxNotificationService.error('Ошибка ' + response);
 					});

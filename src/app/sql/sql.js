@@ -7,13 +7,13 @@
 	 * @description Контроллер выполнения SQL запросов к БД
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.sql, [
+		.controller('SqlController', [
 			'$scope',
 			'$rootScope',
 			'localStorageService',
 			'LxNotificationService',
-			smi2.app.services.api,
-			function($scope, $rootScope, localStorageService, LxNotificationService, api) {
+			'API',
+			function($scope, $rootScope, localStorageService, LxNotificationService, API) {
 
 				$scope.vars = {
 					sql: '',
@@ -56,9 +56,9 @@
 					$scope.vars.sqlData = 'загрузка...';
 
 					// RUN
-					api.queryRaw($scope.vars.sql, $scope.vars.format.sql).then(function(data) {
+					API.queryRaw($scope.vars.sql, $scope.vars.format.sql).then(function(data) {
 						if ($scope.vars.format.name == $scope.vars.formats[0].name) {
-							$scope.vars.sqlData = api.dataToHtml(angular.fromJson(data.message));
+							$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data.message));
 						} else {
 							$scope.vars.sqlData = '<pre class="fs-body-2">' + data.message + '</pre>';
 						}
@@ -68,7 +68,7 @@
 					});
 				};
 
-				$('#resizable').resizable({
+				angular.element('#resizable').resizable({
 					handles: 's'
 				});
 			}

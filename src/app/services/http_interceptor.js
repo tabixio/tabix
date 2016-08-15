@@ -18,7 +18,7 @@
 	 */
 	angular
 		.module(smi2.app.name)
-		.service(smi2.app.services.httpInterceptor, [
+		.service('HttpInterceptor', [
 			'$q',
             '$injector',
 			function($q, $injector) {
@@ -37,7 +37,7 @@
 
                         // Не авторизован? - веду пользователя на страницу авторизации
                         if (rejection.status == 401) {
-                            $injector.get('$state').go(smi2.app.states.login);
+                            $injector.get('$state').go('login');
                         }
 						return $q.reject(rejection);
 					}

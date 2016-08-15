@@ -7,11 +7,11 @@
 	 * @description Контроллер dashboard страницы
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.dashboard, [
+		.controller('DashboardController', [
 			'$scope',
 			'$rootScope',
-			smi2.app.services.api,
-			function($scope, $rootScope, api) {
+			'API',
+			function($scope, $rootScope, API) {
 				$rootScope.breadcrumbs = [{
 					text: 'Рабочий стол',
 					link: 'dashboard'
@@ -21,7 +21,7 @@
 					databases: []
 				};
 
-				api.query('show databases').then(function (data) {
+				API.query('show databases').then(function (data) {
 					$scope.vars.databases = data.data;
 				});
 			}

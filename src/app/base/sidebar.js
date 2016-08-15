@@ -7,10 +7,10 @@
 	 * @description Контроллер бокового меню
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.sidebar, [
+		.controller('SidebarController', [
 			'$scope',
-			smi2.app.services.api,
-			function($scope, api) {
+			'API',
+			function($scope, API) {
 				$scope.vars = {
 					databases: [],
 					selectedDatabase: null,
@@ -19,13 +19,13 @@
 
 				$scope.changeDatabase = function(database) {
 					$scope.vars.selectedDatabase = database;
-					api.setDatabase(database.name);
-					api.query('show tables from ' + database.name).then(function(data) {
+					API.setDatabase(database.name);
+					API.query('show tables from ' + database.name).then(function(data) {
 						$scope.vars.tables = data.data;
 					});
 				};
 
-				api.query('show databases').then(function(data) {
+				API.query('show databases').then(function(data) {
 					$scope.vars.databases = data.data;
 					$scope.changeDatabase(data.data[0]);
 				});

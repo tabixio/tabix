@@ -7,15 +7,16 @@
 
 			$stateProvider
 
-			.state(smi2.app.states.base, {
+			// Базовый роут для проверки авторизации
+			.state('base', {
 				abstract: true,
 				resolve: {
-					session: ['$q', smi2.app.services.api, function ($q, api) {
+					session: ['$q', 'API', function ($q, API) {
 						var defer = $q.defer();
-						if (angular.isDefined(api.getConnectionInfo().login)) {
+						if (angular.isDefined(API.getConnectionInfo().login)) {
 							defer.resolve();
 						} else {
-							defer.reject(smi2.app.messages.notAuthorized);
+							defer.reject('notAuthorized');
 						}
 						return defer.promise;
 					}]
@@ -23,22 +24,23 @@
 				templateUrl: 'app/base/base.html'
 			})
 
-			.state(smi2.app.states.switch, {
-				parent: smi2.app.states.base,
+			.state('switch', {
+				parent: 'base',
 				url: ''
 			})
 
-			.state(smi2.app.states.layout, {
-				parent: smi2.app.states.base,
+			// Роут для отрисовки дизайна
+			.state('layout', {
+				parent: 'base',
 				abstract: true,
 				views: {
 					header: {
 						templateUrl: 'app/base/header.html',
-						controller: smi2.app.controllers.header
+						controller: 'HeaderController'
 					},
 					sidebar: {
 						templateUrl: 'app/base/sidebar.html',
-						controller: smi2.app.controllers.sidebar
+						controller: 'SidebarController'
 					},
 					breadcrumb: {
 						templateUrl: 'app/base/breadcrumbs.html'
@@ -49,55 +51,56 @@
 				}
 			})
 
-			.state(smi2.app.states.dashboard, {
-				parent: smi2.app.states.layout,
+			// Главная страничка
+			.state('dashboard', {
+				parent: 'layout',
 				url: '/dashboard',
 				templateUrl: 'app/dashboard/dashboard.html',
-				controller: smi2.app.controllers.dashboard
+				controller: 'DashboardController'
 			})
 
 			// Логин
-			.state(smi2.app.states.login, {
+			.state('login', {
 				url: '/login',
 				templateUrl: 'app/login/login.html',
-				controller: smi2.app.controllers.login
+				controller: 'LoginController'
 			})
 
 			// SQL
-			.state(smi2.app.states.sql, {
-				parent: smi2.app.states.layout,
+			.state('sql', {
+				parent: 'layout',
 				url: '/sql',
 				templateUrl: 'app/sql/sql.html',
-				controller: smi2.app.controllers.sql
+				controller: 'SqlController'
 			})
 
-			// одна база
-			.state(smi2.app.states.database, {
-				parent: smi2.app.states.layout,
+			// Одна база
+			.state('database', {
+				parent: 'layout',
 				url: '/database/{dbName}',
 				templateUrl: 'app/database/database.html',
-				controller: smi2.app.controllers.database
+				controller: 'DatabaseController'
 			})
 
 			// Одна таблица
-			.state(smi2.app.states.table, {
-				parent: smi2.app.states.database,
+			.state('table', {
+				parent: 'database',
 				url: '/table/{tableName}',
 				templateUrl: 'app/table/table.html',
-				controller: smi2.app.controllers.table
+				controller: 'TableController'
 			})
 
 			// Просмотр данных
-			.state(smi2.app.states.view, {
-				parent: smi2.app.states.table,
+			.state('view', {
+				parent: 'table',
 				url: '/view',
 				templateUrl: 'app/table/view/view.html',
-				controller: smi2.app.controllers.view
+				controller: 'ViewController'
 			})
 
-			// not found
+			// Потеряшки
 			.state('404', {
-				parent: smi2.app.states.base,
+				parent: 'base',
 				templateUrl: 'app/base/404.html'
 			});
 		});

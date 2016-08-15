@@ -8,12 +8,12 @@
 	 */
 	angular
 		.module(smi2.app.name)
-		.service(smi2.app.services.api, [
+		.service('API', [
 			'$http',
 			'$q',
 			'localStorageService',
-			smi2.app.config,
-			function($http, $q, localStorageService, config) {
+			'Config',
+			function($http, $q, localStorageService, Config) {
 
 				var CURRENT_BASE_KEY = 'currentBaseConfig';
 				var database = null;
@@ -74,9 +74,9 @@
 				 * Сброс данных
 				 */
 				this.clear = function () {
-					var database = null;
-					var connection = {};
-					var auth = '';
+					database = null;
+					connection = {};
+					auth = '';
 					localStorageService.set(CURRENT_BASE_KEY, {});
 				};
 
@@ -94,7 +94,7 @@
 					$http({
 						method: 'POST',
 						withCredentials: true,
-						url: config.apiUrl + "/api/query",
+						url: Config.apiUrl + "/api/query",
 						data: data,
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
@@ -126,7 +126,7 @@
 					$http({
 						method: 'POST',
 						withCredentials: true,
-						url: config.apiUrl + "/api/query",
+						url: Config.apiUrl + "/api/query",
 						data: data,
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'

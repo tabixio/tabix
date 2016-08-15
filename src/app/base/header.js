@@ -7,19 +7,19 @@
 	 * @description
 	 */
 	angular.module(smi2.app.name)
-		.controller(smi2.app.controllers.header, [
+		.controller('HeaderController', [
 			'$scope',
 			'$state',
-			smi2.app.services.api,
-			function($scope, $state, api) {
-                $scope.user = api.getConnectionInfo().name;
+			'API',
+			function($scope, $state, API) {
+                $scope.user = API.getConnectionInfo().name;
 
 				/**
 				 * Сброс настроек подключения БД
 				 */
 				$scope.logout = function () {
-					api.clear();
-					$state.go(smi2.app.states.login);
+					API.clear();
+					$state.go('login');
 				};
 			}
 		]);

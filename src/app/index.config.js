@@ -6,7 +6,7 @@
 	/**
 	 * Настройки системы
 	 */
-	.constant(smi2.app.config, {
+	.constant('Config', {
 
 		// URL API сервера, без слеша в конце
 		apiUrl: location.hostname == 'localhost' ? 'http://clickhouse' : location.origin
@@ -27,7 +27,7 @@
 			$locationProvider.html5Mode(true).hashPrefix('!');
 
 			// Проверка авторизации в httpInterceptor
-			$httpProvider.interceptors.push(smi2.app.services.httpInterceptor);
+			$httpProvider.interceptors.push('HttpInterceptor');
 
 			// Разрешаю ng-bind-html
 			$sceProvider.enabled(false);
