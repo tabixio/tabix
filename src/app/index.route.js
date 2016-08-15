@@ -13,7 +13,7 @@
 				resolve: {
 					session: ['$q', 'API', function ($q, API) {
 						var defer = $q.defer();
-						if (angular.isDefined(API.getConnectionInfo().login)) {
+						if (angular.isDefined(API.getConnectionInfo().host)) {
 							defer.resolve();
 						} else {
 							defer.reject('notAuthorized');

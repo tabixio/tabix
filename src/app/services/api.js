@@ -12,8 +12,7 @@
 			'$http',
 			'$q',
 			'localStorageService',
-			'Config',
-			function($http, $q, localStorageService, Config) {
+			function($http, $q, localStorageService) {
 
 				var CURRENT_BASE_KEY = 'currentBaseConfig';
 				var database = null;
@@ -88,7 +87,7 @@
 				this.query = function(sql) {
 					var defer = $q.defer();
 					var data = 'sql=' + encodeURIComponent(sql + ' format JSON') +
-						(auth == '' ? '' : '&auth=' + auth) +
+						(auth === '' ? '' : '&auth=' + auth) +
 						'&host=' + connection.host;
 					if (database !== null) {
 						data += '&database=' + database;
@@ -96,7 +95,7 @@
 					$http({
 						method: 'POST',
 						withCredentials: true,
-						url: Config.apiUrl + "/api/query",
+						url: "/api/query",
 						data: data,
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
@@ -120,7 +119,7 @@
 				this.queryRaw = function(sql, format) {
 					var defer = $q.defer();
 					var data = 'sql=' + encodeURIComponent(sql + ' ' + (format || 'format JSON')) +
-						(auth == '' ? '' : '&auth=' + auth) +
+						(auth === '' ? '' : '&auth=' + auth) +
 						'&host=' + connection.host;
 					if (database !== null) {
 						data += '&database=' + database;
@@ -128,7 +127,7 @@
 					$http({
 						method: 'POST',
 						withCredentials: true,
-						url: Config.apiUrl + "/api/query",
+						url: "/api/query",
 						data: data,
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'

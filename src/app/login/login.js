@@ -28,7 +28,6 @@
 				 * Вход с сохранением параметров подключения
 				 */
 				$scope.login = function () {
-
 					$scope.vars.error = false;
 
 					// сохранение в LS

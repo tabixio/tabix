@@ -4,16 +4,6 @@
 	angular.module(smi2.app.name)
 
 	/**
-	 * Настройки системы
-	 */
-	.constant('Config', {
-
-		// URL API сервера, без слеша в конце
-		apiUrl: location.origin
-
-	})
-
-	/**
 	 * Начальная инициализация провайдеров SPA приложения
 	 */
 	.config([
