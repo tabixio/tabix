@@ -67,7 +67,9 @@
 				this.setDb = function(db) {
 					localStorageService.set(CURRENT_BASE_KEY, db);
 					connection = db;
-					auth = base64(db.login + ':' + db.password);
+					if (db.login) {
+						auth = base64(db.login + ':' + db.password);
+					}
 				};
 
 				/**
@@ -86,7 +88,7 @@
 				this.query = function(sql) {
 					var defer = $q.defer();
 					var data = 'sql=' + encodeURIComponent(sql + ' format JSON') +
-						'&auth=' + auth +
+						(auth == '' ? '' : '&auth=' + auth) +
 						'&host=' + connection.host;
 					if (database !== null) {
 						data += '&database=' + database;
@@ -118,7 +120,7 @@
 				this.queryRaw = function(sql, format) {
 					var defer = $q.defer();
 					var data = 'sql=' + encodeURIComponent(sql + ' ' + (format || 'format JSON')) +
-						'&auth=' + auth +
+						(auth == '' ? '' : '&auth=' + auth) +
 						'&host=' + connection.host;
 					if (database !== null) {
 						data += '&database=' + database;

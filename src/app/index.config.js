@@ -9,7 +9,7 @@
 	.constant('Config', {
 
 		// URL API сервера, без слеша в конце
-		apiUrl: location.hostname == 'localhost' ? 'http://clickhouse' : location.origin
+		apiUrl: location.origin
 
 	})
 
