@@ -2,14 +2,14 @@
 	'use strict';
 
 	angular.module(smi2.app.name).controller('SqlController', SqlController);
-	SqlController.$inject = ['$scope', '$rootScope', 'localStorageService', 'LxNotificationService', 'API'];
+	SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API'];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:SqlController
 	 * @description Контроллер выполнения SQL запросов к БД
 	 */
-	function SqlController($scope, $rootScope, localStorageService, LxNotificationService, API) {
+	function SqlController($scope, $rootScope, $window, localStorageService, LxNotificationService, API) {
 
 		$scope.vars = {
 			sql: '',
@@ -33,6 +33,28 @@
 			link: 'sql',
 			text: 'SQL'
 		}];
+
+		// Предотвращаю потерю SQL данных при закрытии окна
+		$window.onbeforeunload = function(event) {
+			if ($scope.vars.sql !== '') {
+				var message = 'Хотите покинуть страницу?';
+				if (typeof event == 'undefined') {
+					event = window.event;
+				}
+				if (event) {
+					event.returnValue = message;
+				}
+				return message;
+			}
+		};
+
+		// Предотвращаю потерю SQL данных при смене стейта
+		$scope.$on('$locationChangeStart', function(event) {
+			var message = 'Хотите покинуть страницу?';
+			if (!event.defaultPrevented && $scope.vars.sql !== '' && !confirm(message)) {
+				event.preventDefault();
+			}
+		});
 
 		/**
 		 * @ngdoc method
