@@ -1,5 +1,8 @@
 ## Назначение
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
+![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen1.png)
+![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen2.png)
+![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen3.png)
 
 ## Зависимости
 Необходимо установить
