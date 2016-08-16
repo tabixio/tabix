@@ -24,11 +24,6 @@
 				templateUrl: 'app/base/base.html'
 			})
 
-			.state('switch', {
-				parent: 'base',
-				url: ''
-			})
-
 			// Роут для отрисовки дизайна
 			.state('layout', {
 				parent: 'base',
@@ -54,7 +49,7 @@
 			// Главная страничка
 			.state('dashboard', {
 				parent: 'layout',
-				url: '/dashboard',
+				url: '/',
 				templateUrl: 'app/dashboard/dashboard.html',
 				controller: 'DashboardController'
 			})

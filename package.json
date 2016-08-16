@@ -1,6 +1,6 @@
 {
   "name": "SMI2-clickhouse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "glob": "^7.0.3",
     "gulp-ngdocs": "^0.2.13",
