@@ -33,7 +33,8 @@ exports.wiredep = {
 				'src-min-noconflict/ace.js',
 				'src-min-noconflict/ext-language_tools.js',
 				'src-min-noconflict/ext-beautify.js',
-				'src-min-noconflict/ext-statusbar.js'
+				'src-min-noconflict/ext-statusbar.js',
+				'src-min-noconflict/ext-settings_menu.js'
 			]
 		}
 	}

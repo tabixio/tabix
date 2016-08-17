@@ -25,7 +25,8 @@
 			}, {
 				name: 'JSON compact',
 				sql: 'format JSONCompact'
-			}]
+			}],
+			editor: null
 		};
 		$scope.vars.format = $scope.vars.formats[0];
 
@@ -35,7 +36,7 @@
 		}];
 
 		// Предотвращаю потерю SQL данных при закрытии окна
-		$window.onbeforeunload = function(event) {
+		$window.onbeforeunload1 = function(event) {
 			if ($scope.vars.sql !== '') {
 				var message = 'Хотите покинуть страницу?';
 				if (typeof event == 'undefined') {
@@ -49,11 +50,18 @@
 		};
 
 		// Предотвращаю потерю SQL данных при смене стейта
-		$scope.$on('$locationChangeStart', function(event) {
+		var clearRouterListener = $scope.$on('$stateChangeStart', function(event) {
 			var message = 'Хотите покинуть страницу?';
 			if (!event.defaultPrevented && $scope.vars.sql !== '' && !confirm(message)) {
 				event.preventDefault();
 			}
+		});
+
+		// Декструктор контроллера
+		$scope.$on('$destroy', function () {
+			console.log('$destroy');
+			clearRouterListener();
+			$window.onbeforeunload = null;
 		});
 
 		/**
@@ -88,6 +96,21 @@
 				LxNotificationService.error('Ошибка ' + response);
 				$scope.vars.sqlData = 'ошибка запроса';
 			});
+		};
+
+		/**
+		 * @ngdoc method
+		 * @methodOf smi2.controller:SqlController
+		 * @name aceSettings
+		 * @description Показ настроек ACE
+		 */
+		$scope.aceSettings = function () {
+			$scope.vars.editor.execCommand("showSettingsMenu");
+		};
+
+		$scope.aceLoaded = function (editor) {
+			$scope.vars.editor = editor;
+			console.log($scope.vars.editor);
 		};
 
 		angular.element('#resizable').resizable({
