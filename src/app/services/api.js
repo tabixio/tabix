@@ -158,7 +158,9 @@
 			}).then(function(response) {
 				if (response.data.status == 'ok' && response.data.message) {
 					defer.resolve(response.data);
-				} else {
+				} else if (response.data.status == 'error') {
+          defer.reject(response.data);
+        } else {
 					defer.reject('некорректный ответ backend');
 				}
 			}, function(response) {

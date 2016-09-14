@@ -24,7 +24,10 @@ router.post('/api/query', function *(next) {
       .send(body.sql)
       .end(function (response) {
         if (response.error) {
-          reject(response.error)
+          if (response.raw_body) {
+            resolve({"status": "error", "message": response.raw_body});
+          } else
+            reject(response.error)
         } else {
           resolve({"status": "ok", "message": response.raw_body});
           console.log(response.body);

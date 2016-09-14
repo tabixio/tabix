@@ -93,8 +93,16 @@
 					$scope.vars.sqlData = '<pre class="fs-body-2">' + data.message + '</pre>';
 				}
 			}, function(response) {
-				LxNotificationService.error('Ошибка ' + response);
-				$scope.vars.sqlData = 'ошибка запроса';
+			  if (response.message) {
+          LxNotificationService.error('Ошибка ' + response.message);
+          console.log('response', response);
+          $scope.vars.sqlData = 'ошибка запроса\n' + response.message;
+
+        } else {
+          LxNotificationService.error('Ошибка ' + response);
+          console.log('response', response);
+          $scope.vars.sqlData = 'ошибка запроса';
+        }
 			});
 		};
 
