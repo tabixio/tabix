@@ -6,6 +6,8 @@ var conf = require('./conf');
 var phpServer = require('node-php-server');
 var browserSync = require('browser-sync');
 var browserSyncSpa = require('browser-sync-spa');
+var koa = require('koa');
+var app = koa();
 
 var util = require('util');
 
@@ -35,6 +37,7 @@ function browserSyncInit(baseDir, browser) {
    * For more details and option, https://github.com/chimurai/http-proxy-middleware/blob/v0.9.0/README.md
    */
   // server.middleware = proxyMiddleware('/users', {target: 'http://jsonplaceholder.typicode.com', changeOrigin: true});
+
 
   server.middleware = proxyMiddleware('/api', {
       target: 'http://localhost:9798',
