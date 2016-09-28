@@ -107,13 +107,13 @@
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data));
 				} else {
-					$scope.vars.sqlData = '<pre class="fs-caption">' + JSON.stringify(data, null, 4) + '</pre>';
+					$scope.vars.sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
 				}
 				$scope.vars.statistics = data.statistics;
 			}, function(response) {
 				LxNotificationService.error('Ошибка');
 				$scope.vars.statistics = null;
-				$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">' + JSON.stringify(response).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
+				$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
 			});
 		};
 
