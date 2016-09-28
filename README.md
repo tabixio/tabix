@@ -1,6 +1,10 @@
 ## Назначение
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
 
+## Demo
+Пример рабочего приложения вы можете посмотреть тут
+http://guiclickhouse.smi2.ru/
+
 ## Зависимости
 Необходимо установить
 * NodeJS >= 5.x.
