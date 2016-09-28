@@ -2,7 +2,7 @@ bower_components
 node_modules
 .tmp
 coverage
-docs
+help
 
 # IntelliJ project files
 .idea
