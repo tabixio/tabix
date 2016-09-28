@@ -56,7 +56,7 @@ gulp.task('html', ['inject', 'partials'], function() {
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
-    .pipe($.replace('assets/', 'app/assets/'))
+    //.pipe($.replace('assets/', 'app/assets/'))
     //.pipe($.sourcemaps.init())
     .pipe($.ngAnnotate())
     .pipe($.uglify({
@@ -76,8 +76,8 @@ gulp.task('html', ['inject', 'partials'], function() {
     .pipe($.useref())
     .pipe($.revReplace())
     .pipe(htmlFilter)
-    .pipe($.replace('styles/', 'app/styles/'))
-    .pipe($.replace('scripts/', 'app/scripts/'))
+    //.pipe($.replace('styles/', 'app/styles/'))
+    //.pipe($.replace('scripts/', 'app/scripts/'))
     .pipe($.minifyHtml({
       empty: true,
       spare: true,

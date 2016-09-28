@@ -39,7 +39,7 @@
 				$scope.vars.bases.push($scope.vars.db);
 			}
 			localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
-			API.setDb($scope.vars.db);
+			API.setConnection($scope.vars.db);
 			API.query('SELECT \'login success\'').then(function() {
 				$state.go('dashboard');
 			}, function() {
