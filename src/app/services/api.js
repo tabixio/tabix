@@ -55,19 +55,34 @@
 		 */
 		this.query = function(sql, format, withDatabase) {
 			var defer = $q.defer();
+
+			format = (format || ' format JSON');
+			if (format=='null')  format='';
+
+
 			var url = 'http://' + connection.host +
-				'/?query=' + encodeURIComponent(sql + (format || ' format JSON')) +
+				'/?query=' + encodeURIComponent(sql + ' ' + format ) +
 				'&user=' + connection.login +
 				'&password=' + connection.password +
 				'&add_http_cors_header=1';
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
-			$http.get(url).then(function (response) {
-				defer.resolve(response.data);
-			}, function(response) {
-				defer.reject(response.data);
-			});
+
+			if (format) {
+				$http.get(url).then(function (response) {
+					defer.resolve(response.data);
+				}, function (response) {
+					defer.reject(response.data);
+				});
+			}
+			else {
+				$http.post(url).then(function (response) {
+					defer.resolve(response.data);
+				}, function (response) {
+					defer.reject(response.data);
+				});
+			}
 			return defer.promise;
 		};
 

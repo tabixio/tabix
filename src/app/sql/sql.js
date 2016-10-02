@@ -25,6 +25,9 @@
 			}, {
 				name: 'JSON compact',
 				sql: ' format JSONCompact'
+			}, {
+				name: 'CREATE/INSERT',
+				sql: 'null'
 			}],
 			editor: null,
 			statistics: null,
