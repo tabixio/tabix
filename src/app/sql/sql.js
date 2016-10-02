@@ -32,7 +32,7 @@
 			editor: null,
 			statistics: null,
 			fontSize: localStorageService.get('editorFontSize') || 16,
-			theme: localStorageService.get('editorTheme') || 'github'
+			theme: localStorageService.get('editorTheme') || 'cobalt'
 		};
 		$scope.vars.format = $scope.vars.formats[0];
 		$scope.vars.themes = [

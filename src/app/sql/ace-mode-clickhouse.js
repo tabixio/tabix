@@ -9,10 +9,10 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 	var ClickhouseHighlightRules = function() {
 
 		var keywords = (
-			"select|insert|update|delete|from|where|and|or|group|by|order|limit|offset|having|as|case|" +
-			"when|else|end|type|left|right|join|on|outer|desc|asc|union|create|table|primary|key|if|" +
-			"foreign|not|references|default|null|inner|cross|natural|database|drop|grant|" +
-			"attach|detach|describe|optimize|prewhere|totals|databases|processlist|show"
+			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|GROUP|BY|ORDER|LIMIT|OFFSET|HAVING|AS|CASE|" +
+			"WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|IF|" +
+			"FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
+			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW"
 		);
 
 		var builtinConstants = (
@@ -72,7 +72,8 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 		this.$rules = {
 			"start": [{
 				token: "comment",
-				regex: "--.*$"
+				regex: "--.*$",
+				caseInsensitive: true
 			}, {
 				token: "comment",
 				start: "/\\*",
@@ -90,6 +91,9 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 				token: keywordMapper,
 				regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
 			}, {
+				token: "punctuation",
+				regex: ",|;"
+			}, {
 				token: "keyword.operator",
 				regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
 			}, {
@@ -104,10 +108,29 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			}]
 		};
 		this.normalizeRules();
+
+		var completions = [];
+		var addCompletions = function(arr, meta) {
+			arr.forEach(function(v) {
+				completions.push({
+					name: v,
+					value: v,
+					score: 0,
+					meta: meta
+				});
+			});
+		};
+		addCompletions(builtinFunctions.split('|'), 'function');
+		addCompletions(keywords.split('|'), 'keyword');
+		addCompletions(dataTypes.split('|'), 'type');
+		//this allows for custom 'meta' and proper case of completions
+		this.completions = completions;
+
+
+
 	};
 
 	oop.inherits(ClickhouseHighlightRules, TextHighlightRules);
-
 	exports.ClickhouseHighlightRules = ClickhouseHighlightRules;
 });
 
@@ -126,6 +149,9 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 	(function() {
 
 		this.lineCommentStart = "--";
+		this.getCompletions = function(state, session, pos, prefix) {
+			return session.$mode.$highlightRules.completions;
+		};
 
 		this.$id = "ace/mode/clickhouse";
 	}).call(Mode.prototype);
