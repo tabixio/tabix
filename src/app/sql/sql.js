@@ -31,6 +31,7 @@
 			}],
 			editor: null,
 			statistics: null,
+			limitRows: localStorageService.get('editorLimitRows') || 500,
 			fontSize: localStorageService.get('editorFontSize') || 16,
 			theme: localStorageService.get('editorTheme') || 'cobalt'
 		};
@@ -106,7 +107,15 @@
 			$scope.vars.sqlData = 'загрузка...';
 			$scope.vars.statistics = null;
 
-			API.query($scope.vars.sql, $scope.vars.format.sql, true).then(function(data) {
+			var extendSettings='';
+			if ($scope.vars.limitRows)
+			{
+				extendSettings+='max_result_rows='+$scope.vars.limitRows+'&result_overflow_mode=throw';
+			}
+
+
+
+			API.query($scope.vars.sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data));
 				} else {
@@ -114,9 +123,20 @@
 				}
 				$scope.vars.statistics = data.statistics;
 			}, function(response) {
+				console.log("response:");
+				console.log(response);
+
 				LxNotificationService.error('Ошибка');
+
+
 				$scope.vars.statistics = null;
-				$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
+				if (response.data){
+					$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
+				}
+				else
+				{
+					$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">'+response+ '</pre>';
+				}
 			});
 		};
 
@@ -144,6 +164,9 @@
 			editor.setTheme('ace/theme/' + $scope.vars.theme);
 		};
 
+		$scope.$watch('vars.limitRows', function(curr) {
+			localStorageService.set('editorLimitRows', curr);
+		});
 		$scope.$watch('vars.fontSize', function(curr) {
 			if (curr && $scope.vars.editor) {
 				$scope.vars.editor.setOptions({

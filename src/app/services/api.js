@@ -53,7 +53,7 @@
 		 * @param {string} sql Текст запроса
 		 * @return {promise} Promise
 		 */
-		this.query = function(sql, format, withDatabase) {
+		this.query = function(sql, format, withDatabase,extend_settings) {
 			var defer = $q.defer();
 
 			format = (format || ' format JSON');
@@ -68,19 +68,35 @@
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
+			if (extend_settings)
+			{
+				url += '&'+extend_settings;
+
+			}
+
+			var req = {
+				method: 'GET',
+				url: url,
+				headers: {
+					'Content-Type': undefined
+				}
+			};
 
 			if (format) {
-				$http.get(url).then(function (response) {
+				$http(req).then(function (response) {
 					defer.resolve(response.data);
 				}, function (response) {
+					console.log("RPTT");
+					console.log(response.data);
 					defer.reject(response.data);
 				});
+
 			}
 			else {
 				$http.post(url).then(function (response) {
 					defer.resolve(response.data);
 				}, function (response) {
-					defer.reject(response.data);
+					defer.reject(response);
 				});
 			}
 			return defer.promise;

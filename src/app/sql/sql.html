@@ -63,9 +63,15 @@
         }
     }" style="min-height: 200px; width: 100%; height: 100%; border-bottom: 3px #eee solid; border-right: 3px #eee solid;"></div>
     </div>
+
+        <lx-text-field lx-label="max_result_rows" lx-fixed-label="true" lx-icon="tune-vertical" style="width: 60px; float: right; margin-top: -5px; margin-right: 15px;">
+            <input type="text" ng-model="vars.limitRows">
+        </lx-text-field>
+
         <lx-button lx-color="green mt" ng-click="run()">
             <i class="mdi mdi-play"></i> Выполнить
         </lx-button>
+
     </div>
 </div>
 
