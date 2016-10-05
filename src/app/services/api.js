@@ -73,31 +73,26 @@
 				url += '&'+extend_settings;
 
 			}
-			function appendTransform(defaults, transform) {
-
-				// We can't guarantee that the default transformation is an array
-				defaults = angular.isArray(defaults) ? defaults : [defaults];
-
-				// Append the new transformation to the defaults
-				return defaults.concat(transform);
-			}
 
 			var req = {
 				method: 'GET',
 				url: url,
-				headers: {
-					'Content-Type': undefined
-				},
-				transformResponse: appendTransform($http.defaults.transformResponse, function(value) {
-					return (value);
-				})
+				transformResponse: function(data, header,status) {
+					try
+					{
+						return angular.fromJson(data);
+					}
+					catch (err) {
+						return data+"\nStatus:"+status+"\nHeaders:"+JSON.stringify(header());
+					}
+				}
 			};
 
 			if (format) {
 				$http(req).then(function (response) {
 					defer.resolve(response.data);
 				}, function (response) {
-					console.log("RPTT");
+
 					console.log(response.data);
 					defer.reject(response.data);
 				});
