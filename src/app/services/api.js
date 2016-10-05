@@ -83,7 +83,7 @@
 						return angular.fromJson(data);
 					}
 					catch (err) {
-						return data+"\nStatus:"+status+"\nHeaders:"+JSON.stringify(header());
+						return data+"\nStatus:"+status+"\nHeaders:"+angular.toJson(header());
 					}
 				}
 			};

@@ -157,7 +157,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 	(function() {
 
 		this.lineCommentStart = "--";
-		this.getCompletions = function(state, session, pos, prefix) {
+		this.getCompletions = function(state, session) {
 			return session.$mode.$highlightRules.completions;
 		};
 

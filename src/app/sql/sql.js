@@ -53,22 +53,22 @@
 			link: 'sql',
 			text: 'SQL'
 		}];
-
-		// Предотвращаю потерю SQL данных при закрытии окна
-		$window.onbeforeunload = function(event) {
-			if ($scope.vars.sql !== '') {
-				var message = 'Хотите покинуть страницу?';
-				if (typeof event == 'undefined') {
-					event = window.event;
-				}
-				if (event) {
-					event.returnValue = message;
-				}
-				return message;
-			}
-		};
-
-
+        //
+		// // Предотвращаю потерю SQL данных при закрытии окна
+		// $window.onbeforeunload = function(event) {
+		// 	if ($scope.vars.sql !== '') {
+		// 		var message = 'Хотите покинуть страницу?';
+		// 		if (typeof event == 'undefined') {
+		// 			event = window.event;
+		// 		}
+		// 		if (event) {
+		// 			event.returnValue = message;
+		// 		}
+		// 		return message;
+		// 	}
+		// };
+        //
+        //
 		// Предотвращаю потерю SQL данных при смене стейта
 		var clearRouterListener = $scope.$on('$stateChangeStart', function(event) {
 			var message = 'Хотите покинуть страницу?';
@@ -83,6 +83,34 @@
 			clearRouterListener();
 			$window.onbeforeunload = null;
 		});
+		$scope.TokenIteratorgetFunctions = function(editor){
+			var TokenIterator = require("ace/token_iterator").TokenIterator;
+			var iterator = new TokenIterator(editor.getSession(), 0, 0);
+			var token = iterator.getCurrentToken();
+
+			var func = '';
+			while (token) {
+				if(
+					( token.type == 'keyword' && token.value == 'function' ) || //php function
+					( token.type == 'storage.type' && token.value == 'function' ) //js function
+				){
+					func = token.value;
+				}else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
+					matches.push(func);
+					func = '';
+				}else if( func ){
+					func += token.value;
+				}else{
+					func = '';
+				}
+
+				token = iterator.stepForward();
+			}
+
+			matches.sort();
+
+			return matches;
+		}
 
 		/**
 		 * @ngdoc method
@@ -90,20 +118,45 @@
 		 * @name run
 		 * @description Выполнение запроса
 		 */
-		$scope.run = function() {
-			console.log($scope.vars.editor.getSelectedText());
-			if ($scope.vars.sql === '' || $scope.vars.sql === null) {
+		$scope.run = function(typerun) {
+
+
+
+			var sql=$scope.vars.sql;
+			if (typerun=='select' || typerun=='auto')
+			{
+				// typerun=auto if Кастомный cmd+enter чтобы ранать Все/или выделенное
+
+
+				// @todo : Повесить эвент и енайблить кнопку если выделенно To listen for an selection change: editor.getSession().selection.on('changeSelection', callback);
+				var selectsql=$scope.vars.editor.getSelectedText();
+				if (typerun==='auto' && !(selectsql === '' || selectsql === null)) {
+					sql = selectsql;
+				}
+				if (!(selectsql === '' || selectsql === null)) {
+					sql ='';
+				}
+			}
+
+			console.log('SQL:'+sql);
+
+			if (sql === '' || sql === null) {
 				LxNotificationService.warning('Не введен SQL');
 				return;
 			}
 
-			if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
-				$scope.vars.sqlHistory.push($scope.vars.sql);
-				if ($scope.vars.sqlHistory.length > 15) {
-					$scope.vars.sqlHistory.shift();
-				}
-				localStorageService.set('sqlHistory', $scope.vars.sqlHistory);
-			}
+			// много запросовый запрос
+			// Если editor содержит TokenIteratorgetFunctions(editor,"name.tag") , т/е несколько строк разделенных черех ;;
+			// TokenIteratorgetFunctions(editor,"name.tag")  - split ;;
+			//
+
+
+			// Определяем через , указан ли формат запроса
+			// TokenIteratorgetFunctions(editor,"storage") - FORMAT JSON ...
+
+
+			// А можно забить и сделать через split (';;') , str_in_pos('FORMAT\s+')
+
 
 			$scope.vars.sqlData = 'загрузка...';
 			$scope.vars.statistics = null;
@@ -116,13 +169,27 @@
 
 
 
-			API.query($scope.vars.sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
+			API.query(sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data));
 				} else {
 					$scope.vars.sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
 				}
 				$scope.vars.statistics = data.statistics;
+
+
+
+
+
+				// В историю только успешные запросы, ошибки будут звсорять
+				if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
+					$scope.vars.sqlHistory.push(sql);
+					if ($scope.vars.sqlHistory.length > 25) {
+						$scope.vars.sqlHistory.shift();
+					}
+					localStorageService.set('sqlHistory', $scope.vars.sqlHistory);
+				}
+
 			}, function(response) {
 				LxNotificationService.error('Ошибка');
 
@@ -159,6 +226,16 @@
 				fontSize: $scope.vars.fontSize + 'px'
 			});
 			editor.setTheme('ace/theme/' + $scope.vars.theme);
+
+			// @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
+			editor.commands.addCommand({
+				name: 'myCommand',
+				bindKey: {win: 'Ctrl-M',  mac: 'Command-Enter'},
+				exec: function() {
+					$scope.run('auto');
+				}
+			});
+
 		};
 
 		$scope.$watch('vars.limitRows', function(curr) {
