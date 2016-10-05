@@ -15,12 +15,14 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW"
 		);
 
+		var keywordsDouble="FORMAT\\W+JSON|FORMAT\\W+JSONCompact|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparated|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSV|FORMAT\\W+CSVWithNames";
+
 		var builtinConstants = (
 			"true|false"
 		);
 
 		var builtinFunctions = (
-			"avg|count|first|last|max|min|sum|ucase|lcase|mid|len|round|rank|now|format|" +
+			"avg|count|first|last|max|min|sum|ucase|lcase|mid|len|round|rank|now|" +
 			"coalesce|ifnull|isnull|nvl|countIf|timeSlot|yesterday|today|now|toRelativeSecondNum|" + "toRelativeMinuteNum|toRelativeHourNum|toRelativeDayNum|toRelativeWeekNum|toRelativeMonthNum|" +
 			"toRelativeYearNum|toTime|toStartOfHour|toStartOfFiveMinute|toStartOfMinute|toStartOfYear|" +
 			"toStartOfQuarter|toStartOfMonth|toMonday|toSecond|toMinute|toHour|toDayOfWeek|toDayOfMonth|" +
@@ -81,6 +83,9 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			}, {
 				token: "string", // " string
 				regex: '".*?"'
+			},{
+				token: "storage",
+				regex: keywordsDouble
 			}, {
 				token: "string", // ' string
 				regex: "'.*?'"
@@ -92,7 +97,10 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 				regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
 			}, {
 				token: "punctuation",
-				regex: ",|;"
+				regex: ","
+			}, {
+				token: "name.tag",
+				regex: ";;"
 			}, {
 				token: "keyword.operator",
 				regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="

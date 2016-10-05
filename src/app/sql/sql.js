@@ -91,6 +91,7 @@
 		 * @description Выполнение запроса
 		 */
 		$scope.run = function() {
+			console.log($scope.vars.editor.getSelectedText());
 			if ($scope.vars.sql === '' || $scope.vars.sql === null) {
 				LxNotificationService.warning('Не введен SQL');
 				return;
@@ -123,11 +124,7 @@
 				}
 				$scope.vars.statistics = data.statistics;
 			}, function(response) {
-				console.log("response:");
-				console.log(response);
-
 				LxNotificationService.error('Ошибка');
-
 
 				$scope.vars.statistics = null;
 				if (response.data){
