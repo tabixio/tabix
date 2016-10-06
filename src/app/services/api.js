@@ -92,11 +92,8 @@
 				$http(req).then(function (response) {
 					defer.resolve(response.data);
 				}, function (response) {
-
-					console.log(response.data);
 					defer.reject(response.data);
 				});
-
 			}
 			else {
 				$http.post(url).then(function (response) {

@@ -163,54 +163,45 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 
 		this.$id = "ace/mode/clickhouse";
         //
-		this.addKeyword = function(v) {
-			this.completions.push({
-				name: v,
-				value: v,
-				score: 0,
-				meta: meta
-			});
-			// update keywords
-			// editor.session.$mode.$highlightRules.setKeywords({"keyword": "foo|bar|baz"})
-// force rehighlight whole document
-			this.session.bgTokenizer.start(0)
-		};
-
-
-		this.TokenIteratorgetFunctions = function(editor,type) {
-			var TokenIterator = require("ace/token_iterator").TokenIterator;
-
-			var iterator = new TokenIterator(editor.getSession(), 0, 0);
-			var token = iterator.getCurrentToken();
-
-			var func = '';
-			var matches;
-			while (token) {
-
-
-				console.log(token.type +' : '+token.value+' : '+token.start);
-				console.log(token);
-				// if(
-				// 	( token.type == type && token.value == 'function' ) || //php function
-				// 	( token.type == 'storage.type' && token.value == 'function' ) //js function
-				// ){
-				// 	func = token.value;
-				// }else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
-				// 	matches.push(func);
-				// 	func = '';
-				// }else if( func ){
-				// 	func += token.value;
-				// }else{
-				// 	func = '';
-				// }
-				//
-				token = iterator.stepForward();
-			};
+        this.addKeyword = function(v,meta) {
+			// http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
+        };
         //
-		// 	matches.sort();
         //
-			return matches;
-		}
+        //this.TokenIteratorgetFunctions = function(editor,type) {
+			//var TokenIterator = require("ace/token_iterator").TokenIterator;
+        //
+			//var iterator = new TokenIterator(editor.getSession(), 0, 0);
+			//var token = iterator.getCurrentToken();
+        //
+			//var func = '';
+			//var matches;
+			//while (token) {
+        //
+        //
+			//	console.log(token.type +' : '+token.value+' : '+token.start);
+			//	console.log(token);
+			//	// if(
+			//	// 	( token.type == type && token.value == 'function' ) || //php function
+			//	// 	( token.type == 'storage.type' && token.value == 'function' ) //js function
+			//	// ){
+			//	// 	func = token.value;
+			//	// }else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
+			//	// 	matches.push(func);
+			//	// 	func = '';
+			//	// }else if( func ){
+			//	// 	func += token.value;
+			//	// }else{
+			//	// 	func = '';
+			//	// }
+			//	//
+			//	token = iterator.stepForward();
+			//};
+        ////
+        //// 	matches.sort();
+        ////
+			//return matches;
+        //}
 
 
 

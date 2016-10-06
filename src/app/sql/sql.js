@@ -29,6 +29,7 @@
 				name: 'CREATE/INSERT',
 				sql: 'null'
 			}],
+			db:null,
 			editor: null,
 			statistics: null,
 			limitRows: localStorageService.get('editorLimitRows') || 500,
@@ -53,22 +54,22 @@
 			link: 'sql',
 			text: 'SQL'
 		}];
-        //
-		// // Предотвращаю потерю SQL данных при закрытии окна
-		// $window.onbeforeunload = function(event) {
-		// 	if ($scope.vars.sql !== '') {
-		// 		var message = 'Хотите покинуть страницу?';
-		// 		if (typeof event == 'undefined') {
-		// 			event = window.event;
-		// 		}
-		// 		if (event) {
-		// 			event.returnValue = message;
-		// 		}
-		// 		return message;
-		// 	}
-		// };
-        //
-        //
+
+		// Предотвращаю потерю SQL данных при закрытии окна
+		$window.onbeforeunload = function(event) {
+			if ($scope.vars.sql !== '') {
+				var message = 'Хотите покинуть страницу?';
+				if (typeof event == 'undefined') {
+					event = window.event;
+				}
+				if (event) {
+					event.returnValue = message;
+				}
+				return message;
+			}
+		};
+
+
 		// Предотвращаю потерю SQL данных при смене стейта
 		var clearRouterListener = $scope.$on('$stateChangeStart', function(event) {
 			var message = 'Хотите покинуть страницу?';
@@ -90,26 +91,18 @@
 		 * @name run
 		 * @description Выполнение запроса
 		 */
-		$scope.run = function(typerun) {
-
+		$scope.run = function() {
 
 
 			var sql=$scope.vars.sql;
-			if (typerun=='select' || typerun=='auto')
-			{
-				// typerun=auto if Кастомный cmd+enter чтобы ранать Все/или выделенное
 
-
-				// @todo : Повесить эвент и енайблить кнопку если выделенно To listen for an selection change: editor.getSession().selection.on('changeSelection', callback);
-				var selectsql=$scope.vars.editor.getSelectedText();
-				if (typerun==='auto' && !(selectsql === '' || selectsql === null)) {
-					sql = selectsql;
-				}
-				if (!(selectsql === '' || selectsql === null)) {
-					sql ='';
-				}
+			// получаем выделенный текст, и если выделено - ранаем выделение
+			var selectsql=$scope.vars.editor.getSelectedText();
+			if (!(selectsql === '' || selectsql === null)) {
+				sql = selectsql;
 			}
 
+			console.log("database:"+$scope.vars.db);
 			console.log('SQL:'+sql);
 
 			if (sql === '' || sql === null) {
@@ -117,43 +110,47 @@
 				return;
 			}
 
-			// много запросовый запрос
-			// Если editor содержит TokenIteratorgetFunctions(editor,"name.tag") , т/е несколько строк разделенных черех ;;
+
+
+			// много "запросовый" запрос , т/е если содержит ";;" см. ClickhouseHighlightRules [token: "name.tag",regex: ";;"]
+			// Если editor содержит TokenIteratorgetFunctions(editor,"name.tag") ,
 			// TokenIteratorgetFunctions(editor,"name.tag")  - split ;;
 			//
+			//var ClickhouseHighlightRules = $scope.vars.editor.session.$mode;
+			//console.log(ClickhouseHighlightRules.TokenIteratorgetFunctions($scope.vars.editor,"storage"));
 
-			console.log($scope.vars.editor.session.$mode.TokenIteratorgetFunctions($scope.vars.editor,"storage"));
-
-			// Определяем через , указан ли формат запроса
-			// $scope.vars.editor.TokenIteratorgetFunctions();// - FORMAT JSON ...
-
-
+			// Определяем через , указан ли формат запроса [ FORMAT JSON,JSONCompact,JSONEachRow ] через storage
+			// $scope.vars.editor.TokenIteratorgetFunctions();// -  ...
 			// А можно забить и сделать через split (';;') , str_in_pos('FORMAT\s+')
 
 			$scope.vars.sqlData = 'загрузка...';
 			$scope.vars.statistics = null;
 
+
+			// содержит дополнительные GET параметры для выполнения запрос
 			var extendSettings='';
+
+			// если указан limitRows
 			if ($scope.vars.limitRows)
 			{
 				extendSettings+='max_result_rows='+$scope.vars.limitRows+'&result_overflow_mode=throw';
 			}
 
 
-
 			API.query(sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
+
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data));
-				} else {
+				}
+				else
+				{
 					$scope.vars.sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
 				}
+
 				$scope.vars.statistics = data.statistics;
 
 
-
-
-
-				// В историю только успешные запросы, ошибки будут звсорять
+				// В историю только успешные запросы, ошибки будут засорять
 				if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
 					$scope.vars.sqlHistory.push(sql);
 					if ($scope.vars.sqlHistory.length > 25) {
@@ -192,6 +189,18 @@
 			$scope.vars.editor.execCommand("showSettingsMenu");
 		};
 
+
+		$scope.selectDatabase = function(db) {
+			console.log("SET DATABASE:"+db);
+			$scope.vars.db=db;
+
+
+			var ClickhouseHighlightRules = $scope.vars.editor.session.$mode;
+
+			ClickhouseHighlightRules.addKeyword(db);
+
+		};
+
 		$scope.aceLoaded = function(editor) {
 			$scope.vars.editor = editor;
 			editor.setOptions({
@@ -204,9 +213,27 @@
 				name: 'myCommand',
 				bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
 				exec: function() {
-					$scope.run('auto');
+					$scope.run();
 				}
 			});
+
+
+			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
+			// если выделенно To listen for an selection change:
+			// editor.getSession().selection.on('changeSelection', callback);
+
+
+
+			// наблюдаем за изменением в выбор базы данных
+			var scope = angular.element($("[ng-app=sidebar]")).scope();
+			if (scope) {
+				scope.$watch('vars.selectedDatabase.name', function(curr) {
+					if (!angular.isUndefined(curr)) {
+						$scope.selectDatabase(curr);
+					}
+				});
+			}
+
 		};
 
 		$scope.$watch('vars.limitRows', function(curr) {
