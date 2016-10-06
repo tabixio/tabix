@@ -9,7 +9,7 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 	var ClickhouseHighlightRules = function() {
 
 		var keywords = (
-			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|GROUP|BY|ORDER|LIMIT|OFFSET|HAVING|AS|CASE|" +
+			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|GROUP|BY|ORDER|LIMIT|OFFSET|HAVING|AS|" +
 			"WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|IF|" +
 			"FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
 			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW"
@@ -142,7 +142,7 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 	exports.ClickhouseHighlightRules = ClickhouseHighlightRules;
 });
 
-define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text", "ace/mode/clickhouse_highlight_rules", "ace/range"], function(require, exports) {
+define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text","ace/token_iterator", "ace/mode/clickhouse_highlight_rules", "ace/range"], function(require, exports) {
 	"use strict";
 
 	var oop = require("../lib/oop");
@@ -162,6 +162,58 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 		};
 
 		this.$id = "ace/mode/clickhouse";
+        //
+		this.addKeyword = function(v) {
+			this.completions.push({
+				name: v,
+				value: v,
+				score: 0,
+				meta: meta
+			});
+			// update keywords
+			// editor.session.$mode.$highlightRules.setKeywords({"keyword": "foo|bar|baz"})
+// force rehighlight whole document
+			this.session.bgTokenizer.start(0)
+		};
+
+
+		this.TokenIteratorgetFunctions = function(editor,type) {
+			var TokenIterator = require("ace/token_iterator").TokenIterator;
+
+			var iterator = new TokenIterator(editor.getSession(), 0, 0);
+			var token = iterator.getCurrentToken();
+
+			var func = '';
+			var matches;
+			while (token) {
+
+
+				console.log(token.type +' : '+token.value+' : '+token.start);
+				console.log(token);
+				// if(
+				// 	( token.type == type && token.value == 'function' ) || //php function
+				// 	( token.type == 'storage.type' && token.value == 'function' ) //js function
+				// ){
+				// 	func = token.value;
+				// }else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
+				// 	matches.push(func);
+				// 	func = '';
+				// }else if( func ){
+				// 	func += token.value;
+				// }else{
+				// 	func = '';
+				// }
+				//
+				token = iterator.stepForward();
+			};
+        //
+		// 	matches.sort();
+        //
+			return matches;
+		}
+
+
+
 	}).call(Mode.prototype);
 
 	exports.Mode = Mode;

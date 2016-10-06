@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular.module(smi2.app.name).controller('SqlController', SqlController);
-	SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API'];
+	SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService','API'];
 
 	/**
 	 * @ngdoc controller
@@ -83,34 +83,6 @@
 			clearRouterListener();
 			$window.onbeforeunload = null;
 		});
-		$scope.TokenIteratorgetFunctions = function(editor){
-			var TokenIterator = require("ace/token_iterator").TokenIterator;
-			var iterator = new TokenIterator(editor.getSession(), 0, 0);
-			var token = iterator.getCurrentToken();
-
-			var func = '';
-			while (token) {
-				if(
-					( token.type == 'keyword' && token.value == 'function' ) || //php function
-					( token.type == 'storage.type' && token.value == 'function' ) //js function
-				){
-					func = token.value;
-				}else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
-					matches.push(func);
-					func = '';
-				}else if( func ){
-					func += token.value;
-				}else{
-					func = '';
-				}
-
-				token = iterator.stepForward();
-			}
-
-			matches.sort();
-
-			return matches;
-		}
 
 		/**
 		 * @ngdoc method
@@ -150,13 +122,13 @@
 			// TokenIteratorgetFunctions(editor,"name.tag")  - split ;;
 			//
 
+			console.log($scope.vars.editor.session.$mode.TokenIteratorgetFunctions($scope.vars.editor,"storage"));
 
 			// Определяем через , указан ли формат запроса
-			// TokenIteratorgetFunctions(editor,"storage") - FORMAT JSON ...
+			// $scope.vars.editor.TokenIteratorgetFunctions();// - FORMAT JSON ...
 
 
 			// А можно забить и сделать через split (';;') , str_in_pos('FORMAT\s+')
-
 
 			$scope.vars.sqlData = 'загрузка...';
 			$scope.vars.statistics = null;
@@ -230,17 +202,17 @@
 			// @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
 			editor.commands.addCommand({
 				name: 'myCommand',
-				bindKey: {win: 'Ctrl-M',  mac: 'Command-Enter'},
+				bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
 				exec: function() {
 					$scope.run('auto');
 				}
 			});
-
 		};
 
 		$scope.$watch('vars.limitRows', function(curr) {
 			localStorageService.set('editorLimitRows', curr);
 		});
+
 		$scope.$watch('vars.fontSize', function(curr) {
 			if (curr && $scope.vars.editor) {
 				$scope.vars.editor.setOptions({

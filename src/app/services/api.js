@@ -130,6 +130,10 @@
 			database = db;
 		};
 
+		this.getDatabase = function () {
+			return database;
+		};
+
 		/**
 		 * @ngdoc method
 		 * @methodOf smi2.service:API
