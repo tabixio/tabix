@@ -1,3 +1,8 @@
+
+// @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
+global_keywords_fields='bazbaz|pipi';
+global_keywords_tables="";
+
 (function(angular, smi2) {
 	'use strict';
 
@@ -195,10 +200,43 @@
 			$scope.vars.db=db;
 
 
-			var ClickhouseHighlightRules = $scope.vars.editor.session.$mode;
 
-			ClickhouseHighlightRules.addKeyword(db);
 
+			API.query("SELECT table,name,type FROM system.columns WHERE database=\'"+db+"\'", $scope.vars.format.sql, true).then(function(data) {
+
+				var fields=[],ufields = {};
+				var tables=[],utables = {};
+				var keys = [];
+				data.meta.forEach(function(cell) {
+					keys.push(cell.name);
+				});
+				data.data.forEach(function(row) {
+					keys.forEach(function(key) {
+
+						if (key=='table')
+						{
+							if(!utables.hasOwnProperty(row[key])) { utables[row[key]] = 1; tables.push(row[key]); }
+						}
+						if (key=='name')
+						{
+							if(!ufields.hasOwnProperty(row[key])) { ufields[row[key]] = 1; fields.push(row[key]); }
+						}
+					});
+				});
+
+				global_keywords_fields=fields.join('|')+'|'+db;
+				global_keywords_tables=tables.join('|')+'|'+db;
+					// reload highlights
+				$scope.vars.editor.session.setMode({
+					path: "ace/mode/clickhouse",
+					v: Date.now()
+				});
+				$scope.vars.editor.session.bgTokenizer.start(0); // force rehighlight whole document
+
+			});
+
+			$scope.vars.editor.clearSelection();
+			$scope.vars.sql="SELECT article_id as ping FROM aggr\n SELECT FROM domain_source \n\nfoo int8 int16 \n SELECT FROM baz  as 1 \n bar\n-- ROOO\nSELECT 12 as 123\nselect 1 as ping format json";
 		};
 
 		$scope.aceLoaded = function(editor) {
@@ -207,6 +245,7 @@
 				fontSize: $scope.vars.fontSize + 'px'
 			});
 			editor.setTheme('ace/theme/' + $scope.vars.theme);
+
 
 			// @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
 			editor.commands.addCommand({
@@ -221,9 +260,7 @@
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
 			// editor.getSession().selection.on('changeSelection', callback);
-
-
-
+//
 			// наблюдаем за изменением в выбор базы данных
 			var scope = angular.element($("[ng-app=sidebar]")).scope();
 			if (scope) {
@@ -248,7 +285,6 @@
 				localStorageService.set('editorFontSize', curr);
 			}
 		});
-
 
 		angular.element('#resizable').resizable({
 			handles: 's'

@@ -1,20 +1,20 @@
 var define = window.define || window.ace.define;
 
-define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function(require, exports) {
+define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function(require, exports) {
 	"use strict";
 
 	var oop = require("../lib/oop");
 	var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
-	var ClickhouseHighlightRules = function() {
 
+	var ClickhouseHighlightRules = function() {
 		var keywords = (
 			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|GROUP|BY|ORDER|LIMIT|OFFSET|HAVING|AS|" +
 			"WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|IF|" +
 			"FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
 			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW"
 		);
-
+		var identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
 		var keywordsDouble="FORMAT\\W+JSON|FORMAT\\W+JSONCompact|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparated|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSV|FORMAT\\W+CSVWithNames";
 
 		var builtinConstants = (
@@ -68,15 +68,19 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			"support.function": builtinFunctions,
 			"keyword": keywords,
 			"constant.language": builtinConstants,
-			"storage.type": dataTypes
+			"storage.type": dataTypes,
+			"markup.bold":global_keywords_tables,
+			"markup.heading":global_keywords_fields
 		}, "identifier", true);
+
 
 		this.$rules = {
 			"start": [{
 				token: "comment",
 				regex: "--.*$",
 				caseInsensitive: true
-			}, {
+			},
+				{
 				token: "comment",
 				start: "/\\*",
 				end: "\\*/"
@@ -95,9 +99,10 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			}, {
 				token: keywordMapper,
 				regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-			}, {
+			},
+			{
 				token: "punctuation",
-				regex: ","
+				regex: /[?:,;.]/,
 			}, {
 				token: "name.tag",
 				regex: ";;"
@@ -113,7 +118,9 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 			}, {
 				token: "text",
 				regex: "\\s+"
-			}]
+			}
+
+			]
 		};
 		this.normalizeRules();
 
@@ -131,10 +138,10 @@ define("ace/mode/clickhouse_highlight_rules", ["require", "exports", "module", "
 		addCompletions(builtinFunctions.split('|'), 'function');
 		addCompletions(keywords.split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
+		addCompletions(global_keywords_tables.split('|'), 'storage');
+		addCompletions(global_keywords_fields.split('|'), 'storage');
 		//this allows for custom 'meta' and proper case of completions
 		this.completions = completions;
-
-
 
 	};
 
@@ -150,6 +157,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 	var ClickhouseHighlightRules = require("./clickhouse_highlight_rules").ClickhouseHighlightRules;
 
 	var Mode = function() {
+
 		this.HighlightRules = ClickhouseHighlightRules;
 	};
 	oop.inherits(Mode, TextMode);
@@ -162,10 +170,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 		};
 
 		this.$id = "ace/mode/clickhouse";
-        //
-        this.addKeyword = function(v,meta) {
-			// http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
-        };
+
         //
         //
         //this.TokenIteratorgetFunctions = function(editor,type) {

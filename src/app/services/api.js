@@ -140,7 +140,7 @@
 		 * @return {string} Строка HTML
 		 */
 		this.dataToHtml = function(data) {
-			console.log(data);
+
 			var html = '<table class="sql-table fs-body-1"><tr>';
 			var keys = [];
 			data.meta.forEach(function(cell) {
