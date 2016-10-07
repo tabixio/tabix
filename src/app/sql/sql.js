@@ -261,7 +261,7 @@ global_keywords_tables="";
 
 			$scope.vars.editor.clearSelection();
 			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
-			$scope.vars.sql="select 1 as ping \n;;\nselect 2 as ping\n;;\nselect 3 as ping";
+			$scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:

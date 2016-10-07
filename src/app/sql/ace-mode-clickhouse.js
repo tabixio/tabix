@@ -100,13 +100,15 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 				token: keywordMapper,
 				regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
 			},
-			{
-				token: "punctuation",
-				regex: /[?:,;.]/,
-			}, {
-				token: "name.tag",
-				regex: ";;"
-			}, {
+				{
+				token: "invalid.illegal",
+				regex: /;{2}/
+			},
+				{
+					token: "punctuation",
+					regex: /[?:,;.]/,
+				},
+				{
 				token: "keyword.operator",
 				regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
 			}, {
