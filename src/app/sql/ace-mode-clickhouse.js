@@ -135,6 +135,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 				});
 			});
 		};
+
 		addCompletions(builtinFunctions.split('|'), 'function');
 		addCompletions(keywords.split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
