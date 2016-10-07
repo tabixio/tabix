@@ -18,10 +18,14 @@ global_keywords_tables="";
 
 		$scope.vars = {
 			sql: '',
+			button_run: 'Выполнить ⌘ + ⏎',
 			sqlHistory: localStorageService.get('sqlHistory') || [],
 			sqlData: null,
 			format: {},
 			formats: [{
+				name: 'Авто',
+				sql: ' auto'
+			}, {
 				name: 'Таблица',
 				sql: ' format JSON'
 			}, {
@@ -34,7 +38,7 @@ global_keywords_tables="";
 				name: 'CREATE/INSERT',
 				sql: 'null'
 			}],
-			db:null,
+			db: null,
 			editor: null,
 			statistics: null,
 			limitRows: localStorageService.get('editorLimitRows') || 500,
@@ -59,21 +63,21 @@ global_keywords_tables="";
 			link: 'sql',
 			text: 'SQL'
 		}];
-
-		// Предотвращаю потерю SQL данных при закрытии окна
-		$window.onbeforeunload = function(event) {
-			if ($scope.vars.sql !== '') {
-				var message = 'Хотите покинуть страницу?';
-				if (typeof event == 'undefined') {
-					event = window.event;
-				}
-				if (event) {
-					event.returnValue = message;
-				}
-				return message;
-			}
-		};
-
+        //
+		// // Предотвращаю потерю SQL данных при закрытии окна
+		// $window.onbeforeunload = function(event) {
+		// 	if ($scope.vars.sql !== '') {
+		// 		var message = 'Хотите покинуть страницу?';
+		// 		if (typeof event == 'undefined') {
+		// 			event = window.event;
+		// 		}
+		// 		if (event) {
+		// 			event.returnValue = message;
+		// 		}
+		// 		return message;
+		// 	}
+		// };
+        //
 
 		// Предотвращаю потерю SQL данных при смене стейта
 		var clearRouterListener = $scope.$on('$stateChangeStart', function(event) {
@@ -257,11 +261,23 @@ global_keywords_tables="";
 
 			$scope.vars.editor.clearSelection();
 			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
+			$scope.vars.sql="select 1 as ping \n;;\nselect 2 as ping\n;;\nselect 3 as ping";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
-			// editor.getSession().selection.on('changeSelection', callback);
-//
+			editor.on('changeSelection', function () {
+
+				if (editor.getSelectedText())
+				{
+					$scope.vars.button_run='Выполнить выделенное ⌘ + ⏎';
+				}
+				else
+				{
+					$scope.vars.button_run= 'Выполнить ⌘ + ⏎';
+				}
+				document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
+			});
+
 			// наблюдаем за изменением в выбор базы данных
 			var scope = angular.element($("[ng-app=sidebar]")).scope();
 			if (scope) {
