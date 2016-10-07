@@ -63,20 +63,20 @@ global_keywords_tables="";
 			text: 'SQL'
 		}];
         //
-		// // Предотвращаю потерю SQL данных при закрытии окна
-		// $window.onbeforeunload = function(event) {
-		// 	if ($scope.vars.sql !== '') {
-		// 		var message = 'Хотите покинуть страницу?';
-		// 		if (typeof event == 'undefined') {
-		// 			event = window.event;
-		// 		}
-		// 		if (event) {
-		// 			event.returnValue = message;
-		// 		}
-		// 		return message;
-		// 	}
-		// };
-        //
+		// Предотвращаю потерю SQL данных при закрытии окна
+		$window.onbeforeunload = function(event) {
+			if ($scope.vars.sql !== '') {
+				var message = 'Хотите покинуть страницу?';
+				if (typeof event == 'undefined') {
+					event = window.event;
+				}
+				if (event) {
+					event.returnValue = message;
+				}
+				return message;
+			}
+		};
+
 
 		// Предотвращаю потерю SQL данных при смене стейта
 		var clearRouterListener = $scope.$on('$stateChangeStart', function(event) {
@@ -266,8 +266,8 @@ global_keywords_tables="";
 
 			$scope.vars.editor.clearSelection();
 			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
-			$scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
-			$scope.vars.sql="SELECT 'ABC' as a where a='xx' FORMAT JSON\n;;";
+			// $scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
+			// $scope.vars.sql="SELECT 'ABC' as a where a='xx' FORMAT JSON\n;;";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
