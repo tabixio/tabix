@@ -20,14 +20,14 @@ global_keywords_tables="";
 			sql: '',
 			button_run: 'Выполнить ⌘ + ⏎',
 			sqlHistory: localStorageService.get('sqlHistory') || [],
-			sqlData: null,
 			format: {},
+			results: [],
 			formats: [{
-				name: 'Авто',
-				sql: ' auto'
-			}, {
 				name: 'Таблица',
 				sql: ' format JSON'
+			}, {
+				name: 'Авто',
+				sql: ' auto'
 			}, {
 				name: 'JSON',
 				sql: ' format JSON'
@@ -40,7 +40,6 @@ global_keywords_tables="";
 			}],
 			db: null,
 			editor: null,
-			statistics: null,
 			limitRows: localStorageService.get('editorLimitRows') || 500,
 			fontSize: localStorageService.get('editorFontSize') || 16,
 			theme: localStorageService.get('editorTheme') || 'cobalt'
@@ -93,6 +92,42 @@ global_keywords_tables="";
 			clearRouterListener();
 			$window.onbeforeunload = null;
 		});
+		$scope.execute_query = function(sql,numquery){
+			console.log('execute:'+numquery+"\n"+sql);
+
+			// содержит дополнительные GET параметры для выполнения запрос
+			var extendSettings='';
+			// если указан limitRows
+			if ($scope.vars.limitRows)
+			{
+				extendSettings+='max_result_rows='+$scope.vars.limitRows+'&result_overflow_mode=throw';
+			}
+
+			var statistics=null;
+			var sqlData=null;
+			API.query(sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
+				statistics = data.statistics;
+				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
+					sqlData = API.dataToHtml(angular.fromJson(data));
+				}
+				else
+				{
+					sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
+				}
+				$scope.vars.results[numquery]={statistics:statistics,sqlData:sqlData};
+			}, function(response) {
+				LxNotificationService.error('Ошибка');
+				statistics = null;
+				if (response.data){
+					sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
+				}
+				else
+				{
+					sqlData = '<pre class="fs-caption tc-red-700">'+response+ '</pre>';
+				}
+				$scope.vars.results[numquery]={statistics:statistics,sqlData:sqlData};
+			});
+		};
 
 		/**
 		 * @ngdoc method
@@ -100,7 +135,7 @@ global_keywords_tables="";
 		 * @name run
 		 * @description Выполнение запроса
 		 */
-		$scope.run = function() {
+		$scope.run = function(){
 
 
 			var sql=$scope.vars.sql;
@@ -111,75 +146,31 @@ global_keywords_tables="";
 				sql = selectsql;
 			}
 
-			console.log("database:"+$scope.vars.db);
-			console.log('SQL:'+sql);
-
 			if (sql === '' || sql === null) {
 				LxNotificationService.warning('Не введен SQL');
 				return;
 			}
 
 
+			var sql_list=$scope.vars.editor.session.$mode.splitByTokens(sql,'constant.character.escape',';;');
 
-			// много "запросовый" запрос , т/е если содержит ";;" см. ClickhouseHighlightRules [token: "name.tag",regex: ";;"]
-			// Если editor содержит TokenIteratorgetFunctions(editor,"name.tag") ,
-			// TokenIteratorgetFunctions(editor,"name.tag")  - split ;;
-			//
-			//var ClickhouseHighlightRules = $scope.vars.editor.session.$mode;
-			//console.log(ClickhouseHighlightRules.TokenIteratorgetFunctions($scope.vars.editor,"storage"));
-
-			// Определяем через , указан ли формат запроса [ FORMAT JSON,JSONCompact,JSONEachRow ] через storage
-			// $scope.vars.editor.TokenIteratorgetFunctions();// -  ...
-			// А можно забить и сделать через split (';;') , str_in_pos('FORMAT\s+')
-
-			$scope.vars.sqlData = 'загрузка...';
-			$scope.vars.statistics = null;
-
-
-			// содержит дополнительные GET параметры для выполнения запрос
-			var extendSettings='';
-
-			// если указан limitRows
-			if ($scope.vars.limitRows)
+			$scope.vars.results=[];
+			var numquery=0;
+			sql_list.forEach(function(q)
 			{
-				extendSettings+='max_result_rows='+$scope.vars.limitRows+'&result_overflow_mode=throw';
+					$scope.vars.results.push({statistics:null,sqlData:null,query:q});
+					$scope.execute_query(q,numquery);
+					numquery++;
+			});//forEach
+
+			// В историю только успешные запросы, ошибки будут засорять
+			if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
+				$scope.vars.sqlHistory.push(sql);
+				if ($scope.vars.sqlHistory.length > 25) {
+					$scope.vars.sqlHistory.shift();
+				}
+				localStorageService.set('sqlHistory', $scope.vars.sqlHistory);
 			}
-
-
-			API.query(sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
-
-				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
-					$scope.vars.sqlData = API.dataToHtml(angular.fromJson(data));
-				}
-				else
-				{
-					$scope.vars.sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
-				}
-
-				$scope.vars.statistics = data.statistics;
-
-
-				// В историю только успешные запросы, ошибки будут засорять
-				if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
-					$scope.vars.sqlHistory.push(sql);
-					if ($scope.vars.sqlHistory.length > 25) {
-						$scope.vars.sqlHistory.shift();
-					}
-					localStorageService.set('sqlHistory', $scope.vars.sqlHistory);
-				}
-
-			}, function(response) {
-				LxNotificationService.error('Ошибка');
-
-				$scope.vars.statistics = null;
-				if (response.data){
-					$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
-				}
-				else
-				{
-					$scope.vars.sqlData = '<pre class="fs-caption tc-red-700">'+response+ '</pre>';
-				}
-			});
 		};
 
 		$scope.setTheme = function (theme) {
@@ -200,7 +191,6 @@ global_keywords_tables="";
 
 
 		$scope.selectDatabase = function(db) {
-			console.log("SET DATABASE:"+db);
 			$scope.vars.db=db;
 
 
@@ -262,6 +252,7 @@ global_keywords_tables="";
 			$scope.vars.editor.clearSelection();
 			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
 			$scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
+			//$scope.vars.sql="SELECT 'ABC' as a where a='xx'\n;;";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
@@ -287,7 +278,6 @@ global_keywords_tables="";
 					}
 				});
 			}
-
 		};
 
 		$scope.$watch('vars.limitRows', function(curr) {

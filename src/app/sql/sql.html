@@ -75,17 +75,16 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card" ng-repeat="item in vars.results">
     <div class="p+">
-        <div style="white-space: nowrap; float: right; line-height: 26px; color: #666;" class="fs-caption" ng-if="vars.statistics">
-            время: <b>{{vars.statistics.elapsed}}</b>,
-            строк прочитано: <b>{{vars.statistics.rows_read}}</b>,
-            байт прочитано: <b>{{vars.statistics.bytes_read}}</b>
+        <div style="white-space: nowrap; float: right; line-height: 26px; color: #666;" class="fs-caption" ng-if="item.statistics">
+            время: <b>{{item.statistics.elapsed}}</b>,
+            строк прочитано: <b>{{item.statistics.rows_read}}</b>,
+            байт прочитано: <b>{{item.statistics.bytes_read}}</b>
         </div>
-        Результат
     </div>
     <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
-        <span ng-if="vars.sqlData === null" class="fs-caption">нет данных</span>
-        <div ng-if="vars.sqlData !== null" ng-bind-html="vars.sqlData"></div>
+        <span ng-if="item.sqlData === null" class="fs-caption">нет данных</span>
+        <div ng-if="item.sqlData !== null" ng-bind-html="item.sqlData">x</div>
     </div>
 </div>

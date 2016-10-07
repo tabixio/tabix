@@ -101,7 +101,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 				regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
 			},
 				{
-				token: "invalid.illegal",
+				token: "constant.character.escape",
 				regex: /;{2}/
 			},
 				{
@@ -173,45 +173,51 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 		};
 
 		this.$id = "ace/mode/clickhouse";
+// ---------------------------------------------------------------------------
+		this.splitByTokens = function(sql,type,value) {
+			var TokenIterator = require("ace/token_iterator").TokenIterator;
+			var EditSession = require("ace/edit_session").EditSession;
+			var Range = require("ace/range").Range
 
-        //
-        //
-        //this.TokenIteratorgetFunctions = function(editor,type) {
-			//var TokenIterator = require("ace/token_iterator").TokenIterator;
-        //
-			//var iterator = new TokenIterator(editor.getSession(), 0, 0);
-			//var token = iterator.getCurrentToken();
-        //
-			//var func = '';
-			//var matches;
-			//while (token) {
-        //
-        //
-			//	console.log(token.type +' : '+token.value+' : '+token.start);
-			//	console.log(token);
-			//	// if(
-			//	// 	( token.type == type && token.value == 'function' ) || //php function
-			//	// 	( token.type == 'storage.type' && token.value == 'function' ) //js function
-			//	// ){
-			//	// 	func = token.value;
-			//	// }else if( func && token.type == 'paren.lparen' && token.value == '{' ){ //stop when we get to curly bracket
-			//	// 	matches.push(func);
-			//	// 	func = '';
-			//	// }else if( func ){
-			//	// 	func += token.value;
-			//	// }else{
-			//	// 	func = '';
-			//	// }
-			//	//
-			//	token = iterator.stepForward();
-			//};
-        ////
-        //// 	matches.sort();
-        ////
-			//return matches;
-        //}
+			var session = new EditSession(sql,this);
+			var iterator = new TokenIterator(session, 0, 0);
+			var token = iterator.getCurrentToken();
+			var matches=[];
 
+			var startRow= 0, startCol=0;
 
+			while (token) {
+				var t=token;
+				t['row']=iterator.getCurrentTokenRow();
+				t['col']=iterator.getCurrentTokenColumn();
+				if 	( t.type == type && t.value == value)
+				{
+					//var session = new EditSession(sql,this);
+					//session.clearSelection();
+					var range1 = new Range(startRow, startCol, t.row, t.col+value.length);
+					var text=session.getTextRange(range1);
+					startRow= t.row;
+					startCol= t.col+value.length;
+					text=text.trim().replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim();
+					if (text.length>2)
+					{
+						matches.push(text);
+					}
+				}
+				token = iterator.stepForward();
+			}
+			var range1 = new Range(startRow, startCol,Number.MAX_VALUE,Number.MAX_VALUE);
+			var text=session.getTextRange(range1);
+			text=text.trim().replace("^("+value+")","").replace(value+"$","").trim();
+
+			text=text.replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim();
+			if (text.length>2)
+			{
+				matches.push(text);
+
+			}
+			return matches;
+		};
 
 	}).call(Mode.prototype);
 
