@@ -235,8 +235,6 @@ global_keywords_tables="";
 
 			});
 
-			$scope.vars.editor.clearSelection();
-			$scope.vars.sql="SELECT article_id as ping FROM aggr\n SELECT FROM domain_source \n\nfoo int8 int16 \n SELECT FROM baz  as 1 \n bar\n-- ROOO\nSELECT 12 as 123\nselect 1 as ping format json";
 		};
 
 		$scope.aceLoaded = function(editor) {
@@ -256,6 +254,8 @@ global_keywords_tables="";
 				}
 			});
 
+			$scope.vars.editor.clearSelection();
+			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
