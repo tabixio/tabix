@@ -224,7 +224,8 @@ global_keywords_tables="";
 					});
 				});
 
-				global_keywords_fields=fields.join('|')+'|'+db;
+				global_keywords_fields=fields.join('|')+'|';
+
 				global_keywords_tables=tables.join('|')+'|'+db;
 					// reload highlights
 				$scope.vars.editor.session.setMode({
