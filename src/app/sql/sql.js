@@ -92,8 +92,8 @@ global_keywords_tables="";
 			clearRouterListener();
 			$window.onbeforeunload = null;
 		});
-		$scope.execute_query = function(sql,numquery){
-			console.log('execute:'+numquery+"\n"+sql);
+		$scope.execute_query = function(sql,numquery,_format,_keyword){
+			console.log('execute:'+numquery+' : '+_keyword+"\n"+sql);
 
 			// содержит дополнительные GET параметры для выполнения запрос
 			var extendSettings='';
@@ -105,7 +105,12 @@ global_keywords_tables="";
 
 			var statistics=null;
 			var sqlData=null;
-			API.query(sql, $scope.vars.format.sql, true, extendSettings).then(function(data) {
+			var format=' FORMAT JSON';
+
+			if (_format) format='null';
+			if (_keyword!=='select') format='null';
+
+			API.query(sql, format ,true, extendSettings).then(function(data) {
 				statistics = data.statistics;
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					sqlData = API.dataToHtml(angular.fromJson(data));
@@ -158,9 +163,23 @@ global_keywords_tables="";
 			var numquery=0;
 			sql_list.forEach(function(q)
 			{
-					$scope.vars.results.push({statistics:null,sqlData:null,query:q});
-					$scope.execute_query(q,numquery);
-					numquery++;
+
+				var _format=null;
+				var _keyword=null;
+				var set_format=$scope.vars.editor.session.$mode.findTokens(sql,"storage",true);
+				var keyword=$scope.vars.editor.session.$mode.findTokens(sql,"keyword",true);
+
+				if (set_format.hasOwnProperty('value'))
+				{
+					_format=set_format.value;
+				}
+				if (keyword.hasOwnProperty('value'))
+				{
+					_keyword=keyword.value;
+				}
+				$scope.vars.results.push({statistics:null,sqlData:null,query:q});
+				$scope.execute_query(q,numquery,_format,_keyword);
+				numquery++;
 			});//forEach
 
 			// В историю только успешные запросы, ошибки будут засорять
@@ -193,9 +212,6 @@ global_keywords_tables="";
 		$scope.selectDatabase = function(db) {
 			$scope.vars.db=db;
 
-
-
-
 			API.query("SELECT table,name,type FROM system.columns WHERE database=\'"+db+"\'", $scope.vars.format.sql, true).then(function(data) {
 
 				var fields=[],ufields = {};
@@ -219,7 +235,6 @@ global_keywords_tables="";
 				});
 
 				global_keywords_fields=fields.join('|')+'|';
-
 				global_keywords_tables=tables.join('|')+'|'+db;
 					// reload highlights
 				$scope.vars.editor.session.setMode({
@@ -252,7 +267,7 @@ global_keywords_tables="";
 			$scope.vars.editor.clearSelection();
 			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
 			$scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
-			//$scope.vars.sql="SELECT 'ABC' as a where a='xx'\n;;";
+			$scope.vars.sql="SELECT 'ABC' as a where a='xx' FORMAT JSON\n;;";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
@@ -268,7 +283,8 @@ global_keywords_tables="";
 				}
 				document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
 			});
-
+			editor.focus();
+			editor.selection.moveTo(0, 0);
 			// наблюдаем за изменением в выбор базы данных
 			var scope = angular.element($("[ng-app=sidebar]")).scope();
 			if (scope) {

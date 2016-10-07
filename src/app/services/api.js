@@ -56,12 +56,13 @@
 		this.query = function(sql, format, withDatabase,extend_settings) {
 			var defer = $q.defer();
 
-			format = (format || ' format JSON');
+			format = (format || ' FORMAT JSON');
 			if (format=='null')  format='';
+			var q=sql + ' ' + format;
 
 
 			var url = 'http://' + connection.host +
-				'/?query=' + encodeURIComponent(sql + ' ' + format );
+				'/?query=' + encodeURIComponent(q );
 			if (connection.login) {
 				url += '&user=' + connection.login;
 			}
@@ -77,6 +78,7 @@
 				url += '&'+extend_settings;
 
 			}
+			console.warn(q );
 
 			var req = {
 				method: 'GET',

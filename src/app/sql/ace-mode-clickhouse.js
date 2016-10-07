@@ -174,16 +174,44 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 
 		this.$id = "ace/mode/clickhouse";
 // ---------------------------------------------------------------------------
-		this.splitByTokens = function(sql,type,value) {
+		this.findTokens = function(sql,type,needfirst) {
+			sql=sql.replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 			var TokenIterator = require("ace/token_iterator").TokenIterator;
 			var EditSession = require("ace/edit_session").EditSession;
-			var Range = require("ace/range").Range
 
 			var session = new EditSession(sql,this);
 			var iterator = new TokenIterator(session, 0, 0);
 			var token = iterator.getCurrentToken();
 			var matches=[];
+			var startRow= 0, startCol=0;
 
+			while (token) {
+				var t = token;
+				t['row'] = iterator.getCurrentTokenRow();
+				t['col'] = iterator.getCurrentTokenColumn();
+				if (t.type == type ) {
+					matches.push(t);
+					if (needfirst)
+					{
+						t.value=t.value.toLowerCase();
+						return t;
+					}
+				}
+				token = iterator.stepForward();
+			}//w
+			return matches;
+		};
+		this.splitByTokens = function(sql,type,value) {
+			sql=sql.replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
+
+			var TokenIterator = require("ace/token_iterator").TokenIterator;
+			var EditSession = require("ace/edit_session").EditSession;
+			var Range = require("ace/range").Range;
+
+			var session = new EditSession(sql,this);
+			var iterator = new TokenIterator(session, 0, 0);
+			var token = iterator.getCurrentToken();
+			var matches=[];
 			var startRow= 0, startCol=0;
 
 			while (token) {
@@ -198,7 +226,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 					var text=session.getTextRange(range1);
 					startRow= t.row;
 					startCol= t.col+value.length;
-					text=text.trim().replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim();
+					text=text.trim().replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 					if (text.length>2)
 					{
 						matches.push(text);
@@ -208,9 +236,8 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 			}
 			var range1 = new Range(startRow, startCol,Number.MAX_VALUE,Number.MAX_VALUE);
 			var text=session.getTextRange(range1);
-			text=text.trim().replace("^("+value+")","").replace(value+"$","").trim();
-
-			text=text.replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim();
+			text=text.trim().replace("^("+value+")","").replace(value+"$","").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
+			text=text.replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 			if (text.length>2)
 			{
 				matches.push(text);
