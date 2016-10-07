@@ -61,10 +61,14 @@
 
 
 			var url = 'http://' + connection.host +
-				'/?query=' + encodeURIComponent(sql + ' ' + format ) +
-				'&user=' + connection.login +
-				'&password=' + connection.password +
-				'&add_http_cors_header=1';
+				'/?query=' + encodeURIComponent(sql + ' ' + format );
+			if (connection.login) {
+				url += '&user=' + connection.login;
+			}
+			if (connection.password) {
+				url += '&password=' + connection.password;
+			}
+			url += '&add_http_cors_header=1';
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
