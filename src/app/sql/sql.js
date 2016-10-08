@@ -1,13 +1,12 @@
-
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
-global_keywords_fields='bazbaz|pipi';
-global_keywords_tables="";
+global_keywords_fields = 'bazbaz|pipi';
+global_keywords_tables = "";
 
 (function(angular, smi2) {
 	'use strict';
 
 	angular.module(smi2.app.name).controller('SqlController', SqlController);
-	SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService','API'];
+	SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API'];
 
 	/**
 	 * @ngdoc controller
@@ -62,10 +61,10 @@ global_keywords_tables="";
 			link: 'sql',
 			text: 'SQL'
 		}];
-        //
+
 		// Предотвращаю потерю SQL данных при закрытии окна
 		$window.onbeforeunload = function(event) {
-			if ($scope.vars.sql !== '') {
+			if ($scope.vars.sql !== '' && location.hostname != 'localhost') {
 				var message = 'Хотите покинуть страницу?';
 				if (typeof event == 'undefined') {
 					event = window.event;
@@ -88,49 +87,63 @@ global_keywords_tables="";
 
 		// Деструктор контроллера
 		$scope.$on('$destroy', function() {
-			console.log('$destroy');
 			clearRouterListener();
 			$window.onbeforeunload = null;
 		});
-		$scope.execute_query = function(sql,numquery,_format,_keyword){
-			console.log('execute:'+numquery+' : '+_keyword+"\n"+sql);
+
+		$scope.executeQuery = function(query, queue) {// sql, numquery, _format, _keyword) {
 
 			// содержит дополнительные GET параметры для выполнения запрос
-			var extendSettings='';
+			var extendSettings = '';
+
 			// если указан limitRows
-			if ($scope.vars.limitRows)
-			{
-				extendSettings+='max_result_rows='+$scope.vars.limitRows+'&result_overflow_mode=throw';
+			if ($scope.vars.limitRows) {
+				extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
 			}
 
-			var statistics=null;
-			var sqlData=null;
-			var format=' FORMAT JSON';
+			var statistics = null;
+			var sqlData = null;
+			var format = ' FORMAT JSON';
 
-			if (_format) format='null';
-			if (_keyword!=='select') format='null';
+			if (query.format) format = 'null';
+			if (query.keyword !== 'select') format = 'null';
 
-			API.query(sql, format ,true, extendSettings).then(function(data) {
+			API.query(query.sql, format, true, extendSettings).then(function(data) {
 				statistics = data.statistics;
 				if ($scope.vars.format.name == $scope.vars.formats[0].name) {
 					sqlData = API.dataToHtml(angular.fromJson(data));
-				}
-				else
-				{
+				} else {
 					sqlData = '<pre class="fs-caption">' + angular.toJson(data, true) + '</pre>';
 				}
-				$scope.vars.results[numquery]={statistics:statistics,sqlData:sqlData};
+				$scope.vars.results.push({
+					statistics: statistics,
+					sqlData: sqlData
+				});
+
+				// Рекурсивный вызов executeQuery если в очереди
+				// еще остались элементы
+				if ((query.index+1) < queue.length) {
+					$scope.executeQuery(queue[query.index+1], queue);
+				}
+
 			}, function(response) {
 				LxNotificationService.error('Ошибка');
 				statistics = null;
-				if (response.data){
+				if (response.data) {
 					sqlData = '<pre class="fs-caption tc-red-700">' + angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '') + '</pre>';
+				} else {
+					sqlData = '<pre class="fs-caption tc-red-700">' + response + '</pre>';
 				}
-				else
-				{
-					sqlData = '<pre class="fs-caption tc-red-700">'+response+ '</pre>';
+				$scope.vars.results.push({
+					statistics: statistics,
+					sqlData: sqlData
+				});
+
+				// Рекурсивный вызов executeQuery если в очереди
+				// еще остались элементы
+				if ((query.index+1) < queue.length) {
+					$scope.executeQuery(queue[query.index+1], queue);
 				}
-				$scope.vars.results[numquery]={statistics:statistics,sqlData:sqlData};
 			});
 		};
 
@@ -140,47 +153,58 @@ global_keywords_tables="";
 		 * @name run
 		 * @description Выполнение запроса
 		 */
-		$scope.run = function(){
+		$scope.run = function() {
 
-
-			var sql=$scope.vars.sql;
+			var sql = $scope.vars.sql;
+			var numquery = 0;
 
 			// получаем выделенный текст, и если выделено - ранаем выделение
-			var selectsql=$scope.vars.editor.getSelectedText();
+			var selectsql = $scope.vars.editor.getSelectedText();
 			if (!(selectsql === '' || selectsql === null)) {
 				sql = selectsql;
 			}
 
+			// Выход если пустой sql
 			if (sql === '' || sql === null) {
 				LxNotificationService.warning('Не введен SQL');
 				return;
 			}
 
+			$scope.vars.results = [];
+			var queue = [];
 
-			var sql_list=$scope.vars.editor.session.$mode.splitByTokens(sql,'constant.character.escape',';;');
+			// Разбивка SQL на подзапросы по ;;
+			var sqlList = $scope.vars.editor.session.$mode.splitByTokens(sql, 'constant.character.escape', ';;');
 
-			$scope.vars.results=[];
-			var numquery=0;
-			sql_list.forEach(function(q)
-			{
+			// Цикл по подзапросам
+			sqlList.forEach(function(subSQL) {
+				var _format = null;
+				var _keyword = null;
+				var set_format = $scope.vars.editor.session.$mode.findTokens(sql, "storage", true);
+				var keyword = $scope.vars.editor.session.$mode.findTokens(sql, "keyword", true);
 
-				var _format=null;
-				var _keyword=null;
-				var set_format=$scope.vars.editor.session.$mode.findTokens(sql,"storage",true);
-				var keyword=$scope.vars.editor.session.$mode.findTokens(sql,"keyword",true);
-
-				if (set_format.hasOwnProperty('value'))
-				{
-					_format=set_format.value;
+				if (set_format.hasOwnProperty('value')) {
+					_format = set_format.value;
 				}
-				if (keyword.hasOwnProperty('value'))
-				{
-					_keyword=keyword.value;
+
+				if (keyword.hasOwnProperty('value')) {
+					_keyword = keyword.value;
 				}
-				$scope.vars.results.push({statistics:null,sqlData:null,query:q});
-				$scope.execute_query(q,numquery,_format,_keyword);
+
+				// Создание очереди
+				queue.push({
+					sql: subSQL,
+					index: numquery,
+					format: _format,
+					keyword: _keyword
+				});
+
 				numquery++;
-			});//forEach
+			});
+
+			$scope.executeQuery(queue[0], queue);
+
+			console.log($scope.vars.results);
 
 			// В историю только успешные запросы, ошибки будут засорять
 			if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
@@ -192,7 +216,14 @@ global_keywords_tables="";
 			}
 		};
 
-		$scope.setTheme = function (theme) {
+		/**
+		 * @ngdoc method
+		 * @methodOf smi2.controller:SqlController
+		 * @name setTheme
+		 * @description Изменениие темы ACE
+		 * @param theme {string} Название темы
+		 */
+		$scope.setTheme = function(theme) {
 			$scope.vars.theme = theme;
 			$scope.vars.editor.setTheme('ace/theme/' + theme);
 			localStorageService.set('editorTheme', theme);
@@ -210,12 +241,14 @@ global_keywords_tables="";
 
 
 		$scope.selectDatabase = function(db) {
-			$scope.vars.db=db;
+			$scope.vars.db = db;
 
-			API.query("SELECT table,name,type FROM system.columns WHERE database=\'"+db+"\'", $scope.vars.format.sql, true).then(function(data) {
+			API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", $scope.vars.format.sql, true).then(function(data) {
 
-				var fields=[],ufields = {};
-				var tables=[],utables = {};
+				var fields = [],
+					ufields = {};
+				var tables = [],
+					utables = {};
 				var keys = [];
 				data.meta.forEach(function(cell) {
 					keys.push(cell.name);
@@ -223,20 +256,24 @@ global_keywords_tables="";
 				data.data.forEach(function(row) {
 					keys.forEach(function(key) {
 
-						if (key=='table')
-						{
-							if(!utables.hasOwnProperty(row[key])) { utables[row[key]] = 1; tables.push(row[key]); }
+						if (key == 'table') {
+							if (!utables.hasOwnProperty(row[key])) {
+								utables[row[key]] = 1;
+								tables.push(row[key]);
+							}
 						}
-						if (key=='name')
-						{
-							if(!ufields.hasOwnProperty(row[key])) { ufields[row[key]] = 1; fields.push(row[key]); }
+						if (key == 'name') {
+							if (!ufields.hasOwnProperty(row[key])) {
+								ufields[row[key]] = 1;
+								fields.push(row[key]);
+							}
 						}
 					});
 				});
 
-				global_keywords_fields=fields.join('|')+'|';
-				global_keywords_tables=tables.join('|')+'|'+db;
-					// reload highlights
+				global_keywords_fields = fields.join('|') + '|';
+				global_keywords_tables = tables.join('|') + '|' + db;
+				// reload highlights
 				$scope.vars.editor.session.setMode({
 					path: "ace/mode/clickhouse",
 					v: Date.now()
@@ -258,28 +295,25 @@ global_keywords_tables="";
 			// @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
 			editor.commands.addCommand({
 				name: 'myCommand',
-				bindKey: {win: 'Ctrl-Enter',  mac: 'Command-Enter'},
+				bindKey: {
+					win: 'Ctrl-Enter',
+					mac: 'Command-Enter'
+				},
 				exec: function() {
 					$scope.run();
 				}
 			});
 
 			$scope.vars.editor.clearSelection();
-			$scope.vars.sql=$scope.vars.sqlHistory[0]; // последний удачный запрос
-			// $scope.vars.sql="SELECT 'ABC' as a where a=';;'\n;;\nselect 'll' as ping\n;;\nselect 3 as ping;;select ';;' as ping where ping=';;'";
-			// $scope.vars.sql="SELECT 'ABC' as a where a='xx' FORMAT JSON\n;;";
 
 			// @todo : Повесить эвент и переиминовывать кнопку -"Выполнить"
 			// если выделенно To listen for an selection change:
-			editor.on('changeSelection', function () {
+			editor.on('changeSelection', function() {
 
-				if (editor.getSelectedText())
-				{
-					$scope.vars.button_run='Выполнить выделенное ⌘ + ⏎';
-				}
-				else
-				{
-					$scope.vars.button_run= 'Выполнить ⌘ + ⏎';
+				if (editor.getSelectedText()) {
+					$scope.vars.button_run = 'Выполнить выделенное ⌘ + ⏎';
+				} else {
+					$scope.vars.button_run = 'Выполнить ⌘ + ⏎';
 				}
 				document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
 			});

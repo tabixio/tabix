@@ -76,8 +76,8 @@
 </div>
 
 <div class="card" ng-repeat="item in vars.results">
-    <div class="p+">
-        <div style="white-space: nowrap; float: right; line-height: 26px; color: #666;" class="fs-caption" ng-if="item.statistics">
+    <div class="p+" style="background: #f3f3f3">
+        <div style="white-space: nowrap; float: right; line-height: 0px; color: #666;" class="fs-caption" ng-if="item.statistics">
             время: <b>{{item.statistics.elapsed}}</b>,
             строк прочитано: <b>{{item.statistics.rows_read}}</b>,
             байт прочитано: <b>{{item.statistics.bytes_read}}</b>
