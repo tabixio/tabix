@@ -53,21 +53,61 @@
 		 * @param {string} sql Текст запроса
 		 * @return {promise} Promise
 		 */
-		this.query = function(sql, format, withDatabase) {
+		this.query = function(sql, format, withDatabase,extend_settings) {
 			var defer = $q.defer();
+
+			format = (format || ' FORMAT JSON');
+			if (format=='null')  format='';
+			var q=sql + ' ' + format;
+
+
 			var url = 'http://' + connection.host +
-				'/?query=' + encodeURIComponent(sql + (format || ' format JSON')) +
-				'&user=' + connection.login +
-				'&password=' + connection.password +
-				'&add_http_cors_header=1';
+				'/?query=' + encodeURIComponent(q );
+			if (connection.login) {
+				url += '&user=' + connection.login;
+			}
+			if (connection.password) {
+				url += '&password=' + connection.password;
+			}
+			url += '&add_http_cors_header=1';
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
-			$http.get(url).then(function (response) {
-				defer.resolve(response.data);
-			}, function(response) {
-				defer.reject(response.data);
-			});
+			if (extend_settings)
+			{
+				url += '&'+extend_settings;
+
+			}
+			console.warn(q );
+
+			var req = {
+				method: 'GET',
+				url: url,
+				transformResponse: function(data, header,status) {
+					try
+					{
+						return angular.fromJson(data);
+					}
+					catch (err) {
+						return data+"\nStatus:"+status+"\nHeaders:"+angular.toJson(header());
+					}
+				}
+			};
+
+			if (format) {
+				$http(req).then(function (response) {
+					defer.resolve(response.data);
+				}, function (response) {
+					defer.reject(response.data);
+				});
+			}
+			else {
+				$http.post(url).then(function (response) {
+					defer.resolve(response.data);
+				}, function (response) {
+					defer.reject(response);
+				});
+			}
 			return defer.promise;
 		};
 
@@ -93,6 +133,10 @@
 			database = db;
 		};
 
+		this.getDatabase = function () {
+			return database;
+		};
+
 		/**
 		 * @ngdoc method
 		 * @methodOf smi2.service:API
@@ -102,7 +146,7 @@
 		 * @return {string} Строка HTML
 		 */
 		this.dataToHtml = function(data) {
-			console.log(data);
+
 			var html = '<table class="sql-table fs-body-1"><tr>';
 			var keys = [];
 			data.meta.forEach(function(cell) {
