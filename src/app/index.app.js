@@ -14,7 +14,8 @@
 		'lumx',
 		'angularScreenfull',
 		'ui.ace',
-		'ui.grid'
+		'ui.grid',
+		'ui.grid.autoResize'
 
 	]);
 })();

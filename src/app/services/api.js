@@ -172,17 +172,46 @@
 
 
 		this.dataToUIGrid = function (data) {
+
+			var columnDefs=[];
+			data.meta.forEach(function(cell) {
+				columnDefs.push(
+					//  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
+					{ field: cell.name, minWidth: 100, enableColumnResizing: true , headerTooltip: cell.type }
+				);
+			});
+
+			return {
+				enableSorting: true,
+				enableFiltering: true,
+				enableColumnResizing : true,
+				columnDefs:columnDefs,
+				enableGridMenu: true,
+				enableSelectAll: true,
+				showGridFooter: true,
+				showColumnFooter: true,
+
+
+				data:data.data,
+
+			};
+			//gridMenuCustomItems: [
+			//	{
+			//		title: 'Rotate Grid',
+			//		action: function ($event) {
+			//			this.grid.element.toggleClass('rotated');
+			//		},
+			//		order: 210
+			//	}
+			//],
 			// http://ui-grid.info/docs/#/tutorial/117_tooltips
 			// gridOptions = {
-			// 	enableSorting: true,
 			// 	columnDefs: [
 			// 		{ field: 'name', minWidth: 200, width: 250, enableColumnResizing: false },
 			// 		{ field: 'gender', width: '30%', maxWidth: 200, minWidth: 70 },
 			// 		{ field: 'company', width: '20%' }
 			// 	]
 			// };
-			// enableGridMenu: true,
-			// 	enableSelectAll: true,
 			// 	exporterCsvFilename: 'myFile.csv',
 			// exporterPdfDefaultStyle: {fontSize: 9},
 			// exporterPdfTableStyle: {margin: [30, 30, 30, 30]},

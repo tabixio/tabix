@@ -1,3 +1,7 @@
+
+<div ui-grid-auto-resize ng-if="vars.grid !== null && vars.grid" ui-grid="vars.grid" class="myGrid"></div>
+
+
 <div class="pl+ pt+ pb+ pr fs-title">
     <div class="float-right" style="margin-top: -5px">
         <lx-button lx-size="l" lx-color="black" lx-type="icon" ng-click="loadPrev()" ng-disabled="vars.offset === 0">
@@ -14,4 +18,3 @@
     <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.data == -1"></lx-progress>
     <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
 </div>
-<div ng-if="grid !== null" ui-grid="vars.grid" class="myGrid"></div>
