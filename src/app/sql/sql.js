@@ -50,10 +50,7 @@ global_keywords_tables = "";
             'dreamweaver', 'merbivore_soft', 'tomorrow'
         ];
 
-        $rootScope.breadcrumbs = [{
-            link: 'sql',
-            text: 'SQL'
-        }];
+        $rootScope.breadcrumbs = false;
 
         // Предотвращаю потерю SQL данных при закрытии окна
         $window.onbeforeunload = function (event) {
