@@ -140,6 +140,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 
 		addCompletions(builtinFunctions.split('|'), 'function');
 		addCompletions(keywords.split('|'), 'keyword');
+		addCompletions("FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
 		addCompletions(global_keywords_tables.split('|'), 'storage');
 		addCompletions(global_keywords_fields.split('|'), 'storage');

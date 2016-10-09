@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<div class="card" ng-repeat="item in vars.results">
+<div class="card" ng-repeat="item in vars.resultsQuery">
     <div class="p+" style="background: #f3f3f3">
         <div style="white-space: nowrap; float: right; line-height: 0px; color: #666;" class="fs-caption" ng-if="item.statistics">
             время: <b>{{item.statistics.elapsed}}</b>,
@@ -84,7 +84,7 @@
         </div>
     </div>
     <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
-        <span ng-if="item.sqlData === null" class="fs-caption">нет данных</span>
-        <div ng-if="item.sqlData !== null" ng-bind-html="item.sqlData">x</div>
+        <span ng-if="item.result === null" class="fs-caption">нет данных</span>
+        <div ng-if="item.result !== null" ng-bind-html="item.result">x</div>
     </div>
 </div>
