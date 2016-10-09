@@ -81,6 +81,15 @@ global_keywords_tables = "";
             $window.onbeforeunload = null;
         });
 
+        // Initially, do not go into full screen
+        $scope.isFullscreen = false;
+
+        $scope.toggleFullScreen = function() {
+            $scope.isFullscreen = !$scope.isFullscreen;
+        };
+
+
+
         $scope.executeQuery = function (query, queue, callback) {// sql, numquery, _format, _keyword) {
 
             // содержит дополнительные GET параметры для выполнения запрос

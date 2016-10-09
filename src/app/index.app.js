@@ -12,6 +12,7 @@
 		'ui.router',
 		'LocalStorageModule',
 		'lumx',
+		'angularScreenfull',
 		'ui.ace'
 	]);
 })();
