@@ -14,3 +14,4 @@
     <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.data == -1"></lx-progress>
     <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
 </div>
+<div ng-if="grid !== null" ui-grid="vars.grid" class="myGrid"></div>

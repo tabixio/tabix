@@ -13,6 +13,8 @@
 		'LocalStorageModule',
 		'lumx',
 		'angularScreenfull',
-		'ui.ace'
+		'ui.ace',
+		'ui.grid'
+
 	]);
 })();

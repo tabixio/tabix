@@ -169,5 +169,40 @@
 			html += '</table>';
 			return html;
 		};
+
+
+		this.dataToUIGrid = function (data) {
+			// http://ui-grid.info/docs/#/tutorial/117_tooltips
+			// gridOptions = {
+			// 	enableSorting: true,
+			// 	columnDefs: [
+			// 		{ field: 'name', minWidth: 200, width: 250, enableColumnResizing: false },
+			// 		{ field: 'gender', width: '30%', maxWidth: 200, minWidth: 70 },
+			// 		{ field: 'company', width: '20%' }
+			// 	]
+			// };
+			// enableGridMenu: true,
+			// 	enableSelectAll: true,
+			// 	exporterCsvFilename: 'myFile.csv',
+			// exporterPdfDefaultStyle: {fontSize: 9},
+			// exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+			// exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+			// exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+			// exporterPdfFooter: function ( currentPage, pageCount ) {
+			// 	return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+			// },
+			// { field: 'name', cellTooltip: 'Custom string', headerTooltip: 'Custom header string' },
+			// { field: 'company', cellTooltip:
+			// 	function( row, col ) {
+			// 		return 'Name: ' + row.entity.name + ' Company: ' + row.entity.company;
+			// 	}, headerTooltip:
+			// 	function( col ) {
+			// 		return 'Header: ' + col.displayName;
+			// 	}
+			// },
+			// { field: 'gender', cellTooltip: true, headerTooltip: true, cellFilter: 'mapGender' },
+			// ],
+
+		}
 	}
 })(angular, smi2);
