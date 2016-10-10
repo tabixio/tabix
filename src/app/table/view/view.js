@@ -34,8 +34,8 @@
             $scope.vars.data = -1;
             API.query('select * from ' + $stateParams.dbName + '.' + $stateParams.tableName + ' limit ' + $scope.vars.offset + ', ' + $scope.vars.limit).then(function (data) {
                 $scope.vars.data = API.dataToHtml(data);
-                $scope.vars.grid = API.dataToUIGrid(data);
-console.warn($scope.vars.grid);
+                // $scope.vars.grid = API.dataToUIGrid(data);
+                // console.warn($scope.vars.grid);
 
             }, function (response) {
                 LxNotificationService.error('Ошибка ' + response);
