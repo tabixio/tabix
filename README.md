@@ -15,6 +15,49 @@
 * Разрешенный IP адресс
 
 
+## Changelog 
+
+### 2016-10-10
+* Добавили поддержку FORMAT CSV|FORMAT CSVWithNames в запросе + подсветка + дополнение
+* В редакторе добавленна возможность максимальное кол-во строк в ответа
+* Развернуть в полный экран редактор запросов 
+* HotKey ⌘ + ⏎ для мак , выполнить запрос или выполнить выделенный запрос только 
+* История запросов, показывает последний успешный запрос при открытии GUI 
+* Анонимное подключение к базе без указания user+password  
+* Корректная подсветка и автодополние, теперь автодополнение содержит колонки и названия таблиц
+* Последовательное выполнение нескольких запросов которые разделены `;;`
+
+
+
+Пример тестового запроса: 
+```sql
+
+;;select 0 as ping;;
+select 1 as ping;;select 2 as ping
+;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;
+SELECT 5 As PING format JSON;;select 6 as ping
+;;select 7 as ping FORMAT CSVWithNames
+;;CREATE TABLE IF NOT EXISTS t (a UInt8,b String) ENGINE = Log;;
+INSERT INTO t SELECT toUInt8(123) as a,';;' as b  
+;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;
+
+```
+![](https://api.monosnap.com/rpc/file/download?id=ky5h5tQoubjbZa01N8FV08qVxqD8xa)
+
+
+### Roadmap
+
+* Hotkey for Windows, справочник или help 
+* Отрисовка ответа после create/drop/insert
+* Правки подсветки IF EXISTS + IF NOT EXISTS
+* Выполнение запроса "под курсором"  
+* Автодополнение, поддержка словарей
+* Размер таблицы и SHOW CREATE TABLE по каждой таблицы
+* Изменить Grid, возможно добавить pivot таблицы
+
+
+# Dev
+
 ## Зависимости
 Необходимо установить
 * NodeJS >= 5.x.
