@@ -48,13 +48,14 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 ### Roadmap
 
 * Hotkey for Windows, справочник или help 
-* Отрисовка ответа после create/drop/insert
+* Отрисовка ответа после create/drop/insert + обновление автодополнения
 * Правки подсветки IF EXISTS + IF NOT EXISTS
 * Выполнение запроса "под курсором"  
 * Автодополнение, поддержка словарей
-* Размер таблицы и SHOW CREATE TABLE по каждой таблицы
-* Изменить Grid, возможно добавить pivot таблицы
-
+* Размер таблицы и SHOW CREATE TABLE по каждой таблицы, в виде tabs, как в sequelpro
+* Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
+* Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
+* Добавлять в историю запросов которых там раньше не было
 
 # Dev
 
