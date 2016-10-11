@@ -87,7 +87,7 @@
 			console.info(q );
 
 			var req = {
-				method: 'GET',
+				method: (format?'GET':'POST'), // if not set format use POST
 				url: url,
 				transformResponse: function(data, header,status) {
 					try
@@ -95,25 +95,16 @@
 						return angular.fromJson(data);
 					}
 					catch (err) {
-						return data+"\nStatus:"+status+"\nHeaders:"+angular.toJson(header());
+						return (data?data:"\nStatus:"+status+"\nHeaders:"+angular.toJson(header()));
 					}
 				}
 			};
 
-			if (format) {
-				$http(req).then(function (response) {
-					defer.resolve(response.data);
-				}, function (response) {
-					defer.reject(response.data);
-				});
-			}
-			else {
-				$http.post(url).then(function (response) {
-					defer.resolve(response.data);
-				}, function (response) {
-					defer.reject(response);
-				});
-			}
+			$http(req).then(function (response) {
+				defer.resolve(response.data);
+			}, function (response) {
+				defer.reject(response.data);
+			});
 			return defer.promise;
 		};
 
@@ -190,10 +181,7 @@
 				enableSelectAll: true,
 				showGridFooter: true,
 				showColumnFooter: true,
-
-
 				data:data.data,
-
 			};
 			//gridMenuCustomItems: [
 			//	{

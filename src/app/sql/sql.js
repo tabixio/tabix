@@ -178,8 +178,16 @@ global_keywords_tables = "";
             return data;
         };
         $scope.renderFinalResult = function () {
-            // console.warn('--------renderResult-----------');//
-            // console.warn($scope.vars.resultsQuery);//
+            var keywords='';
+            $scope.vars.resultsQuery.forEach(function (q) {
+                keywords+=q.query.keyword+"|";
+            });//for
+
+            if(keywords.toUpperCase().match(/(DROP|CREATE|ALTER)/g)){
+                // reload
+                $scope.selectDatabase($scope.vars.db);
+            }
+
         };
         /**
          * @ngdoc method
@@ -318,7 +326,6 @@ global_keywords_tables = "";
                     v: Date.now()
                 });
                 $scope.vars.editor.session.bgTokenizer.start(0); // force rehighlight whole document
-
             });
 
         };
@@ -372,7 +379,7 @@ global_keywords_tables = "";
                 $scope.vars.sql = $scope.vars.sqlHistory[0]; // последний удачный запрос
             }
             else {
-                $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames";
+                $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames\n\n;;\nCREATE TABLE IF NOT EXISTS t (a UInt8,b String) ENGINE = Log;;\nINSERT INTO t SELECT toUInt8(123) as a,';;' as b\n\n;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;";
             }
 
         };
