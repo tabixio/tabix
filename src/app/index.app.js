@@ -3,7 +3,8 @@
 
 	var smi2 = window.smi2 = window.smi2 || {};
 	smi2.app = {
-		name: 'SMI2'
+		name: 'SMI2',
+		build: '16.10.10'
 	};
 
 	// Подключение сторонних библиотек

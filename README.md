@@ -15,7 +15,26 @@
 * Разрешенный IP адресс
 
 
+
+### Roadmap
+
+* Hotkey справочник и/или help 
+* Выполнение запроса "под курсором"  
+* Размер таблицы и SHOW CREATE TABLE по каждой таблицы, в виде tabs, как в sequelpro
+* Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
+* Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
+* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
+
+
+
 ## Changelog 
+
+### 2016-10-11
+* Показ версии сборки
+* Автодополнение, поддержка словарей - отдельная кнопка вставить словать
+* Прогресс бар запросов
+* Правки подсветки IF EXISTS + IF NOT EXISTS
+* Отрисовка ответа после create/drop/insert + обновление автодополнения
 
 ### 2016-10-10
 * Добавили поддержку FORMAT CSV|FORMAT CSVWithNames в запросе + подсветка + дополнение
@@ -44,20 +63,6 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 ```
 ![](https://api.monosnap.com/rpc/file/download?id=ky5h5tQoubjbZa01N8FV08qVxqD8xa)
 
-
-### Roadmap
-
-* Hotkey for Windows, справочник или help 
-* Выполнение запроса "под курсором"  
-* Автодополнение, поддержка словарей
-* Размер таблицы и SHOW CREATE TABLE по каждой таблицы, в виде tabs, как в sequelpro
-* Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
-* Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
-* Добавлять в историю запросов которых там раньше не было
-
-done:
-* Правки подсветки IF EXISTS + IF NOT EXISTS
-* Отрисовка ответа после create/drop/insert + обновление автодополнения
 
 # Dev
 

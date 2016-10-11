@@ -20,6 +20,8 @@ global_keywords_tables = "";
             button_run: 'Выполнить ⌘ + ⏎',
             sqlHistory: localStorageService.get('sqlHistory') || [],
             format: {},
+            dictionaries:[],
+            finishQuery:true,
             resultsQuery: [],
             formats: [{
                 name: 'Таблица',
@@ -182,6 +184,7 @@ global_keywords_tables = "";
             $scope.vars.resultsQuery.forEach(function (q) {
                 keywords+=q.query.keyword+"|";
             });//for
+            $scope.vars.finishQuery=true;
 
             if(keywords.toUpperCase().match(/(DROP|CREATE|ALTER)/g)){
                 // reload
@@ -258,6 +261,7 @@ global_keywords_tables = "";
                 numquery++;
             });
 
+            $scope.vars.finishQuery=false;
             $scope.executeQuery(queue[0], queue);
 
 
@@ -290,7 +294,7 @@ global_keywords_tables = "";
         $scope.selectDatabase = function (db) {
             $scope.vars.db = db;
 
-            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", $scope.vars.format.sql, true).then(function (data) {
+            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'",null).then(function (data) {
 
                 var fields = [],
                     ufields = {};
@@ -330,6 +334,21 @@ global_keywords_tables = "";
 
         };
 
+        $scope.addDictionariesWord = function (word) {
+            $scope.vars.editor.insert(word);
+        };
+        $scope.loadDictionaries = function () {
+            $scope.vars.dictionaries=[];
+            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute", null).then(function (data) {
+                data.data.forEach(function (item) {
+                    // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
+                    var dic='dictGet'+item["attribute.types"]+'(\''+item.name+'\',\''+item["attribute.names"]+'\',to'+item.key+'( ID ) ) AS '+item.name.replace(/\./,'_')+'_'+item["attribute.names"]+',';
+
+                    $scope.vars.dictionaries.push(dic);
+                })
+
+            });
+        };
         $scope.aceLoaded = function (editor) {
             $scope.vars.editor = editor;
             editor.setOptions({
@@ -381,6 +400,7 @@ global_keywords_tables = "";
             else {
                 $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames\n\n;;\nCREATE TABLE IF NOT EXISTS t (a UInt8,b String) ENGINE = Log;;\nINSERT INTO t SELECT toUInt8(123) as a,';;' as b\n\n;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;";
             }
+            $scope.loadDictionaries();
 
         };
 

@@ -17,7 +17,8 @@
 		$scope.vars = {
 			bases: localStorageService.get(ALL_BASES_KEY) || [],
 			db: {},
-			error: false
+			error: false,
+			build:smi2.app.build
 		};
 
 		/**
