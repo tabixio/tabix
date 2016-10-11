@@ -68,7 +68,7 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 
 ## Зависимости
 Необходимо установить
-* NodeJS >= 5.x.
+* NodeJS >= 5.x. ( лучше v6.7.0 )
 
 Установить глобальные NPM пакеты Gulp и Bower, загрузить зависимости:
 <pre>
