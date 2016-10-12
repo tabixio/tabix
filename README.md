@@ -18,10 +18,8 @@
 
 ### Roadmap
 
-* Сортировка словарей по name
-* Запрос на create_table из select
-* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 
+* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 * Hotkey справочник и/или help 
 * SHOW CREATE TABLE 
 * Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
@@ -34,6 +32,8 @@
 ## Changelog 
 
 ### 2016-10-12
+* Запрос на create_table из select , если запрос содержит таблицу ответа 
+* Сортировка словарей по name + удобное отображение
 * Выполнение запроса "под курсором"  
 * Shift-Ctrl-Enter | Shift-Command-Enter - запустить все запросы разделенные ;; или выделенный 
 * Ctrl-Enter | Command-Enter - запускает текущий или выделенный 

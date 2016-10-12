@@ -181,6 +181,7 @@ global_keywords_tables = "";
             }
             else {
                 data.result = API.dataToHtml(data);
+                data.createtable=API.dataToCreateTable(data);
             }
             data.data = false;
             return data;
@@ -248,7 +249,7 @@ global_keywords_tables = "";
                     }
                     else
                     {
-
+                        console.log('sckip'+subSQL);
                         return;
                     }
                 }
@@ -291,8 +292,7 @@ global_keywords_tables = "";
             });
 
 
-console.log(queue);
-console.log(queue.length);
+            console.log(queue.length);
             if (queue.length)
             {
                 $scope.vars.finishQuery = false;
@@ -369,17 +369,19 @@ console.log(queue.length);
         };
 
         $scope.addDictionariesWord = function (word) {
+            $scope.vars.editor.clearSelection();
             $scope.vars.editor.insert(word);
+            $scope.vars.sql=$scope.vars.editor.getValue()
         };
 
         $scope.loadDictionaries = function () {
             $scope.vars.dictionaries = [];
-            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute", null).then(function (data) {
+            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then(function (data) {
                 data.data.forEach(function (item) {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
                     var dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item.name.replace(/\./, '_') + '_' + item["attribute.names"] + ',';
 
-                    $scope.vars.dictionaries.push(dic);
+                    $scope.vars.dictionaries.push({dic:dic,title:item.name+'.'+item["attribute.names"]+' as '+item["attribute.types"] });
                 });
             });
         };

@@ -98,7 +98,7 @@
             <lx-dropdown-menu>
                 <ul>
                     <li ng-repeat="item in vars.dictionaries">
-                        <a class="dropdown-link" ng-click="addDictionariesWord(item)">{{item}}</a>
+                        <a class="dropdown-link" ng-click="addDictionariesWord(item.dic)">{{item.title}}</a>
                     </li>
                 </ul>
             </lx-dropdown-menu>
@@ -109,9 +109,12 @@
 <div class="card" ng-repeat="item in vars.resultsQuery" style="background: #EEEEEE">
     <div class="p+" style="background: #EEEEEE">
         <div style="white-space: nowrap; float: right; line-height: 0px; color: #666;" class="fs-caption" ng-if="item.statistics">
-            время: <b>{{item.statistics.elapsed}}</b>,
-            строк прочитано: <b>{{item.statistics.rows_read}}</b>,
-            байт прочитано: <b>{{item.statistics.bytes_read}}</b>
+
+            <i class="mdi mdi-table-large" ng-if="item.createtable" ng-click="addDictionariesWord(item.createtable)"></i>
+
+            время: <b>{{item.statistics.elapsed | number:3}}</b>,
+            строк прочитано: <b>{{item.statistics.rows_read  | number}}</b>,
+            прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
         </div>
     </div>
     <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;background: #fafafa">

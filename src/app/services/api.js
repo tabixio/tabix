@@ -130,6 +130,15 @@
 			return database;
 		};
 
+		this.dataToCreateTable = function(data) {
+			var q = "\n"+'CREATE TABLE x ('+"\n";
+			var keys = [];
+			data.meta.forEach(function(cell) {
+				keys.push("\t" + cell.name + " "+ cell.type );
+			});
+
+			return q+keys.join(",\n")+"\n ) ENGINE = Log \n;;\n";
+		};
 		/**
 		 * @ngdoc method
 		 * @methodOf smi2.service:API
@@ -138,6 +147,7 @@
 		 * @param {mixed} data Объект, который содержит ответ БД
 		 * @return {string} Строка HTML
 		 */
+
 		this.dataToHtml = function(data) {
 
 			var html = '<table class="sql-table fs-body-1"><tr>';
