@@ -51,10 +51,12 @@ global_keywords_tables = "";
             'dawn', 'merbivore', 'textmate',
             'dreamweaver', 'merbivore_soft', 'tomorrow'
         ];
-
         $rootScope.breadcrumbs = false;
+        $scope.isFullscreen = false;
 
-        // Предотвращаю потерю SQL данных при закрытии окна
+        /**
+         * Предотвращаю потерю SQL данных при закрытии окна
+         */
         $window.onbeforeunload = function (event) {
             if ($scope.vars.sql !== '' && location.hostname != 'localhost') {
                 var message = 'Хотите покинуть страницу?';
@@ -68,8 +70,9 @@ global_keywords_tables = "";
             }
         };
 
-
-        // Предотвращаю потерю SQL данных при смене стейта
+        /**
+         * Предотвращаю потерю SQL данных при смене стейта
+         */
         var clearRouterListener = $scope.$on('$stateChangeStart', function (event) {
             var message = 'Хотите покинуть страницу?';
             if (!event.defaultPrevented && $scope.vars.sql !== '' && !confirm(message)) {
@@ -77,22 +80,32 @@ global_keywords_tables = "";
             }
         });
 
-        // Деструктор контроллера
+        /**
+         * Деструктор контроллера
+         */
         $scope.$on('$destroy', function () {
             clearRouterListener();
             $window.onbeforeunload = null;
         });
 
-        // Initially, do not go into full screen
-        $scope.isFullscreen = false;
-
+        /**
+         * @ngdoc method
+         * @methodOf smi2.controller:SqlController
+         * @name toggleFullScreen
+         * @description Переключение полноэкранного режима
+         */
         $scope.toggleFullScreen = function() {
             $scope.isFullscreen = !$scope.isFullscreen;
         };
 
-
-
-        $scope.executeQuery = function (query, queue, callback) {// sql, numquery, _format, _keyword) {
+        /**
+         * @ngdoc method
+         * @methodOf smi2.controller:SqlController
+         * @name executeQuery
+         * @description Выполненеие одного SQL запроса
+         * @param {} query
+         */
+        $scope.executeQuery = function (query, queue, callback) {
 
             // содержит дополнительные GET параметры для выполнения запрос
             var extendSettings = '';
@@ -102,19 +115,19 @@ global_keywords_tables = "";
                 extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
             }
 
-
             API.query(query.sql, query.format, true, extendSettings).then(function (data) {
 
+                var r = data;
+
                 if (typeof data !== 'object') {
-                    var r = data;
-                    var data = {};
-                    data['data'] = r;
-                    data['meta'] = null;
-                    data['rows'] = null;
-                    data['statistics'] = null;
+                    data = {};
+                    data.data = r;
+                    data.meta = null;
+                    data.rows = null;
+                    data.statistics = null;
                 }
-                data['error'] = false;
-                data['query'] = query;
+                data.error = false;
+                data.query = query;
                 $scope.vars.resultsQuery.push($scope.renderResult(data));
 
                 // Рекурсивный вызов executeQuery если в очереди
@@ -138,32 +151,25 @@ global_keywords_tables = "";
             }, function (response) {
                 LxNotificationService.error('Ошибка');
                 var result = {};
-                result['meta'] = null;
-                result['rows'] = null;
-                result['query'] = query;
-                result['statistics'] = null;
+                result.meta = null;
+                result.rows = null;
+                result.query = query;
+                result.statistics = null;
 
                 if (response.data) {
-                    result['error'] = angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '')
+                    result.error = angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '');
                 } else {
-                    result['error'] = response;
+                    result.error = response;
                 }
                 $scope.vars.resultsQuery.push($scope.renderResult(result));
 
                 $scope.renderFinalResult();
-
-                // Рекурсивный вызов executeQuery если в очереди
-                // еще остались элементы
-                // if error need stop
-                // if ((query.index+1) < queue.length) {
-                // 	$scope.executeQuery(queue[query.index+1], queue);
-                // }
             });
         };
-        $scope.renderResult = function (data) {
 
+        $scope.renderResult = function (data) {
             if (typeof data.error == 'string') {
-                data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>'
+                data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
             }
             else if (typeof data.data !== 'object') {
                 if (typeof data.data !== 'string') {
@@ -179,6 +185,7 @@ global_keywords_tables = "";
             data.data = false;
             return data;
         };
+
         $scope.renderFinalResult = function () {
             var keywords='';
             $scope.vars.resultsQuery.forEach(function (q) {
@@ -192,6 +199,7 @@ global_keywords_tables = "";
             }
 
         };
+
         /**
          * @ngdoc method
          * @methodOf smi2.controller:SqlController
@@ -337,6 +345,7 @@ global_keywords_tables = "";
         $scope.addDictionariesWord = function (word) {
             $scope.vars.editor.insert(word);
         };
+
         $scope.loadDictionaries = function () {
             $scope.vars.dictionaries=[];
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute", null).then(function (data) {
@@ -345,8 +354,7 @@ global_keywords_tables = "";
                     var dic='dictGet'+item["attribute.types"]+'(\''+item.name+'\',\''+item["attribute.names"]+'\',to'+item.key+'( ID ) ) AS '+item.name.replace(/\./,'_')+'_'+item["attribute.names"]+',';
 
                     $scope.vars.dictionaries.push(dic);
-                })
-
+                });
             });
         };
         $scope.aceLoaded = function (editor) {
@@ -398,7 +406,7 @@ global_keywords_tables = "";
                 $scope.vars.sql = $scope.vars.sqlHistory[0]; // последний удачный запрос
             }
             else {
-                $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames\n\n;;\nCREATE TABLE IF NOT EXISTS t (a UInt8,b String) ENGINE = Log;;\nINSERT INTO t SELECT toUInt8(123) as a,';;' as b\n\n;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;";
+                $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames";
             }
             $scope.loadDictionaries();
 
