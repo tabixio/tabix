@@ -21,9 +21,9 @@
 * Сортировка словарей по name
 * Запрос на create_table из select
 * Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
-* Выполнение запроса "под курсором"  
+
 * Hotkey справочник и/или help 
-* Размер таблицы и SHOW CREATE TABLE по каждой таблицы, в виде tabs, как в sequelpro
+* SHOW CREATE TABLE 
 * Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
 * Выбор разделителя `;;` или `;`
@@ -32,6 +32,15 @@
 
 
 ## Changelog 
+
+### 2016-10-12
+* Выполнение запроса "под курсором"  
+* Shift-Ctrl-Enter | Shift-Command-Enter - запустить все запросы разделенные ;; или выделенный 
+* Ctrl-Enter | Command-Enter - запускает текущий или выделенный 
+* Размер таблицы 
+* Исправлена загрузка шрифтов. 
+* Вынесен screenfull из html в зависимости
+* Изменения в шаблоне lumX
 
 ### 2016-10-11
 * Показ версии сборки
