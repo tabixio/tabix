@@ -18,12 +18,15 @@
 
 ### Roadmap
 
-* Hotkey справочник и/или help 
+* Запрос на create_table из select
+* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 * Выполнение запроса "под курсором"  
+* Hotkey справочник и/или help 
 * Размер таблицы и SHOW CREATE TABLE по каждой таблицы, в виде tabs, как в sequelpro
 * Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
-* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
+* Выбор разделителя `;;` или `;`
+
 
 
 
