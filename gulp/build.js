@@ -119,7 +119,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('cname', function() {
-    return gulp.src('./CNAME').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
+    return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
 gulp.task('build', ['html', 'fonts', 'other', 'cname']);
