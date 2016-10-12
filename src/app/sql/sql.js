@@ -423,7 +423,7 @@ console.log(queue.length);
                 if (editor.getSelectedText()) {
                     $scope.vars.button_run = 'Выполнить выделенное ⌘ + ⏎';
                 } else {
-                    $scope.vars.button_run = 'Выполнить ⌘ + ⏎';
+                    $scope.vars.button_run = 'Выполнить все ⇧ + ⌘ + ⏎';
                 }
                 document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
             });
