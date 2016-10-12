@@ -18,6 +18,7 @@
 
 ### Roadmap
 
+* Сортировка словарей по name
 * Запрос на create_table из select
 * Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 * Выполнение запроса "под курсором"  
