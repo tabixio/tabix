@@ -249,7 +249,6 @@ global_keywords_tables = "";
                     }
                     else
                     {
-                        console.log('sckip'+subSQL);
                         return;
                     }
                 }
@@ -291,8 +290,6 @@ global_keywords_tables = "";
                 numquery++;
             });
 
-
-            console.log(queue.length);
             if (queue.length)
             {
                 $scope.vars.finishQuery = false;
