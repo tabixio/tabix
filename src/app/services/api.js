@@ -55,20 +55,19 @@
 		 */
 		this.query = function(sql, format, withDatabase,extend_settings) {
 			var defer = $q.defer();
+			var query = '';
 
-
-			if (format!==false)
-			{
+			if (format !== false) {
 				format = (format || ' FoRmAt JSON');
-				if (format=='null')  format='';
-				var q=sql + ' ' + format;
-			}
-			else
-			{
-				var q = sql;
+				if (format == 'null') {
+					format = '';
+				}
+				query = sql + ' ' + format;
+			} else {
+				query = sql;
 			}
 			var url = 'http://' + connection.host +
-				'/?query=' + encodeURIComponent(q );
+				'/?query=' + encodeURIComponent(query);
 			if (connection.login) {
 				url += '&user=' + connection.login;
 			}
@@ -79,22 +78,17 @@
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
-			if (extend_settings)
-			{
+			if (extend_settings) {
 				url += '&'+extend_settings;
-
 			}
-			console.info(q );
 
 			var req = {
 				method: (format?'GET':'POST'), // if not set format use POST
 				url: url,
 				transformResponse: function(data, header,status) {
-					try
-					{
+					try {
 						return angular.fromJson(data);
-					}
-					catch (err) {
+					} catch (err) {
 						return (data?data:"\nStatus:"+status+"\nHeaders:"+angular.toJson(header()));
 					}
 				}
@@ -105,6 +99,7 @@
 			}, function (response) {
 				defer.reject(response.data);
 			});
+
 			return defer.promise;
 		};
 
@@ -183,43 +178,6 @@
 				showColumnFooter: true,
 				data:data.data,
 			};
-			//gridMenuCustomItems: [
-			//	{
-			//		title: 'Rotate Grid',
-			//		action: function ($event) {
-			//			this.grid.element.toggleClass('rotated');
-			//		},
-			//		order: 210
-			//	}
-			//],
-			// http://ui-grid.info/docs/#/tutorial/117_tooltips
-			// gridOptions = {
-			// 	columnDefs: [
-			// 		{ field: 'name', minWidth: 200, width: 250, enableColumnResizing: false },
-			// 		{ field: 'gender', width: '30%', maxWidth: 200, minWidth: 70 },
-			// 		{ field: 'company', width: '20%' }
-			// 	]
-			// };
-			// 	exporterCsvFilename: 'myFile.csv',
-			// exporterPdfDefaultStyle: {fontSize: 9},
-			// exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
-			// exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-			// exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
-			// exporterPdfFooter: function ( currentPage, pageCount ) {
-			// 	return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-			// },
-			// { field: 'name', cellTooltip: 'Custom string', headerTooltip: 'Custom header string' },
-			// { field: 'company', cellTooltip:
-			// 	function( row, col ) {
-			// 		return 'Name: ' + row.entity.name + ' Company: ' + row.entity.company;
-			// 	}, headerTooltip:
-			// 	function( col ) {
-			// 		return 'Header: ' + col.displayName;
-			// 	}
-			// },
-			// { field: 'gender', cellTooltip: true, headerTooltip: true, cellFilter: 'mapGender' },
-			// ],
-
-		}
+		};
 	}
 })(angular, smi2);
