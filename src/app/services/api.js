@@ -56,11 +56,17 @@
 		this.query = function(sql, format, withDatabase,extend_settings) {
 			var defer = $q.defer();
 
-			format = (format || ' FORMAT JSON');
-			if (format=='null')  format='';
-			var q=sql + ' ' + format;
 
-
+			if (format!==false)
+			{
+				format = (format || ' FoRmAt JSON');
+				if (format=='null')  format='';
+				var q=sql + ' ' + format;
+			}
+			else
+			{
+				var q = sql;
+			}
 			var url = 'http://' + connection.host +
 				'/?query=' + encodeURIComponent(q );
 			if (connection.login) {
@@ -78,10 +84,10 @@
 				url += '&'+extend_settings;
 
 			}
-			console.warn(q );
+			console.info(q );
 
 			var req = {
-				method: 'GET',
+				method: (format?'GET':'POST'), // if not set format use POST
 				url: url,
 				transformResponse: function(data, header,status) {
 					try
@@ -89,25 +95,16 @@
 						return angular.fromJson(data);
 					}
 					catch (err) {
-						return data+"\nStatus:"+status+"\nHeaders:"+angular.toJson(header());
+						return (data?data:"\nStatus:"+status+"\nHeaders:"+angular.toJson(header()));
 					}
 				}
 			};
 
-			if (format) {
-				$http(req).then(function (response) {
-					defer.resolve(response.data);
-				}, function (response) {
-					defer.reject(response.data);
-				});
-			}
-			else {
-				$http.post(url).then(function (response) {
-					defer.resolve(response.data);
-				}, function (response) {
-					defer.reject(response);
-				});
-			}
+			$http(req).then(function (response) {
+				defer.resolve(response.data);
+			}, function (response) {
+				defer.reject(response.data);
+			});
 			return defer.promise;
 		};
 
@@ -163,5 +160,66 @@
 			html += '</table>';
 			return html;
 		};
+
+
+		this.dataToUIGrid = function (data) {
+
+			var columnDefs=[];
+			data.meta.forEach(function(cell) {
+				columnDefs.push(
+					//  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
+					{ field: cell.name, minWidth: 100, enableColumnResizing: true , headerTooltip: cell.type }
+				);
+			});
+
+			return {
+				enableSorting: true,
+				enableFiltering: true,
+				enableColumnResizing : true,
+				columnDefs:columnDefs,
+				enableGridMenu: true,
+				enableSelectAll: true,
+				showGridFooter: true,
+				showColumnFooter: true,
+				data:data.data,
+			};
+			//gridMenuCustomItems: [
+			//	{
+			//		title: 'Rotate Grid',
+			//		action: function ($event) {
+			//			this.grid.element.toggleClass('rotated');
+			//		},
+			//		order: 210
+			//	}
+			//],
+			// http://ui-grid.info/docs/#/tutorial/117_tooltips
+			// gridOptions = {
+			// 	columnDefs: [
+			// 		{ field: 'name', minWidth: 200, width: 250, enableColumnResizing: false },
+			// 		{ field: 'gender', width: '30%', maxWidth: 200, minWidth: 70 },
+			// 		{ field: 'company', width: '20%' }
+			// 	]
+			// };
+			// 	exporterCsvFilename: 'myFile.csv',
+			// exporterPdfDefaultStyle: {fontSize: 9},
+			// exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+			// exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+			// exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+			// exporterPdfFooter: function ( currentPage, pageCount ) {
+			// 	return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+			// },
+			// { field: 'name', cellTooltip: 'Custom string', headerTooltip: 'Custom header string' },
+			// { field: 'company', cellTooltip:
+			// 	function( row, col ) {
+			// 		return 'Name: ' + row.entity.name + ' Company: ' + row.entity.company;
+			// 	}, headerTooltip:
+			// 	function( col ) {
+			// 		return 'Header: ' + col.displayName;
+			// 	}
+			// },
+			// { field: 'gender', cellTooltip: true, headerTooltip: true, cellFilter: 'mapGender' },
+			// ],
+
+		}
 	}
 })(angular, smi2);

@@ -1,9 +1,18 @@
-<div class="card mb+">
-    <div class="pl+ pt+ pb+ pr">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/screenfull.js/2.0.0/screenfull.js"></script>
+
+<div ngsf-fullscreen="fullscreenCtrl" class="fullscreen">
+
+
+    <div class="card mb+" style="background: #f2f2f2">
+    <div class="pl+ pt+ pb+ pr" >
         <div class="float-right" style="margin-top: -5px">
             <lx-text-field lx-label="Шрифт" lx-fixed-label="true" lx-icon="format-size" style="width: 60px; float: left; margin-top: -5px; margin-right: 15px;">
                 <input type="text" ng-model="vars.fontSize">
             </lx-text-field>
+            <lx-button lx-position="right"  lx-over-toggle="true" ng-click="fullscreenCtrl.toggleFullscreen()">
+                <i class="mdi mdi-fullscreen"></i>
+            </lx-button>
+
             <lx-dropdown lx-position="right" lx-over-toggle="true">
                 <lx-dropdown-toggle>
                     <lx-button lx-color="black" lx-type="flat">
@@ -13,6 +22,7 @@
                 <lx-dropdown-menu>
                     <ul>
                         <li ng-repeat="theme in vars.themes">
+
                             <a class="dropdown-link" ng-click="setTheme(theme)">{{theme}}</a>
                         </li>
                     </ul>
@@ -32,7 +42,7 @@
                     </ul>
                 </lx-dropdown-menu>
             </lx-dropdown>
-            <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="250">
+            <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="450">
                 <lx-dropdown-toggle>
                     <lx-button lx-color="black" lx-type="icon">
                         <i class="mdi mdi-history"></i>
@@ -52,7 +62,7 @@
         </div>
         SQL
     </div>
-    <div class="card__actions">
+    <div class="card__actions" style="background: #f2f2f2">
         <div style="min-height: 200px; position: relative;" id="resizable">
         <div ng-model="vars.sql" ui-ace="{
         useWrapMode : true,
@@ -64,7 +74,7 @@
     }" style="min-height: 200px; width: 100%; height: 100%; border-bottom: 3px #eee solid; border-right: 3px #eee solid;"></div>
     </div>
 
-        <lx-text-field lx-label="max_result_rows" lx-fixed-label="true" lx-icon="tune-vertical" style="width: 60px; float: right; margin-top: -5px; margin-right: 15px;">
+        <lx-text-field lx-label="max_result_rows" lx-fixed-label="true" lx-icon="tune-vertical" style="float: right; ">
             <input type="text" ng-model="vars.limitRows">
         </lx-text-field>
 
@@ -72,10 +82,42 @@
             <i class="mdi mdi-play"></i><span id="sql_button">{{vars.button_run}}</span>
         </lx-button>
 
-    </div>
-</div>
+        <lx-dropdown id="{{ vm.dropdownId }}">
+            <lx-dropdown-menu>
+                <ul>
+                    <li><a class="dropdown-link">An action</a></li>
+                    <li><a class="dropdown-link">Another action</a></li>
+                    <li><a class="dropdown-link">Something else here</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><span class="dropdown-link dropdown-link--is-header">Header</span></li>
+                    <li><a class="dropdown-link">Separated link</a></li>
+                </ul>
+            </lx-dropdown-menu>
+        </lx-dropdown>
 
-<div class="card" ng-repeat="item in vars.results">
+
+        <lx-dropdown lx-position="right" lx-over-toggle="true"  lx-width="450"  style="float: right;margin-top: 5px; margin-right: 15px;">
+            <lx-dropdown-toggle>
+                <lx-button lx-color="black" lx-type="icon">
+                    <i class="mdi mdi-school"></i>
+                </lx-button>
+            </lx-dropdown-toggle>
+            <lx-dropdown-menu>
+                <ul>
+                    <li ng-repeat="item in vars.dictionaries">
+                        <a class="dropdown-link" ng-click="addDictionariesWord(item)">{{item}}</a>
+                    </li>
+                </ul>
+            </lx-dropdown-menu>
+        </lx-dropdown>
+
+
+    </div>
+
+
+</div>
+    <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.finishQuery == false"></lx-progress>
+<div class="card" ng-repeat="item in vars.resultsQuery">
     <div class="p+" style="background: #f3f3f3">
         <div style="white-space: nowrap; float: right; line-height: 0px; color: #666;" class="fs-caption" ng-if="item.statistics">
             время: <b>{{item.statistics.elapsed}}</b>,
@@ -84,7 +126,8 @@
         </div>
     </div>
     <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
-        <span ng-if="item.sqlData === null" class="fs-caption">нет данных</span>
-        <div ng-if="item.sqlData !== null" ng-bind-html="item.sqlData">x</div>
+        <span ng-if="item.result === null" class="fs-caption">нет данных</span>
+        <div ng-if="item.result !== null" ng-bind-html="item.result">x</div>
     </div>
+</div>
 </div>

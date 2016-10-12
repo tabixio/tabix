@@ -3,7 +3,8 @@
 
 	var smi2 = window.smi2 = window.smi2 || {};
 	smi2.app = {
-		name: 'SMI2'
+		name: 'SMI2',
+		build: '16.10.11'
 	};
 
 	// Подключение сторонних библиотек
@@ -12,6 +13,10 @@
 		'ui.router',
 		'LocalStorageModule',
 		'lumx',
-		'ui.ace'
+		'angularScreenfull',
+		'ui.ace',
+		'ui.grid',
+		'ui.grid.autoResize'
+
 	]);
 })();
