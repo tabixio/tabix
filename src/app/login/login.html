@@ -32,27 +32,27 @@
         <div class="main-view">
           <div class="login-view">
             <form name="vars.loginForm" class="card">
-              <div class="card__header p+">Подключение</div>
+              <div class="card__header p+">{{ 'Подключение' | translate }}</div>
               <div ng-if="vars.error" class="login-message error fs-body-1">
-                <p class="tc-white">Неверные данные</p>
+                <p class="tc-white">{{'Неверные данные' | translate}}</p>
               </div>
               <div class="card__body p++">
-                <lx-text-field label="название" fixed-label="true" icon="border-color">
+                <lx-text-field label="{{ 'название' | translate}}" fixed-label="true" icon="border-color">
                   <input type="text" ng-model="vars.db.name" name="name" required="required"/>
                 </lx-text-field>
-                <lx-text-field label="хост:порт" fixed-label="true" icon="server">
+                <lx-text-field label="{{ 'хост:порт' | translate}}" fixed-label="true" icon="server">
                   <input type="text" ng-model="vars.db.host" name="host" required="required"/>
                 </lx-text-field>
-                <lx-text-field label="логин" fixed-label="true" icon="account">
+                <lx-text-field label="{{ 'логин' | translate}}" fixed-label="true" icon="account">
                   <input type="text" ng-model="vars.db.login" name="login"/>
                 </lx-text-field>
-                <lx-text-field label="пароль" fixed-label="true" icon="key">
+                <lx-text-field label="{{ 'пароль' | translate}}" fixed-label="true" icon="key">
                   <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)"/>
                 </lx-text-field>
               </div>
               <div class="card__actions text-center p+">
-                <button ng-disabled="vars.loginForm.$invalid" ng-class="{'btn--is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple" class="btn btn--l btn--blue btn--raised btn-login" ng-click="login()">Войти</button>
-                <button ng-if="vars.db.id" lx-ripple="lx-ripple" class="btn btn--l btn--red btn--raised btn-login" ng-click="remove()">Удалить</button>
+                <button ng-disabled="vars.loginForm.$invalid" ng-class="{'btn--is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple" class="btn btn--l btn--blue btn--raised btn-login" ng-click="login()">{{ 'Войти' | translate}}</button>
+                <button ng-if="vars.db.id" lx-ripple="lx-ripple" class="btn btn--l btn--red btn--raised btn-login" ng-click="remove()">{{ 'Удалить' | translate}}</button>
               </div>
           </form>
           </div>

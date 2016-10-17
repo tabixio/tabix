@@ -6,25 +6,25 @@ global_keywords_tables = "";
     'use strict';
 
     angular.module(smi2.app.name).controller('SqlController', SqlController);
-    SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API'];
+    SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API', '$filter'];
 
     /**
      * @ngdoc controller
      * @name smi2.controller:SqlController
      * @description Контроллер выполнения SQL запросов к БД
      */
-    function SqlController($scope, $rootScope, $window, localStorageService, LxNotificationService, API) {
+    function SqlController($scope, $rootScope, $window, localStorageService, LxNotificationService, API, $filter) {
 
         $scope.vars = {
             sql: '',
-            button_run: 'Выполнить ⌘ + ⏎',
+            button_run: $filter('translate')('Выполнить ⌘ + ⏎'),
             sqlHistory: localStorageService.get('sqlHistory') || [],
             format: {},
             dictionaries: [],
             finishQuery: true,
             resultsQuery: [],
             formats: [{
-                name: 'Таблица',
+                name: $filter('translate')('Таблица'),
                 sql: ' format JSON',
                 render: 'html'
             }, {
@@ -59,7 +59,7 @@ global_keywords_tables = "";
          */
         $window.onbeforeunload = function (event) {
             if ($scope.vars.sql !== '' && location.hostname != 'localhost') {
-                var message = 'Хотите покинуть страницу?';
+                var message = $filter('translate')('Хотите покинуть страницу?');
                 if (typeof event == 'undefined') {
                     event = window.event;
                 }
@@ -74,7 +74,7 @@ global_keywords_tables = "";
          * Предотвращаю потерю SQL данных при смене стейта
          */
         var clearRouterListener = $scope.$on('$stateChangeStart', function (event) {
-            var message = 'Хотите покинуть страницу?';
+            var message = $filter('translate')('Хотите покинуть страницу?');
             if (!event.defaultPrevented && $scope.vars.sql !== '' && !confirm(message)) {
                 event.preventDefault();
             }
@@ -149,7 +149,7 @@ global_keywords_tables = "";
                 }
 
             }, function (response) {
-                LxNotificationService.error('Ошибка');
+                LxNotificationService.error($filter('translate')('Ошибка'));
                 var result = {};
                 result.meta = null;
                 result.rows = null;
@@ -220,7 +220,7 @@ global_keywords_tables = "";
 
             // Выход если пустой sql
             if (sql === '' || sql === null) {
-                LxNotificationService.warning('Не введен SQL');
+                LxNotificationService.warning($filter('translate')('Не введен SQL'));
                 return;
             }
 
@@ -420,9 +420,9 @@ global_keywords_tables = "";
             editor.on('changeSelection', function () {
 
                 if (editor.getSelectedText()) {
-                    $scope.vars.button_run = 'Выполнить выделенное ⌘ + ⏎';
+                    $scope.vars.button_run = $filter('translate')('Выполнить выделенное ⌘ + ⏎');
                 } else {
-                    $scope.vars.button_run = 'Выполнить все ⇧ + ⌘ + ⏎';
+                    $scope.vars.button_run = $filter('translate')('Выполнить все ⇧ + ⌘ + ⏎');
                 }
                 document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
             });

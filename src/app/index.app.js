@@ -16,8 +16,8 @@
 		'angularScreenfull',
 		'ui.ace',
 		'ui.grid',
-		'ui.grid.autoResize'
-
+		'ui.grid.autoResize',
+    'pascalprecht.translate'
 	]).filter( 'filesize', function () {
 		var units = [
 			'bytes',

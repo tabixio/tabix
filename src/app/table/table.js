@@ -2,19 +2,19 @@
 	'use strict';
 
 	angular.module(smi2.app.name).controller('TableController', TableController);
-	TableController.$inject = ['$scope', '$rootScope', '$stateParams', 'API'];
+	TableController.$inject = ['$scope', '$rootScope', '$stateParams', 'API', '$filter'];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:TableController
 	 * @description Контроллер страницы 1 таблицы БД
 	 */
-	function TableController($scope, $rootScope, $stateParams, API) {
+	function TableController($scope, $rootScope, $stateParams, API, $filter) {
 		$rootScope.breadcrumbs = [{
-			text: 'База ' + $stateParams.dbName,
+			text: $filter('translate')('База') + ' ' + $stateParams.dbName,
 			link: 'database'
 		}, {
-			text: 'Таблица ' + $stateParams.tableName,
+			text: $filter('translate')('Таблица') + ' ' + $stateParams.tableName,
 			link: 'table'
 		}];
 

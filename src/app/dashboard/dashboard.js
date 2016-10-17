@@ -2,16 +2,16 @@
 	'use strict';
 
 	angular.module(smi2.app.name).controller('DashboardController', DashboardController);
-	DashboardController.$inject = ['$scope', '$rootScope', 'API'];
+	DashboardController.$inject = ['$scope', '$rootScope', 'API', '$filter'];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:DashboardController
 	 * @description Контроллер dashboard страницы
 	 */
-	function DashboardController($scope, $rootScope, API) {
+	function DashboardController($scope, $rootScope, API, $filter) {
 		$rootScope.breadcrumbs = [{
-			text: 'Рабочий стол',
+			text: $filter('translate')('Рабочий стол'),
 			link: 'dashboard'
 		}];
 

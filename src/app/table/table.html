@@ -8,16 +8,16 @@
         <lx-tabs lx-theme="light" lx-color="blue">
 
             <!-- колонки -->
-            <lx-tab lx-icon="table-column-plus-after" lx-label="Структура">
+            <lx-tab lx-icon="table-column-plus-after" lx-label="{{'Структура' | translate}}">
                 <div class="data-table-container">
                     <table class="data-table">
                         <thead>
                             <tr class="data-table-row">
                                 <th style="width: 40px"></th>
-                                <th style="width: 40%">Название</th>
-                                <th style="width: 10%">Тип</th>
-                                <th style="width: 10%">Default тип</th>
-                                <th style="width: 10%">Значение</th>
+                                <th style="width: 40%">{{'Название' | translate}}</th>
+                                <th style="width: 10%">{{'Тип' | translate}}</th>
+                                <th style="width: 10%">{{'Default тип' | translate}}</th>
+                                <th style="width: 10%">{{'Значение' | translate}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +33,7 @@
             </lx-tab>
 
             <!-- данные -->
-            <lx-tab lx-icon="table-large" lx-label="Данные">
+            <lx-tab lx-icon="table-large" lx-label="{{'Данные' | translate}}">
                 <div class="pl+ pt+ pb+ pr" style="font-size: .75rem;">
                     <div class="float-right" style="margin-top: -12px">
                         <lx-button lx-size="l" lx-color="black" lx-type="icon" ng-click="loadPrev()" ng-disabled="vars.offset === 0">
@@ -43,44 +43,44 @@
                             <i class="mdi mdi-arrow-right"></i>
                         </lx-button>
                     </div>
-                    Данные <span class="tc-grey-400">c {{vars.offset}} по {{vars.offset + vars.limit}}</span>
+                    {{'Данные' | translate}} <span class="tc-grey-400"> {{vars.offset}} ... {{vars.offset + vars.limit}}</span>
                 </div>
                 <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;">
-                    <span ng-if="vars.data === null" class="fs-caption">нет данных</span>
+                    <span ng-if="vars.data === null" class="fs-caption">{{'нет данных' | translate}}</span>
                     <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.data == -1"></lx-progress>
                     <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
                 </div>
             </lx-tab>
 
             <!-- информация -->
-            <lx-tab lx-icon="information" lx-label="Информация">
+            <lx-tab lx-icon="information" lx-label="{{'Информация' | translate}}">
                 <div class="data-table-container">
                     <table class="data-table">
                         <tbody>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400" style="width: 40px">1</td>
-                                <td  style="width: 200px">Размер</td>
+                                <td  style="width: 200px">{{'Размер' | translate}}</td>
                                 <td>
                                     {{vars.statistics.size}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">2</td>
-                                <td>Размер, байт</td>
+                                <td>{{'Размер, байт' | translate}}</td>
                                 <td>
                                     {{vars.statistics.sizeBytes}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">3</td>
-                                <td>Первая запись</td>
+                                <td>{{'Первая запись' | translate}}</td>
                                 <td>
                                     {{vars.statistics.minDate}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">4</td>
-                                <td>Последняя запись</td>
+                                <td>{{'Последняя запись' | translate}}</td>
                                 <td>
                                     {{vars.statistics.maxDate}}
                                 </td>

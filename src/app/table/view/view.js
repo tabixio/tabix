@@ -2,23 +2,23 @@
     'use strict';
 
     angular.module(smi2.app.name).controller('ViewController', ViewController);
-    ViewController.$inject = ['$scope', '$rootScope', '$stateParams', 'LxNotificationService', 'API'];
+    ViewController.$inject = ['$scope', '$rootScope', '$stateParams', 'LxNotificationService', 'API', '$filter'];
 
     /**
      * @ngdoc controller
      * @name smi2.controller:ViewController
      * @description Контроллер просмотра данных таблицы БД
      */
-    function ViewController($scope, $rootScope, $stateParams, LxNotificationService, API) {
+    function ViewController($scope, $rootScope, $stateParams, LxNotificationService, API, $filter) {
 
         $rootScope.breadcrumbs = [{
-            text: 'База ' + $stateParams.dbName,
+            text: filter('translate')('База') + ' ' + $stateParams.dbName,
             link: 'database'
         }, {
-            text: 'Таблица ' + $stateParams.tableName,
+            text: filter('translate')('Таблица') + ' ' + $stateParams.tableName,
             link: 'table'
         }, {
-            text: 'Просмотр',
+            text: filter('translate')('Просмотр'),
             link: 'view'
         }];
 
@@ -34,7 +34,7 @@
             API.query('select * from ' + $stateParams.dbName + '.' + $stateParams.tableName + ' limit ' + $scope.vars.offset + ', ' + $scope.vars.limit).then(function (data) {
                 $scope.vars.data = API.dataToHtml(data);
             }, function (response) {
-                LxNotificationService.error('Ошибка ' + response);
+                LxNotificationService.error(filter('translate')('Ошибка') + ' ' + response);
             });
         };
 

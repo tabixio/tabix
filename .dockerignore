@@ -1,0 +1,16 @@
+node_modules/
+.git/
+.tmp/
+.dockerignore
+Dockerfile*
+docker-compose.*
+
+.gitignore
+.env
+.editorconfig
+.gitlab-ci.yml
+.idea/
+.vagrant/
+.vscode/
+docs/
+todo

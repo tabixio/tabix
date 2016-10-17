@@ -2,16 +2,16 @@
 	'use strict';
 
 	angular.module(smi2.app.name).controller('DatabaseController', DatabaseController);
-	DatabaseController.$inject = ['$scope', '$rootScope', '$stateParams', 'API'];
+	DatabaseController.$inject = ['$scope', '$rootScope', '$stateParams', 'API', '$filter'];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:DatabaseController
 	 * @description Контроллер оботстраницы с 1 бд
 	 */
-	function DatabaseController($scope, $rootScope, $stateParams, API) {
+	function DatabaseController($scope, $rootScope, $stateParams, API, $filter) {
 		$rootScope.breadcrumbs = [{
-			text: 'База ' + $stateParams.dbName,
+			text: $filter('translate')('База') + ' ' + $stateParams.dbName,
 			link: 'database',
 			params: $stateParams
 		}];
