@@ -3,6 +3,7 @@ node_modules/
 .tmp/
 .dockerignore
 Dockerfile*
+bower_components/
 docker-compose.*
 
 .gitignore
