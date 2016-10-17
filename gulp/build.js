@@ -56,7 +56,7 @@ gulp.task('html', ['inject', 'partials'], function() {
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
-    .pipe($.replace('assets/', 'app/assets/'))
+    //.pipe($.replace('assets/', 'app/assets/'))
     //.pipe($.sourcemaps.init())
     .pipe($.ngAnnotate())
     .pipe($.uglify({
@@ -65,6 +65,7 @@ gulp.task('html', ['inject', 'partials'], function() {
     //.pipe($.sourcemaps.write('maps'))
     .pipe(jsFilter.restore)
     .pipe(cssFilter)
+    .pipe($.replace('url(./fonts/', 'url(../fonts/')) // костылек для lumx
     //.pipe($.sourcemaps.init())
 	//для favicon production
     // .pipe($.minifyCss({
@@ -76,8 +77,7 @@ gulp.task('html', ['inject', 'partials'], function() {
     .pipe($.useref())
     .pipe($.revReplace())
     .pipe(htmlFilter)
-    .pipe($.replace('styles/', 'app/styles/'))
-    .pipe($.replace('scripts/', 'app/scripts/'))
+    //.pipe($.replace('scripts/', 'app/scripts/'))
     .pipe($.minifyHtml({
       empty: true,
       spare: true,
@@ -118,4 +118,8 @@ gulp.task('clean', function() {
   return $.del([path.join(conf.paths.dist, '/'), path.join(conf.paths.tmp, '/')]);
 });
 
-gulp.task('build', ['html', 'fonts', 'other']);
+gulp.task('cname', function() {
+    return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
+});
+
+gulp.task('build', ['html', 'fonts', 'other', 'cname']);

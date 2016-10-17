@@ -1,10 +1,8 @@
 bower_components
 node_modules
 .tmp
-dist
 coverage
-docs
-public/config.php
+help
 
 # IntelliJ project files
 .idea
