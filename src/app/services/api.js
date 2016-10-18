@@ -66,7 +66,11 @@
 			} else {
 				query = sql;
 			}
-			var url = 'http://' + connection.host +
+			var httpProto = '';
+			if (connection.host.indexOf('://') < 0) {
+			  httpProto = 'http://';
+      }
+			var url = httpProto + connection.host +
 				'/?query=' + encodeURIComponent(query);
 			if (connection.login) {
 				url += '&user=' + connection.login;
