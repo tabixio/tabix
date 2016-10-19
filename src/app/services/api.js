@@ -67,8 +67,8 @@
 				query = sql;
 			}
 			var httpProto = '';
-			if (connection.host.indexOf('://') < 0) {
-			  httpProto = 'http://';
+			if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
+        httpProto = 'http://';
       }
 			var url = httpProto + connection.host +
 				'/?query=' + encodeURIComponent(query);
@@ -78,7 +78,11 @@
 			if (connection.password) {
 				url += '&password=' + connection.password;
 			}
-			url += '&add_http_cors_header=1';
+			
+			if (connection.host.indexOf('/') != 0) {
+        url += '&add_http_cors_header=1';
+      }
+
 			if (withDatabase) {
 				url += '&database=' + database;
 			}
