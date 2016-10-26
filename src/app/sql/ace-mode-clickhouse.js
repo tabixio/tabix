@@ -230,7 +230,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 					text=text.trim().replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 					if (text.length>2)
 					{
-						matches.push(text);
+						matches.push({sql:text,range:range1});
 					}
 				}
 				token = iterator.stepForward();
@@ -241,8 +241,8 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 			text=text.replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 			if (text.length>2)
 			{
-				matches.push(text);
 
+				matches.push({sql:text,range:range1});
 			}
 			return matches;
 		};

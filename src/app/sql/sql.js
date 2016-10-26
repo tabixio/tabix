@@ -20,8 +20,8 @@ global_keywords_tables = "";
             button_run: 'Выполнить ⌘ + ⏎',
             sqlHistory: localStorageService.get('sqlHistory') || [],
             format: {},
-            dictionaries:[],
-            finishQuery:true,
+            dictionaries: [],
+            finishQuery: true,
             resultsQuery: [],
             formats: [{
                 name: 'Таблица',
@@ -94,7 +94,7 @@ global_keywords_tables = "";
          * @name toggleFullScreen
          * @description Переключение полноэкранного режима
          */
-        $scope.toggleFullScreen = function() {
+        $scope.toggleFullScreen = function () {
             $scope.isFullscreen = !$scope.isFullscreen;
         };
 
@@ -181,19 +181,20 @@ global_keywords_tables = "";
             }
             else {
                 data.result = API.dataToHtml(data);
+                data.createtable=API.dataToCreateTable(data);
             }
             data.data = false;
             return data;
         };
 
         $scope.renderFinalResult = function () {
-            var keywords='';
+            var keywords = '';
             $scope.vars.resultsQuery.forEach(function (q) {
-                keywords+=q.query.keyword+"|";
+                keywords += q.query.keyword + "|";
             });//for
-            $scope.vars.finishQuery=true;
+            $scope.vars.finishQuery = true;
 
-            if(keywords.toUpperCase().match(/(DROP|CREATE|ALTER)/g)){
+            if (keywords.toUpperCase().match(/(DROP|CREATE|ALTER)/g)) {
                 // reload
                 $scope.selectDatabase($scope.vars.db);
             }
@@ -206,7 +207,7 @@ global_keywords_tables = "";
          * @name run
          * @description Выполнение запроса
          */
-        $scope.run = function () {
+        $scope.run = function (type) {
 
             var sql = $scope.vars.sql;
             var numquery = 0;
@@ -230,8 +231,28 @@ global_keywords_tables = "";
             var sqlList = $scope.vars.editor.session.$mode.splitByTokens(sql, 'constant.character.escape', ';;');
 
 
+
             // Цикл по подзапросам
-            sqlList.forEach(function (subSQL) {
+            sqlList.forEach(function (SQLQuery) {
+                var subSQL = SQLQuery.sql;
+
+                if (subSQL.length<5) return;
+
+                // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
+                if (type == 'current' && !selectsql) {
+                    var cursor = $scope.vars.editor.selection.getCursor();
+
+                    if (angular.isDefined(cursor)) {
+                    // if (cursor.row && cursor.column) {
+                        var inRange = SQLQuery.range.compare(cursor.row, cursor.column);
+                        if (inRange !== 0) return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
                 var _format = null;
                 var _format_seted = false;
                 var storage = false;
@@ -269,9 +290,11 @@ global_keywords_tables = "";
                 numquery++;
             });
 
-            $scope.vars.finishQuery=false;
-            $scope.executeQuery(queue[0], queue);
-
+            if (queue.length)
+            {
+                $scope.vars.finishQuery = false;
+                $scope.executeQuery(queue[0], queue);
+            }
 
         };
 
@@ -302,7 +325,7 @@ global_keywords_tables = "";
         $scope.selectDatabase = function (db) {
             $scope.vars.db = db;
 
-            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'",null).then(function (data) {
+            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", null).then(function (data) {
 
                 var fields = [],
                     ufields = {};
@@ -343,17 +366,19 @@ global_keywords_tables = "";
         };
 
         $scope.addDictionariesWord = function (word) {
+            $scope.vars.editor.clearSelection();
             $scope.vars.editor.insert(word);
+            $scope.vars.sql=$scope.vars.editor.getValue()
         };
 
         $scope.loadDictionaries = function () {
-            $scope.vars.dictionaries=[];
-            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute", null).then(function (data) {
+            $scope.vars.dictionaries = [];
+            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then(function (data) {
                 data.data.forEach(function (item) {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
-                    var dic='dictGet'+item["attribute.types"]+'(\''+item.name+'\',\''+item["attribute.names"]+'\',to'+item.key+'( ID ) ) AS '+item.name.replace(/\./,'_')+'_'+item["attribute.names"]+',';
+                    var dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item.name.replace(/\./, '_') + '_' + item["attribute.names"] + ',';
 
-                    $scope.vars.dictionaries.push(dic);
+                    $scope.vars.dictionaries.push({dic:dic,title:item.name+'.'+item["attribute.names"]+' as '+item["attribute.types"] });
                 });
             });
         };
@@ -367,15 +392,27 @@ global_keywords_tables = "";
 
             // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
             editor.commands.addCommand({
-                name: 'myCommand',
+                name: 'runCurrentCommand',
                 bindKey: {
                     win: 'Ctrl-Enter',
                     mac: 'Command-Enter'
                 },
                 exec: function () {
-                    $scope.run();
+                    $scope.run('current');
                 }
             });
+
+            editor.commands.addCommand({
+                name: 'runAllCommand',
+                bindKey: {
+                    win: 'Shift-Ctrl-Enter',
+                    mac: 'Shift-Command-Enter'
+                },
+                exec: function () {
+                    $scope.run('all');
+                }
+            });
+
 
             $scope.vars.editor.clearSelection();
 
@@ -385,7 +422,7 @@ global_keywords_tables = "";
                 if (editor.getSelectedText()) {
                     $scope.vars.button_run = 'Выполнить выделенное ⌘ + ⏎';
                 } else {
-                    $scope.vars.button_run = 'Выполнить ⌘ + ⏎';
+                    $scope.vars.button_run = 'Выполнить все ⇧ + ⌘ + ⏎';
                 }
                 document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
             });
