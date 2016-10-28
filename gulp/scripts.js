@@ -25,5 +25,6 @@ function buildScripts() {
         .pipe($.babel({
             presets: ['es2015', 'stage-0']
         }))
+        .on('error', conf.errorHandler('babel'))
 		.pipe($.size())
 };
