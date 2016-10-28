@@ -1,32 +1,44 @@
 {
-  "name": "SMI2-clickhouse",
-  "version": "1.0.0",
-  "dependencies": {
-    "angular-animate": "~1.5.0",
-    "jquery": "~2.1.4",
-    "angular-ui-router": "~0.2.15",
-    "angular": "~1.4.12",
-    "lumx": "~1.0.6",
-    "angular-ui-ace": "~0.2.3",
-    "angular-local-storage": "~0.2.7",
-    "jquery-ui": "~1.11.4",
-    "angular-screenfull": "^0.1.1",
-    "angular-ui-grid": "^3.2.9",
-    "screenfull": "~3.0.2",
-    "angular-sanitize": "^1.5.8"
-  },
-  "devDependencies": {
-    "angular-mocks": "~1.5.0"
-  },
-  "overrides": {
-    "screenfull": {
-      "main": [
-        "dist/screenfull.min.js"
-      ]
+    "name": "SMI2-clickhouse",
+    "version": "1.0.0",
+    "dependencies": {
+        "angular-animate": "~1.5.0",
+        "jquery": "~2.1.4",
+        "angular-ui-router": "~0.2.15",
+        "angular": "~1.4.12",
+        "lumx": "~1.0.6",
+        "angular-ui-ace": "~0.2.3",
+        "angular-local-storage": "~0.2.7",
+        "jquery-ui": "~1.11.4",
+        "angular-screenfull": "^0.1.1",
+        "angular-ui-grid": "^3.2.9",
+        "screenfull": "~3.0.2",
+        "angular-sanitize": "^1.5.8",
+        "devextreme": "^16.1.7"
+    },
+    "devDependencies": {
+        "angular-mocks": "~1.5.0"
+    },
+    "overrides": {
+        "screenfull": {
+            "main": [
+                "dist/screenfull.min.js"
+            ]
+        },
+        "devextreme": {
+            "main": [
+                "js/dx.all.js",
+                "css/dx.spa.css",
+                "css/dx.common.css",
+                "css/dx.dark.css",
+                "css/icons/dxicons.eot",
+                "css/icons/dxicons.ttf",
+                "css/icons/dxicons.woff"
+            ]
+        }
+    },
+    "resolutions": {
+        "jquery": "~2.1.4",
+        "angular": "~1.4.12"
     }
-  },
-  "resolutions": {
-    "jquery": "~2.1.4",
-    "angular": "~1.4.12"
-  }
 }

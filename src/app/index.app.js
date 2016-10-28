@@ -17,7 +17,8 @@
 		'ui.ace',
 		'ui.grid',
 		'ui.grid.autoResize',
-        'ngSanitize'
+        'ngSanitize',
+        'dx'
 	]);
 
 })();
