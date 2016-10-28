@@ -22,6 +22,7 @@
     "chalk": "~1.1.1",
     "del": "~2.0.2",
     "eslint-plugin-angular": "~0.12.0",
+    "eslint-plugin-es6-recommended": "^0.1.2",
     "estraverse": "~4.1.0",
     "gulp": "~3.9.0",
     "gulp-angular-filesort": "~1.1.1",
