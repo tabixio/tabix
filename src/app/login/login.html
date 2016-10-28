@@ -1,76 +1,142 @@
 <div class="wrapper">
 
-  <div class="header">
-    <div class="card bgc-blue-500 tc-white">
-      <div class="toolbar">
-        <div class="toolbar__left mr">
-          <img src="assets/images/logo.png" class="logo"/>
-        </div>
-        <div class="toolbar__label fs-title header-title">
-          <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
-        </div>
-      </div>
+    <div class="header">
+        <!--<div class="card bgc-blue-500 tc-white">-->
+            <!--<div class="toolbar">-->
+                <!--<div class="toolbar__left mr">-->
+                    <!--<img src="assets/images/logo.png" class="logo"/>-->
+                <!--</div>-->
+                <!--<div class="toolbar__label fs-title header-title">-->
+                    <!--<a ui-sref="dashboard" class="tc-white">Clickhouse</a>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div dx-toolbar="toolbarOptions"></div>
     </div>
-  </div>
 
-  <div class="content" style="margin-top: 2px">
-    <div class="sidebar-view">
-      <div class="sidebar">
-        <ul class="sidebar-menu p">
-          <li class="menu-item p" ng-repeat="base in vars.bases">
-            <a class="tc-black link" href ng-click="vars.db = base">
-              <div class="fs-body" style="display: inline-block; line-height: 30px; width: 180px; overflow: hidden; text-overflow: ellipsis">{{base.name}}</div>
-              <span class="tc-grey-400 fs-body-2">{{base.host}}</span>
+    <div class="content" style="margin-top: 2px">
+        <div class="sidebar-view">
+            <div class="sidebar">
+                <ul class="sidebar-menu p">
+                    <li class="menu-item p" ng-repeat="base in vars.bases">
+                        <a class="tc-black link" href ng-click="vars.db = base">
+                            <div class="fs-body"
+                                 style="display: inline-block; line-height: 30px; width: 180px; overflow: hidden; text-overflow: ellipsis">
+                                {{base.name}}
+                            </div>
+                            <span class="tc-grey-400 fs-body-2">{{base.host}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!--<div class="content">-->
+            <!--<div class="main-content">-->
+                <!--<div class="main-view">-->
+                    <!--<div class="login-view">-->
+                        <!--<form name="vars.loginForm" class="card">-->
+                            <!--<div class="card__header p+">Подключение</div>-->
+                            <!--<div ng-if="vars.error" class="login-message error fs-body-1">-->
+                                <!--<p class="tc-white">Неверные данные</p>-->
+                            <!--</div>-->
+                            <!--<div class="card__body p++">-->
+                                <!--<lx-text-field label="название" fixed-label="true" icon="border-color">-->
+                                    <!--<input type="text" ng-model="vars.db.name" name="name" required="required"/>-->
+                                <!--</lx-text-field>-->
+                                <!--<lx-text-field label="хост:порт" fixed-label="true" icon="server">-->
+                                    <!--<input type="text" ng-model="vars.db.host" name="host" required="required"/>-->
+                                <!--</lx-text-field>-->
+                                <!--<div class="dx-field">-->
+                                    <!--<div class="dx-field-label">Логин</div>-->
+                                    <!--<div class="dx-field-value">-->
+                                        <!--<div dx-text-box="widget.login"></div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <!--&lt;!&ndash;<lx-text-field label="логин" fixed-label="true" icon="account">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" ng-model="vars.db.login" name="login"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</lx-text-field>&ndash;&gt;-->
+                                <!--<lx-text-field label="пароль" fixed-label="true" icon="key">-->
+                                    <!--<input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)"/>-->
+                                <!--</lx-text-field>-->
+                            <!--</div>-->
+                            <!--<div class="card__actions text-center p+">-->
+                                <!--<button ng-disabled="vars.loginForm.$invalid"-->
+                                        <!--ng-class="{'btn&#45;&#45;is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple"-->
+                                        <!--class="btn btn&#45;&#45;l btn&#45;&#45;blue btn&#45;&#45;raised btn-login" ng-click="login()">Войти-->
+                                <!--</button>-->
+                                <!--<button ng-if="vars.db.id" lx-ripple="lx-ripple"-->
+                                        <!--class="btn btn&#45;&#45;l btn&#45;&#45;red btn&#45;&#45;raised btn-login" ng-click="remove()">Удалить-->
+                                <!--</button>-->
+                            <!--</div>-->
+                        <!--</form>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <div class="content">
+            <div class="main-content">
+                <div class="main-view">
+                    <div class="login-view">
+                        <div class="form">
+                            <div class="dx-fieldset">
+                                <div class="dx-field">
+                                    <div class="dx-field-label"></div>
+                                    <div class="dx-field-value">
+                                        <h4>Подключение</h4>
+                                    </div>
+                                </div>
+                                <div class="dx-field">
+                                    <div class="dx-field-label">Название</div>
+                                    <div class="dx-field-value">
+                                        <div dx-text-box="widget.name"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field">
+                                    <div class="dx-field-label">Хост:порт</div>
+                                    <div class="dx-field-value">
+                                        <div dx-text-box="widget.host"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field">
+                                    <div class="dx-field-label">Логин</div>
+                                    <div class="dx-field-value">
+                                        <div dx-text-box="widget.login"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field">
+                                    <div class="dx-field-label">Пароль</div>
+                                    <div class="dx-field-value">
+                                        <div dx-text-box="widget.password"></div>
+                                    </div>
+                                </div>
+                                <div class="dx-field">
+                                    <div class="dx-field-label"></div>
+                                    <div class="dx-field-value">
+                                        <div dx-button="widget.button" class="width-100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div class="toolbar">
+            <p class="copyright tc-white text-center">
+                <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
+                &copy;
+                {{::vars.year}}, все права защищены, сборка: {{::vars.build}}</p>
+            <a href="https://github.com/smi2/clickhouse-frontend" target="_blank">
+                <i class="mdi mdi-github-circle tc-white fs-display-1"></i>
             </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="content">
-      <div class="main-content">
-        <div class="main-view">
-          <div class="login-view">
-            <form name="vars.loginForm" class="card">
-              <div class="card__header p+">Подключение</div>
-              <div ng-if="vars.error" class="login-message error fs-body-1">
-                <p class="tc-white">Неверные данные</p>
-              </div>
-              <div class="card__body p++">
-                <lx-text-field label="название" fixed-label="true" icon="border-color">
-                  <input type="text" ng-model="vars.db.name" name="name" required="required"/>
-                </lx-text-field>
-                <lx-text-field label="хост:порт" fixed-label="true" icon="server">
-                  <input type="text" ng-model="vars.db.host" name="host" required="required"/>
-                </lx-text-field>
-                <lx-text-field label="логин" fixed-label="true" icon="account">
-                  <input type="text" ng-model="vars.db.login" name="login"/>
-                </lx-text-field>
-                <lx-text-field label="пароль" fixed-label="true" icon="key">
-                  <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)"/>
-                </lx-text-field>
-              </div>
-              <div class="card__actions text-center p+">
-                <button ng-disabled="vars.loginForm.$invalid" ng-class="{'btn--is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple" class="btn btn--l btn--blue btn--raised btn-login" ng-click="login()">Войти</button>
-                <button ng-if="vars.db.id" lx-ripple="lx-ripple" class="btn btn--l btn--red btn--raised btn-login" ng-click="remove()">Удалить</button>
-              </div>
-          </form>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-
-  <div class="footer">
-    <div class="toolbar">
-      <p class="copyright tc-white text-center">
-        <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
-        &copy;
-        {{::vars.year}}, все права защищены, сборка: {{::vars.build}}</p>
-        <a href="https://github.com/smi2/clickhouse-frontend" target="_blank">
-            <i class="mdi mdi-github-circle tc-white fs-display-1"></i>
-        </a>
-    </div>
-  </div>
 
 </div>
