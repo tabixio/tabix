@@ -11,7 +11,7 @@
 	 */
 	function SidebarController($scope, API) {
 		$scope.vars = {
-			databases: [],
+			loaded: false,
 			selectedDatabase: null,
 			tables: []
 		};
@@ -24,9 +24,45 @@
 			});
 		};
 
-		API.query('show databases').then(function(data) {
-			$scope.vars.databases = data.data;
-			$scope.changeDatabase(data.data[0]);
-		});
+
+		API.query(
+				'SELECT ' +
+				'	database, ' +
+				'	name ' +
+				'FROM  ' +
+				'	system.tables')
+			.then(res => {
+				let data = res.data || [];
+				$scope.vars.databases = {
+					focusStateEnabled:false,
+					width: 200,
+					itemTemplate:data=>`${data.html}&nbsp;<span>${data.text}</span>`
+				};
+				$scope.vars.databases.items = data.reduce((prev, item, id) => {
+					for (let a of prev) {
+						if (a.text == item.database) {
+							a.items.push({
+								id: a.id + '_' + a.items.length,
+								html:'<i class="icon icon--grey icon--flat mdi mdi-table">',
+								text: item.name
+							});
+							return prev;
+						}
+					}
+					return [...prev, {
+						id: id + 1,
+						text: item.database,
+						html:'<i class="icon icon--flat mdi mdi-database">',
+						items: [{
+							id: id + 1 + '_0',
+							html:'<i class="icon icon--grey icon--flat mdi mdi-table">',
+							text: item.name
+						}]
+					}];
+				}, []);
+				$scope.vars.loaded = true;
+				console.log($scope.vars.databases);
+			});
+		// 	$scope.changeDatabase(data.data[0]);
 	}
 })(angular, smi2);
