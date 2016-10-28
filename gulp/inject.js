@@ -29,6 +29,9 @@ gulp.task('inject', ['scripts', 'styles'], function() {
 			path.join('!' + conf.paths.src, '/app/**/*.test.js'),
 			path.join('!' + conf.paths.src, '/app/**/*.mock.js'),
 		])
+        .pipe($.babel({
+            presets: ['es2015', 'stage-0']
+        }))
 		.pipe($.angularFilesort()).on('error', conf.errorHandler('AngularFilesort'));
 
 	var injectOptions = {
