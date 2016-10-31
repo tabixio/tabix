@@ -81,7 +81,8 @@
             if (extend_settings) {
                 url += '&' + extend_settings;
             }
-            console.info(query);// Не удалять не только для DEBUG
+            // console.info(query);// Не удалять не только для DEBUG.
+            // Бебебе удалил
 
             var req = {
                 method: (format ? 'GET' : 'POST'), // if not set format use POST

@@ -12,7 +12,6 @@
 		'ngAnimate',
 		'ui.router',
 		'LocalStorageModule',
-		'lumx',
 		'angularScreenfull',
 		'ui.ace',
 		'ui.grid',
