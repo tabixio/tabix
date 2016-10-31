@@ -18,7 +18,7 @@
 		'ui.grid',
 		'ui.grid.autoResize',
         'ngSanitize',
-        'dx'
+        'ngMaterial'
 	]);
 
 })();
