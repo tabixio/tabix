@@ -1,22 +1,38 @@
 <div class="header">
-    <div class="card bgc-blue-500 tc-white">
-        <div class="toolbar">
-            <div class="toolbar__left mr">
-                <button lx-ripple="lx-ripple" ng-if="hasSidebar" ng-click="vm.switchSidebar()" class="btn btn--l btn--white btn--icon hide-gt-sm"><i class="mdi mdi-menu"></i></button>
-                <img src="assets/images/logo.png" class="logo"/>
-            </div>
-            <div class="toolbar__label fs-title header-title">
+    <md-card class="m0 pl0">
+        <div>
+            <div class="pull-left" style="width: 180px">
+                <img src="assets/images/logo.png" class="logo mr"/>
                 <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
             </div>
-            <div class="toolbar__right">
-                <a ui-sref="sql" href lx-tooltip="SQL" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
-                    <i class="mdi mdi-console"></i>
-                </a>
-                <a ng-click="logout()" href lx-tooltip="Выход" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
-                    <i class="mdi mdi-lock"></i>
-                </a>
+            <div class="pull-left">
+                <ul ng-if="$root.breadcrumbs" class="breadcrumb">
+                    <li class="home-item" style="margin-right: -16px">
+                        <md-button class="md-icon-button" aria-label="Home" ui-sref="dashboard">
+                            <i class="mdi mdi-home"></i>
+                        </md-button>
+                    </li>
+                    <li  ng-repeat="nav in $root.breadcrumbs" class="breadcrumb-item">
+                        <i class="icon icon--xs mdi mdi-chevron-right"></i>
+                        <a ng-if="!$last" ui-sref="{{nav.link}}(nav.params)" class="btn btn--xs btn--white btn--raised">{{nav.text}}&nbsp;</a>
+                        <span ng-if="$last" class="tc-white">{{nav.text}}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="pull-right">
+
+                <md-button class="md-icon-button" aria-label="SQL" ui-sref="sql">
+                    <i class="mdi mdi-24px mdi-console"></i>
+                    <md-tooltip>SQL</md-tooltip>
+                </md-button>
+
+                <md-button class="md-icon-button" aria-label="Выход" ng-click="logout()">
+                    <i class="mdi mdi-24px mdi-lock"></i>
+                    <md-tooltip>Выход</md-tooltip>
+                </md-button>
                 <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>
         </div>
-    </div>
+    </md-card>
 </div>

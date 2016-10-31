@@ -11,10 +11,10 @@
 	 */
 	function TableController($scope, $rootScope, $stateParams, API) {
 		$rootScope.breadcrumbs = [{
-			text: 'База ' + $stateParams.dbName,
+			text: $stateParams.dbName,
 			link: 'database'
 		}, {
-			text: 'Таблица ' + $stateParams.tableName,
+			text: $stateParams.tableName,
 			link: 'table'
 		}];
 
