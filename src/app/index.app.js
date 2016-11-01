@@ -17,7 +17,9 @@
 		'ui.grid',
 		'ui.grid.autoResize',
         'ngSanitize',
-        'ngMaterial'
+        'ngMaterial',
+		'eehMetisMenu',
+		'ngScrollbars'
 	]);
 
 })();

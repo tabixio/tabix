@@ -1,5 +1,20 @@
-<div class="sidebar" ng-app="sidebar">
-    <div class="form">
-		<div ng-if="vars.loaded" dx-tree-view="vars.databases"></div>
-	</div>
+<div ng-if="vars.loaded" class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
+    <div eeh-metis-menu="{{ {toggle: true} }}" class="metismenu">
+        <nav>
+            <ul>
+                <li ng-repeat="database in vars.databases">
+                    <a>
+                        <md-button class="text-left w100">
+                            <i class="mdi mdi-database"></i>{{database.text}}</md-button>
+                    </a>
+                    <ul class="sub-menu" ng-if="database.tables.length">
+                        <li ng-repeat="table in database.tables">
+                            <md-button class="text-left">
+                                <i class="mdi mdi-table"></i>{{table.text}}</md-button>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>

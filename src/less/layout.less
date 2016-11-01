@@ -29,7 +29,6 @@ body .wrapper {
     -webkit-box-flex: 1;
     -ms-flex: 1;
     flex: 1;
-    padding-top: 40px;
 }
 
 @media only screen and (min-width: 0px) and (max-width: 600px) {
@@ -49,7 +48,12 @@ body .wrapper {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
+    position: fixed;
+    left: 200px;
+    top:40px;
+    bottom: 0;
+    right: 0;
 }
 
 .content .main-content .main-view {
