@@ -2,14 +2,14 @@
 	'use strict';
 
 	angular.module( smi2.app.name ).controller( 'SidebarController', SidebarController );
-	SidebarController.$inject = [ '$scope', 'API' ];
+	SidebarController.$inject = [ '$scope', 'API', 'ThemeService' ];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:SidebarController
 	 * @description Контроллер бокового меню
 	 */
-	function SidebarController( $scope, API ) {
+	function SidebarController( $scope, API, ThemeService ) {
 		$scope.vars = {
 			loaded: false,
 			databases: [ ]
@@ -17,7 +17,9 @@
 
 		$scope.vars.scrollConfig = {
 			autoHideScrollbar: false,
-			theme: 'light',
+			theme: ThemeService.isDark( )
+				? 'light'
+				: 'dark',
 			scrollButtons: {
 				enable: false
 			},
@@ -53,6 +55,5 @@
 			}, [ ]);
 			$scope.vars.loaded = true;
 		});
-		// 	$scope.changeDatabase(data.data[0]);
 	}
 })( angular, smi2 );
