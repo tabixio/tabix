@@ -6,23 +6,30 @@ global_keywords_tables = "";
     'use strict';
 
     angular.module(smi2.app.name).controller('SqlController', SqlController);
-    SqlController.$inject = ['$scope', '$rootScope', '$window', 'localStorageService', 'LxNotificationService', 'API'];
+    SqlController.$inject = [
+        '$scope',
+        '$rootScope',
+        '$window',
+        'localStorageService',
+        'API'
+    ];
 
     /**
      * @ngdoc controller
      * @name smi2.controller:SqlController
      * @description Контроллер выполнения SQL запросов к БД
      */
-    function SqlController($scope, $rootScope, $window, localStorageService, LxNotificationService, API) {
+    function SqlController($scope, $rootScope, $window, localStorageService, API) {
 
         $scope.vars = {
             sql: '',
-            button_run: 'Выполнить ⌘ + ⏎',
+            buttonTitle: 'Выполнить ⌘ + ⏎',
             sqlHistory: localStorageService.get('sqlHistory') || [],
             format: {},
             dictionaries: [],
             finishQuery: true,
             resultsQuery: [],
+            tabs: [],
             formats: [{
                 name: 'Таблица',
                 sql: ' format JSON',
@@ -149,7 +156,7 @@ global_keywords_tables = "";
                 }
 
             }, function (response) {
-                LxNotificationService.error('Ошибка');
+                //LxNotificationService.error('Ошибка');
                 var result = {};
                 result.meta = null;
                 result.rows = null;
@@ -220,7 +227,7 @@ global_keywords_tables = "";
 
             // Выход если пустой sql
             if (sql === '' || sql === null) {
-                LxNotificationService.warning('Не введен SQL');
+                //LxNotificationService.warning('Не введен SQL');
                 return;
             }
 
@@ -418,13 +425,11 @@ global_keywords_tables = "";
 
             // Повесить эвент и переиминовывать кнопку -"Выполнить"
             editor.on('changeSelection', function () {
-
                 if (editor.getSelectedText()) {
-                    $scope.vars.button_run = 'Выполнить выделенное ⌘ + ⏎';
+                    $scope.vars.buttonTitle = 'Выполнить выделенное ⌘ + ⏎';
                 } else {
-                    $scope.vars.button_run = 'Выполнить все ⇧ + ⌘ + ⏎';
+                    $scope.vars.buttonTitle = 'Выполнить все ⇧ + ⌘ + ⏎';
                 }
-                document.getElementById('sql_button').innerHTML = $scope.vars.button_run;
             });
             editor.focus();
             editor.selection.moveTo(0, 0);
@@ -462,8 +467,12 @@ global_keywords_tables = "";
             }
         });
 
-        angular.element('#resizable').resizable({
-            handles: 's'
-        });
+        $scope.addTab = () => {
+            $scope.vars.tabs.push({});
+        }
+
+        // angular.element('#resizable').resizable({
+        //     handles: 's'
+        // });
     }
 })(angular, smi2);
