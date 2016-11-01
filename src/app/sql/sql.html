@@ -1,21 +1,52 @@
+<div style="position: absolute; top: 4px; right: 4px; z-index: 2">
+    <md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">
+        <i class="mdi mdi-settings"></i>
+    </md-button>
+</div>
+
 <md-tabs md-dynamic-height md-border-bottom>
-    <md-tab label="SQL" ng-repeat="tab in vars.tabs">
-        <md-content style="padding-right: 4px">
-            <div style="min-height: 200px; position: relative;" id="resizable">
-                <div ng-model="vars.sql" ui-ace="{
-                        useWrapMode : true,
-                        mode: 'clickhouse',
-                        onLoad: aceLoaded,
-                        advanced: {
-                            enableBasicAutocompletion: true
-                        }
-                    }"
-                     style="min-height: 200px; width: 100%; height: 100%; border-bottom: 3px #eee solid; border-right: 3px #eee solid;">
+    <md-tab label="{{tab.name}}" ng-repeat="tab in vars.tabs" ng-click="vars.currentTab = tab">
+        <md-content>
+            <div style="display: table; width: 100%;">
+                <div style="min-height: 300px; position: relative; display: table-cell;" id="resizable">
+                    <div ng-model="tab.sql" ui-ace="{
+                            useWrapMode : true,
+                            mode: 'clickhouse',
+                            onLoad: aceLoaded,
+                            advanced: {
+                                enableBasicAutocompletion: true
+                            }
+                        }"
+                        style="min-height: 200px; width: 100%; height: 100%;">
+                    </div>
+                    <md-button class="ml0 md-raised1 md-primary">{{tab.buttonTitle}}</md-button>
+                </div>
+                <div style="width: 40px; display: table-cell; vertical-align: top;">
+                    <md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                        <i class="mdi mdi-content-save"></i>
+                    </md-button>
+                    <md-menu md-position-mode="target-right target" >
+                        <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <i class="mdi mdi-history"></i>
+                        </md-button>
+                        <md-menu-content width="4" >
+                            <md-menu-item ng-repeat="item in [1, 2, 3]">
+                                <md-button ng-click="ctrl.announceClick($index)">
+                                    <div layout="row" flex>
+                                        <p flex>Option {{item}}</p>
+                                        <md-icon md-menu-align-target md-svg-icon="call:portable-wifi-off" style="margin: auto 3px auto 0;"></md-icon>
+                                    </div>
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
                 </div>
             </div>
         </md-content>
     </md-tab>
-    <md-tab label="+" ng-click="addTab()"></md-tab>
+    <md-tab ng-click="addTab()">
+        <i class="mdi mdi-plus-circle"></i>
+    </md-tab>
 </md-tabs>
 
 
@@ -38,20 +69,6 @@
                         <!--<ul>-->
                             <!--<li ng-repeat="theme in vars.themes">-->
                                 <!--<a class="dropdown-link" ng-click="setTheme(theme)">{{theme}}</a>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                    <!--</lx-dropdown-menu>-->
-                <!--</lx-dropdown>-->
-                <!--<lx-dropdown lx-position="right" lx-over-toggle="true">-->
-                    <!--<lx-dropdown-toggle>-->
-                        <!--<lx-button lx-color="black" lx-type="flat">-->
-                            <!--{{vars.format.name}}-->
-                        <!--</lx-button>-->
-                    <!--</lx-dropdown-toggle>-->
-                    <!--<lx-dropdown-menu>-->
-                        <!--<ul>-->
-                            <!--<li ng-repeat="format in vars.formats">-->
-                                <!--<a class="dropdown-link" ng-click="vars.format = format">{{format.name}}</a>-->
                             <!--</li>-->
                         <!--</ul>-->
                     <!--</lx-dropdown-menu>-->
@@ -154,3 +171,39 @@
         </div>
     </div>
 </div>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+    <div class="p+">
+        <h4 class="mt0 mb+++">
+            Настройки редактора
+        </h4>
+        <md-input-container class="width-100">
+            <label for="inp1">Размер шрифта</label>
+            <input type="text" id="inp1" ng-model="vars.fontSize">
+        </md-input-container>
+        <md-input-container class="width-100">
+            <label for="inp2">Максимум строк</label>
+            <input type="text" id="inp2" ng-model="vars.limitRows">
+        </md-input-container>
+        <md-input-container class="width-100 mb++">
+            <label>Тема редактора</label>
+            <md-select ng-model="vars.theme">
+                <md-option ng-repeat="theme in vars.themes" ng-value="theme" ng-click="setTheme(theme)">
+                    {{theme}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container class="width-100">
+            <label>Формат результатов</label>
+            <md-select ng-model="vars.format">
+                <md-option ng-repeat="format in vars.formats" ng-value="format" ng-click="vars.format = format">
+                    {{format.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">
+            Закрыть
+        </md-button>
+    </div>
+</md-sidenav>

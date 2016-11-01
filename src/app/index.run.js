@@ -4,7 +4,7 @@
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:Run
-	 * @description Первый контроллер приложения
+	 * @description Main APP controller
 	 */
 	angular
 		.module(smi2.app.name)
