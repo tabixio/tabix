@@ -14,6 +14,7 @@
 			function($rootScope, $state) {
 
 				$rootScope.breadcrumbs = [];
+				$rootScope.currentDatabase = null;
 
 				// Провеярю в чем ошибка перехода на state
 				var stateChangeErrorUnbind = $rootScope.$on('$stateChangeError', function(toState, toParams, fromState, fromParams, error, reason) {

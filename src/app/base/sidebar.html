@@ -1,5 +1,5 @@
-<div ng-if="vars.loaded" class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
-    <div eeh-metis-menu="{{ {toggle: true} }}" class="metismenu">
+<div class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
+    <div ng-if="vars.loaded" eeh-metis-menu="{{ {toggle: true} }}" class="metismenu">
         <nav>
             <ul>
                 <li ng-repeat="database in vars.databases">
@@ -16,5 +16,8 @@
                 </li>
             </ul>
         </nav>
+    </div>
+    <div ng-if="!vars.loaded">
+        no connect
     </div>
 </div>

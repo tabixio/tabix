@@ -2,14 +2,14 @@
 	'use strict';
 
 	angular.module( smi2.app.name ).controller( 'SidebarController', SidebarController );
-	SidebarController.$inject = [ '$scope', 'API', 'ThemeService' ];
+	SidebarController.$inject = [ '$scope', '$rootScope', 'API', 'ThemeService' ];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:SidebarController
 	 * @description Контроллер бокового меню
 	 */
-	function SidebarController( $scope, API, ThemeService ) {
+	function SidebarController( $scope, $rootScope, API, ThemeService ) {
 		$scope.vars = {
 			loaded: false,
 			databases: [ ]
@@ -27,6 +27,14 @@
 			advanced: {
 				updateOnContentResize: true
 			}
+		};
+
+
+		/**
+		 * Select database
+		 */
+		$scope.selectDatabase = database => {
+			$rootScope.currentDatabase = database.text;
 		};
 
 		API.query( 'SELECT ' +
@@ -53,6 +61,7 @@
 					}
 				];
 			}, [ ]);
+			$scope.selectDatabase($scope.vars.databases[0]);
 			$scope.vars.loaded = true;
 		});
 	}
