@@ -29,7 +29,12 @@ gulp.task('inject', ['scripts', 'styles'], function() {
 			path.join('!' + conf.paths.src, '/app/**/*.test.js'),
 			path.join('!' + conf.paths.src, '/app/**/*.mock.js'),
 		])
-		.pipe($.angularFilesort()).on('error', conf.errorHandler('AngularFilesort'));
+        .pipe($.babel({
+            presets: ['es2015', 'stage-0']
+        }))
+        .on('error', conf.errorHandler('babel'))
+		.pipe($.angularFilesort())
+        .on('error', conf.errorHandler('AngularFilesort'));
 
 	var injectOptions = {
 		ignorePath: [conf.paths.src, path.join(conf.paths.tmp, '/serve')],

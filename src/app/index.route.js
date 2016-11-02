@@ -37,9 +37,6 @@
 						templateUrl: 'app/base/sidebar.html',
 						controller: 'SidebarController'
 					},
-					breadcrumb: {
-						templateUrl: 'app/base/breadcrumbs.html'
-					},
 					main: {
 						template: '<ui-view/>'
 					}
@@ -50,8 +47,7 @@
 			.state('dashboard', {
 				parent: 'layout',
 				url: '/',
-				templateUrl: 'app/dashboard/dashboard.html',
-				controller: 'DashboardController'
+				controller: ['$state', ($state) => ($state.go('sql'))]
 			})
 
 			// Логин
@@ -95,7 +91,7 @@
 
 			// Потеряшки
 			.state('404', {
-				parent: 'base',
+				parent: 'layout',
 				templateUrl: 'app/base/404.html'
 			});
 		});

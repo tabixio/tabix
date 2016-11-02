@@ -4,7 +4,7 @@
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:Run
-	 * @description Первый контроллер приложения
+	 * @description Main APP controller
 	 */
 	angular
 		.module(smi2.app.name)
@@ -14,6 +14,7 @@
 			function($rootScope, $state) {
 
 				$rootScope.breadcrumbs = [];
+				$rootScope.currentDatabase = null;
 
 				// Провеярю в чем ошибка перехода на state
 				var stateChangeErrorUnbind = $rootScope.$on('$stateChangeError', function(toState, toParams, fromState, fromParams, error, reason) {

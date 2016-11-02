@@ -1,20 +1,22 @@
 {
   "extends": "eslint:recommended",
-  "plugins": ["angular"],
+  "plugins": ["angular", "es6-recommended"],
   "env": {
     "browser": true,
-    "jasmine": true
+    "jasmine": true,
+    "es6": true
   },
   "globals": {
     "angular": true,
     "smi2": true,
     "module": true,
     "inject": true,
-    "moment": true,
+    "moment": true
   },
     "rules": {
         "semi": 2,
         "angular/window-service":0,
+        "angular/on-watch":0,
 
         // Нет объективных причин почему вместо $scope используется this.
         // Никаких изменений в производительности, памяти.

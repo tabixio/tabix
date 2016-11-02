@@ -1,0 +1,49 @@
+.sidebar-view {
+    position: fixed;
+    top: 40px;
+    bottom: 0;
+
+    .sidebar {
+        overflow: hidden;
+        height: 100%;
+        width: 200px;
+        padding-left: 5px;
+
+        .mCSB_container_wrapper {
+            margin-right: 5px!important;
+
+            .mCSB_container {
+                padding-right: 0 !important;
+            }
+        }
+
+        .metismenu {
+            -webkit-margin-before: 0;
+            -webkit-padding-start: 0;
+
+            ul {
+                list-style: none;
+
+                li {
+                    position: relative;
+                    padding-right: 5px;
+
+                    ul.sub-menu {
+                        -webkit-padding-start: 0;
+                        margin-left: 20px;
+                    }
+
+                    button {
+                        width: 100%;
+                        text-overflow: ellipsis;
+                        margin: 0;
+
+                        i {
+                            margin-right: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
