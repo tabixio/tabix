@@ -551,9 +551,32 @@ global_keywords_tables = "";
          */
         $scope.removeTab = (tab, event) => {
             event.stopPropagation();
-            $scope.vars.tabs.splice($scope.vars.tabs.indexOf(tab), 1);
-            if ($scope.vars.tabs.length == $scope.vars.selectedTab) {
-                $scope.vars.selectedTab--;
+
+            const clear = () => {
+                $scope.vars.tabs.splice($scope.vars.tabs.indexOf(tab), 1);
+                if ($scope.vars.tabs.length == $scope.vars.selectedTab) {
+                    $scope.vars.selectedTab--;
+                }
+            };
+
+            if (tab.changed) {
+                $mdDialog.show(
+                    $mdDialog.confirm()
+                        .title('SQL изменен. Сохранить перед закрытием?')
+                        .targetEvent(event)
+                        .ok('Да')
+                        .cancel('Нет')
+                ).then(()=> {
+                    const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
+                    if (index != -1) {
+                        $scope.vars.sqlHistory[index].sql = tab.sql;
+                        $scope.vars.sqlHistory[index].name = tab.name;
+                    }
+                    localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
+                    clear();
+                }, clear);
+            } else {
+                clear();
             }
         };
 

@@ -24,7 +24,8 @@
             bases: localStorageService.get(ALL_BASES_KEY) || [],
             db: {},
             loading: false,
-            build: smi2.app.build
+            build: smi2.app.build,
+            themes: ThemeService.list
         };
 
         /**
@@ -72,5 +73,11 @@
             localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
             $scope.vars.db = {};
         };
+
+        /**
+         * Change UI theme
+         * @param theme
+         */
+        $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
     }
 })(angular, smi2);

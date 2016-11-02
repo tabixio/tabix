@@ -15,11 +15,11 @@
         const list = [{
             isDark: false,
             name: 'default',
-            title: 'Светлая'
+            title: 'Светлая тема'
         }, {
             isDark: true,
             name: 'dark',
-            title: 'Темная'
+            title: 'Темная тема'
         }];
         let theme = list.find((item) => (item.name == themeName)) || list[0];
 

@@ -16,10 +16,10 @@
 		'ui.ace',
 		'ui.grid',
 		'ui.grid.autoResize',
+        'angularResizable',
         'ngSanitize',
         'ngMaterial',
 		'funMetisMenu',
 		'ngScrollbars'
 	]);
-
 })();

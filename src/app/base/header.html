@@ -7,6 +7,17 @@
             </div>
 
             <div class="pull-right">
+                <md-menu md-position-mode="target-right target">
+                    <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                        <i class="mdi mdi-24px mdi-theme-light-dark"></i>
+                        <md-tooltip>Тема</md-tooltip>
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item ng-repeat="theme in themes">
+                            <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
                 <md-button class="md-icon-button" aria-label="Выход" ng-click="logout()">
                     <i class="mdi mdi-24px mdi-lock"></i>
                     <md-tooltip>Выход</md-tooltip>

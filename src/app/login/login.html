@@ -9,6 +9,19 @@
                 <div class="pull-left">
                     <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
                 </div>
+
+                <div class="pull-right">
+                    <md-menu md-position-mode="target-right target">
+                        <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <i class="mdi mdi-24px mdi-theme-light-dark"></i>
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item ng-repeat="theme in vars.themes">
+                                <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
             </div>
         </md-card>
     </div>
