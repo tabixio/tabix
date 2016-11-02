@@ -1,6 +1,6 @@
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
-global_keywords_fields = "";
-global_keywords_tables = "";
+window.global_keywords_fields = "";
+window.global_keywords_tables = "";
 
 (function (angular, smi2) {
     'use strict';
@@ -370,8 +370,8 @@ global_keywords_tables = "";
                     });
                 });
 
-                global_keywords_fields = fields.join('|') + '|';
-                global_keywords_tables = tables.join('|') + '|' + db;
+                window.global_keywords_fields = fields.join('|') + '|';
+                window.global_keywords_tables = tables.join('|') + '|' + db;
 
                 // reload highlights
                 $scope.vars.tabs.forEach((tab) => {
