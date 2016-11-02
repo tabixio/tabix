@@ -1,7 +1,7 @@
 <div class="wrapper">
     <header ui-view="header" class="header-view"></header>
     <div class="content">
-        <div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view"></div>
+        <div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view" resizable r-directions="['right']" r-width="200" r-flex="true"></div>
         <div class="main-content">
             <div ui-view="main"></div>
 			<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="tableSiedenav">
