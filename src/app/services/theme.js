@@ -11,7 +11,7 @@
      */
     function ThemeService(localStorageService, $state, $stateParams) {
 
-        const themeName = localStorageService.get('themeName') || false;
+        const themeName = localStorageService.get('themeName') || 'dark';
         const list = [{
             isDark: false,
             name: 'default',
