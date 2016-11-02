@@ -69,8 +69,8 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			"keyword": keywords,
 			"constant.language": builtinConstants,
 			"storage.type": dataTypes,
-			"markup.bold":global_keywords_tables,
-			"markup.heading":global_keywords_fields
+			"markup.bold":window.global_keywords_tables,
+			"markup.heading":window.global_keywords_fields
 		}, "identifier", true);
 
 
@@ -142,8 +142,8 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 		addCompletions(keywords.split('|'), 'keyword');
 		addCompletions("FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
-		addCompletions(global_keywords_tables.split('|'), 'storage');
-		addCompletions(global_keywords_fields.split('|'), 'storage');
+		addCompletions(window.global_keywords_tables.split('|'), 'storage');
+		addCompletions(window.global_keywords_fields.split('|'), 'storage');
 		//this allows for custom 'meta' and proper case of completions
 		this.completions = completions;
 
