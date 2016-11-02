@@ -46,6 +46,9 @@ gulp.task('html', ['inject', 'partials'], function () {
     var jsFilter = $.filter('**/*.js', {
         restore: true
     });
+    var jsVendor = $.filter(['**/*.js', '!**/vendor-*.js'], {
+        restore: true
+    });
     var cssFilter = $.filter('**/*.css', {
         restore: true
     });
@@ -56,6 +59,12 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe(assets = $.useref.assets())
         .pipe($.rev())
         .pipe(jsFilter)
+        .pipe(jsVendor)
+        .pipe($.babel({
+            presets: ['es2015', 'stage-0']
+        }))
+        .on('error', conf.errorHandler('babel'))
+        .pipe(jsVendor.restore)
         //.pipe($.replace('assets/', 'app/assets/'))
         //.pipe($.sourcemaps.init())
         .pipe($.ngAnnotate())
