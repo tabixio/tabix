@@ -49,7 +49,7 @@
 
             API.setConnection($scope.vars.db);
             API.query('SELECT \'login success\'').then(
-                () => $state.go('dashboard'),
+                () => $state.go('sql'),
                 () => {
                     $scope.vars.loading = false;
                     $mdToast.show(

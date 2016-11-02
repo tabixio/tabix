@@ -5,28 +5,8 @@
                 <img src="assets/images/logo.png" class="logo mr"/>
                 <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
             </div>
-            <div class="pull-left">
-                <ul ng-if="$root.breadcrumbs" class="breadcrumb">
-                    <li class="home-item" style="margin-right: -16px">
-                        <md-button class="md-icon-button" aria-label="Home" ui-sref="dashboard">
-                            <i class="mdi mdi-home"></i>
-                        </md-button>
-                    </li>
-                    <li  ng-repeat="nav in $root.breadcrumbs" class="breadcrumb-item">
-                        <i class="icon icon--xs mdi mdi-chevron-right"></i>
-                        <a ng-if="!$last" ui-sref="{{nav.link}}(nav.params)" class="btn btn--xs btn--white btn--raised">{{nav.text}}&nbsp;</a>
-                        <span ng-if="$last" class="tc-white">{{nav.text}}</span>
-                    </li>
-                </ul>
-            </div>
 
             <div class="pull-right">
-
-                <md-button class="md-icon-button" aria-label="SQL" ui-sref="sql">
-                    <i class="mdi mdi-24px mdi-console"></i>
-                    <md-tooltip>SQL</md-tooltip>
-                </md-button>
-
                 <md-button class="md-icon-button" aria-label="Выход" ng-click="logout()">
                     <i class="mdi mdi-24px mdi-lock"></i>
                     <md-tooltip>Выход</md-tooltip>

@@ -17,13 +17,20 @@ a {
 }
 
 .sql-table {
+    th {
+        background-color: rgba(200,200,200,0.2);
+    }
     td, th {
         white-space: nowrap;
         text-align: left;
         padding: 5px;
     }
+    .sql-table__subheader {
+        font-size: 80%;
+        opacity: 0.7;
+    }
     tr:nth-child(even) {
-        background: #f2f2f2;
+        ///background: #f2f2f2;
     }
 }
 
@@ -34,6 +41,16 @@ pre {
 .fullscreen {
     width: 100%;
     height: 100%;
+    &.default {
+        background-color: rgb(250,250,250);
+    }
+    &.dark {
+        background-color: rgb(48,48,48);
+    }
+}
+
+*:-webkit-full-screen {
+    background-color: inherit;
 }
 
 //.myGrid {

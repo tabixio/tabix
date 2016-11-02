@@ -12,7 +12,12 @@ global_keywords_tables = "";
         '$window',
         'localStorageService',
         'API',
-        '$mdSidenav'
+        '$mdSidenav',
+        '$mdDialog',
+        '$mdToast',
+        'ThemeService',
+        '$timeout',
+        '$filter'
     ];
 
     /**
@@ -20,15 +25,18 @@ global_keywords_tables = "";
      * @name smi2.controller:SqlController
      * @description Контроллер выполнения SQL запросов к БД
      */
-    function SqlController($scope, $rootScope, $window, localStorageService, API, $mdSidenav) {
+    function SqlController($scope, $rootScope, $window, localStorageService, API, $mdSidenav, $mdDialog, $mdToast, ThemeService, $timeout, $filter) {
+
+        const SQL_HISTORY_KEY = 'sqlHistory2';
 
         $scope.vars = {
-            sqlHistory: localStorageService.get('sqlHistory') || [],
+            sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
-            finishQuery: true,
-            resultsQuery: [],
             tabs: [],
+            uiTheme: ThemeService.themeObject,
+            uiThemes: ThemeService.list,
             currentTab: {},
+            selectedTab: 0,
             formats: [{
                 name: 'Таблица',
                 sql: ' format JSON',
@@ -56,13 +64,15 @@ global_keywords_tables = "";
             'dawn', 'merbivore', 'textmate',
             'dreamweaver', 'merbivore_soft', 'tomorrow'
         ];
-        $rootScope.breadcrumbs = false;
-        $scope.isFullscreen = false;
+        $rootScope.breadcrumbs = [{
+            text: 'SQL',
+            link: 'sql'
+        }];
 
         /**
          * Предотвращаю потерю SQL данных при закрытии окна
          */
-        $window.onbeforeunload = function (event) {
+        $window.onbeforeunload = (event) => {
             if ($scope.vars.currentTab.sql !== '' && location.hostname != 'localhost') {
                 let message = 'Хотите покинуть страницу?';
                 if (typeof event == 'undefined') {
@@ -78,19 +88,12 @@ global_keywords_tables = "";
         /**
          * Предотвращаю потерю SQL данных при смене стейта
          */
-        let clearRouterListener = $scope.$on('$stateChangeStart', function (event) {
+        let clearRouterListener = $scope.$on('$stateChangeStart', (event) => {
             let message = 'Хотите покинуть страницу?';
             if (!event.defaultPrevented && $scope.vars.currentTab !== '' && !confirm(message)) {
                 event.preventDefault();
             }
         });
-
-        /**
-         * Toggle fullscreen mode
-         */
-        $scope.toggleFullScreen = function () {
-            $scope.isFullscreen = !$scope.isFullscreen;
-        };
 
         /**
          * @ngdoc method
@@ -99,65 +102,68 @@ global_keywords_tables = "";
          * @description Выполненеие одного SQL запроса
          * @param {} query
          */
-        $scope.executeQuery = function (query, queue, callback) {
+        $scope.executeQuery = (query, queue, resultContainer) => {
 
             // содержит дополнительные GET параметры для выполнения запрос
             let extendSettings = '';
+
+            $scope.vars.currentTab.loading = true;
 
             // если указан limitRows
             if ($scope.vars.limitRows) {
                 extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
             }
 
-            API.query(query.sql, query.format, true, extendSettings).then(function (data) {
+            API.query(query.sql, query.format, true, extendSettings).then((data) => {
 
                 let r = data;
 
                 if (typeof data !== 'object') {
-                    data = {};
-                    data.data = r;
-                    data.meta = null;
-                    data.rows = null;
-                    data.statistics = null;
+                    data = {
+                        data: r,
+                        meta: null,
+                        rows: null,
+                        statistics: null
+                    };
                 }
                 data.error = false;
                 data.query = query;
-                $scope.vars.resultsQuery.push($scope.renderResult(data));
+                let resultData = $scope.renderResult(data);
+                resultContainer.data.push(resultData);
 
                 // Рекурсивный вызов executeQuery если в очереди
                 // еще остались элементы
                 if ((query.index + 1) < queue.length) {
-                    $scope.executeQuery(queue[query.index + 1], queue);
+                    $scope.executeQuery(queue[query.index + 1], queue, resultContainer);
                 }
                 else {
-                    // В историю только успешные запросы, ошибки будут засорять
-                    if ($scope.vars.sqlHistory.indexOf($scope.vars.sql) == -1) {
-                        $scope.vars.sqlHistory.push($scope.vars.sql);
-                        if ($scope.vars.sqlHistory.length > 25) {
-                            $scope.vars.sqlHistory.shift();
-                        }
-                        localStorageService.set('sqlHistory', $scope.vars.sqlHistory);
-                    }
                     // отрисовка
-                    $scope.renderFinalResult();
+                    $scope.renderFinalResult(resultContainer);
                 }
 
-            }, function (response) {
-                //LxNotificationService.error('Ошибка');
-                let result = {};
-                result.meta = null;
-                result.rows = null;
-                result.query = query;
-                result.statistics = null;
+            }, (response) => {
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Ошибка')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                );
 
-                if (response.data) {
+                let result = {
+                    meta: null,
+                    rows: null,
+                    query: query,
+                    statistics: null
+                };
+                if (response && response.data) {
                     result.error = angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '');
                 } else {
                     result.error = response;
                 }
-                $scope.vars.resultsQuery.push($scope.renderResult(result));
+                resultContainer.data.push($scope.renderResult(result));
 
-                $scope.renderFinalResult();
+                $scope.renderFinalResult(resultContainer);
             });
         };
 
@@ -166,7 +172,7 @@ global_keywords_tables = "";
          * @param data
          * @returns {*}
          */
-        $scope.renderResult = function (data) {
+        $scope.renderResult = (data) => {
             if (typeof data.error == 'string') {
                 data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
             }
@@ -180,70 +186,92 @@ global_keywords_tables = "";
             }
             else {
                 data.result = API.dataToHtml(data);
-                data.createtable=API.dataToCreateTable(data);
+                data.createtable = API.dataToCreateTable(data);
             }
             data.data = false;
             return data;
         };
 
-        $scope.renderFinalResult = function () {
-            let keywords = '';
-            $scope.vars.resultsQuery.forEach(function (q) {
-                keywords += q.query.keyword + "|";
-            });//for
-            $scope.vars.finishQuery = true;
-
-            if (keywords.toUpperCase().match(/(DROP|CREATE|ALTER)/g)) {
-                // reload
+        /**
+         * Operations after render
+         * @param result
+         */
+        $scope.renderFinalResult = (result) => {
+            $scope.vars.currentTab.loading = false;
+            if(result.data.find((item) => (
+                ['DROP','CREATE','ALTER'].indexOf(
+                    item.query.keyword.toUpperCase()
+                ) != -1
+            ))) {
                 $scope.selectDatabase($scope.vars.db);
             }
-
         };
 
         /**
          * Execute SQL statement
          * @param type
          */
-        $scope.execute = function (type) {
+        $scope.execute = (type, tab) => {
 
-            let sql = $scope.vars.sql;
+            let sql = tab.sql;
             let numquery = 0;
+            const editor = tab.editor;
+            let queue = [];
+            let selectSql = editor.getSelectedText();
+            let result = {
+                data: [],
+                time: $filter('date')(new Date(), 'HH:mm:ss'),
+                pinned: false
+            };
 
             // получаем выделенный текст, и если выделено - ранаем выделение
-            let selectsql = $scope.vars.editor.getSelectedText();
-            if (!(selectsql === '' || selectsql === null)) {
-                sql = selectsql;
+            if (!(selectSql === '' || selectSql === null)) {
+                sql = selectSql;
             }
 
             // Выход если пустой sql
             if (sql === '' || sql === null) {
-                //LxNotificationService.warning('Не введен SQL');
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Не введен SQL')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                );
+
                 return;
             }
 
-            $scope.vars.resultsQuery = [];
-            let queue = [];
+            // Clear not-pinned tabs
+            tab.results = tab.results.reduce((arr, item) => {
+                if(item.pinned) {
+                   arr.push(item);
+                }
+                return arr;
+            }, []);
+            tab.results.unshift(result);
 
-            // Разбивка SQL на подзапросы по ;;
-            let sqlList = $scope.vars.editor.session.$mode.splitByTokens(sql, 'constant.character.escape', ';;');
+            // Split SQL into subqueries
+            editor
+                .session
+                .$mode
+                .splitByTokens(sql, 'constant.character.escape', ';;')
+                .forEach((item) => {
 
-            // Цикл по подзапросам
-            sqlList.forEach(function (SQLQuery) {
-                let subSQL = SQLQuery.sql;
+                const subSql = item.sql;
 
-                if (subSQL.length<5) return;
+                // Ignore short queries
+                if (subSql.length < 5) {
+                    return;
+                }
 
                 // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
-                if (type == 'current' && !selectsql) {
-                    let cursor = $scope.vars.editor.selection.getCursor();
+                if (type == 'current' && !selectSql) {
+                    let cursor = editor.selection.getCursor();
 
-                    if (angular.isDefined(cursor)) {
-                    // if (cursor.row && cursor.column) {
-                        let inRange = SQLQuery.range.compare(cursor.row, cursor.column);
-                        if (inRange !== 0) return;
-                    }
-                    else
-                    {
+                    if (!cursor ||
+                        !angular.isDefined(cursor) ||
+                        item.range.compare(cursor.row, cursor.column) !== 0) {
                         return;
                     }
                 }
@@ -252,9 +280,8 @@ global_keywords_tables = "";
                 let _format_seted = false;
                 let storage = false;
                 let _keyword = null;
-                let set_format = $scope.vars.editor.session.$mode.findTokens(subSQL, "storage", true);
-                let keyword = $scope.vars.editor.session.$mode.findTokens(subSQL, "keyword", true);
-
+                let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
+                let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
 
                 if (set_format.hasOwnProperty('value')) {
                     _format = false;
@@ -272,22 +299,21 @@ global_keywords_tables = "";
                     _format_seted = false;
                 }
 
-
-                // Создание очереди
+                // Queue creation
                 queue.push({
-                    sql: subSQL,
+                    sql: subSql,
                     index: numquery,
                     format: _format,
                     setedformat: _format_seted,
                     keyword: _keyword,
                     storage: storage
                 });
+
                 numquery++;
             });
 
             if (queue.length) {
-                $scope.vars.finishQuery = false;
-                $scope.executeQuery(queue[0], queue);
+                $scope.executeQuery(queue[0], queue, result);
             }
 
         };
@@ -296,27 +322,38 @@ global_keywords_tables = "";
          * Set theme for all editors
          * @param theme
          */
-        $scope.setTheme = function (theme) {
+        $scope.setTheme = (theme) => {
             $scope.vars.theme = theme;
             $scope.vars.tabs.forEach((tab) => tab.editor.setTheme('ace/theme/' + theme));
             localStorageService.set('editorTheme', theme);
         };
 
-        $scope.selectDatabase = function (db) {
-            $scope.vars.db = db;
+        /**
+         * Установка названия БД
+         * @param db
+         */
+        $scope.selectDatabase = (db) => {
 
-            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", null).then(function (data) {
+            if (!db) {
+                return;
+            }
+
+            $scope.vars.db = db;
+            API.setDatabase(db);
+
+            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", null)
+                .then((data) => {
 
                 let fields = [],
                     ufields = {};
                 let tables = [],
                     utables = {};
                 let keys = [];
-                data.meta.forEach(function (cell) {
+                data.meta.forEach((cell) => {
                     keys.push(cell.name);
                 });
-                data.data.forEach(function (row) {
-                    keys.forEach(function (key) {
+                data.data.forEach((row) => {
+                    keys.forEach((key) => {
 
                         if (key == 'table') {
                             if (!utables.hasOwnProperty(row[key])) {
@@ -335,12 +372,15 @@ global_keywords_tables = "";
 
                 global_keywords_fields = fields.join('|') + '|';
                 global_keywords_tables = tables.join('|') + '|' + db;
+
                 // reload highlights
-                $scope.vars.editor.session.setMode({
-                    path: "ace/mode/clickhouse",
-                    v: Date.now()
+                $scope.vars.tabs.forEach((tab) => {
+                    tab.editor.session.setMode({
+                        path: "ace/mode/clickhouse",
+                        v: Date.now()
+                    });
+                    tab.editor.session.bgTokenizer.start(0);
                 });
-                $scope.vars.editor.session.bgTokenizer.start(0); // force rehighlight whole document
             });
 
         };
@@ -348,7 +388,7 @@ global_keywords_tables = "";
         /**
          * Add word from dict to SQL etitor
          */
-        $scope.addDictionariesWord = function (word) {
+        $scope.addDictionariesWord = (word) => {
             const editor = $scope.vars.currentTab.editor;
             editor.clearSelection();
             editor.insert(word);
@@ -358,14 +398,17 @@ global_keywords_tables = "";
         /**
          * Load dicts for ACE autocomplete
          */
-        $scope.loadDictionaries = function () {
+        $scope.loadDictionaries = () => {
             $scope.vars.dictionaries = [];
-            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then(function (data) {
-                data.data.forEach(function (item) {
+            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
+                data.data.forEach((item) => {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
                     let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item.name.replace(/\./, '_') + '_' + item["attribute.names"] + ',';
 
-                    $scope.vars.dictionaries.push({dic:dic,title:item.name+'.'+item["attribute.names"]+' as '+item["attribute.types"] });
+                    $scope.vars.dictionaries.push({
+                        dic: dic,
+                        title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"]
+                    });
                 });
             });
         };
@@ -374,7 +417,7 @@ global_keywords_tables = "";
          * ACE editor init on creation
          * @param editor
          */
-        $scope.aceLoaded = function (editor) {
+        $scope.aceLoaded = (editor) => {
             let tab = $scope.vars.currentTab;
             tab.editor = editor;
 
@@ -391,8 +434,8 @@ global_keywords_tables = "";
                     win: 'Ctrl-Enter',
                     mac: 'Command-Enter'
                 },
-                exec: function () {
-                    $scope.execute('current');
+                exec: () => {
+                    $scope.execute('current', tab);
                 }
             });
 
@@ -402,8 +445,8 @@ global_keywords_tables = "";
                     win: 'Shift-Ctrl-Enter',
                     mac: 'Shift-Command-Enter'
                 },
-                exec: function () {
-                    $scope.execute('all');
+                exec: () => {
+                    $scope.execute('all', tab);
                 }
             });
 
@@ -412,32 +455,22 @@ global_keywords_tables = "";
             editor.selection.moveTo(0, 0);
 
             // Повесить эвент и переиминовывать кнопку -"Выполнить"
-            editor.on('changeSelection', function () {
-                tab.buttonTitle = editor.getSelectedText() !== '' ? 'Выполнить выделенное ⌘ + ⏎' : 'Выполнить все ⇧ + ⌘ + ⏎';
-                $scope.$apply();
-            });
-
-            // наблюдаем за изменением в выбор базы данных
-            let scope = angular.element($("[ng-app=sidebar]")).scope();
-            if (scope) {
-                scope.$watch('vars.selectedDatabase.name', function (curr) {
-                    if (!angular.isUndefined(curr)) {
-                        $scope.selectDatabase(curr);
+            editor.on('changeSelection', () => {
+                $timeout(() => {
+                    tab.buttonTitle = editor.getSelectedText() !== '' ? 'Выполнить выделенное ⌘ + ⏎' : 'Выполнить все ⇧ + ⌘ + ⏎';
+                    if (tab.originalSql) {
+                        tab.changed = (tab.originalSql != tab.sql);
                     }
                 });
-            }
-
-            /*
-            if (location.hostname != 'localhost') {
-                $scope.vars.sql = $scope.vars.sqlHistory[0]; // последний удачный запрос
-            }
-            else {
-                $scope.vars.sql = ";;select 0 as ping;;\nselect 1 as ping;;select 2 as ping\n;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;\nSELECT 5 As PING format JSON;;select 6 as ping\n;;select 7 as ping FORMAT CSVWithNames";
-            }
-            */
+            });
 
             $scope.loadDictionaries();
         };
+
+        /**
+         * Watch for menu database changes
+         */
+        $rootScope.$watch('currentDatabase', $scope.selectDatabase);
 
         /**
          * Watch and save settings in LocalStorage
@@ -457,6 +490,45 @@ global_keywords_tables = "";
         });
 
         /**
+         * Save SQL to history
+         * @param tab
+         * @param ev
+         */
+        $scope.save = (tab, ev) => $mdDialog.show(
+            $mdDialog.prompt()
+                .title('Сохранить SQL как')
+                .placeholder('название')
+                .initialValue(tab.name)
+                .targetEvent(ev)
+                .ok('Сохранить')
+                .cancel('Отмена')
+        ).then((name)=> {
+            const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
+            if (index != -1) {
+                $scope.vars.sqlHistory[index].sql = tab.sql;
+                $scope.vars.sqlHistory[index].name = name;
+            } else {
+                $scope.vars.sqlHistory.push({
+                    sql: tab.sql,
+                    name
+                });
+            }
+            tab.originalSql = tab.sql;
+            tab.name = name;
+            localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
+        });
+
+        /**
+         * Load SQL from history
+         * @param history
+         */
+        $scope.load = (history) => {
+            $scope.vars.currentTab.sql = history.sql;
+            $scope.vars.currentTab.originalSql = history.sql;
+            $scope.vars.currentTab.name = history.name;
+        }
+
+        /**
          * Inserting new SQL tab
          */
         $scope.addTab = () => {
@@ -465,17 +537,43 @@ global_keywords_tables = "";
                 sql: '',
                 buttonTitle: 'Выполнить ⌘ + ⏎',
                 format: {},
-                editor: null
+                editor: null,
+                results: [],
+                selectedResultTab: 0
             };
             $scope.vars.tabs.push($scope.vars.currentTab);
-        }
+        };
+
+        /**
+         * Remove SQL tab
+         * @param tab
+         * @param event
+         */
+        $scope.removeTab = (tab, event) => {
+            event.stopPropagation();
+            $scope.vars.tabs.splice($scope.vars.tabs.indexOf(tab), 1);
+            if ($scope.vars.tabs.length == $scope.vars.selectedTab) {
+                $scope.vars.selectedTab--;
+            }
+        };
+
+        /**
+         * Remove result Tab
+         * @param tab
+         * @param result
+         * @param $event
+         */
+        $scope.removeResult = (tab, result, event) => {
+            event.stopPropagation();
+            tab.results.splice(tab.results.indexOf(result), 1);
+        };
 
         /**
          * Toggle settings panel
          */
         $scope.toggleSidenav = (id) => {
             $mdSidenav(id).toggle();
-        }
+        };
 
         // angular.element('#resizable').resizable({
         //     handles: 's'
@@ -485,14 +583,20 @@ global_keywords_tables = "";
          * Init :)
          */
         $scope.addTab();
+        if ($rootScope.currentDatabase) {
+            $scope.selectDatabase($rootScope.currentDatabase);
+        };
 
         /**
          * Controller destructor
          */
-        $scope.$on('$destroy', function () {
+        $scope.$on('$destroy', () => {
+            API.setDatabase($rootScope.currentDatabase);
             clearRouterListener();
             $window.onbeforeunload = null;
         });
+
+        $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
 
     }
 })(angular, smi2);
