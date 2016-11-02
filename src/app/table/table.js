@@ -2,17 +2,19 @@
 	'use strict';
 
 	angular.module( smi2.app.name ).controller( 'TableController', TableController );
-	TableController.$inject = [ '$scope', '$rootScope', 'API', 'ThemeService' ];
+	TableController.$inject = [ '$scope', '$rootScope', 'API', 'ThemeService', '$stateParams' ];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:TableController
 	 * @description Контроллер страницы 1 таблицы БД
 	 */
-	function TableController( $scope, $rootScope, API, ThemeService ) {
+	function TableController( $scope, $rootScope, API, ThemeService, $stateParams ) {
 
 		$scope.vars = {
 			columns: {},
+            currentDatabase: $stateParams.dbName || $rootScope.currentDatabase,
+            currentTable: $stateParams.tableName || $rootScope.currentTable,
 			data: null,
 			grid: null,
 			limit: 100,
@@ -33,18 +35,26 @@
 			}
 		};
 
-		$rootScope.$watch('currentTable', ( val, prev ) => {
-			if ( val && val !== prev ) {
-				$scope.init( );
-			}
-		});
+        if (!$stateParams.dbName && !$stateParams.tableName) {
+            $rootScope.$watch('currentTable', (val, prev) => {
+                if (val && val !== prev) {
+                    $scope.vars.currentTable = $rootScope.currentTable;
+                    $scope.vars.currentDatabase = $rootScope.currentDatabase;
+                    $scope.init();
+                }
+            });
+        }
 
 		/**
 		 * Загрузка данных
 		 */
 		$scope.load = ( ) => {
 			$scope.vars.data = -1;
-			API.query( 'select * from ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable + ' limit ' + $scope.vars.offset + ', ' + $scope.vars.limit ).then( function ( data ) {
+			API.query( `
+			    select * 
+			    from ${$scope.vars.currentDatabase}.${$scope.vars.currentTable}
+			    limit ${$scope.vars.offset}, ${$scope.vars.limit}
+            `).then( function ( data ) {
 				$scope.vars.data = API.dataToHtml( data );
 			}, function ( response ) {
 				console.error( 'Ошибка ' + response );
@@ -52,9 +62,6 @@
 		};
 
 		$scope.init = ( ) => {
-			$scope.vars.currentTable = $rootScope.currentTable;
-			$scope.vars.currentDatabase = $rootScope.currentDatabase;
-
 			/**
 			* Запрос полей таблицы
 			*/
