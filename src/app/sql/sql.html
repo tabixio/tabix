@@ -1,125 +1,130 @@
-<div ngsf-fullscreen="fullscreenCtrl" class="fullscreen">
-    <div class="card mb+" style="background: #f2f2f2">
-    <div class="pl+ pt+ pb+ pr" >
-        <div class="float-right" style="margin-top: -5px">
-            <lx-text-field lx-label="Шрифт" lx-fixed-label="true" lx-icon="format-size" style="width: 60px; float: left; margin-top: -5px; margin-right: 15px;">
-                <input type="text" ng-model="vars.fontSize">
-            </lx-text-field>
-            <lx-dropdown lx-position="right" lx-over-toggle="true">
-                <lx-dropdown-toggle>
-                    <lx-button lx-color="black" lx-type="flat">
-                        {{vars.theme}}
-                    </lx-button>
-                </lx-dropdown-toggle>
-                <lx-dropdown-menu>
-                    <ul>
-                        <li ng-repeat="theme in vars.themes">
-                            <a class="dropdown-link" ng-click="setTheme(theme)">{{theme}}</a>
-                        </li>
-                    </ul>
-                </lx-dropdown-menu>
-            </lx-dropdown>
-            <lx-dropdown lx-position="right" lx-over-toggle="true">
-                <lx-dropdown-toggle>
-                    <lx-button lx-color="black" lx-type="flat">
-                        {{vars.format.name}}
-                    </lx-button>
-                </lx-dropdown-toggle>
-                <lx-dropdown-menu>
-                    <ul>
-                        <li ng-repeat="format in vars.formats">
-                            <a class="dropdown-link" ng-click="vars.format = format">{{format.name}}</a>
-                        </li>
-                    </ul>
-                </lx-dropdown-menu>
-            </lx-dropdown>
-            <lx-dropdown lx-position="right" lx-over-toggle="true" lx-width="450">
-                <lx-dropdown-toggle>
-                    <lx-button lx-color="black" lx-type="icon">
-                        <i class="mdi mdi-history"></i>
-                    </lx-button>
-                </lx-dropdown-toggle>
-                <lx-dropdown-menu>
-                    <ul ng-if="vars.sqlHistory.length == 0">
-                        <li class="tc-grey-400 pl fs-body-2">История запросов пуста</li>
-                    </ul>
-                    <ul ng-if="vars.sqlHistory.length > 0">
-                        <li ng-repeat="item in vars.sqlHistory track by $index">
-                            <a class="dropdown-link" ng-click="vars.sql = item">{{item}}</a>
-                        </li>
-                    </ul>
-                </lx-dropdown-menu>
-            </lx-dropdown>
-            <lx-button lx-color="black" lx-type="icon" lx-over-toggle="true" ng-click="fullscreenCtrl.toggleFullscreen()">
-                <i class="mdi mdi-fullscreen"></i>
-            </lx-button>
-        </div>
-        SQL
-    </div>
-    <div class="card__actions" style="background: #f2f2f2">
-        <div style="min-height: 200px; position: relative;" id="resizable">
-        <div ng-model="vars.sql" ui-ace="{
-        useWrapMode : true,
-        mode: 'clickhouse',
-        onLoad: aceLoaded,
-        advanced: {
-            enableBasicAutocompletion: true
-        }
-    }" style="min-height: 200px; width: 100%; height: 100%; border-bottom: 3px #eee solid; border-right: 3px #eee solid;"></div>
-    </div>
-
-        <lx-text-field lx-label="max_result_rows" lx-fixed-label="true" lx-icon="tune-vertical" style="float: right; ">
-            <input type="text" ng-model="vars.limitRows">
-        </lx-text-field>
-
-        <lx-button lx-color="green mt" ng-click="run()">
-            <i class="mdi mdi-play"></i><span id="sql_button">{{vars.button_run}}</span>
-        </lx-button>
-
-        <lx-dropdown id="{{ vm.dropdownId }}">
-            <lx-dropdown-menu>
-                <ul>
-                    <li><a class="dropdown-link">An action</a></li>
-                    <li><a class="dropdown-link">Another action</a></li>
-                    <li><a class="dropdown-link">Something else here</a></li>
-                    <li class="dropdown-divider"></li>
-                    <li><span class="dropdown-link dropdown-link--is-header">Header</span></li>
-                    <li><a class="dropdown-link">Separated link</a></li>
-                </ul>
-            </lx-dropdown-menu>
-        </lx-dropdown>
-
-        <lx-dropdown lx-position="right" lx-over-toggle="true"  lx-width="450"  style="float: right;margin-top: 5px; margin-right: 15px;">
-            <lx-dropdown-toggle>
-                <lx-button lx-color="black" lx-type="icon">
-                    <i class="mdi mdi-school"></i>
-                </lx-button>
-            </lx-dropdown-toggle>
-            <lx-dropdown-menu>
-                <ul>
-                    <li ng-repeat="item in vars.dictionaries">
-                        <a class="dropdown-link" ng-click="addDictionariesWord(item.dic)">{{item.title}}</a>
-                    </li>
-                </ul>
-            </lx-dropdown-menu>
-        </lx-dropdown>
-    </div>
+<div style="position: absolute; top: 4px; right: 4px; z-index: 2">
+    <md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">
+        <i class="mdi mdi-settings"></i>
+    </md-button>
 </div>
-    <lx-progress lx-type="linear" lx-color="teal" ng-if="vars.finishQuery == false"></lx-progress>
-<div class="card" ng-repeat="item in vars.resultsQuery" style="background: #EEEEEE">
-    <div class="p+" style="background: #EEEEEE">
-        <div style="white-space: nowrap; float: right; line-height: 0px; color: #666;" class="fs-caption" ng-if="item.statistics">
 
-            <i class="mdi mdi-table-large" ng-if="item.createtable" ng-click="addDictionariesWord(item.createtable)"></i>
+<div ngsf-fullscreen="fullscreenCtrl" class="fullscreen" ng-class="vars.uiTheme.name">
+    <md-tabs md-dynamic-height md-border-bottom md-selected="vars.selectedTab">
+        <md-tab ng-repeat="tab in vars.tabs" ng-click="vars.currentTab = tab">
+            <md-tab-label>
+                {{tab.name + (tab.changed ? ' *' : '')}}
+                <i class="mdi mdi-close ml+" ng-click="removeTab(tab, $event)"></i>
+            </md-tab-label>
+            <md-tab-body>
+                <div style="display: table; width: 100%;">
+                    <div style="min-height: 300px; position: relative; display: table-cell;">
+                        <div resizable r-directions="['bottom']" r-height="300" style="min-height: 300px">
+                            <div ng-model="tab.sql" ui-ace="{
+                                    useWrapMode : true,
+                                    mode: 'clickhouse',
+                                    onLoad: aceLoaded,
+                                    advanced: {
+                                        enableBasicAutocompletion: true
+                                    }
+                                }"
+                                style="min-height: 300px; width: 100%; height: 100%;">
+                            </div>
+                        </div>
+                        <md-button class="md-raised1 md-primary" ng-disabled="tab.loading" ng-click="execute('all', tab)">{{tab.buttonTitle}}</md-button>
+                        <div style="display: inline-block">
+                            <md-progress-circular md-diameter="16px" ng-if="tab.loading"></md-progress-circular>
+                        </div>
+                    </div>
+                    <div style="width: 40px; display: table-cell; vertical-align: top;">
+                        <md-button class="md-icon-button" ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
+                            <i class="mdi mdi-fullscreen"></i>
+                        </md-button>
+                        <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
+                            <i class="mdi mdi-content-save"></i>
+                        </md-button>
+                        <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
+                            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <i class="mdi mdi-history"></i>
+                            </md-button>
+                            <md-menu-content width="4">
+                                <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
+                                    <md-button>{{item.name}}</md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </div>
+                </div>
 
-            время: <b>{{item.statistics.elapsed | number:3}}</b>,
-            строк прочитано: <b>{{item.statistics.rows_read  | number}}</b>,
-            прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
-        </div>
-    </div>
-    <div class="card__actions p+" style="max-height: 560px; overflow-x: auto; overflow-y: auto;background: #fafafa">
-        <span ng-if="item.result === null" class="fs-caption">нет данных</span>
-        <div ng-if="item.result !== null" ng-bind-html="item.result">x</div>
-    </div>
+                <md-tabs md-dynamic-height md-border-bottom ng-if="tab.results.length" md-selected="tab.selectedResultTab">
+                    <md-tab ng-repeat="result in tab.results">
+                        <md-tab-label>
+                            {{::result.time}}
+                            <i class="mdi mdi-18px ml+" ng-class="result.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="result.pinned = !result.pinned; $event.stopPropagation()"></i>
+                            <i class="mdi mdi-close" ng-click="removeResult(tab, result, $event)"></i>
+                        </md-tab-label>
+                        <md-tab-body>
+                            <div ng-repeat="item in result.data">
+                                <md-card class="m0 text-right">
+                                <div style="white-space: nowrap; float: right;" class="md-card" ng-if="item.statistics">
+                                    <i class="mdi mdi-table-large" ng-if="item.createtable" ng-click="addDictionariesWord(item.createtable)"></i>
+                                    время: <b>{{item.statistics.elapsed | number:3}}</b>,
+                                    строк прочитано: <b>{{item.statistics.rows_read | number}}</b>,
+                                    прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
+                                </div>
+                                </md-card>
+
+                                <div>
+                                    <span ng-if="item.result === null">нет данных</span>
+                                    <div ng-if="item.result !== null" ng-bind-html="item.result" style="overflow-x: auto; overflow-y: auto; width: 100%; height: 400px"></div>
+                                </div>
+                            </div>
+                        </md-tab-body>
+                    </md-tab>
+                </md-tabs>
+            </md-tab-body>
+        </md-tab>
+        <md-tab ng-click="addTab()">
+            <md-tab-label>
+                <i class="mdi mdi-plus-circle"></i>
+            </md-tab-label>
+        </md-tab>
+    </md-tabs>
 </div>
-</div>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
+    <div class="p+">
+        <h4 class="mt0 mb+++">
+            Настройки редактора
+        </h4>
+        <md-input-container class="width-100">
+            <label for="inp1">Размер шрифта</label>
+            <input type="text" id="inp1" ng-model="vars.fontSize">
+        </md-input-container>
+        <md-input-container class="width-100">
+            <label for="inp2">Максимум строк</label>
+            <input type="text" id="inp2" ng-model="vars.limitRows">
+        </md-input-container>
+        <md-input-container class="width-100 mt mb++">
+            <label>Формат результатов</label>
+            <md-select ng-model="vars.format">
+                <md-option ng-repeat="format in vars.formats" ng-value="format" ng-click="vars.format = format">
+                    {{format.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container class="width-100 mb++">
+            <label>Тема редактора</label>
+            <md-select ng-model="vars.theme">
+                <md-option ng-repeat="theme in vars.themes" ng-value="theme" ng-click="setTheme(theme)">
+                    {{theme}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <md-input-container class="width-100 mt">
+            <label>Тема интерфейса</label>
+            <md-select ng-model="vars.uiTheme">
+                <md-option ng-repeat="theme in vars.uiThemes" ng-value="theme" ng-click="setUiTheme(theme)">{{theme.title}}</md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">
+            Закрыть
+        </md-button>
+    </div>
+</md-sidenav>

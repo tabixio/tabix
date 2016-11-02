@@ -1,10 +1,17 @@
 <div class="wrapper">
-	<header ui-view="header" class="header-view"></header>
-	<div class="content">
-		<div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view"></div>
-		<div class="main-content">
-			<div ui-view="breadcrumb" class="breadcrumb-view"></div>
-			<div ui-view="main" class="p"></div>
-		</div>
-	</div>
+    <header ui-view="header" class="header-view"></header>
+    <div class="content">
+        <div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view"></div>
+        <div class="main-content">
+            <div ui-view="main"></div>
+			<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="tableSiedenav">
+				<!-- <md-toolbar class="md-theme-indigo"> -->
+					<h1 class="md-toolbar-tools">Table: {{currentTable}}</h1>
+				<!-- </md-toolbar> -->
+				<md-content ng-if="currentTable"  layout-padding>
+					<div class="h100" ng-include="'/app/table/table.html'" ng-controller="TableController"></div>
+				</md-content>
+			</md-sidenav>
+        </div>
+    </div>
 </div>

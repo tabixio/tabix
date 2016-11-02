@@ -2,14 +2,14 @@
     'use strict';
 
     angular.module(smi2.app.name).service('API', API);
-    API.$inject = ['$http', '$q', 'localStorageService', '$sanitize'];
+    API.$inject = ['$http', '$q', 'localStorageService', '$sanitize', 'ThemeService'];
 
     /**
      * @ngdoc service
      * @name smi2.service:API
      * @description Менеджер API. Нужен для обмена данными с backend.
      */
-    function API($http, $q, localStorageService, $sanitize) {
+    function API($http, $q, localStorageService, $sanitize, ThemeService) {
 
         var CURRENT_BASE_KEY = 'currentBaseConfig';
         var database = null;
@@ -81,7 +81,8 @@
             if (extend_settings) {
                 url += '&' + extend_settings;
             }
-            console.info(query);// Не удалять не только для DEBUG
+            // console.info(query);// Не удалять не только для DEBUG.
+            // Бебебе удалил
 
             var req = {
                 method: (format ? 'GET' : 'POST'), // if not set format use POST
@@ -150,10 +151,12 @@
          */
         this.dataToHtml = function (data) {
 
-            var html = '<table class="sql-table fs-body-1"><tr>';
+            var html = `<table class="sql-table ${ThemeService.theme}"><tr>`;
             var keys = [];
             data.meta.forEach(function (cell) {
-                html += '<th>' + $sanitize(cell.name) + '<div class="fs-caption tc-grey-400">' + $sanitize(cell.type) + '</div></th>';
+                html += `<th>${$sanitize(cell.name)}
+                            <div class="sql-table__subheader">${$sanitize(cell.type)}</div>
+                        </th>`;
                 keys.push(cell.name);
             });
             data.data.forEach(function (row) {

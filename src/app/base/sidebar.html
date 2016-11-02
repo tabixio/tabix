@@ -1,28 +1,23 @@
-<div class="sidebar" ng-app="sidebar">
-    <lx-dropdown class="p">
-        <lx-dropdown-toggle class="pt">
-            <lx-button lx-color="blue" style="min-width: 180px">
-                <span class="float-left">
-                    <i class="icon icon--s icon--flat mdi mdi-database"></i>
-                    {{vars.selectedDatabase.name}}
-                </span>
-            </lx-button>
-        </lx-dropdown-toggle>
-        <lx-dropdown-menu>
+<div class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
+    <fun-metis-menu ng-if="vars.loaded" fun-metis-config="vars.metis.config" fun-metis-events="vars.metis.events" class="metismenu">
+        <nav>
             <ul>
-                <li ng-repeat="database in vars.databases" ng-click="changeDatabase(database)">
-                    <a class="dropdown-link">{{database.name}}</a>
+                <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
+                    <a>
+                        <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
+                            <i class="mdi mdi-database"></i>{{database.name}}</md-button>
+                    </a>
+                    <ul class="sub-menu" ng-if="database.tables.length">
+                        <li ng-repeat="table in database.tables">
+                            <md-button class="text-left no-txt-transform" ng-click="openTable(table)">
+                                <i class="mdi mdi-table"></i>{{table.name}}</md-button>
+                        </li>
+                    </ul>
                 </li>
             </ul>
-        </lx-dropdown-menu>
-    </lx-dropdown>
-
-    <ul class="sidebar-menu p">
-        <li class="menu-item p" ng-repeat="table in vars.tables">
-            <a class="tc-black link" href ui-sref="table({dbName: vars.selectedDatabase.name, tableName: table.name})">
-                <i class="icon icon--s icon--grey icon--flat mdi mdi-table"></i>
-                <div style="line-height: 30px;display: inline-block;width: 132px;overflow: hidden;text-overflow: ellipsis;" class="ng-binding" lx-tooltip="{{table.name}}" lx-tooltip-position="right">{{table.name}}</div>
-            </a>
-        </li>
-    </ul>
+        </nav>
+    </fun-metis-menu>
+    <div ng-if="!vars.loaded">
+        no connect
+    </div>
 </div>

@@ -12,13 +12,14 @@
 		'ngAnimate',
 		'ui.router',
 		'LocalStorageModule',
-		'lumx',
 		'angularScreenfull',
 		'ui.ace',
 		'ui.grid',
 		'ui.grid.autoResize',
+        'angularResizable',
         'ngSanitize',
-        'dx'
+        'ngMaterial',
+		'funMetisMenu',
+		'ngScrollbars'
 	]);
-
 })();

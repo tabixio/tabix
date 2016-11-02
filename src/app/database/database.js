@@ -11,7 +11,7 @@
 	 */
 	function DatabaseController($scope, $rootScope, $stateParams, API) {
 		$rootScope.breadcrumbs = [{
-			text: 'База ' + $stateParams.dbName,
+			text: $stateParams.dbName,
 			link: 'database',
 			params: $stateParams
 		}];

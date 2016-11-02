@@ -1,22 +1,29 @@
 <div class="header">
-    <div class="card bgc-blue-500 tc-white">
-        <div class="toolbar">
-            <div class="toolbar__left mr">
-                <button lx-ripple="lx-ripple" ng-if="hasSidebar" ng-click="vm.switchSidebar()" class="btn btn--l btn--white btn--icon hide-gt-sm"><i class="mdi mdi-menu"></i></button>
-                <img src="assets/images/logo.png" class="logo"/>
-            </div>
-            <div class="toolbar__label fs-title header-title">
+    <md-card class="m0 pl0">
+        <div>
+            <div class="pull-left" style="width: 180px">
+                <img src="assets/images/logo.png" class="logo mr"/>
                 <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
             </div>
-            <div class="toolbar__right">
-                <a ui-sref="sql" href lx-tooltip="SQL" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
-                    <i class="mdi mdi-console"></i>
-                </a>
-                <a ng-click="logout()" href lx-tooltip="Выход" lx-tooltip-position="bottom" lx-ripple="white" class="btn btn--l btn--white btn--icon">
-                    <i class="mdi mdi-lock"></i>
-                </a>
+
+            <div class="pull-right">
+                <md-menu md-position-mode="target-right target">
+                    <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                        <i class="mdi mdi-24px mdi-theme-light-dark"></i>
+                        <md-tooltip>Тема</md-tooltip>
+                    </md-button>
+                    <md-menu-content>
+                        <md-menu-item ng-repeat="theme in themes">
+                            <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
+                <md-button class="md-icon-button" aria-label="Выход" ng-click="logout()">
+                    <i class="mdi mdi-24px mdi-lock"></i>
+                    <md-tooltip>Выход</md-tooltip>
+                </md-button>
                 <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>
         </div>
-    </div>
+    </md-card>
 </div>
