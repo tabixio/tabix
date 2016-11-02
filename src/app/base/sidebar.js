@@ -2,14 +2,21 @@
 	'use strict';
 
 	angular.module( smi2.app.name ).controller( 'SidebarController', SidebarController );
-	SidebarController.$inject = [ '$scope', '$rootScope', 'API', 'ThemeService' ];
+	SidebarController.$inject = [
+		'$scope',
+		'$rootScope',
+		'$state',
+		'API',
+		'ThemeService',
+		'$mdSidenav'
+	];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:SidebarController
 	 * @description Контроллер бокового меню
 	 */
-	function SidebarController( $scope, $rootScope, API, ThemeService ) {
+	function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav ) {
 		$scope.vars = {
 			loaded: false,
 			databases: [ ]
@@ -37,18 +44,28 @@
 		};
 
 		$scope.clickAndSelect = ( database, event ) => {
-			if ( database.text == $rootScope.currentDatabase ) {
-				event.stopPropagation();
+			if ( database.name == $rootScope.currentDatabase ) {
+				event.stopPropagation( );
 				return false;
 			}
-			$scope.selectDatabase(database);
+			$scope.selectDatabase( database );
 		};
 
 		/**
 		 * Select database
 		 */
-		$scope.selectDatabase = ( database ) => {
-			$rootScope.currentDatabase = database.text;
+		$scope.selectDatabase = database => {
+			$rootScope.currentDatabase = database.name;
+			$mdSidenav( 'tableSiedenav' ).close( );
+		};
+
+		/**
+		* Open table
+		*/
+		$scope.openTable = table => {
+			$mdSidenav( 'tableSiedenav' ).close( );
+			$rootScope.currentTable = table.name;
+			$mdSidenav( 'tableSiedenav' ).open( );
 		};
 
 		API.query( 'SELECT ' +
@@ -59,17 +76,17 @@
 			let data = res.data || [ ];
 			$scope.vars.databases = data.reduce(( prev, item ) => {
 				for ( let a of prev ) {
-					if ( a.text == item.database ) {
-						a.tables.push({ text: item.name });
+					if ( a.name == item.database ) {
+						a.tables.push({ name: item.name });
 						return prev;
 					}
 				}
 				return [
 					...prev, {
-						text: item.database,
+						name: item.database,
 						tables: [
 							{
-								text: item.name
+								name: item.name
 							}
 						]
 					}

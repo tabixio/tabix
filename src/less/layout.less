@@ -30,7 +30,6 @@ body .wrapper {
     -ms-flex: 1;
     flex: 1;
 }
-
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .content {
         margin-top: 56px;
@@ -51,7 +50,7 @@ body .wrapper {
     overflow: auto;
     position: fixed;
     left: 206px;
-    top:40px;
+    top: 40px;
     bottom: 0;
     right: 0;
 }
@@ -71,6 +70,36 @@ body .wrapper {
     align-items: center;
 }
 
+md-sidenav[md-component-id="tableSiedenav"] {
+    width: 50% !important;
+    max-width: 50% !important;
+    height: 100%;
+    overflow: hidden;
+
+    .md-closed.md-locked-open-add-active,
+    .md-locked-open {
+        width: 50% !important;
+        height: 100%;
+        max-width: 50% !important;
+    }
+
+    md-content {
+        position: absolute;
+        top: 64px;
+        bottom: 0;
+        width: 100%;
+        overflow: hidden;
+        md-tab-content{
+            max-height: 100%;
+            >div{
+                max-height: 100%;
+            }
+        }
+        .mCustomScrollbar {
+            // height: 100%;
+        }
+    }
+}
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .content .main-content .main-view {
         margin-left: 8px;
@@ -86,7 +115,7 @@ body .wrapper {
 .content .main-content .main-view .full-width {
     -ms-flex-item-align: start;
     align-self: flex-start;
-    padding: 10px 30px 20px 30px;
+    padding: 10px 30px 20px;
     width: 100%;
 }
 
@@ -104,7 +133,6 @@ body .wrapper {
     width: 100%;
     z-index: 2;
 }
-
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .header-view .toolbar {
         padding-left: 0;
@@ -133,7 +161,6 @@ body #loading-bar-spinner .spinner-icon {
 .sidebar-view {
     border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
-
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .sidebar-view {
         position: fixed;
@@ -196,7 +223,6 @@ body #loading-bar-spinner .spinner-icon {
     line-height: 32px;
     font-size: 14pt;
 }
-
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .sidebar-view .sidebar-backdrop {
         position: absolute;
@@ -231,6 +257,7 @@ body #loading-bar-spinner .spinner-icon {
 .header {
     height: 40px;
     line-height: 40px;
+
     md-card {
         height: 40px;
         line-height: 40px;
