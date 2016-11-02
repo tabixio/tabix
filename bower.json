@@ -14,8 +14,8 @@
     "angular-sanitize": "^1.5.8",
     "angular-material": "^1.1.1",
     "mdi": "^1.7.22",
-    "eeh-metis-menu": "^0.2.0",
-    "ng-scrollbars": "^0.0.11"
+    "ng-scrollbars": "^0.0.11",
+    "fun-metis-menu": "*"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

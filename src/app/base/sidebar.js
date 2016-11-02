@@ -29,11 +29,25 @@
 			}
 		};
 
+		$scope.vars.metis = {
+			config: {
+				toggle: true,
+				preventDefault: false
+			}
+		};
+
+		$scope.clickAndSelect = ( database, event ) => {
+			if ( database.text == $rootScope.currentDatabase ) {
+				event.stopPropagation();
+				return false;
+			}
+			$scope.selectDatabase(database);
+		};
 
 		/**
 		 * Select database
 		 */
-		$scope.selectDatabase = database => {
+		$scope.selectDatabase = ( database ) => {
 			$rootScope.currentDatabase = database.text;
 		};
 
@@ -61,6 +75,7 @@
 					}
 				];
 			}, [ ]);
+
 			$scope.selectDatabase($scope.vars.databases[0]);
 			$scope.vars.loaded = true;
 		});
