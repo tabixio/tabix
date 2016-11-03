@@ -1,4 +1,4 @@
-( function ( angular, smi2 ) {
+(( angular, smi2 ) => {
 	'use strict';
 
 	angular.module( smi2.app.name ).controller( 'SidebarController', SidebarController );

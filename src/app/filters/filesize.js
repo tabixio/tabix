@@ -1,9 +1,9 @@
-(function (angular, smi2) {
+((angular, smi2) => {
     'use strict';
 
     angular
         .module(smi2.app.name)
-        .filter('filesize', function () {
+        .filter('filesize', () => {
             var units = [
                 'bytes',
                 'KB',
@@ -13,7 +13,7 @@
                 'PB'
             ];
 
-            return function (bytes, precision) {
+            return (bytes, precision) => {
                 if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
                     return '?';
                 }

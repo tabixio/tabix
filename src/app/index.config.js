@@ -1,9 +1,9 @@
-(function (angular, smi2) {
+((angular, smi2) => {
     'use strict';
 
 
     /**
-     * Начальная инициализация провайдеров SPA приложения
+     * Providers configuration
      */
     angular
         .module(smi2.app.name)

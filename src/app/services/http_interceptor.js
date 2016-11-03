@@ -1,4 +1,4 @@
-(function(angular, smi2) {
+((angular, smi2) => {
 	'use strict';
 
 	angular.module(smi2.app.name).service('HttpInterceptor', HttpInterceptor);
@@ -8,32 +8,21 @@
 	 * @ngdoc service
 	 * @name smi2.service:HttpInterceptor
 	 * @description
-	 * Сервис первичной обработки HTTP запросов.
-	 * Задачами сервиса являются:
-	 * * переброс неавторизованного пользователя на логин;
-	 * * добавление токена авторизации (Bearer) ко всем запросам
-	 *
-	 * Сервис является частью массива с $httpProvider.interceptors
-	 * ```javascript
-	 * // В angular.config()
-	 * $httpProvider.interceptors.push('HttpInterceptor');
-	 * ```
+	 * Service from handle HTTP requests
 	 */
 	function HttpInterceptor($q, $injector) {
 		return {
 			/**
 			 * @ngdoc
 			 * @name responseError
-			 * @description
-			 * Метод-обертка, срабатывает перед передачей
-			 * HTTP ошибки в приложение
-			 * @param {mixed} rejection Данные HTTP ответа
+			 * @description Handle HTTP errors
+			 * @param {mixed} rejection
 			 * @methodOf smi2.service:HttpInterceptor
 			 * @return {promise} $q promise
 			 */
-			responseError: function(rejection) {
+			responseError: (rejection) => {
 
-				// Не авторизован? - веду пользователя на страницу авторизации
+				// If not authorized -> go to login page
 				if (rejection.status == 401) {
 					$injector.get('$state').go('login');
 				}
