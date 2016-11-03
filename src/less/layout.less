@@ -61,6 +61,12 @@ md-sidenav[md-component-id="tableSiedenav"] {
     max-width: 50% !important;
     height: 100%;
     overflow: hidden;
+    .right-button{
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        z-index: 1;
+    }
 
     .md-closed.md-locked-open-add-active,
     .md-locked-open {
@@ -71,10 +77,12 @@ md-sidenav[md-component-id="tableSiedenav"] {
 
     md-content {
         position: absolute;
-        top: 64px;
+        top: 0;
         bottom: 0;
         width: 100%;
         overflow: hidden;
+        padding-top: 0;
+        padding-bottom: 0;
 
         md-tab-content {
             max-height: 100%;
