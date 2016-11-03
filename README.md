@@ -73,7 +73,6 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 ;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;
 
 ```
-![](https://api.monosnap.com/rpc/file/download?id=ky5h5tQoubjbZa01N8FV08qVxqD8xa)
 
 
 # Dev
