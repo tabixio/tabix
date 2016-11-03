@@ -1,6 +1,6 @@
 <div class="wrapper">
 
-    <div class="header">
+    <div class="header header-view">
         <md-card class="m0 pl0">
             <div>
                 <div class="mr pull-left">
@@ -25,92 +25,84 @@
             </div>
         </md-card>
     </div>
-
     <div class="content">
-        <md-card class="m0" style="width: 180px">
-            <div ng-repeat="base in vars.bases">
-                <md-button class="menu-button" ng-click="vars.db = base">
-                    <span class="menu-button__title">
-                        {{base.name}}
-                    </span>
-                    <span class="menu-button__subtitle">
-                        {{base.host}}
-                    </span>
-                </md-button>
-            </div>
-        </md-card>
+        <div class="sidebar-view login">
 
-        <div class="content login">
-            <div class="main-content">
-                <div class="main-view">
-                    <div class="login-view">
-                        <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
-                            <form class="p++" name="loginForm">
-                                <div>
-                                    <md-input-container>
-                                        <label>Название</label>
-                                        <input ng-model="vars.db.name" required ng-disabled="vars.loading">
-                                    </md-input-container>
+            <md-card class="m0 h100" style="width: 180px">
+                <div ng-repeat="base in vars.bases">
+                    <md-button class="menu-button" ng-click="vars.db = base">
+                        <span class="menu-button__title">
+                            {{base.name}}
+                        </span>
+                        <span class="menu-button__subtitle">
+                            {{base.host}}
+                        </span>
+                    </md-button>
+                </div>
+            </md-card>
+        </div>
+
+        <div class="main-content login">
+            <div class="main-view">
+                <div class="login-view">
+                    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+                        <form class="p++" name="loginForm">
+                            <div>
+                                <md-input-container>
+                                    <label>Название</label>
+                                    <input ng-model="vars.db.name" required ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Хост:порт</label>
+                                    <input ng-model="vars.db.host" required ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Логин</label>
+                                    <input ng-model="vars.db.login" ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Пароль</label>
+                                    <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <div flex>
+                                    <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
+                                        Войти
+                                    </md-button>
                                 </div>
-                                <div>
-                                    <md-input-container>
-                                        <label>Хост:порт</label>
-                                        <input ng-model="vars.db.host" required ng-disabled="vars.loading">
-                                    </md-input-container>
+                                <div flex ng-if="vars.db.id" class="pl">
+                                    <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
+                                        Удалить
+                                    </md-button>
                                 </div>
-                                <div>
-                                    <md-input-container>
-                                        <label>Логин</label>
-                                        <input ng-model="vars.db.login" ng-disabled="vars.loading">
-                                    </md-input-container>
-                                </div>
-                                <div>
-                                    <md-input-container>
-                                        <label>Пароль</label>
-                                        <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
-                                    </md-input-container>
-                                </div>
-                                <div layout="row">
-                                    <div flex>
-                                        <md-button
-                                            class="md-primary md-raised m0 width-100"
-                                            ng-disabled="loginForm.$invalid || vars.loading"
-                                            ng-click="login()"
-                                        >
-                                            Войти
-                                        </md-button>
-                                    </div>
-                                    <div flex ng-if="vars.db.id" class="pl">
-                                        <md-button
-                                            class="md-raised md-warn m0 width-100"
-                                            ng-disabled="vars.loading"
-                                            ng-click="remove()"
-                                        >
-                                            Удалить
-                                        </md-button>
-                                    </div>
-                                </div>
-                            </form>
-                        </md-card>
-                    </div>
+                            </div>
+                        </form>
+                    </md-card>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        <md-card class="m0 p">
-            <div>
-                <a href="https://github.com/smi2/clickhouse-frontend" target="_blank" class="pull-right">
-                    <i class="mdi mdi-github-circle mdi-24px"></i>
-                </a>
-                <p class="copyright text-center" style="line-height: 24px">
-                    <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
-                    &copy;
-                    {{::vars.year}}, все права защищены, сборка: {{::vars.build}}
-                </p>
+            <div class="footer">
+                <md-card class="m0 p">
+                    <div>
+                        <a href="https://github.com/smi2/clickhouse-frontend" target="_blank" class="pull-right">
+                            <i class="mdi mdi-github-circle mdi-24px"></i>
+                        </a>
+                        <p class="copyright text-center" style="line-height: 24px">
+                            <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
+                            &copy;
+                            {{::vars.year}}, все права защищены, сборка:
+                            {{::vars.build}}
+                        </p>
+                    </div>
+                </md-card>
             </div>
-        </md-card>
+        </div>
     </div>
 
 </div>
