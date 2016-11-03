@@ -2,7 +2,7 @@
 window.global_keywords_fields = "";
 window.global_keywords_tables = "";
 
-(function (angular, smi2) {
+((angular, smi2) => {
     'use strict';
 
     angular.module(smi2.app.name).controller('SqlController', SqlController);
@@ -198,11 +198,11 @@ window.global_keywords_tables = "";
          */
         $scope.renderFinalResult = (result) => {
             $scope.vars.currentTab.loading = false;
-            if(result.data.find((item) => (
-                ['DROP','CREATE','ALTER'].indexOf(
-                    item.query.keyword.toUpperCase()
-                ) != -1
-            ))) {
+            if (result.data.find((item) => (
+                    ['DROP', 'CREATE', 'ALTER'].indexOf(
+                        item.query.keyword.toUpperCase()
+                    ) != -1
+                ))) {
                 $scope.selectDatabase($scope.vars.db);
             }
         };
@@ -244,8 +244,8 @@ window.global_keywords_tables = "";
 
             // Clear not-pinned tabs
             tab.results = tab.results.reduce((arr, item) => {
-                if(item.pinned) {
-                   arr.push(item);
+                if (item.pinned) {
+                    arr.push(item);
                 }
                 return arr;
             }, []);
@@ -258,59 +258,58 @@ window.global_keywords_tables = "";
                 .splitByTokens(sql, 'constant.character.escape', ';;')
                 .forEach((item) => {
 
-                const subSql = item.sql;
+                    const subSql = item.sql;
 
-                // Ignore short queries
-                if (subSql.length < 5) {
-                    return;
-                }
-
-                // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
-                if (type == 'current' && !selectSql) {
-                    let cursor = editor.selection.getCursor();
-
-                    if (!cursor ||
-                        !angular.isDefined(cursor) ||
-                        item.range.compare(cursor.row, cursor.column) !== 0) {
+                    // Ignore short queries
+                    if (subSql.length < 5) {
                         return;
                     }
-                }
 
-                let _format = null;
-                let _format_seted = false;
-                let storage = false;
-                let _keyword = null;
-                let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
-                let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
+                    // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
+                    if (type == 'current' && !selectSql) {
+                        let cursor = editor.selection.getCursor();
 
-                if (set_format.hasOwnProperty('value')) {
-                    _format = false;
-                    storage = set_format.value;
-                }
-                else {
-                    _format = ' FORMAT JSON ';
-                    _format_seted = true;
-                }
-                if (keyword.hasOwnProperty('value')) {
-                    _keyword = keyword.value;
-                }
-                if (_keyword !== 'select') {
-                    _format = false;
-                    _format_seted = false;
-                }
+                        if (!cursor || !angular.isDefined(cursor) ||
+                            item.range.compare(cursor.row, cursor.column) !== 0) {
+                            return;
+                        }
+                    }
 
-                // Queue creation
-                queue.push({
-                    sql: subSql,
-                    index: numquery,
-                    format: _format,
-                    setedformat: _format_seted,
-                    keyword: _keyword,
-                    storage: storage
+                    let _format = null;
+                    let _format_seted = false;
+                    let storage = false;
+                    let _keyword = null;
+                    let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
+                    let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
+
+                    if (set_format.hasOwnProperty('value')) {
+                        _format = false;
+                        storage = set_format.value;
+                    }
+                    else {
+                        _format = ' FORMAT JSON ';
+                        _format_seted = true;
+                    }
+                    if (keyword.hasOwnProperty('value')) {
+                        _keyword = keyword.value;
+                    }
+                    if (_keyword !== 'select') {
+                        _format = false;
+                        _format_seted = false;
+                    }
+
+                    // Queue creation
+                    queue.push({
+                        sql: subSql,
+                        index: numquery,
+                        format: _format,
+                        setedformat: _format_seted,
+                        keyword: _keyword,
+                        storage: storage
+                    });
+
+                    numquery++;
                 });
-
-                numquery++;
-            });
 
             if (queue.length) {
                 $scope.executeQuery(queue[0], queue, result);
@@ -344,44 +343,44 @@ window.global_keywords_tables = "";
             API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", null)
                 .then((data) => {
 
-                let fields = [],
-                    ufields = {};
-                let tables = [],
-                    utables = {};
-                let keys = [];
-                data.meta.forEach((cell) => {
-                    keys.push(cell.name);
-                });
-                data.data.forEach((row) => {
-                    keys.forEach((key) => {
+                    let fields = [],
+                        ufields = {};
+                    let tables = [],
+                        utables = {};
+                    let keys = [];
+                    data.meta.forEach((cell) => {
+                        keys.push(cell.name);
+                    });
+                    data.data.forEach((row) => {
+                        keys.forEach((key) => {
 
-                        if (key == 'table') {
-                            if (!utables.hasOwnProperty(row[key])) {
-                                utables[row[key]] = 1;
-                                tables.push(row[key]);
+                            if (key == 'table') {
+                                if (!utables.hasOwnProperty(row[key])) {
+                                    utables[row[key]] = 1;
+                                    tables.push(row[key]);
+                                }
                             }
-                        }
-                        if (key == 'name') {
-                            if (!ufields.hasOwnProperty(row[key])) {
-                                ufields[row[key]] = 1;
-                                fields.push(row[key]);
+                            if (key == 'name') {
+                                if (!ufields.hasOwnProperty(row[key])) {
+                                    ufields[row[key]] = 1;
+                                    fields.push(row[key]);
+                                }
                             }
-                        }
+                        });
+                    });
+
+                    window.global_keywords_fields = fields.join('|') + '|';
+                    window.global_keywords_tables = tables.join('|') + '|' + db;
+
+                    // reload highlights
+                    $scope.vars.tabs.forEach((tab) => {
+                        tab.editor.session.setMode({
+                            path: "ace/mode/clickhouse",
+                            v: Date.now()
+                        });
+                        tab.editor.session.bgTokenizer.start(0);
                     });
                 });
-
-                window.global_keywords_fields = fields.join('|') + '|';
-                window.global_keywords_tables = tables.join('|') + '|' + db;
-
-                // reload highlights
-                $scope.vars.tabs.forEach((tab) => {
-                    tab.editor.session.setMode({
-                        path: "ace/mode/clickhouse",
-                        v: Date.now()
-                    });
-                    tab.editor.session.bgTokenizer.start(0);
-                });
-            });
 
         };
 
@@ -390,9 +389,15 @@ window.global_keywords_tables = "";
          */
         $scope.addDictionariesWord = (word) => {
             const editor = $scope.vars.currentTab.editor;
+            const position = editor.getCursorPosition();
+            position.column += word.length;
             editor.clearSelection();
             editor.insert(word);
             $scope.vars.currentTab.sql = editor.getValue();
+            $timeout(() => {
+                editor.focus();
+                editor.moveCursorToPosition(position);
+            });
         };
 
         /**
@@ -420,6 +425,7 @@ window.global_keywords_tables = "";
         $scope.aceLoaded = (editor) => {
             let tab = $scope.vars.currentTab;
             tab.editor = editor;
+            editor.$blockScrolling = Infinity;
 
             editor.setOptions({
                 fontSize: $scope.vars.fontSize + 'px'
@@ -608,7 +614,8 @@ window.global_keywords_tables = "";
         $scope.addTab();
         if ($rootScope.currentDatabase) {
             $scope.selectDatabase($rootScope.currentDatabase);
-        };
+        }
+        ;
 
         /**
          * Controller destructor

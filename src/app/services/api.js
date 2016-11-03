@@ -1,4 +1,4 @@
-(function (angular, smi2) {
+((angular, smi2) => {
     'use strict';
 
     angular.module(smi2.app.name).service('API', API);
@@ -7,16 +7,16 @@
     /**
      * @ngdoc service
      * @name smi2.service:API
-     * @description Менеджер API. Нужен для обмена данными с backend.
+     * @description API manager
      */
     function API($http, $q, localStorageService, $sanitize, ThemeService) {
 
-        var CURRENT_BASE_KEY = 'currentBaseConfig';
-        var database = null;
-        var connection = {};
+        let CURRENT_BASE_KEY = 'currentBaseConfig';
+        let database = null;
+        let connection = {};
 
         // Первичная загрузка данных из LS
-        var data = localStorageService.get(CURRENT_BASE_KEY);
+        let data = localStorageService.get(CURRENT_BASE_KEY);
         if (data && data.host) {
             connection = data;
         }
@@ -28,7 +28,7 @@
          * @description Сохранение данных подключения в БД
          * @param {mixed} db Данные подключения
          */
-        this.setConnection = function (db) {
+        this.setConnection = (db) => {
             localStorageService.set(CURRENT_BASE_KEY, db);
             connection = db;
         };
@@ -39,7 +39,7 @@
          * @name clear
          * @description Сброс авторизации
          */
-        this.clear = function () {
+        this.clear = () => {
             database = null;
             connection = {};
             localStorageService.set(CURRENT_BASE_KEY, {});
@@ -53,9 +53,9 @@
          * @param {string} sql Текст запроса
          * @return {promise} Promise
          */
-        this.query = function (sql, format, withDatabase, extend_settings) {
-            var defer = $q.defer();
-            var query = '';
+        this.query = (sql, format, withDatabase, extend_settings) => {
+            let defer = $q.defer();
+            let query = '';
 
             if (format !== false) {
                 format = (format || ' FoRmAt JSON');
@@ -66,7 +66,7 @@
             } else {
                 query = sql;
             }
-            var url = 'http://' + connection.host +
+            let url = 'http://' + connection.host +
                 '/?query=' + encodeURIComponent(query);
             if (connection.login) {
                 url += '&user=' + connection.login;
@@ -84,10 +84,10 @@
             // console.info(query);// Не удалять не только для DEBUG.
             // Бебебе удалил
 
-            var req = {
+            let req = {
                 method: (format ? 'GET' : 'POST'), // if not set format use POST
                 url: url,
-                transformResponse: function (data, header, status) {
+                transformResponse: (data, header, status) => {
                     try {
                         return angular.fromJson(data);
                     } catch (err) {
@@ -96,9 +96,9 @@
                 }
             };
 
-            $http(req).then(function (response) {
+            $http(req).then((response) => {
                 defer.resolve(response.data);
-            }, function (response) {
+            }, (response) => {
                 defer.reject(response.data);
             });
 
@@ -112,9 +112,7 @@
          * @description Получение данных подключения
          * @return {mixed} Объект с данными подключения
          */
-        this.getConnectionInfo = function () {
-            return connection;
-        };
+        this.getConnectionInfo = () => connection;
 
         /**
          * @ngdoc method
@@ -123,20 +121,25 @@
          * @description Установка дефолтной БД
          * @param {mixed} db Данные БД
          */
-        this.setDatabase = function (db) {
-            database = db;
-        };
+        this.setDatabase = (db) => (database = db);
 
-        this.getDatabase = function () {
-            return database;
-        };
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name getDatabase
+         * @description Get database info
+         */
+        this.getDatabase = () => database;
 
-        this.dataToCreateTable = function (data) {
-            var q = "\n" + 'CREATE TABLE x (' + "\n";
-            var keys = [];
-            data.meta.forEach(function (cell) {
-                keys.push("\t" + cell.name + " " + cell.type);
-            });
+        /**
+         *
+         * @param data
+         * @returns {string}
+         */
+        this.dataToCreateTable = (data) => {
+            let q = "\n" + 'CREATE TABLE x (' + "\n";
+            let keys = [];
+            data.meta.forEach((cell) => keys.push("\t" + cell.name + " " + cell.type));
 
             return q + keys.join(",\n") + "\n ) ENGINE = Log \n;;\n";
         };
@@ -149,19 +152,19 @@
          * @param {mixed} data Объект, который содержит ответ БД
          * @return {string} Строка HTML
          */
-        this.dataToHtml = function (data) {
+        this.dataToHtml = (data) => {
 
-            var html = `<table class="sql-table ${ThemeService.theme}"><tr>`;
-            var keys = [];
-            data.meta.forEach(function (cell) {
+            let html = `<table class="sql-table ${ThemeService.theme}"><tr>`;
+            let keys = [];
+            data.meta.forEach((cell) => {
                 html += `<th>${$sanitize(cell.name)}
                             <div class="sql-table__subheader">${$sanitize(cell.type)}</div>
                         </th>`;
                 keys.push(cell.name);
             });
-            data.data.forEach(function (row) {
+            data.data.forEach((row) => {
                 html += '<tr>';
-                keys.forEach(function (key) {
+                keys.forEach((key) => {
                     html += '<td>' + $sanitize(row[key]) + '</td>';
                 });
                 html += '</tr>';
@@ -171,10 +174,10 @@
         };
 
 
-        this.dataToUIGrid = function (data) {
+        this.dataToUIGrid = (data) => {
 
-            var columnDefs = [];
-            data.meta.forEach(function (cell) {
+            let columnDefs = [];
+            data.meta.forEach((cell) => {
                 columnDefs.push(
                     //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
                     {field: cell.name, minWidth: 100, enableColumnResizing: true, headerTooltip: cell.type}

@@ -1,6 +1,7 @@
 <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
     <md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">
         <i class="mdi mdi-settings"></i>
+        <md-tooltip>Настройки редактора</md-tooltip>
     </md-button>
 </div>
 
@@ -34,9 +35,11 @@
                     <div style="width: 40px; display: table-cell; vertical-align: top;">
                         <md-button class="md-icon-button" ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
                             <i class="mdi mdi-fullscreen"></i>
+                            <md-tooltip>На весь экран</md-tooltip>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
                             <i class="mdi mdi-content-save"></i>
+                            <md-tooltip>Сохранить</md-tooltip>
                         </md-button>
                         <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
                             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
@@ -44,7 +47,23 @@
                             </md-button>
                             <md-menu-content width="4">
                                 <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
-                                    <md-button>{{item.name}}</md-button>
+                                    <md-button>
+                                        {{item.name}}
+                                        <md-tooltip>История зарпросов</md-tooltip>
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                        <md-menu md-position-mode="target-right target" show-if-fullscreen="false">
+                            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <i class="mdi mdi-code-braces"></i>
+                            </md-button>
+                            <md-menu-content>
+                                <md-menu-item ng-repeat="dictionary in vars.dictionaries">
+                                    <md-button ng-click="addDictionariesWord(dictionary.dic)">
+                                        {{dictionary.title}}
+                                        <md-tooltip>Словари</md-tooltip>
+                                    </md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>

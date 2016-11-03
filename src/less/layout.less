@@ -23,12 +23,8 @@ body .wrapper {
 }
 
 .content {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+    height: 100vh;
 }
 @media only screen and (min-width: 0px) and (max-width: 600px) {
     .content {
@@ -37,22 +33,12 @@ body .wrapper {
 }
 
 .content .main-content {
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
+    flex-flow: column nowrap;
     overflow: auto;
-    position: fixed;
-    left: 206px;
-    top: 40px;
-    bottom: 0;
-    right: 0;
+    margin-top: 40px;
+    position: relative;
 }
 
 .content .main-content .main-view {
@@ -75,6 +61,12 @@ md-sidenav[md-component-id="tableSiedenav"] {
     max-width: 50% !important;
     height: 100%;
     overflow: hidden;
+    .right-button{
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        z-index: 1;
+    }
 
     .md-closed.md-locked-open-add-active,
     .md-locked-open {
@@ -85,16 +77,21 @@ md-sidenav[md-component-id="tableSiedenav"] {
 
     md-content {
         position: absolute;
-        top: 64px;
+        top: 0;
         bottom: 0;
         width: 100%;
         overflow: hidden;
-        md-tab-content{
+        padding-top: 0;
+        padding-bottom: 0;
+
+        md-tab-content {
             max-height: 100%;
-            >div{
+
+            > div {
                 max-height: 100%;
             }
         }
+
         .mCustomScrollbar {
             // height: 100%;
         }
@@ -179,15 +176,6 @@ body #loading-bar-spinner .spinner-icon {
         transform: none;
     }
 }
-
-.sidebar-view .sidebar {
-    width: 200px;
-    height: 100%;
-    overflow: auto;
-    padding-top: 15px;
-    padding-left: 20px;
-}
-
 .sidebar-view .sidebar .sidebar-menu {
     list-style: none;
 }

@@ -1,4 +1,4 @@
-(function(angular, smi2) {
+((angular, smi2) => {
 	'use strict';
 
 	angular.module(smi2.app.name).controller('HeaderController', HeaderController);
@@ -16,7 +16,7 @@
 		/**
 		 * Logout )
 		 */
-		$scope.logout = function() {
+		$scope.logout = () => {
 			API.clear();
 			$state.go('login');
 		};
