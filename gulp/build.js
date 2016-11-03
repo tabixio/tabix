@@ -77,9 +77,9 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe($.replace('url(./fonts/', 'url(../fonts/')) // костылек для lumx
         //.pipe($.sourcemaps.init())
         //для favicon production
-        // .pipe($.minifyCss({
-        //   processImport: false
-        // }))
+        .pipe($.minifyCss({
+          processImport: false
+        }))
         //.pipe($.sourcemaps.write('maps'))
         .pipe(cssFilter.restore)
         .pipe(assets.restore())
