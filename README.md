@@ -16,12 +16,17 @@
 
 
 ### Roadmap
+Cписок багов: 
+* В новой вкладке нет подсказок
+* Вернуть историю запросов 
 
 
+Список фич: 
+* Список полей в левом дереве 
 * Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 * Hotkey справочник и/или help 
 * SHOW CREATE TABLE 
-* Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
+* Изменить Grid, выбрать из [ui-grid.info | ag-grid | paramquery.com | js-grid.com], сортировка на клиенте 
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
 * Выбор разделителя `;;` или `;`
 
@@ -29,6 +34,11 @@
 
 
 ## Changelog 
+
+### 2016-11-03
+Полностью обновили GUI 
+Вместо слов : https://monosnap.com/file/rIEnBkDoh0jMmhGDsu0umaqk5F0srt 
+
 
 ### 2016-10-12
 * Запрос на create_table из select , если запрос содержит таблицу ответа 
