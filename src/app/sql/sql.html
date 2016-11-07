@@ -57,16 +57,20 @@
                         <md-menu md-position-mode="target-right target" show-if-fullscreen="false">
                             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                                 <i class="mdi mdi-code-braces"></i>
+                                <md-tooltip>Словари</md-tooltip>
                             </md-button>
                             <md-menu-content>
                                 <md-menu-item ng-repeat="dictionary in vars.dictionaries">
                                     <md-button ng-click="addDictionariesWord(dictionary.dic)">
                                         {{dictionary.title}}
-                                        <md-tooltip>Словари</md-tooltip>
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
+                        <md-button class="md-icon-button" ng-click="toggleSidenav('log')" show-if-fullscreen="false" aria-label="log">
+                            <i class="mdi mdi-view-headline"></i>
+                            <md-tooltip>Лог запросов</md-tooltip>
+                        </md-button>
                     </div>
                 </div>
 
@@ -146,4 +150,22 @@
             Закрыть
         </md-button>
     </div>
+</md-sidenav>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="log">
+    <div class="p+">
+        <h4 class="mt0">
+            <md-button class="md-icon-button pull-right" ng-click="toggleSidenav('log')" aria-label="close" style="margin-top: -10px; margin-right: -10px">
+                <i class="mdi mdi-close"></i>
+                <md-tooltip>Сохранить</md-tooltip>
+            </md-button>
+            Лог запросов
+        </h4>
+    </div>
+    <div ng-repeat="sql in vars.sqlLog" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">
+        <pre class="p0 m0" style="max-height: 48px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
+    </div>
+    <small class="p+" ng-if="vars.sqlLog.length === 0">
+        История запросов пуста
+    </small>
 </md-sidenav>

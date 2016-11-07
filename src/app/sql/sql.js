@@ -28,6 +28,8 @@ window.global_keywords_tables = "";
     function SqlController($scope, $rootScope, $window, localStorageService, API, $mdSidenav, $mdDialog, $mdToast, ThemeService, $timeout, $filter) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
+        const SQL_LOG_KEY = 'sqlLog';
+        const SQL_LOG_LENGTH = 30;
 
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
@@ -37,6 +39,7 @@ window.global_keywords_tables = "";
             uiThemes: ThemeService.list,
             currentTab: {},
             selectedTab: 0,
+            sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
             formats: [{
                 name: 'Таблица',
                 sql: ' format JSON',
@@ -199,6 +202,8 @@ window.global_keywords_tables = "";
         $scope.renderFinalResult = (result) => {
             $scope.vars.currentTab.loading = false;
             if (result.data.find((item) => (
+                    item.query &&
+                    item.query.keyword &&
                     ['DROP', 'CREATE', 'ALTER'].indexOf(
                         item.query.keyword.toUpperCase()
                     ) != -1
@@ -250,6 +255,15 @@ window.global_keywords_tables = "";
                 return arr;
             }, []);
             tab.results.unshift(result);
+
+            // save to SQL log
+            if ($scope.vars.sqlLog.indexOf(sql) == -1) {
+                $scope.vars.sqlLog.unshift(sql);
+                if ($scope.vars.sqlLog.length > SQL_LOG_LENGTH) {
+                    $scope.vars.sqlLog.splice(0, SQL_LOG_LENGTH);
+                }
+                localStorageService.set(SQL_LOG_KEY, $scope.vars.sqlLog);
+            }
 
             // Split SQL into subqueries
             editor
@@ -381,7 +395,6 @@ window.global_keywords_tables = "";
                         tab.editor.session.bgTokenizer.start(0);
                     });
                 });
-
         };
 
         /**
@@ -427,11 +440,18 @@ window.global_keywords_tables = "";
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
 
+            // Load settings from LocalStorage
             editor.setOptions({
                 fontSize: $scope.vars.fontSize + 'px'
             });
-
             editor.setTheme('ace/theme/' + $scope.vars.theme);
+
+            // reload keywords & highlights
+            editor.session.setMode({
+                path: "ace/mode/clickhouse",
+                v: Date.now()
+            });
+            editor.session.bgTokenizer.start(0);
 
             // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
             editor.commands.addCommand({
@@ -532,6 +552,7 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab.sql = history.sql;
             $scope.vars.currentTab.originalSql = history.sql;
             $scope.vars.currentTab.name = history.name;
+
         }
 
         /**
@@ -627,6 +648,12 @@ window.global_keywords_tables = "";
         });
 
         $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
+
+        $scope.setSql = (sql) => {
+            $scope.vars.currentTab.sql = sql;
+            $scope.toggleSidenav('log');
+            $timeout(() => $scope.vars.currentTab.editor.focus(), 500);
+        }
 
     }
 })(angular, smi2);
