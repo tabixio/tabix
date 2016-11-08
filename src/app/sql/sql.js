@@ -598,6 +598,7 @@ window.global_keywords_tables = "";
                 selectedResultTab: 0
             };
             $scope.vars.tabs.push($scope.vars.currentTab);
+            saveSession();
         };
 
         /**
@@ -679,7 +680,12 @@ window.global_keywords_tables = "";
         /**
          * Save session checkbox state in LS
          */
-        $scope.$watch('vars.saveTabs', (value) => localStorageService.set(SQL_SAVE_TABS_KEY, value));
+        $scope.$watch('vars.saveTabs', (value, old) => {
+            localStorageService.set(SQL_SAVE_TABS_KEY, value);
+            if (old === false && value === true) {
+                saveSession();
+            }
+        });
 
         /**
          * Change UI themetam_tam641

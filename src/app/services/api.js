@@ -193,7 +193,7 @@
                 enableSelectAll: true,
                 showGridFooter: true,
                 showColumnFooter: true,
-                data: data.data,
+                data: data.data
             };
         };
     }
