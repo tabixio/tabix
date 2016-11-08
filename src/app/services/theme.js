@@ -2,14 +2,14 @@
     'use strict';
 
     angular.module(smi2.app.name).service('ThemeService', ThemeService);
-    ThemeService.$inject = ['localStorageService', '$state', '$stateParams'];
+    ThemeService.$inject = ['localStorageService'];
 
     /**
      * @ngdoc service
      * @name smi2.service:ThemeService
      * @description Theme service
      */
-    function ThemeService(localStorageService, $state, $stateParams) {
+    function ThemeService(localStorageService) {
 
         const themeName = localStorageService.get('themeName') || 'dark';
         const list = [{
