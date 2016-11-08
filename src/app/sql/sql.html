@@ -50,6 +50,9 @@
                                     <md-button>
                                         {{item.name}}
                                         <md-tooltip>История зарпросов</md-tooltip>
+                                        <div class="pull-right">
+                                            <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
+                                        </div>
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
@@ -139,11 +142,16 @@
                 </md-option>
             </md-select>
         </md-input-container>
-        <md-input-container class="width-100 mt">
+        <md-input-container class="width-100 mt mb+">
             <label>Тема интерфейса</label>
             <md-select ng-model="vars.uiTheme">
                 <md-option ng-repeat="theme in vars.uiThemes" ng-value="theme" ng-click="setUiTheme(theme)">{{theme.title}}</md-option>
             </md-select>
+        </md-input-container>
+        <md-input-container class="width-100 mt">
+            <md-checkbox ng-model="vars.saveTabs" aria-label="saveTabs">
+                Сохранять сессию
+            </md-checkbox>
         </md-input-container>
 
         <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">

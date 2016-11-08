@@ -3,6 +3,7 @@
 var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
+var packageJson = require('../package.json');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
@@ -86,7 +87,7 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe($.useref())
         .pipe($.revReplace())
         .pipe(htmlFilter)
-        //.pipe($.replace('scripts/', 'app/scripts/'))
+        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
         .pipe($.minifyHtml({
             empty: true,
             spare: true,

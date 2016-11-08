@@ -24,7 +24,7 @@
             bases: localStorageService.get(ALL_BASES_KEY) || [],
             db: {},
             loading: false,
-            build: smi2.app.build,
+            version: smi2.app.version,
             themes: ThemeService.list
         };
 

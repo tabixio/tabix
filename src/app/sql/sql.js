@@ -23,18 +23,21 @@ window.global_keywords_tables = "";
     /**
      * @ngdoc controller
      * @name smi2.controller:SqlController
-     * @description Контроллер выполнения SQL запросов к БД
+     * @description SQL controller data
      */
     function SqlController($scope, $rootScope, $window, localStorageService, API, $mdSidenav, $mdDialog, $mdToast, ThemeService, $timeout, $filter) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
+        const SQL_SAVE_TABS_KEY = 'saveTabs';
+        const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
 
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
             tabs: [],
+            saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
             currentTab: {},
@@ -73,7 +76,7 @@ window.global_keywords_tables = "";
         }];
 
         /**
-         * Предотвращаю потерю SQL данных при закрытии окна
+         * Prevent data loss on close page
          */
         $window.onbeforeunload = (event) => {
             if ($scope.vars.currentTab.sql !== '' && location.hostname != 'localhost') {
@@ -89,9 +92,9 @@ window.global_keywords_tables = "";
         };
 
         /**
-         * Предотвращаю потерю SQL данных при смене стейта
+         * Prevent data loss on state change
          */
-        let clearRouterListener = $scope.$on('$stateChangeStart', (event) => {
+        const clearRouterListener = $scope.$on('$stateChangeStart', (event) => {
             let message = 'Хотите покинуть страницу?';
             if (!event.defaultPrevented && $scope.vars.currentTab !== '' && !confirm(message)) {
                 event.preventDefault();
@@ -99,10 +102,30 @@ window.global_keywords_tables = "";
         });
 
         /**
+         * Save tabs session
+         */
+        const saveSession = () => {
+            if ($scope.vars.saveTabs) {
+                const tabs = $scope.vars.tabs.map((tab) => {
+                    return {
+                        name: tab.name,
+                        sql: tab.sql,
+                        buttonTitle: tab.buttonTitle,
+                        format: tab.format,
+                        results: [],
+                        editor: null,
+                        selectedResultTab: 0
+                    };
+                });
+                localStorageService.set(SQL_SESSION_KEY, tabs);
+            }
+        }
+
+        /**
          * @ngdoc method
          * @methodOf smi2.controller:SqlController
          * @name executeQuery
-         * @description Выполненеие одного SQL запроса
+         * @description Execute single SQL query
          * @param {} query
          */
         $scope.executeQuery = (query, queue, resultContainer) => {
@@ -256,7 +279,7 @@ window.global_keywords_tables = "";
             }, []);
             tab.results.unshift(result);
 
-            // save to SQL log
+            // Save to SQL log
             if ($scope.vars.sqlLog.indexOf(sql) == -1) {
                 $scope.vars.sqlLog.unshift(sql);
                 if ($scope.vars.sqlLog.length > SQL_LOG_LENGTH) {
@@ -264,6 +287,9 @@ window.global_keywords_tables = "";
                 }
                 localStorageService.set(SQL_LOG_KEY, $scope.vars.sqlLog);
             }
+
+            // Save tabs session
+            saveSession();
 
             // Split SQL into subqueries
             editor
@@ -342,7 +368,7 @@ window.global_keywords_tables = "";
         };
 
         /**
-         * Установка названия БД
+         * Set database name
          * @param db
          */
         $scope.selectDatabase = (db) => {
@@ -388,11 +414,13 @@ window.global_keywords_tables = "";
 
                     // reload highlights
                     $scope.vars.tabs.forEach((tab) => {
-                        tab.editor.session.setMode({
-                            path: "ace/mode/clickhouse",
-                            v: Date.now()
-                        });
-                        tab.editor.session.bgTokenizer.start(0);
+                        if (tab.editor) {
+                            tab.editor.session.setMode({
+                                path: "ace/mode/clickhouse",
+                                v: Date.now()
+                            });
+                            tab.editor.session.bgTokenizer.start(0);
+                        }
                     });
                 });
         };
@@ -436,7 +464,7 @@ window.global_keywords_tables = "";
          * @param editor
          */
         $scope.aceLoaded = (editor) => {
-            let tab = $scope.vars.currentTab;
+            let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
 
@@ -542,6 +570,7 @@ window.global_keywords_tables = "";
             tab.originalSql = tab.sql;
             tab.name = name;
             localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
+            saveSession();
         });
 
         /**
@@ -625,18 +654,66 @@ window.global_keywords_tables = "";
             $mdSidenav(id).toggle();
         };
 
-        // angular.element('#resizable').resizable({
-        //     handles: 's'
-        // });
+        /**
+         * Remove history item
+         * @param item
+         * @param event
+         */
+        $scope.removeHistory = (item, event) => {
+            event.preventDefault();
+            const index = $scope.vars.sqlHistory.indexOf(item);
+            if (index != -1) {
+                $mdDialog.show(
+                    $mdDialog.confirm()
+                        .title(`Удалить ${item.name}?`)
+                        .targetEvent(event)
+                        .ok('Да')
+                        .cancel('Нет')
+                ).then(()=> {
+                    $scope.vars.sqlHistory.splice(index, 1);
+                    localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
+                });
+            }
+        };
+
+        /**
+         * Save session checkbox state in LS
+         */
+        $scope.$watch('vars.saveTabs', (value) => localStorageService.set(SQL_SAVE_TABS_KEY, value));
+
+        /**
+         * Change UI themetam_tam641
+         * @param theme
+         */
+        $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
+
+        /**
+         * Set SQL in editor
+         * @param sql
+         */
+        $scope.setSql = (sql) => {
+            $scope.vars.currentTab.sql = sql;
+            $scope.toggleSidenav('log');
+            $timeout(() => $scope.vars.currentTab.editor.focus(), 500);
+        }
 
         /**
          * Init :)
          */
-        $scope.addTab();
+        if ($scope.vars.saveTabs) {
+            $scope.vars.tabs = localStorageService.get(SQL_SESSION_KEY);
+            if ($scope.vars.tabs.length > 0) {
+                $timeout(() => ($scope.vars.currentTab = $scope.vars.tabs[0]), 500);
+            } else {
+                $scope.addTab();
+            }
+        } else {
+            localStorageService.set(SQL_SESSION_KEY, []);
+            $scope.addTab();
+        }
         if ($rootScope.currentDatabase) {
             $scope.selectDatabase($rootScope.currentDatabase);
-        }
-        ;
+        };
 
         /**
          * Controller destructor
@@ -646,14 +723,5 @@ window.global_keywords_tables = "";
             clearRouterListener();
             $window.onbeforeunload = null;
         });
-
-        $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
-
-        $scope.setSql = (sql) => {
-            $scope.vars.currentTab.sql = sql;
-            $scope.toggleSidenav('log');
-            $timeout(() => $scope.vars.currentTab.editor.focus(), 500);
-        }
-
     }
 })(angular, smi2);
