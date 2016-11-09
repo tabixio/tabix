@@ -11,7 +11,9 @@
      */
     function API($http, $q, localStorageService, $sanitize, ThemeService) {
 
-        let CURRENT_BASE_KEY = 'currentBaseConfig';
+        const CURRENT_BASE_KEY = 'currentBaseConfig';
+        const DEFAULT_PORT = 8123;
+
         let database = null;
         let connection = {};
 
@@ -30,7 +32,12 @@
          */
         this.setConnection = (db) => {
             localStorageService.set(CURRENT_BASE_KEY, db);
-            connection = db;
+            connection = angular.copy(db);
+
+            // Check port
+            if (!/.*\:\d+$/.test(connection.host)) {
+                connection.host += ':' + DEFAULT_PORT;
+            }
         };
 
         /**

@@ -10,7 +10,8 @@
         <md-tab ng-repeat="tab in vars.tabs" ng-click="vars.currentTab = tab">
             <md-tab-label>
                 {{tab.name + (tab.changed ? ' *' : '')}}
-                <i class="mdi mdi-close ml+" ng-click="removeTab(tab, $event)"></i>
+                <i class="mdi mdi-pencil ml+" ng-click="changeTabName(tab, $event)" style="cursor: pointer"></i>
+                <i class="mdi mdi-close" ng-click="removeTab(tab, $event)" style="cursor: pointer"></i>
             </md-tab-label>
             <md-tab-body>
                 <div style="display: table; width: 100%;">
