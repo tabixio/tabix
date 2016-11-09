@@ -582,7 +582,7 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab.originalSql = history.sql;
             $scope.vars.currentTab.name = history.name;
 
-        }
+        };
 
         /**
          * Inserting new SQL tab
@@ -701,7 +701,34 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab.sql = sql;
             $scope.toggleSidenav('log');
             $timeout(() => $scope.vars.currentTab.editor.focus(), 500);
-        }
+        };
+
+        /**
+         * Rename tab
+         * @param tab
+         * @param event
+         */
+        $scope.changeTabName = (tab, event) => {
+            event.stopPropagation();
+            $mdDialog.show(
+                $mdDialog.prompt()
+                    .title('Название вкладки')
+                    .placeholder('название')
+                    .initialValue(tab.name)
+                    .targetEvent(event)
+                    .ok('Применить')
+                    .cancel('Отмена')
+            ).then((name)=> {
+                const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
+                if (index != -1) {
+                    tab.originalSql = tab.sql;
+                    $scope.vars.sqlHistory[index].name = name;
+                    localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
+                }
+                tab.name = name;
+                saveSession();
+            });
+        };
 
         /**
          * Init :)

@@ -18,7 +18,7 @@
      */
     function LoginController($scope, $state, localStorageService, API, $mdToast, ThemeService) {
 
-        var ALL_BASES_KEY = 'basesConfig';
+        const ALL_BASES_KEY = 'basesConfig';
 
         $scope.vars = {
             bases: localStorageService.get(ALL_BASES_KEY) || [],
