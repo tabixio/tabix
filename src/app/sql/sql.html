@@ -87,13 +87,68 @@
                         </md-tab-label>
                         <md-tab-body>
                             <div ng-repeat="item in result.data">
-                                <md-card class="m0 text-right">
-                                <div style="white-space: nowrap; float: right;" class="md-card" ng-if="item.statistics">
-                                    <i class="mdi mdi-table-large" ng-if="item.createtable" ng-click="addDictionariesWord(item.createtable)"></i>
-                                    время: <b>{{item.statistics.elapsed | number:3}}</b>,
-                                    строк прочитано: <b>{{item.statistics.rows_read | number}}</b>,
-                                    прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
-                                </div>
+                                <md-card class="m0">
+                                    <div>
+                                        <div class="pull-left" ng-if="item.statistics">
+                                            <md-button aria-label="menu" class="md-icon-button" ng-click="addDictionariesWord(item.createtable)" ng-if="item.createtable">
+                                                <i class="mdi mdi-table-large"></i>
+                                            </md-button>
+                                            <md-menu md-position-mode="target">
+                                                <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                                    <i class="mdi mdi-file-excel"></i>
+                                                </md-button>
+                                                <md-menu-content>
+                                                    <md-menu-item>
+                                                        <md-button
+                                                            ng-csv="getExportData(item.data)"
+                                                            quote-strings='"'
+                                                            filename="{{tab.name}}-{{result.time}}.csv"
+                                                            csv-header="getExportHeaders(item.meta)"
+                                                        >
+                                                            CSV с заголовком
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                    <md-menu-item>
+                                                        <md-button
+                                                            ng-csv="getExportData(item.data)"
+                                                            quote-strings='"'
+                                                            filename="{{tab.name}}-{{result.time}}.csv"
+                                                        >
+                                                            CSV без заголовка
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                    <md-menu-item>
+                                                        <md-button
+                                                            ng-csv="getExportData(item.data)"
+                                                            quote-strings=''
+                                                            filename="{{tab.name}}-{{result.time}}.txt"
+                                                            field-separator="\t"
+                                                            csv-header="getExportHeaders(item.meta)"
+                                                        >
+                                                            Табулированный текст с заголовками
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                    <md-menu-item>
+                                                        <md-button
+                                                            ng-csv="getExportData(item.data)"
+                                                            quote-strings=" "
+                                                            filename="{{tab.name}}-{{result.time}}.txt"
+                                                            field-separator="\t"
+                                                            csv-header="getExportHeaders(item.meta)"
+                                                        >
+                                                            Табулированный текст без заголовков
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                </md-menu-content>
+                                            </md-menu>
+                                        </div>
+
+                                        <div style="white-space: nowrap; line-height: 40px" class="md-card pull-right mr" ng-if="item.statistics">
+                                            время: <b>{{item.statistics.elapsed | number:3}}</b>,
+                                            строк прочитано: <b>{{item.statistics.rows_read | number}}</b>,
+                                            прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
+                                        </div>
+                                    </div>
                                 </md-card>
 
                                 <div>

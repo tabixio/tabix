@@ -20,6 +20,7 @@
         'ngSanitize',
         'ngMaterial',
         'funMetisMenu',
-        'ngScrollbars'
+        'ngScrollbars',
+        'ngCsv'
     ]);
 })();
