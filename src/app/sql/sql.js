@@ -25,7 +25,17 @@ window.global_keywords_tables = "";
      * @name smi2.controller:SqlController
      * @description SQL controller data
      */
-    function SqlController($scope, $rootScope, $window, localStorageService, API, $mdSidenav, $mdDialog, $mdToast, ThemeService, $timeout, $filter) {
+    function SqlController($scope,
+                           $rootScope,
+                           $window,
+                           localStorageService,
+                           API,
+                           $mdSidenav,
+                           $mdDialog,
+                           $mdToast,
+                           ThemeService,
+                           $timeout,
+                           $filter) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -214,7 +224,6 @@ window.global_keywords_tables = "";
                 data.result = API.dataToHtml(data);
                 data.createtable = API.dataToCreateTable(data);
             }
-            data.data = false;
             return data;
         };
 
@@ -581,8 +590,20 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab.sql = history.sql;
             $scope.vars.currentTab.originalSql = history.sql;
             $scope.vars.currentTab.name = history.name;
-
         };
+
+        /**
+         * Create export data
+         * @param result
+         * @returns {number[]}
+         */
+        $scope.getExportData = result => (
+            result.map(item => Object.keys(item).map(key => (
+                angular.isArray(item[key]) ? item[key].join(', ') : item[key]
+            )))
+        );
+
+        $scope.getExportHeaders = result => result.map(item => item.name);
 
         /**
          * Inserting new SQL tab
