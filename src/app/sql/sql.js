@@ -479,7 +479,10 @@ window.global_keywords_tables = "";
 
             // Load settings from LocalStorage
             editor.setOptions({
-                fontSize: $scope.vars.fontSize + 'px'
+                fontSize: $scope.vars.fontSize + 'px',
+                enableBasicAutocompletion : true,
+                enableSnippet:true,
+                enableLiveAutocompletion:true
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
