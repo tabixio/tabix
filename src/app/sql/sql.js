@@ -482,7 +482,7 @@ window.global_keywords_tables = "";
                 fontSize: $scope.vars.fontSize + 'px',
                 enableBasicAutocompletion : true,
                 enableSnippet:true,
-                enableLiveAutocompletion:true
+                enableLiveAutocompletion:false
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
