@@ -70,7 +70,6 @@
                 'Размер, байт': 'Size in bytes',
                 'Первая запись': 'First record',
                 'Последняя запись': 'Last record',
-                'Название': 'name',
                 'Тип': 'Type',
                 'Default тип': 'Default type',
                 'Значение': 'Default value',
