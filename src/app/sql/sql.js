@@ -562,12 +562,12 @@ window.global_keywords_tables = "";
          */
         $scope.save = (tab, ev) => $mdDialog.show(
             $mdDialog.prompt()
-                .title('Сохранить SQL как')
-                .placeholder('название')
+                .title($filter('translate')('Сохранить SQL как'))
+                .placeholder($filter('translate')('название'))
                 .initialValue(tab.name)
                 .targetEvent(ev)
-                .ok('Сохранить')
-                .cancel('Отмена')
+                .ok($filter('translate')('Сохранить'))
+                .cancel($filter('translate')('Отмена'))
         ).then((name)=> {
             const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
             if (index != -1) {
@@ -615,7 +615,7 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab = {
                 name: 'new SQL',
                 sql: '',
-                buttonTitle: 'Выполнить ⌘ + ⏎',
+                buttonTitle: $filter('translate')('Выполнить ⌘ + ⏎'),
                 format: {},
                 editor: null,
                 results: [],
@@ -643,10 +643,10 @@ window.global_keywords_tables = "";
             if (tab.changed) {
                 $mdDialog.show(
                     $mdDialog.confirm()
-                        .title('SQL изменен. Сохранить перед закрытием?')
+                        .title($filter('translate')('SQL изменен. Сохранить перед закрытием?'))
                         .targetEvent(event)
-                        .ok('Да')
-                        .cancel('Нет')
+                        .ok($filter('translate')('Да'))
+                        .cancel($filter('translate')('Нет'))
                 ).then(()=> {
                     const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
                     if (index != -1) {

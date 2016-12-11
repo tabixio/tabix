@@ -50,11 +50,11 @@
         .config(['$translateProvider', function ($translateProvider) {
             $translateProvider.translations('en', {
                 'Подключение': 'Connection',
-                'Неверные данные':'some data is wrong',
-                'название':'name',
-                'хост:порт':'host:port',
-                'логин':'login',
-                'пароль': 'password',
+                'Неверные данные': 'some data is wrong',
+                'Название': 'name',
+                'Хост:порт': 'host:port',
+                'Логин': 'login',
+                'Пароль': 'password',
                 'Удалить': 'Delete',
                 'Войти': 'Sing in',
                 'не найдено': 'not found',
@@ -63,8 +63,8 @@
                 'Выход': 'Sing out',
                 'Шрифт': 'font',
                 'История запросов пуста': 'Requests\'s history is empty',
-                'Структура':'Structure',
-                'Данные':'Data',
+                'Структура': 'Structure',
+                'Данные': 'Data',
                 'Информация': 'Information',
                 'Размер': 'Size',
                 'Размер, байт': 'Size in bytes',
@@ -85,10 +85,45 @@
                 'Выполнить выделенное ⌘ + ⏎': 'Run selected ⌘ + ⏎',
                 'Выполнить все ⇧ + ⌘ + ⏎': 'Run all ⇧ + ⌘ + ⏎',
                 'Просмотр': 'Preview',
-                'Ошибка ': 'Error '
-            });
-            $translateProvider.translations('ru', {
-            });
+                'Ошибка ': 'Error ',
+                'Сохранить':'Save',
+                'Лог запросов': 'Request\'s log',
+                'Тема интерфейса': 'Theme',
+                'Тема': 'Theme',
+                'Максимум строк': 'Maximum lines',
+                'Настройки редактора': 'Editor settings',
+                'Закрыть': 'Close',
+                'Размер шрифта': 'Font size',
+                'Формат результатов': 'Result\'s format',
+                'Тема редактора':'Editor theme',
+                'Сохранять сессию': 'Save session',
+                'На весь экран': 'Full screen',
+                'Словари': 'Dictionaries',
+                'CSV с заголовком': 'CSV with headers',
+                'CSV без заголовка': 'CSV without headers',
+                'Табулированный текст с заголовками': 'Tabulated text with headers',
+                'Табулированный текст без заголовков': 'Tabulated text without headers',
+                'время':'time',
+                'строк прочитано':'lines read',
+                'прочитано':'read',
+                'SQL изменен. Сохранить перед закрытием?': 'SQL was changed. Save it before exit?',
+                'Да':'Yes',
+                'Нет': 'No',
+                'Светлая тема': 'Light theme',
+                'Темная тема': 'Dark theme',
+                'с': 'from',
+                'по': 'to',
+                'Открыть таблицу': 'Open table'
+            })
+            .translations('ru', {
+            })
+            .registerAvailableLanguageKeys(['en', 'ru'], {
+                'en_*': 'en',
+                'ru_*': 'ru'
+            })
+            .determinePreferredLanguage();
+            // this line used for translation check
+            //$translateProvider.useMissingTranslationHandlerLog();
 
-            $translateProvider.preferredLanguage('en');
+        }]);
 })(angular, smi2);

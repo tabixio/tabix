@@ -10,7 +10,7 @@
                 <md-menu md-position-mode="target-right target">
                     <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                         <i class="mdi mdi-24px mdi-theme-light-dark"></i>
-                        <md-tooltip>Тема</md-tooltip>
+                        <md-tooltip>{{'Тема' | translate}}</md-tooltip>
                     </md-button>
                     <md-menu-content>
                         <md-menu-item ng-repeat="theme in themes">
@@ -22,9 +22,9 @@
                     <i class="mdi mdi-24px mdi-console"></i>
                     <md-tooltip>SQL</md-tooltip>
                 </md-button>
-                <md-button class="md-icon-button" aria-label="Выход" ng-click="logout()">
+                <md-button class="md-icon-button" aria-label="{{'Выход' | translate}}" ng-click="logout()">
                     <i class="mdi mdi-24px mdi-lock"></i>
-                    <md-tooltip>Выход</md-tooltip>
+                    <md-tooltip>{{'Выход' | translate}}</md-tooltip>
                 </md-button>
                 <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>

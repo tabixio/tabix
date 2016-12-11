@@ -2,24 +2,24 @@
     'use strict';
 
     angular.module(smi2.app.name).service('ThemeService', ThemeService);
-    ThemeService.$inject = ['localStorageService'];
+    ThemeService.$inject = ['localStorageService', '$filter'];
 
     /**
      * @ngdoc service
      * @name smi2.service:ThemeService
      * @description Theme service
      */
-    function ThemeService(localStorageService) {
+    function ThemeService(localStorageService, $filter) {
 
         const themeName = localStorageService.get('themeName') || 'dark';
         const list = [{
             isDark: false,
             name: 'default',
-            title: 'Светлая тема'
+            title: $filter('translate')('Светлая тема')
         }, {
             isDark: true,
             name: 'dark',
-            title: 'Темная тема'
+            title: $filter('translate')('Темная тема')
         }];
         let theme = list.find((item) => (item.name == themeName)) || list[0];
 

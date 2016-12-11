@@ -8,17 +8,17 @@
         <!-- колонки -->
         <md-tab>
             <md-tab-label>
-                <i class="mdi mdi-table-column-plus-after mr-"></i>Структура
+                <i class="mdi mdi-table-column-plus-after mr-"></i>{{'Структура' | translate}}
             </md-tab-label>
             <md-tab-body>
                 <table class="data-table">
                     <thead>
                         <tr class="text-left">
                             <th style="width: 40px"></th>
-                            <th style="width: 40%">Название</th>
-                            <th style="width: 10%">Тип</th>
-                            <th style="width: 10%">Default тип</th>
-                            <th style="width: 10%">Значение</th>
+                            <th style="width: 40%">{{'Название' | translate}}</th>
+                            <th style="width: 10%">{{'Тип' | translate}}</th>
+                            <th style="width: 10%">{{'Default тип' | translate}}</th>
+                            <th style="width: 10%">{{'Значение' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,7 @@
         <!-- данные -->
         <md-tab>
             <md-tab-label>
-                <i class="mdi mdi-table-large mr-"></i>Данные
+                <i class="mdi mdi-table-large mr-"></i>{{'Данные' | translate}}
             </md-tab-label>
             <md-tab-body>
                 <div class="pl+ pt+ pb+ pr" style="font-size: .75rem;max-height:100%">
@@ -49,14 +49,14 @@
                             <i class="mdi mdi-arrow-right"></i>
                         </md-button>
                     </div>
-                    Данные
-                    <span class="tc-grey-400">c
+                    {{'Данные' | translate}}
+                    <span class="tc-grey-400">{{'с' | translate}}
                         {{vars.offset}}
-                        по
+                        {{'по' | translate}}
                         {{vars.offset + vars.limit}}</span>
                 </div>
                 <div class="card__actions p+" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden; " ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
-                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">нет данных</span>
+                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
                     <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
                 </div>
@@ -66,35 +66,35 @@
         <!-- информация -->
         <md-tab>
             <md-tab-label>
-                <i class="mdi mdi-information mr-"></i>Информация</md-tab-label>
+                <i class="mdi mdi-information mr-"></i>{{'Информация' | translate}}</md-tab-label>
             <md-tab-body>
                 <div class="data-table-container">
                     <table class="data-table">
                         <tbody>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400" style="width: 40px">1</td>
-                                <td style="width: 200px">Размер</td>
+                                <td style="width: 200px">{{'Размер' | translate}}</td>
                                 <td>
                                     {{vars.statistics.size}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">2</td>
-                                <td>Размер, байт</td>
+                                <td>{{'Размер, байт' | translate}}</td>
                                 <td>
                                     {{vars.statistics.sizeBytes}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">3</td>
-                                <td>Первая запись</td>
+                                <td>{{'Первая запись' | translate}}</td>
                                 <td>
                                     {{vars.statistics.minDate}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">4</td>
-                                <td>Последняя запись</td>
+                                <td>{{'Последняя запись' | translate}}</td>
                                 <td>
                                     {{vars.statistics.maxDate}}
                                 </td>

@@ -9,7 +9,7 @@
                     <md-button class="md-icon-button right-button" ui-sref="table({tableName:currentTable, dbName:currentDatabase})">
                         <i class="mdi mdi-arrow-expand-all"></i>
                         <md-tooltip md-direction="left">
-                            Открыть таблицу
+                            {{'Открыть таблицу' | translate}}
                         </md-tooltip>
                     </md-button>
                     <div class="h100" ng-include="'app/table/table-container.html'" ng-controller="TableContainerController" ng-init="initContainer()"></div>
