@@ -1,202 +1,213 @@
-(function(angular, smi2) {
-	'use strict';
+((angular, smi2) => {
+    'use strict';
 
-	angular.module(smi2.app.name).service('API', API);
-	API.$inject = ['$http', '$q', 'localStorageService'];
+    angular.module(smi2.app.name).service('API', API);
+    API.$inject = ['$http', '$q', 'localStorageService', '$sanitize', 'ThemeService'];
 
-	/**
-	 * @ngdoc service
-	 * @name smi2.service:API
-	 * @description Менеджер API. Нужен для обмена данными с backend.
-	 */
-	function API($http, $q, localStorageService) {
+    /**
+     * @ngdoc service
+     * @name smi2.service:API
+     * @description API manager
+     */
+    function API($http, $q, localStorageService, $sanitize, ThemeService) {
 
-		var CURRENT_BASE_KEY = 'currentBaseConfig';
-		var database = null;
-		var connection = {};
+        const CURRENT_BASE_KEY = 'currentBaseConfig';
+        const DEFAULT_PORT = 8123;
 
-		// Первичная загрузка данных из LS
-		var data = localStorageService.get(CURRENT_BASE_KEY);
-		if (data && data.host) {
-			connection = data;
-		}
+        let database = null;
+        let connection = {};
 
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name setConnection
-		 * @description Сохранение данных подключения в БД
-		 * @param {mixed} db Данные подключения
-		 */
-		this.setConnection = function(db) {
-			localStorageService.set(CURRENT_BASE_KEY, db);
-			connection = db;
-		};
+        // Первичная загрузка данных из LS
+        let data = localStorageService.get(CURRENT_BASE_KEY);
+        if (data && data.host) {
+            connection = data;
+        }
 
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name clear
-		 * @description Сброс авторизации
-		 */
-		this.clear = function() {
-			database = null;
-			connection = {};
-			localStorageService.set(CURRENT_BASE_KEY, {});
-		};
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name setConnection
+         * @description Сохранение данных подключения в БД
+         * @param {mixed} db Данные подключения
+         */
+        this.setConnection = (db) => {
+            localStorageService.set(CURRENT_BASE_KEY, db);
+            connection = angular.copy(db);
 
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name query
-		 * @description Выполнение запроса к БД
-		 * @param {string} sql Текст запроса
-		 * @return {promise} Promise
-		 */
-		this.query = function(sql, format, withDatabase,extend_settings) {
-			var defer = $q.defer();
-			var query = '';
+            // Check port
+            if (!/.*\:\d+$/.test(connection.host)) {
+                connection.host += ':' + DEFAULT_PORT;
+            }
+        };
 
-			if (format !== false) {
-				format = (format || ' FoRmAt JSON');
-				if (format == 'null') {
-					format = '';
-				}
-				query = sql + ' ' + format;
-			} else {
-				query = sql;
-			}
-			var httpProto = '';
-			if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
-        httpProto = 'http://';
-      }
-			var url = httpProto + connection.host +
-				'/?query=' + encodeURIComponent(query);
-			if (connection.login) {
-				url += '&user=' + connection.login;
-			}
-			if (connection.password) {
-				url += '&password=' + connection.password;
-			}
-			
-			if (connection.host.indexOf('/') != 0) {
-        url += '&add_http_cors_header=1';
-      }
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name clear
+         * @description Сброс авторизации
+         */
+        this.clear = () => {
+            database = null;
+            connection = {};
+            localStorageService.set(CURRENT_BASE_KEY, {});
+        };
 
-			if (withDatabase) {
-				url += '&database=' + database;
-			}
-			if (extend_settings) {
-				url += '&'+extend_settings;
-			}
-			console.info(query);// Не удалять не только для DEBUG
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name query
+         * @description Выполнение запроса к БД
+         * @param {string} sql Текст запроса
+         * @return {promise} Promise
+         */
+        this.query = (sql, format, withDatabase, extend_settings) => {
+            let defer = $q.defer();
+            let query = '';
 
-			var req = {
-				method: (format?'GET':'POST'), // if not set format use POST
-				url: url,
-				transformResponse: function(data, header,status) {
-					try {
-						return angular.fromJson(data);
-					} catch (err) {
-						return (data?data:"\nStatus:"+status+"\nHeaders:"+angular.toJson(header()));
-					}
-				}
-			};
+            if (format !== false) {
+                format = (format || ' FoRmAt JSON');
+                if (format == 'null') {
+                    format = '';
+                }
+                query = sql + ' ' + format;
+            } else {
+                query = sql;
+            }
+            var httpProto = '';
+            if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
+                httpProto = 'http://';
+            }
+            let url = httpProto + connection.host +
+                '/?query=' + encodeURIComponent(query);
+            if (connection.login) {
+                url += '&user=' + connection.login;
+            }
+            if (connection.password) {
+                url += '&password=' + connection.password;
+            }
+            if (connection.host.indexOf('/') != 0) {
+                url += '&add_http_cors_header=1';
+            }
+            if (withDatabase) {
+                url += '&database=' + database;
+            }
+            if (extend_settings) {
+                url += '&' + extend_settings;
+            }
+            // console.info(query);// Не удалять не только для DEBUG.
+            // Бебебе удалил
 
-			$http(req).then(function (response) {
-				defer.resolve(response.data);
-			}, function (response) {
-				defer.reject(response.data);
-			});
+            let req = {
+                method: (format ? 'GET' : 'POST'), // if not set format use POST
+                url: url,
+                transformResponse: (data, header, status) => {
+                    try {
+                        return angular.fromJson(data);
+                    } catch (err) {
+                        return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
+                    }
+                }
+            };
 
-			return defer.promise;
-		};
+            $http(req).then((response) => {
+                defer.resolve(response.data);
+            }, (response) => {
+                defer.reject(response.data);
+            });
 
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name getConnectionInfo
-		 * @description Получение данных подключения
-		 * @return {mixed} Объект с данными подключения
-		 */
-		this.getConnectionInfo = function() {
-			return connection;
-		};
+            return defer.promise;
+        };
 
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name setDatabase
-		 * @description Установка дефолтной БД
-		 * @param {mixed} db Данные БД
-		 */
-		this.setDatabase = function(db) {
-			database = db;
-		};
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name getConnectionInfo
+         * @description Получение данных подключения
+         * @return {mixed} Объект с данными подключения
+         */
+        this.getConnectionInfo = () => connection;
 
-		this.getDatabase = function () {
-			return database;
-		};
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name setDatabase
+         * @description Установка дефолтной БД
+         * @param {mixed} db Данные БД
+         */
+        this.setDatabase = (db) => (database = db);
 
-		this.dataToCreateTable = function(data) {
-			var q = "\n"+'CREATE TABLE x ('+"\n";
-			var keys = [];
-			data.meta.forEach(function(cell) {
-				keys.push("\t" + cell.name + " "+ cell.type );
-			});
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name getDatabase
+         * @description Get database info
+         */
+        this.getDatabase = () => database;
 
-			return q+keys.join(",\n")+"\n ) ENGINE = Log \n;;\n";
-		};
-		/**
-		 * @ngdoc method
-		 * @methodOf smi2.service:API
-		 * @name dataToHtml
-		 * @description Преобразование JSON данных запроса в таблицу
-		 * @param {mixed} data Объект, который содержит ответ БД
-		 * @return {string} Строка HTML
-		 */
+        /**
+         *
+         * @param data
+         * @returns {string}
+         */
+        this.dataToCreateTable = (data) => {
+            let q = "\n" + 'CREATE TABLE x (' + "\n";
+            let keys = [];
+            data.meta.forEach((cell) => keys.push("\t" + cell.name + " " + cell.type));
 
-		this.dataToHtml = function(data) {
+            return q + keys.join(",\n") + "\n ) ENGINE = Log \n;;\n";
+        };
 
-			var html = '<table class="sql-table fs-body-1"><tr>';
-			var keys = [];
-			data.meta.forEach(function(cell) {
-				html += '<th>' + cell.name + '<div class="fs-caption tc-grey-400">' + cell.type + '</div></th>';
-				keys.push(cell.name);
-			});
-			data.data.forEach(function(row) {
-				html += '<tr>';
-				keys.forEach(function(key) {
-					html += '<td>' + row[key] + '</td>';
-				});
-				html += '</tr>';
-			});
-			html += '</table>';
-			return html;
-		};
+        /**
+         * @ngdoc method
+         * @methodOf smi2.service:API
+         * @name dataToHtml
+         * @description Преобразование JSON данных запроса в таблицу
+         * @param {mixed} data Объект, который содержит ответ БД
+         * @return {string} Строка HTML
+         */
+        this.dataToHtml = (data) => {
+
+            let html = `<table class="sql-table ${ThemeService.theme}"><tr>`;
+            let keys = [];
+            data.meta.forEach((cell) => {
+                html += `<th>${$sanitize(cell.name)}
+                            <div class="sql-table__subheader">${$sanitize(cell.type)}</div>
+                        </th>`;
+                keys.push(cell.name);
+            });
+            data.data.forEach((row) => {
+                html += '<tr>';
+                keys.forEach((key) => {
+                    html += '<td>' + $sanitize(row[key]) + '</td>';
+                });
+                html += '</tr>';
+            });
+            html += '</table>';
+            return html;
+        };
 
 
-		this.dataToUIGrid = function (data) {
+        this.dataToUIGrid = (data) => {
 
-			var columnDefs=[];
-			data.meta.forEach(function(cell) {
-				columnDefs.push(
-					//  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
-					{ field: cell.name, minWidth: 100, enableColumnResizing: true , headerTooltip: cell.type }
-				);
-			});
+            let columnDefs = [];
+            data.meta.forEach((cell) => {
+                columnDefs.push(
+                    //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
+                    {field: cell.name, minWidth: 100, enableColumnResizing: true, headerTooltip: cell.type}
+                );
+            });
 
-			return {
-				enableSorting: true,
-				enableFiltering: true,
-				enableColumnResizing : true,
-				columnDefs:columnDefs,
-				enableGridMenu: true,
-				enableSelectAll: true,
-				showGridFooter: true,
-				showColumnFooter: true,
-				data:data.data,
-			};
-		};
-	}
+            return {
+                enableSorting: true,
+                enableFiltering: true,
+                enableColumnResizing: true,
+                columnDefs: columnDefs,
+                enableGridMenu: true,
+                enableSelectAll: true,
+                showGridFooter: true,
+                showColumnFooter: true,
+                data: data.data
+            };
+        };
+    }
 })(angular, smi2);

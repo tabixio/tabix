@@ -1,23 +1,30 @@
-(function(angular, smi2) {
+((angular, smi2) => {
 	'use strict';
 
 	angular.module(smi2.app.name).controller('HeaderController', HeaderController);
-	HeaderController.$inject = ['$scope', '$state', 'API'];
+	HeaderController.$inject = ['$scope', '$state', 'API', 'ThemeService'];
 
 	/**
 	 * @ngdoc controller
 	 * @name smi2.controller:HeaderController
-	 * @description Контроллер заголовка layout страницы
+	 * @description Controller for layout header
 	 */
-	function HeaderController($scope, $state, API) {
+	function HeaderController($scope, $state, API, ThemeService) {
 		$scope.user = API.getConnectionInfo().name;
+        $scope.themes = ThemeService.list;
 
 		/**
-		 * Сброс настроек подключения БД
+		 * Logout )
 		 */
-		$scope.logout = function() {
+		$scope.logout = () => {
 			API.clear();
 			$state.go('login');
 		};
+
+        /**
+         * Change UI theme
+         * @param theme
+         */
+		$scope.setUiTheme = (theme) => ThemeService.set(theme.name);
 	}
 })(angular, smi2);

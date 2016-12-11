@@ -22,5 +22,9 @@ function buildScripts() {
 	return gulp.src(path.join(conf.paths.src, '/app/**/*.js'))
 		.pipe($.eslint())
 		.pipe($.eslint.format())
+        .pipe($.babel({
+            presets: ['es2015', 'stage-0']
+        }))
+        .on('error', conf.errorHandler('babel'))
 		.pipe($.size())
 };

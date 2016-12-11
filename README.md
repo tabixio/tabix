@@ -1,12 +1,11 @@
 ## Назначение
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
 
-Последняя версия,рабочего приложения : http://guiclickhouse.smi2.ru/
+Последняя версия рабочего приложения: http://guiclickhouse.smi2.ru/
 
 
-![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen1.png)
-![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen2.png)
-![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen3.png)
+![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen4.jpg)
+![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen5.jpg)
 
 
 ## Требования 
@@ -17,12 +16,12 @@
 
 
 ### Roadmap
-
-
+Список фич: 
+* Список полей в левом дереве 
 * Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
 * Hotkey справочник и/или help 
 * SHOW CREATE TABLE 
-* Изменить Grid, выбрать из [ui-grid.info | ag-grid | dhtmlx | paramquery.com | js-grid.com], предпочтение dark
+* Изменить Grid, выбрать из [ui-grid.info | ag-grid | paramquery.com | js-grid.com], сортировка на клиенте 
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
 * Выбор разделителя `;;` или `;`
 
@@ -31,8 +30,10 @@
 
 ## Changelog 
 
-### 2016-10-17
-* Added translation to English 
+### 2016-11-03
+Полностью обновили GUI 
+Вместо слов : https://monosnap.com/file/rIEnBkDoh0jMmhGDsu0umaqk5F0srt 
+
 
 ### 2016-10-12
 * Запрос на create_table из select , если запрос содержит таблицу ответа 
@@ -77,7 +78,6 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 ;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;
 
 ```
-![](https://api.monosnap.com/rpc/file/download?id=ky5h5tQoubjbZa01N8FV08qVxqD8xa)
 
 
 # Dev

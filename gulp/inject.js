@@ -3,6 +3,7 @@
 var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
+var packageJson = require('../package.json');
 
 var $ = require('gulp-load-plugins')();
 
@@ -29,7 +30,12 @@ gulp.task('inject', ['scripts', 'styles'], function() {
 			path.join('!' + conf.paths.src, '/app/**/*.test.js'),
 			path.join('!' + conf.paths.src, '/app/**/*.mock.js'),
 		])
-		.pipe($.angularFilesort()).on('error', conf.errorHandler('AngularFilesort'));
+        .pipe($.babel({
+            presets: ['es2015', 'stage-0']
+        }))
+        .on('error', conf.errorHandler('babel'))
+		.pipe($.angularFilesort())
+        .on('error', conf.errorHandler('AngularFilesort'));
 
 	var injectOptions = {
 		ignorePath: [conf.paths.src, path.join(conf.paths.tmp, '/serve')],
@@ -39,6 +45,7 @@ gulp.task('inject', ['scripts', 'styles'], function() {
 	return gulp.src(path.join(conf.paths.src, '/*.html'))
 		.pipe($.inject(injectStyles, injectOptions))
 		.pipe($.inject(injectScripts, injectOptions))
+        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
 		.pipe(wiredep(_.extend({}, conf.wiredep)))
 		.pipe(gulp.dest(path.join(conf.paths.tmp, '/serve')));
 });

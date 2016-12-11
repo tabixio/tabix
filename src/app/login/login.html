@@ -1,76 +1,108 @@
 <div class="wrapper">
 
-  <div class="header">
-    <div class="card bgc-blue-500 tc-white">
-      <div class="toolbar">
-        <div class="toolbar__left mr">
-          <img src="assets/images/logo.png" class="logo"/>
-        </div>
-        <div class="toolbar__label fs-title header-title">
-          <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="header header-view">
+        <md-card class="m0 pl0">
+            <div>
+                <div class="mr pull-left">
+                    <img src="assets/images/logo.png" class="logo"/>
+                </div>
+                <div class="pull-left">
+                    <a ui-sref="dashboard" class="tc-white">Clickhouse</a>
+                </div>
 
-  <div class="content" style="margin-top: 2px">
-    <div class="sidebar-view">
-      <div class="sidebar">
-        <ul class="sidebar-menu p">
-          <li class="menu-item p" ng-repeat="base in vars.bases">
-            <a class="tc-black link" href ng-click="vars.db = base">
-              <div class="fs-body" style="display: inline-block; line-height: 30px; width: 180px; overflow: hidden; text-overflow: ellipsis">{{base.name}}</div>
-              <span class="tc-grey-400 fs-body-2">{{base.host}}</span>
-            </a>
-          </li>
-        </ul>
-      </div>
+                <div class="pull-right">
+                    <md-menu md-position-mode="target-right target">
+                        <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <i class="mdi mdi-24px mdi-theme-light-dark"></i>
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item ng-repeat="theme in vars.themes">
+                                <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </div>
+            </div>
+        </md-card>
     </div>
-
     <div class="content">
-      <div class="main-content">
-        <div class="main-view">
-          <div class="login-view">
-            <form name="vars.loginForm" class="card">
-              <div class="card__header p+">{{ 'Подключение' | translate }}</div>
-              <div ng-if="vars.error" class="login-message error fs-body-1">
-                <p class="tc-white">{{'Неверные данные' | translate}}</p>
-              </div>
-              <div class="card__body p++">
-                <lx-text-field label="{{ 'название' | translate}}" fixed-label="true" icon="border-color">
-                  <input type="text" ng-model="vars.db.name" name="name" required="required"/>
-                </lx-text-field>
-                <lx-text-field label="{{ 'хост:порт' | translate}}" fixed-label="true" icon="server">
-                  <input type="text" ng-model="vars.db.host" name="host" required="required"/>
-                </lx-text-field>
-                <lx-text-field label="{{ 'логин' | translate}}" fixed-label="true" icon="account">
-                  <input type="text" ng-model="vars.db.login" name="login"/>
-                </lx-text-field>
-                <lx-text-field label="{{ 'пароль' | translate}}" fixed-label="true" icon="key">
-                  <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)"/>
-                </lx-text-field>
-              </div>
-              <div class="card__actions text-center p+">
-                <button ng-disabled="vars.loginForm.$invalid" ng-class="{'btn--is-disabled': vars.loginForm.$invalid}" lx-ripple="lx-ripple" class="btn btn--l btn--blue btn--raised btn-login" ng-click="login()">{{ 'Войти' | translate}}</button>
-                <button ng-if="vars.db.id" lx-ripple="lx-ripple" class="btn btn--l btn--red btn--raised btn-login" ng-click="remove()">{{ 'Удалить' | translate}}</button>
-              </div>
-          </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+        <div class="sidebar-view login">
 
-  <div class="footer">
-    <div class="toolbar">
-      <p class="copyright tc-white text-center">
-        <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
-        &copy;
-        {{::vars.year}}, все права защищены, сборка: {{::vars.build}}</p>
-        <a href="https://github.com/smi2/clickhouse-frontend" target="_blank">
-            <i class="mdi mdi-github-circle tc-white fs-display-1"></i>
-        </a>
+            <md-card class="m0 h100" style="width: 180px">
+                <div ng-repeat="base in vars.bases">
+                    <md-button class="menu-button" ng-click="vars.db = base">
+                        <span class="menu-button__title">
+                            {{base.name}}
+                        </span>
+                        <span class="menu-button__subtitle">
+                            {{base.host}}
+                        </span>
+                    </md-button>
+                </div>
+            </md-card>
+        </div>
+
+        <div class="main-content login">
+            <div class="main-view">
+                <div class="login-view">
+                    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+                        <form class="p++" name="loginForm">
+                            <div>
+                                <md-input-container>
+                                    <label>Название</label>
+                                    <input ng-model="vars.db.name" required ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Хост:порт</label>
+                                    <input ng-model="vars.db.host" required ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Логин</label>
+                                    <input ng-model="vars.db.login" ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div>
+                                <md-input-container>
+                                    <label>Пароль</label>
+                                    <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
+                            <div layout="row">
+                                <div flex>
+                                    <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
+                                        Войти
+                                    </md-button>
+                                </div>
+                                <div flex ng-if="vars.db.id" class="pl">
+                                    <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
+                                        Удалить
+                                    </md-button>
+                                </div>
+                            </div>
+                        </form>
+                    </md-card>
+                </div>
+            </div>
+            <div class="footer">
+                <md-card class="m0 p">
+                    <div>
+                        <a href="https://github.com/smi2/clickhouse-frontend" target="_blank" class="pull-right">
+                            <i class="mdi mdi-github-circle mdi-24px"></i>
+                        </a>
+                        <p class="copyright text-center" style="line-height: 24px">
+                            <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
+                            &copy;
+                            {{::vars.year}}, все права защищены.
+                            Сборка {{::vars.version}}
+                        </p>
+                    </div>
+                </md-card>
+            </div>
+        </div>
     </div>
-  </div>
 
 </div>
