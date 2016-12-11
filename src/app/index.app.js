@@ -21,6 +21,7 @@
         'ngMaterial',
         'funMetisMenu',
         'ngScrollbars',
-        'ngCsv'
+        'ngCsv',
+        'pascalprecht.translate'
     ]);
 })();

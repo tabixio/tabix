@@ -49,37 +49,37 @@
                         <form class="p++" name="loginForm">
                             <div>
                                 <md-input-container>
-                                    <label>Название</label>
+                                    <label>{{'Название' | translate}}</label>
                                     <input ng-model="vars.db.name" required ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div>
                                 <md-input-container>
-                                    <label>Хост:порт</label>
+                                    <label>{{'Хост:порт' | translate}}</label>
                                     <input ng-model="vars.db.host" required ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div>
                                 <md-input-container>
-                                    <label>Логин</label>
+                                    <label>{{'Логин' | translate}}</label>
                                     <input ng-model="vars.db.login" ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div>
                                 <md-input-container>
-                                    <label>Пароль</label>
+                                    <label>{{'Пароль' | translate}}</label>
                                     <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div layout="row">
                                 <div flex>
                                     <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
-                                        Войти
+                                        {{'Войти' | translate}}
                                     </md-button>
                                 </div>
                                 <div flex ng-if="vars.db.id" class="pl">
                                     <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
-                                        Удалить
+                                        {{'Удалить' | translate}}
                                     </md-button>
                                 </div>
                             </div>
@@ -94,10 +94,10 @@
                             <i class="mdi mdi-github-circle mdi-24px"></i>
                         </a>
                         <p class="copyright text-center" style="line-height: 24px">
-                            <a href="https://github.com/smi2" target="_blank" class="tc-white">СМИ2</a>
+                            <a href="https://github.com/smi2" target="_blank" class="tc-white">{{'СМИ2' | translate}}</a>
                             &copy;
-                            {{::vars.year}}, все права защищены.
-                            Сборка {{::vars.version}}
+                            {{::vars.year}}, {{'все права защищены' | translate}}.
+                            {{'Сборка' | translate}} {{::vars.version}}
                         </p>
                     </div>
                 </md-card>

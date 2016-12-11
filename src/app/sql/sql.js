@@ -54,7 +54,7 @@ window.global_keywords_tables = "";
             selectedTab: 0,
             sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
             formats: [{
-                name: 'Таблица',
+                name: $filter('translate')('Таблица'),
                 sql: ' format JSON',
                 render: 'html'
             }, {
@@ -90,7 +90,7 @@ window.global_keywords_tables = "";
          */
         $window.onbeforeunload = (event) => {
             if ($scope.vars.currentTab.sql !== '' && location.hostname != 'localhost') {
-                let message = 'Хотите покинуть страницу?';
+                let message = $filter('translate')('Хотите покинуть страницу?');
                 if (typeof event == 'undefined') {
                     event = window.event;
                 }
@@ -105,7 +105,7 @@ window.global_keywords_tables = "";
          * Prevent data loss on state change
          */
         const clearRouterListener = $scope.$on('$stateChangeStart', (event) => {
-            let message = 'Хотите покинуть страницу?';
+            let message = $filter('translate')('Хотите покинуть страницу?');
             if (!event.defaultPrevented && $scope.vars.currentTab !== '' && !confirm(message)) {
                 event.preventDefault();
             }
@@ -181,7 +181,7 @@ window.global_keywords_tables = "";
                 $mdToast.show(
                     $mdToast
                         .simple()
-                        .content('Ошибка')
+                        .content($filter('translate')('Ошибка'))
                         .theme(ThemeService.theme)
                         .position('bottom right')
                 );
@@ -271,7 +271,7 @@ window.global_keywords_tables = "";
                 $mdToast.show(
                     $mdToast
                         .simple()
-                        .content('Не введен SQL')
+                        .content($filter('translate')('Не введен SQL'))
                         .theme(ThemeService.theme)
                         .position('bottom right')
                 );
@@ -523,7 +523,7 @@ window.global_keywords_tables = "";
             // Повесить эвент и переиминовывать кнопку -"Выполнить"
             editor.on('changeSelection', () => {
                 $timeout(() => {
-                    tab.buttonTitle = editor.getSelectedText() !== '' ? 'Выполнить выделенное ⌘ + ⏎' : 'Выполнить все ⇧ + ⌘ + ⏎';
+                    tab.buttonTitle = editor.getSelectedText() !== '' ? $filter('translate')('Выполнить выделенное ⌘ + ⏎') : $filter('translate')('Выполнить все ⇧ + ⌘ + ⏎');
                     if (tab.originalSql) {
                         tab.changed = (tab.originalSql != tab.sql);
                     }
@@ -562,12 +562,12 @@ window.global_keywords_tables = "";
          */
         $scope.save = (tab, ev) => $mdDialog.show(
             $mdDialog.prompt()
-                .title('Сохранить SQL как')
-                .placeholder('название')
+                .title($filter('translate')('Сохранить SQL как'))
+                .placeholder($filter('translate')('название'))
                 .initialValue(tab.name)
                 .targetEvent(ev)
-                .ok('Сохранить')
-                .cancel('Отмена')
+                .ok($filter('translate')('Сохранить'))
+                .cancel($filter('translate')('Отмена'))
         ).then((name)=> {
             const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
             if (index != -1) {
@@ -615,7 +615,7 @@ window.global_keywords_tables = "";
             $scope.vars.currentTab = {
                 name: 'new SQL',
                 sql: '',
-                buttonTitle: 'Выполнить ⌘ + ⏎',
+                buttonTitle: $filter('translate')('Выполнить ⌘ + ⏎'),
                 format: {},
                 editor: null,
                 results: [],
@@ -643,10 +643,10 @@ window.global_keywords_tables = "";
             if (tab.changed) {
                 $mdDialog.show(
                     $mdDialog.confirm()
-                        .title('SQL изменен. Сохранить перед закрытием?')
+                        .title($filter('translate')('SQL изменен. Сохранить перед закрытием?'))
                         .targetEvent(event)
-                        .ok('Да')
-                        .cancel('Нет')
+                        .ok($filter('translate')('Да'))
+                        .cancel($filter('translate')('Нет'))
                 ).then(()=> {
                     const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
                     if (index != -1) {
@@ -736,12 +736,12 @@ window.global_keywords_tables = "";
             event.stopPropagation();
             $mdDialog.show(
                 $mdDialog.prompt()
-                    .title('Название вкладки')
-                    .placeholder('название')
+                    .title($filter('translate')('Название вкладки'))
+                    .placeholder($filter('translate')('название'))
                     .initialValue(tab.name)
                     .targetEvent(event)
-                    .ok('Применить')
-                    .cancel('Отмена')
+                    .ok($filter('translate')('Применить'))
+                    .cancel($filter('translate')('Отмена'))
             ).then((name)=> {
                 const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
                 if (index != -1) {

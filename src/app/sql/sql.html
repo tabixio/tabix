@@ -1,7 +1,7 @@
 <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
     <md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">
         <i class="mdi mdi-settings"></i>
-        <md-tooltip>Настройки редактора</md-tooltip>
+        <md-tooltip>{{'Настройки редактора' | translate}}</md-tooltip>
     </md-button>
 </div>
 
@@ -36,11 +36,11 @@
                     <div style="width: 40px; display: table-cell; vertical-align: top;">
                         <md-button class="md-icon-button" ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
                             <i class="mdi mdi-fullscreen"></i>
-                            <md-tooltip>На весь экран</md-tooltip>
+                            <md-tooltip>{{'На весь экран' | translate}}</md-tooltip>
                         </md-button>
                         <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
                             <i class="mdi mdi-content-save"></i>
-                            <md-tooltip>Сохранить</md-tooltip>
+                            <md-tooltip>{{'Сохранить' | translate}}</md-tooltip>
                         </md-button>
                         <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
                             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
@@ -50,7 +50,7 @@
                                 <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
                                     <md-button>
                                         {{item.name}}
-                                        <md-tooltip>История зарпросов</md-tooltip>
+                                        <md-tooltip>{{'История зарпросов' | translate}}</md-tooltip>
                                         <div class="pull-right">
                                             <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
                                         </div>
@@ -61,7 +61,7 @@
                         <md-menu md-position-mode="target-right target" show-if-fullscreen="false">
                             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                                 <i class="mdi mdi-code-braces"></i>
-                                <md-tooltip>Словари</md-tooltip>
+                                <md-tooltip>{{'Словари' | translate}}</md-tooltip>
                             </md-button>
                             <md-menu-content>
                                 <md-menu-item ng-repeat="dictionary in vars.dictionaries">
@@ -73,7 +73,7 @@
                         </md-menu>
                         <md-button class="md-icon-button" ng-click="toggleSidenav('log')" show-if-fullscreen="false" aria-label="log">
                             <i class="mdi mdi-view-headline"></i>
-                            <md-tooltip>Лог запросов</md-tooltip>
+                            <md-tooltip>{{'Лог запросов' | translate}}</md-tooltip>
                         </md-button>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                                                             filename="{{tab.name}}-{{result.time}}.csv"
                                                             csv-header="getExportHeaders(item.meta)"
                                                         >
-                                                            CSV с заголовком
+                                                            {{'CSV с заголовком' | translate}}
                                                         </md-button>
                                                     </md-menu-item>
                                                     <md-menu-item>
@@ -114,7 +114,7 @@
                                                             quote-strings='"'
                                                             filename="{{tab.name}}-{{result.time}}.csv"
                                                         >
-                                                            CSV без заголовка
+                                                            {{'CSV без заголовка' | translate}}
                                                         </md-button>
                                                     </md-menu-item>
                                                     <md-menu-item>
@@ -125,7 +125,7 @@
                                                             field-separator="\t"
                                                             csv-header="getExportHeaders(item.meta)"
                                                         >
-                                                            Табулированный текст с заголовками
+                                                            {{'Табулированный текст с заголовками' | translate}}
                                                         </md-button>
                                                     </md-menu-item>
                                                     <md-menu-item>
@@ -136,7 +136,7 @@
                                                             field-separator="\t"
                                                             csv-header="getExportHeaders(item.meta)"
                                                         >
-                                                            Табулированный текст без заголовков
+                                                            {{'Табулированный текст без заголовков' | translate}}
                                                         </md-button>
                                                     </md-menu-item>
                                                 </md-menu-content>
@@ -144,15 +144,15 @@
                                         </div>
 
                                         <div style="white-space: nowrap; line-height: 40px" class="md-card pull-right mr" ng-if="item.statistics">
-                                            время: <b>{{item.statistics.elapsed | number:3}}</b>,
-                                            строк прочитано: <b>{{item.statistics.rows_read | number}}</b>,
-                                            прочитано: <b>{{item.statistics.bytes_read | filesize}}</b>
+                                            {{'время' | translate}}: <b>{{item.statistics.elapsed | number:3}}</b>,
+                                            {{'строк прочитано' | translate}}: <b>{{item.statistics.rows_read | number}}</b>,
+                                            {{'прочитано' | translate}}: <b>{{item.statistics.bytes_read | filesize}}</b>
                                         </div>
                                     </div>
                                 </md-card>
 
                                 <div>
-                                    <span ng-if="item.result === null">нет данных</span>
+                                    <span ng-if="item.result === null">{{'нет данных' | translate}}</span>
                                     <div ng-if="item.result !== null" ng-bind-html="item.result" style="overflow-x: auto; overflow-y: auto; width: 100%; height: 400px"></div>
                                 </div>
                             </div>
@@ -172,18 +172,18 @@
 <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
     <div class="p+">
         <h4 class="mt0 mb+++">
-            Настройки редактора
+            {{'Настройки редактора' | translate}}
         </h4>
         <md-input-container class="width-100">
-            <label for="inp1">Размер шрифта</label>
+            <label for="inp1">{{'Размер шрифта' | translate}}</label>
             <input type="text" id="inp1" ng-model="vars.fontSize">
         </md-input-container>
         <md-input-container class="width-100">
-            <label for="inp2">Максимум строк</label>
+            <label for="inp2">{{'Максимум строк' | translate}}</label>
             <input type="text" id="inp2" ng-model="vars.limitRows">
         </md-input-container>
         <md-input-container class="width-100 mt mb++">
-            <label>Формат результатов</label>
+            <label>{{'Формат результатов' | translate}}</label>
             <md-select ng-model="vars.format">
                 <md-option ng-repeat="format in vars.formats" ng-value="format" ng-click="vars.format = format">
                     {{format.name}}
@@ -191,7 +191,7 @@
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mb++">
-            <label>Тема редактора</label>
+            <label>{{'Тема редактора' | translate}}</label>
             <md-select ng-model="vars.theme">
                 <md-option ng-repeat="theme in vars.themes" ng-value="theme" ng-click="setTheme(theme)">
                     {{theme}}
@@ -199,19 +199,19 @@
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mt mb+">
-            <label>Тема интерфейса</label>
+            <label>{{'Тема интерфейса' | translate}}</label>
             <md-select ng-model="vars.uiTheme">
                 <md-option ng-repeat="theme in vars.uiThemes" ng-value="theme" ng-click="setUiTheme(theme)">{{theme.title}}</md-option>
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mt">
             <md-checkbox ng-model="vars.saveTabs" aria-label="saveTabs">
-                Сохранять сессию
+                {{'Сохранять сессию' | translate}}
             </md-checkbox>
         </md-input-container>
 
         <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">
-            Закрыть
+            {{'Закрыть' | translate}}
         </md-button>
     </div>
 </md-sidenav>
@@ -221,15 +221,15 @@
         <h4 class="mt0">
             <md-button class="md-icon-button pull-right" ng-click="toggleSidenav('log')" aria-label="close" style="margin-top: -10px; margin-right: -10px">
                 <i class="mdi mdi-close"></i>
-                <md-tooltip>Сохранить</md-tooltip>
+                <md-tooltip>{{'Сохранить' | translate}}</md-tooltip>
             </md-button>
-            Лог запросов
+            {{'Лог запросов' | translate}}
         </h4>
     </div>
     <div ng-repeat="sql in vars.sqlLog" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">
         <pre class="p0 m0" style="max-height: 48px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
     </div>
     <small class="p+" ng-if="vars.sqlLog.length === 0">
-        История запросов пуста
+        {{'История запросов пуста' | translate}}
     </small>
 </md-sidenav>
