@@ -112,7 +112,12 @@
                 'Темная тема': 'Dark theme',
                 'с': 'from',
                 'по': 'to',
-                'Открыть таблицу': 'Open table'
+                'Открыть таблицу': 'Open table',
+
+
+                ';; Двойной':';; Double',
+                '; Одинарный':'; Single',
+                'Разделитель запросов':'Delimiters queries'
             })
             .translations('ru', {
             })

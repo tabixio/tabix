@@ -73,7 +73,6 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			"markup.heading":window.global_keywords_fields
 		}, "identifier", true);
 
-
 		this.$rules = {
 			"start": [{
 				token: "comment",
@@ -180,10 +179,16 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 // ---------------------------------------------------------------------------
 		this.findTokens = function(sql,type,needfirst) {
 			sql=sql.replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
+
 			var TokenIterator = require("ace/token_iterator").TokenIterator;
+
 			var EditSession = require("ace/edit_session").EditSession;
 
+
 			var session = new EditSession(sql,this);
+
+
+
 			var iterator = new TokenIterator(session, 0, 0);
 			var token = iterator.getCurrentToken();
 			var matches=[];
@@ -208,12 +213,25 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 		this.splitByTokens = function(sql,type,value) {
 			sql=sql.replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 
+
+			console.info('splitByTokens:'+value);
+
 			var TokenIterator = require("ace/token_iterator").TokenIterator;
 			var EditSession = require("ace/edit_session").EditSession;
 			var Range = require("ace/range").Range;
 
 			var session = new EditSession(sql,this);
+
+
+			session.bgTokenizer.start(0);// force rehighlight whole document
+
+			// foreach $rules find type=$type and update value
+			console.log(session.$mode.$highlightRules.$rules);
+
 			var iterator = new TokenIterator(session, 0, 0);
+
+
+
 			var token = iterator.getCurrentToken();
 			var matches=[];
 			var startRow= 0, startCol=0;

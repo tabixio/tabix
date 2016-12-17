@@ -210,6 +210,15 @@
             </md-checkbox>
         </md-input-container>
 
+        <md-input-container class="width-100 mt mb+">
+            <label>{{'Разделитель запросов' | translate }}</label>
+            <md-select ng-model="vars.delimiter">
+                <md-option ng-repeat="delimiter in vars.delimiters" ng-value="delimiter" ng-click="vars.delimiter = delimiter">
+                    {{delimiter.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+
         <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">
             {{'Закрыть' | translate}}
         </md-button>
