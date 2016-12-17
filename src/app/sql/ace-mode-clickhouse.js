@@ -9,7 +9,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 
 	var ClickhouseHighlightRules = function() {
 		var keywords = (
-			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|GROUP BY|ORDER|LIMIT|OFFSET|HAVING|AS|" +
+			"SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|LIMIT|OFFSET|HAVING|AS|" +
 			"WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|" +
 			"FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
 			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
@@ -79,6 +79,9 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 				token: "comment",
 				regex: "--.*$",
 				caseInsensitive: true
+			},{
+				token: "keyword",
+				regex: "GROUP\\W+BY|ORDER\\W+BY"
 			},
 				{
 				token: "comment",
@@ -140,7 +143,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 
 		addCompletions(builtinFunctions.split('|'), 'function');
 		addCompletions(keywords.split('|'), 'keyword');
-		addCompletions("FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
+		addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
 		addCompletions(window.global_keywords_tables.split('|'), 'storage');
 		addCompletions(window.global_keywords_fields.split('|'), 'storage');

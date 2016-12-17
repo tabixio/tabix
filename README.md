@@ -1,8 +1,9 @@
 ## Назначение
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
 
-Последняя версия рабочего приложения: http://guiclickhouse.smi2.ru/
+Последняя версия рабочего приложения: [master buid on github pages](http://guiclickhouse.smi2.ru/)
 
+[Youtube demo](https://www.youtube.com/watch?v=u5DOWnm47vg)
 
 ![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen4.jpg)
 ![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen5.jpg)
