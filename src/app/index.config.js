@@ -65,6 +65,7 @@
                 'История запросов пуста': 'Requests\'s history is empty',
                 'Структура': 'Structure',
                 'Данные': 'Data',
+                'Параметры': 'Params',
                 'Информация': 'Information',
                 'Размер': 'Size',
                 'Размер, байт': 'Size in bytes',

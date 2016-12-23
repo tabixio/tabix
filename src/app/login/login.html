@@ -71,6 +71,12 @@
                                     <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
+                            <div>
+                                <md-input-container>
+                                    <label>{{'Параметры' | translate}}</label>
+                                    <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
+                                </md-input-container>
+                            </div>
                             <div layout="row">
                                 <div flex>
                                     <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">

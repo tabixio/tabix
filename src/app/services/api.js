@@ -94,6 +94,10 @@
             if (extend_settings) {
                 url += '&' + extend_settings;
             }
+            if (connection.params){
+                url += '&'+connection.params;
+            }
+
             // console.info(query);// Не удалять не только для DEBUG.
             // Бебебе удалил
 
