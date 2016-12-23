@@ -9,14 +9,21 @@
                     </a>
                     <ul class="sub-menu" ng-if="database.tables.length">
                         <li ng-repeat="table in database.tables">
-                            <md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
+
+                            <a><md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
                                 <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
                                 <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
 
                                 {{table.name}}
 
                             </md-button>
+                            </a>
 
+                            <ul class="sub-menu">
+                                <li ng-repeat="field in table.fields" class="" style="font-size: 70%;" ng-click="clickInsertField(field, $event)">
+                                        {{field.name}}
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -24,6 +31,7 @@
         </nav>
     </fun-metis-menu>
     <div ng-if="!vars.loaded">
-        no connect
+        No connect, or Error.
+        See console log
     </div>
 </div>

@@ -43,6 +43,13 @@
             }
         };
 
+        $scope.clickInsertField = ( field, event ) => {
+            console.warn(field.name);
+
+            $rootScope.$emit('handleBroadcastInsertInActive',{value:field.name});
+
+
+        };
         $scope.clickAndSelect = ( database, event ) => {
             if ( database.name == $rootScope.currentDatabase ) {
                 event.stopPropagation( );
@@ -73,7 +80,17 @@
         });
 
         $scope.reLoad = () =>{
-            console.log("load database, tables list");
+
+        let list_all_fields=[];
+
+        console.log("load database, tables list");
+        API.query( "SELECT * FROM system.columns" ).then(res => {
+            let data = res.data || [ ];
+            data.forEach((item) => {
+                if (!list_all_fields[item.database+'.'+item.table]) list_all_fields[item.database+'.'+item.table]=[];
+                list_all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type });
+            });
+            //database.table
             API.query( "SELECT database,name,engine FROM system.tables" ).then(res => {
                 let data = res.data || [ ];
                 $scope.vars.databases = data.reduce(( prev, item ) => {
@@ -91,7 +108,7 @@
 
                     for ( let a of prev ) {
                         if ( item.name !=='-' && a.name == item.database ) {
-                            a.tables.push({ name: item.name,engine : item.engine,classEngine:item.classEngine });
+                            a.tables.push({ name: item.name,engine : item.engine,classEngine:item.classEngine,fields:list_all_fields[item.database+'.'+item.name] });
                             return prev;
                         }
                     }
@@ -103,7 +120,8 @@
                                 {
                                     name: item.name,
                                     engine : item.engine,
-                                    classEngine : item.classEngine
+                                    classEngine : item.classEngine,
+                                    fields:list_all_fields[item.database+'.'+item.name]
                                 }
                             ]
                         }
@@ -135,6 +153,7 @@
                     $scope.vars.loaded = true;
                 });
 
+            });
             });
         };
 

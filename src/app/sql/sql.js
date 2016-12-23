@@ -739,6 +739,14 @@ window.global_keywords_dictList = "";
             tab.results.splice(tab.results.indexOf(result), 1);
         };
 
+        // вставка текста в активное окно редактора там где курсор
+        $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
+            if (args.value) {
+
+            }
+        });
+
+
         /**
          * Toggle settings panel
          */
