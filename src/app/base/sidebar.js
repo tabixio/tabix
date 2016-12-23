@@ -68,33 +68,76 @@
             $mdSidenav( 'tableSiedenav' ).open( );
         };
 
-        API.query( 'SELECT ' +
-            '	database, ' +
-            '	name ' +
-            'FROM  ' +
-            '	system.tables' ).then(res => {
-            let data = res.data || [ ];
-            $scope.vars.databases = data.reduce(( prev, item ) => {
-                for ( let a of prev ) {
-                    if ( a.name == item.database ) {
-                        a.tables.push({ name: item.name });
-                        return prev;
-                    }
-                }
-                return [
-                    ...prev, {
-                        name: item.database,
-                        tables: [
-                            {
-                                name: item.name
-                            }
-                        ]
-                    }
-                ];
-            }, [ ]);
-
-            $scope.selectDatabase($scope.vars.databases[0]);
-            $scope.vars.loaded = true;
+        $rootScope.$on('handleBroadcastDatabases', function(event,args) {
+            $scope.reLoad();
         });
+
+        $scope.reLoad = () =>{
+            console.log("load database, tables list");
+            API.query( "SELECT database,name,engine FROM system.tables" ).then(res => {
+                let data = res.data || [ ];
+                $scope.vars.databases = data.reduce(( prev, item ) => {
+
+
+                    let classEngine='';
+                    if (item.engine.match(/Distributed.*/))  classEngine='soundcloud'
+                    if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube'
+                    if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom'
+                    if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after'
+                    if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height'
+                    if (item.engine.match(/$Merge^/))  classEngine='source-fork'
+
+                    item.classEngine=classEngine;
+
+                    for ( let a of prev ) {
+                        if ( item.name !=='-' && a.name == item.database ) {
+                            a.tables.push({ name: item.name,engine : item.engine,classEngine:item.classEngine });
+                            return prev;
+                        }
+                    }
+
+                    return [
+                        ...prev, {
+                            name: item.database,
+                            tables: [
+                                {
+                                    name: item.name,
+                                    engine : item.engine,
+                                    classEngine : item.classEngine
+                                }
+                            ]
+                        }
+                    ];
+
+                }, [ ]);
+
+
+                $scope.selectDatabase($scope.vars.databases[0]);
+
+                // отдельно получаем список баз данных - если база пустая
+                API.query( "SELECT name FROM system.databases" ).then(res => {
+                    let data = res.data || [];
+                    data.forEach((item) => {
+                        let find=false;
+                        $scope.vars.databases.forEach((dbitem) => {
+                            if (dbitem.name==item.name)
+                            {
+                                find=true;
+                            }
+                        });
+                        if (!find)
+                        {
+                            $scope.vars.databases.push({name:item.name,tables:[]});
+                        }
+
+                    });
+
+                    $scope.vars.loaded = true;
+                });
+
+            });
+        };
+
+        $scope.reLoad();
     }
 })( angular, smi2 );

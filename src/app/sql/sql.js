@@ -188,8 +188,22 @@ window.global_keywords_dictList = "";
                     $scope.executeQuery(queue[query.index + 1], queue, resultContainer);
                 }
                 else {
+
                     // отрисовка
                     $scope.renderFinalResult(resultContainer);
+
+                    let _need_reload=false;
+                    // если в списке был запрос на CREATE / DROP нужно перерисовать
+                    queue.forEach((item) => {
+                        if (item.keyword=='create' || item.keyword=='drop')
+                        {
+                            _need_reload=true;
+                        }
+                    });
+                    if (_need_reload){
+                        $rootScope.$emit('handleBroadcastDatabases',{});
+                    }
+
                 }
 
             }, (response) => {
@@ -265,6 +279,7 @@ window.global_keywords_dictList = "";
          */
         $scope.execute = (type, tab) => {
 
+
             let sql = tab.sql;
             let numquery = 0;
             const editor = tab.editor;
@@ -325,7 +340,6 @@ window.global_keywords_dictList = "";
                 .forEach((item) => {
 
                     const subSql = item.sql;
-                    console.warn(item);
                     // Ignore short queries
                     if (subSql.length < 5) {
                         return;
@@ -363,7 +377,9 @@ window.global_keywords_dictList = "";
                         _format = false;
                         _format_seted = false;
                     }
-                    console.info('>>> '+subSql);
+
+
+                    console.info('[:] '+subSql);
                     // Queue creation
                     queue.push({
                         sql: subSql,
@@ -485,10 +501,10 @@ window.global_keywords_dictList = "";
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
                 data.data.forEach((item) => {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
-                    let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item.name.replace(/\./, '_') + '_' + item["attribute.names"] + ',';
+                    let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item["attribute.names"] + ',';
                     window.global_keywords_dictList.push({
                         dic:dic,
-                        title: item.name + '.' + item["attribute.names"]
+                        title: 'dic_'+item.name + '.' + item["attribute.names"]
                     });
                     $scope.vars.dictionaries.push({
                         dic: dic,

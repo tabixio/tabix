@@ -50,13 +50,13 @@
                             <div>
                                 <md-input-container>
                                     <label>{{'Название' | translate}}</label>
-                                    <input ng-model="vars.db.name" required ng-disabled="vars.loading">
+                                    <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div>
                                 <md-input-container>
                                     <label>{{'Хост:порт' | translate}}</label>
-                                    <input ng-model="vars.db.host" required ng-disabled="vars.loading">
+                                    <input ng-model="vars.db.host" placeholder="http://127.0.0.1:8123" required ng-disabled="vars.loading">
                                 </md-input-container>
                             </div>
                             <div>
