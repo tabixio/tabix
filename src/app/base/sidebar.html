@@ -7,11 +7,12 @@
                         <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
                             <i class="mdi mdi-database"></i>{{database.name}}</md-button>
                     </a>
-                    <ul class="sub-menu" ng-if="database.tables.length">
+                    <ul class="sub-menu has-arrow" ng-if="database.tables.length">
                         <li ng-repeat="table in database.tables">
-                            <md-button class="text-left no-txt-transform" ng-click="openTable(table)">
+                            <md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
                                 <i class="mdi mdi-table"></i>{{table.name}}
                             </md-button>
+
                         </li>
                     </ul>
                 </li>

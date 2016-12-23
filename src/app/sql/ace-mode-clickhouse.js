@@ -1,6 +1,6 @@
 var define = window.define || window.ace.define;
 
-define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports", "module", "ace/lib/oop", "ace/mode/text_highlight_rules"], function(require, exports) {
+define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports", "module", "ace/lib/oop","ace/snippets", "ace/mode/text_highlight_rules"], function(require, exports) {
 	"use strict";
 
 	var oop = require("../lib/oop");
@@ -127,25 +127,77 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			]
 		};
 		this.normalizeRules();
+		var makeCompletionsdocHTML=function (name,meta){
+
+			return '<div style="padding: 15px 5px 5px 15px"><b>'+name+'</b><br>'+meta+'</div>'
+
+
+		};
 
 		var completions = [];
 		var addCompletions = function(arr, meta) {
 			arr.forEach(function(v) {
+
+
 				completions.push({
 					name: v,
 					value: v,
 					score: 0,
-					meta: meta
+					meta: meta,
+					docHTML:makeCompletionsdocHTML(v,meta)
 				});
+
 			});
+
 		};
 
 		addCompletions(builtinFunctions.split('|'), 'function');
 		addCompletions(keywords.split('|'), 'keyword');
 		addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
 		addCompletions(dataTypes.split('|'), 'type');
-		addCompletions(window.global_keywords_tables.split('|'), 'storage');
-		addCompletions(window.global_keywords_fields.split('|'), 'storage');
+		addCompletions(window.global_keywords_tables.split('|'), '[table]');
+		// addCompletions(window.global_keywords_fields.split('|'), '[field]');
+
+
+		if (window.global_keywords_dictList) {
+			// автодополнение полей таблицы
+			window.global_keywords_dictList.forEach(function (v) {
+					completions.push({
+						name: v['dic'],
+						value: v['dic'],
+						caption:v['title'],
+						score: 0,
+						meta: 'dic',
+						docHTML: makeCompletionsdocHTML(v['title'],v['dic'] )
+					});
+
+
+				}
+			);
+		}
+		if (window.global_keywords_fieldsList) {
+
+			// автодополнение полей таблицы
+			window.global_keywords_fieldsList.forEach(function (v) {
+
+					var name = v['table'] + '.' + v['name'];
+					var value = v['name'];
+					var meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
+
+					completions.push({
+						name: name,
+						// caption: name,
+						value: value,
+						score: 20,
+						meta: v['table'],
+						docHTML: makeCompletionsdocHTML(name, meta)
+					});
+
+
+				}
+			);
+		}
+
 		//this allows for custom 'meta' and proper case of completions
 		this.completions = completions;
 

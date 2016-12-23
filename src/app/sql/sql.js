@@ -1,6 +1,8 @@
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
 window.global_keywords_fields = "";
 window.global_keywords_tables = "";
+window.global_keywords_fieldsList = "";
+window.global_keywords_dictList = "";
 
 ((angular, smi2) => {
     'use strict';
@@ -404,7 +406,7 @@ window.global_keywords_tables = "";
             $scope.vars.db = db;
             API.setDatabase(db);
 
-            API.query("SELECT table,name,type FROM system.columns WHERE database=\'" + db + "\'", null)
+            API.query("SELECT table,name,type,default_type,default_expression FROM system.columns WHERE database=\'" + db + "\'", null)
                 .then((data) => {
 
                     let fields = [],
@@ -412,10 +414,18 @@ window.global_keywords_tables = "";
                     let tables = [],
                         utables = {};
                     let keys = [];
+
+                    window.global_keywords_fieldsList = [];
+
+
+
                     data.meta.forEach((cell) => {
                         keys.push(cell.name);
                     });
+
                     data.data.forEach((row) => {
+
+                        window.global_keywords_fieldsList.push(row);
                         keys.forEach((key) => {
 
                             if (key == 'table') {
@@ -432,6 +442,7 @@ window.global_keywords_tables = "";
                             }
                         });
                     });
+
 
                     window.global_keywords_fields = fields.join('|') + '|';
                     window.global_keywords_tables = tables.join('|') + '|' + db;
@@ -470,11 +481,15 @@ window.global_keywords_tables = "";
          */
         $scope.loadDictionaries = () => {
             $scope.vars.dictionaries = [];
+            window.global_keywords_dictList=[];
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
                 data.data.forEach((item) => {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
                     let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item.name.replace(/\./, '_') + '_' + item["attribute.names"] + ',';
-
+                    window.global_keywords_dictList.push({
+                        dic:dic,
+                        title: item.name + '.' + item["attribute.names"]
+                    });
                     $scope.vars.dictionaries.push({
                         dic: dic,
                         title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"]
@@ -496,7 +511,7 @@ window.global_keywords_tables = "";
             editor.setOptions({
                 fontSize: $scope.vars.fontSize + 'px',
                 enableBasicAutocompletion : true,
-                enableSnippet:true,
+                // enableSnippet:true ,
                 enableLiveAutocompletion:false
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
@@ -519,6 +534,17 @@ window.global_keywords_tables = "";
                     $scope.execute('current', tab);
                 }
             });
+            // removeLines
+            editor.commands.addCommand({
+                    name: 'removeLiness',
+                    bindKey: {
+                        win: 'Ctrl-Y',
+                        mac: 'Cmd-Y'
+                    },
+                    exec: (editor) => {
+                        editor.removeLines();
+                    }
+             });
 
             editor.commands.addCommand({
                 name: 'runAllCommand',
@@ -530,6 +556,9 @@ window.global_keywords_tables = "";
                     $scope.execute('all', tab);
                 }
             });
+
+
+
 
             editor.clearSelection();
             editor.focus();
