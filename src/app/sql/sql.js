@@ -531,7 +531,11 @@ window.global_builtinFunctions      = "";
             editor.setOptions({
                 fontSize: $scope.vars.fontSize + 'px',
                 enableBasicAutocompletion : true,
-                // enableSnippet:true ,
+                behavioursEnabled:true ,
+                wrapBehavioursEnabled:true ,
+                highlightSelectedWord:true ,
+                //showInvisibles:true ,
+                showGutter:true ,
                 enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
