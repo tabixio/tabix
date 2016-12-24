@@ -21,6 +21,7 @@
 
         $scope.vars = {
             columns: {},
+            createtable: {},
             data: null,
             grid: null,
             limit: 100,
@@ -89,6 +90,10 @@
                 */
             API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.columns = data );
 
+            API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.createtable = data );
+
+            console.warn("createtable");
+            console.warn($scope.vars.createtable);
             /**
                 * Запрос статистики по таблице
                 */

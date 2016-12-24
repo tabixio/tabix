@@ -11,7 +11,7 @@
                 <i class="mdi mdi-table-column-plus-after mr-"></i>{{'Структура' | translate}}
             </md-tab-label>
             <md-tab-body>
-                <table class="data-table">
+                <table class="data-table" style="font-size: 80%">
                     <thead>
                         <tr class="text-left">
                             <th style="width: 40px"></th>
@@ -22,6 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
+
                         <tr class="text-left" ng-repeat="field in vars.columns.data">
                             <td class="tc-grey-400">{{$index + 1}}</td>
                             <td ng-repeat="key in ['name', 'type', 'default_type', 'default_expression'] track by $index">
@@ -101,7 +102,16 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <br>
+                    <br>
+                    <br>
+                    <b>SHOW CREATE TABLE</b><br>
+                    <i ng-repeat="field in vars.createtable.data">
+                        {{ field.statement }}
+                    </i>
                 </div>
+
             </md-tab-body>
         </md-tab>
     </md-tabs>

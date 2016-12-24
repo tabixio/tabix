@@ -34,7 +34,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			"bitAnd|bitOr|bitXor|bitNot|bitShiftLeft|bitShiftRight|abs|negate|modulo|intDivOrZero|" +
 			"intDiv|divide|multiply|minus|plus|empty|notEmpty|length|lengthUTF8|lower|upper|lowerUTF8|" +
 			"upperUTF8|reverse|reverseUTF8|concat|substring|substringUTF8|appendTrailingCharIfAbsent|" +
-			"position|positionUTF8|match|extract|extractAll|like|notLike|replaceOne|replaceAll|" +
+			"position|positionUTF8|match|extract|extractAll|like|notLike|replaceOne|replaceAll|toColumnTypeName|" +
 			"replaceRegexpOne|range|arrayElement|has|indexOf|countEqual|arrayEnumerate|arrayEnumerateUniq|" +
 			"arrayJoin|arrayMap|arrayFilter|arrayExists|arrayCount|arrayAll|arrayFirst|arraySum|splitByChar|" +
 			"splitByString|alphaTokens|domainWithoutWWW|topLevelDomain|firstSignificantSubdomain|" +

@@ -1,8 +1,10 @@
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
-window.global_keywords_fields = "";
-window.global_keywords_tables = "";
-window.global_keywords_fieldsList = "";
-window.global_keywords_dictList = "";
+window.global_keywords_fields       = "";
+window.global_keywords_tables       = "";
+window.global_keywords_fieldsList   = "";
+window.global_keywords_dictList     = "";
+window.global_builtinFunctions      = "";
+
 
 ((angular, smi2) => {
     'use strict';
@@ -42,6 +44,7 @@ window.global_keywords_dictList = "";
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
         const SQL_SAVE_TABS_KEY = 'saveTabs';
+        const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion';
         const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
 
@@ -49,6 +52,7 @@ window.global_keywords_dictList = "";
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
             tabs: [],
+            enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
@@ -528,7 +532,7 @@ window.global_keywords_dictList = "";
                 fontSize: $scope.vars.fontSize + 'px',
                 enableBasicAutocompletion : true,
                 // enableSnippet:true ,
-                enableLiveAutocompletion:false
+                enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
@@ -742,7 +746,7 @@ window.global_keywords_dictList = "";
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {
-
+                $scope.addDictionariesWord(" "+args.value+', ');
             }
         });
 
@@ -784,6 +788,18 @@ window.global_keywords_dictList = "";
             if (old === false && value === true) {
                 saveSession();
             }
+        });
+
+        $scope.$watch('vars.enableLiveAutocompletion', (value, old) => {
+            localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
+            // loop
+            $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
+                enableLiveAutocompletion: value
+            }));
+
+
+
+
         });
 
         /**
@@ -847,6 +863,9 @@ window.global_keywords_dictList = "";
             $scope.selectDatabase($rootScope.currentDatabase);
         };
 
+
+
+
         /**
          * Controller destructor
          */
@@ -855,5 +874,10 @@ window.global_keywords_dictList = "";
             clearRouterListener();
             $window.onbeforeunload = null;
         });
+
+
+
+
+
     }
 })(angular, smi2);
