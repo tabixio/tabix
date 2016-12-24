@@ -49,10 +49,11 @@
 * Настройка автодополнение / enableLiveAutocompletion
 * Размер div результата компактнее
 * Подсветка скобок
+* Список ф-ций загружатеся исходя из возможностей сервера. Из таблицы `system.functions` 
+
 
 
 **Todo**:
-- window.global_builtinFunctions `SELECT name,is_aggregate FROM system.functions `
 - Ctrl-1|Ctrl-9 переключает вкладки
 - Подсказка по функции
 - Рендеры графики
@@ -62,7 +63,7 @@
 - Сворачивать скобки / Подзапросы 
 - Плагинная структура для Renders
 - help modal window -> link to github
-
+- keywordMapper  =>  "support.function": builtinFunctions,
 
 
 

@@ -291,13 +291,35 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports
 
         };
 
-        addCompletions(builtinFunctions.split('|'), 'function');
+
+
+
+        // addCompletions(builtinFunctions.split('|'), 'function');
         addCompletions(keywords.split('|'), 'keyword');
         addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
         addCompletions(dataTypes.split('|'), 'type');
         addCompletions(window.global_keywords_tables.split('|'), '[table]');
-        // addCompletions(window.global_keywords_fields.split('|'), '[field]');
 
+
+        if (window.global_builtinFunctions) {
+
+            // автодополнение builtin Functions
+
+            window.global_builtinFunctions.forEach(function (v) {
+
+                completions.push({
+                    name: v['name'],
+                    value: v['name']+'( )',
+                    caption: v['name'],
+                    score: v['score'],
+                    meta: 'function',
+                    docHTML: makeCompletionsdocHTML(v['name'], v['name'])
+                });
+
+
+                });
+
+            }
 
         if (window.global_keywords_dictList) {
             // автодополнение полей таблицы
