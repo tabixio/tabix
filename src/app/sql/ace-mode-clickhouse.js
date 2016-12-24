@@ -139,7 +139,7 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
 });
 
 
-define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports", "module", "ace/lib/oop", "ace/snippets", "ace/mode/text_highlight_rules"], function (require, exports) {
+define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports", "module", "ace/lib/oop", "ace/snippets", 'ace/ext/language_tools' ,"ace/mode/text_highlight_rules"], function (require, exports) {
     "use strict";
 
     var oop = require("../lib/oop");
@@ -283,7 +283,8 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports
                     value: v,
                     score: 0,
                     meta: meta,
-                    docHTML: makeCompletionsdocHTML(v, meta)
+                    docHTML: makeCompletionsdocHTML(v, meta),
+                    iconClass: 'f'
                 });
 
             });

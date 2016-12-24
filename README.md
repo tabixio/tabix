@@ -61,9 +61,21 @@
 - Рендер в виде текста для Redmine 
 - Сворачивать скобки / Подзапросы 
 - Плагинная структура для Renders
+- help modal window -> link to github
 
+
+
+
++ Вынести из под Bower - ACE компонент, нужен в нутри проекта - скрестить с Ace.Tern
+
+
+
+
+https://github.com/sevin7676/Ace.Tern
 https://github.com/chieffancypants/angular-hotkeys
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+
+https://github.com/ajaxorg/ace/pull/2414
 
 ### 2016-12-17
 
