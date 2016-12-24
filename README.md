@@ -47,6 +47,7 @@
 * Список полей в таблице (левом дереве) и вставка поля при клике в редактор
 * Запрос создания таблицы, через SHOW CREATE TABLE - в "информации" 
 * Настройка автодополнение / enableLiveAutocompletion
+* Размер div результата компактнее
 
 
 
@@ -59,9 +60,10 @@
 - SHOW PROCESSLIST FORMAT JSON
 - Рендер в виде текста для Redmine 
 - Сворачивать скобки / Подзапросы 
-
 - Плагинная структура для Renders
 
+https://github.com/chieffancypants/angular-hotkeys
+https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
 ### 2016-12-17
 

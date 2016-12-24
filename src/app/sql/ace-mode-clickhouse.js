@@ -1,5 +1,74 @@
 var define = window.define || window.ace.define;
 
+define("ace/mode/clickhouse_FoldMode", ["$rootScope","require", "exports", "module", "ace/lib/oop","ace/lib/oop","ace/range","ace/mode/folding/cstyle","ace/snippets", "ace/mode/text_highlight_rules"], function(require, exports) {
+
+	var oop = require("../../lib/oop");
+	// var Range = require("../../range").Range;
+	var BaseFoldMode = require("./cstyle").FoldMode;
+
+	// var FoldMode = exports.FoldMode = function() {};
+
+	// oop.inherits(FoldMode, BaseFoldMode);
+
+	// (function() {
+    //
+	// 	this.foldingStartMarker = /(\bCASE\b|\bBEGIN\b)|^\s*(\/\*)/i;
+	// 	this.startRegionRe = /^\s*(\/\*|--)#?region\b/;
+    //
+	// 	this.getFoldWidgetRange = function(session, foldStyle, row, forceMultiline) {
+	// 		var line = session.getLine(row);
+    //
+	// 		if (this.startRegionRe.test(line)) return this.getCommentRegionBlock(session, line, row);
+    //
+	// 		var match = line.match(this.foldingStartMarker);
+	// 		if (match) {
+	// 			var i = match.index;
+	// 			if (match[1]) return this.getBeginEndBlock(session, row, i, match[1]);
+    //
+	// 			var range = session.getCommentFoldRange(row, i + match[0].length, 1);
+	// 			if (range && !range.isMultiLine()) {
+	// 				if (forceMultiline) {
+	// 					range = this.getSectionRange(session, row);
+	// 				}
+	// 				else if (foldStyle != "all") range = null;
+	// 			}
+    //
+	// 			return range;
+	// 		}
+    //
+	// 		if (foldStyle === "markbegin") return;
+	// 		return;
+	// 	};
+	// 	this.getBeginEndBlock = function(session, row, column, matchSequence) {
+	// 		var start = {
+	// 			row: row,
+	// 			column: column + matchSequence.length
+	// 		};
+	// 		var maxRow = session.getLength();
+	// 		var line;
+    //
+	// 		var depth = 1;
+	// 		var re = /(\bCASE\b|\bBEGIN\b)|(\bEND\b)/i;
+	// 		while (++row < maxRow) {
+	// 			line = session.getLine(row);
+	// 			var m = re.exec(line);
+	// 			if (!m) continue;
+	// 			if (m[1]) depth++;
+	// 			else depth--;
+    //
+	// 			if (!depth) break;
+	// 		}
+	// 		var endRow = row;
+	// 		if (endRow > start.row) {
+	// 			return new Range(start.row, start.column, endRow, line.length);
+	// 		}
+	// 	};
+    //
+	// }).call(FoldMode.prototype);
+
+});
+
+
 define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports", "module", "ace/lib/oop","ace/snippets", "ace/mode/text_highlight_rules"], function(require, exports) {
 	"use strict";
 
@@ -14,7 +83,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			"FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
 			"ANY|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
 		);
-		var identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
+		// var identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
 		var keywordsDouble="IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS|FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated";
 
 		var builtinConstants = (
@@ -108,7 +177,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 			},
 				{
 					token: "punctuation",
-					regex: /[?:,;.]/,
+					regex: /[?:,;.]/
 				},
 				{
 				token: "keyword.operator",
@@ -129,7 +198,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 		this.normalizeRules();
 		var makeCompletionsdocHTML=function (name,meta){
 
-			return '<div style="padding: 15px 5px 5px 15px"><b>'+name+'</b><br>'+meta+'</div>'
+			return '<div style="padding: 15px 5px 5px 15px"><b>'+name+'</b><br>'+meta+'</div>';
 
 
 		};
@@ -207,15 +276,23 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope","require", "exports"
 	exports.ClickhouseHighlightRules = ClickhouseHighlightRules;
 });
 
-define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text","ace/token_iterator", "ace/mode/clickhouse_highlight_rules", "ace/range"], function(require, exports) {
+
+define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text",
+		"ace/token_iterator",
+		"ace/mode/folding",
+		"ace/mode/clickhouse_FoldMode",
+		"ace/mode/clickhouse_highlight_rules"
+
+], function(require, exports) {
 	"use strict";
 
 	var oop = require("../lib/oop");
 	var TextMode = require("./text").Mode;
 	var ClickhouseHighlightRules = require("./clickhouse_highlight_rules").ClickhouseHighlightRules;
-
+	var SqlServerFoldMode = require("./clickhouse_FoldMode").FoldMode;
+	// var BaseFoldMode = require("./fold_mode").FoldMode;
 	var Mode = function() {
-
+		// this.foldingRules = new SqlServerFoldMode();
 		this.HighlightRules = ClickhouseHighlightRules;
 	};
 	oop.inherits(Mode, TextMode);
@@ -244,7 +321,6 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 			var iterator = new TokenIterator(session, 0, 0);
 			var token = iterator.getCurrentToken();
 			var matches=[];
-			var startRow= 0, startCol=0;
 
 			while (token) {
 				var t = token;
@@ -288,6 +364,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 			var matches=[];
 			var startRow= 0, startCol=0;
 
+			var range1,text;
 			while (token) {
 				var t=token;
 				t['row']=iterator.getCurrentTokenRow();
@@ -296,8 +373,8 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 				{
 					//var session = new EditSession(sql,this);
 					//session.clearSelection();
-					var range1 = new Range(startRow, startCol, t.row, t.col+value.length);
-					var text=session.getTextRange(range1);
+					range1 = new Range(startRow, startCol, t.row, t.col+value.length);
+					text=session.getTextRange(range1);
 					startRow= t.row;
 					startCol= t.col+value.length;
 					text=text.trim().replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
@@ -308,8 +385,11 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 				}
 				token = iterator.stepForward();
 			}
-			var range1 = new Range(startRow, startCol,Number.MAX_VALUE,Number.MAX_VALUE);
-			var text=session.getTextRange(range1);
+
+
+			range1 = new Range(startRow, startCol,Number.MAX_VALUE,Number.MAX_VALUE);
+			text=session.getTextRange(range1);
+
 			text=text.trim().replace("^("+value+")","").replace(value+"$","").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 			text=text.replace(new RegExp("^"+value+"|"+value+'$','g'),"").trim().replace(/^(\r\n|\n|\r)/gm,"").replace(/(\r\n|\n|\r)$/gm,"");
 			if (text.length>2)
