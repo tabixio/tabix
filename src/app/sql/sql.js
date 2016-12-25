@@ -869,19 +869,19 @@ window.global_builtinFunctions      = [];
 
         API.query("select name,is_aggregate from system.functions", null).then((data) => {
             data.data.forEach((item) => {
-                window.global_builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false});
+                window.global_builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
                 if (item.is_aggregate)
                 {
                     // Комбинатор -If. Условные агрегатные функции
-                    let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If'};
+                    let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If',origin:item.name};
                     window.global_builtinFunctions.push(p);
 
                     // Комбинатор -Array. Агрегатные функции для аргументов-массивов
-                    p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array'};
+                    p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array',origin:item.name};
                     window.global_builtinFunctions.push(p);
 
                     // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
-                    p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State'};
+                    p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State',origin:item.name};
                     window.global_builtinFunctions.push(p);
 
                 }

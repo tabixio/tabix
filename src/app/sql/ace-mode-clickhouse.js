@@ -139,7 +139,7 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
 });
 
 
-define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports", "module", "ace/lib/oop", "ace/snippets", 'ace/ext/language_tools' ,"ace/mode/text_highlight_rules"], function (require, exports) {
+define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScope", "module", "ace/lib/oop", "ace/snippets", 'ace/ext/language_tools' ,"ace/mode/text_highlight_rules"], function (require, exports,$rootScope) {
     "use strict";
 
     var oop = require("../lib/oop");
@@ -246,6 +246,50 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports
             ]
         };
         this.normalizeRules();
+        var makeCompletionsDocFunctions = function (fn, origin,comb) {
+
+
+            var body='<div style="padding: 15px 5px 5px 15px">';
+            var use=fn;
+
+            if (typeof window.global_chFunctionsHelp['functions'][fn] != 'undefined')
+            {
+                use=fn;
+            }
+            else
+            {
+                if (typeof window.global_chFunctionsHelp['functions'][origin] != 'undefined') use=origin;
+            }
+
+            if (typeof window.global_chFunctionsHelp['functions'][use] != 'undefined')
+            {
+                var help=window.global_chFunctionsHelp['functions'][use];
+                var brackets='';
+                var desc_ru='';
+                var desc_en='';
+                if (help['ru'])
+                {
+                    brackets=help['bracket'];
+                    desc_ru=help['ru'];
+                    desc_en=help['en'];
+                }
+                else
+                {
+                    brackets=help[0];
+                    desc_ru=help[1];
+                    desc_en=help[2];
+                }
+
+                if (desc_ru) desc_ru=desc_ru.replace(/\.\s*/gm, ".<br>");
+                body='<b>' + fn + brackets+'</b><br>' + desc_ru;
+            }
+            else {
+                body='<b>' + fn + '( ) </b><br>' + origin;
+            }
+            return body+ '</div>';
+
+
+        };
         var makeCompletionsdocHTML = function (name, meta) {
 
             return '<div style="padding: 15px 5px 5px 15px"><b>' + name + '</b><br>' + meta + '</div>';
@@ -284,7 +328,6 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports
         if (window.global_builtinFunctions) {
 
             // автодополнение builtin Functions
-
             window.global_builtinFunctions.forEach(function (v) {
 
                 completions.push({
@@ -293,7 +336,7 @@ define("ace/mode/clickhouse_highlight_rules", ["$rootScope", "require", "exports
                     caption: v['name'],
                     score: v['score'],
                     meta: 'function',
-                    docHTML: makeCompletionsdocHTML(v['name'], v['name'])
+                    docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
                 });
 
 

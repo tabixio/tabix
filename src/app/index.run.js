@@ -29,8 +29,7 @@
 
 				$http.get('ch_completions_help.json')
 					.then(function(res){
-						console.warn(res.data);
-						$rootScope.chFunctionsHelp = res.data;
+						window.global_chFunctionsHelp = res.data;
 					});
 			}
 		]);
