@@ -11,7 +11,8 @@
 		.run([
 			'$rootScope',
 			'$state',
-			($rootScope, $state) => {
+			'$http',
+			($rootScope, $state,$http) => {
 
 				$rootScope.breadcrumbs = [];
 				$rootScope.currentDatabase = null;
@@ -25,6 +26,12 @@
 
 				// Требование JSlinter'a (((
 				$rootScope.$on('$destroy', () => stateChangeErrorUnbind);
+
+				$http.get('ch_completions_help.json')
+					.then(function(res){
+						console.warn(res.data);
+						$rootScope.chFunctionsHelp = res.data;
+					});
 			}
 		]);
 })();
