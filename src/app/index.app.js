@@ -22,6 +22,7 @@
         'funMetisMenu',
         'ngScrollbars',
         'ngCsv',
-        'pascalprecht.translate'
+        'pascalprecht.translate',
+        'cfp.hotkeys'
     ]);
 })();
