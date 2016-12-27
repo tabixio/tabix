@@ -16,23 +16,10 @@
 
 
 
-### Roadmap
-Список фич: 
-* Список полей в левом дереве 
-* Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
-* Hotkey справочник и/или help 
-* SHOW CREATE TABLE 
-* Изменить Grid, выбрать из [ui-grid.info | ag-grid | paramquery.com | js-grid.com], сортировка на клиенте 
-* Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
-* Выбор разделителя `;;` или `;`
-
-
-
-
 ## Changelog 
 
 
-### Dev 
+### Dev ( > 2016-12-22  )
 - [x]  Bind: Cmd-Y | Ctrl-Y = removeLines
 - [x]  Автодополнение + подсказка по полям с типом 
 - [x]  Автодополнение словарей + подсказка
@@ -51,31 +38,30 @@
 - [x]  Подсветка скобок
 - [x]  Список ф-ций загружатеся исходя из возможностей сервера. Из таблицы `system.functions` + keywordMapper.builtinFunctions
 - [x]  Подсказка по функции (загрузка из json)
-
+- [x]  [Command | Ctrl ] + [ Right | Left ] переключает вкладки
+- [x]  Shift-Ctrl-[1...0] переключает вкладки 
+- [x]  Редактор ACEjs,вынести из под Bower
 
 
 **Todo**:
-
-- [ ] Ctrl-1|Ctrl-9 переключает вкладки (angular-hotkeys)
-- [ ] Редактор ACE
+- [ ] Редактор 
 > - Сворачивать скобки / Подзапросы 
 > - Парсинг в тексте FROM DBName.TBName
 > - Выбор разделителя ;; или ; 
 
-- [ ] Отдельное окно SHOW PROCESSLIST FORMAT JSON
 
 - [ ] Рендер
 > - в виде текста для Redmine 
-> - Рендеры графики
+> - Рендеры графики + c поддержкой D3/C3
 > - Плагинная структура для Renders
+> - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid, выбрать из pivotJs таблицы,   [ui-grid.info | ag-grid | paramquery.com | js-grid.com]
 
-- [ ] help modal window -> link to github
+- [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
+- [ ] ACE скрестить с Ace.Tern
+- [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
+- [ ] Отдельное окно SHOW PROCESSLIST FORMAT JSON
 
 
-
-#### В таски
-+ **Вынести из под Bower** - ACE компонент, нужен в нутри проекта - скрестить с Ace.Tern
-+ Улучшить отображение полей таблицы в дереве, поддержка клика
 
 ----
 
@@ -86,6 +72,10 @@ https://github.com/chieffancypants/angular-hotkeys
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
 https://github.com/ajaxorg/ace/pull/2414
+
+----
+
+http://raw.densitydesign.org/
 
 ----
 
