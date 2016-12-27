@@ -542,7 +542,7 @@ window.global_builtinFunctions      = [];
             }
         };
 
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 9; i++) {
             hotkeys.add({
                 combo: 'ctrl+shift+' + (i + 1),
                 callback: () => selectTab(i)
@@ -620,7 +620,7 @@ window.global_builtinFunctions      = [];
                 }
             });
 
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 9; i++) {
                 editor.commands.addCommand({
                     name: 'selecttab' + i,
                     bindKey: {
