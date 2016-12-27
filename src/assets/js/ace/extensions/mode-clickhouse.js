@@ -298,7 +298,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
         };
 
         var completions = [];
-        var addCompletions = function (arr, meta) {
+        var addCompletions = function (arr, meta,icon) {
             arr.forEach(function (v) {
 
 
@@ -308,21 +308,17 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                     score: 0,
                     meta: meta,
                     docHTML: makeCompletionsdocHTML(v, meta),
-                    iconClass: 'f'
+                    iconClass: icon
                 });
 
             });
 
         };
 
-
-
-
-        // addCompletions(builtinFunctions.split('|'), 'function');
-        addCompletions(keywords.split('|'), 'keyword');
-        addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword');
-        addCompletions(dataTypes.split('|'), 'type');
-        addCompletions(window.global_keywords_tables.split('|'), '[table]');
+        addCompletions(keywords.split('|'), 'keyword','keyword');
+        addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
+        addCompletions(dataTypes.split('|'), 'type','type');
+        addCompletions(window.global_keywords_tables.split('|'), '[table]','table');
 
 
         if (window.global_builtinFunctions) {
@@ -336,6 +332,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                     caption: v['name'],
                     score: v['score'],
                     meta: 'function',
+                    iconClass:'function',
                     docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
                 });
 
@@ -353,6 +350,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                         caption: v['title'],
                         score: 0,
                         meta: 'dic',
+                        iconClass:'dict',
                         docHTML: makeCompletionsdocHTML(v['title'], v['dic'])
                     });
 
@@ -375,6 +373,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                         value: value,
                         score: 20,
                         meta: v['table'],
+                        iconClass:'field',
                         docHTML: makeCompletionsdocHTML(name, meta)
                     });
 

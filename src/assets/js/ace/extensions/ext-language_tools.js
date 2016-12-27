@@ -1060,6 +1060,14 @@ var AcePopup = function(parentNode) {
 
         var last = -1;
         var flag, c;
+
+
+        if (data.iconClass)//show icon in popup if specified by completor
+            tokens.push({
+                type: 'icon ace_icon-'+data.iconClass,
+                value: " "
+            });
+
         for (var i = 0; i < data.caption.length; i++) {
             c = data.caption[i];
             flag = data.matchMask & (1 << i) ? 1 : 0;

@@ -1,4 +1,55 @@
 <style>
+
+    .ace_icon {
+        /*padding-left: 12px;*/
+        /*position: relative;*/
+        /*position: absolute;*/
+        left: 0;
+        bottom: 0;
+        border-radius: 50%;
+        font-weight: bold;
+        height: 13px;
+        width: 13px;
+        font-size: 11px;
+        line-height: 14px;
+        text-align: center;
+        color: black;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .ace_icon-unknown:before {
+        content: '?';
+        background: #4bb;
+    }
+    .ace_icon-function:before {
+        content: 'ƒ';
+        color: #7c7;
+    }
+    .ace_icon-array:before {
+        content: 'A';
+        background: #c66;
+    }
+    .ace_icon-field:before {
+        content: 'F';
+        color:red;
+    }
+    .ace_icon-dict:before {
+        content: 'D';
+    }
+    .ace_icon-keyword:before {
+        content: 'K';
+    }
+    .ace_icon-type:before {
+        content: '√';
+    }
+    .ace_icon-table:before {
+        content: 'T';
+        color: #c66;
+    }
+
+
     .ace_doc-tooltip  {
         border: 1px solid silver; border-radius: 3px; color: #444; padding: 2px 5px; padding-right:15px;
         font-family: monospace; background-color: white; white-space: pre-wrap;
