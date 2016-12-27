@@ -21,7 +21,8 @@ window.global_builtinFunctions      = [];
         '$mdToast',
         'ThemeService',
         '$timeout',
-        '$filter'
+        '$filter',
+        'hotkeys'
     ];
 
     /**
@@ -39,7 +40,8 @@ window.global_builtinFunctions      = [];
                            $mdToast,
                            ThemeService,
                            $timeout,
-                           $filter) {
+                           $filter,
+                           hotkeys) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -148,7 +150,7 @@ window.global_builtinFunctions      = [];
                 });
                 localStorageService.set(SQL_SESSION_KEY, tabs);
             }
-        }
+        };
 
         /**
          * @ngdoc method
@@ -353,7 +355,7 @@ window.global_builtinFunctions      = [];
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
-                        if (!cursor || !angular.isDefined(cursor) ||
+                        if (!cursor || angular.isUndefined(cursor) ||
                             item.range.compare(cursor.row, cursor.column) !== 0) {
                             return;
                         }
@@ -518,6 +520,43 @@ window.global_builtinFunctions      = [];
             });
         };
 
+        const selectTab = index => {
+            if ($scope.vars.tabs.length >= index) {
+                $scope.vars.currentTab = $scope.vars.tabs[index];
+                $scope.vars.selectedTab = index;
+                $timeout(() => {
+                    $scope.vars.currentTab.editor.focus();
+                });
+            }
+        };
+
+        const selectPrevTab = () => {
+            if ($scope.vars.selectedTab > 0) {
+                selectTab($scope.vars.selectedTab - 1);
+            }
+        };
+
+        const selectNextTab = () => {
+            if ($scope.vars.selectedTab < ($scope.vars.tabs.length - 1)) {
+                selectTab($scope.vars.selectedTab + 1);
+            }
+        };
+
+        for (let i = 0; i < 12; i++) {
+            hotkeys.add({
+                combo: 'ctrl+shift+' + (i + 1),
+                callback: () => selectTab(i)
+            });
+        }
+        hotkeys.add({
+            combo: 'ctrl+right',
+            callback: selectNextTab
+        });
+        hotkeys.add({
+            combo: 'ctrl+left',
+            callback: selectPrevTab
+        });
+
         /**
          * ACE editor init on creation
          * @param editor
@@ -581,8 +620,32 @@ window.global_builtinFunctions      = [];
                 }
             });
 
-
-
+            for (let i = 0; i < 12; i++) {
+                editor.commands.addCommand({
+                    name: 'selecttab' + i,
+                    bindKey: {
+                        win: 'Ctrl-Shift-' + (i + 1),
+                        mac: 'Command-Shift-' + (i + 1)
+                    },
+                    exec: () => selectTab(i)
+                });
+            }
+            editor.commands.addCommand({
+                name: 'selectnexttab',
+                bindKey: {
+                    win: 'Ctrl-Right',
+                    mac: 'Command-Right'
+                },
+                exec: selectNextTab
+            });
+            editor.commands.addCommand({
+                name: 'selectprevtab',
+                bindKey: {
+                    win: 'Ctrl-Left',
+                    mac: 'Command-Left'
+                },
+                exec: selectPrevTab
+            });
 
             editor.clearSelection();
             editor.focus();
@@ -865,7 +928,7 @@ window.global_builtinFunctions      = [];
         }
         if ($rootScope.currentDatabase) {
             $scope.selectDatabase($rootScope.currentDatabase);
-        };
+        }
 
         API.query("select name,is_aggregate from system.functions", null).then((data) => {
             data.data.forEach((item) => {
@@ -888,6 +951,8 @@ window.global_builtinFunctions      = [];
 
             });
         });
+
+
 
 
         /**
