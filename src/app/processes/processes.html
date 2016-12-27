@@ -1,0 +1,27 @@
+<div class="pr+ pt+ pull-right">
+    <md-input-container class="mb++ mr+">
+        <label>{{'Частота обновления' | translate}}</label>
+        <md-select ng-model="vars.interval" ng-change="setInterval()">
+            <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
+                {{interval == -1 ? 'Обновление отключено' : interval  + ' сек'}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+    <md-input-container class="mb++">
+        <label>{{'Сортировка' | translate}}</label>
+        <md-select ng-model="vars.sort" ng-change="setSort()">
+            <md-option ng-repeat="col in vars.cols" ng-value="col">
+                {{col}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+</div>
+<h4 class="pl pt">
+    {{'Список процессов' | translate}}
+</h4>
+
+<div class="card__actions pl pr+ pt+ pb" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden;" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
+    <span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
+    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
+    <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
+</div>

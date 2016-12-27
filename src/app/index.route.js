@@ -73,7 +73,15 @@
                     controller: 'TableController'
                 })
 
-                // 4040 not found handle
+                // Processes list
+                .state('processes', {
+                    parent: 'layout',
+                    url: '/processes',
+                    templateUrl: 'app/processes/processes.html',
+                    controller: 'ProcessesController'
+                })
+
+                // 404 not found handle
                 .state('404', {
                     parent: 'layout',
                     templateUrl: 'app/base/404.html'
