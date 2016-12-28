@@ -69,6 +69,8 @@ https://github.com/chieffancypants/angular-hotkeys
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
 https://github.com/ajaxorg/ace/pull/2414
+https://github.com/tlatoza/SeeCodeRun/wiki/Ace-code-editor
+https://masonwebdev.wordpress.com/2016/03/22/extending-ace-lets-make-sure-you-are-always-with-higher-hand/
 
 ----
 
