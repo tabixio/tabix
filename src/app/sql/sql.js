@@ -4,7 +4,7 @@ window.global_keywords_tables       = "";
 window.global_keywords_fieldsList   = "";
 window.global_keywords_dictList     = "";
 window.global_builtinFunctions      = [];
-
+window.global_delimiter             = ";;";
 
 ((angular, smi2) => {
     'use strict';
@@ -86,7 +86,7 @@ window.global_builtinFunctions      = [];
             theme: localStorageService.get('editorTheme') || 'cobalt'
         };
 
-        $scope.vars.delimiter = $scope.vars.delimiters[0];
+        $scope.vars.delimiter = localStorageService.get('delimiter') || $scope.vars.delimiters[0];
         $scope.vars.format = $scope.vars.formats[0];
         $scope.vars.themes = [
             'ambiance',
@@ -681,7 +681,24 @@ window.global_builtinFunctions      = [];
          * Watch and save delimiter in LocalStorage
          */
 
-        $scope.$watch('vars.delimiter', (curr) => localStorageService.set('delimiter', curr));
+        $scope.$watch('vars.delimiter', (curr) => {
+            var d=curr.delimiter
+            localStorageService.set('delimiter', d)
+            window.global_delimiter=d;
+
+            $scope.vars.tabs.forEach((tab) =>
+            {
+                if (tab.editor)
+                {
+
+                    tab.editor.session.setMode({
+                        path: "ace/mode/clickhouse",
+                        v: Date.now()
+                    });
+                    tab.editor.session.bgTokenizer.start(0);
+                }
+            });
+        });
 
         /**
          * Watch and save settings in LocalStorage

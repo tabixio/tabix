@@ -9,7 +9,7 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
     var oop = require("../lib/oop");
     var BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
     var Range = require("ace/range").Range;
-
+    var TokenIterator = require("ace/token_iterator").TokenIterator;
     var FoldMode = exports.FoldMode = function () {
 
     };
@@ -18,122 +18,42 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
 
     (function () {
 
+        this.foldingStartMarker = /\s*(\(\s*SELECT\s*)/;
 
-        this.foldingStartMarker = /(\{|\[)[^\}\]]*$|^\s*(\/\*)/;
-        this.foldingStopMarker = /^[^\[\{]*(\}|\])|^[\s\*]*(\*\/)/;
-        this.singleLineBlockCommentRe= /^\s*(\/\*).*\*\/\s*$/;
-        this.tripleStarBlockCommentRe = /^\s*(\/\*\*\*).*\*\/\s*$/;
-        this.startRegionRe = /^\s*(\/\*|\/\/)#?region\b/;
-        this._getFoldWidgetBase = this.getFoldWidget;
-        this.getFoldWidget = function(session, foldStyle, row) {
+        this.getFoldWidgetRange = function(session, foldStyle, row) {
+            var re = this.foldingStartMarker;
             var line = session.getLine(row);
+            var m = line.match(re);
+            // были ли вообще совпадения по ( SELECT
+            if (!m) return;
 
-            if (this.singleLineBlockCommentRe.test(line)) {
-                if (!this.startRegionRe.test(line) && !this.tripleStarBlockCommentRe.test(line))
-                    return "";
-            }
+            // позиционируем TokenIterator на нужную строку
+            var iterator = new TokenIterator(session, row, 0);
+            //  получаем token
+            var token = iterator.getCurrentToken();
+            // if find : ` ( SELECT `
+            while (token) {
+                var t = token;
+                var range=false;
+                // позиция текущего токена
+                var pos = iterator.getCurrentTokenPosition();
 
-            var fw = this._getFoldWidgetBase(session, foldStyle, row);
+                token = iterator.stepForward();
+                // если текущий токен скобка а следующий SELECT
+                if (t.type=='paren.lparen' && t.value=='(')
+                 {
+                     console.info(t.type + " "+t.value);
+                     if (token.type=='keyword' && token.value=='SELECT')
+                     {
+                         range=session.getBracketRange(pos);
+                     }
+                 }
+                 // Если мы нашли рендж - отлично
+                 if (range) break;
+            };
 
-            if (!fw && this.startRegionRe.test(line))
-                return "start"; // lineCommentRegionStart
-
-            return fw;
+            return range;
         };
-
-        this.getFoldWidgetRange = function(session, foldStyle, row, forceMultiline) {
-            var line = session.getLine(row);
-
-            if (this.startRegionRe.test(line))
-                return this.getCommentRegionBlock(session, line, row);
-
-            var match = line.match(this.foldingStartMarker);
-            if (match) {
-                var i = match.index;
-
-                if (match[1])
-                    return this.openingBracketBlock(session, match[1], row, i);
-
-                var range = session.getCommentFoldRange(row, i + match[0].length, 1);
-
-                if (range && !range.isMultiLine()) {
-                    if (forceMultiline) {
-                        range = this.getSectionRange(session, row);
-                    } else if (foldStyle != "all")
-                        range = null;
-                }
-
-                return range;
-            }
-
-            if (foldStyle === "markbegin")
-                return;
-
-            var match = line.match(this.foldingStopMarker);
-            if (match) {
-                var i = match.index + match[0].length;
-
-                if (match[1])
-                    return this.closingBracketBlock(session, match[1], row, i);
-
-                return session.getCommentFoldRange(row, i, -1);
-            }
-        };
-
-        this.getSectionRange = function(session, row) {
-            var line = session.getLine(row);
-            var startIndent = line.search(/\S/);
-            var startRow = row;
-            var startColumn = line.length;
-            row = row + 1;
-            var endRow = row;
-            var maxRow = session.getLength();
-            while (++row < maxRow) {
-                line = session.getLine(row);
-                var indent = line.search(/\S/);
-                if (indent === -1)
-                    continue;
-                if  (startIndent > indent)
-                    break;
-                var subRange = this.getFoldWidgetRange(session, "all", row);
-
-                if (subRange) {
-                    if (subRange.start.row <= startRow) {
-                        break;
-                    } else if (subRange.isMultiLine()) {
-                        row = subRange.end.row;
-                    } else if (startIndent == indent) {
-                        break;
-                    }
-                }
-                endRow = row;
-            }
-
-            return new Range(startRow, startColumn, endRow, session.getLine(endRow).length);
-        };
-        this.getCommentRegionBlock = function(session, line, row) {
-            var startColumn = line.search(/\s*$/);
-            var maxRow = session.getLength();
-            var startRow = row;
-
-            var re = /^\s*(?:\/\*|\/\/|--)#?(end)?region\b/;
-            var depth = 1;
-            while (++row < maxRow) {
-                line = session.getLine(row);
-                var m = re.exec(line);
-                if (!m) continue;
-                if (m[1]) depth--;
-                else depth++;
-
-                if (!depth) break;
-            }
-
-            var endRow = row;
-            if (endRow > startRow) {
-                return new Range(startRow, startColumn, endRow, line.length);
-            }
-        };
-
     }).call(FoldMode.prototype);
 
 });
@@ -223,7 +143,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 },
                 {
                     token: "constant.character.escape",
-                    regex: /;{2}/
+                    regex: new RegExp(window.global_delimiter)
                 },
                 {
                     token: "punctuation",
@@ -245,6 +165,8 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
 
             ]
         };
+
+        console.warn("!!global_delimiter!!>>> "+window.global_delimiter);
         this.normalizeRules();
         var makeCompletionsDocFunctions = function (fn, origin,comb) {
 
@@ -394,11 +316,11 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
     var oop = require("../lib/oop");
     var TextMode = require("./text").Mode;
     var ClickhouseHighlightRules = require("./clickhouse_highlight_rules").ClickhouseHighlightRules;
-    //var ClickhouseFoldMode = require("./clickhouse_FoldMode").FoldMode;
-    var BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
+    var ClickhouseFoldMode = require("./clickhouse_FoldMode").FoldMode;
+    // var BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
 
     var Mode = function () {
-        this.foldingRules = new BaseFoldMode();
+        this.foldingRules = new ClickhouseFoldMode();
         this.HighlightRules = ClickhouseHighlightRules;
     };
     oop.inherits(Mode, TextMode);

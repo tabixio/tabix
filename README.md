@@ -46,12 +46,14 @@
 - [x]  ACE скрестить с Ace.Tern
 - [x]  Подсказки из офф документации в виде JSON 
 - [x]  Live autocomplete delay
-
+- [x]  Редактор:Сворачивать скобки / Подзапросы
+- [x]  Редактор:Выбор разделителя запросов `;;` или `;` 
+ 
+ 
 **Todo**:
 - [ ] Редактор 
-> - Сворачивать скобки / Подзапросы 
-> - Парсинг в тексте FROM DBName.TBName
-> - Выбор разделителя ;; или ; 
+
+> - Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
 
 - [ ] Рендер
 > - в виде текста для Redmine 
@@ -61,21 +63,21 @@
 
 - [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
-
-
+- [ ] tableau export via WDC/ODATA
+ 
 
 
 ----
-
-https://github.com/sevin7676/Ace.Tern
-
-https://github.com/chieffancypants/angular-hotkeys
-
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
-
-https://github.com/ajaxorg/ace/pull/2414
 https://github.com/tlatoza/SeeCodeRun/wiki/Ace-code-editor
 https://masonwebdev.wordpress.com/2016/03/22/extending-ace-lets-make-sure-you-are-always-with-higher-hand/
+
+----
+tableau: 
+
+https://community.tableau.com/community/developers/web-data-connectors
+https://github.com/justindarc/fxos-web-server
+https://onlinehelp.tableau.com/current/server/en-us/datasource_wdc.htm
 
 ----
 
