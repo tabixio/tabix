@@ -27,7 +27,7 @@
 				// Требование JSlinter'a (((
 				$rootScope.$on('$destroy', () => stateChangeErrorUnbind);
 
-				$http.get('ch_completions_help.json')
+				$http.get('assets/ch_completions_help.json')
 					.then(function(res){
 						window.global_chFunctionsHelp = res.data;
 					});

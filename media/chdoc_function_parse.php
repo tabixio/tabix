@@ -1,7 +1,7 @@
 <?php
 include_once '../../phpClickHouse/include.php';
 
-$ch=new \ClickHouseDB\Client(['host'=>'192.168.1.20','port'=>8123,'username'=>'default','password'=>'']);
+$ch=new \ClickHouseDB\Client(include_once '/sites/_clickhouse_config_product.php');
 $functions_list=array_keys(($ch->select('SELECT * FROM system.functions')->rowsAsTree('name')));
 
 $functions_list=array_values($functions_list);
@@ -29,25 +29,64 @@ function parseDocPage($url)
                 $name=trim(trim($m[1]),'=');
                 $value=trim($m[2]);
 
+                $name=str_ireplace('<i>T</i>','String',$name);
 
 
+                $back='(v)';
+                $nameList=[];
 
 
                 $mn=[];
-                if (preg_match('%((((?!\()\X)*)%ius',$name,$mn))
+                //replaceRegexpAll(haystack, pattern, replacement)
+                if (preg_match('%([^\(]*)(\([^\(]*\).*)%ius',$name,$mn))
                 {
-                    echo $name."\n";
-                    print_r($mn);
+
+                    $name=$mn[1];
+                    $back=$mn[2];
+                }
+
+                if (stripos($name,','))
+                {
+
+                    //emptyArrayUInt8, emptyArrayUInt16, emptyArrayUInt32, emptyArrayUInt64
+                    if (preg_match_all('%([^,\)\(]*)%ius',$name,$mn,PREG_SET_ORDER))
+                    {
+                        $o=[];
+                        foreach($mn as $r)
+                        {
+                            $v=trim($r[0]);
+                            if ($v) $o[]=$v;
+                        }
+                        $nameList=$o;
+                    }
+
+
                 }
                 if (stripos($name,'dictGet'))
                 {
                     $out[$name.'OrDefault']=$value;
                 }
-                $out[$name]=$value;
+
+                if (sizeof($nameList))
+                {
+
+                    foreach ($nameList as $name)
+                    {
+                        $out[$name]=[$value,$back];
+                    }
+                }
+                else
+                {
+                    $out[$name]=[$value,$back];
+                }
+
             }
         }
     }
-    die();
+
+//
+//
+
     return $out;
 
 }
@@ -64,7 +103,8 @@ foreach ($functions_list as $fn)
     {
         if (stripos($name,$fn)!==false)
         {
-            $output['f']['ru'][$fn]=$name;
+            $output['f'][$fn]['ru']=[$name,$value[0]];
+            $output['f'][$fn]['b']=$value[1];
             $find=1;
         }
     }
@@ -72,7 +112,8 @@ foreach ($functions_list as $fn)
     {
         if (stripos($name,$fn)!==false)
         {
-            $output['f']['en'][$fn]=$name;
+            $output['f'][$fn]['en']=[$name,$value[0]];
+            $output['f'][$fn]['b']=$value[1];
             $find=1;
         }
     }
@@ -83,18 +124,39 @@ foreach ($functions_list as $fn)
 }
 print_r($notFind);
 //
-foreach ($ru as $name=>$value)
+$json=[];
+
+
+foreach($notFind as $name=>$tmp)
 {
-    $value=str_ireplace("\n"," ",$value);
-    echo "\033[32m $name \033[0m";
-    echo mb_substr($value,0,53);
+    $json[$name]['bracket']="()";
+    $json[$name]['desc']['ru']="";
+    $json[$name]['desc']['en']="";
+}
+
+foreach ($output['f'] as $name=>$data)
+{
+    $ru=$data['ru'][1];
+    $en=$data['en'][1];
+    $b=$data['b'];
+    $en=str_ireplace("\n"," <br> ",$en);
+    $ru=str_ireplace("\n"," <br> ",$ru);
+
+    echo "\033[32m ".mb_substr($name,0,40)." \033[0m";
+    echo "\033[31m ".$b." \033[0m";
+    echo mb_substr($en,0,43);
+    echo mb_substr($ru,0,43);
     echo "\n";
 
+
+
+
+    $json[$name]['bracket']=$b;
+    $json[$name]['desc']['ru']=mb_substr($ru,0,1450);
+    $json[$name]['desc']['en']=mb_substr($en,0,1450);
+
+
 }
-//
 
-// Merge
-
-//foreach ()
-
-//    if (preg_match_all('%==(.*)==\s+(.*)==*%',$content,$mathes,PREG_SET_ORDER))
+$x= json_encode(['functions'=>$json],JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+file_put_contents('out.json',$x);

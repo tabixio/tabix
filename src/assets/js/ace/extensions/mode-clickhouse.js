@@ -273,15 +273,10 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                     desc_ru=help['ru'];
                     desc_en=help['en'];
                 }
-                else
-                {
-                    brackets=help[0];
-                    desc_ru=help[1];
-                    desc_en=help[2];
-                }
+
 
                 if (desc_ru) desc_ru=desc_ru.replace(/\.\s*/gm, ".<br>");
-                body='<b>' + fn + brackets+'</b><br>' + desc_ru;
+                body='<b>' + fn + brackets+'</b><br>' + desc_ru +' <br>'+desc_en;
             }
             else {
                 body='<b>' + fn + '( ) </b><br>' + origin;
