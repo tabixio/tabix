@@ -50,7 +50,7 @@
 - [x]  Редактор:Выбор разделителя запросов `;;` или `;` 
  
  
-**Todo**:
+**Todo high**:
 - [ ] Редактор 
 
 > - Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
@@ -63,6 +63,9 @@
 
 - [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
+- [ ] Kill query in SHOW PROCESSLIST
+
+**Todo low**:
 - [ ] tableau export via WDC/ODATA
  
 
