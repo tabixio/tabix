@@ -42,21 +42,26 @@
 - [x]  Shift-Ctrl-[1...0] переключает вкладки 
 - [x]  Редактор ACEjs,вынести из под Bower
 - [x]  Редактор - иконки в подсказках
+- [x]  Отдельное окно SHOW PROCESSLIST FORMAT JSON
+- [x]  ACE скрестить с Ace.Tern
+- [x]  Подсказки из офф документации в виде JSON 
+- [x]  Live autocomplete delay
 
 **Todo**:
 - [ ] Редактор 
 > - Сворачивать скобки / Подзапросы 
 > - Парсинг в тексте FROM DBName.TBName
 > - Выбор разделителя ;; или ; 
+
 - [ ] Рендер
 > - в виде текста для Redmine 
 > - Рендеры графики + c поддержкой D3/C3
 > - Плагинная структура для Renders
 > - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid, выбрать из pivotJs таблицы,   [ui-grid.info | ag-grid | paramquery.com | js-grid.com]
+
 - [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
-- [ ] ACE скрестить с Ace.Tern
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
-- [ ] Отдельное окно SHOW PROCESSLIST FORMAT JSON
+
 
 
 

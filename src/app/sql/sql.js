@@ -575,7 +575,9 @@ window.global_builtinFunctions      = [];
                 highlightSelectedWord:true ,
                 //showInvisibles:true ,
                 showGutter:true ,
-                enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion
+                enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
+                liveAutocompletionDelay: 500,
+                liveAutocompletionThreshold: 1
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 

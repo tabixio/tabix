@@ -1897,7 +1897,7 @@ var doLiveAutocomplete = function(e) {
     }
     else if (e.command.name === "insertstring") {
         var prefix = util.getCompletionPrefix(editor);
-        if (prefix && !hasCompleter) {
+        if (prefix && prefix.length >= editor.$liveAutocompletionThreshold && !hasCompleter) {
             if (!editor.completer) {
                 editor.completer = new Autocomplete();
             }
@@ -1906,6 +1906,17 @@ var doLiveAutocomplete = function(e) {
         }
     }
 };
+
+    var lastExec_e;
+    var liveAutocompleteTimer = lang.delayedCall(function () { doLiveAutocomplete(lastExec_e); }, 0);
+
+    var scheduleAutocomplete = function(e)
+    {
+        lastExec_e = e;
+        liveAutocompleteTimer.delay(e.editor.$liveAutocompletionDelay);
+
+    }
+
 
 var Editor = require("../editor").Editor;
 require("../config").defineOptions(Editor.prototype, "editor", {
@@ -1921,17 +1932,26 @@ require("../config").defineOptions(Editor.prototype, "editor", {
         },
         value: false
     },
+
     enableLiveAutocompletion: {
         set: function(val) {
             if (val) {
                 if (!this.completers)
                     this.completers = Array.isArray(val)? val: completers;
-                this.commands.on('afterExec', doLiveAutocomplete);
+                this.commands.on('afterExec', scheduleAutocomplete);
+                // this.commands.on('afterExec', doLiveAutocomplete);
             } else {
-                this.commands.removeListener('afterExec', doLiveAutocomplete);
+                // this.commands.removeListener('afterExec', doLiveAutocomplete);
+                this.commands.removeListener('afterExec', scheduleAutocomplete);
             }
         },
         value: false
+    },
+    liveAutocompletionThreshold: {
+        value: 0
+    },
+    liveAutocompletionDelay: {
+        value: 500
     },
     enableSnippets: {
         set: function(val) {
