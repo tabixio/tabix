@@ -249,7 +249,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
         var makeCompletionsDocFunctions = function (fn, origin,comb) {
 
 
-            var body='<div style="padding: 15px 5px 5px 15px">';
+            var body='<span>';
             var use=fn;
 
             if (typeof window.global_chFunctionsHelp['functions'][fn] != 'undefined')
@@ -267,40 +267,24 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 var brackets='';
                 var desc_ru='';
                 var desc_en='';
-                if (help['ru'])
+                if (help['desc']['ru'])
                 {
                     brackets=help['bracket'];
-                    desc_ru=help['ru'];
-                    desc_en=help['en'];
+                    desc_ru=help['desc']['ru'];
+                    desc_en=help['desc']['en'];
                 }
 
 
                 if (desc_ru) desc_ru=desc_ru.replace(/\.\s*/gm, ".<br>");
-                body='<b>' + fn + brackets+'</b><br>' + desc_ru +' <br>'+desc_en;
+                body='<span class="ace_doc-header"><b>' + fn + brackets+'</b></span><br><span class="ace_doc-description">' + desc_ru +' </span>';
             }
             else {
-                body='<b>' + fn + '( ) </b><br>' + origin;
+                body='<span class="ace_doc-header"><b>' + fn + '( ) </b></span><br>' + origin;
             }
-            return body+ '<a title="close" class="ace_doc-tooltip-boxclose"></a></div>';
-return '<span><span class="Ace-Tern-typeHeader-simple">fn(a, b, c, useSum) -&gt; number</span>Description of this fn'+
-    '<span class="Ace-Tern-jsdoc-param-wrapper"><div> <span class="Ace-Tern-jsdoc-tag">@param</span> ' +
-    '<span class="Ace-Tern-type">{int}</span> <span class="Ace-Tern-jsdoc-param-name">a</span>' +
-    ' - <span class="Ace-Tern-jsdoc-param-description">first number</span>' +
-    '</div><div> ' +
-    '<span class="Ace-Tern-jsdoc-tag">@param</span> ' +
-    '<span class="Ace-Tern-type">{decimal}</span> ' +
-    '<span class="Ace-Tern-jsdoc-param-name">b</span> - ' +
-    '<span class="Ace-Tern-jsdoc-param-description">second number</span></div><div> <span class="Ace-Tern-jsdoc-tag">@param</span> <span class="Ace-Tern-type">{number}</span> <span class="Ace-Tern-jsdoc-param-optionalWrapper"><span class="Ace-Tern-farg-optionalBracket">[</span><span class="Ace-Tern-jsdoc-param-name">c</span><span class="Ace-Tern-jsdoc-param-optionalBracket">]</span></span> - <span class="Ace-Tern-jsdoc-param-description">third number to include</span></div><div> <span class="Ace-Tern-jsdoc-tag">@param</span> <span class="Ace-Tern-type">{bool}</span> <span class="Ace-Tern-jsdoc-param-optionalWrapper"><span class="Ace-Tern-farg-optionalBracket">[</span><span class="Ace-Tern-jsdoc-param-name">useSum</span><span class="Ace-Tern-jsdoc-param-defaultValue">=false</span><span class="Ace-Tern-jsdoc-param-optionalBracket">]</span></span> - <span class="Ace-Tern-jsdoc-param-description">pass true to use sum instead of product</span></div></span> <span class="Ace-Tern-jsdoc-tag">@returns</span> <span class="Ace-Tern-type">{number}</span> the product of the passed parameters</span>'
-
-            //
-
-
+            return body+ '<a title="close" class="ace_doc-tooltip-boxclose"></a></span></div>';
         };
         var makeCompletionsdocHTML = function (name, meta) {
-
             return '<div style="padding: 15px 5px 5px 15px"><b>' + name + '</b><br>' + meta + '</div>';
-
-
         };
 
         var completions = [];
