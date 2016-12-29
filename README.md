@@ -48,8 +48,7 @@
 - [x]  Live autocomplete delay
 - [x]  Редактор:Сворачивать скобки / Подзапросы
 - [x]  Редактор:Выбор разделителя запросов `;;` или `;` 
- 
- 
+
 **Todo high**:
 - [ ] Редактор 
 
@@ -64,6 +63,7 @@
 - [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
 - [ ] Kill query in SHOW PROCESSLIST
+
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA
@@ -81,6 +81,8 @@ tableau:
 https://community.tableau.com/community/developers/web-data-connectors
 https://github.com/justindarc/fxos-web-server
 https://onlinehelp.tableau.com/current/server/en-us/datasource_wdc.htm
+
+https://github.com/wangshijun/angular-echarts
 
 ----
 

@@ -4,7 +4,6 @@ var define = window.define || window.ace.define;
 define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "module", "ace/lib/oop",
     "ace/range",'ace/mode/sqlserver','ace/mode/folding/cstyle'], function (require, exports, module) {
 
-    console.warn('YYYYPII!!!');
 
     var oop = require("../lib/oop");
     var BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
@@ -18,14 +17,14 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
 
     (function () {
 
-        this.foldingStartMarker = /\s*(\(\s*SELECT\s*)/;
+        this.foldingStartMarker = /\s*(\(\s*SELECT\s*)/mig;
 
         this.getFoldWidgetRange = function(session, foldStyle, row) {
             var re = this.foldingStartMarker;
             var line = session.getLine(row);
             var m = line.match(re);
             // были ли вообще совпадения по ( SELECT
-            if (!m) return;
+            //if (!m) return;
 
             // позиционируем TokenIterator на нужную строку
             var iterator = new TokenIterator(session, row, 0);
@@ -35,23 +34,35 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
             while (token) {
                 var t = token;
                 var range=false;
+
                 // позиция текущего токена
                 var pos = iterator.getCurrentTokenPosition();
 
                 token = iterator.stepForward();
-                // если текущий токен скобка а следующий SELECT
-                if (t.type=='paren.lparen' && t.value=='(')
-                 {
-                     console.info(t.type + " "+t.value);
-                     if (token.type=='keyword' && token.value=='SELECT')
-                     {
-                         range=session.getBracketRange(pos);
-                     }
+                //if (token)
+                //{
+                //    token2 = iterator.stepForward();
+                //}
+                // если текущий токен скобка а следующий текст и далее SELECT
+                if (t.type=='paren.lparen' && t.value=='(' && token.type)
+                {
+                    range=session.getBracketRange(pos);
+                    //
+                    //if (token.type=='keyword' && token.value=='SELECT')
+                    // {
+                    //     range=session.getBracketRange(pos);
+                    // }
+                    // else
+                    // {
+                    //     if  (token.type=='text' && token2.type=='keyword' && token2.value=='SELECT')
+                    //     {
+                    //         range=session.getBracketRange(pos);
+                    //     }
+                    // }
                  }
                  // Если мы нашли рендж - отлично
                  if (range) break;
-            };
-
+            }// while
             return range;
         };
     }).call(FoldMode.prototype);
@@ -101,7 +112,13 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
         };
                 //
 
-
+        if (window.global_delimiter)
+        {
+            var delit=new RegExp(window.global_delimiter);
+        }
+        else{
+            var delit=new RegExp(';;');
+        }
 
         var keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
@@ -143,7 +160,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 },
                 {
                     token: "constant.character.escape",
-                    regex: new RegExp(window.global_delimiter)
+                    regex: delit
                 },
                 {
                     token: "punctuation",
@@ -166,8 +183,11 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
             ]
         };
 
-        console.warn("!!global_delimiter!!>>> "+window.global_delimiter);
+        // ------------------------------------------------------------------------------
+
         this.normalizeRules();
+
+        // ------------------------------------------------------------------------------
         var makeCompletionsDocFunctions = function (fn, origin,comb) {
 
 
@@ -205,10 +225,11 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
             }
             return body+ '<a title="close" class="ace_doc-tooltip-boxclose"></a></span></div>';
         };
+        // ------------------------------------------------------------------------------
         var makeCompletionsdocHTML = function (name, meta) {
             return '<div style="padding: 15px 5px 5px 15px"><b>' + name + '</b><br>' + meta + '</div>';
         };
-
+        // ------------------------------------------------------------------------------
         var completions = [];
         var addCompletions = function (arr, meta,icon) {
             arr.forEach(function (v) {
@@ -232,7 +253,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
         addCompletions(dataTypes.split('|'), 'type','type');
         addCompletions(window.global_keywords_tables.split('|'), '[table]','table');
 
-
+        // ------------------------------------------------------------------------------
         if (window.global_builtinFunctions) {
 
             // автодополнение builtin Functions
@@ -252,7 +273,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 });
 
             }
-
+        // ------------------------------------------------------------------------------
         if (window.global_keywords_dictList) {
             // автодополнение полей таблицы
             window.global_keywords_dictList.forEach(function (v) {
@@ -270,6 +291,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 }
             );
         }
+        // ------------------------------------------------------------------------------
         if (window.global_keywords_fieldsList) {
 
             // автодополнение полей таблицы
@@ -303,7 +325,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
     exports.ClickhouseHighlightRules = ClickhouseHighlightRules;
 });
 
-
+// ------------------------------------------------------------------------------
 define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text",
     "ace/token_iterator",
     "ace/mode/folding",
@@ -367,23 +389,16 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
         this.splitByTokens = function (sql, type, value) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
-
-            console.info('splitByTokens:' + value);
-
             var TokenIterator = require("ace/token_iterator").TokenIterator;
             var EditSession = require("ace/edit_session").EditSession;
             var Range = require("ace/range").Range;
 
             var session = new EditSession(sql, this);
 
-
             session.bgTokenizer.start(0);// force rehighlight whole document
-
             // foreach $rules find type=$type and update value
-            console.log(session.$mode.$highlightRules.$rules);
 
             var iterator = new TokenIterator(session, 0, 0);
-
 
             var token = iterator.getCurrentToken();
             var matches = [];
