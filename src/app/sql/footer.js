@@ -226,6 +226,7 @@ console.warn(g);
                 });
             }
 
+            obl={};
             console.info(obl);
 
             var chart = AmCharts.makeChart("myFirstChart", obl);
