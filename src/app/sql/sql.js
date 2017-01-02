@@ -198,17 +198,6 @@ window.global_delimiter             = ";;";
                     // отрисовка
                     $scope.renderFinalResult(resultContainer);
 
-                    let _need_reload=false;
-                    // если в списке был запрос на CREATE / DROP нужно перерисовать
-                    queue.forEach((item) => {
-                        if (item.keyword=='create' || item.keyword=='drop')
-                        {
-                            _need_reload=true;
-                        }
-                    });
-                    if (_need_reload){
-                        $rootScope.$emit('handleBroadcastDatabases',{});
-                    }
 
                 }
 
@@ -276,6 +265,8 @@ window.global_delimiter             = ";;";
                     ) != -1
                 ))) {
                 $scope.selectDatabase($scope.vars.db);
+                // если в списке был запрос на CREATE / DROP нужно перерисовать
+                $rootScope.$emit('handleBroadcastDatabases',{});
             }
         };
 

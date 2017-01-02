@@ -23,6 +23,7 @@
         'ngScrollbars',
         'ngCsv',
         'pascalprecht.translate',
-        'cfp.hotkeys'
+        'cfp.hotkeys',
+        'amChartsDirective'
     ]);
 })();

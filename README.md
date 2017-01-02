@@ -51,18 +51,27 @@
 
 **Todo high**:
 - [ ] Редактор 
-
 > - Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
+- [ ] Переменные 
+> - Подстановка в запросах $var переменных 
+> - Таблица редактор
+
 
 - [ ] Рендер
 > - в виде текста для Redmine 
-> - Рендеры графики + c поддержкой D3/C3
+> - Рендеры графики AmCharts
 > - Плагинная структура для Renders
 > - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid, выбрать из pivotJs таблицы,   [ui-grid.info | ag-grid | paramquery.com | js-grid.com]
+http://krispo.github.io/angular-nvd3/#/
 
-- [ ] Улучшить отображение полей таблицы в дереве, поддержка клика
+- [ ] Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
+
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
+
 - [ ] Kill query in SHOW PROCESSLIST
+
+
+
 
 
 **Todo low**:
@@ -71,8 +80,19 @@
 
 
 ----
+*angular-nvd3*
+
+https://github.com/krispo/angular-nvd3/
+
+https://github.com/krispo/angular-nvd3/blob/gh-pages/pages/gridster/dashboard.html
+
+
+**ACE**
+
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
+
 https://github.com/tlatoza/SeeCodeRun/wiki/Ace-code-editor
+
 https://masonwebdev.wordpress.com/2016/03/22/extending-ace-lets-make-sure-you-are-always-with-higher-hand/
 
 ----

@@ -1,3 +1,8 @@
+<script src="http://www.amcharts.com/lib/3/amcharts.js" type="text/javascript"></script>
+<script src="http://www.amcharts.com/lib/3/serial.js" type="text/javascript"></script>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://www.amcharts.com/lib/3/themes/dark.js"></script>
+
 <style>
 
     .ace_icon {
@@ -186,86 +191,9 @@
 
                 </div>
 
+
                 <md-tabs md-dynamic-height md-border-bottom ng-if="tab.results.length" md-selected="tab.selectedResultTab">
-                    <md-tab ng-repeat="result in tab.results">
-                        <md-tab-label>
-                            {{::result.time}}
-                            <i class="mdi mdi-18px ml+" ng-class="result.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="result.pinned = !result.pinned; $event.stopPropagation()"></i>
-                            <i class="mdi mdi-close" ng-click="removeResult(tab, result, $event)"></i>
-                        </md-tab-label>
-                        <md-tab-body>
-                            <div ng-repeat="item in result.data">
-                                <md-card class="m0">
-                                    <div>
-                                        <div class="pull-left" ng-if="item.statistics">
-                                            <md-button aria-label="menu" class="md-icon-button" ng-click="addDictionariesWord(item.createtable)" ng-if="item.createtable">
-                                                <i class="mdi mdi-table-large"></i>
-                                            </md-button>
-                                            <md-menu md-position-mode="target">
-                                                <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                                                    <i class="mdi mdi-file-excel"></i>
-                                                </md-button>
-                                                <md-menu-content>
-                                                    <md-menu-item>
-                                                        <md-button
-                                                            ng-csv="getExportData(item.data)"
-                                                            quote-strings='"'
-                                                            filename="{{tab.name}}-{{result.time}}.csv"
-                                                            csv-header="getExportHeaders(item.meta)"
-                                                        >
-                                                            {{'CSV с заголовком' | translate}}
-                                                        </md-button>
-                                                    </md-menu-item>
-                                                    <md-menu-item>
-                                                        <md-button
-                                                            ng-csv="getExportData(item.data)"
-                                                            quote-strings='"'
-                                                            filename="{{tab.name}}-{{result.time}}.csv"
-                                                        >
-                                                            {{'CSV без заголовка' | translate}}
-                                                        </md-button>
-                                                    </md-menu-item>
-                                                    <md-menu-item>
-                                                        <md-button
-                                                            ng-csv="getExportData(item.data)"
-                                                            quote-strings=''
-                                                            filename="{{tab.name}}-{{result.time}}.txt"
-                                                            field-separator="\t"
-                                                            csv-header="getExportHeaders(item.meta)"
-                                                        >
-                                                            {{'Табулированный текст с заголовками' | translate}}
-                                                        </md-button>
-                                                    </md-menu-item>
-                                                    <md-menu-item>
-                                                        <md-button
-                                                            ng-csv="getExportData(item.data)"
-                                                            quote-strings=" "
-                                                            filename="{{tab.name}}-{{result.time}}.txt"
-                                                            field-separator="\t"
-                                                            csv-header="getExportHeaders(item.meta)"
-                                                        >
-                                                            {{'Табулированный текст без заголовков' | translate}}
-                                                        </md-button>
-                                                    </md-menu-item>
-                                                </md-menu-content>
-                                            </md-menu>
-                                        </div>
-
-                                        <div style="white-space: nowrap; line-height: 40px" class="md-card pull-right mr" ng-if="item.statistics">
-                                            {{'время' | translate}}: <b>{{item.statistics.elapsed | number:3}}</b>,
-                                            {{'строк прочитано' | translate}}: <b>{{item.statistics.rows_read | number}}</b>,
-                                            {{'прочитано' | translate}}: <b>{{item.statistics.bytes_read | filesize}}</b>
-                                        </div>
-                                    </div>
-                                </md-card>
-
-                                <div>
-                                    <span ng-if="item.result === null">{{'нет данных' | translate}}</span>
-                                    <div ng-if="item.result !== null" ng-bind-html="item.result" style="overflow-x: auto; overflow-y: auto; width: 100%; min-height: 40px"></div>
-                                </div>
-                            </div>
-                        </md-tab-body>
-                    </md-tab>
+                    <span  ng-include="'app/sql/renderResult.html'"></span>
                 </md-tabs>
             </md-tab-body>
         </md-tab>
