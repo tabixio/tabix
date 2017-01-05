@@ -16,6 +16,7 @@
         'ui.ace',
         'ui.grid',
         'ui.grid.autoResize',
+        'ui.grid.resizeColumns', 'ui.grid.moveColumns','ui.grid.exporter', 'ui.grid.selection',
         'angularResizable',
         'ngSanitize',
         'ngMaterial',

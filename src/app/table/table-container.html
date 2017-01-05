@@ -1,3 +1,23 @@
+
+<style>
+    .ui-grid-menu-button {
+        height: 31px;
+    }
+    .my-custom-menu {
+        position: absolute;
+    }
+
+    .my-custom-menu .ui-grid-menu {
+        padding: 0px;
+    }
+
+    .my-custom-menu .ui-grid-menu-inner {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+</style>
+
+
 <div style="position: absolute;top: 0px;bottom: 59px;left: 16px;right: 16px;">
 
     <h3>{{vars.currentDatabase}}
@@ -59,7 +79,10 @@
                 <div class="card__actions p+" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden; " ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
                     <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
-                    <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
+
+
+                    <div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection style="height: 100%;width: 99%"></div>
+                    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
                 </div>
             </md-tab-body>
         </md-tab>

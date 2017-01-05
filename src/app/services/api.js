@@ -193,24 +193,35 @@
 
         this.dataToUIGrid = (data) => {
 
+
             let columnDefs = [];
             data.meta.forEach((cell) => {
+
+                let minWidth=100;
+                switch (cell.type) {
+                    case 'Date': minWidth=90; break;
+                    case 'DateTime': minWidth=150; break;
+                    case 'Int32': minWidth=80; break;
+                    case 'UInt32': minWidth=80; break;
+                    case 'String': minWidth=180; break;
+                }
+
+                console.info(cell.type);
                 columnDefs.push(
                     //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
-                    {field: cell.name, minWidth: 100, enableColumnResizing: true, headerTooltip: cell.type}
+                    {
+                        field: cell.name,
+                        minWidth: minWidth,
+                        headerTooltip: cell.type,
+                        enableColumnMenu:true,
+                        enableFiltering:true}
                 );
             });
 
             return {
-                enableSorting: true,
-                enableFiltering: true,
-                enableColumnResizing: true,
                 columnDefs: columnDefs,
-                enableGridMenu: true,
-                enableSelectAll: true,
-                showGridFooter: true,
-                showColumnFooter: true,
                 data: data.data
+
             };
         };
     }

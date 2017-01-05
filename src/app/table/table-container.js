@@ -19,8 +19,27 @@
     */
     function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
 
+        $scope.ugrid = {
+            enableGridMenu: true,
+            enableSelectAll: true,
+            // showGridFooter: true,
+            // showColumnFooter: true,
+            useExternalFiltering: true,
+            enableFiltering: true,
+
+            enableSorting: true,
+            enableColumnResizing: true,
+            // gridMenuTitleFilter: fakeI18n,
+            showFilter:true,
+            onRegisterApi: function( gridApi ) {
+                    $scope.gridApi = gridApi;
+                    $scope.initUIGrid();
+                }
+        };
+
         $scope.vars = {
             columns: {},
+            ugrid:{},
             createtable: {},
             data: null,
             grid: null,
@@ -52,6 +71,19 @@
             });
         };
 
+        $scope.initUIGrid = ( ) => {
+            $scope.gridApi.core.on.filterChanged( $scope, function() {
+                let grid = this.grid;
+
+                grid.columns.forEach((col) => {
+
+                    console.info('col',col);
+                });
+                    // .forEach((cell) => {
+
+
+            });
+        };
         $scope.initOnGo = ( ) => {
             if ( $scope.$parent.vars ) {
                 if ($mdComponentRegistry.get( 'tableSiedenav' )) {
@@ -74,7 +106,13 @@
                 from ${ $scope.vars.currentDatabase }.${ $scope.vars.currentTable }
                 limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
                 ` ).then( function ( data ) {
-                $scope.vars.data = API.dataToHtml( data );
+                // $scope.vars.odata = data.data;
+                $scope.ugrid = API.dataToUIGrid( data );
+                //
+                $scope.ugrid.onRegisterApi = function(gridApi){
+                    $scope.gridApi = gridApi;
+                };
+
                 $scope.vars.loading = false;
             }, function ( response ) {
                 $scope.vars.loading = false;
