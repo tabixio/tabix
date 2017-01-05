@@ -111,13 +111,13 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
             builtinFunctions=builtin.join('|');
         };
                 //
-
+        let delit='';
         if (window.global_delimiter)
         {
-            let delit=new RegExp(window.global_delimiter);
+             delit=new RegExp(window.global_delimiter);
         }
         else{
-            let delit=new RegExp(';;');
+             delit=new RegExp(';;');
         }
 
         let keywordMapper = this.createKeywordMapper({
