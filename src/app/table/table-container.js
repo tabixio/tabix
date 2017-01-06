@@ -19,23 +19,34 @@
     */
     function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
 
-        $scope.ugrid = {
-            enableGridMenu: true,
-            enableSelectAll: true,
-            // showGridFooter: true,
-            // showColumnFooter: true,
-            useExternalFiltering: true,
-            enableFiltering: true,
+        $scope.table = {
+            // stretchH: 'all',
+            //
+            //
+            // preventOverflow: 'horizontal',
+            data:{
 
-            enableSorting: true,
-            enableColumnResizing: true,
-            // gridMenuTitleFilter: fakeI18n,
-            showFilter:true,
-            onRegisterApi: function( gridApi ) {
-                    $scope.gridApi = gridApi;
-                    $scope.initUIGrid();
-                }
+            },
+            settings : {
+                manualColumnMove: true,
+                manualColumnResize: true,
+                rowHeaders: true,
+                colHeaders: true,
+                dropdownMenu: true,
+                contextMenu: ['row_above', 'row_below', 'remove_row'],
+                filters: true,
+            }
+            // colHeaders: ['A', 'B', 'C', 'D'],
+            // colWidths: [200, 200, 200, 200, 200],
+            // columns: [
+            //     { data: 'a' },
+            //     { data: 'b' },
+            //     { data: 'c' },
+            //     { data: 'd' }
+            // ],
+            // data: data,
         };
+
 
         $scope.vars = {
             columns: {},
@@ -107,11 +118,37 @@
                 limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
                 ` ).then( function ( data ) {
                 // $scope.vars.odata = data.data;
-                $scope.ugrid = API.dataToUIGrid( data );
+                let handsontable = API.dataToHandsontable( data );
+                $scope.table.colHeaders=handsontable.colHeaders;
+                $scope.table.settings.columns=handsontable.columns;
+                $scope.table.colWidths=handsontable.colWidths;
+                $scope.table.data=handsontable.data;
                 //
-                $scope.ugrid.onRegisterApi = function(gridApi){
-                    $scope.gridApi = gridApi;
-                };
+                // $scope.ugrid.onRegisterApi = function(gridApi){
+                //     $scope.gridApi = gridApi;
+                // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 $scope.vars.loading = false;
             }, function ( response ) {

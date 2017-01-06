@@ -191,6 +191,58 @@
         };
 
 
+        this.dataToHandsontable = (data) => {
+            // colHeaders: ['A', 'B', 'C', 'D'],
+            // colWidths: [200, 200, 200, 200, 200],
+            // columns: [
+            //     { data: 'a' },
+            //     { data: 'b' },
+            //     { data: 'c' },
+            //     { data: 'd' }
+            // ],
+            // data: data,
+
+            let colWidths = [];
+            let colHeaders = [];
+            let columns = [];
+            data.meta.forEach((cell) => {
+
+                colHeaders.push(cell.name);
+
+
+                let minWidth=100;
+                switch (cell.type) {
+                    case 'Date': minWidth=90; break;
+                    case 'DateTime': minWidth=150; break;
+                    case 'Int32': minWidth=80; break;
+                    case 'UInt32': minWidth=80; break;
+                    case 'String': minWidth=180; break;
+                }
+                colWidths.push(minWidth);
+                columns.push({
+                    data:cell.name,
+                });
+                // console.info(cell.type);
+                // columnDefs.push(
+                //     //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
+                //     {
+                //         field: cell.name,
+                //         minWidth: minWidth,
+                //         headerTooltip: cell.type,
+                //         enableColumnMenu:true,
+                //         enableFiltering:true}
+                // );
+            });
+
+            return {
+                colHeaders: colHeaders,
+                colWidths: colWidths,
+                columns: columns,
+                data: data.data,
+
+
+            };
+        };
         this.dataToUIGrid = (data) => {
 
 

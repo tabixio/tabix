@@ -21,7 +21,8 @@
     "angular-translate": "^2.12.1",
     "angular-translate-handler-log": "^2.13.1",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
-    "amcharts3": "^3.20.19"
+    "amcharts3": "^3.20.19",
+    "ngHandsontable": "^0.13.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

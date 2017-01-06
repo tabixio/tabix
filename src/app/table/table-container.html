@@ -81,8 +81,34 @@
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
 
 
-                    <div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>
-x
+                    <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
+                    <hot-table
+
+                               col-headers="table.colHeaders"
+                               col-widths="table.colWidths"
+                               settings="table.settings"
+                               datarows="table.data" class="grid" style="width: 99%;height: 99%">
+                    </hot-table>
+                            <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
+                               <!--row-headers="false"-->
+                               <!--min-spare-rows="minSpareRows"-->
+
+
+
+
+
+
+
+                        <!--<hot-column data="id" title="'ID'"></hot-column>-->
+                        <!--<hot-column data="name.first" title="'First Name'" read-only></hot-column>-->
+                        <!--<hot-column data="name.last" title="'Last Name'"  read-only></hot-column>-->
+                        <!--<hot-column data="address" title="'Address'" width="150"></hot-column>-->
+                        <!--<hot-column data="product.description" title="'Favorite food'"></hot-column>-->
+                        <!--<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>-->
+                        <!--<hot-column data="isActive" title="'Is active'" type="'checkbox'" width="65" checked-template="'Yes'" unchecked-template="'No'"></hot-column>-->
+
+
+
                     <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
                 </div>
             </md-tab-body>
