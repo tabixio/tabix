@@ -208,35 +208,26 @@
             data.meta.forEach((cell) => {
 
                 colHeaders.push(cell.name);
+                let c={};
+                c.type='text';
+                c.width=100;
 
 
-                let minWidth=100;
+
                 switch (cell.type) {
-                    case 'Date': minWidth=90; break;
-                    case 'DateTime': minWidth=150; break;
-                    case 'Int32': minWidth=80; break;
-                    case 'UInt32': minWidth=80; break;
-                    case 'String': minWidth=180; break;
+                    case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
+                    case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
+                    case 'Int32':       c.width=80;c.type='numeric'; break;
+                    case 'UInt32':      c.width=80; c.type='numeric';break;
+                    case 'String':      c.width=180; break;
                 }
-                colWidths.push(minWidth);
-                columns.push({
-                    data:cell.name,
-                });
-                // console.info(cell.type);
-                // columnDefs.push(
-                //     //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
-                //     {
-                //         field: cell.name,
-                //         minWidth: minWidth,
-                //         headerTooltip: cell.type,
-                //         enableColumnMenu:true,
-                //         enableFiltering:true}
-                // );
+
+                c.data=cell.name;
+                columns.push(c);
             });
 
             return {
                 colHeaders: colHeaders,
-                colWidths: colWidths,
                 columns: columns,
                 data: data.data,
 

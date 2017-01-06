@@ -55,7 +55,7 @@
         </md-tab>
 
         <!-- данные -->
-        <md-tab>
+        <md-tab md-active="true">
             <md-tab-label>
                 <i class="mdi mdi-table-large mr-"></i>{{'Данные' | translate}}
             </md-tab-label>
@@ -82,12 +82,14 @@
 
 
                     <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
-                    <hot-table
+                    <hot-table  settings="table.settings" datarows="table.data" class="grid" style="width: 99%;height: 99%"
+                                col-headers="table.colHeaders"
+                                columns="table.columns"
+                    >
 
-                               col-headers="table.colHeaders"
-                               col-widths="table.colWidths"
-                               settings="table.settings"
-                               datarows="table.data" class="grid" style="width: 99%;height: 99%">
+                               <!---->
+                               <!--col-widths="table.colWidths"-->
+
                     </hot-table>
                             <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
                                <!--row-headers="false"-->

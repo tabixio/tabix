@@ -20,21 +20,35 @@
     function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
 
         $scope.table = {
-            // stretchH: 'all',
             //
             //
-            // preventOverflow: 'horizontal',
+            //
+            //
             data:{
 
             },
             settings : {
-                manualColumnMove: true,
+                // manualColumnMove: true,
                 manualColumnResize: true,
+                autoWrapRow: true,
                 rowHeaders: true,
                 colHeaders: true,
                 dropdownMenu: true,
+                stretchH: 'all',
+                preventOverflow: 'horizontal',
+                persistentState:true,
                 contextMenu: ['row_above', 'row_below', 'remove_row'],
                 filters: true,
+                // fixedRowsTop: 1,
+                // fixedColumnsLeft: 2,
+
+                columnSorting: true,
+                sortIndicator: true,
+                // manualRowResize: true,
+                maxRows: 10,
+                autoColumnSize: {
+                    samplingRatio: 23
+                }
             }
             // colHeaders: ['A', 'B', 'C', 'D'],
             // colWidths: [200, 200, 200, 200, 200],
@@ -121,7 +135,7 @@
                 let handsontable = API.dataToHandsontable( data );
                 $scope.table.colHeaders=handsontable.colHeaders;
                 $scope.table.settings.columns=handsontable.columns;
-                $scope.table.colWidths=handsontable.colWidths;
+                // $scope.table.settings.colWidths=handsontable.colWidths;
                 $scope.table.data=handsontable.data;
                 //
                 // $scope.ugrid.onRegisterApi = function(gridApi){
