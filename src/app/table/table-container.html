@@ -26,7 +26,7 @@
 
     <md-tabs md-dynamic1-height md-border-bottom class="h100">
         <!-- колонки -->
-        <md-tab>
+        <md-tab >
             <md-tab-label>
                 <i class="mdi mdi-table-column-plus-after mr-"></i>{{'Структура' | translate}}
             </md-tab-label>
@@ -81,16 +81,22 @@
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
 
 
+
+
+
                     <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
-                    <hot-table  settings="table.settings" datarows="table.data" class="grid" style="width: 99%;height: 99%"
-                                col-headers="table.colHeaders"
-                                columns="table.columns"
-                    >
+                    <hot-table  hot-id="hottable"  settings="table.settings" datarows="table.data"  style="width: 99%;height: 99%"
+                                col-headers="table.colHeaders" manual-column-resize="true">
+
+                    </hot-table>
+                                <!--on-after-init="onAfterInit"-->
+                                <!--columns="table.columns"-->
+
 
                                <!---->
                                <!--col-widths="table.colWidths"-->
 
-                    </hot-table>
+                    <!--</hot-table>-->
                             <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
                                <!--row-headers="false"-->
                                <!--min-spare-rows="minSpareRows"-->

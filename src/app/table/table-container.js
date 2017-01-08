@@ -9,7 +9,8 @@
         'ThemeService',
         '$stateParams',
         '$mdSidenav',
-        '$mdComponentRegistry'
+        '$mdComponentRegistry',
+        'HandTable'
     ];
 
     /**
@@ -17,7 +18,7 @@
     * @name smi2.controller:TableContainerController
     * @description Контроллер страницы 1 таблицы БД
     */
-    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
+    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry,HandTable ) {
 
         $scope.table = {
             //
@@ -28,37 +29,42 @@
 
             },
             settings : {
-                // manualColumnMove: true,
+                manualColumnMove: true,
                 manualColumnResize: true,
+
                 autoWrapRow: true,
-                rowHeaders: true,
-                colHeaders: true,
+                // rowHeaders: true,
+                // colHeaders: _(headers).map(function(header, i) {
+                //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
+                // }),
+                colWidths: 100,
+                rowHeights: [50, 40, 100],
+                renderer: 'html',
+                fillHandle: false,
                 dropdownMenu: true,
                 stretchH: 'all',
                 preventOverflow: 'horizontal',
                 persistentState:true,
                 contextMenu: ['row_above', 'row_below', 'remove_row'],
                 filters: true,
-                // fixedRowsTop: 1,
-                // fixedColumnsLeft: 2,
 
+                // fixedRowsTop: 1,
+                // fixedColumnsLeft: 1,
                 columnSorting: true,
                 sortIndicator: true,
-                // manualRowResize: true,
-                maxRows: 10,
+                manualRowResize: true,
+                viewportColumnRenderingOffset:'auto',
+                // maxRows: 10,
+                // visibleRows:10,
+
+                wordWrap:false,
                 autoColumnSize: {
-                    samplingRatio: 23
+                    samplingRatio: 13
                 }
             }
             // colHeaders: ['A', 'B', 'C', 'D'],
             // colWidths: [200, 200, 200, 200, 200],
-            // columns: [
-            //     { data: 'a' },
-            //     { data: 'b' },
-            //     { data: 'c' },
-            //     { data: 'd' }
-            // ],
-            // data: data,
+
         };
 
 
@@ -71,7 +77,7 @@
             limit: 100,
             offset: 0,
             statistics: {},
-            loading: false,
+            loading: true,
             scrollConfig: {
                 autoHideScrollbar: false,
                 theme: ThemeService.isDark( )
@@ -96,18 +102,13 @@
             });
         };
 
-        $scope.initUIGrid = ( ) => {
-            $scope.gridApi.core.on.filterChanged( $scope, function() {
-                let grid = this.grid;
-
-                grid.columns.forEach((col) => {
-
-                    console.info('col',col);
-                });
-                    // .forEach((cell) => {
+        $scope.onAfterInit = ( ) => {
+            // this.validateCells();
+        };
+        $scope.initHandTable = ( ) => {
 
 
-            });
+                // init
         };
         $scope.initOnGo = ( ) => {
             if ( $scope.$parent.vars ) {
@@ -134,9 +135,11 @@
                 // $scope.vars.odata = data.data;
                 let handsontable = API.dataToHandsontable( data );
                 $scope.table.colHeaders=handsontable.colHeaders;
-                $scope.table.settings.columns=handsontable.columns;
-                // $scope.table.settings.colWidths=handsontable.colWidths;
+                // $scope.table.settings.columns=handsontable.columns;
+                $scope.table.settings.manualColumnResize=handsontable.columns;
+                $scope.table.settings.colWidths=handsontable.colWidths;
                 $scope.table.data=handsontable.data;
+
                 //
                 // $scope.ugrid.onRegisterApi = function(gridApi){
                 //     $scope.gridApi = gridApi;
@@ -181,8 +184,6 @@
 
             API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.createtable = data );
 
-            console.warn("createtable");
-            console.warn($scope.vars.createtable);
             /**
                 * Запрос статистики по таблице
                 */
@@ -197,6 +198,7 @@
                 'WHERE ' +
                 '	database = \'' + $scope.vars.currentDatabase + '\' AND ' + '	( ' + '		table = \'' + $scope.vars.currentTable + '\' OR ' + '		table = \'' + $scope.vars.currentTable + '_sharded\'' + '    ) ' + 'GROUP BY ' + '    table ' ).then(response => $scope.vars.statistics = (response && response.data.length && response.data[0]) || {});
 
+            $scope.initHandTable( );
             $scope.load( );
         };
 

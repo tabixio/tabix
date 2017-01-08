@@ -213,11 +213,11 @@
                 c.width=100;
 
 
-
                 switch (cell.type) {
                     case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
                     case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
                     case 'Int32':       c.width=80;c.type='numeric'; break;
+                    case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
                     case 'UInt32':      c.width=80; c.type='numeric';break;
                     case 'String':      c.width=180; break;
                 }
@@ -227,6 +227,7 @@
             });
 
             return {
+                colWidths: colWidths,
                 colHeaders: colHeaders,
                 columns: columns,
                 data: data.data,
