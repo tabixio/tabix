@@ -55,11 +55,14 @@
         };
         $scope.getChartGraph = (meta) => {
 
+            // SELECT number,sin(number),cos(number),number as `Title [asix=g2:column:blue]`  from system.numbers limit 40
                 let showname=meta.name;
                 let name=meta.name;
                 let useaxis="v1";
 
                 showname=showname.replace(/_axis\d+/gm,'');
+                // showname=showname.replace(/_column\d+/gm,'');
+
                 var re=/.*_axis(\d+).*/i;
                 var axis = name.match(re);
 
@@ -87,8 +90,8 @@
 
             // ['DROP', 'CREATE', 'ALTER'].indexOf(  item.query.keyword.toUpperCase()  ) != -1
 
-            let dataDateFormat="YYYY-MM-DD JJ:NN:SS";
-            let categoryField="event_time";
+            let dataDateFormat=false;
+            let categoryField="";
             let minPeriod='mm';//minute
             let graphs=[];
             let counter=0;
@@ -105,6 +108,11 @@
                         categoryField=i.name;
                     }
                     else {
+                        if (!categoryField)
+                        {
+                            categoryField=i.name;
+                            return;
+                        }
                         counter=counter+1;
                         let g=$scope.getChartGraph(i);
                         g.id='g'+counter;
@@ -114,7 +122,6 @@
                         {
                             axes.push(g.valueAxis);
                         }
-console.warn(g);
                         graphs.push(g);
 
                     }
@@ -134,17 +141,17 @@ console.warn(g);
             let obl={
                 "type": "serial",
                 "theme": theme,
-                // "marginRight": 40,
-                // "marginLeft": 40,
-                // "startDuration": 0.4,
+                "marginRight": 50,
+                "marginLeft": 50,
+                "startDuration": 0.4,
                 // "handDrawn":true,
-                "autoMarginOffset": 30,
+                "autoMarginOffset": 50,
                 "autoResize":true,
-                // "marginBottom": 30,
+                "marginBottom": 30,
                 "marginsUpdated": true,
-                // "marginTop": 10,
+                "marginTop": 10,
 
-                "dataDateFormat": dataDateFormat,
+                // "dataDateFormat": dataDateFormat,
                 "categoryField": categoryField,
 
                 "valueAxes": [ {
@@ -156,7 +163,7 @@ console.warn(g);
                     // "axisColor": "#FF6600",
                     // "axisThickness": 2,
 
-                    "position": "left",
+                    // "position": "left",
                     "ignoreAxisWidth": true
                 } ],
 
@@ -173,11 +180,11 @@ console.warn(g);
                     "valueLineAlpha": 0.5
                 },
 
-                "valueScrollbar": {
-                    "autoGridCount": true,
-                    "color": "#000000",
-                    "scrollbarHeight": 1
-                },
+                // "valueScrollbar": {
+                    // "autoGridCount": true,
+                    // "color": "#000000",
+                    // "scrollbarHeight": 1
+                // },
 
                 "chartScrollbar": {
                     "graph":"g1",
@@ -196,8 +203,6 @@ console.warn(g);
                     "selectedGraphLineAlpha":1
                 },
                 "categoryAxis": {
-                    "parseDates": true,
-                    'minPeriod':minPeriod,
                     "dashLength": 1,
                     "minorGridEnabled": true
                 },
@@ -211,24 +216,37 @@ console.warn(g);
                     "valueWidth": 100
                 },
             };
+
+
+            if (dataDateFormat)
+            {
+                obl.dataDateFormat=dataDateFormat;
+
+                obl.categoryAxis.parseDates=true;
+                obl.categoryAxis.minPeriod=minPeriod;
+            }
+
             if (axes)
             {
+                let a_offset=0;
                 axes.forEach((a) => {
+                    a_offset++;
                     let ax=
                     {
                         "id": a,
                         "axisAlpha": 1,
                         "axisThickness": 1,
-                        "position": "rigth",
-                        "ignoreAxisWidth": true
+                        "position": "right",
+                        "ignoreAxisWidth": true,
+                        "offset": 1*a_offset,
                     };
                     obl.valueAxes.push(ax);
                 });
             }
 
-            console.info(obl);
+            console.info('valueAxes',obl.valueAxes);
 
-            var chart = AmCharts.makeChart("myFirstChart", obl);
+            let chart = AmCharts.makeChart("myFirstChart", obl);
         }
 
     }
