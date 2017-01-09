@@ -42,6 +42,25 @@
         $scope.initPivot = (meta,data) => {
             console.info('pivot');
             console.table(meta);
+
+            let rows=[];
+            let cols=[];
+            meta.forEach((i) => {
+                // rows.push(i.name);
+                // cols.push(i.name);
+
+            });
+            $("#pivotDiv").pivotUI(data, {
+                dataClass: $.pivotUtilities.SubtotalPivotData,
+                rows: rows,
+                cols: cols,
+                renderer: $.pivotUtilities.subtotal_renderers["Table With Subtotal"],
+                rendererOptions: {
+                    collapseRowsAt: 1,
+                    collapseColsAt: 0
+                }
+            });
+
         };
 
         $scope.initChart = (meta,data) => {
@@ -151,7 +170,6 @@
                 "marginsUpdated": true,
                 "marginTop": 10,
 
-                // "dataDateFormat": dataDateFormat,
                 "categoryField": categoryField,
 
                 "valueAxes": [ {
@@ -221,7 +239,6 @@
             if (dataDateFormat)
             {
                 obl.dataDateFormat=dataDateFormat;
-
                 obl.categoryAxis.parseDates=true;
                 obl.categoryAxis.minPeriod=minPeriod;
             }

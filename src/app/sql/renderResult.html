@@ -113,17 +113,16 @@
                                             <md-menu-item>
                                                 <md-menu-item>
                                                     <md-menu>
-                                                        <md-button ng-click="$mdOpenMenu()">New</md-button>
+                                                        <md-button ng-click="$mdOpenMenu()">stackType</md-button>
                                                         <md-menu-content>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">Document</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Spreadsheet', $event)">Spreadsheet</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Presentation', $event)">Presentation</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Form', $event)">Form</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Drawing', $event)">Drawing</md-button></md-menu-item>
+                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">none</md-button></md-menu-item>
+                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">100%</md-button></md-menu-item>
+                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Spreadsheet', $event)">regular</md-button></md-menu-item>
                                                         </md-menu-content>
                                                     </md-menu>
                                                 </md-menu-item>
-                                            </md-menu-item></md-menu-content>
+                                            </md-menu-item>
+                                        </md-menu-content>
                                     </md-menu>
                                 </md-menu-bar>
 
@@ -144,7 +143,7 @@
                         </md-tab-label>
 
                         <md-tab-body >
-                            <!--<div id="chartDiv" style="width:50%; height:100%"></div>-->
+                            <div id="pivotDiv" style="width:600px; height:100%"></div>
 
                         </md-tab-body>
                     </md-tab>

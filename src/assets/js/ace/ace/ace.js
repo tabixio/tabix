@@ -51,7 +51,7 @@ var define = function(module, deps, payload) {
         if (define.original)
             define.original.apply(this, arguments);
         else {
-            console.error("dropping module because define wasn\'t a string.");
+            console.error("dropping module because define wasn\'t a string.",module);
             console.trace();
         }
         return;
