@@ -361,7 +361,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
         };
 
         this.$id = "ace/mode/clickhouse";
-// ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------
         this.findTokens = function (sql, type, needfirst) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
@@ -392,21 +392,20 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
             }//w
             return matches;
         };
+        // ------------------------------------------------------------------------------
         this.trim = function (text , value) {
 
-
-            if (value!==true &&  typeof value === 'string' && value.length>3)
+            text = text.trim().replace(/^(\r\n|\n|\r)/gm, " ").replace(/(\r\n|\n|\r)$/gm, " ");
+            if (value!==true &&  typeof value === 'string' && value.length>0)
             {
                 text=text.replace("^(" + value + ")", "").replace(value + "$", "");
                 text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "");
             }
-
-            text = text.trim().replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
             text = text.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
             return text.trim();
         };
 
-
+        // ------------------------------------------------------------------------------
         this.splitByTokens = function (sql, type, value) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
@@ -443,10 +442,15 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
                 {
                     let vl=0;
                     if (value instanceof String) vl=value.length;
+
+                    // bug : col + vl - не корректно, возможен случай смешение строки
                     range1 = new Range(startRow, startCol, t.row, t.col + vl);
+
                     text = session.getTextRange(range1);
+
                     startRow = t.row;
                     startCol = t.col + vl;
+
                     text = this.trim(text,t.value);
                     if (text.length > 2) {
                         trimValue=t.value;

@@ -349,10 +349,17 @@ window.global_delimiter             = ";;";
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
-                        if (!cursor || angular.isUndefined(cursor) ||
-                            item.range.compare(cursor.row, cursor.column) !== 0) {
+                        if (!cursor || angular.isUndefined(cursor)) {
                             return;
                         }
+                        else
+                        {
+                            let rg=item.range.compare(cursor.row, cursor.column);
+                            if (rg !== 0) return ;
+
+                        }
+
+
                     }
 
                     // определяем есть ли комманда DRAW .* - все что после нее есть JavaScript
