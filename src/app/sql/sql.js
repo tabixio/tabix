@@ -376,8 +376,9 @@ window.global_delimiter             = ";;";
                     if (drawCommand)
                     {
                         console.info('[DRAW]>',eval('('+drawCommand+')'));
+                        return;
                     }
-                    return;
+
 
                     let _format = null;
                     let _format_seted = false;
