@@ -73,8 +73,11 @@ http://krispo.github.io/angular-nvd3/#/
 - [ ] Kill query in SHOW PROCESSLIST
 
 
-
-
+- [ ] Ошибка ``Не введен SQL`` 
+- [ ] Ошибка позиции `;;\n
+                      select 2\n
+                      ;;<cursor>\n
+                      select 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA

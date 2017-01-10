@@ -119,6 +119,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
         else{
              delit=new RegExp(';;');
         }
+        let drawCommand="DRAW\\W+AREA|DRAW\\W+BAR|DRAW\\W+HEATMAP|DRAW\\W+HISTOGRAM|DRAW\\W+LINE|DRAW\\W+POINT|DRAW\\W+PIVOT";
 
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
@@ -148,7 +149,12 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
                 }, {
                     token: "storage",
                     regex: keywordsDouble
-                }, {
+                },
+                {
+                    token: "invalid.illegal",
+                    regex: drawCommand
+                },
+                {
                     token: "string", // ' string
                     regex: "'.*?'"
                 }, {
@@ -386,6 +392,21 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
             }//w
             return matches;
         };
+        this.trim = function (text , value) {
+
+
+            if (value!==true &&  typeof value === 'string' && value.length>3)
+            {
+                text=text.replace("^(" + value + ")", "").replace(value + "$", "");
+                text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "");
+            }
+
+            text = text.trim().replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
+            text = text.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
+            return text.trim();
+        };
+
+
         this.splitByTokens = function (sql, type, value) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
@@ -403,22 +424,33 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
             let token = iterator.getCurrentToken();
             let matches = [];
             let startRow = 0, startCol = 0;
-
+            let trimValue=false;
             let range1, text;
             while (token) {
                 let t = token;
+
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
-                if (t.type == type && t.value == value) {
-                    //let session = new EditSession(sql,this);
-                    //session.clearSelection();
-                    range1 = new Range(startRow, startCol, t.row, t.col + value.length);
+
+                if (
+                    t.type == type &&
+                    (
+                        (value!==true && t.value == value )
+                        ||
+                        value===true
+                    )
+                )
+                {
+                    let vl=0;
+                    if (value instanceof String) vl=value.length;
+                    range1 = new Range(startRow, startCol, t.row, t.col + vl);
                     text = session.getTextRange(range1);
                     startRow = t.row;
-                    startCol = t.col + value.length;
-                    text = text.trim().replace(new RegExp("^" + value + "|" + value + '$', 'g'), "").trim().replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
+                    startCol = t.col + vl;
+                    text = this.trim(text,t.value);
                     if (text.length > 2) {
-                        matches.push({sql: text, range: range1});
+                        trimValue=t.value;
+                        matches.push({sql: text, range: range1,keyword:t});
                     }
                 }
                 token = iterator.stepForward();
@@ -427,9 +459,13 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 
             range1 = new Range(startRow, startCol, Number.MAX_VALUE, Number.MAX_VALUE);
             text = session.getTextRange(range1);
+            text = this.trim(text,value);
 
-            text = text.trim().replace("^(" + value + ")", "").replace(value + "$", "").trim().replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
-            text = text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "").trim().replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
+            if (typeof trimValue === 'string'){
+                text = this.trim(text,trimValue);
+            }
+
+
             if (text.length > 2) {
 
                 matches.push({sql: text, range: range1});

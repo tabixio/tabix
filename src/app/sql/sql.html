@@ -262,7 +262,7 @@
         <md-input-container class="width-100 mt mb+">
             <label>{{'Разделитель запросов' | translate }}</label>
             <md-select ng-model="vars.delimiter">
-                <md-option ng-repeat="delimiter in vars.delimiters" ng-value="delimiter" ng-click="vars.delimiter = delimiter">
+                <md-option ng-repeat="delimiter in vars.delimiters" ng-value="delimiter.delimiter" ng-click="vars.delimiter = delimiter">
                     {{delimiter.name}}
                 </md-option>
             </md-select>

@@ -86,7 +86,7 @@ window.global_delimiter             = ";;";
             theme: localStorageService.get('editorTheme') || 'cobalt'
         };
 
-        $scope.vars.delimiter = localStorageService.get('delimiter') || $scope.vars.delimiters[0];
+        $scope.vars.delimiter = localStorageService.get('delimiter') || ';;';
         $scope.vars.format = $scope.vars.formats[0];
         $scope.vars.themes = [
             'ambiance',
@@ -292,6 +292,7 @@ window.global_delimiter             = ";;";
             if (!(selectSql === '' || selectSql === null)) {
                 sql = selectSql;
             }
+            console.info(sql);
 
             // Выход если пустой sql
             if (sql === '' || sql === null) {
@@ -327,21 +328,23 @@ window.global_delimiter             = ";;";
             // Save tabs session
             saveSession();
 
-            var use_delimiter=$scope.vars.delimiter.delimiter;
 
-            // Split SQL into subqueries
+            // BadCode : window.global_delimiter
+            let use_delimiter=window.global_delimiter;
+            if (!use_delimiter) use_delimiter=';;';
+
+            // Split SQL into subqueries by delimiter
             editor
                 .session
                 .$mode
                 .splitByTokens(sql, 'constant.character.escape', use_delimiter)
                 .forEach((item) => {
-
-                    const subSql = item.sql;
+                    let drawCommand=false;
+                    let subSql = item.sql;
                     // Ignore short queries
                     if (subSql.length < 5) {
                         return;
                     }
-
                     // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
@@ -351,6 +354,30 @@ window.global_delimiter             = ";;";
                             return;
                         }
                     }
+
+                    // определяем есть ли комманда DRAW .* - все что после нее есть JavaScript
+                    // вырезаем если комманда есть
+
+                    if (editor.session.$mode.findTokens(subSql, "invalid.illegal", true))
+                    {
+                        let draw=editor.session.$mode.splitByTokens(subSql,'invalid.illegal',true);
+
+                        subSql=draw[0]['sql'];
+
+                        if (draw[1])
+                        drawCommand=draw[1]['sql'];
+
+
+
+                    }
+
+
+                    console.info('[SQL]>',subSql);
+                    if (drawCommand)
+                    {
+                        console.info('[DRAW]>',eval('('+drawCommand+')'));
+                    }
+                    return;
 
                     let _format = null;
                     let _format_seted = false;
@@ -375,8 +402,6 @@ window.global_delimiter             = ";;";
                         _format_seted = false;
                     }
 
-
-                    console.info('[:] '+subSql);
                     // Queue creation
                     queue.push({
                         sql: subSql,
@@ -672,10 +697,18 @@ window.global_delimiter             = ";;";
          * Watch and save delimiter in LocalStorage
          */
 
-        $scope.$watch('vars.delimiter', (curr) => {
-            var d=curr.delimiter
+        $scope.$watch('vars.delimiter', (d) => {
+
+            if (d.name && d.delimiter)
+            {
+                d=d.delimiter;
+            }
+
+
             localStorageService.set('delimiter', d)
             window.global_delimiter=d;
+
+            console.warn('WATCH:delimiter',d);
 
             $scope.vars.tabs.forEach((tab) =>
             {
