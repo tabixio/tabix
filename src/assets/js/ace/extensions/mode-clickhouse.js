@@ -256,6 +256,7 @@ define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$rootScop
 
         addCompletions(keywords.split('|'), 'keyword','keyword');
         addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
+        addCompletions("DRAW AREA|DRAW BAR|DRAW HEATMAP|DRAW HISTOGRAM|DRAW LINE|DRAW POINT|DRAW PIVOT".split('|'), 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
         addCompletions(window.global_keywords_tables.split('|'), '[table]','table');
 
@@ -453,8 +454,14 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 
                     text = this.trim(text,t.value);
                     if (text.length > 2) {
+
+                        if (typeof trimValue === 'string'){
+                            text = this.trim(text,trimValue);
+                        }
+
+                        matches.push({sql: text, range: range1,keyword:trimValue});
+
                         trimValue=t.value;
-                        matches.push({sql: text, range: range1,keyword:t});
                     }
                 }
                 token = iterator.stepForward();
@@ -472,7 +479,7 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
 
             if (text.length > 2) {
 
-                matches.push({sql: text, range: range1});
+                matches.push({sql: text, range: range1,keyword:trimValue});
             }
             return matches;
         };

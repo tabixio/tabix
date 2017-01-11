@@ -339,7 +339,7 @@ window.global_delimiter             = ";;";
                 .$mode
                 .splitByTokens(sql, 'constant.character.escape', use_delimiter)
                 .forEach((item) => {
-                    let drawCommand=false;
+                    let drawCommand=[];
                     let subSql = item.sql;
                     // Ignore short queries
                     if (subSql.length < 5) {
@@ -370,19 +370,29 @@ window.global_delimiter             = ";;";
                         let draw=editor.session.$mode.splitByTokens(subSql,'invalid.illegal',true);
 
                         subSql=draw[0]['sql'];
+                        draw.forEach((i)=>{
 
-                        if (draw[1])
-                        drawCommand=draw[1]['sql'];
-
-
-
+                            if (!angular.isUndefined(i.keyword) && i.keyword)
+                            {
+                                let d=/DRAW\s+(\w+)/img;
+                                let found=d.exec(i.keyword);
+                                if (found && found[1])
+                                {
+                                    drawCommand.push({
+                                        keyword:found[1].toLowerCase(),
+                                        code:i.sql
+                                    });
+                                }
+                            }
+                        });
                     }
 
 
                     console.info('[SQL]>',subSql);
                     if (drawCommand)
                     {
-                        console.info('[DRAW]>',eval('('+drawCommand+')'));
+                        console.info('[DRAW]>',drawCommand);
+                        // console.info('[DRAW]>',eval('('+drawCommand+')'));
                         return;
                     }
 
@@ -716,7 +726,6 @@ window.global_delimiter             = ";;";
             localStorageService.set('delimiter', d)
             window.global_delimiter=d;
 
-            console.warn('WATCH:delimiter',d);
 
             $scope.vars.tabs.forEach((tab) =>
             {
