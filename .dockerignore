@@ -13,5 +13,4 @@ docker-compose.*
 .idea/
 .vagrant/
 .vscode/
-docs/
 todo
