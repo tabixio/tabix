@@ -78,7 +78,7 @@
                 httpProto = 'http://';
             }
             let url = httpProto + connection.host +
-                '/?query=' + encodeURIComponent(query);
+                '/?';
             if (connection.login) {
                 url += '&user=' + connection.login;
             }
@@ -102,7 +102,8 @@
             // Бебебе удалил
 
             let req = {
-                method: (format ? 'GET' : 'POST'), // if not set format use POST
+                method: (format ? 'GET' : 'POST'), // if not set format use POST,
+                data:query,
                 url: url,
                 transformResponse: (data, header, status) => {
                     try {
