@@ -35,6 +35,7 @@ exports.wiredep = {
 				'src-min-noconflict/ext-beautify.js',
 				'src-min-noconflict/ext-statusbar.js',
 				'src-min-noconflict/ext-settings_menu.js',
+
 				'src-min-noconflict/mode-sqlserver.js',
 				'src-min-noconflict/theme-ambiance.js',
 				'src-min-noconflict/theme-crimson_editor.js',
