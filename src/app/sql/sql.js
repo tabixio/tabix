@@ -198,7 +198,6 @@ window.global_delimiter             = ";;";
                     // отрисовка
                     $scope.renderFinalResult(resultContainer);
 
-
                 }
 
             }, (response) => {
@@ -379,7 +378,7 @@ window.global_delimiter             = ";;";
                                 if (found && found[1])
                                 {
                                     drawCommand.push({
-                                        keyword:found[1].toLowerCase(),
+                                        drawtype:found[1].toLowerCase(),
                                         code:i.sql
                                     });
                                 }
@@ -392,8 +391,6 @@ window.global_delimiter             = ";;";
                     if (drawCommand)
                     {
                         console.info('[DRAW]>',drawCommand);
-                        // console.info('[DRAW]>',eval('('+drawCommand+')'));
-                        return;
                     }
 
 
@@ -427,7 +424,8 @@ window.global_delimiter             = ";;";
                         format: _format,
                         setedformat: _format_seted,
                         keyword: _keyword,
-                        storage: storage
+                        storage: storage,
+                        drawCommand: drawCommand
                     });
 
                     numquery++;

@@ -63,16 +63,20 @@
 
         };
 
-        $scope.initChart = (meta,data) => {
-            console.info('chart');
-            console.table(meta);
+        $scope.initChart = (meta,data,query) => {
 
-            $scope.createChart(meta,data);
+            let drawCommand=[];
+
+            if ('drawCommand' in query)
+            {
+                drawCommand=query.drawCommand;
+            }
+            $scope.createChart(meta,data,drawCommand);
 
 
 
         };
-        $scope.getChartGraph = (meta) => {
+        $scope.getChartGraph = (meta,chartSets) => {
 
             // SELECT number,sin(number),cos(number),number as `Title [asix=g2:column:blue]`  from system.numbers limit 40
                 let showname=meta.name;
@@ -90,7 +94,7 @@
                 {
                     useaxis='v'+axis[1];
                 }
-                return {
+                let f= {
                     "id": "g1",
                     "valueAxis": useaxis,
                     "fillAlphas": 0.2,
@@ -103,11 +107,42 @@
                     "valueField": name,
                     "type": "smoothedLine",
                     "balloonText": "[[title]] [[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
-                }
-        }
-        $scope.createChart= (meta,data)=> {
+                };
+
+                if (!chartSets) chartSets={};
+
+                return Object.assign(f,chartSets);
+        };
+
+
+        $scope.createChart= (meta,data,drawCommand)=> {
 
             // ['DROP', 'CREATE', 'ALTER'].indexOf(  item.query.keyword.toUpperCase()  ) != -1
+
+            let chartSets={};
+            drawCommand.forEach((i)=>{
+                try {
+                    if (i && !i.code) return;
+                    let object=eval('('+i.code+')');
+                    console.warn(object);
+
+                    // получаем настройки по осям
+                    meta.forEach((i) => {
+                        // получаем ключь для каждой оси
+                        if (object[i.name])
+                        {
+                            chartSets[i.name]=object[i.name];
+                        }
+                    });
+
+                }catch (E) {
+
+                }
+            });
+
+
+
+
 
             let dataDateFormat=false;
             let categoryField="";
@@ -133,7 +168,7 @@
                             return;
                         }
                         counter=counter+1;
-                        let g=$scope.getChartGraph(i);
+                        let g=$scope.getChartGraph(i,chartSets[i.name]);
                         g.id='g'+counter;
 
 
@@ -260,6 +295,9 @@
                     obl.valueAxes.push(ax);
                 });
             }
+
+
+
 
             console.info('valueAxes',obl.valueAxes);
 
