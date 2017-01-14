@@ -2,10 +2,10 @@
     <fun-metis-menu ng-if="vars.loaded" fun-metis-config="vars.metis.config" fun-metis-events="vars.metis.events" class="metismenu">
         <nav>
             <ul>
-                <li>
-                    <a><md-button class="text-left no-txt-transform w100">
-                        <i class="mdi mdi-database"></i>Server <span class="pull-right" style="color: silver"></span></md-button></a>
-                            <ul>
+                <li ng-class="active">
+                    <a><md-button class="text-left no-txt-transform w200">
+                        <i class="mdi mdi-public"></i>Server <span class="pull-right" style="color: silver"></span></md-button></a>
+                            <ul class="sub-menu">
                                 <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
                                     <a>
                                         <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
@@ -24,7 +24,7 @@
                                             </a>
 
                                             <ul class="sub-menu">
-                                                <li ng-repeat="field in table.fields" class="" style="font-size: 70%;" ng-click="clickInsertField(field, $event)">
+                                                <li ng-repeat="field in table.fields" class="text-right" style="font-size: 70%;" ng-click="clickInsertField(field, $event)">
                                                         {{field.name}}
                                                 </li>
                                             </ul>
