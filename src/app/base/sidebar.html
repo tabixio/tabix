@@ -2,30 +2,36 @@
     <fun-metis-menu ng-if="vars.loaded" fun-metis-config="vars.metis.config" fun-metis-events="vars.metis.events" class="metismenu">
         <nav>
             <ul>
-                <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
-                    <a>
-                        <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
-                            <i class="mdi mdi-database"></i>{{database.name}} <span class="pull-right" style="color: silver">{{database.tables.length}} </span></md-button>
-                    </a>
-                    <ul class="sub-menu" ng-if="database.tables.length">
-                        <li ng-repeat="table in database.tables">
+                <li>
+                    <a><md-button class="text-left no-txt-transform w100">
+                        <i class="mdi mdi-database"></i>Server <span class="pull-right" style="color: silver"></span></md-button></a>
+                            <ul>
+                                <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
+                                    <a>
+                                        <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
+                                            <i class="mdi mdi-database"></i>{{database.name}} <span class="pull-right" style="color: silver">{{database.tables.length}} </span></md-button>
+                                    </a>
+                                    <ul class="sub-menu" ng-if="database.tables.length">
+                                        <li ng-repeat="table in database.tables">
 
-                            <a><md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
-                                <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
-                                <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
+                                            <a><md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
+                                                <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
+                                                <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
 
-                                {{table.name}}
+                                                {{table.name}}
 
-                            </md-button>
-                            </a>
+                                            </md-button>
+                                            </a>
 
-                            <ul class="sub-menu">
-                                <li ng-repeat="field in table.fields" class="" style="font-size: 70%;" ng-click="clickInsertField(field, $event)">
-                                        {{field.name}}
+                                            <ul class="sub-menu">
+                                                <li ng-repeat="field in table.fields" class="" style="font-size: 70%;" ng-click="clickInsertField(field, $event)">
+                                                        {{field.name}}
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
-                        </li>
-                    </ul>
                 </li>
             </ul>
         </nav>

@@ -78,15 +78,12 @@
                 httpProto = 'http://';
             }
             let url = httpProto + connection.host +
-                '/?';
+                '/?add_http_cors_header=1';
             if (connection.login) {
-                url += '&user=' + connection.login;
+                url += 'user=' + connection.login;
             }
             if (connection.password) {
                 url += '&password=' + connection.password;
-            }
-            if (connection.host.indexOf('/') != 0) {
-                url += '&add_http_cors_header=1';
             }
             if (withDatabase) {
                 url += '&database=' + database;
@@ -98,12 +95,12 @@
                 url += '&'+connection.params;
             }
 
-            // console.info(query);// Не удалять не только для DEBUG.
-            // Бебебе удалил
-
             let req = {
-                method: (format ? 'GET' : 'POST'), // if not set format use POST,
-                data:query,
+                method: 'POST',
+                data :query,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
                 url: url,
                 transformResponse: (data, header, status) => {
                     try {

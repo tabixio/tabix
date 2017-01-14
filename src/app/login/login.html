@@ -45,52 +45,99 @@
         <div class="main-content login">
             <div class="main-view">
                 <div class="login-view">
-                    <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
-                        <form class="p++" name="loginForm">
-                            <div>
-                                <md-input-container>
-                                    <label>{{'Название' | translate}}</label>
-                                    <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
-                                </md-input-container>
-                            </div>
-                            <div>
-                                <md-input-container>
-                                    <label>{{'Хост:порт' | translate}}</label>
-                                    <input ng-model="vars.db.host" placeholder="http://127.0.0.1:8123" required ng-disabled="vars.loading">
-                                </md-input-container>
-                            </div>
-                            <div>
-                                <md-input-container>
-                                    <label>{{'Логин' | translate}}</label>
-                                    <input ng-model="vars.db.login" ng-disabled="vars.loading">
-                                </md-input-container>
-                            </div>
-                            <div>
-                                <md-input-container>
-                                    <label>{{'Пароль' | translate}}</label>
-                                    <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
-                                </md-input-container>
-                            </div>
-                            <div>
-                                <md-input-container>
-                                    <label>{{'Параметры' | translate}}</label>
-                                    <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
-                                </md-input-container>
-                            </div>
-                            <div layout="row">
-                                <div flex>
-                                    <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
-                                        {{'Войти' | translate}}
-                                    </md-button>
-                                </div>
-                                <div flex ng-if="vars.db.id" class="pl">
-                                    <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
-                                        {{'Удалить' | translate}}
-                                    </md-button>
-                                </div>
-                            </div>
-                        </form>
-                    </md-card>
+                    <md-tabs md-dynamic-height md-border-bottom class="login-tabs">
+
+                        <md-tab>
+                            <md-tab-label>
+                                Direct
+                            </md-tab-label>
+                            <md-tab-body>
+                                <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+                                    <form class="p++" name="loginForm">
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Название' | translate}}</label>
+                                                <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Хост:порт' | translate}}</label>
+                                                <input ng-model="vars.db.host" placeholder="http://127.0.0.1:8123" required ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Логин' | translate}}</label>
+                                                <input ng-model="vars.db.login" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Пароль' | translate}}</label>
+                                                <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Параметры' | translate}}</label>
+                                                <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div layout="row">
+                                            <div flex>
+                                                <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
+                                                    {{'Войти' | translate}}
+                                                </md-button>
+                                            </div>
+                                            <div flex ng-if="vars.db.id" class="pl">
+                                                <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
+                                                    {{'Удалить' | translate}}
+                                                </md-button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </md-card>
+                            </md-tab-body>
+                    </md-tab>
+                    <md-tab>
+                            <md-tab-label>
+                                uxData Grider
+                            </md-tab-label>
+
+                            <md-tab-body>
+                                <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+                                    <form class="p++" name="loginServerForm">
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Сервер' | translate}}</label>
+                                                <input ng-model="vars.db.srvname" required placeholder="dev" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Логин' | translate}}</label>
+                                                <input ng-model="vars.db.srvlogin" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Пароль' | translate}}</label>
+                                                <input type="password" ng-model="vars.db.srvpassword" ng-click="onKeypress($event)" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div layout="row">
+                                            <div flex>
+                                                <md-button class="md-primary md-raised m0 width-100" ng-disabled="vars.loading" ng-click="login()">
+                                                    {{'Войти' | translate}}
+                                                </md-button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </md-card>
+                        </md-tab-body>
+                    </md-tab>
+                    </md-tabs>
                 </div>
             </div>
             <div class="footer">
