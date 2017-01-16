@@ -12,16 +12,18 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
     let TextMode = require("./text").Mode;
     let ClickhouseHighlightRules = require("./clickhouse_highlight_rules").ClickhouseHighlightRules;
     let ClickhouseFoldMode = require("./clickhouse_FoldMode").FoldMode;
-    var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
-    var CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
+    let MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
+    let CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
     // var CStyleFoldMode = require("./folding/cstyle").FoldMode;
 
     // let BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
 
     let Mode = function () {
+
         this.foldingRules = new ClickhouseFoldMode();
         this.$outdent = new MatchingBraceOutdent();
         this.$behaviour = new CstyleBehaviour();
+
         // this.foldingRules = new CStyleFoldMode();
         this.HighlightRules = ClickhouseHighlightRules;
     };
@@ -30,7 +32,9 @@ define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "a
     (function () {
 
         this.lineCommentStart = "--";
-        this.getCompletions = function (state, session) {
+
+        this.getCompletions = function (state, session,pos, prefix) {
+            // return this.$completer.getCompletions(state, session, pos, prefix);
             return session.$mode.$highlightRules.completions;
         };
 

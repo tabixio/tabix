@@ -94,44 +94,9 @@
                         </md-tab-label>
 
                         <md-tab-body>
-                            <md-card class="m0">
-                            <div >
-
-
-                                <md-menu-bar>
-                                    <md-menu>
-                                        <button ng-click="$mdOpenMenu()">
-                                            Type chart
-                                        </button>
-                                        <md-menu-content>
-                                            <md-menu-item>
-                                                <md-button ng-click="ctrl.sampleAction('share', $event)">
-                                                    Share...
-                                                </md-button>
-                                            </md-menu-item>
-                                            <md-menu-divider></md-menu-divider>
-                                            <md-menu-item>
-                                                <md-menu-item>
-                                                    <md-menu>
-                                                        <md-button ng-click="$mdOpenMenu()">stackType</md-button>
-                                                        <md-menu-content>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">none</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Document', $event)">100%</md-button></md-menu-item>
-                                                            <md-menu-item><md-button ng-click="ctrl.sampleAction('New Spreadsheet', $event)">regular</md-button></md-menu-item>
-                                                        </md-menu-content>
-                                                    </md-menu>
-                                                </md-menu-item>
-                                            </md-menu-item>
-                                        </md-menu-content>
-                                    </md-menu>
-                                </md-menu-bar>
-
-
-
+                            <md-card md-theme-watch>
+                            <div>
                                 <div id="myFirstChart" style="height:500px;width:100%;border: 1px silver dotted"></div>
-
-
-
                             </div>
                             </md-card>
                         </md-tab-body>

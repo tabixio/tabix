@@ -49,7 +49,15 @@ window.global_delimiter             = ";;";
         const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion';
         const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
-
+        $scope.menuOptions = [
+            ['Select', function ($itemScope, $event, modelValue, text, $li) {
+                $scope.selected = $itemScope.item.name;
+            }],
+            null, // Dividier
+            ['Remove', function ($itemScope, $event, modelValue, text, $li) {
+                $scope.items.splice($itemScope.$index, 1);
+            }]
+        ];
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],

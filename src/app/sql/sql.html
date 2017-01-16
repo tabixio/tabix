@@ -134,7 +134,7 @@
                 <div style="display: table; width: 100%;">
                     <div style="min-height: 100px; position: relative; display: table-cell;">
                         <div resizable r-directions="['bottom']" r-height="300" style="">
-                            <div ng-model="tab.sql" ui-ace="{
+                            <div ng-model="tab.sql" context-menu="menuOptions" ui-ace="{
                                     useWrapMode : true,
                                     mode: 'clickhouse',
                                     onLoad: aceLoaded,
@@ -291,3 +291,25 @@
         {{'История запросов пуста' | translate}}
     </small>
 </md-sidenav>
+<!-- contextmenu -->
+<div contextmenu="meta.contextmenu" class="dropdown contextmenu">
+    <ul class="dropdown-menu" role="menu">
+        <li class="dropdown-header">
+            {{ meta.contextmenu.item.email }}
+        </li>
+        <li>
+            <a role="menuitem" tabindex="-1" href
+               ng-href="#/user/{{ meta.contextmenu.item.email }}/edit"
+            >
+                <span>Edit</span>
+            </a>
+        </li>
+        <li>
+            <a role="menuitem" href
+               ng-click="delete(meta.contextmenu.item)"
+            >
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+</div>

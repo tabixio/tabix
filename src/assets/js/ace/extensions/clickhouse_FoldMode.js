@@ -56,13 +56,16 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
     oop.inherits(FoldMode, BaseFoldMode);
 
     (function () {
+        this.foldingRules = "cStyle";
 
-        this.foldingStartMarker = /\s*(\(\s*SELECT\s*)/mig;
+        // this.foldingStartMarker = /\s*(\(\s*SELECT\s*)/mig;
+        // this.foldingStartMarker = /\s*SELECT\s*/mig;
+        this.foldingStartMarker = /\(|\{/;
 
-        this.getFoldWidgetRange = function(session, foldStyle, row) {
-            let re = this.foldingStartMarker;
-            let line = session.getLine(row);
-            let m = line.match(re);
+        this.getFoldWidgetRange = function(session, foldStyle, row, forceMultiline) {
+            // let re = this.foldingStartMarker;
+            // let line = session.getLine(row);
+            // let m = line.match(re);
             // были ли вообще совпадения по ( SELECT
             //if (!m) return;
 
@@ -75,22 +78,16 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
             // if find : ` ( SELECT `
             while (token) {
                 let t = token;
-
-
                 // позиция текущего токена
                 let pos = iterator.getCurrentTokenPosition();
-
                 token = iterator.stepForward();
-                //if (token)
-                //{
-                //    token2 = iterator.stepForward();
-                //}
                 // если текущий токен скобка а следующий текст и далее SELECT
-                if (t.type=='paren.lparen' && t.value=='(' && token.type)
+                if (t.type=='paren.lparen' && ( t.value=='(' || t.value=='{') )// && token.type
                 {
-                    range=session.getBracketRange(pos);
+                   range=session.getBracketRange(pos);
                     //
-                    //if (token.type=='keyword' && token.value=='SELECT')
+                    //
+                    // if (token.type=='keyword' && token.value=='SELECT')
                     // {
                     //     range=session.getBracketRange(pos);
                     // }
@@ -108,6 +105,5 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
             return range;
         };
     }).call(FoldMode.prototype);
-
 });
 
