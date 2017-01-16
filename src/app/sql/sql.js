@@ -1031,6 +1031,25 @@ window.global_delimiter             = ";;";
         });
 
 
+        //context menu array
+        $scope.rightAceMenuList = [
+            {active: true, value: 'AutoFormat'},
+            {active: true, value: 'Cut'},
+            {active: true, value: 'Paste'}
+        ];
+
+        //gets triggered when an item in the context menu is selected
+        $scope.rightMenuProcess = function(item, ev){
+            if(item.value == "Copy"){
+                $scope.placeHolder = $scope.model.text; //copy text
+            } else if(item.value == "Cut"){
+                $scope.placeHolder = $scope.model.text; //cut text
+                $scope.model.text = "";
+            } else {
+                $scope.model.text += $scope.placeHolder; //paste text
+            }
+        };
+
 
 
 
