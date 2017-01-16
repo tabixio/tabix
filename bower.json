@@ -4,7 +4,6 @@
   "dependencies": {
     "angular-animate": "~1.5.0",
     "jquery": "~2.1.4",
-    "angular-ui-router": "~0.2.15",
     "angular": "^1.4.12",
     "angular-ui-ace": "~0.2.3",
     "angular-local-storage": "~0.2.7",
@@ -26,7 +25,8 @@
     "subtotal": "^1.5.0",
     "d3": "^4.4.1",
     "c3": "^0.4.11",
-    "jquery-ui": "jquery.ui#^1.12.1"
+    "jquery-ui": "jquery.ui#^1.12.1",
+    "angular-ui-router": "^0.3.2"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

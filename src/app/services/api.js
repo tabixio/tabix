@@ -80,7 +80,7 @@
             let url = httpProto + connection.host +
                 '/?add_http_cors_header=1';
             if (connection.login) {
-                url += 'user=' + connection.login;
+                url += '&user=' + connection.login;
             }
             if (connection.password) {
                 url += '&password=' + connection.password;
