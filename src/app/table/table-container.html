@@ -1,24 +1,4 @@
-
-<style>
-    .ui-grid-menu-button {
-        height: 31px;
-    }
-    .my-custom-menu {
-        position: absolute;
-    }
-
-    .my-custom-menu .ui-grid-menu {
-        padding: 0px;
-    }
-
-    .my-custom-menu .ui-grid-menu-inner {
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
-</style>
-
-
-<div style="position: absolute;top: 0px;bottom: 59px;left: 16px;right: 16px;">
+<div style="position: absolute;top: 0px;bottom: 59px;left: 16px;right: 16px;" class="md-tabs-fix">
 
     <h3>{{vars.currentDatabase}}
         <i class="mdi mdi-chevron-right"></i>
@@ -51,74 +31,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </md-tab-body>
-        </md-tab>
-
-        <!-- данные -->
-        <md-tab md-active="true">
-            <md-tab-label>
-                <i class="mdi mdi-table-large mr-"></i>{{'Данные' | translate}}
-            </md-tab-label>
-            <md-tab-body>
-                <div class="pl+ pt+ pb+ pr" style="font-size: .75rem;max-height:100%">
-
-                    <div class="float-right" style="margin-top: -12px">
-                        <md-button class="md-icon-button" aria-label="load prev" ng-click="loadPrev()" ng-disabled="vars.offset === 0">
-                            <i class="mdi mdi-arrow-left"></i>
-                        </md-button>
-                        <md-button class="md-icon-button" aria-label="load next" ng-click="loadNext()">
-                            <i class="mdi mdi-arrow-right"></i>
-                        </md-button>
-                    </div>
-                    {{'Данные' | translate}}
-                    <span class="tc-grey-400">{{'с' | translate}}
-                        {{vars.offset}}
-                        {{'по' | translate}}
-                        {{vars.offset + vars.limit}}</span>
-                </div>
-                <div class="card__actions p+" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden; " ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
-                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
-                    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
-
-
-
-
-
-                    <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
-                    <hot-table  hot-id="hottable"  settings="table.settings" datarows="table.data"  style="width: 99%;height: 99%"
-                                col-headers="table.colHeaders" manual-column-resize="true">
-
-                    </hot-table>
-                                <!--on-after-init="onAfterInit"-->
-                                <!--columns="table.columns"-->
-
-
-                               <!---->
-                               <!--col-widths="table.colWidths"-->
-
-                    <!--</hot-table>-->
-                            <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
-                               <!--row-headers="false"-->
-                               <!--min-spare-rows="minSpareRows"-->
-
-
-
-
-
-
-
-                        <!--<hot-column data="id" title="'ID'"></hot-column>-->
-                        <!--<hot-column data="name.first" title="'First Name'" read-only></hot-column>-->
-                        <!--<hot-column data="name.last" title="'Last Name'"  read-only></hot-column>-->
-                        <!--<hot-column data="address" title="'Address'" width="150"></hot-column>-->
-                        <!--<hot-column data="product.description" title="'Favorite food'"></hot-column>-->
-                        <!--<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>-->
-                        <!--<hot-column data="isActive" title="'Is active'" type="'checkbox'" width="65" checked-template="'Yes'" unchecked-template="'No'"></hot-column>-->
-
-
-
-                    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
-                </div>
             </md-tab-body>
         </md-tab>
 
@@ -169,7 +81,80 @@
                         {{ field.statement }}
                     </i>
                 </div>
+            </md-tab-body>
+        </md-tab>
 
+
+        <!-- данные -->
+        <md-tab md-active="true">
+            <md-tab-label>
+                <i class="mdi mdi-table-large mr-"></i>{{'Данные' | translate}}
+            </md-tab-label>
+            <md-tab-body>
+                <div style="display:table">
+
+                </div>
+                <div class="pl+ pt+ pb+ pr" style="font-size: .75rem;max-height:100%">
+
+                    <div class="float-right" style="margin-top: -12px">
+                        <md-button class="md-icon-button" aria-label="load prev" ng-click="loadPrev()" ng-disabled="vars.offset === 0">
+                            <i class="mdi mdi-arrow-left"></i>
+                        </md-button>
+                        <md-button class="md-icon-button" aria-label="load next" ng-click="loadNext()">
+                            <i class="mdi mdi-arrow-right"></i>
+                        </md-button>
+                    </div>
+                    {{'Данные' | translate}}
+                    <span class="tc-grey-400">{{'с' | translate}}
+                        {{vars.offset}}
+                        {{'по' | translate}}
+                        {{vars.offset + vars.limit}}</span>
+                </div>
+                <div class="card__actions p+" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden; ">
+                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
+                    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
+
+                    <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
+                    <hot-table
+                        ng-class="{'handsontable-dark': vars.isDark}"
+                        hot-id="hottable"
+                        settings="table.settings"
+                        datarows="table.data"
+                        style="width: 99%;height: 99%"
+                        col-headers="table.colHeaders"
+                        manual-column-resize="true"
+                    >
+                    </hot-table>
+                                <!--on-after-init="onAfterInit"-->
+                                <!--columns="table.columns"-->
+
+
+                               <!---->
+                               <!--col-widths="table.colWidths"-->
+
+                    <!--</hot-table>-->
+                            <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
+                               <!--row-headers="false"-->
+                               <!--min-spare-rows="minSpareRows"-->
+
+
+
+
+
+
+
+                        <!--<hot-column data="id" title="'ID'"></hot-column>-->
+                        <!--<hot-column data="name.first" title="'First Name'" read-only></hot-column>-->
+                        <!--<hot-column data="name.last" title="'Last Name'"  read-only></hot-column>-->
+                        <!--<hot-column data="address" title="'Address'" width="150"></hot-column>-->
+                        <!--<hot-column data="product.description" title="'Favorite food'"></hot-column>-->
+                        <!--<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>-->
+                        <!--<hot-column data="isActive" title="'Is active'" type="'checkbox'" width="65" checked-template="'Yes'" unchecked-template="'No'"></hot-column>-->
+
+
+
+                    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
+                </div>
             </md-tab-body>
         </md-tab>
     </md-tabs>

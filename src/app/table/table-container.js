@@ -29,38 +29,38 @@
 
             },
             settings : {
-                manualColumnMove: true,
-                manualColumnResize: true,
-
-                autoWrapRow: true,
-                // rowHeaders: true,
-                // colHeaders: _(headers).map(function(header, i) {
-                //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
-                // }),
-                colWidths: 100,
-                rowHeights: [50, 40, 100],
-                renderer: 'html',
-                fillHandle: false,
+                // manualColumnMove: true,
+                // manualColumnResize: true,
+                //
+                // autoWrapRow: true,
+                // // rowHeaders: true,
+                // // colHeaders: _(headers).map(function(header, i) {
+                // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
+                // // }),
+                // //colWidths: 100,
+                // rowHeights: [50, 40, 100],
+                // renderer: 'html',
+                // fillHandle: false,
                 dropdownMenu: true,
-                stretchH: 'all',
-                preventOverflow: 'horizontal',
-                persistentState:true,
-                contextMenu: ['row_above', 'row_below', 'remove_row'],
-                filters: true,
-
-                // fixedRowsTop: 1,
-                // fixedColumnsLeft: 1,
-                columnSorting: true,
-                sortIndicator: true,
-                manualRowResize: true,
-                viewportColumnRenderingOffset:'auto',
-                // maxRows: 10,
-                // visibleRows:10,
-
-                wordWrap:false,
-                autoColumnSize: {
-                    samplingRatio: 13
-                }
+                // stretchH: 'all',
+                // preventOverflow: 'horizontal',
+                // persistentState:true,
+                // contextMenu: ['row_above', 'row_below', 'remove_row'],
+                // filters: true,
+                //
+                // // fixedRowsTop: 1,
+                // // fixedColumnsLeft: 1,
+                // columnSorting: true,
+                // sortIndicator: true,
+                // manualRowResize: true,
+                // viewportColumnRenderingOffset:'auto',
+                // // maxRows: 10,
+                // // visibleRows:10,
+                //
+                // wordWrap:false,
+                // // autoColumnSize: {
+                // //     samplingRatio: 23
+                // // }
             }
             // colHeaders: ['A', 'B', 'C', 'D'],
             // colWidths: [200, 200, 200, 200, 200],
@@ -71,6 +71,7 @@
         $scope.vars = {
             columns: {},
             ugrid:{},
+            isDark: ThemeService.isDark(),
             createtable: {},
             data: null,
             grid: null,
@@ -145,28 +146,7 @@
                 //     $scope.gridApi = gridApi;
                 // };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                console.log('t = f');
                 $scope.vars.loading = false;
             }, function ( response ) {
                 $scope.vars.loading = false;
@@ -176,6 +156,7 @@
 
         $scope.init = ( ) => {
             $scope.vars.loading = true;
+            console.log('t = true');
 
             /**
                 * Запрос полей таблицы
