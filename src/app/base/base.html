@@ -4,7 +4,7 @@
         <div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view" resizable r-directions="['right']" r-width="200" r-flex="true"></div>
         <div class="main-content">
             <div ui-view="main" style="height: 100%"></div>
-            <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="tableSiedenav">
+            <md-sidenav class="md-sidenav-right md-whiteframe-4dp md-sidenav-fix" md-component-id="tableSiedenav">
                 <md-content ng-if="currentTable" layout-padding>
                     <md-button class="md-icon-button right-button" ui-sref="table({tableName:currentTable, dbName:currentDatabase})">
                         <i class="mdi mdi-arrow-expand-all"></i>
