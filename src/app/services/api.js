@@ -111,11 +111,10 @@
                 }
             };
 
-            $http(req).then((response) => {
-                defer.resolve(response.data);
-            }, (response) => {
-                defer.reject(response.data);
-            });
+            $http(req).then(
+                response => defer.resolve(response.data),
+                reason => defer.reject(reason)
+            );
 
             return defer.promise;
         };

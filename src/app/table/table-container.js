@@ -146,7 +146,6 @@
                 //     $scope.gridApi = gridApi;
                 // };
 
-                console.log('t = f');
                 $scope.vars.loading = false;
             }, function ( response ) {
                 $scope.vars.loading = false;
@@ -156,7 +155,6 @@
 
         $scope.init = ( ) => {
             $scope.vars.loading = true;
-            console.log('t = true');
 
             /**
                 * Запрос полей таблицы
