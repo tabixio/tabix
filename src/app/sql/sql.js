@@ -585,7 +585,10 @@ window.global_delimiter             = ";;";
         const formatCode = () => {
             if (angular.isObject(window.sqlFormatter)) {
                 $timeout(() => {
-                    $scope.vars.currentTab.sql = window.sqlFormatter.format($scope.vars.currentTab.sql);
+                    //$scope.vars.currentTab.sql = window.sqlFormatter.format($scope.vars.currentTab.sql);
+                    $scope.vars.currentTab.editor.setValue(
+                        window.sqlFormatter.format($scope.vars.currentTab.sql)
+                    );
                 });
             }
         };
@@ -617,6 +620,8 @@ window.global_delimiter             = ";;";
             let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
+
+            console.log(editor.getSession().getUndoManager());
 
             // Load settings from LocalStorage
             editor.setOptions({
@@ -838,7 +843,7 @@ window.global_delimiter             = ";;";
         $scope.addTab = () => {
             $scope.vars.currentTab = {
                 name: 'new SQL',
-                sql: 'select * from ontime where id > 20 limit 10',
+                sql: '',
                 buttonTitle: $filter('translate')('Выполнить ⌘ + ⏎'),
                 format: {},
                 editor: null,
