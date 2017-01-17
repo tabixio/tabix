@@ -113,6 +113,17 @@
                         </md-tab-body>
                     </md-tab>
 
+                    <md-tab md-on-select="initSankeys(item.meta,item.data,item.query)">
+                        <md-tab-label>
+                            Sankeys <i class="mdi mdi-pages"></i>
+                        </md-tab-label>
+
+                        <md-tab-body >
+                            <div id="sunkeyDiv" style="width:600px; height:100%"></div>
+
+                        </md-tab-body>
+                    </md-tab>
+
 
                 </md-tabs>
 

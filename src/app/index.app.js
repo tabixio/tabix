@@ -27,6 +27,7 @@
         'cfp.hotkeys',
         'ngHandsontable',
         'amChartsDirective',
+        'echarts'
     ]).directive('ngRightClick', function($parse) {
         return function(scope, element, attrs) {
             var fn = $parse(attrs.ngRightClick);

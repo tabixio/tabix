@@ -95,11 +95,15 @@ http://krispo.github.io/angular-nvd3/#/
 
 
 ----
-*angular-nvd3*
+*Построение графи.*
+sankeys in Tableau: https://community.tableau.com/thread/154623
 
-https://github.com/krispo/angular-nvd3/
+http://echarts.baidu.com/demo.html#sankey-product
 
-https://github.com/krispo/angular-nvd3/blob/gh-pages/pages/gridster/dashboard.html
+http://echarts.baidu.com/demo.html#treemap-drill-down
+
+http://echarts.baidu.com/examples.html
+
 
 
 **ACE**
