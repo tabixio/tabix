@@ -582,6 +582,14 @@ window.global_delimiter             = ";;";
             }
         };
 
+        const formatCode = () => {
+            if (angular.isObject(window.sqlFormatter)) {
+                $timeout(() => {
+                    $scope.vars.currentTab.sql = window.sqlFormatter.format($scope.vars.currentTab.sql);
+                });
+            }
+        };
+
         for (let i = 0; i < 9; i++) {
             hotkeys.add({
                 combo: 'ctrl+shift+' + (i + 1),
@@ -595,6 +603,10 @@ window.global_delimiter             = ";;";
         hotkeys.add({
             combo: 'ctrl+left',
             callback: selectPrevTab
+        });
+        hotkeys.add({
+            combo: 'ctrl+shift+f',
+            callback: formatCode
         });
 
         /**
@@ -687,6 +699,14 @@ window.global_delimiter             = ";;";
                     mac: 'Command-Left'
                 },
                 exec: selectPrevTab
+            });
+            editor.commands.addCommand({
+                name: 'formatcode',
+                bindKey: {
+                    win: 'Ctrl-Shift-F',
+                    mac: 'Command-Shift-F'
+                },
+                exec: formatCode
             });
 
             editor.clearSelection();
@@ -818,7 +838,7 @@ window.global_delimiter             = ";;";
         $scope.addTab = () => {
             $scope.vars.currentTab = {
                 name: 'new SQL',
-                sql: '',
+                sql: 'select * from ontime where id > 20 limit 10',
                 buttonTitle: $filter('translate')('Выполнить ⌘ + ⏎'),
                 format: {},
                 editor: null,
@@ -1046,7 +1066,8 @@ window.global_delimiter             = ";;";
                 $scope.placeHolder = $scope.model.text; //cut text
                 $scope.model.text = "";
             } else {
-                $scope.model.text += $scope.placeHolder; //paste text
+                //$scope.model.text += $scope.placeHolder; //paste text
+                formatCode();
             }
         };
 
