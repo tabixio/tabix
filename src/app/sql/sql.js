@@ -50,11 +50,11 @@ window.global_delimiter             = ";;";
         const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
         $scope.menuOptions = [
-            ['Select', function ($itemScope, $event, modelValue, text, $li) {
+            ['Select', function ($itemScope) {
                 $scope.selected = $itemScope.item.name;
             }],
             null, // Dividier
-            ['Remove', function ($itemScope, $event, modelValue, text, $li) {
+            ['Remove', function ($itemScope) {
                 $scope.items.splice($itemScope.$index, 1);
             }]
         ];
@@ -183,7 +183,7 @@ window.global_delimiter             = ";;";
 
                 let r = data;
 
-                if (typeof data !== 'object') {
+                if (!angular.isObject(data)) {
                     data = {
                         data: r,
                         meta: null,
@@ -243,8 +243,8 @@ window.global_delimiter             = ";;";
             if (typeof data.error == 'string') {
                 data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
             }
-            else if (typeof data.data !== 'object') {
-                if (typeof data.data !== 'string') {
+            else if (!angular.isObject(data.data)) {
+                if (!angular.isString(data.data)) {
                     data.result = '<pre class="fs-caption">' + angular.toJson(data.data, true) + '</pre>';
                 }
                 else {
@@ -283,8 +283,7 @@ window.global_delimiter             = ";;";
          */
         $scope.execute = (type, tab) => {
 
-
-            let sql = tab.sql;
+            let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
             let numquery = 0;
             const editor = tab.editor;
             let queue = [];
@@ -379,7 +378,7 @@ window.global_delimiter             = ";;";
                         subSql=draw[0]['sql'];
                         draw.forEach((i)=>{
 
-                            if (!angular.isUndefined(i.keyword) && i.keyword)
+                            if (angular.isDefined(i.keyword) && i.keyword)
                             {
                                 let d=/DRAW\s+(\w+)/img;
                                 let found=d.exec(i.keyword);
@@ -752,7 +751,7 @@ window.global_delimiter             = ";;";
             }
 
 
-            localStorageService.set('delimiter', d)
+            localStorageService.set('delimiter', d);
             window.global_delimiter=d;
 
 
@@ -946,16 +945,12 @@ window.global_delimiter             = ";;";
             }
         });
 
-        $scope.$watch('vars.enableLiveAutocompletion', (value, old) => {
+        $scope.$watch('vars.enableLiveAutocompletion', (value) => {
             localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
             // loop
             $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
                 enableLiveAutocompletion: value
             }));
-
-
-
-
         });
 
         /**
@@ -1062,7 +1057,7 @@ window.global_delimiter             = ";;";
         ];
 
         //gets triggered when an item in the context menu is selected
-        $scope.rightMenuProcess = function(item, ev){
+        $scope.rightMenuProcess = function(item){
             if(item.value == "Copy"){
                 $scope.placeHolder = $scope.model.text; //copy text
             } else if(item.value == "Cut"){
@@ -1073,9 +1068,6 @@ window.global_delimiter             = ";;";
                 formatCode();
             }
         };
-
-
-
 
     }
 })(angular, smi2);
