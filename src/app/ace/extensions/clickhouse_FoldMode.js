@@ -1,6 +1,5 @@
-let define = window.define || window.ace.define;
 
-define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
+ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
     "use strict";
 
     var Range = require("ace/range").Range;
@@ -41,7 +40,7 @@ define("ace/mode/matching_brace_outdent",["require","exports","module","ace/rang
 });
 
 
-define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "module", "ace/lib/oop",
+ace.define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "module", "ace/lib/oop",
     "ace/range",'ace/mode/sqlserver','ace/mode/folding/cstyle'], function (require, exports, module) {
 
 

@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------
-define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text",
+ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop", "ace/mode/text",
     "ace/token_iterator",
     "ace/mode/folding",
     "ace/mode/clickhouse_FoldMode",
