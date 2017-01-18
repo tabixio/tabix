@@ -1,4 +1,4 @@
-((angular, smi2) => {
+((angular, smi2, AmCharts, $) => {
     'use strict';
 
     angular.module(smi2.app.name).controller('FooterCtrl', FooterController);
@@ -45,12 +45,7 @@
 
             let rows=[];
             let cols=[];
-            meta.forEach((i) => {
-                // rows.push(i.name);
-                // cols.push(i.name);
-
-            });
-            $("#pivotDiv").pivotUI(data, {
+            angular.element("#pivotDiv").pivotUI(data, {
                 dataClass: $.pivotUtilities.SubtotalPivotData,
                 rows: rows,
                 cols: cols,
@@ -64,18 +59,14 @@
         };
 
         $scope.initChart = (meta,data,query) => {
-
             let drawCommand=[];
-
             if ('drawCommand' in query)
             {
                 drawCommand=query.drawCommand;
             }
             $scope.createChart(meta,data,drawCommand);
-
-
-
         };
+
         $scope.getChartGraph = (meta,chartSets) => {
 
             // SELECT number,sin(number),cos(number),number as `Title [asix=g2:column:blue]`  from system.numbers limit 40
@@ -106,7 +97,7 @@
                     "useLineColorForBulletBorder": true,
                     "valueField": name,
                     "type": "smoothedLine",
-                    "balloonText": "[[title]] [[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>",
+                    "balloonText": "[[title]] [[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>"
                 };
 
                 if (!chartSets) chartSets={};
@@ -120,7 +111,7 @@
             // ['DROP', 'CREATE', 'ALTER'].indexOf(  item.query.keyword.toUpperCase()  ) != -1
 
             let chartSets={};
-            drawCommand.forEach((i)=>{
+            drawCommand.forEach(i => {
                 try {
                     if (i && !i.code) return;
                     let object=eval('('+i.code+')');
@@ -134,9 +125,8 @@
                             chartSets[i.name]=object[i.name];
                         }
                     });
-
-                }catch (E) {
-
+                } catch (E) {
+                    console.error('error eval ', i.code);
                 }
             });
 
@@ -267,7 +257,7 @@
                     "valueAlign": "left",
                     "valueText": "[[value]] ([[percents]]%)",
                     "valueWidth": 100
-                },
+                }
             };
 
 
@@ -290,7 +280,7 @@
                         "axisThickness": 1,
                         "position": "right",
                         "ignoreAxisWidth": true,
-                        "offset": 1*a_offset,
+                        "offset": 1 * a_offset
                     };
                     obl.valueAxes.push(ax);
                 });
@@ -301,8 +291,8 @@
 
             console.info('valueAxes',obl.valueAxes);
 
-            let chart = AmCharts.makeChart("myFirstChart", obl);
-        }
+            AmCharts.makeChart("myFirstChart", obl);
+        };
 
     }
-})(angular, smi2);
+})(angular, smi2, window.AmCharts, window.$);

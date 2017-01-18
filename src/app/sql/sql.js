@@ -621,8 +621,6 @@ window.global_delimiter             = ";;";
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
 
-            console.log(editor.getSession().getUndoManager());
-
             // Load settings from LocalStorage
             editor.setOptions({
                 fontSize: $scope.vars.fontSize + 'px',
