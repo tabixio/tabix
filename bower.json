@@ -29,14 +29,15 @@
     "angular-ui-router": "^0.3.2",
     "handsontable": "~0.30.0",
     "sql-formatter": "^1.1.2",
-    "amcharts-angular": "*"
+    "amcharts-angular": "*",
+    "Sortable": "sortablejs#^1.4.2"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"
   },
   "overrides": {
     "amcharts": {
-        "main": []
+      "main": []
     },
     "amcharts3": {
       "main": [
@@ -75,6 +76,12 @@
       "dependencies": {
         "angular": "~1.x"
       }
+    },
+    "Sortable": {
+        "main": [
+          "Sortable.js",
+          "jquery.binding.js"
+        ]
     }
   },
   "resolutions": {
