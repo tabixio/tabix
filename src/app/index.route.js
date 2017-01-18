@@ -47,7 +47,9 @@
                 .state('dashboard', {
                     parent: 'layout',
                     url: '/',
-                    controller: ['$state', $state => $state.go('sql')]
+                    controller: ['$state', function ($state) {
+                        $state.go('sql');
+                    }]
                 })
 
                 // Login state
