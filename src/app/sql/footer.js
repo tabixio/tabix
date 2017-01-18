@@ -183,6 +183,7 @@
             }
             //this all works:
             let obl={
+                "color": ThemeService.isDark() ? '#eee' : '#333',
                 "type": "serial",
                 "theme": theme,
                 "marginRight": 50,
@@ -202,10 +203,9 @@
                     "axisAlpha": 1,
                     // "stackType": "100%",// "stackType": "regular",
                     "gridAlpha": 0.07,
-
-                    // "axisColor": "#FF6600",
+                    "axisColor": ThemeService.isDark() ? '#eee' : '#333',
+                    "gridColor": ThemeService.isDark() ? '#eee' : '#333',
                     // "axisThickness": 2,
-
                     // "position": "left",
                     "ignoreAxisWidth": true
                 } ],
@@ -247,7 +247,9 @@
                 },
                 "categoryAxis": {
                     "dashLength": 1,
-                    "minorGridEnabled": true
+                    "minorGridEnabled": true,
+                    "axisColor": ThemeService.isDark() ? '#eee' : '#333',
+                    "gridColor": ThemeService.isDark() ? '#eee' : '#333'
                 },
                 "dataProvider": data,
                 "legend": {
