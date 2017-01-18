@@ -1,4 +1,3 @@
-
 ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
     "use strict";
 
@@ -105,4 +104,3 @@ ace.define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", 
         };
     }).call(FoldMode.prototype);
 });
-

@@ -51,6 +51,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
 
         // ---------------------------------------------------------------------------
         this.findTokens = function (sql, type, needfirst) {
+            console.log('!!!!!!!');
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
             let TokenIterator = require("ace/token_iterator").TokenIterator;
