@@ -666,25 +666,28 @@ window.global_delimiter             = ";;";
              });
             // removeLines
             editor.commands.addCommand({
-                    name: 'removeLiness',
+                    name: 'collapseAll',
                     bindKey: {
                         win: 'Ctrl-Shift--',
-                        mac: 'Ctrl-Shift--'
+                        mac: 'Command+Shift+-'
                     },
                     exec: (editor) => {
-                        editor.session.foldAll();
+                        console.info('collapseAll');
+                        editor.session.$mode.collapseAll(editor.session);
                     }
              });
             editor.commands.addCommand({
-                    name: 'removeLiness',
+                    name: 'unfold',
                     bindKey: {
                         win: 'Ctrl-Shift-+',
-                        mac: 'Ctrl-Shift-+'
+                        mac: 'Command+Shift+='
                     },
                     exec: (editor) => {
                         editor.session.unfold();
+
                     }
              });
+            // https://github.com/ajaxorg/ace/blob/master/lib/ace/lib/keys.js
 
             editor.commands.addCommand({
                 name: 'runAllCommand',
@@ -1080,41 +1083,18 @@ window.global_delimiter             = ";;";
 
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcess = function(item){
+
+            let session=$scope.vars.currentTab.editor.session;
+
             $scope.vars.currentTab.editor.resize();
             if(item.value == "AutoFormat"){
                 formatCode();
             } else if(item.value == "Expand"){
-                $scope.vars.currentTab.editor.session.unfold();
+                session.unfold();
             } else if(item.value == "Collapse All"){
-
-                let e=$scope.vars.currentTab.editor.session;
-                let foldWidgets = e.foldWidgets;
-                let endRow =  e.getLength();
-                let startRow = 0;
-
-                for (let row = startRow; row < endRow; row++) {
-                    if (foldWidgets[row] == null)
-                        foldWidgets[row] = e.getFoldWidget(row);
-
-                    if (foldWidgets[row] != "start") continue;
-                    let range = e.getFoldWidgetRange(row);
-                    if (range
-                        && range.end.row <= endRow
-                        && range.start.row >= startRow
-                    ) {
-                        row = range.end.row;
-                        try {
-                            // addFold can change the range
-                            console.info('addFold',row,range);
-                            let fold = e.addFold("...", range);
-                            if (fold)
-                                fold.collapseChildren = depth;
-                        } catch(e) {
-                        }
-                    }
-                }
+                session.$mode.collapseAll(session);
             } else if(item.value == "Collapse"){
-                $scope.vars.currentTab.editor.session.foldAll();
+                session.foldAll();
             } else {
 
             }

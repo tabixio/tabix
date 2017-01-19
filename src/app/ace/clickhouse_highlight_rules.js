@@ -105,10 +105,10 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                     regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
                 }, {
                     token: "paren.lparen",
-                    regex: "[\\(]"
+                    regex: "[\\(\\{]"
                 }, {
                     token: "paren.rparen",
-                    regex: "[\\)]"
+                    regex: "[\\)\\}]"
                 }, {
                     token: "text",
                     regex: "\\s+"

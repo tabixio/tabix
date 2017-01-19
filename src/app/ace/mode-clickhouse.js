@@ -14,9 +14,6 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
     let ClickhouseFoldMode = require("./clickhouse_FoldMode").FoldMode;
     let MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
     let CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
-    // var CStyleFoldMode = require("./folding/cstyle").FoldMode;
-
-    // let BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
 
     let Mode = function () {
 
@@ -30,28 +27,21 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
     oop.inherits(Mode, TextMode);
 
     (function () {
-
         this.lineCommentStart = "--";
-
         this.getCompletions = function (state, session,pos, prefix) {
             // return this.$completer.getCompletions(state, session, pos, prefix);
             return session.$mode.$highlightRules.completions;
         };
-
         this.$id = "ace/mode/clickhouse";
-
-
+        // ---------------------------------------------------------------------------
         this.checkOutdent = function(state, line, input) {
             return this.$outdent.checkOutdent(line, input);
         };
-
         this.autoOutdent = function(state, doc, row) {
             this.$outdent.autoOutdent(doc, row);
         };
-
         // ---------------------------------------------------------------------------
         this.findTokens = function (sql, type, needfirst) {
-            console.log('!!!!!!!');
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 
             let TokenIterator = require("ace/token_iterator").TokenIterator;
@@ -93,8 +83,35 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             text = text.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
             return text.trim();
         };
-
         // ------------------------------------------------------------------------------
+        this.collapseAll = function (session) {
+
+            let e=session;
+            let foldWidgets = e.foldWidgets;
+            let endRow =  e.getLength();
+            let startRow = 0;
+
+            for (let row = startRow; row < endRow; row++) {
+                if (foldWidgets[row] == null)
+                    foldWidgets[row] = e.getFoldWidget(row);
+
+                if (foldWidgets[row] != "start") continue;
+                let range = e.getFoldWidgetRange(row);
+                if (range
+                    && range.end.row <= endRow
+                    && range.start.row >= startRow
+                ) {
+                    row = range.end.row;
+                    try {
+                        // addFold can change the range
+                        let fold = e.addFold("...", range);
+                        if (fold)
+                            fold.collapseChildren = depth;
+                    } catch(e) {
+                    }
+                }
+            }
+        };
         this.splitByTokens = function (sql, type, value) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 

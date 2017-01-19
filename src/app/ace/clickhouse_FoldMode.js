@@ -80,22 +80,13 @@ ace.define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", 
                 let pos = iterator.getCurrentTokenPosition();
                 token = iterator.stepForward();
                 // если текущий токен скобка а следующий текст и далее SELECT
-                if (t.type=='paren.lparen' && ( t.value=='(' || t.value=='{') )// && token.type
+                if
+                (
+                 (t.type=='paren.lparen' && ( t.value=='(' ||  t.value=='{' ) )
+
+                )
                 {
                    range=session.getBracketRange(pos);
-                    //
-                    //
-                    // if (token.type=='keyword' && token.value=='SELECT')
-                    // {
-                    //     range=session.getBracketRange(pos);
-                    // }
-                    // else
-                    // {
-                    //     if  (token.type=='text' && token2.type=='keyword' && token2.value=='SELECT')
-                    //     {
-                    //         range=session.getBracketRange(pos);
-                    //     }
-                    // }
                 }
                 // Если мы нашли рендж - отлично
                 if (range) break;
