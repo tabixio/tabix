@@ -35,7 +35,7 @@
                                 </div>
                                 <md-menu-content id="menu" width="4">
                                     <md-menu-item ng-repeat="menu in rightAceMenuList | filter: {active: true}">
-                                        <md-button ng-click="rightMenuProcess(menu, $event)"> <i class="mdi mdi-fullscreen"></i>
+                                        <md-button ng-click="rightMenuProcess(menu, $event)"> <i class="mdi mdi-{{menu.icon}}"></i>
                                             {{menu.value}}
                                         </md-button>
                                     </md-menu-item>

@@ -630,8 +630,8 @@ window.global_delimiter             = ";;";
                 //showInvisibles:true ,
                 showGutter:true ,
                 enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
-                liveAutocompletionDelay: 500,
-                liveAutocompletionThreshold: 1
+                // liveAutocompletionDelay: 500,
+                // liveAutocompletionThreshold: 1
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
@@ -662,6 +662,27 @@ window.global_delimiter             = ";;";
                     },
                     exec: (editor) => {
                         editor.removeLines();
+                    }
+             });
+            // removeLines
+            editor.commands.addCommand({
+                    name: 'removeLiness',
+                    bindKey: {
+                        win: 'Ctrl-Shift--',
+                        mac: 'Ctrl-Shift--'
+                    },
+                    exec: (editor) => {
+                        editor.session.foldAll();
+                    }
+             });
+            editor.commands.addCommand({
+                    name: 'removeLiness',
+                    bindKey: {
+                        win: 'Ctrl-Shift-+',
+                        mac: 'Ctrl-Shift-+'
+                    },
+                    exec: (editor) => {
+                        editor.session.unfold();
                     }
              });
 
@@ -1051,22 +1072,54 @@ window.global_delimiter             = ";;";
 
         //context menu array
         $scope.rightAceMenuList = [
-            {active: true, value: 'AutoFormat'},
-            {active: true, value: 'Cut'},
-            {active: true, value: 'Paste'}
+            {active: true, value: 'AutoFormat',icon:'format-size'},
+            {active: true, value: 'Expand',icon:'arrow-expand'},
+            {active: true, value: 'Collapse',icon:'arrow-compress'},
+            {active: true, value: 'Collapse All',icon:'arrow-compress'},
         ];
 
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcess = function(item){
-            if(item.value == "Copy"){
-                $scope.placeHolder = $scope.model.text; //copy text
-            } else if(item.value == "Cut"){
-                $scope.placeHolder = $scope.model.text; //cut text
-                $scope.model.text = "";
-            } else {
-                //$scope.model.text += $scope.placeHolder; //paste text
+            $scope.vars.currentTab.editor.resize();
+            if(item.value == "AutoFormat"){
                 formatCode();
+            } else if(item.value == "Expand"){
+                $scope.vars.currentTab.editor.session.unfold();
+            } else if(item.value == "Collapse All"){
+
+                let e=$scope.vars.currentTab.editor.session;
+                let foldWidgets = e.foldWidgets;
+                let endRow =  e.getLength();
+                let startRow = 0;
+
+                for (let row = startRow; row < endRow; row++) {
+                    if (foldWidgets[row] == null)
+                        foldWidgets[row] = e.getFoldWidget(row);
+
+                    if (foldWidgets[row] != "start") continue;
+                    let range = e.getFoldWidgetRange(row);
+                    if (range
+                        && range.end.row <= endRow
+                        && range.start.row >= startRow
+                    ) {
+                        row = range.end.row;
+                        try {
+                            // addFold can change the range
+                            console.info('addFold',row,range);
+                            let fold = e.addFold("...", range);
+                            if (fold)
+                                fold.collapseChildren = depth;
+                        } catch(e) {
+                        }
+                    }
+                }
+            } else if(item.value == "Collapse"){
+                $scope.vars.currentTab.editor.session.foldAll();
+            } else {
+
             }
+            $scope.vars.currentTab.editor.focus();
+
         };
 
     }
