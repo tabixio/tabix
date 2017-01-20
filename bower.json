@@ -32,7 +32,8 @@
     "sql-formatter": "^1.1.2",
     "amcharts-angular": "*",
     "Sortable": "sortablejs#^1.4.2",
-    "echarts": "^3.4.0"
+    "echarts": "^3.4.0",
+    "ngECharts": "ngecharts#^0.2.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"
@@ -98,6 +99,11 @@
     "screenfull": {
       "main": [
         "dist/screenfull.min.js"
+      ]
+    },
+    "echarts": {
+      "main": [
+        "dist/echarts.js"
       ]
     },
     "jquery-ui": {

@@ -58,6 +58,42 @@
 
         };
 
+        $scope.initSankeys = (meta,data,query) => {
+            let dom = document.getElementById('sunkeyDiv');
+            let myChart = echarts.init(dom);
+            $.get('./product.json', function (data) {
+                myChart.hideLoading();
+
+                let option = {
+                    tooltip: {
+                        trigger: 'item',
+                        triggerOn: 'mousemove'
+
+                    },
+                    series: [
+                        {
+                            type: 'sankey',
+                            layout:'none',
+                            data: data.nodes,
+                            links: data.links,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 1,
+                                    borderColor: '#aaa'
+                                }
+                            },
+                            lineStyle: {
+                                normal: {
+                                    curveness: 0.5
+                                }
+                            }
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            });
+
+        };
         $scope.initChart = (meta,data,query) => {
             let drawCommand=[];
             if ('drawCommand' in query)

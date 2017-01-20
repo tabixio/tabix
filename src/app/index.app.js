@@ -26,6 +26,7 @@
         'pascalprecht.translate',
         'cfp.hotkeys',
         'ngHandsontable',
-        'amChartsDirective'
+        'amChartsDirective',
+        'ngecharts'
     ]);
 })();

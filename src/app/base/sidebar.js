@@ -73,7 +73,7 @@
             $mdSidenav( 'tableSiedenav' ).open( );
         };
 
-        $rootScope.$on('handleBroadcastDatabases', function(event,args) {
+        $rootScope.$on('handleBroadcastDatabases', function() {
             $scope.reLoad();
         });
 
