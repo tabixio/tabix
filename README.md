@@ -43,9 +43,7 @@
 - [x]  Редактор ACEjs,вынести из под Bower
 - [x]  Редактор - иконки в подсказках
 - [x]  Отдельное окно SHOW PROCESSLIST FORMAT JSON
-- [x]  ACE скрестить с Ace.Tern
-- [x]  Подсказки из офф документации в виде JSON 
-- [x]  Live autocomplete delay
+- [x]  Подсказки из офф документации в виде Json/js 
 - [x]  Редактор:Сворачивать скобки / Подзапросы
 - [x]  Редактор:Выбор разделителя запросов `;;` или `;` 
 - [x]  Комманда DRAW подсветка
@@ -80,6 +78,9 @@ http://krispo.github.io/angular-nvd3/#/
 - [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
 - [ ] Kill query in SHOW PROCESSLIST
 
+- [ ]  echarts тема темная 
+- [ ]  ACE скрестить с Ace.Tern
+- [ ]  Live autocomplete delay
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA
@@ -133,6 +134,30 @@ ui-grid.info : http://ui-grid.info/docs/#/tutorial/401_AllFeatures
 
 
 http://raw.densitydesign.org/
+
+
+
+# Draw 
+
+### drawchart
+
+```javascript
+{
+    cos:{'lineColor':'green','type':'column'},
+    sin:{'title':'COS!!!!'}
+}
+```
+### drawsankeys
+
+```javascript
+{
+    levels:[
+        {source:'AdmArea',target:'District',value:'MoneyPerHour'},
+        {source:'District',target:'Street',value:'MoneyPerHour'}
+    ],
+    echarts:{}
+}
+```
 
 ----
 

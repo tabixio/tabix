@@ -116,7 +116,9 @@
                         </md-tab-label>
 
                         <md-tab-body >
-                            <div id="sunkeyDiv" style="width:600px; height:100%"></div>
+<div ng-if="echarts.sankeys">
+    <echarts options="echarts.sankeys" style="width:1000px; height:700px;border: 1px solid silver" ></echarts>
+</div>
 
                         </md-tab-body>
                     </md-tab>
