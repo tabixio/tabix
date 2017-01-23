@@ -1,6 +1,6 @@
 <div ng-controller="FooterCtrl as footer">
 
-<md-tab ng-repeat="result in tab.results" >
+<md-tab ng-repeat="result in tab.results" md-dynamic1-height md-border-bottom class="h100">
     <md-tab-label>
         {{::result.time}}
         <i class="mdi mdi-18px ml+" ng-class="result.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="result.pinned = !result.pinned; $event.stopPropagation()"></i>
@@ -8,10 +8,10 @@
     </md-tab-label>
     <md-tab-body>
         <div ng-repeat="item in result.data">
-                <md-tabs md-dynamic-height md-selected="vars.selectedIndex" md-border-bottom md-autoselect>
+                <md-tabs md-dynamic-height md-selected="item.selectedTabIndex" md-border-bottom md-autoselect>
                     <md-tab>
                         <md-tab-label>
-                        Table
+                        Table <i class="mdi mdi-18px mdi-table-large"></i>
                         </md-tab-label>
 
                         <md-tab-body>
@@ -85,43 +85,58 @@
                         </md-tab-body>
                     </md-tab>
 
-                     <md-tab md-on-select="initChart(item.meta,item.data,item.query)" >
+
+
+
+                    <!-- CHART -->
+
+                     <md-tab md-on-select="initCharts(item.meta,item.data,item.query)" ng-if="item.charts">
                         <md-tab-label>
-                        amChart <i class="mdi mdi-show-chart"></i>
+                        Charts <i class="mdi mdi-18px mdi-show-chart"></i>
                         </md-tab-label>
 
                         <md-tab-body>
-                            <md-card md-theme-watch>
-                            <div>
-                                <div id="myFirstChart" style="height:500px;width:100%;border: 1px silver dotted"></div>
-                            </div>
+                            <md-card md-theme-watch ng-repeat="chart in render.charts">
+
+                            <span ng-if="chart.echarts">
+                                <echarts options="chart.echarts.options" style="width:1000px; height:700px;border: 1px solid silver" ></echarts>
+                            </span>
+
+                            <span ng-if="chart.amchart">
+                                <div id="myFirstChart" style="height:500px;width:100%;border: 1px dotted red"></div>
+                            </span>
+
                             </md-card>
+
+
                         </md-tab-body>
                     </md-tab>
 
-                    <md-tab md-on-select="initPivot(item.meta,item.data,item.query)">
+
+
+
+
+                    <!--<md-tab md-on-select="initSankeys(item.meta,item.data,item.query)" ng-if="item.echarts">-->
+                        <!--<md-tab-label>-->
+                            <!--{{item.echarts.title}} <i class="mdi mdi-18px mdi-pages"></i>-->
+                        <!--</md-tab-label>-->
+
+                        <!--<md-tab-body >-->
+
+                        <!--</md-tab-body>-->
+                    <!--</md-tab>-->
+
+                    <!-- PIVOTJS -->
+                    <md-tab md-on-select="initPivot(item.meta,item.data,item.query)" ng-if="item.pivot">
                         <md-tab-label>
-                            Pivot <i class="mdi mdi-pages"></i>
+                            Pivot  <i class="material-icons mdi mdi-18px mdi-extension"></i>
                         </md-tab-label>
-
                         <md-tab-body >
-                            <div id="pivotDiv" style="width:600px; height:100%"></div>
-
+                            <div id="pivotDiv" ng-if="ready.pivot" style="width:600px; height:100%"></div>
                         </md-tab-body>
                     </md-tab>
 
-                    <md-tab md-on-select="initSankeys(item.meta,item.data,item.query)">
-                        <md-tab-label>
-                            Sankeys <i class="mdi mdi-pages"></i>
-                        </md-tab-label>
 
-                        <md-tab-body >
-<div ng-if="echarts.sankeys">
-    <echarts options="echarts.sankeys" style="width:1000px; height:700px;border: 1px solid silver" ></echarts>
-</div>
-
-                        </md-tab-body>
-                    </md-tab>
 
 
                 </md-tabs>

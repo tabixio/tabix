@@ -240,6 +240,15 @@ window.global_delimiter             = ";;";
          * @returns {*}
          */
         $scope.renderResult = (data) => {
+
+            // ставим активной закладку 0
+
+            data.echarts=false;
+            data.pivot=false;
+            data.charts=false;
+
+            data.selectedTabIndex=0;
+            //
             if (typeof data.error == 'string') {
                 data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
             }
@@ -252,8 +261,14 @@ window.global_delimiter             = ";;";
                 }
             }
             else {
+
+                // рендер таблицы в HTML
                 data.result = API.dataToHtml(data);
+                // запрос на createtable из select
                 data.createtable = API.dataToCreateTable(data);
+
+                data.pivot=true;
+                data.charts=true;
             }
             return data;
         };

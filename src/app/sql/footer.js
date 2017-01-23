@@ -31,9 +31,20 @@
 
 
         $scope.amChartOptions = false;
+
+
+        $scope.ready = {
+            pivot:false,
+            amchart:false,
+            echarts:false
+
+        };
         $scope.echarts = {
             sankeys:false
         };
+
+
+
         $scope.vars = {
             rsw: 0,
             uiTheme: ThemeService.themeObject,
@@ -58,7 +69,7 @@
                     collapseColsAt: 0
                 }
             });
-
+            $scope.ready.pivot=true;
         };
 
         $scope.initSankeys = (meta,data,query) => {
@@ -148,6 +159,7 @@
             //
             //
             // });
+            $scope.ready.echarts=true;
 
         };
         $scope.initChart = (meta,data,query) => {
@@ -157,6 +169,7 @@
                 drawCommand=query.drawCommand;
             }
             $scope.createChart(meta,data,drawCommand);
+            $scope.ready.amchart=true;
         };
 
         $scope.getChartGraph = (meta,chartSets) => {
