@@ -81,6 +81,13 @@ http://krispo.github.io/angular-nvd3/#/
 - [ ]  echarts тема темная 
 - [ ]  ACE скрестить с Ace.Tern
 - [ ]  Live autocomplete delay
+- [ ]  Меню по правой кнопке на таблице, наполнить элементы
+- [ ]   
+- [ ]   
+- [ ]   
+- [ ]   
+- [ ]   
+- [ ]   
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA

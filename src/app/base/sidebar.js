@@ -8,7 +8,8 @@
         '$state',
         'API',
         'ThemeService',
-        '$mdSidenav'
+        '$mdSidenav',
+
     ];
 
     /**
@@ -77,8 +78,21 @@
             $scope.reLoad();
         });
 
+
+        //gets triggered when an item in the context menu is selected
+        $scope.rightMenuProcessTable = function(item){
+            if(item.key == "OpenTables"){
+
+            } else if(item.key == "InsertDescribe"){
+
+            }
+        };
+
+
+
         $scope.reLoad = () =>   {
             let list_all_fields=[];
+
 
             API.query( "SELECT * FROM system.columns" ).then(res => {
                 let data = res.data || [ ];
@@ -91,6 +105,11 @@
                     let data = res.data || [ ];
                     $scope.vars.databases = data.reduce(( prev, item ) => {
 
+                        let  rightMenuListTable=
+                        [
+                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},
+                            {active: true, value: 'Insert Create Table',key:'InsertDescribe',icon:'format-size'}
+                        ];
 
                         let classEngine='';
                         if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
@@ -101,10 +120,19 @@
                         if (item.engine.match(/$Merge^/))  classEngine='source-fork';
 
                         item.classEngine=classEngine;
+                        item.rightMenuListTable=rightMenuListTable;
 
                         for ( let a of prev ) {
                             if ( item.name !=='-' && a.name == item.database ) {
-                                a.tables.push({ name: item.name,engine : item.engine,classEngine:item.classEngine,fields:list_all_fields[item.database+'.'+item.name] });
+                                a.tables.push(
+                                        {
+                                                name: item.name,
+                                                engine : item.engine,
+                                                classEngine:item.classEngine,
+                                                fields:list_all_fields[item.database+'.'+item.name],
+                                                rightMenuList:item.rightMenuListTable
+                                        }
+                                );
                                 return prev;
                             }
                         }
@@ -117,7 +145,9 @@
                                         name: item.name,
                                         engine : item.engine,
                                         classEngine : item.classEngine,
-                                        fields:list_all_fields[item.database+'.'+item.name]
+                                        rightMenuList:item.rightMenuListTable,
+                                        fields:list_all_fields[item.database+'.'+item.name],
+
                                     }
                                 ]
                             }
@@ -127,6 +157,7 @@
 
 
                     $scope.selectDatabase($scope.vars.databases[0]);
+
 
                     // отдельно получаем список баз данных - если база пустая
                     API.query( "SELECT name FROM system.databases" ).then(res => {
@@ -138,10 +169,16 @@
                                 {
                                     find=true;
                                 }
+
                             });
                             if (!find)
                             {
-                                $scope.vars.databases.push({name:item.name,tables:[]});
+                                $scope.vars.databases.push(
+                                        {
+                                                name:item.name,
+                                                // rightMenuList:rightMenuListDatabases,
+                                                tables:[]
+                                        });
                             }
 
                         });

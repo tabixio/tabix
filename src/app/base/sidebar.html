@@ -2,8 +2,8 @@
     <fun-metis-menu ng-if="vars.loaded && !vars.error" fun-metis-config="vars.metis.config" fun-metis-events="vars.metis.events" class="metismenu">
         <nav>
             <ul>
-                <li ng-class="active">
-                    <a>
+                <li class="active">
+                    <a class="has-arrow" >
                         <md-button class="text-left no-txt-transform w200">
                             <i class="mdi mdi-server"></i>
                             Server
@@ -12,24 +12,46 @@
                     </a>
                     <ul class="sub-menu">
                         <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
-                            <a>
-                                <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)">
+
+
+                            <a ng-mouseenter >
+                                <md-button class="text-left no-txt-transform w100" ng-click="clickAndSelect(database, $event)" >
                                     <i class="mdi mdi-database"></i>{{database.name}} <span class="pull-right" style="color: silver">{{database.tables.length}} </span></md-button>
                             </a>
+
+
                             <ul class="sub-menu" ng-if="database.tables.length">
                                 <li ng-repeat="table in database.tables">
-                                    <a>
-                                        <md-button class="text-left no-txt-transform" ng-dblclick="openTable(table)">
-                                            <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
-                                            <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
-                                            {{table.name}}
-                                        </md-button>
+
+                                    <a class="has-arrow">
+                                        <md-menu mousepoint-menu>
+
+                                            <md-button ng-mouseenter class="text-left no-txt-transform" ng-dblclick="openTable(table)"
+                                                       ng-right-click="$mdOpenMousepointMenu($event)">
+                                                <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
+                                                <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
+                                                {{table.name}}
+                                            </md-button>
+
+                                            <md-menu-content width="4">
+                                                <md-menu-item ng-repeat="menu in table.rightMenuList | filter: {active: true}">
+                                                    <md-button ng-click="rightMenuProcessTable(menu, $event)"> <i class="mdi mdi-{{menu.icon}}"></i>
+                                                        {{menu.value}}
+                                                    </md-button>
+                                                </md-menu-item>
+                                            </md-menu-content>
+
+                                        </md-menu>
                                     </a>
                                     <ul class="sub-menu">
-                                        <li ng-repeat="field in table.fields" class="text-left" style="font-size: 70%;" ng-click="clickInsertField(field)">
-                                            {{field.name}}
+                                        <li ng-repeat="field in table.fields" class="text-left no-txt-transform" style="font-size: 80%;" ng-click="clickInsertField(field)">
+                                            <pre style="margin: 2px 0px 0px 2px">{{field.name}}</pre>
                                         </li>
                                     </ul>
+
+
+
+
                                 </li>
                             </ul>
                         </li>
@@ -39,7 +61,7 @@
         </nav>
     </fun-metis-menu>
     <div ng-if="vars.loaded && vars.error" class="mt+">
-        No connect, or Error.
+        No connect, or Error or Loadind!
         See console log
     </div>
 </div>
