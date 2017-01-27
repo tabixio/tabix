@@ -43,6 +43,40 @@
             sankeys:false
         };
 
+        $scope.widgets = [{ x:0, y:0, width:1, height:1 }, { x:0, y:0, width:3, height:1 }];
+        $scope.options = {
+            cellHeight: 200,
+            verticalMargin: 10
+        };
+        $scope.addWidget = function() {
+            var newWidget = { x:0, y:0, width:1, height:1 };
+            $scope.widgets.push(newWidget);
+        };
+        $scope.removeWidget = function(w) {
+            var index = $scope.widgets.indexOf(w);
+            $scope.widgets.splice(index, 1);
+        };
+        $scope.onChange = function(event, items) {
+            console.log("onChange event: "+event+" items:"+items);
+        };
+        $scope.onDragStart = function(event, ui) {
+            console.log("onDragStart event: "+event+" ui:"+ui);
+        };
+        $scope.onDragStop = function(event, ui) {
+            console.log("onDragStop event: "+event+" ui:"+ui);
+        };
+        $scope.onResizeStart = function(event, ui) {
+            console.log("onResizeStart event: "+event+" ui:"+ui);
+        };
+        $scope.onResizeStop = function(event, ui) {
+            console.log("onResizeStop event: "+event+" ui:"+ui);
+        };
+        $scope.onItemAdded = function(item) {
+            console.log("onItemAdded item: "+item);
+        };
+        $scope.onItemRemoved = function(item) {
+            $log.log("onItemRemoved item: "+item);
+        };
 
 
         $scope.vars = {
