@@ -1,8 +1,8 @@
 ((angular, smi2, AmCharts, $) => {
     'use strict';
 
-    angular.module(smi2.app.name).controller('FooterCtrl', FooterController);
-    FooterController.$inject = [
+    angular.module(smi2.app.name).controller('RenderCtrl', RenderController);
+    RenderController.$inject = [
         '$scope',
         '$rootScope',
         '$window',
@@ -16,10 +16,10 @@
 
     /**
      * @ngdoc controller
-     * @name smi2.controller:FooterCtrl
+     * @name smi2.controller:RenderCtrl
      * @description SQL controller data
      */
-    function FooterController($scope,
+    function RenderController($scope,
                            $rootScope,
                            $window,
                            localStorageService,
@@ -43,7 +43,7 @@
             sankeys:false
         };
 
-        $scope.widgets = [{ x:0, y:0, width:1, height:1 }, { x:0, y:0, width:3, height:1 }];
+        $scope.widgets = [{ x:0, y:0, width:12, height:3 }, { x:0, y:0, width:3, height:1 }];
         $scope.options = {
             cellHeight: 200,
             verticalMargin: 10
@@ -75,7 +75,7 @@
             console.log("onItemAdded item: "+item);
         };
         $scope.onItemRemoved = function(item) {
-            $log.log("onItemRemoved item: "+item);
+            console.log("onItemRemoved item: "+item);
         };
 
 
@@ -86,6 +86,20 @@
             stackType:'false'
 
         };
+
+        $scope.initTableTab = (data) => {
+
+        };
+
+        $scope.initDrawTab = (data) => {
+
+        };
+
+        $scope.initPivotTab = (data) => {
+
+        };
+
+
 
         $scope.initPivot = (meta,data) => {
             console.info('pivot');
@@ -105,6 +119,35 @@
             });
             $scope.ready.pivot=true;
         };
+
+        $scope.initChart = (meta,data,query) => {
+
+            let drawCommand=[];
+            if ('drawCommand' in query)
+            {
+                drawCommand=query.drawCommand;
+            }
+            $scope.createChart(meta,data,drawCommand);
+            $scope.ready.amchart=true;
+
+        };
+
+
+
+        $scope.initTable = (meta,data,query) => {
+
+            console.warn("INIT TABLE!");
+
+        };
+
+
+
+        $scope.initControll = (meta,data,query) => {
+
+            console.warn("INIT TABLE!");
+
+        };
+
 
         $scope.initSankeys = (meta,data,query) => {
 
@@ -195,15 +238,6 @@
             // });
             $scope.ready.echarts=true;
 
-        };
-        $scope.initChart = (meta,data,query) => {
-            let drawCommand=[];
-            if ('drawCommand' in query)
-            {
-                drawCommand=query.drawCommand;
-            }
-            $scope.createChart(meta,data,drawCommand);
-            $scope.ready.amchart=true;
         };
 
         $scope.getChartGraph = (meta,chartSets) => {
