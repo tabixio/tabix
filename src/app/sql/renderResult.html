@@ -20,8 +20,10 @@
             </md-tab-label>
 
             <md-tab-body>
+                <div ng-repeat="item in result.data">
                 <span ng-if="item.result === null">{{'нет данных' | translate}}</span>
                 <div ng-if="item.result !== null" ng-bind-html="item.result" style="overflow-x: auto; overflow-y: auto; width: 100%; min-height: 40px"></div>
+                </div>
             </md-tab-body>
 
 

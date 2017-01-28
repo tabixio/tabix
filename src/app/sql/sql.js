@@ -51,6 +51,11 @@ window.global_delimiter             = ";;";
         const SQL_LOG_LENGTH = 30;
 
 
+        $scope.widgets={
+            tables:[],
+            pivot:[],
+            draw:[]
+        };
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
@@ -186,8 +191,44 @@ window.global_delimiter             = ";;";
                 }
                 data.error = false;
                 data.query = query;
-                let resultData = $scope.renderResult(data);
-                resultContainer.data.push(resultData);
+
+
+
+                // провайдер CH или API
+                let provider='ch';
+                // передаем в
+                let dp= new DataProvider(data,provider);
+
+
+
+                // Получаем список виджетов в каждый передаем DP
+                // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
+                // Запрос может содержать несколько draw комманд, тогда в разделе Draw должно быть указанное кол-во комманд
+                // Если в текущем scope уже существуют виджеты - нужно аккурататно перестроить их ? как ?
+
+                $scope.widgets.tables.push(new WidgetTable(dp));
+                $scope.widgets.pivot.push(new WidgetPivot(dp));
+
+                if ('drawCommand' in query && query.drawCommand.length)
+                {
+                    // У запроса есть список DRAW комманд каждая идет в стек
+                    query.drawCommand.forEach((item) => {
+
+
+                        console.warn("ADD DRAW",item);
+
+                        $scope.widgets.draw.push(new WidgetDraw(dp,item));
+                    });
+                }
+                else {
+
+                    console.warn("ADD DRAW",'AUTO');
+                    // Если у запроса не указана коммпанда Draw попробовать использовать автомат
+                    $scope.widgets.draw.push(new WidgetDraw(dp,false));
+                }
+
+                // Стек отправленных запросов
+                resultContainer.data.push(query);
 
                 // Рекурсивный вызов executeQuery если в очереди
                 // еще остались элементы
@@ -195,9 +236,8 @@ window.global_delimiter             = ";;";
                     $scope.executeQuery(queue[query.index + 1], queue, resultContainer);
                 }
                 else {
-
-                    // отрисовка
-                    $scope.renderFinalResult(resultContainer);
+                    // Финал запросов
+                    $scope.finalizeResult(resultContainer);
 
                 }
 
@@ -221,9 +261,21 @@ window.global_delimiter             = ";;";
                 } else {
                     result.error = response;
                 }
-                resultContainer.data.push($scope.renderResult(result));
 
-                $scope.renderFinalResult(resultContainer);
+                // провайдер CH или API
+                let provider='ch';
+                // передаем в
+                let dp= new DataProvider(result,provider);
+                resultContainer.data.push(query);
+
+                $scope.widgets.tables.push(new WidgetTable(dp));
+
+
+                $scope.finalizeResult(resultContainer);
+
+
+                //resultContainer.data.push($scope.renderResult(result));
+                //$scope.renderFinalResult(resultContainer);
             });
         };
 
@@ -270,9 +322,9 @@ window.global_delimiter             = ";;";
          * Operations after render
          * @param result
          */
-        $scope.renderFinalResult = (result) => {
+        $scope.finalizeResult = (resultContainer) => {
             $scope.vars.currentTab.loading = false;
-            if (result.data.find((item) => (
+            if (resultContainer.data.find((item) => (
                     item.query &&
                     item.query.keyword &&
                     ['DROP', 'CREATE', 'ALTER'].indexOf(
@@ -283,6 +335,8 @@ window.global_delimiter             = ";;";
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 $rootScope.$emit('handleBroadcastDatabases',{});
             }
+
+            console.info('WID',$scope.widgets);
         };
 
         /**
@@ -369,6 +423,7 @@ window.global_delimiter             = ";;";
                         else
                         {
                             let rg=item.range.compare(cursor.row, cursor.column);
+                            console.warn("REGION COMPARE",rg);
                             if (rg !== 0) return ;
 
                         }
@@ -627,6 +682,8 @@ window.global_delimiter             = ";;";
             let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
+
+
 
             // Load settings from LocalStorage
             editor.setOptions({

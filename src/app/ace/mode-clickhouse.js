@@ -113,7 +113,8 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             }
         };
         this.splitByTokens = function (sql, type, value) {
-            sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
+            sql = this.trim(sql,';;');
+            sql = this.trim(sql,';');
 
             let TokenIterator = require("ace/token_iterator").TokenIterator;
             let EditSession = require("ace/edit_session").EditSession;
