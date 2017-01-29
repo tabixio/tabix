@@ -3,11 +3,27 @@
         <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,widgets)" on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
 
 
-            <div gridstack-item ng-repeat="w in widgets" class="grid-stack-item" gs-item-x="w.x" gs-item-y="w.y"
-                 gs-item-width="w.width" gs-item-height="w.height" gs-item-autopos="1" on-item-added="onItemAdded(w)" on-item-removed="onItemRemoved(w)">
+            <div gridstack-item
+                    ng-repeat="w in widgets"
+                    class="grid-stack-item"
+                    gs-item-x="w.x"
+                    gs-item-y="w.y"
+                    gs-item-width="w.width"
+                    gs-item-height="w.height"
+                    gs-item-autopos="1"
+                    on-item-added="onItemAdded(w)"
+                    on-item-removed="onItemRemoved(w)">
+
+
+
                 <div class="grid-stack-item-content" ng-if="w.init">
-                    <!--<a class="btn btn-primary" ng-click="removeWidget(w)" href="#">remove</a>-->
+
+                    <draw-widget widget="w">XD</draw-widget>
+
                 </div>
+
+
+
             </div>
         </div>
     </div>

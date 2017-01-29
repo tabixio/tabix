@@ -205,17 +205,8 @@ window.global_delimiter             = ";;";
                 // Получаем список виджетов в каждый передаем DP
                 // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
                 // Запрос может содержать несколько draw комманд, тогда в разделе Draw должно быть указанное кол-во комманд
-                // data: [],
-                //     time: $filter('date')(new Date(), 'HH:mm:ss'),
-                //     pinned: false,
-                //     widgets:{
-                //     tables:[],
-                //         pivot:[],
-                //         draw:[]
-                // }
-                // Стек отправленных запросов и результатов - доступен в view через tab.results
 
-
+                // resultContainer - Стек отправленных запросов и результатов - доступен в view через tab.results
                 resultContainer.widgets.tables.push(new WidgetTable(dp));
                 resultContainer.widgets.pivot.push(new WidgetPivot(dp));
 
@@ -231,7 +222,6 @@ window.global_delimiter             = ";;";
                     // Если у запроса не указана коммпанда Draw попробовать использовать автомат
                     resultContainer.widgets.draw.push(new WidgetDraw(dp,false));
                 }
-
 
                 resultContainer.data.push(query);
 
@@ -318,7 +308,7 @@ window.global_delimiter             = ";;";
 
         /**
          * Operations after render
-         * @param result
+         * @param resultContainer
          */
         $scope.finalizeResult = (resultContainer) => {
             $scope.vars.currentTab.loading = false;
@@ -340,6 +330,7 @@ window.global_delimiter             = ";;";
         /**
          * Execute SQL statement
          * @param type
+         * @param tab
          */
         $scope.execute = (type, tab) => {
 
@@ -349,6 +340,10 @@ window.global_delimiter             = ";;";
             let queue = [];
             let selectSql = editor.getSelectedText();
 
+            if (angular.isUndefined(tab.selectedTabResultIndex))
+            {
+                tab.selectedTabResultIndex=0;
+            }
 
             // RESULT для вкладки в TAB
             let result = {

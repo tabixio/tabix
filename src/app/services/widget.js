@@ -12,7 +12,7 @@ class Widget {
         this.init=false;
         this.x=0;
         this.y=0;
-        this.height=2;
+        this.height=1;
         this.width=6;
     }
 
@@ -26,8 +26,10 @@ class WidgetDraw extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.height=2;
+        this.height=1;
         this.width=12;
+
+        this.init=true;
 
     }
 }
@@ -37,8 +39,10 @@ class WidgetPivot extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.height=6;
-        this.width=12;
+        this.height=1;
+        this.width=6;
+
+        this.init=true;
     }
 }
 class WidgetTable extends Widget
@@ -46,8 +50,9 @@ class WidgetTable extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.height=6;
+        this.height=1;
         this.width=12;
+        this.init=true;
     }
 }
 

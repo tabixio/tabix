@@ -86,22 +86,31 @@
             rsw: 0,
             uiTheme: ThemeService.themeObject,
             isChartReady:false,
-            stackType:'false'
+            stackType:'false',
+            active:{
+                table:false,
+                pivot:false,
+                draw:false
+            }
 
         };
 
-        $scope.initTableTab = (resultContainer) => {
+        $scope.initTableTab = () => {
             console.info("initTableTab");
+            $scope.vars.active.table=true;
 
         };
 
-        $scope.initDrawTab = (resultContainer) => {
+        $scope.initDrawTab = () => {
             console.info("initDrawTab");
+            $scope.vars.active.draw=true;
 
         };
 
-        $scope.initPivotTab = (resultContainer) => {
+        $scope.initPivotTab = () => {
             console.info("initPivotTab");
+            $scope.vars.active.pivot=true;
+
 
         };
 

@@ -9,17 +9,17 @@
 </md-tab-label>
 <md-tab-body>
 
-    <!--md-selected="selectedTabResultIndex"-->
-    <md-tabs md-dynamic-height  md-border-bottom md-autoselect>
+    <!---->
+    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
 
         <!-- !TABLES! -->
-        <md-tab md-on-select="initTableTab(resultContainer)">
+        <md-tab md-on-select="initTableTab()" ng-click="vars.active.table=true">
             <md-tab-label>
                 Table <i class="mdi mdi-18px mdi-table-large"></i>
             </md-tab-label>
 
             <md-tab-body>
-                <div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'"></div>
+                <div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>
                 <!--<div ng-repeat="item in result.data">-->
                 <!--<span ng-if="item.result === null">{{'нет данных' | translate}}</span>-->
                 <!--<div ng-if="item.result !== null" ng-bind-html="item.result" style="overflow-x: auto; overflow-y: auto; width: 100%; min-height: 40px"></div>-->
@@ -29,23 +29,23 @@
 
 
         <!-- !CHART! -->
-        <md-tab md-on-select="initDrawTab(resultContainer)" >
+        <md-tab md-on-select="vars.active.draw=true" >
             <md-tab-label>
                 Draw <i class="mdi mdi-18px mdi-show-chart"></i>
             </md-tab-label>
             <md-tab-body>
-                <div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'"></div>
+                <div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>
             </md-tab-body>
         </md-tab>
 
 
         <!-- !PIVOTJS! -->
-        <md-tab md-on-select="initPivotTab(resultContainer)">
+        <md-tab md-on-select="vars.active.pivot=true">
             <md-tab-label>
                 Pivot  <i class="material-icons mdi mdi-18px mdi-extension"></i>
             </md-tab-label>
             <md-tab-body >
-                <div ng-init="widgets = resultContainer.widgets.pivot" ng-include="'app/render/WidgetsList.html'"></div>
+                <div ng-init="widgets = resultContainer.widgets.pivot" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.pivot"></div>
                 <!--<div ng-if="ready.pivot" style="width:600px; height:100%"></div>-->
             </md-tab-body>
         </md-tab>
