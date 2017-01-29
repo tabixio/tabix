@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017  SMI2
+ * All rights reserved.
+ */
+
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
 window.global_keywords_fields       = "";
 window.global_keywords_tables       = "";
@@ -51,11 +56,7 @@ window.global_delimiter             = ";;";
         const SQL_LOG_LENGTH = 30;
 
 
-        $scope.widgets={
-            tables:[],
-            pivot:[],
-            draw:[]
-        };
+
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
@@ -204,30 +205,34 @@ window.global_delimiter             = ";;";
                 // Получаем список виджетов в каждый передаем DP
                 // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
                 // Запрос может содержать несколько draw комманд, тогда в разделе Draw должно быть указанное кол-во комманд
-                // Если в текущем scope уже существуют виджеты - нужно аккурататно перестроить их ? как ?
+                // data: [],
+                //     time: $filter('date')(new Date(), 'HH:mm:ss'),
+                //     pinned: false,
+                //     widgets:{
+                //     tables:[],
+                //         pivot:[],
+                //         draw:[]
+                // }
+                // Стек отправленных запросов и результатов - доступен в view через tab.results
 
-                $scope.widgets.tables.push(new WidgetTable(dp));
-                $scope.widgets.pivot.push(new WidgetPivot(dp));
+
+                resultContainer.widgets.tables.push(new WidgetTable(dp));
+                resultContainer.widgets.pivot.push(new WidgetPivot(dp));
+
 
                 if ('drawCommand' in query && query.drawCommand.length)
                 {
                     // У запроса есть список DRAW комманд каждая идет в стек
                     query.drawCommand.forEach((item) => {
-
-
-                        console.warn("ADD DRAW",item);
-
-                        $scope.widgets.draw.push(new WidgetDraw(dp,item));
+                        resultContainer.widgets.draw.push(new WidgetDraw(dp,item));
                     });
                 }
                 else {
-
-                    console.warn("ADD DRAW",'AUTO');
                     // Если у запроса не указана коммпанда Draw попробовать использовать автомат
-                    $scope.widgets.draw.push(new WidgetDraw(dp,false));
+                    resultContainer.widgets.draw.push(new WidgetDraw(dp,false));
                 }
 
-                // Стек отправленных запросов
+
                 resultContainer.data.push(query);
 
                 // Рекурсивный вызов executeQuery если в очереди
@@ -238,7 +243,6 @@ window.global_delimiter             = ";;";
                 else {
                     // Финал запросов
                     $scope.finalizeResult(resultContainer);
-
                 }
 
             }, (response) => {
@@ -267,15 +271,9 @@ window.global_delimiter             = ";;";
                 // передаем в
                 let dp= new DataProvider(result,provider);
                 resultContainer.data.push(query);
-
-                $scope.widgets.tables.push(new WidgetTable(dp));
-
-
+                resultContainer.widgets.tables.push(new WidgetTable(dp));
                 $scope.finalizeResult(resultContainer);
 
-
-                //resultContainer.data.push($scope.renderResult(result));
-                //$scope.renderFinalResult(resultContainer);
             });
         };
 
@@ -324,6 +322,8 @@ window.global_delimiter             = ";;";
          */
         $scope.finalizeResult = (resultContainer) => {
             $scope.vars.currentTab.loading = false;
+
+            // todo проверить
             if (resultContainer.data.find((item) => (
                     item.query &&
                     item.query.keyword &&
@@ -335,8 +335,6 @@ window.global_delimiter             = ";;";
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 $rootScope.$emit('handleBroadcastDatabases',{});
             }
-
-            console.info('WID',$scope.widgets);
         };
 
         /**
@@ -350,17 +348,25 @@ window.global_delimiter             = ";;";
             const editor = tab.editor;
             let queue = [];
             let selectSql = editor.getSelectedText();
+
+
+            // RESULT для вкладки в TAB
             let result = {
                 data: [],
                 time: $filter('date')(new Date(), 'HH:mm:ss'),
-                pinned: false
+                pinned: false,
+                widgets:{
+                    tables:[],
+                    pivot:[],
+                    draw:[]
+                }
             };
 
             // получаем выделенный текст, и если выделено - ранаем выделение
             if (!(selectSql === '' || selectSql === null)) {
                 sql = selectSql;
             }
-            console.info(sql);
+            console.info('[EDITOR TEXT]> ',sql);
 
             // Выход если пустой sql
             if (sql === '' || sql === null) {
@@ -423,7 +429,6 @@ window.global_delimiter             = ";;";
                         else
                         {
                             let rg=item.range.compare(cursor.row, cursor.column);
-                            console.warn("REGION COMPARE",rg);
                             if (rg !== 0) return ;
 
                         }
@@ -737,7 +742,6 @@ window.global_delimiter             = ";;";
                         mac: 'Command+Shift+-'
                     },
                     exec: (editor) => {
-                        console.info('collapseAll');
                         editor.session.$mode.collapseAll(editor.session);
                     }
              });

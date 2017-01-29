@@ -1,9 +1,15 @@
+/*
+ * Copyright (C) 2017 IgorStrykhar  in  SMI2
+ * All rights reserved.
+ */
+
+
 'use strict';
 
 class DataProvider {
 
     constructor(result,privider) {
-        console.warn('result',result);
+        console.warn('DataProvider',result,privider);
         // this._data = data;
         // this._query = query;
         // this._drawCommands = drawCommands;
