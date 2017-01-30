@@ -14,6 +14,7 @@ class Widget {
         this.y=0;
         this.height=1;
         this.width=6;
+        this.type=false;
     }
 
     toString() {
@@ -28,7 +29,7 @@ class WidgetDraw extends Widget
 
         this.height=1;
         this.width=12;
-
+        this.type="amchart";
         this.init=true;
 
     }
@@ -41,7 +42,7 @@ class WidgetPivot extends Widget
 
         this.height=1;
         this.width=6;
-
+        this.type="pivot";
         this.init=true;
     }
 }
@@ -53,6 +54,7 @@ class WidgetTable extends Widget
         this.height=1;
         this.width=12;
         this.init=true;
+        this.type='table';
     }
 }
 
