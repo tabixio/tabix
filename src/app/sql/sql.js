@@ -638,11 +638,16 @@ window.global_delimiter             = ";;";
             }
         };
 
+
         const selectNextTab = () => {
             if ($scope.vars.selectedTab < ($scope.vars.tabs.length - 1)) {
                 selectTab($scope.vars.selectedTab + 1);
             }
         };
+
+        /**
+         * Автоформатирование
+         */
 
         const formatCode = () => {
             if (angular.isObject(window.sqlFormatter)) {
@@ -655,6 +660,10 @@ window.global_delimiter             = ";;";
             }
         };
 
+
+        /**
+         * Хоткеи для переключения вкладок
+         */
         for (let i = 0; i < 9; i++) {
             hotkeys.add({
                 combo: 'ctrl+shift+' + (i + 1),

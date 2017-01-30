@@ -8,9 +8,15 @@
 
 class DataProvider {
 
-    constructor(result,privider) {
-        console.warn('DataProvider',result,privider);
-        // this._data = data;
+    constructor(result,sourceType) {
+        this.data=result.data;
+        this.sourceType=sourceType;
+        this.meta=result.meta;
+        this.query=result.query;
+        this.draw=result.query.drawCommands;
+        this.rows=result.rows;
+console.info("DP>",result);
+
         // this._query = query;
         // this._drawCommands = drawCommands;
 
@@ -18,12 +24,12 @@ class DataProvider {
     }
 
 
+
     data() {
-        console.log(this.data);
-        return this._data.data;
+        return this.data;
     }
     meta() {
-        return this._data.meta;
+        return this.meta;
     }
     toString() {
         return '(' + this.name + ', ' + this.y + ')';

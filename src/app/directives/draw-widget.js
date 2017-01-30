@@ -23,15 +23,18 @@
             //
             if (scope.widget.type=='table')
             {
-                let x= `<hot-table
-                        ng-class="{'handsontable-dark': vars.isDark}"
-                        hot-id="hottable"
-                        settings="widget.settings"
-                        datarows="widget.data"
+
+                // ng-class="{'handsontable-dark': vars.isDark}"
+                let x= angular.element(`<hot-table
+
+                        settings="widget.table.settings"
+                        datarows="widget.data.data"
                         style="width: 100%;height: 100%;border: 1px solid red"
-                        col-headers="table.colHeaders"
+                        col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
-                    ></hot-table>`;
+                    ></hot-table>`);
+
+
 
                 element.append(x);
                 $compile(x)(scope);
@@ -40,7 +43,7 @@
             if (scope.widget.type=='pivot')
             {
                 //
-                let x = angular.element('<pivot data="widget.data" config="widget.config" edit-mode="true" style="width: 100%;height: 100%;border: 1px solid red"></pivot>');
+                let x = angular.element(`<pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true" style="width: 100%;height: 100%;border: 1px solid red"></pivot>`);
                 element.append(x);
                 $compile(x)(scope);
 
