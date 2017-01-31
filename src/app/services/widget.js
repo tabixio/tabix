@@ -9,6 +9,12 @@ class Widget {
     constructor(DataProvider,draw=false) {
         this.data = DataProvider;
         this._draw=draw;
+
+        // проверка результат с ошибкой или это текстовая строка
+        this.error=this.data.error;
+        this.text=this.data.text;
+
+        //
         this.init=false;
         this.x=0;
         this.y=0;
@@ -27,9 +33,12 @@ class WidgetDraw extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
+        this.type="amchart";
+        if (this.error || this.text) {
+            return;
+        }
         this.height=1;
         this.width=12;
-        this.type="amchart";
         this.init=true;
 
     }
@@ -40,12 +49,18 @@ class WidgetPivot extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
+        this.type="pivot";
+
+        if (this.error || this.text) {
+            return;
+        }
         this.height=1;
         this.width=6;
-        this.type="pivot";
         this.init=true;
         this.pivot={
-            config:{}
+            config:{
+
+            }
         };
     }
 }
@@ -53,39 +68,28 @@ class WidgetTable extends Widget
 {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
-
-        this.height=1;
-        this.width=12;
-        this.init=true;
         this.type='table';
 
+        if (this.error) {
+            this.height=1;
+            this.width=6;
+            this.init=true;
+            return ;
+        }
+        if (this.text) {
+            this.height=2;
+            this.width=12;
+            this.init=true;
+            return ;
+        }
 
-        this.items = [
-            {
-                "id": 1,
-                "name": {
-                    "first": "John",
-                    "last": "Schmidt"
-                },
-                "address": "45024 France",
-                "price": 760.41,
-                "isActive": "Yes",
-                "product": {
-                    "description": "Fried Potatoes",
-                    "options": [
-                        {
-                            "description": "Fried Potatoes",
-                            "image": "//a248.e.akamai.net/assets.github.com/images/icons/emoji/fries.png"
-                        },
-                        {
-                            "description": "Fried Onions",
-                            "image": "//a248.e.akamai.net/assets.github.com/images/icons/emoji/fries.png"
-                        }
-                    ]
-                }
-            },
-            //more items go here
-        ];
+        this.height=4;
+        this.width=12;
+        this.init=true;
+
+
+        // if (this.data.rows)
+
         let handsontable=this.makeColumns();
 
         // make columns
@@ -95,8 +99,8 @@ class WidgetTable extends Widget
                 dropdownMenu: true,
                 // manualColumnResize: handsontable.columns,
                 // colWidths:handsontable.colWidths;
-                // manualColumnMove: true,
-                // manualColumnResize: true,
+                manualColumnMove: true,
+                manualColumnResize: true,
                 //
                 // autoWrapRow: true,
                 // // rowHeaders: true,
@@ -106,26 +110,26 @@ class WidgetTable extends Widget
                 // //colWidths: 100,
                 // rowHeights: [50, 40, 100],
                 // renderer: 'html',
-                // fillHandle: false,
-                // stretchH: 'all',
-                // preventOverflow: 'horizontal',
-                // persistentState:true,
-                // contextMenu: ['row_above', 'row_below', 'remove_row'],
-                // filters: true,
+                fillHandle: false,
+                stretchH: 'all',
+                preventOverflow: 'horizontal',
+                persistentState:true,
+                contextMenu: ['row_above', 'row_below', 'remove_row'],
+                filters: true,
                 //
                 // // fixedRowsTop: 1,
                 // // fixedColumnsLeft: 1,
                 columnSorting: true,
                 sortIndicator: true,
                 manualRowResize: true,
-                // viewportColumnRenderingOffset:'auto',
+                viewportColumnRenderingOffset:'auto',
                 // // maxRows: 10,
                 // // visibleRows:10,
                 //
-                // wordWrap:false,
-                // // autoColumnSize: {
-                // //     samplingRatio: 23
-                // // }
+                wordWrap:false,
+                autoColumnSize: {
+                    samplingRatio: 23
+                }
 
             },
             columns: handsontable.columns,
@@ -140,16 +144,6 @@ class WidgetTable extends Widget
     }
 
     makeColumns() {
-    // colHeaders: ['A', 'B', 'C', 'D'],
-    // colWidths: [200, 200, 200, 200, 200],
-    // columns: [
-    //     { data: 'a' },
-    //     { data: 'b' },
-    //     { data: 'c' },
-    //     { data: 'd' }
-    // ],
-    // data: data,
-
         let colHeaders = [];
         let columns = [];
         this.data.meta.forEach((cell) => {

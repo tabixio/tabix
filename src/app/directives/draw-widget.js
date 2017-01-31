@@ -17,11 +17,35 @@
 
         return function (scope, element, attrs) {
             console.warn('buildLinkFunc',scope.widget);
+            // ---------------------------------------------------------------------------------------------
+            // Text & Error RENDER
 
-            // var x = angular.element('<child-directive></child-directive><child-directive></child-directive>');
-            //
-            //
-            if (scope.widget.type=='table')
+            if (scope.widget.type=='table' && scope.widget.text)
+            {
+                let x = angular.element( '<pre class="fs-caption">'+scope.widget.text+'</pre>');
+                element.append(x);
+                $compile(x)(scope);
+                return ;
+            }
+            if (scope.widget.type=='table' && scope.widget.error)
+            {
+                console.warn("Error",scope.widget.error);
+                let x = angular.element( '<pre class="fs-caption tc-red-700">'+scope.widget.error+'</pre>');
+                element.append(x);
+                $compile(x)(scope);
+                return ;
+            }
+
+            if (scope.widget.error || scope.widget.textformat)
+            {
+                return ;
+            }
+
+            // ---------------------------------------------------------------------------------------------
+            // TABLE RENDER
+
+
+            if (scope.widget.type=='table' && !scope.widget.error)
             {
 
                 // ng-class="{'handsontable-dark': vars.isDark}"
@@ -40,7 +64,12 @@
                 $compile(x)(scope);
 
             }
-            if (scope.widget.type=='pivot')
+
+            // ---------------------------------------------------------------------------------------------
+            // RIVOT RENDER
+
+
+            if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 //
                 let x = angular.element(`<pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true" style="width: 100%;height: 100%;border: 1px solid red"></pivot>`);
