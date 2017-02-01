@@ -33,10 +33,15 @@ class WidgetDraw extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.type="amchart";
+        this.type="draw";
         if (this.error || this.text) {
             return;
         }
+
+        this.library='amchart';
+        this.library='echarts';
+
+
         this.height=1;
         this.width=12;
         this.init=true;

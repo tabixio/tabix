@@ -37,6 +37,15 @@
                               ThemeService) {
 
 
+        $scope.gridstack={
+            options:{
+
+            },
+            enable:false
+        };
+
+
+        $scope.gridstackHandler = false;
         $scope.amChartOptions = false;
 
 
@@ -55,6 +64,9 @@
             verticalMargin: 10
         };
 
+        $scope.Button = function() {
+          console.info('Button',$scope.gridstackHandler);
+        };
         $scope.removeWidget = function(w) {
             var index = $scope.widgets.indexOf(w);
             $scope.widgets.splice(index, 1);

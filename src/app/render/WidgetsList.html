@@ -1,10 +1,18 @@
 <!--
 
   -->
-
+<md-button class="md-raised" ng-click="Button()">Button</md-button>
 <div class="row">
     <div class="col-md-12">
-        <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,widgets)" on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
+        <div gridstack
+             class="grid-stack grid1"
+             options="gridstack.options"
+             gridstackHandler="gridstackHandler"
+             on-change="onChange(event,widgets)"
+             on-drag-start="onDragStart(event,ui)"
+             on-drag-stop="onDragStop(event,ui)"
+             on-resize-start="onResizeStart(event,ui)"
+             on-resize-stop="onResizeStop(event,ui)">
 
 
             <div gridstack-item

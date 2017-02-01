@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 IgorStrykhar  in  SMI2
+ * All rights reserved.
+ */
+
 ((angular, smi2) => {
     'use strict';
 
@@ -11,6 +16,56 @@
             link: buildLinkFunc($compile)
         };
     }]);
+
+
+    function buildDrawChart(widget) {
+        let html='';
+
+        if (widget.library=='echart') {
+
+        }
+        if (widget.library=='c3') {
+
+        }
+        if (widget.library=='d3') {
+
+        }
+        if (widget.library=='amchart') {
+
+        }
+
+
+
+        //
+        // var chart, options;
+        // chart = echarts.init(ele[0], 'macarons');
+        //
+        // //
+        // createChart(scope.widget);
+        //
+        // //
+        // function createChart(options) {
+        //     if (!options) return;
+        //
+        //     chart.setOption(options);
+        //     // scope.$emit('create', chart);
+        //
+        //     angular.element($window).bind('resize', function(){
+        //         chart.resize();
+        //     });
+        //
+        // }
+        //
+        // // при изменении в виджете
+        // scope.$watch('widget', function (newVal, oldVal) {
+        //     if (angular.equals(newVal, oldVal)) return;
+        //     createChart(widget);
+        // })
+
+        return html;
+    }
+
+
 
 
     function buildLinkFunc($compile) {
@@ -67,8 +122,12 @@
 
             // ---------------------------------------------------------------------------------------------
             // RIVOT RENDER
-
-
+            if (scope.widget.type=='chart' && !scope.widget.error )
+            {
+                let x=angular.element(buildDrawChart(scope.widget));
+                element.append(x);
+                $compile(x)(scope);
+            }
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 //
@@ -77,31 +136,7 @@
                 $compile(x)(scope);
 
             }
-            //
-            // var chart, options;
-            // chart = echarts.init(ele[0], 'macarons');
-            //
-            // //
-            // createChart(scope.widget);
-            //
-            // //
-            // function createChart(options) {
-            //     if (!options) return;
-            //
-            //     chart.setOption(options);
-            //     // scope.$emit('create', chart);
-            //
-            //     angular.element($window).bind('resize', function(){
-            //         chart.resize();
-            //     });
-            //
-            // }
-            //
-            // // при изменении в виджете
-            // scope.$watch('widget', function (newVal, oldVal) {
-            //     if (angular.equals(newVal, oldVal)) return;
-            //     createChart(widget);
-            // })
+
 
 
         };
