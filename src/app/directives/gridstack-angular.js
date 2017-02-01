@@ -36,17 +36,6 @@ app.controller('GridstackController', ['$scope', function($scope) {
     return null;
   };
 
-  this.disable = function () {
-      if(gridstack) {
-          return gridstack.disable();
-      }
-      return null;
-  };
-
-  this.enable = function () {
-      if(gridstack) { return gridstack.enable(); }  return null;
-  };
-
 
 
   this.addItem = function(element) {
@@ -76,7 +65,7 @@ app.directive('gridstack', ['$timeout', function($timeout) {
       onResizeStart: '&',
       onResizeStop: '&',
       gridstackHandler: '=?',
-      enable: '=',
+      gridStatic: '=',
       options: '='
     },
     link: function(scope, element, attrs, controller, ngModel) {
@@ -84,16 +73,15 @@ app.directive('gridstack', ['$timeout', function($timeout) {
       var gridstack = controller.init(element, scope.options);
       scope.gridstackHandler = gridstack;
 
-
-      scope.$watch(function() { return $(element).attr('enable'); }, function(val) {
-
-            console.warn("ENABLE/DISABLE GS:",val);
-
-            //scope.gsItemId = val;
+      scope.$watch('gridStatic', function(val) {
+            if (!gridstack) return;
+            gridstack.setStatic(val);
       });
 
       element.on('change', function(e, items) {
         $timeout(function() {
+          console.log("enable",scope.enable);
+
           scope.$apply();
           scope.onChange({event: e, items: items});
         });

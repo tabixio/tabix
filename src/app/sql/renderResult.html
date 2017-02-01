@@ -8,6 +8,12 @@
         <i class="mdi mdi-close" ng-click="removeResult(tab, resultContainer, $event)"></i>
 </md-tab-label>
 <md-tab-body>
+    <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
+       <md-button aria-label="menu" class="md-icon-button">
+            <i class="mdi ml+" ng-class="gridstack.static ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
+            <md-tooltip>{{'Привязка' | translate}}</md-tooltip>
+        </md-button>
+    </div>
 
     <!---->
     <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
@@ -49,6 +55,9 @@
                 <!--<div ng-if="ready.pivot" style="width:600px; height:100%"></div>-->
             </md-tab-body>
         </md-tab>
+
+
+
 
     </md-tabs>
 </md-tab-body>

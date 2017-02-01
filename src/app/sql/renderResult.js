@@ -40,8 +40,10 @@
         $scope.gridstack={
             options:{
 
+                cellHeight: 200,
+                verticalMargin: 1
             },
-            enable:false
+            static:true
         };
 
 
@@ -59,13 +61,10 @@
             sankeys:false
         };
 
-        $scope.options = {
-            cellHeight: 200,
-            verticalMargin: 10
-        };
 
-        $scope.Button = function() {
-          console.info('Button',$scope.gridstackHandler);
+
+        $scope.switchStaticGrid = function() {
+          $scope.gridstack.static=!$scope.gridstack.static;
         };
         $scope.removeWidget = function(w) {
             var index = $scope.widgets.indexOf(w);
