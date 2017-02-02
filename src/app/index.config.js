@@ -117,8 +117,9 @@
             .translations('ru', {
             })
             .registerAvailableLanguageKeys(['en', 'ru'], {
-                'en_*': 'en',
-                'ru_*': 'ru'
+                'ru_*': 'ru',
+                'ru-*': 'ru',
+                '*': 'en',
             })
             .determinePreferredLanguage();
             // this line used for translation check
