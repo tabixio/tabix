@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2017 IgorStrykhar  in  SMI2
  * All rights reserved.
+ * GPLv3
  */
 
 'use strict';
@@ -8,7 +9,17 @@
 class Widget {
     constructor(DataProvider,draw=false) {
         this.data = DataProvider;
-        this._draw=draw;
+        this.draw=draw;
+
+        if (draw && this.draw.drawtype)
+        {
+            this.drawType=this.draw.drawtype.toUpperCase();
+
+        }
+        else{
+            this.drawType=false;
+        }
+
 
         // проверка результат с ошибкой или это текстовая строка
         this.error=this.data.error;
@@ -28,26 +39,6 @@ class Widget {
     }
 }
 
-class WidgetDraw extends Widget
-{
-    constructor(DataProvider, draw) {
-        super(DataProvider, draw);
-
-        this.type="draw";
-        if (this.error || this.text) {
-            return;
-        }
-
-        this.library='amchart';
-        this.library='echarts';
-
-
-        this.height=1;
-        this.width=12;
-        this.init=true;
-
-    }
-}
 
 class WidgetPivot extends Widget
 {
@@ -69,6 +60,90 @@ class WidgetPivot extends Widget
         };
     }
 }
+
+
+
+class WidgetDraw extends Widget
+{
+    constructor(DataProvider, draw) {
+        super(DataProvider, draw);
+
+        this.type="draw";
+        if (this.error || this.text) {
+            return;
+        }
+        let init=this.initChart();
+
+        this.library=false;
+        this.height=1;
+        this.width=12;
+        this.init=init;
+
+    }
+
+    initChart() {
+
+        console.info('INIT>DRAW>>',this.drawType,this.draw);
+        if (!this.drawType) {
+            console.error("Un support DrawType:null");
+            return false;
+        }
+
+        let defaults ={
+
+        };
+
+        let list= {
+            'SCATTERMAP': {
+                'library':'echarts'
+            },
+            'HEATMAP': {
+                'library':'echarts'
+            },
+            'CHART': {
+                'library':'amchart'
+            },
+            'SANKEYS': {
+                'library':'echarts'
+            },
+            'TREEMAP': {
+                'library':'echarts'
+            },
+            'C3': {
+                'library':'c3'
+            },
+            'D3': {
+                'library':'d3'
+            },
+
+
+        };
+
+        // if this.draw.code - exec/eval code and merge objects
+
+        if (!list[this.drawType]) {
+            console.error("Un support DrawType:"+this.drawType);
+            return false;
+        }
+
+
+        // merging objects
+        let ob = Object.assign(defaults,list[this.drawType]);
+        for (let [k, v] of Object.entries(ob)) {
+            this[k]=v;
+            console.info(">SET>",k,v);
+        }
+
+
+        // if (!(method instanceof Function) || method === Callbacks) continue;
+        console.info('DRAW.this.Merge',this);
+        return true;
+
+
+    }
+}
+
+
 class WidgetTable extends Widget
 {
     constructor(DataProvider, draw) {
@@ -175,14 +250,14 @@ class WidgetTable extends Widget
         return {
             colHeaders: colHeaders,
             columns: columns
+        };
     };
-};
 
 }
 
-
 angular.module(smi2.app.name).service('Widget', Widget);
-angular.module(smi2.app.name).service('WidgetDraw', WidgetDraw);
-angular.module(smi2.app.name).service('WidgetTable', WidgetTable);
 angular.module(smi2.app.name).service('WidgetPivot', WidgetPivot);
+angular.module(smi2.app.name).service('WidgetTable', WidgetTable);
+angular.module(smi2.app.name).service('WidgetDraw', WidgetDraw);
+
 // Widget.$inject = ['$http', '$q', 'localStorageService', '$sanitize', 'ThemeService'];

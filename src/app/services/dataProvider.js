@@ -29,7 +29,7 @@ class DataProvider {
         this.error=result.error;
         this.draw=result.query.drawCommands;
         this.rows=result.rows;
-console.info("DP>",result);
+// console.info("DP>",result);
 
         // this._query = query;
         // this._drawCommands = drawCommands;

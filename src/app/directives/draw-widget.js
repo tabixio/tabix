@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2017 IgorStrykhar  in  SMI2
  * All rights reserved.
+ * GPLv3
  */
 
 ((angular, smi2) => {
@@ -22,16 +23,16 @@
         let html='';
 
         if (widget.library=='echart') {
-
+            console.info('DW:echart');
         }
         if (widget.library=='c3') {
-
+            console.info('DW:c3');
         }
         if (widget.library=='d3') {
-
+            console.info('DW:d3');
         }
         if (widget.library=='amchart') {
-
+            console.info('DW:amchart');
         }
 
 
@@ -122,7 +123,7 @@
 
             // ---------------------------------------------------------------------------------------------
             // RIVOT RENDER
-            if (scope.widget.type=='chart' && !scope.widget.error )
+            if (scope.widget.type=='draw' && !scope.widget.error )
             {
                 let x=angular.element(buildDrawChart(scope.widget));
                 element.append(x);

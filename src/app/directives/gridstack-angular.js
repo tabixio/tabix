@@ -80,7 +80,7 @@ app.directive('gridstack', ['$timeout', function($timeout) {
 
       element.on('change', function(e, items) {
         $timeout(function() {
-          console.log("enable",scope.enable);
+          //console.log("enable",scope.enable);
 
           scope.$apply();
           scope.onChange({event: e, items: items});
