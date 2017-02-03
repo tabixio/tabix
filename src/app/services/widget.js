@@ -62,7 +62,6 @@ class WidgetPivot extends Widget
 }
 
 
-
 class WidgetDraw extends Widget
 {
     constructor(DataProvider, draw) {
@@ -72,13 +71,16 @@ class WidgetDraw extends Widget
         if (this.error || this.text) {
             return;
         }
-        let init=this.initChart();
-
         this.library=false;
         this.height=1;
         this.width=12;
+
+        let init=this.initChart();
+
+
         this.init=init;
 
+        // if (!(method instanceof Function) || method === Callbacks) continue;
     }
 
     initChart() {
@@ -131,12 +133,9 @@ class WidgetDraw extends Widget
         let ob = Object.assign(defaults,list[this.drawType]);
         for (let [k, v] of Object.entries(ob)) {
             this[k]=v;
-            console.info(">SET>",k,v);
         }
 
 
-        // if (!(method instanceof Function) || method === Callbacks) continue;
-        console.info('DRAW.this.Merge',this);
         return true;
 
 
