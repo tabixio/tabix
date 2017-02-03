@@ -9,11 +9,11 @@
 class Widget {
     constructor(DataProvider,draw=false) {
         this.data = DataProvider;
-        this.draw=draw;
-
-        if (draw && this.draw.drawtype)
+        this.drawCommnads=draw;
+        this._draw=false;
+        if (draw && this.drawCommnads.drawtype)
         {
-            this.drawType=this.draw.drawtype.toUpperCase();
+            this.drawType=this.drawCommnads.drawtype.toUpperCase();
 
         }
         else{
@@ -79,72 +79,47 @@ class WidgetDraw extends Widget
         this.library=false;
         this.height=1;
         this.width=12;
-
-        let init=this.initChart();
-
-
-        this.init=init;
-
-        // if (!(method instanceof Function) || method === Callbacks) continue;
-        console.info('DRAW.this.Merge',this);
+        this._list= {
+            'SCATTERMAP': DrawEcharts,
+            'HEATMAP': DrawEcharts,
+            'TREEMAP': DrawEcharts,
+            'SANKEYS': DrawEcharts,
+            'CHART': DrawAMcharts,
+            'D3': DrawD3,
+            'C3': DrawC3
+        };
+        // if class exists -> init ok
+        this.init=this.getChartClass();
     }
 
-    initChart() {
+    get draw(){
 
-        console.info('INIT>DRAW>>',this.drawType,this.draw);
+        if (this.drawType)
+        {
+            this._draw=new this._list[this.drawType](this);
+        }
+        return this._draw;
+    }
+
+    getChartClass() {
+
         if (!this.drawType) {
             console.error("Un support DrawType:null");
             return false;
         }
-
-        let defaults ={
-
-        };
-
-        let list= {
-            'SCATTERMAP': {
-                'library':'echarts'
-            },
-            'HEATMAP': {
-                'library':'echarts'
-            },
-            'CHART': {
-                'library':'amchart'
-            },
-            'SANKEYS': {
-                'library':'echarts'
-            },
-            'TREEMAP': {
-                'library':'echarts'
-            },
-            'C3': {
-                'library':'c3'
-            },
-            'D3': {
-                'library':'d3'
-            },
-
-
-        };
-
-        // if this.draw.code - exec/eval code and merge objects
-
-        if (!list[this.drawType]) {
+        if (!this._list[this.drawType]) {
             console.error("Un support DrawType:"+this.drawType);
             return false;
         }
-
-
-        // merging objects
-        let ob = Object.assign(defaults,list[this.drawType]);
-        for (let [k, v] of Object.entries(ob)) {
-            this[k]=v;
-        }
-
-
         return true;
 
+        // if this.draw.code - exec/eval code and merge objects
 
+        // merging objects
+        // let ob = Object.assign(defaults,list[this.drawType]);
+        // for (let [k, v] of Object.entries(ob)) {
+        //     this[k]=v;
+        // }
     }
 }
 

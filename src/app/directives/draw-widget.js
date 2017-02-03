@@ -22,6 +22,7 @@
     function buildDrawChart(widget) {
         let html='';
 
+        let x=widget.draw;
         if (widget.library=='echart') {
             console.info('DW:echart');
         }
@@ -35,7 +36,9 @@
             console.info('DW:amchart');
         }
 
-
+        if (widget.preProcessor instanceof Function) {
+            widget.preProcessor();
+        }
 
         //
         // var chart, options;
