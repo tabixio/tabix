@@ -4,8 +4,8 @@
   "dependencies": {
     "ace-builds": "^1.2.6",
     "angular-animate": "~1.5.0",
-    "jquery": "~3.1.1",
-    "jquery-ui": "~1.12.1",
+    "jquery": "^3.1.1",
+    "jquery-ui": "^1.9.2",
     "angular": "^1.4.12",
     "angular-ui-ace": "~0.2.3",
     "angular-local-storage": "~0.2.7",

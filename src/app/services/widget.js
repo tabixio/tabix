@@ -55,7 +55,12 @@ class WidgetPivot extends Widget
         this.init=true;
         this.pivot={
             config:{
-
+                dataClass: $.pivotUtilities.SubtotalPivotData,
+                renderer: $.extend($.pivotUtilities.renderers,$.pivotUtilities.subtotal_renderers["Table With Subtotal"], $.pivotUtilities.c3_renderers),
+                rendererOptions: {
+                    collapseRowsAt: 1,
+                    collapseColsAt: 0
+                }
             }
         };
     }
@@ -81,6 +86,7 @@ class WidgetDraw extends Widget
         this.init=init;
 
         // if (!(method instanceof Function) || method === Callbacks) continue;
+        console.info('DRAW.this.Merge',this);
     }
 
     initChart() {
