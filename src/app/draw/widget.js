@@ -34,6 +34,9 @@ class Widget {
         this.type=false;
     }
 
+    onResize() {
+        console.info("On widget Resize",this);
+    }
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
     }
@@ -131,15 +134,15 @@ class WidgetTable extends Widget
         this.type='table';
 
         if (this.error) {
-            this.height=1;
-            this.width=6;
-            this.init=true;
+            this.height=2;
+            this.width=12;
+            this.init=false;
             return ;
         }
         if (this.text) {
             this.height=2;
             this.width=12;
-            this.init=true;
+            this.init=false;
             return ;
         }
 

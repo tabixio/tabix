@@ -1,33 +1,57 @@
 <div class="row">
     <div class="col-md-12">
-        <div gridstack
-             class="grid-stack grid1"
-             options="gridstack.options"
-             on-change="onChange(event,widgets)"
-             on-drag-start="onDragStart(event,ui)"
-             on-drag-stop="onDragStop(event,ui)"
-             on-resize-start="onResizeStart(event,ui)"
-             on-resize-stop="onResizeStop(event,ui)"
-             grid-static="gridstack.static"
-            >
 
 
-            <div gridstack-item
-                    ng-repeat="w in widgets"
-                    class="grid-stack-item"
-                    gs-item-x="w.x"
-                    gs-item-y="w.y"
-                    gs-item-width="w.width"
-                    gs-item-height="w.height"
-                    gs-item-autopos="1"
-                    on-item-added="onItemAdded(w)"
-                    on-item-removed="onItemRemoved(w)">
+        <div gridster="gridsterOpts">
+            <ul>
+                <li
+                    gridster-item="w"
+                    ng-repeat="w in widgets" style="border: 1px sienna dotted">
 
 
-                <div class="grid-stack-item-content" ng-if="w.init">
-                    <draw-widget widget="w"></draw-widget>
-                </div>
-            </div>
+                    <draw-widget widget="w" ng-if="w.init && !w.error"></draw-widget>
+                    <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
+                    <div ng-bind-html="w.text"  class="grid-monospace" ng-if="w.text"></div>
+
+
+                </li>
+            </ul>
         </div>
+        <!--<div gridstack-->
+             <!--class="grid-stack grid1"-->
+             <!--options="gridstack.options"-->
+             <!--on-change="onChange(event,widgets)"-->
+             <!--on-drag-start="onDragStart(event,ui)"-->
+             <!--on-drag-stop="onDragStop(event,ui)"-->
+             <!--on-resize-start="onResizeStart(event,ui)"-->
+             <!--on-resize-stop="onResizeStop(event,ui)"-->
+             <!--grid-static="gridstack.static"-->
+            <!--&gt;-->
+
+
+            <!--<div gridstack-item-->
+                    <!--ng-repeat="w in widgets"-->
+                    <!--class="grid-stack-item"-->
+                    <!--gs-item-x="w.x"-->
+                    <!--gs-item-y="w.y"-->
+                    <!--widget="w"-->
+                    <!--gs-item-width="w.width"-->
+                    <!--gs-item-height="w.height"-->
+                    <!--gs-item-autopos="1"-->
+                    <!--on-item-added="onItemAdded(w)"-->
+                    <!--on-item-removed="onItemRemoved(w)">-->
+
+
+                <!--<div class="grid-stack-item-content"  >-->
+
+
+
+                <!--</div>-->
+
+
+                <!--<span ng-if="w.empty">{{'нет данных' | translate}}</span>-->
+
+            <!--</div>-->
+        <!--</div>-->
     </div>
 </div>

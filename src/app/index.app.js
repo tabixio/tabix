@@ -28,6 +28,6 @@
         'ngHandsontable',
         'amChartsDirective',
         'ngecharts',
-        'gridstack-angular'
+        'gridster'
     ]);
 })();
