@@ -12,7 +12,8 @@
             restrict: 'EA',
             template: '<div></div>',
             scope: {
-                widget: '=widget'
+                widget: '=widget',
+                isdark: '=isdark'
             },
             link: buildLinkFunc($compile)
         };
@@ -79,6 +80,8 @@
             // ---------------------------------------------------------------------------------------------
             // Text & Error RENDER
 
+            scope.widget.isDark=scope.isdark;
+            console.log("scope.widget.isDark",scope.widget.isDark);
             if (scope.widget.type=='table' && scope.widget.text)
             {
                 let x = angular.element( '<pre class="fs-caption">'+scope.widget.text+'</pre>');
@@ -112,7 +115,7 @@
 
                         settings="widget.table.settings"
                         datarows="widget.data.data"
-                        style="width: 100%;height: 100%;border: 1px solid red"
+                        ng-class="{'handsontable-dark': widget.isDark}"
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
@@ -135,7 +138,7 @@
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 //
-                let x = angular.element(`<pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true" style="width: 100%;height: 100%;border: 1px solid red"></pivot>`);
+                let x = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
                 element.append(x);
                 $compile(x)(scope);
 

@@ -37,19 +37,27 @@
                               ThemeService) {
 
 
-        $scope.gridstack={
-            options:{
-                cellHeight: 200,
-                verticalMargin: 1
-            },
-            static:true
+        $scope.vars = {
+            rsw: 0,
+            uiTheme: ThemeService.themeObject,
+            isChartReady:false,
+            stackType:'false',
+            isDark:ThemeService.isDark(),
+            active:{
+                table:false,
+                pivot:false,
+                draw:false
+            }
+
         };
+
+
 
         $scope.gridsterOpts = {
             columns: 6, // the width of the grid, in columns
             pushing: true, // whether to push other items out of the way on move or resize
             floating: true, // whether to automatically float items up so they stack (you can temporarily disable if you are adding unsorted items with ng-repeat)
-            swapping: false, // whether or not to have items of the same size switch places instead of pushing down if they are the same size
+            swapping: true, // whether or not to have items of the same size switch places instead of pushing down if they are the same size
             width: 'auto', // can be an integer or 'auto'. 'auto' scales gridster to be the full width of its containing element
             colWidth: 'auto', // can be an integer or 'auto'.  'auto' uses the pixel width of the element divided by 'columns'
             rowHeight: 'match', // can be an integer or 'match'.  Match uses the colWidth, giving you square widgets.
@@ -67,7 +75,8 @@
             minSizeX: 1, // minimum column width of an item
             maxSizeX: null, // maximum column width of an item
             minSizeY: 1, // minumum row height of an item
-            maxSizeY: null, // maximum row height of an item
+            maxSizeY: null, // maximum row height of an item,
+            // static : true,
             resizable: {
                 enabled: true,
                 handles: ['n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw'],
@@ -77,7 +86,7 @@
             },
             draggable: {
                 enabled: true, // whether dragging items is supported
-                handle: '.my-class', // optional selector for drag handle
+                handle: '.widget-draggable', // optional selector for drag handle
                 start: function(event, $element, widget) {}, // optional callback fired when drag is started,
                 drag: function(event, $element, widget) {}, // optional callback fired when item is moved,
                 stop: function(event, $element, widget) {} // optional callback fired when item is finished dragging
@@ -101,7 +110,15 @@
 
 
         $scope.switchStaticGrid = function() {
-          $scope.gridstack.static=!$scope.gridstack.static;
+            //$scope.gridstack.static=!$scope.gridstack.static;
+            // $scope.gridsterOpts.static=!$scope.gridsterOpts.static;
+            $scope.gridsterOpts.draggable.enabled = !$scope.gridsterOpts.draggable.enabled;
+            $scope.gridsterOpts.resizable.enabled = !$scope.gridsterOpts.resizable.enabled
+            //gridsterOpts.floating = !gridsterOpts.floating
+            //gridsterOpts.pushing = !gridsterOpts.pushing
+            //gridsterOpts.swapping = !gridsterOpts.swapping
+
+
         };
         $scope.removeWidget = function(w) {
             var index = $scope.widgets.indexOf(w);
@@ -135,19 +152,6 @@
             // console.log("onItemRemoved item: "+item);
         };
 
-
-        $scope.vars = {
-            rsw: 0,
-            uiTheme: ThemeService.themeObject,
-            isChartReady:false,
-            stackType:'false',
-            active:{
-                table:false,
-                pivot:false,
-                draw:false
-            }
-
-        };
 
         $scope.initTableTab = () => {
             console.info("initTableTab");

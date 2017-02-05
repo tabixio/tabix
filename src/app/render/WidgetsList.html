@@ -6,13 +6,15 @@
             <ul>
                 <li
                     gridster-item="w"
-                    ng-repeat="w in widgets" style="border: 1px sienna dotted">
+                    ng-repeat="w in widgets"  >
 
+                    <div class="widget-draggable">
 
-                    <draw-widget widget="w" ng-if="w.init && !w.error"></draw-widget>
-                    <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
-                    <div ng-bind-html="w.text"  class="grid-monospace" ng-if="w.text"></div>
-
+                            <draw-widget widget="w" ng-if="w.init && !w.error" isdark="vars.isDark" class="widget-{{w.type}}"></draw-widget>
+                            <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
+                            <div ng-bind-html="w.text"  class="grid-monospace" ng-if="w.text"></div>
+                            <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+                    </div>
 
                 </li>
             </ul>
@@ -49,7 +51,7 @@
                 <!--</div>-->
 
 
-                <!--<span ng-if="w.empty">{{'нет данных' | translate}}</span>-->
+                <!--
 
             <!--</div>-->
         <!--</div>-->

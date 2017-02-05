@@ -10,7 +10,7 @@
 <md-tab-body>
     <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
        <md-button aria-label="menu" class="md-icon-button">
-            <i class="mdi ml+" ng-class="gridstack.static ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
+            <i class="mdi ml+" ng-class="!gridsterOpts.draggable.enabled ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
             <md-tooltip>{{'Привязка' | translate}}</md-tooltip>
         </md-button>
     </div>
