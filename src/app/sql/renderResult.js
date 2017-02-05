@@ -81,18 +81,33 @@
                 enabled: true,
                 handles: ['n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw'],
                 start: function(event, $element, widget) {}, // optional callback fired when resize is started,
-                resize: function(event, $element, widget) {}, // optional callback fired when item is resized,
-                stop: function(event, $element, widget) {} // optional callback fired when item is finished resizing
+                resize: function(event, $element, widget) {widget.onResize();}, // optional callback fired when item is resized,
+                stop: function(event, $element, widget) {
+
+                    // optional callback fired when item is finished resizing
+                    widget.onResize();
+                }
             },
             draggable: {
                 enabled: true, // whether dragging items is supported
                 handle: '.widget-draggable', // optional selector for drag handle
                 start: function(event, $element, widget) {}, // optional callback fired when drag is started,
                 drag: function(event, $element, widget) {}, // optional callback fired when item is moved,
-                stop: function(event, $element, widget) {} // optional callback fired when item is finished dragging
+                stop: function(event, $element, widget) {
+                    // optional callback fired when item is finished dragging
+                    widget.onDrag();
+
+                }
             }
         };
-
+        $scope.$on('gridster-item-transition-end', function(widget) {
+            console.info('transition!',widget);
+            // widget.onResize();
+        });
+        $scope.$on('gridster-item-initialized', function(widget) {
+            console.info('INIT!',widget);
+            // widget.onResize();
+        });
         $scope.gridstackHandler = false;
         $scope.amChartOptions = false;
 

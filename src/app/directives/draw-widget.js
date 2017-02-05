@@ -76,12 +76,11 @@
     function buildLinkFunc($compile) {
 
         return function (scope, element, attrs) {
-            console.warn('buildLinkFunc',scope.widget);
+            // console.warn('buildLinkFunc',scope.widget);
             // ---------------------------------------------------------------------------------------------
             // Text & Error RENDER
 
             scope.widget.isDark=scope.isdark;
-            console.log("scope.widget.isDark",scope.widget.isDark);
             if (scope.widget.type=='table' && scope.widget.text)
             {
                 let x = angular.element( '<pre class="fs-caption">'+scope.widget.text+'</pre>');
@@ -105,45 +104,50 @@
 
             // ---------------------------------------------------------------------------------------------
             // TABLE RENDER
+            scope.$on('gridster-item-initialized', function(item) {
+                console.info('>>>gridster-item-initialized');
+            });
+            scope.$on('gridster-item-resized', function(item) {
+                console.info('>>>gridster-item-resized');
+            });
 
+
+            scope.$watch('widget.sizeX', function(){
+                console.warn('widget.sizeX');
+                // scope.widget.onResize();
+            }, true);
 
             if (scope.widget.type=='table' && !scope.widget.error)
             {
-
-                // ng-class="{'handsontable-dark': vars.isDark}"
-                let x= angular.element(`<hot-table
-
+                scope.widget.element = angular.element(`<hot-table
+                        
                         settings="widget.table.settings"
                         datarows="widget.data.data"
+                        width="widget.table.width"
                         ng-class="{'handsontable-dark': widget.isDark}"
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
-
-
-
-                element.append(x);
-                $compile(x)(scope);
-
             }
 
             // ---------------------------------------------------------------------------------------------
             // RIVOT RENDER
             if (scope.widget.type=='draw' && !scope.widget.error )
             {
-                let x=angular.element(buildDrawChart(scope.widget));
-                element.append(x);
-                $compile(x)(scope);
+                scope.widget.element = angular.element(buildDrawChart(scope.widget));
+
             }
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 //
-                let x = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
-                element.append(x);
-                $compile(x)(scope);
+                scope.widget.element = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
 
             }
 
+//$scope.hotInstance
+
+            element.append(scope.widget.element);
+            $compile(scope.widget.element)(scope);
 
 
         };

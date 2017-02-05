@@ -26,6 +26,7 @@ class Widget {
         this.text=this.data.text;
 
         //
+        this.element=false;
         this.init=false;
         this.x=0;
         this.y=0;
@@ -34,12 +35,16 @@ class Widget {
         this.type=false;
     }
 
+    onDrag() {
+        // console.info("On widget Draw",this);
+    }
     onResize() {
-        console.info("On widget Resize",this);
+        // console.info("On widget Resize",this);
     }
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
     }
+
 }
 
 
@@ -158,6 +163,7 @@ class WidgetTable extends Widget
         // make columns
 
         this.table= {
+            width:'100%',
             settings: {
                 dropdownMenu: true,
                 // manualColumnResize: handsontable.columns,
@@ -172,7 +178,7 @@ class WidgetTable extends Widget
                 // // }),
                 // //colWidths: 100,
                 // rowHeights: [50, 40, 100],
-                // renderer: 'html',
+                renderer: 'html',
                 fillHandle: false,
                 stretchH: 'all',
                 preventOverflow: 'horizontal',
@@ -192,10 +198,14 @@ class WidgetTable extends Widget
                 wordWrap:false,
                 autoColumnSize: {
                     samplingRatio: 23
-                }
+                },
+                observeDOMVisibility:true,
+                observeChanges:true,
+                width:'100%'
 
             },
             columns: handsontable.columns,
+
             colHeaders: handsontable.colHeaders
         }
         ;
@@ -205,7 +215,16 @@ class WidgetTable extends Widget
 
 
     }
-
+    onDrag() {
+        this.onResize();
+    }
+    onResize() {
+        // Для hot-table изменим парамер ширины, финт/костыль - хз
+        this.table.width='99.9'+Math.floor(100*Math.random())+'%';
+        // hotInstance.updateSettings({
+        //     width: $('hotWrapperDiv').width()
+        // });
+    }
     makeColumns() {
         let colHeaders = [];
         let columns = [];
