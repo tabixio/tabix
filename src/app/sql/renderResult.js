@@ -100,14 +100,7 @@
                 }
             }
         };
-        $scope.$on('gridster-item-transition-end', function(widget) {
-            console.info('transition!',widget);
-            // widget.onResize();
-        });
-        $scope.$on('gridster-item-initialized', function(widget) {
-            console.info('INIT!',widget);
-            // widget.onResize();
-        });
+
         $scope.gridstackHandler = false;
         $scope.amChartOptions = false;
 
@@ -125,13 +118,17 @@
 
 
         $scope.switchStaticGrid = function() {
+
             //$scope.gridstack.static=!$scope.gridstack.static;
-            // $scope.gridsterOpts.static=!$scope.gridsterOpts.static;
-            $scope.gridsterOpts.draggable.enabled = !$scope.gridsterOpts.draggable.enabled;
-            $scope.gridsterOpts.resizable.enabled = !$scope.gridsterOpts.resizable.enabled
+            //$scope.gridsterOpts.static=!$scope.gridsterOpts.static;
+
             //gridsterOpts.floating = !gridsterOpts.floating
             //gridsterOpts.pushing = !gridsterOpts.pushing
             //gridsterOpts.swapping = !gridsterOpts.swapping
+
+            $scope.gridsterOpts.draggable.enabled = !$scope.gridsterOpts.draggable.enabled;
+            $scope.gridsterOpts.resizable.enabled = !$scope.gridsterOpts.resizable.enabled;
+
 
 
         };

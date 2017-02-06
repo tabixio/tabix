@@ -159,6 +159,7 @@ window.global_delimiter             = ";;";
             }
         };
 
+
         /**
          * @ngdoc method
          * @methodOf smi2.controller:SqlController

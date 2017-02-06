@@ -7,7 +7,7 @@
 ((angular, smi2) => {
     'use strict';
 
-    angular.module(smi2.app.name).directive('drawWidget', ['$compile', function ($compile) {
+    angular.module(smi2.app.name).directive('drawWidget', ['$compile','$rootScope', function ($compile,$rootScope) {
         return {
             restrict: 'EA',
             template: '<div></div>',
@@ -15,7 +15,7 @@
                 widget: '=widget',
                 isdark: '=isdark'
             },
-            link: buildLinkFunc($compile)
+            link: buildLinkFunc($compile,$rootScope)
         };
     }]);
 
@@ -73,7 +73,7 @@
 
 
 
-    function buildLinkFunc($compile) {
+    function buildLinkFunc($compile,$rootScope) {
 
         return function (scope, element, attrs) {
             // console.warn('buildLinkFunc',scope.widget);
@@ -104,11 +104,13 @@
 
             // ---------------------------------------------------------------------------------------------
             // TABLE RENDER
-            scope.$on('gridster-item-initialized', function(item) {
-                console.info('>>>gridster-item-initialized');
+            $rootScope.$on('gridster-loaded', function(item) {
+                console.info('> > > gridster-loaded');
+                scope.widget.onResize();
             });
-            scope.$on('gridster-item-resized', function(item) {
-                console.info('>>>gridster-item-resized');
+
+            $rootScope.$on('gridster-item-resized', function(item) {
+                console.info('> > > gridster-item-resized < < < < <');
             });
 
 
@@ -123,13 +125,14 @@
                         
                         settings="widget.table.settings"
                         datarows="widget.data.data"
-                        width="widget.table.width"
+                    
                         ng-class="{'handsontable-dark': widget.isDark}"
+                        width="widget.table.width"
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
             }
-
+//
             // ---------------------------------------------------------------------------------------------
             // RIVOT RENDER
             if (scope.widget.type=='draw' && !scope.widget.error )

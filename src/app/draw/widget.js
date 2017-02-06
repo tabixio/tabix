@@ -25,13 +25,13 @@ class Widget {
         this.error=this.data.error;
         this.text=this.data.text;
 
+
+        this.sizeX=3;// ширина
+        this.sizeY=1;// высота
         //
         this.element=false;
         this.init=false;
-        this.x=0;
-        this.y=0;
-        this.height=1;
-        this.width=6;
+
         this.type=false;
     }
 
@@ -58,8 +58,8 @@ class WidgetPivot extends Widget
         if (this.error || this.text) {
             return;
         }
-        this.height=1;
-        this.width=6;
+        // this.height=1;
+        // this.sizeX=6;
         this.init=true;
         this.pivot={
             config:{
@@ -85,8 +85,8 @@ class WidgetDraw extends Widget
             return;
         }
         this.library=false;
-        this.height=1;
-        this.width=12;
+        this.sizeY=2;
+
         this._list= {
             'SCATTERMAP': DrawEcharts,
             'HEATMAP': DrawEcharts,
@@ -139,20 +139,20 @@ class WidgetTable extends Widget
         this.type='table';
 
         if (this.error) {
-            this.height=2;
-            this.width=12;
+            this.sizeY=1;
+            this.sizeX=6;
             this.init=false;
             return ;
         }
         if (this.text) {
-            this.height=2;
-            this.width=12;
+            this.sizeY=2;
+            this.sizeX=6;
             this.init=false;
             return ;
         }
 
-        this.height=4;
-        this.width=12;
+        // this.height=4;
+        // this.sizeX=12;
         this.init=true;
 
 
@@ -164,6 +164,7 @@ class WidgetTable extends Widget
 
         this.table= {
             width:'100%',
+            height:'100%',
             settings: {
                 dropdownMenu: true,
                 // manualColumnResize: handsontable.columns,
@@ -178,10 +179,10 @@ class WidgetTable extends Widget
                 // // }),
                 // //colWidths: 100,
                 // rowHeights: [50, 40, 100],
-                renderer: 'html',
+                // renderer: 'html',
                 fillHandle: false,
                 stretchH: 'all',
-                preventOverflow: 'horizontal',
+                // preventOverflow: 'horizontal',
                 persistentState:true,
                 contextMenu: ['row_above', 'row_below', 'remove_row'],
                 filters: true,
@@ -191,7 +192,7 @@ class WidgetTable extends Widget
                 columnSorting: true,
                 sortIndicator: true,
                 manualRowResize: true,
-                viewportColumnRenderingOffset:'auto',
+                // viewportColumnRenderingOffset:'auto',
                 // // maxRows: 10,
                 // // visibleRows:10,
                 //
@@ -210,8 +211,30 @@ class WidgetTable extends Widget
         }
         ;
 
-        console.table(this.table);
+        // init table size тут как бы отрефа
+        let x = 0;
+        if (handsontable.columns.length>5) {
+            x=1;
+        }
+        if (handsontable.columns.length>10) {
+            x=3;
+        }
+        if (handsontable.columns.length>15) {
+            x=6;
+        }
+        this.sizeX=x;
 
+        this.sizeY=0;//1...2...3...4...5..
+
+        if (this.data.rows>100) {
+            this.sizeY=1;
+        }
+        if (this.data.rows>250) {
+            this.sizeY=2;
+        }
+        if (this.data.rows>500) {
+            this.sizeY=3;
+        }
 
 
     }
@@ -220,10 +243,20 @@ class WidgetTable extends Widget
     }
     onResize() {
         // Для hot-table изменим парамер ширины, финт/костыль - хз
+        console.log("> > > hot-table - resize > >");
+
+        if (!this.table) return;
         this.table.width='99.9'+Math.floor(100*Math.random())+'%';
+        // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
         // hotInstance.updateSettings({
         //     width: $('hotWrapperDiv').width()
         // });
+        // -----
+        // Или попробовать вариант hotInstance.redraw()
+        // -----
+        // Или таймер на X00 мс который отложет ресайз
+        // ----
+        // Или передавать точный размер width области после ресайза
     }
     makeColumns() {
         let colHeaders = [];

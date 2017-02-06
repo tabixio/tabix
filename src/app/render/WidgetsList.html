@@ -10,10 +10,13 @@
 
                     <div class="widget-draggable">
 
-                            <draw-widget widget="w" ng-if="w.init && !w.error" isdark="vars.isDark" class="widget-{{w.type}}"></draw-widget>
+
+                        <div >
+                            <draw-widget widget="w" ng-if="w.init && !w.error" isdark="vars.isDark" class="widget-{{w.type}}" ></draw-widget>
                             <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
                             <div ng-bind-html="w.text"  class="grid-monospace" ng-if="w.text"></div>
                             <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+                        </div>
                     </div>
 
                 </li>
