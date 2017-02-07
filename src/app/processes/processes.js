@@ -21,8 +21,9 @@
         const LS_SORT_KEY = 'proc.key';
 
         $scope.vars = {
+            logMode : true,
             loading: false,
-            data: null,
+            logData: {},
             cols: [],
             isDark: ThemeService.isDark(),
             sort: /^[a-z0-9_]+$/.test(localStorageService.get(LS_SORT_KEY)) ? localStorageService.get(LS_SORT_KEY) : null,
@@ -86,14 +87,21 @@
 
         let intervalHandle = null;
 
+        $scope.flush = () => {
+            $scope.vars.logData={};
+            $scope.table.data=[];
+        };
         $scope.load = () => {
-            let sql = `SELECT query,formatReadableSize(bytes_read) as bytes_read, 
+            let sql = `SELECT query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
                 formatReadableSize(memory_usage) as memory_usage,
                 rows_read,
-                round(elapsed,4) as elapsed , *
-                
-            FROM system.processes`;// /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'`;
+                round(elapsed,4) as elapsed ,  * ,  cityHash64(query) as hash
+            FROM system.processes `;
 
+            if ($scope.vars.logMode) {
+                // исключить запрос
+                sql=sql+" /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'";
+            }
 
             API.query(sql).then(function ( data ) {
 
@@ -102,7 +110,38 @@
                 // $scope.table.settings.columns=handsontable.columns;
                 $scope.table.settings.manualColumnResize=handsontable.columns;
                 $scope.table.settings.colWidths=handsontable.colWidths;
-                $scope.table.data=handsontable.data;
+
+                if ($scope.vars.logMode)
+                {
+
+                    handsontable.data.forEach((cell) => {
+                        if ($scope.vars.logData[cell.hash])
+                        {
+
+                            let c=$scope.vars.logData[cell.hash].count;
+                            c=c+1;
+                            cell.count=c;
+                            $scope.vars.logData[cell.hash]=cell;
+                        } else
+                        {
+                            cell.count=1;
+                            $scope.vars.logData[cell.hash]=cell;
+
+                        }
+
+
+                    });
+
+                    let array = $.map($scope.vars.logData, function(value, index) {
+                        return [value];
+                    });
+                    // array.splice(0, 5);
+                    $scope.table.data=array;
+                }
+                else
+                {
+                    $scope.table.data=handsontable.data;
+                }
 
                 $scope.vars.data = true;
                 // $scope.vars.cols = data.meta.map(col => col.name);
