@@ -24,6 +24,7 @@
             loading: false,
             data: null,
             cols: [],
+            isDark: ThemeService.isDark(),
             sort: /^[a-z0-9_]+$/.test(localStorageService.get(LS_SORT_KEY)) ? localStorageService.get(LS_SORT_KEY) : null,
             interval: localStorageService.get(LS_INTERVAL_KEY) || -1,
             scrollConfig: {
@@ -40,16 +41,71 @@
                 }
             }
         };
+
+
+        $scope.table = {
+            wordWrap:false,
+
+            data:{
+
+            },
+            settings : {
+                manualColumnMove: true,
+                manualColumnResize: true,
+                //
+                autoWrapRow: true,
+                // // rowHeaders: true,
+                // // colHeaders: _(headers).map(function(header, i) {
+                // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
+                // // }),
+                colWidths: 70,
+                // rowHeights: [50, 40, 100],
+                // renderer: 'html',
+                // fillHandle: false,
+                dropdownMenu: true,
+                stretchH: 'all',
+                preventOverflow: 'horizontal',
+                persistentState:true,
+                // contextMenu: ['row_above', 'row_below', 'remove_row'],
+                // filters: true,
+                //
+                // fixedRowsTop: 1,
+                // fixedColumnsLeft: 1,
+                columnSorting: true,
+                sortIndicator: true,
+                manualRowResize: true,
+                viewportColumnRenderingOffset:'auto',
+                // // maxRows: 10,
+                // // visibleRows:10,
+                autoColumnSize: {
+                    samplingRatio: 23
+                }
+            }
+        };
+
+
         let intervalHandle = null;
 
         $scope.load = () => {
-            let sql = 'SELECT * FROM system.processes';
-            if ($scope.vars.sort) {
-                sql += ' ORDER BY ' + $scope.vars.sort;
-            }
+            let sql = `SELECT query,formatReadableSize(bytes_read) as bytes_read, 
+                formatReadableSize(memory_usage) as memory_usage,
+                rows_read,
+                round(elapsed,4) as elapsed , *
+                
+            FROM system.processes`;// /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'`;
+
+
             API.query(sql).then(function ( data ) {
-                $scope.vars.data = API.dataToHtml( data );
-                $scope.vars.cols = data.meta.map(col => col.name);
+
+                let handsontable = API.dataToHandsontable( data );
+                $scope.table.colHeaders=handsontable.colHeaders;
+                // $scope.table.settings.columns=handsontable.columns;
+                $scope.table.settings.manualColumnResize=handsontable.columns;
+                $scope.table.settings.colWidths=handsontable.colWidths;
+                $scope.table.data=handsontable.data;
+
+                $scope.vars.data = true;
+                // $scope.vars.cols = data.meta.map(col => col.name);
                 $scope.vars.loading = false;
             }, function ( response ) {
                 $scope.vars.loading = false;
@@ -68,12 +124,13 @@
             }
         };
 
-        $scope.setSort = () => {
-            localStorageService.set(LS_SORT_KEY, $scope.vars.sort);
-            $scope.load();
-        };
 
+
+
+        // start
         $scope.load();
+
+
         if ($scope.vars.interval > -1) {
             $scope.setInterval();
         }

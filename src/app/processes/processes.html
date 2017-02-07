@@ -1,27 +1,56 @@
-<div class="pr+ pt+ pull-right">
-    <md-input-container class="mb++ mr+">
-        <label>{{'Частота обновления' | translate}}</label>
-        <md-select ng-model="vars.interval" ng-change="setInterval()">
-            <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
-                {{interval == -1 ? 'Обновление отключено' : interval  + ' сек'}}
-            </md-option>
-        </md-select>
-    </md-input-container>
-    <md-input-container class="mb++">
-        <label>{{'Сортировка' | translate}}</label>
-        <md-select ng-model="vars.sort" ng-change="setSort()">
-            <md-option ng-repeat="col in vars.cols" ng-value="col">
-                {{col}}
-            </md-option>
-        </md-select>
-    </md-input-container>
-</div>
-<h4 class="pl pt">
-    {{'Список процессов' | translate}}
-</h4>
+<div>
+    <h1 class="md-title">{{'Список процессов' | translate}}</h1>
+    <md-card-content>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
 
-<div class="card__actions pl pr+ pt+ pb" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden;" ng-scrollbars ng-scrollbars-config="vars.scrollConfig">
-    <span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
-    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
-    <div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>
+                <label>{{'Частота обновления' | translate}}</label>
+                <md-select ng-model="vars.interval" ng-change="setInterval()" >
+                    <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
+                        {{interval == -1 ? 'Обновление отключено' : interval  + ' сек'}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="table.wordWrap">
+                    {{'Перенос строк' | translate}}
+                </md-switch>
+            </md-input-container>
+
+
+            <md-input-container class="md-block" flex-gt-sm ng-click="load()">
+                <md-button class="md-raised md-primary">{{'Обновить' | translate}}</md-button>
+            </md-input-container>
+
+
+        </div>
+    </md-card-content>
 </div>
+
+<md-card-content>
+<!--<div class="card__actions pl pr+ pt+ pb" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden;">-->
+
+
+<div layout="row">
+     <!--ng-scrollbars ng-scrollbars-config="vars.scrollConfig"-->
+    <span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
+
+    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
+    <hot-table
+            ng-class="{'handsontable-dark': vars.isDark}"
+            hot-id="hottable"
+            word-wrap="table.wordWrap"
+            settings="table.settings"
+            datarows="table.data"
+            style="width: 100%;height: 100%"
+            col-headers="table.colHeaders"
+            manual-column-resize="true"
+    >
+    </hot-table>
+
+    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
+</div>
+
+</md-card-content>
