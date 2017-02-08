@@ -60,6 +60,7 @@ window.global_delimiter             = ";;";
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
+            isDictionariesLoad:false,
             tabs: [],
             enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
@@ -605,6 +606,11 @@ window.global_delimiter             = ";;";
          * Load dicts for ACE autocomplete
          */
         $scope.loadDictionaries = () => {
+
+            if ($scope.vars.isDictionariesLoad) {
+                return;
+            }
+            console.log("loadDictionaries");
             $scope.vars.dictionaries = [];
             window.global_keywords_dictList=[];
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
@@ -621,6 +627,7 @@ window.global_delimiter             = ";;";
                     });
                 });
             });
+            $scope.vars.isDictionariesLoad=true;
         };
 
         const selectTab = index => {

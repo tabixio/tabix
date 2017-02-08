@@ -92,6 +92,9 @@
             $scope.table.data=[];
         };
         $scope.load = () => {
+
+            console.info("SHOW PROCESS");
+
             let sql = `SELECT query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
                 formatReadableSize(memory_usage) as memory_usage,
                 rows_read,
@@ -164,7 +167,11 @@
         };
 
 
-
+        $scope.$on('$destroy', function() {
+            $scope.vars.interval=-1;
+            $interval.cancel(intervalHandle);
+            $scope.setInterval();
+        });
 
         // start
         $scope.load();

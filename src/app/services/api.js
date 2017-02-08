@@ -110,7 +110,7 @@
                     }
                 }
             };
-
+            console.info("SQL>",query);
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)

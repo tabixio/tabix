@@ -247,7 +247,7 @@ class WidgetTable extends Widget
 
         if (!this.table) return;
         this.table.width='99.9'+Math.floor(100*Math.random())+'%';
-        // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
+        this.table.height='99.9'+Math.floor(100*Math.random())+'%';
         // hotInstance.updateSettings({
         //     width: $('hotWrapperDiv').width()
         // });

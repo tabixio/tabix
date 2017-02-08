@@ -105,15 +105,19 @@
             // ---------------------------------------------------------------------------------------------
             // TABLE RENDER
             $rootScope.$on('gridster-loaded', function(item) {
-                console.info('> > > gridster-loaded');
-                scope.widget.onResize();
+                console.info('> > >$rootScope gridster-loaded',item);
+                // scope.widget.onResize();
             });
 
             $rootScope.$on('gridster-item-resized', function(item) {
-                console.info('> > > gridster-item-resized < < < < <');
+                console.info('> > >$rootScope  gridster-item-resized < < < < <',item);
             });
 
 
+            scope.$watch('widget.sizeY', function(){
+                console.warn('widget.sizeY');
+
+            }, true);
             scope.$watch('widget.sizeX', function(){
                 console.warn('widget.sizeX');
                 // scope.widget.onResize();

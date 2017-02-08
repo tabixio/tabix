@@ -80,12 +80,37 @@
             resizable: {
                 enabled: true,
                 handles: ['n', 'e', 's', 'w', 'ne', 'se', 'sw', 'nw'],
-                start: function(event, $element, widget) {}, // optional callback fired when resize is started,
-                resize: function(event, $element, widget) {widget.onResize();}, // optional callback fired when item is resized,
+                start: function(event, $element, widget) {
+
+                }, // optional callback fired when resize is started,
+                resize: function(event, $element, widget) {
+
+                }, // optional callback fired when item is resized,
                 stop: function(event, $element, widget) {
 
-                    // optional callback fired when item is finished resizing
-                    widget.onResize();
+                    console.log("[resizable.STOP]");
+                    // console.dir($element[0].offsetWidth);
+                    // console.dir($element[0].offsetHeight);
+                    // console.dir(widget);
+
+
+                    setTimeout(function() {
+                        widget.onResize();
+
+                        //  console.log($element);
+                        // resizeBlock(1);
+                    }, 300);
+
+                    //
+                    // console.log($element);
+                    // if ($element.originalSize.width != $element.size.width
+                    //     || $element.originalSize.height != $element.size.height) {
+                    //     var gridsterItemScope = angular.element($element).scope();
+                    //     gridsterItemScope.$broadcast('resizestop', arguments);
+                    // }
+                    //
+                    // // optional callback fired when item is finished resizing
+                    // widget.onResize();
                 }
             },
             draggable: {
