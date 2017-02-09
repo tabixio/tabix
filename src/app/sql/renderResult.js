@@ -88,19 +88,9 @@
                 }, // optional callback fired when item is resized,
                 stop: function(event, $element, widget) {
 
+                    //
                     console.log("[resizable.STOP]");
-                    // console.dir($element[0].offsetWidth);
-                    // console.dir($element[0].offsetHeight);
-                    // console.dir(widget);
-
-
-                    setTimeout(function() {
-                        widget.onResize();
-
-                        //  console.log($element);
-                        // resizeBlock(1);
-                    }, 300);
-
+                    widget.scheduledResize();
                     //
                     // console.log($element);
                     // if ($element.originalSize.width != $element.size.width
@@ -120,7 +110,8 @@
                 drag: function(event, $element, widget) {}, // optional callback fired when item is moved,
                 stop: function(event, $element, widget) {
                     // optional callback fired when item is finished dragging
-                    widget.onDrag();
+                    // widget.onDrag();
+                    widget.scheduledResize();
 
                 }
             }
@@ -156,37 +147,6 @@
 
 
 
-        };
-        $scope.removeWidget = function(w) {
-            var index = $scope.widgets.indexOf(w);
-            $scope.widgets.splice(index, 1);
-        };
-        $scope.onChange = function(event, items) {
-            // console.log("onChange event: "+event+" items:"+items);
-        };
-        $scope.onDragStart = function(event, ui) {
-            // console.log("onDragStart event: "+event+" ui:"+ui);
-        };
-        $scope.onDragStop = function(event, ui) {
-            // console.log("onDragStop event: "+event+" ui:"+ui);
-        };
-        $scope.onResizeStart = function(event, ui) {
-            // console.log("onResizeStart event: "+event+" ui:"+ui);
-        };
-        $scope.onResizeStop = function(event, ui) {
-            console.log("onResizeStop event: ",event," ui:",ui);
-            let widget=ui.element[0].attributes.getNamedItem("widget");
-            console.log('wid',widget);
-            console.log('wid',$scope.widgets);
-            if (widget){
-                widget.onResize()
-            }
-        };
-        $scope.onItemAdded = function(item) {
-            // console.log("onItemAdded item: "+item);
-        };
-        $scope.onItemRemoved = function(item) {
-            // console.log("onItemRemoved item: "+item);
         };
 
 

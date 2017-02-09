@@ -8,6 +8,7 @@
 
 class Widget {
     constructor(DataProvider,draw=false) {
+        this._scheduledResize=false;
         this.data = DataProvider;
         this.drawCommnads=draw;
         this._draw=false;
@@ -33,6 +34,10 @@ class Widget {
         this.init=false;
 
         this.type=false;
+        this.isDark=false;
+    }
+    isDark() {
+        return this.isDark;
     }
 
     onDrag() {
@@ -40,6 +45,24 @@ class Widget {
     }
     onResize() {
         // console.info("On widget Resize",this);
+    }
+    scheduledResize() {
+        if (this._scheduledResize)
+        {
+            return;
+        }
+        // отложенный ресайз , если много изменений
+        console.info("Add scheduledResize");
+        this._scheduledResize=true;
+        let th=this;
+
+        setTimeout(function() {
+            console.info("this exec scheduledResize");
+            th._scheduledResize=false;
+            th.onResize();
+        }, 1500);
+
+
     }
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
@@ -102,7 +125,8 @@ class WidgetDraw extends Widget
 
     get draw(){
 
-        if (this.drawType)
+
+        if (this.drawType && !this._draw)
         {
             this._draw=new this._list[this.drawType](this);
         }
@@ -112,8 +136,9 @@ class WidgetDraw extends Widget
     getChartClass() {
 
         if (!this.drawType) {
+            this.drawType='CHART';
             console.error("Un support DrawType:null");
-            return false;
+            // return false;
         }
         if (!this._list[this.drawType]) {
             console.error("Un support DrawType:"+this.drawType);
@@ -241,22 +266,36 @@ class WidgetTable extends Widget
     onDrag() {
         this.onResize();
     }
-    onResize() {
-        // Для hot-table изменим парамер ширины, финт/костыль - хз
-        console.log("> > > hot-table - resize > >");
-
+    onResize(w,h) {
         if (!this.table) return;
+
+        if (w && h)
+        {
+            // console.log("> > > hot-table - resize > >",w,h);
+            // this.table.width=w*0.9;
+            // this.table.height=h*0.9;
+            // return;
+        }
+
+        // Для hot-table изменим парамер ширины, финт/костыль - хз
+
         this.table.width='99.9'+Math.floor(100*Math.random())+'%';
         this.table.height='99.9'+Math.floor(100*Math.random())+'%';
+
+        console.log("> resize > ",this.table.width,this.table.height);
+
+
+        // ngHandsontable содержит Watch на поля width + height который вызывает updateSettings()
         // hotInstance.updateSettings({
         //     width: $('hotWrapperDiv').width()
         // });
-        // -----
+        // -----------------------------------------------------------------
         // Или попробовать вариант hotInstance.redraw()
-        // -----
+        // -----------------------------------------------------------------
         // Или таймер на X00 мс который отложет ресайз
-        // ----
+        // ----------------------------------------------------------------
         // Или передавать точный размер width области после ресайза
+        // ----------------------------------------------------------------
     }
     makeColumns() {
         let colHeaders = [];

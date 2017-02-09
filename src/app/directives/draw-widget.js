@@ -23,19 +23,27 @@
     function buildDrawChart(widget) {
         let html='';
 
-        let x=widget.draw;
-        if (widget.library=='echart') {
+
+
+
+
+        if (widget.draw.library=='echart') {
             console.info('DW:echart');
+            html = `<echarts options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></echarts>`
         }
-        if (widget.library=='c3') {
+        if (widget.draw.library=='c3') {
             console.info('DW:c3');
         }
-        if (widget.library=='d3') {
+        if (widget.draw.library=='d3') {
             console.info('DW:d3');
         }
-        if (widget.library=='amchart') {
+        if (widget.draw.library=='amchart') {
             console.info('DW:amchart');
+            html = `<am-chart options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></am-chart>`;
+
         }
+        console.warn('buildDrawChart',html);
+
 
         if (widget.preProcessor instanceof Function) {
             widget.preProcessor();
@@ -104,32 +112,32 @@
 
             // ---------------------------------------------------------------------------------------------
             // TABLE RENDER
-            $rootScope.$on('gridster-loaded', function(item) {
-                console.info('> > >$rootScope gridster-loaded',item);
-                // scope.widget.onResize();
-            });
+            // $rootScope.$on('gridster-loaded', function(item) {
+            //     console.info('> > >$rootScope gridster-loaded',item);
 
-            $rootScope.$on('gridster-item-resized', function(item) {
-                console.info('> > >$rootScope  gridster-item-resized < < < < <',item);
-            });
+            // });
+
+            // $rootScope.$on('gridster-item-resized', function(item) {
+            //     console.info('> > >$rootScope  gridster-item-resized < < < < <',item);
+            // });
 
 
             scope.$watch('widget.sizeY', function(){
-                console.warn('widget.sizeY');
+                // изменился размер
+                scope.widget.onResize(element.parent().width(),element.parent().height());
 
             }, true);
             scope.$watch('widget.sizeX', function(){
-                console.warn('widget.sizeX');
-                // scope.widget.onResize();
+                // изменился размер
+                scope.widget.onResize(element.parent().width(),element.parent().height());
+
             }, true);
 
             if (scope.widget.type=='table' && !scope.widget.error)
             {
                 scope.widget.element = angular.element(`<hot-table
-                        
                         settings="widget.table.settings"
                         datarows="widget.data.data"
-                    
                         ng-class="{'handsontable-dark': widget.isDark}"
                         width="widget.table.width"
                         col-headers="widget.table.colHeaders"
@@ -137,6 +145,7 @@
                     ></hot-table>`);
             }
 //
+
             // ---------------------------------------------------------------------------------------------
             // RIVOT RENDER
             if (scope.widget.type=='draw' && !scope.widget.error )
@@ -146,12 +155,9 @@
             }
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
-                //
                 scope.widget.element = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
 
             }
-
-//$scope.hotInstance
 
             element.append(scope.widget.element);
             $compile(scope.widget.element)(scope);
