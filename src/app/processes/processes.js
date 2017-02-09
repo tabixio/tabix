@@ -95,10 +95,10 @@
 
             console.info("SHOW PROCESS");
 
-            let sql = `SELECT query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
+            let sql = `SELECT now() as dt,query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
                 formatReadableSize(memory_usage) as memory_usage,
                 rows_read,
-                round(elapsed,4) as elapsed ,  * ,  cityHash64(query) as hash
+                round(elapsed,4) as elapsed ,  * ,  cityHash64(query) as hash,hostName()
             FROM system.processes `;
 
             if ($scope.vars.logMode) {
@@ -122,7 +122,11 @@
                         {
 
                             let c=$scope.vars.logData[cell.hash].count;
-                            c=c+1;
+
+                            if ($scope.vars.logData[cell.hash].query_id!=cell.query_id)
+                            {
+                                c=c+1;
+                            }
                             cell.count=c;
                             $scope.vars.logData[cell.hash]=cell;
                         } else
