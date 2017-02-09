@@ -61,6 +61,7 @@
 - [x]  TabiX name
 - [X]  HotTable темная тема для меню и hottable в списке процессов
 - [x]  PROCESSLIST режим логировать запросы
+- [x]  HotTable ресайз колонок
 
 
 
@@ -78,21 +79,22 @@
 
 
 - [ ] Рендер
-> - в виде текста для Redmine 
 > - Рендеры графики AmCharts
+> - Рендеры графики eChars
+> - Рендеры графики angular-nvd3
 > - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid
-http://krispo.github.io/angular-nvd3/#/
 
-- [ ] Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
-- [ ] Help Modal Window -> Link to github +  Hotkey справочник и/или help 
-- [ ] Kill query in SHOW PROCESSLIST
+
+
+- [ ]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
+- [ ]  Help Modal Window -> Link to github +  Hotkey справочник и/или help
+- [ ]  Kill query in SHOW PROCESSLIST
 
 - [ ]  echarts тема темная 
 - [ ]  ACE скрестить с Ace.Tern
 - [ ]  Live autocomplete delay
 - [ ]  Меню по правой кнопке на таблице, наполнить элементы
 - [ ]  Поиск в дереве 
-- [ ]  HotTable ресайз колонок
 - [ ]  HotTable ресайз виджета
 - [ ]  HotTable запоминать размеры установленные руками
 - [ ]  SHOW PROCESSLIST не останавливается
@@ -101,6 +103,7 @@ http://krispo.github.io/angular-nvd3/#/
 - [ ]  Размер несжатых данных
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться
 
+- [ ]  Виджет список предустановленных графиков + минимальный редактор
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA
@@ -126,6 +129,7 @@ http://echarts.baidu.com/examples.html
 https://cdn.materialdesignicons.com/1.1.34/
 
 **ACE**
+http://krispo.github.io/angular-nvd3/#/
 
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
