@@ -39,7 +39,7 @@
             <md-tab-label>
                 <i class="mdi mdi-information mr-"></i>{{'Информация' | translate}}</md-tab-label>
             <md-tab-body>
-                <div class="data-table-container">
+                <div class="data-table-container" style="overflow:hidden;">
                     <table class="data-table">
                         <tbody>
                             <tr class="data-table-row">
@@ -70,16 +70,24 @@
                                     {{vars.statistics.maxDate}}
                                 </td>
                             </tr>
+                            <tr class="data-table-row">
+                                <td class="tc-grey-400">4</td>
+                                <td>{{'Примерный размер несжатых данных' | translate}}</td>
+                                <td ng-if="!vars.isRawStatistics" >
+                                    <md-button class="md-primary" ng-click="calcRawSize()">{{'Расчитать' | translate}}
+                                    </md-button>
+                                </td>
+                                <td ng-if="vars.isRawStatistics">
+                                    {{vars.rawstatistics}}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
 
                     <br>
-                    <br>
-                    <br>
                     <b>SHOW CREATE TABLE</b><br>
-                    <i ng-repeat="field in vars.createtable.data">
-                        {{ field.statement }}
-                    </i>
+                    <pre>{{vars.createtable}}</pre>
+
                 </div>
             </md-tab-body>
         </md-tab>
@@ -125,35 +133,8 @@
                         manual-column-resize="true"
                     >
                     </hot-table>
-                                <!--on-after-init="onAfterInit"-->
-                                <!--columns="table.columns"-->
 
 
-                               <!---->
-                               <!--col-widths="table.colWidths"-->
-
-                    <!--</hot-table>-->
-                            <!--settings="{colHeaders: colHeaders, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange}"-->
-                               <!--row-headers="false"-->
-                               <!--min-spare-rows="minSpareRows"-->
-
-
-
-
-
-
-
-                        <!--<hot-column data="id" title="'ID'"></hot-column>-->
-                        <!--<hot-column data="name.first" title="'First Name'" read-only></hot-column>-->
-                        <!--<hot-column data="name.last" title="'Last Name'"  read-only></hot-column>-->
-                        <!--<hot-column data="address" title="'Address'" width="150"></hot-column>-->
-                        <!--<hot-column data="product.description" title="'Favorite food'"></hot-column>-->
-                        <!--<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>-->
-                        <!--<hot-column data="isActive" title="'Is active'" type="'checkbox'" width="65" checked-template="'Yes'" unchecked-template="'No'"></hot-column>-->
-
-
-
-                    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
                 </div>
             </md-tab-body>
         </md-tab>

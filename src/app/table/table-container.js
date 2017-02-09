@@ -79,6 +79,8 @@
             offset: 0,
             statistics: {},
             loading: true,
+            isRawStatistics:false,
+            rawstatistics:"",
             scrollConfig: {
                 autoHideScrollbar: false,
                 theme: ThemeService.isDark( )
@@ -153,6 +155,27 @@
             });
         };
 
+        $scope.calcRawSize = ( ) => {
+            console.log('RAcalcRawSizeW');
+            //SELECT any(ignore(*)) FROM merge.hits SAMPLE 1 / 10000
+
+            // А размер данных без учета компрессии -- никак?
+            // Можно узнать разжатый размер всей таблицы сделав в клиенте SELECT any(ignore(*)) FROM table и посмотреть финальный прогресс
+            // Progress: 33.82 million rows, 39.82 GB
+            // Только это может выполняться долго
+            // Потом прогресс вручную домножить на 10000
+
+            $scope.vars.isRawStatistics=true;
+            API.query( 'SELECT any(ignore(*)) FROM ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable +' SAMPLE 1 / 10000 ' ).then( data => {
+                //
+                $scope.vars.rawstatistics=data.statistics;
+                console.log("RAcalcRawSizeWresult",data);
+            } , function(reason) {
+                $scope.vars.rawstatistics=reason.data;
+            });
+
+
+        };
         $scope.init = ( ) => {
             $scope.vars.loading = true;
 
@@ -161,7 +184,11 @@
                 */
             API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.columns = data );
 
-            API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.createtable = data );
+            API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
+                $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
+                console.log($scope.vars.createtable)
+            } );
+
 
             /**
                 * Запрос статистики по таблице
