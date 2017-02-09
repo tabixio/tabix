@@ -532,12 +532,12 @@ window.global_delimiter             = ";;";
             $scope.vars.db = db;
             API.setDatabase(db);
 
-            API.query("SELECT table,name,type,default_type,default_expression FROM system.columns WHERE database=\'" + db + "\'", null)
+            API.query("SELECT database,table,name,type,default_type,default_expression FROM system.columns", null)
                 .then((data) => {
 
                     let fields = [],
                         ufields = {};
-                    let tables = [],
+                    let tables = [], dbtables={},
                         utables = {};
                     let keys = [];
 
@@ -550,30 +550,41 @@ window.global_delimiter             = ";;";
                     });
 
                     data.data.forEach((row) => {
+                        dbtables[row.database+'.'+row.table]=1;
 
-                        window.global_keywords_fieldsList.push(row);
-                        keys.forEach((key) => {
+                        if (row.database==db)
+                        {
+                            window.global_keywords_fieldsList.push(row);
+                            keys.forEach((key) => {
 
-                            if (key == 'table') {
-                                if (!utables.hasOwnProperty(row[key])) {
-                                    utables[row[key]] = 1;
-                                    tables.push(row[key]);
+                                if (key == 'table') {
+                                    if (!utables.hasOwnProperty(row[key])) {
+                                        utables[row[key]] = 1;
+                                        tables.push(row[key]);
+                                    }
                                 }
-                            }
-                            if (key == 'name') {
-                                if (!ufields.hasOwnProperty(row[key])) {
-                                    ufields[row[key]] = 1;
-                                    fields.push(row[key]);
+                                if (key == 'name') {
+                                    if (!ufields.hasOwnProperty(row[key])) {
+                                        ufields[row[key]] = 1;
+                                        fields.push(row[key]);
+                                    }
                                 }
-                            }
-                        });
-                    });
+                            });
 
+                        }
+
+                    }); // data.data.forEach
 
                     window.global_keywords_fields = fields.join('|') + '|';
-                    window.global_keywords_tables = tables.join('|') + '|' + db;
+                    // window.global_keywords_tables = tables.join('|') + '|' + db;
+
+                    window.global_keywords_tables=db;
+                    Object.keys(dbtables).forEach((tab) => {
+                        window.global_keywords_tables += '|'+tab;
+                    });
 
                     // reload highlights
+
                     $scope.vars.tabs.forEach((tab) => {
                         if (tab.editor) {
                             tab.editor.session.setMode({

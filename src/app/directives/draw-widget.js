@@ -24,11 +24,7 @@
         let html='';
 
 
-
-
-
         if (widget.draw.library=='echart') {
-            console.info('DW:echart');
             html = `<echarts options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></echarts>`
         }
         if (widget.draw.library=='c3') {
@@ -38,16 +34,25 @@
             console.info('DW:d3');
         }
         if (widget.draw.library=='amchart') {
-            console.info('DW:amchart');
-            html = `<am-chart options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></am-chart>`;
+            html = `<am-chart options="widget.draw.options" height="100%"  width="100%"></am-chart>`;
 
         }
+        if (!html) {
+            console.warn('buildDrawChart , false in html code');
+
+            return ;
+        }
+
         console.warn('buildDrawChart',html);
 
 
         if (widget.preProcessor instanceof Function) {
             widget.preProcessor();
         }
+        if (widget.draw.preProcessor instanceof Function) {
+            widget.draw.preProcessor();
+        }
+
 
         //
         // var chart, options;

@@ -91,7 +91,7 @@ http://krispo.github.io/angular-nvd3/#/
 - [ ]  ACE скрестить с Ace.Tern
 - [ ]  Live autocomplete delay
 - [ ]  Меню по правой кнопке на таблице, наполнить элементы
-
+- [ ]  Поиск в дереве 
 - [ ]  HotTable ресайз колонок
 - [ ]  HotTable ресайз виджета
 - [ ]  HotTable запоминать размеры установленные руками

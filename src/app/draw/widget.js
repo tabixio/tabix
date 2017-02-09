@@ -132,7 +132,11 @@ class WidgetDraw extends Widget
         }
         return this._draw;
     }
-
+    onResize() {
+        if (this._draw) {
+            this._draw.onResize();
+        }
+    }
     getChartClass() {
 
         if (!this.drawType) {

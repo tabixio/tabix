@@ -19,6 +19,7 @@
 	 */
     function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav ) {
         $scope.vars = {
+            searchline:'',
             loaded: false,
             error: false,
             databases: [ ]
@@ -44,6 +45,15 @@
                 preventDefault: false
             }
         };
+
+        $scope.$watch('vars.searchline', (curr) =>
+        {
+            // filter
+            // тут поиск по деверу и установка active / не active
+            console.log(curr,$scope.vars.databases);
+        });
+
+
 
         $scope.clickInsertField = field => {
             $rootScope.$emit('handleBroadcastInsertInActive', {value:field.name});
@@ -98,7 +108,7 @@
                 let data = res.data || [ ];
                 data.forEach((item) => {
                     if (!list_all_fields[item.database+'.'+item.table]) list_all_fields[item.database+'.'+item.table]=[];
-                    list_all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type });
+                    list_all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type,active:true });
                 });
                 //database.table
                 API.query( "SELECT database,name,engine FROM system.tables" ).then(res => {
@@ -118,7 +128,7 @@
                         if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
                         if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
                         if (item.engine.match(/$Merge^/))  classEngine='source-fork';
-
+                        item.active=true;
                         item.classEngine=classEngine;
                         item.rightMenuListTable=rightMenuListTable;
 
@@ -126,6 +136,7 @@
                             if ( item.name !=='-' && a.name == item.database ) {
                                 a.tables.push(
                                         {
+                                                active:true,
                                                 name: item.name,
                                                 engine : item.engine,
                                                 classEngine:item.classEngine,
@@ -142,6 +153,7 @@
                                 name: item.database,
                                 tables: [
                                     {
+                                        active:true,
                                         name: item.name,
                                         engine : item.engine,
                                         classEngine : item.classEngine,
@@ -174,11 +186,12 @@
                             if (!find)
                             {
                                 $scope.vars.databases.push(
-                                        {
-                                                name:item.name,
-                                                // rightMenuList:rightMenuListDatabases,
-                                                tables:[]
-                                        });
+                                    {
+                                        name:item.name,
+                                        // rightMenuList:rightMenuListDatabases,
+                                        tables:[],
+                                        active:true
+                                    });
                             }
 
                         });
