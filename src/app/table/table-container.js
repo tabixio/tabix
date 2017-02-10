@@ -34,10 +34,7 @@
                 //
                 // autoWrapRow: true,
                 // // rowHeaders: true,
-                // // colHeaders: _(headers).map(function(header, i) {
-                // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
-                // // }),
-                // //colWidths: 100,
+                colWidths: 100,
                 // rowHeights: [50, 40, 100],
                 // renderer: 'html',
                 // fillHandle: false,
@@ -45,23 +42,23 @@
                 contextMenu: true,
                 contextMenuCopyPaste: {
                     swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
-                }
-                // stretchH: 'all',
-                // preventOverflow: 'horizontal',
+                },
+                stretchH: 'all',
+                preventOverflow: 'horizontal',
                 // persistentState:true,
                 // contextMenu: ['row_above', 'row_below', 'remove_row'],
                 // filters: true,
                 //
                 // // fixedRowsTop: 1,
                 // // fixedColumnsLeft: 1,
-                // columnSorting: true,
-                // sortIndicator: true,
+                columnSorting: true,
+                sortIndicator: true,
                 // manualRowResize: true,
                 // viewportColumnRenderingOffset:'auto',
                 // // maxRows: 10,
                 // // visibleRows:10,
                 //
-                // wordWrap:false,
+                wordWrap:false,
                 // // autoColumnSize: {
                 // //     samplingRatio: 23
                 // // }
@@ -75,6 +72,7 @@
         $scope.vars = {
             columns: {},
             ugrid:{},
+            sortColumn:false,
             isDark: ThemeService.isDark(),
             createtable: {},
             data: null,
@@ -133,10 +131,21 @@
         * Загрузка данных
         */
         $scope.load = ( ) => {
+
+            console.log($scope.vars.columns);
+
+            let sort="";
+            if ($scope.vars.sortColumn) {
+                sort="ORDER BY "+$scope.vars.sortColumn+' DESC';
+            }
+
             $scope.vars.data = -1;
             API.query( `
                 select *
                 from ${ $scope.vars.currentDatabase }.${ $scope.vars.currentTable }
+                
+                
+                
                 limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
                 ` ).then( function ( data ) {
                 // $scope.vars.odata = data.data;
@@ -183,14 +192,9 @@
         $scope.init = ( ) => {
             $scope.vars.loading = true;
 
-            /**
-                * Запрос полей таблицы
-                */
-            API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => $scope.vars.columns = data );
 
             API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
                 $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
-                console.log($scope.vars.createtable)
             } );
 
 
@@ -209,7 +213,38 @@
                 '	database = \'' + $scope.vars.currentDatabase + '\' AND ' + '	( ' + '		table = \'' + $scope.vars.currentTable + '\' OR ' + '		table = \'' + $scope.vars.currentTable + '_sharded\'' + '    ) ' + 'GROUP BY ' + '    table ' ).then(response => $scope.vars.statistics = (response && response.data.length && response.data[0]) || {});
 
             $scope.initHandTable( );
-            $scope.load( );
+            /**
+             * Запрос полей таблицы
+             */
+            API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => {
+                $scope.vars.columns = data;
+
+
+
+                // Загружаем данные
+
+                $scope.vars.sortColumn=false;
+                let c=0;
+                data.data.forEach((col) =>
+                {
+                    if (c<3) {
+                        if (col.type=='Date') {
+                            $scope.vars.sortColumn=col.name;
+                        }
+                        if (col.type=='DateTime') {
+                            $scope.vars.sortColumn=col.name;
+                        }
+
+                    }
+                    c=c+1;
+
+
+                });
+
+                $scope.load( );
+            } );
+
+
         };
 
         /**

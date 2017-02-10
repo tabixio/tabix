@@ -627,7 +627,30 @@ window.global_delimiter             = ";;";
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
                 data.data.forEach((item) => {
                     // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
-                    let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( ID ) ) AS ' + item["attribute.names"] + ',';
+
+                    let id_field=item.name;
+
+                    // Определяем id_field из item.name
+                    // Если id_field содержит точку вырезать все что до точки
+                    // Если в конце `s` вырезать
+                    // подставить _id и все в нижний регистр
+
+                    id_field = id_field.replace(/^.*\./gm, "");
+
+                    if (id_field!='news') {
+                        id_field = id_field.replace(/s$/gm, "");
+                    }
+
+                    if (!id_field) {
+                        id_field='ID';
+                    }else {
+                        id_field=id_field.toLowerCase()+'_id';
+                    }
+
+
+                    let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( '+id_field+' ) ) AS ' + item["attribute.names"] + ',';
+
+
                     window.global_keywords_dictList.push({
                         dic:dic,
                         title: 'dic_'+item.name + '.' + item["attribute.names"]
