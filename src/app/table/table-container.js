@@ -42,6 +42,10 @@
                 // renderer: 'html',
                 // fillHandle: false,
                 dropdownMenu: true,
+                contextMenu: true,
+                contextMenuCopyPaste: {
+                    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
+                }
                 // stretchH: 'all',
                 // preventOverflow: 'horizontal',
                 // persistentState:true,

@@ -62,6 +62,7 @@
 - [X]  HotTable темная тема для меню и hottable в списке процессов
 - [x]  PROCESSLIST режим логировать запросы
 - [x]  HotTable ресайз колонок
+- [x]  HotTable CopyPaste menu
 
 
 
@@ -85,7 +86,7 @@
 > - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid
 
 
-
+- [ ]  HotTable CopyPaste to ReadMine markup
 - [ ]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
 - [ ]  Help Modal Window -> Link to github +  Hotkey справочник и/или help
 - [ ]  Kill query in SHOW PROCESSLIST

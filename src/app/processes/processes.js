@@ -70,6 +70,22 @@
                 // contextMenu: ['row_above', 'row_below', 'remove_row'],
                 // filters: true,
                 //
+                // https://docs.handsontable.com/0.30.1/demo-context-menu.html
+                contextMenu: {
+                    callback: function (key, options) {
+                        if (key === 'kill') {
+                            setTimeout(function () {
+
+                                console.warn(options);
+                                // timeout is used to make sure the menu collapsed before alert is shown
+                                // alert("This is a context menu with default and custom options mixed");
+                            }, 100);
+                        }
+                    },
+                    items: {
+                        "kill": {name: 'Kill query'}
+                    }
+                },
                 // fixedRowsTop: 1,
                 // fixedColumnsLeft: 1,
                 columnSorting: true,
