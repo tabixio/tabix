@@ -1,16 +1,15 @@
 <div class="header">
     <md-card class="m0 pl0">
         <div>
-            <div class="pull-left" style="width: 180px">
+            <div class="pull-left" style="width: 210px">
                 <a ui-sref="dashboard"><img src="assets/images/logotabix.png" class="mr logo"/></a>
-                <!--<a class="tc-white">TabiX</a>-->
             </div>
 
             <div class="pull-right">
                 <md-menu md-position-mode="target-right target">
-                    <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                    <md-button aria-label="menu" ng-click="$mdOpenMenu($event)">
                         <i class="mdi mdi-24px mdi-theme-light-dark"></i>
-                        <md-tooltip>{{'Тема' | translate}}</md-tooltip>
+                        <md-tooltip>{{'Тема' | translate}}</md-tooltip>{{'Тема' | translate}}
                     </md-button>
                     <md-menu-content>
                         <md-menu-item ng-repeat="theme in themes">
@@ -18,17 +17,18 @@
                         </md-menu-item>
                     </md-menu-content>
                 </md-menu>
-                <md-button aria-label="menu" class="md-icon-button" ui-sref="processes">
-                    <i class="mdi mdi-24px mdi-playlist-play"></i>
+                <md-button aria-label="menu"  ui-sref="processes">
+                    <i class="mdi mdi-24px mdi-playlist-play"></i><a href="#" class="mdi" >{{'Список процессов' | translate}}</a>
                     <md-tooltip>Список процессов</md-tooltip>
                 </md-button>
-                <md-button aria-label="menu" class="md-icon-button" ui-sref="sql">
-                    <i class="mdi mdi-24px mdi-console"></i>
+                <md-button aria-label="menu"  ui-sref="sql">
+                    <i class="mdi mdi-24px mdi-console"></i>SQL
                     <md-tooltip>SQL</md-tooltip>
                 </md-button>
-                <md-button class="md-icon-button" aria-label="{{'Выход' | translate}}" ng-click="logout()">
+
+                <md-button  aria-label="{{'Выход' | translate}}" ng-click="logout()">
                     <i class="mdi mdi-24px mdi-lock"></i>
-                    <md-tooltip>{{'Выход' | translate}}</md-tooltip>
+                    <md-tooltip>{{'Выход' | translate}}</md-tooltip>{{'Выход' | translate}}
                 </md-button>
                 <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>
