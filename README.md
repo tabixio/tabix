@@ -67,7 +67,7 @@
 - [x]  В словарях поле ID строится из названия словаря, ads.blocks => block_id , ads.campaigns => campaign_id , ads.news => news_id , geonames => geoname_id
 - [x]  SHOW PROCESSLIST не останавливается
 - [x]  Меню по правой кнопке на таблице, наполнить элементы
-
+- [x]  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
 
 
 
@@ -92,7 +92,7 @@
 - [ ]  HotTable CopyPaste to ReadMine markup
 - [ ]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
 
-- [ ]  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
+
 
 - [ ]  echarts тема темная 
 - [ ]  ACE скрестить с Ace.Tern

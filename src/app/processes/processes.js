@@ -22,6 +22,7 @@
         const LS_SORT_KEY = 'proc.key';
 
         $scope.vars = {
+            queryesToKill:{},
             logMode : true,
             loading: false,
             logData: {},
@@ -207,33 +208,79 @@
 
 
         $scope.dialogKill = function(ev) {
-            $mdDialog.show({
-                controller: DialogController,
-                templateUrl: 'app/processes/dialog.kill.html',
-                parent: angular.element(document.body),
-                targetEvent: ev,
-                clickOutsideToClose:true
-            })
-                .then(function(answer) {
-                    $scope.status = 'You said the information was "' + answer + '".';
-                }, function() {
-                    $scope.status = 'You cancelled the dialog.';
-                });
+            let sql = `SELECT now() as dt,query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
+                formatReadableSize(memory_usage) as memory_usage,
+                rows_read,cityHash64(query) as hash,
+                round(elapsed,4) as elapsed 
+            FROM system.processes /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%' ORDER BY elapsed DESC`;
+
+            API.query(sql).then(function ( data ) {
+
+                $mdDialog.show({
+                    controller: function($scope){
+                        $scope.queryesToKill=data.data;
+                        $scope.kill = function(q) {
+                            // Appending dialog to document.body to cover sidenav in docs app
+                            let confirm = $mdDialog.confirm()
+                                .title('Kill?')
+                                .textContent(q.query)
+                                .ariaLabel('Lucky day')
+                                .targetEvent(ev)
+                                .ok('Please do it!')
+                                .cancel('Sounds like a scam');
+
+                            $mdDialog.show(confirm).then(function() {
+
+                                let sqlKill='KILL QUERY WHERE cityHash64(query)='+q.hash+' SYNC';
+
+                                //
+                                API.query(sqlKill,false).then(function ( killdata ) {
+
+                                    $mdDialog.show(
+                                        $mdDialog.alert()
+                                            .clickOutsideToClose(true)
+                                            .title(sqlKill)
+                                            .textContent(killdata)
+                                            .ariaLabel('Alert')
+                                            .ok('Ok!')
+                                            .targetEvent(ev)
+                                    );
+                                }, (response) => {
+                                    $mdDialog.show(
+                                        $mdDialog.alert()
+                                            .clickOutsideToClose(true)
+                                            .title(sqlKill)
+                                            .textContent(response.data)
+                                            .ariaLabel('Error on Kill')
+                                            .ok('Ok!')
+                                            .targetEvent(ev)
+                                    );
+                                });
+
+                            }, function() {
+                                // cancel
+                            });
+                        };
+                        $scope.cancel = function() {
+                            $mdDialog.cancel();
+                        };
+                    },
+                    templateUrl: 'app/processes/dialog.kill.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose:true
+                })
+                    .then(function(answer) {
+                        $scope.status = 'You said the information was "' + answer + '".';
+                    }, function() {
+                        $scope.status = 'You cancelled the dialog.';
+                    });
+
+            });
+
         };
 
-        function DialogController($scope, $mdDialog) {
-            $scope.hide = function() {
-                $mdDialog.hide();
-            };
 
-            $scope.cancel = function() {
-                $mdDialog.cancel();
-            };
-
-            $scope.answer = function(answer) {
-                $mdDialog.hide(answer);
-            };
-        }
 
     }
 })(angular, smi2);
