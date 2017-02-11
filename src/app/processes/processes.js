@@ -7,7 +7,8 @@
         'API',
         'ThemeService',
         '$interval',
-        'localStorageService'
+        'localStorageService',
+        '$mdDialog'
     ];
 
     /**
@@ -15,7 +16,7 @@
      * @name smi2.controller:LoginController
      * @description Login page controller
      */
-    function ProcessesController($scope, API, ThemeService, $interval, localStorageService) {
+    function ProcessesController($scope, API, ThemeService, $interval, localStorageService,$mdDialog) {
 
         const LS_INTERVAL_KEY = 'proc.interval';
         const LS_SORT_KEY = 'proc.key';
@@ -200,5 +201,39 @@
         if ($scope.vars.interval > -1) {
             $scope.setInterval();
         }
+
+
+        // ------- KILL QUERY --------
+
+
+        $scope.dialogKill = function(ev) {
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'app/processes/dialog.kill.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true
+            })
+                .then(function(answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                }, function() {
+                    $scope.status = 'You cancelled the dialog.';
+                });
+        };
+
+        function DialogController($scope, $mdDialog) {
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.answer = function(answer) {
+                $mdDialog.hide(answer);
+            };
+        }
+
     }
 })(angular, smi2);

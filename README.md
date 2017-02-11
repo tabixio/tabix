@@ -91,7 +91,7 @@
 
 - [ ]  HotTable CopyPaste to ReadMine markup
 - [ ]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
-- [ ]  Help Modal Window -> Link to github +  Hotkey справочник и/или help
+
 - [ ]  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
 
 - [ ]  echarts тема темная 
@@ -108,6 +108,13 @@
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
 - [ ]  HotTable в сплывашке показывается криво
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
+
+
+- [ ]  Документация
+> - Help Modal Window -> Link to github +  Hotkey справочник и/или help
+> - Отдельный домен doc.tabix, собранный из md файлов
+
+
 
 **Todo low**:
 - [ ] tableau export via WDC/ODATA
@@ -153,14 +160,9 @@ https://github.com/wangshijun/angular-echarts
 
 ----
 
-GridX : http://oria.github.io/gridx/gallery.html#filter
+**awesome-dataviz**
 
-zkoss Grid: https://www.zkoss.org/zkdemo/grid/grouping_model
-
-ember-table : http://opensource.addepar.com/ember-table/#/community-examples
-
-ui-grid.info : http://ui-grid.info/docs/#/tutorial/401_AllFeatures
-
+https://github.com/fasouto/awesome-dataviz
 
 
 http://raw.densitydesign.org/
