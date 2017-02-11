@@ -50,7 +50,10 @@
         {
             // filter
             // тут поиск по деверу и установка active / не active
+
+            // нужно добавить таймер задержку в 500 мс на ввод и только после искать/фильтровать
             console.log(curr,$scope.vars.databases);
+            // деверо должно быть все расскрыть включая филды
         });
 
 
@@ -88,6 +91,85 @@
             $scope.reLoad();
         });
 
+        $scope.filterCompletions = function(items, needle) {
+            console.log(">>>filterCompletions",needle);
+
+            // Базовый алгоритм поиска в дереве обьектов
+
+            let results = {};
+            let upper = needle.toUpperCase();
+            let lower = needle.toLowerCase();
+
+
+            let serverName='clickhouse';
+
+            loop: items.forEach((dbase) => {
+                dbase.tables.forEach((table) =>{
+                    table.fields.forEach((field) =>{
+
+                        let item={};
+                        // variant 1
+                        // let caption=serverName+'.'+dbase.name+'.'+table.name+'.'+field.name;
+                        // variant 2
+                        let caption=table.name+'.'+field.name;
+
+                        if (!caption) return;
+                        let lastIndex = -1;
+                        let matchMask = 0;
+                        let penalty = 0;
+                        let index, distance;
+
+
+                        // caption char iteration is faster in Chrome but slower in Firefox, so lets use indexOf
+                        for (let j = 0; j < needle.length; j++) {
+                            // TODO add penalty on case mismatch
+                            let i1 = caption.indexOf(lower[j], lastIndex + 1);
+                            let i2 = caption.indexOf(upper[j], lastIndex + 1);
+                            index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
+                            if (index < 0)
+                            {
+                                return;
+                            }
+                            distance = index - lastIndex - 1;
+                            if (distance > 0) {
+                                // first char mismatch should be more sensitive
+                                if (lastIndex === -1)
+                                    penalty += 10;
+                                penalty += distance;
+                            }
+                            matchMask = matchMask | (1 << index);
+                            lastIndex = index;
+                        }
+                        item.matchMask = matchMask;
+                        item.exactMatch = penalty ? 0 : 1;
+                        item.score = (item.score || 0) - penalty;
+                        item.dbase=dbase.name;
+                        item.table=table.name;
+                        item.field=field.name;
+
+                        // if (!results[dbase.name]) results[dbase.name]={};
+                        // if (!results[dbase.name][table.name]) results[dbase.name][table.name]={};
+                        // results[dbase.name][table.name][field.name]=item;
+
+
+                    });
+                });
+
+            });//forEach
+            // items.forEach((dbase) => {
+            //     dbase.tables.forEach((table) => {
+            //         table.fields.forEach((field) => {
+            //
+            //                 if (results[dbase.name][table.name][field.name]) {
+
+                            // }
+                    //
+                    // })
+                // })
+            // });
+            console.log("> ",results);
+
+        };
 
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcessTable = function(obj){
@@ -223,6 +305,8 @@
                             }
 
                         });
+                        $scope.filterCompletions($scope.vars.databases,'userage');
+
 
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
@@ -239,6 +323,8 @@
                 $scope.vars.loaded = true;
                 $scope.vars.error = true;
             });
+
+
         };
 
         $scope.reLoad();
