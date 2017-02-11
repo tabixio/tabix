@@ -52,6 +52,16 @@
             localStorageService.set(CURRENT_BASE_KEY, {});
         };
 
+
+        this.makeQueryId = () => {
+                let text = "";
+                let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                for( let i=0; i < 15; i++ )
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+                return text;
+        }
+
         /**
          * @ngdoc method
          * @methodOf smi2.service:API

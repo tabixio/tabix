@@ -56,7 +56,7 @@
 
 
         $scope.clickInsertField = field => {
-            $rootScope.$emit('handleBroadcastInsertInActive', {value:field.name});
+            $rootScope.$emit('handleBroadcastInsertInActive', {value:" "+field.name+",\n"});
         };
 
         $scope.clickAndSelect = ( database, event ) => {
@@ -90,10 +90,38 @@
 
 
         //gets triggered when an item in the context menu is selected
-        $scope.rightMenuProcessTable = function(item){
-            if(item.key == "OpenTables"){
+        $scope.rightMenuProcessTable = function(obj){
 
-            } else if(item.key == "InsertDescribe"){
+            let table=obj.item.name;
+            let db=obj.item.database;
+            if(obj.key == "OpenTables"){
+                // тут можно что то  получше чем location
+                window.location='/database/'+db+'/table/'+table;
+
+            } else if(obj.key == "InsertDescribe"){
+                   API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
+
+                       let fields=[];
+                       let where=[];
+
+                       data.data.forEach((item) => {
+                           fields.push(item.name);
+                           if (item.type=='Date') {
+                               where.push(item.name+'=today()')
+                           }
+                       });
+
+                       let sql="\nSELECT\n\t"+fields.join(",\n\t");
+
+                       if (where.length) {
+                           sql=sql+"\nWHERE\n\t"+where.join("\n AND \n");
+                       }
+                       sql=sql+"\nLIMIT 100\n\n";
+
+                       console.log(sql);
+                       // вставка текста в активное окно редактора там где курсор, см SQL.JS
+                        $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
+                    });
 
             }
         };
@@ -117,8 +145,8 @@
 
                         let  rightMenuListTable=
                         [
-                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},
-                            {active: true, value: 'Insert Create Table',key:'InsertDescribe',icon:'format-size'}
+                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',item:item},
+                            {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',item:item}
                         ];
 
                         let classEngine='';

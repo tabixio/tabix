@@ -92,12 +92,16 @@
                             <md-tooltip>{{'Лог запросов' | translate}}</md-tooltip>
                         </md-button>
 
-                        <div style="display: inline-block">
-                            <md-progress-circular md-diameter="16px" ng-if="tab.loading"></md-progress-circular>
+                        <div ng-if="tab.loading" style="display: table; width: 100%;">
+                            <md-progress-linear md-mode="indeterminate" ></md-progress-linear>
+                            {{tab.progress}}
                         </div>
                     </div>
                 </div>
                 <md-tabs md-dynamic-height md-border-bottom ng-if="tab.results.length" md-selected="tab.selectedResultTab">
+
+
+
                     <span  ng-include="'app/sql/renderResult.html'"></span>
                 </md-tabs>
 

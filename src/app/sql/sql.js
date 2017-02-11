@@ -175,12 +175,20 @@ window.global_delimiter             = ";;";
 
             $scope.vars.currentTab.loading = true;
 
+
             // если указан limitRows
             if ($scope.vars.limitRows) {
                 extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
             }
+            $scope.vars.currentTab.progress.query=query.sql.replace(/(\r\n|\n|\r)$/gm, "").substr(0,130);
 
-            API.query(query.sql, query.format, true, extendSettings).then((data) => {
+            let Q_ID='';
+
+            if (query.qid) {
+                Q_ID=' /*GUI_QUERY_ID_'+query.qid+'*/';
+            }
+
+            API.query(query.sql+Q_ID, query.format, true, extendSettings).then((data) => {
 
                 let r = data;
 
@@ -314,6 +322,7 @@ window.global_delimiter             = ";;";
          */
         $scope.finalizeResult = (resultContainer) => {
             $scope.vars.currentTab.loading = false;
+            $scope.vars.currentTab.progress = false;
 
             // todo проверить
             if (resultContainer.data.find((item) => (
@@ -497,13 +506,15 @@ window.global_delimiter             = ";;";
                         setedformat: _format_seted,
                         keyword: _keyword,
                         storage: storage,
-                        drawCommand: drawCommand
+                        drawCommand: drawCommand,
+                        qid:API.makeQueryId()
                     });
 
                     numquery++;
                 });
 
             if (queue.length) {
+                $scope.vars.currentTab.progress = {};
                 $scope.executeQuery(queue[0], queue, result);
             }
 
@@ -1040,7 +1051,7 @@ window.global_delimiter             = ";;";
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {
-                $scope.addDictionariesWord(" "+args.value+', ');
+                $scope.addDictionariesWord(args.value);
             }
         });
 
