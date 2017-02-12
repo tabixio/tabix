@@ -202,6 +202,7 @@ window.global_delimiter             = ";;";
                 }
                 data.error = false;
                 data.query = query;
+                data.countAllQuery = queue.length;
 
 
 
@@ -408,7 +409,7 @@ window.global_delimiter             = ";;";
             // Save tabs session
             saveSession();
 
-
+            let count_all=0;
             // BadCode : window.global_delimiter
             let use_delimiter=window.global_delimiter;
             if (!use_delimiter) use_delimiter=';;';
@@ -497,6 +498,7 @@ window.global_delimiter             = ";;";
                         _format = false;
                         _format_seted = false;
                     }
+
 
                     // Queue creation
                     queue.push({

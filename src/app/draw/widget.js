@@ -94,6 +94,15 @@ class WidgetPivot extends Widget
                 }
             }
         };
+
+
+        if (this.data.countAll==1) {
+            // результат толкьо одна отпра
+            this.sizeX=6;
+            this.sizeY=3;
+
+        }
+
     }
 }
 
@@ -121,6 +130,16 @@ class WidgetDraw extends Widget
         };
         // if class exists -> init ok
         this.init=this.getChartClass();
+
+
+        if (this.data.countAll==1) {
+            // результат толкьо одна отпра
+            this.sizeX=6;
+            this.sizeY=3;
+
+        }
+
+
     }
 
     get draw(){
@@ -221,7 +240,7 @@ class WidgetTable extends Widget
                 columnSorting: true,
                 sortIndicator: true,
                 manualRowResize: true,
-                // viewportColumnRenderingOffset:'auto',
+                viewportColumnRenderingOffset:'auto',
                 // // maxRows: 10,
                 // // visibleRows:10,
                 //
@@ -265,6 +284,16 @@ class WidgetTable extends Widget
             this.sizeY=3;
         }
 
+        if (this.data.countAll==1) {
+            // результат толкьо одна отпра
+            this.sizeX=6;
+            this.sizeY=3;
+
+        }
+
+        console.log("SSSS:",this.data.position,this.data.countAll);
+        //    data.position = query.index;
+        // data.countAll = queue.length;
 
     }
     onDrag() {

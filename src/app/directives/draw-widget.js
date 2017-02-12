@@ -119,7 +119,7 @@
             // TABLE RENDER
             // $rootScope.$on('gridster-loaded', function(item) {
             //     console.info('> > >$rootScope gridster-loaded',item);
-
+            //
             // });
 
             // $rootScope.$on('gridster-item-resized', function(item) {
@@ -148,6 +148,9 @@
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
+
+                scope.widget.scheduledResize();
+
             }
 //
 
