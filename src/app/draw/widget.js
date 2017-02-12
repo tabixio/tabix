@@ -121,6 +121,7 @@ class WidgetDraw extends Widget
 
         this._list= {
             'SCATTERMAP': DrawEcharts,
+            'MAP': DrawEcharts,
             'HEATMAP': DrawEcharts,
             'TREEMAP': DrawEcharts,
             'SANKEYS': DrawEcharts,
@@ -147,7 +148,7 @@ class WidgetDraw extends Widget
 
         if (this.drawType && !this._draw)
         {
-            this._draw=new this._list[this.drawType](this);
+            this._draw=new this._list[this.drawType](this,this.drawType);
         }
         return this._draw;
     }

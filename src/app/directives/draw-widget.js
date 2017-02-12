@@ -23,9 +23,12 @@
     function buildDrawChart(widget) {
         let html='';
 
+        if (widget.draw.library=='echarts') {
 
-        if (widget.draw.library=='echart') {
-            html = `<echarts options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></echarts>`
+            html = `<div style="width: 100%;height: 100%;border: 2px solid red"><echarts options="widget.draw.options" height="100px" ng-if="widget.draw.init" width="100px"></echarts></div>`
+
+//            html = `<div style="width: 100%;height: 100%;border: 2px solid red" data-iu-chart="widget.draw.options"  ng-if="widget.draw.init"></div>`
+
         }
         if (widget.draw.library=='c3') {
             console.info('DW:c3');

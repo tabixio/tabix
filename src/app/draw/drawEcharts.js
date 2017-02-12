@@ -7,10 +7,25 @@
 'use strict';
 
 class DrawEcharts {
-    constructor(Widget) {
+    constructor(Widget,drawType) {
+        // `<echarts options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></echarts>`
+        console.warn("Draw   Echarts constructor",Widget.drawCommnads,drawType);
+        this.type=drawType.toUpperCase();
         this.library = 'echarts';
         this.widget = Widget;
         this.init = false;
+        this.options={
+                version: 3,
+                backgroundColor: '#404a59',
+                title : {
+                    text: 'EChart',
+                    subtext: 'subtext',
+                    left: 'center',
+                    textStyle : {
+                        color: '#fff'
+                    }
+                },
+        };// opthios
     }
 
     onResize() {
@@ -18,7 +33,97 @@ class DrawEcharts {
     }
 
     preProcessor() {
+        if (this.type=='MAP') {
+            this.init=this.createMAP();
+        }
 
+        console.info('preProcessor',this.init,this.options);
+    }
+
+
+
+    createMAP() {
+        this.widget.height=3;
+        this.widget.width=2;
+
+        // массив состоящий
+        let series=[
+            {
+                type: 'scatter',
+                coordinateSystem: 'geo',
+                data: this.widget.data.data.map(function (itemOpt) {
+
+                    return {
+                        name: itemOpt.name_ru,
+                        value: [
+                            itemOpt.longitude,
+                            itemOpt.latitude,
+                            itemOpt.views_count
+                        ],
+
+                        label: {
+                            emphasis: {
+                                position: 'right',
+                                show: true
+                            }
+                        },
+                    };
+
+                })
+            }
+        ];
+
+        console.log(series);
+
+
+
+        let o={
+            tooltip : {
+                trigger: 'item'
+            },
+            // legend: {
+            //     orient: 'vertical',
+            //     top: 'bottom',
+            //     left: 'right',
+            //     data:['data Top10', 'data Top10', 'data Top10'],
+            //     textStyle: {
+            //         color: '#fff'
+            //     },
+            //     selectedMode: 'single'
+            // },
+            geo: {
+                name: 'World Population (2010)',
+                type: 'map',
+                map: 'world',
+                label: {
+                    emphasis: {
+                        show: false
+                    }
+                },
+                visualMap: {
+                    show: false,
+                    min: 0,
+                    max: 100,// max,
+                    inRange: {
+                        symbolSize: [6, 60]
+                    }
+                },
+                roam: true,
+                itemStyle: {
+                    normal: {
+                        areaColor: '#323c48',
+                        borderColor: '#404a59'
+                    },
+                    emphasis: {
+                        areaColor: '#2a333d'
+                    }
+                }
+            },
+            series: series
+        };
+
+        this.options=Object.assign(o,this.options);
+        return true;
     }
 }
 
@@ -32,16 +137,6 @@ class DrawAMcharts {
         this.widget = Widget;
         this.widget.height=2;
         this.widget.width=2;
-
-        //
-        //
-        // this.options={
-        //
-        // };
-        // this.init=false;
-
-
-        console.info('AMconstructor',this.init,this.options);
 
 
     }
