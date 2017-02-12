@@ -759,8 +759,8 @@ window.global_delimiter             = ";;";
                 //showInvisibles:true ,
                 showGutter:true ,
                 enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
-                // liveAutocompletionDelay: 500,
-                // liveAutocompletionThreshold: 1
+                liveAutocompletionDelay: 500,
+                liveAutocompletionThreshold: 1
             });
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
