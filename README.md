@@ -69,6 +69,8 @@
 - [x]  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
 - [x]  Меню для таблицы (по прав.кнопке )
 - [x]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
+- [x]  Редактор ACEjs,вынести из под Bower, ACE скрестить с Ace.Tern
+- [x]  Live autocomplete delay
 
 
 
@@ -89,9 +91,6 @@
 
 
 - [ ]  echarts тема темная
-- [ ]  Редактор ACEjs,вынести из под Bower
-- [ ]  ACE скрестить с Ace.Tern
-- [ ]  Live autocomplete delay
 
 - [ ]  Поиск в дереве https://github.com/ajaxorg/ace/blob/64cf0ba78b1418552008c85a521368d98d8b96c9/lib/ace/autocomplete.js#L457
 
