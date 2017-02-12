@@ -72,7 +72,8 @@
 - [x]  Редактор ACEjs,вынести из под Bower, ACE скрестить с Ace.Tern
 - [x]  Live autocomplete delay
 - [x]  KILL QUERY по query_id не по hash
-
+- [x]  Выбор DB через двойной клик в дереве, вслывашка о выборе
+- [x]  Дерево теперь не переключается
 
 **Todo high**:
 - [ ] Редактор 
@@ -92,7 +93,7 @@
 
 - [ ]  echarts тема темная
 
-- [ ]  Поиск в дереве https://github.com/ajaxorg/ace/blob/64cf0ba78b1418552008c85a521368d98d8b96c9/lib/ace/autocomplete.js#L457
+- [ ]  Поиск в дереве, фильтрация дерева
 
 
 - [ ]  HotTable ресайз виджета, и при инициализации не правильный размер

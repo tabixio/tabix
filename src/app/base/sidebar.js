@@ -8,7 +8,7 @@
         '$state',
         'API',
         'ThemeService',
-        '$mdSidenav',
+        '$mdSidenav','$mdToast'
 
     ];
 
@@ -17,7 +17,7 @@
 	 * @name smi2.controller:SidebarController
 	 * @description Контроллер бокового меню
 	 */
-    function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav ) {
+    function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav,$mdToast ) {
         $scope.vars = {
             searchline:'',
             loaded: false,
@@ -41,19 +41,51 @@
 
         $scope.vars.metis = {
             config: {
-                toggle: true,
+                toggle: false,
                 preventDefault: false
             }
         };
 
         $scope.$watch('vars.searchline', (curr) =>
         {
+
+            // деверо должно быть все расскрыть включая филды
+
+            // if (curr.length<3)
+            // {
+            //     $scope.vars.metis.config.toggle=true;
+            //     return ;
+            // }
+            // $scope.vars.metis.config.toggle=false;
+
             // filter
             // тут поиск по деверу и установка active / не active
 
             // нужно добавить таймер задержку в 500 мс на ввод и только после искать/фильтровать
-            console.log(curr,$scope.vars.databases);
-            // деверо должно быть все расскрыть включая филды
+
+
+
+
+            if (curr.length<2) {
+                // reset
+                console.warn("reset, search box");
+                $scope.vars.databases.forEach((dbase,i_db) => {
+                    $scope.vars.databases[i_db].active=true;
+
+                    dbase.tables.forEach((table, i_tab) => {
+                        $scope.vars.databases[i_db].tables[i_tab].active=true;
+
+                        table.fields.forEach((field, i_fld) => {
+                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
+                        })
+                    })
+                });
+
+            }
+            else {
+                $scope.filterCompletions(curr);
+            }
+
         });
 
 
@@ -67,7 +99,10 @@
                 event.stopPropagation( );
                 return false;
             }
+
+
             $scope.selectDatabase( database );
+
         };
 
         /**
@@ -75,6 +110,16 @@
 		 */
         $scope.selectDatabase = database => {
             $rootScope.currentDatabase = database.name;
+
+            $mdToast.show(
+                $mdToast
+                    .simple()
+                    .content('USE '+database.name+' database')
+                    .theme(ThemeService.theme)
+                    .position('bottom right')
+            );
+
+
             $mdSidenav( 'tableSiedenav' ).close( );
         };
 
@@ -91,21 +136,21 @@
             $scope.reLoad();
         });
 
-        $scope.filterCompletions = function(items, needle) {
+        $scope.filterCompletions = function( needle) {
             console.log(">>>filterCompletions",needle);
 
             // Базовый алгоритм поиска в дереве обьектов
 
             let results = {};
+            let resultsIds = {};
             let upper = needle.toUpperCase();
             let lower = needle.toLowerCase();
 
 
             let serverName='clickhouse';
-
-            loop: items.forEach((dbase) => {
-                dbase.tables.forEach((table) =>{
-                    table.fields.forEach((field) =>{
+            loop: $scope.vars.databases.forEach((dbase,i_db) => {
+                dbase.tables.forEach((table,i_tab) =>{
+                    table.fields.forEach((field,i_fld) =>{
 
                         let item={};
                         // variant 1
@@ -128,6 +173,7 @@
                             index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
                             if (index < 0)
                             {
+
                                 return;
                             }
                             distance = index - lastIndex - 1;
@@ -147,27 +193,52 @@
                         item.table=table.name;
                         item.field=field.name;
 
-                        // if (!results[dbase.name]) results[dbase.name]={};
-                        // if (!results[dbase.name][table.name]) results[dbase.name][table.name]={};
-                        // results[dbase.name][table.name][field.name]=item;
+                        if (!results[i_db]) results[i_db]={};
+                        if (!results[i_db][i_tab]) results[i_db][i_tab]={};
+                        results[i_db][i_tab][i_fld]=item;
 
 
                     });
                 });
 
             });//forEach
-            // items.forEach((dbase) => {
-            //     dbase.tables.forEach((table) => {
-            //         table.fields.forEach((field) => {
-            //
-            //                 if (results[dbase.name][table.name][field.name]) {
+            $scope.vars.databases.forEach((dbase,i_db) => {
 
-                            // }
-                    //
-                    // })
-                // })
-            // });
-            console.log("> ",results);
+                if (results[i_db]) {
+                    $scope.vars.databases[i_db].active=true;
+                }
+                else
+                {
+                    $scope.vars.databases[i_db].active=false;
+                }
+
+
+
+                dbase.tables.forEach((table, i_tab) => {
+
+                    if (results[i_db] && results[i_db][i_tab]) {
+                        $scope.vars.databases[i_db].tables[i_tab].active=true;
+                    }
+                    else
+                    {
+                        $scope.vars.databases[i_db].tables[i_tab].active=false;
+                    }
+
+                    table.fields.forEach((field, i_fld) => {
+
+
+                        if (results[i_db] && results[i_db][i_tab] && results[i_db][i_tab][i_fld]) {
+                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
+                        }
+                        else
+                        {
+                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=false;
+                        }
+
+                    })
+                })
+            });
+
 
         };
 
@@ -305,7 +376,7 @@
                             }
 
                         });
-                        $scope.filterCompletions($scope.vars.databases,'userage');
+
 
 
                         $scope.vars.loaded = true;
