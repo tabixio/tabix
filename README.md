@@ -71,7 +71,7 @@
 - [x]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
 - [x]  Редактор ACEjs,вынести из под Bower, ACE скрестить с Ace.Tern
 - [x]  Live autocomplete delay
-
+- [x]  KILL QUERY по query_id не по hash
 
 
 **Todo high**:
@@ -100,7 +100,7 @@
 - [ ]  HotTable в сплывашке показывается криво
 - [ ]  HotTable CopyPaste to ReadMine markup
 
-- [ ]  KILL QUERY по query_id не по hash
+
 
 - [ ]  Размер несжатых данных
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)

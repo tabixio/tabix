@@ -210,7 +210,7 @@
         $scope.dialogKill = function(ev) {
             let sql = `SELECT now() as dt,query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
                 formatReadableSize(memory_usage) as memory_usage,
-                rows_read,cityHash64(query) as hash,
+                rows_read,query_id as hash,
                 round(elapsed,4) as elapsed 
             FROM system.processes /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%' ORDER BY elapsed DESC`;
 
@@ -221,8 +221,10 @@
                         $scope.queryesToKill=data.data;
                         $scope.kill = function(q) {
                             // Appending dialog to document.body to cover sidenav in docs app
+                            let sqlKill='KILL QUERY WHERE query_id=\''+q.hash+'\' SYNC';
+
                             let confirm = $mdDialog.confirm()
-                                .title('Kill?')
+                                .title(sqlKill+' ?')
                                 .textContent(q.query)
                                 .ariaLabel('Lucky day')
                                 .targetEvent(ev)
@@ -231,7 +233,7 @@
 
                             $mdDialog.show(confirm).then(function() {
 
-                                let sqlKill='KILL QUERY WHERE cityHash64(query)='+q.hash+' SYNC';
+
 
                                 //
                                 API.query(sqlKill,false).then(function ( killdata ) {
@@ -239,7 +241,7 @@
                                     $mdDialog.show(
                                         $mdDialog.alert()
                                             .clickOutsideToClose(true)
-                                            .title(sqlKill)
+                                            .title('Result: '+sqlKill)
                                             .textContent(killdata)
                                             .ariaLabel('Alert')
                                             .ok('Ok!')
@@ -249,7 +251,7 @@
                                     $mdDialog.show(
                                         $mdDialog.alert()
                                             .clickOutsideToClose(true)
-                                            .title(sqlKill)
+                                            .title("Error: "+sqlKill)
                                             .textContent(response.data)
                                             .ariaLabel('Error on Kill')
                                             .ok('Ok!')
