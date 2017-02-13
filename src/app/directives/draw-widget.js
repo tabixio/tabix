@@ -24,8 +24,18 @@
         let html='';
 
         if (widget.draw.library=='echarts') {
+//<div style="width: 100%;height: 100%;border: 2px solid red">
+            html = `
+        <ng-echartsx style="border: 2px solid salmon" style="width: 400px;height: 300px"
+        ec-option="widget.draw.options" 
+        width="300" height="300"
+        ec-config="widget.draw.config" 
+        ></ng-echartsx>
+        
+       `;
 
-            html = `<div style="width: 100%;height: 100%;border: 2px solid red"><echarts options="widget.draw.options" height="100px" ng-if="widget.draw.init" width="100px"></echarts></div>`
+// </div>
+            //ng-if="widget.draw.init"
 
 //            html = `<div style="width: 100%;height: 100%;border: 2px solid red" data-iu-chart="widget.draw.options"  ng-if="widget.draw.init"></div>`
 
@@ -48,13 +58,6 @@
 
         console.warn('buildDrawChart',html);
 
-
-        if (widget.preProcessor instanceof Function) {
-            widget.preProcessor();
-        }
-        if (widget.draw.preProcessor instanceof Function) {
-            widget.draw.preProcessor();
-        }
 
 
         //
@@ -161,13 +164,27 @@
             // RIVOT RENDER
             if (scope.widget.type=='draw' && !scope.widget.error )
             {
-                scope.widget.element = angular.element(buildDrawChart(scope.widget));
+                let html=buildDrawChart(scope.widget);
+
+
+                scope.widget.element = angular.element(html);
+
+
+
+
+                if (scope.widget.preProcessor instanceof Function) {
+                    scope.widget.preProcessor();
+                }
+
+                if (scope.widget.draw.preProcessor instanceof Function) {
+                    scope.widget.draw.preProcessor();
+                }
+
 
             }
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 scope.widget.element = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
-
             }
 
             element.append(scope.widget.element);

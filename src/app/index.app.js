@@ -27,7 +27,7 @@
         'cfp.hotkeys',
         'ngHandsontable',
         'amChartsDirective',
-        'ngecharts',
-        'gridster'
+        'gridster',
+        'ngecharts','ng-echartsx'
     ]);
 })();
