@@ -13,6 +13,7 @@ class DrawEcharts {
         this.type=drawType.toUpperCase();
         this.library = 'echarts';
         this.widget = Widget;
+        this.chart = false;// тут храниться обьект
         this.init = false;
         this.options={
                 version: 3,
@@ -36,82 +37,77 @@ class DrawEcharts {
         if (this.type=='MAP') {
             this.init=this.createMAP();
         }
-        this.config = {
-            theme:'default',
-            // event: [{click:onClick}],
-            dataLoaded:true
-        };
-
         this.options = {
-            title : {
-                text: '未来一周气温变化(5秒后自动轮询)',
+            title: {
+                text: '一天用电量分布',
                 subtext: '纯属虚构'
             },
-            tooltip : {
+            tooltip: {
                 trigger: 'axis'
             },
-            legend: {
-                data:['最高气温','最低气温']
-            },
             toolbox: {
-                show : true,
-                feature : {
-                    mark : {show: true},
-                    dataView : {show: true, readOnly: false},
-                    magicType : {show: true, type: ['line', 'bar']},
-                    restore : {show: true},
-                    saveAsImage : {show: true}
+                show: true,
+                feature: {
+                    saveAsImage: {}
                 }
             },
-            calculable : true,
-            xAxis : [
+            xAxis:  {
+                type: 'category',
+                boundaryGap: false,
+                data: ['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} W'
+                }
+            },
+            visualMap: {
+                show: false,
+                dimension: 0,
+                pieces: [{
+                    lte: 6,
+                    color: 'green'
+                }, {
+                    gt: 6,
+                    lte: 8,
+                    color: 'red'
+                }, {
+                    gt: 8,
+                    lte: 14,
+                    color: 'green'
+                }, {
+                    gt: 14,
+                    lte: 17,
+                    color: 'red'
+                }, {
+                    gt: 17,
+                    color: 'green'
+                }]
+            },
+            series: [
                 {
-                    type : 'category',
-                    boundaryGap : false,
-                    data : ['周一','周二','周三','周四','周五','周六','周日']
+                    name:'用电量',
+                    type:'line',
+                    smooth: true,
+                    data: [300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500, 600, 750, 800, 700, 600, 400],
+                    markArea: {
+                        data: [ [{
+                            name: '早高峰',
+                            xAxis: '07:30'
+                        }, {
+                            xAxis: '10:00'
+                        }], [{
+                            name: '晚高峰',
+                            xAxis: '17:30'
+                        }, {
+                            xAxis: '21:15'
+                        }] ]
+                    }
                 }
             ],
-            yAxis : [
-                {
-                    type : 'value',
-                    axisLabel : {
-                        formatter: '{value} °C'
-                    }
-                }
-            ],
-            series : [
-                {
-                    name:'最高气温',
-                    type:'line',
-                    data:[11, 11, 15, 13, 12, 13, 10],
-                    markPoint : {
-                        data : [
-                            {type : 'max', name: '最大值'},
-                            {type : 'min', name: '最小值'}
-                        ]
-                    },
-                    markLine : {
-                        data : [
-                            {type : 'average', name: '平均值'}
-                        ]
-                    }
-                },
-                {
-                    name:'最低气温',
-                    type:'line',
-                    data:[1, -2, 2, 5, 3, 2, 0],
-                    markPoint : {
-                        data : [
-                            {name : '周最低', value : -2, xAxis: 1, yAxis: -1.5}
-                        ]
-                    },
-                    markLine : {
-                        data : [
-                            {type : 'average', name : '平均值'}
-                        ]
-                    }
-                }
-            ]
+            width:'100%',
+            height:'100%'
         };
         console.info('preProcessor',this.init,this.options);
     }

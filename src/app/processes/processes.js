@@ -113,10 +113,18 @@
 
             console.info("SHOW PROCESS");
 
-            let sql = `SELECT now() as dt,query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
+            let sql = `SELECT 
+                    now() as dt,
+                    query,
+                    1 as count,
+                     
+                formatReadableSize(read_bytes) as bytes_read, 
+                formatReadableSize(written_bytes) as written_bytes, 
                 formatReadableSize(memory_usage) as memory_usage,
-                rows_read,
-                round(elapsed,4) as elapsed ,  * ,  cityHash64(query) as hash,hostName()
+                read_rows,written_rows,
+                round(elapsed,4) as elapsed ,  * ,  
+                cityHash64(query) as hash,
+                hostName()
             FROM system.processes `;
 
             if ($scope.vars.logMode) {
@@ -205,12 +213,43 @@
 
 
         // ------- KILL QUERY --------
-
-
+        //
+        // 1	is_initial_query	UInt8
+        // 2	user	String
+        // 3	query_id	String
+        // 4	address	String
+        // 5	port	UInt16
+        // 6	initial_user	String
+        // 7	initial_query_id	String
+        // 8	initial_address	String
+        // 9	initial_port	UInt16
+        // 10	interface	UInt8
+        // 11	os_user	String
+        // 12	client_hostname	String
+        // 13	client_name	String
+        // 14	client_version_major	UInt64
+        // 15	client_version_minor	UInt64
+        // 16	client_revision	UInt64
+        // 17	http_method	UInt8
+        // 18	http_user_agent	String
+        // 19	quota_key	String
+        // 20	elapsed	Float64
+        // 21	read_rows	UInt64
+        // 22	read_bytes	UInt64
+        // 23	total_rows_approx	UInt64
+        // 24	written_rows	UInt64
+        // 25	written_bytes	UInt64
+        // 26	memory_usage	Int64
+        // 27	query	String
         $scope.dialogKill = function(ev) {
-            let sql = `SELECT now() as dt,query,1 as count,formatReadableSize(bytes_read) as bytes_read, 
+            let sql = `SELECT now() as dt,query,1 as count,
+                
+                formatReadableSize(read_bytes) as read_bytes, 
+                formatReadableSize(written_bytes) as written_bytes, 
                 formatReadableSize(memory_usage) as memory_usage,
-                rows_read,query_id as hash,
+                read_rows,written_rows,
+                
+                query_id as hash,
                 round(elapsed,4) as elapsed 
             FROM system.processes /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%' ORDER BY elapsed DESC`;
 

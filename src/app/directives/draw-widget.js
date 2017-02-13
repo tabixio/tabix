@@ -10,7 +10,7 @@
     angular.module(smi2.app.name).directive('drawWidget', ['$compile','$rootScope', function ($compile,$rootScope) {
         return {
             restrict: 'EA',
-            template: '<div></div>',
+            template: '<div style="background: wheat;border: 1px solid sienna;height:100%;width:100%"></div>',
             scope: {
                 widget: '=widget',
                 isdark: '=isdark'
@@ -20,25 +20,13 @@
     }]);
 
 
-    function buildDrawChart(widget) {
+    function buildDrawChart(widget,element) {
         let html='';
 
         if (widget.draw.library=='echarts') {
-//<div style="width: 100%;height: 100%;border: 2px solid red">
-            html = `
-        <ng-echartsx style="border: 2px solid salmon" style="width: 400px;height: 300px"
-        ec-option="widget.draw.options" 
-        width="300" height="300"
-        ec-config="widget.draw.config" 
-        ></ng-echartsx>
-        
-       `;
-
-// </div>
-            //ng-if="widget.draw.init"
-
-//            html = `<div style="width: 100%;height: 100%;border: 2px solid red" data-iu-chart="widget.draw.options"  ng-if="widget.draw.init"></div>`
-
+            widget.draw.chart = echarts.init(element[0], 'macarons');
+            console.log(element[0]);
+            html=false;
         }
         if (widget.draw.library=='c3') {
             console.info('DW:c3');
@@ -50,41 +38,59 @@
             html = `<am-chart options="widget.draw.options" height="100%"  width="100%"></am-chart>`;
 
         }
-        if (!html) {
-            console.warn('buildDrawChart , false in html code');
 
-            return ;
-        }
 
+        // ------------------------------------------------------------------------------------------------------------------
         console.warn('buildDrawChart',html);
 
 
+        if (widget.preProcessor instanceof Function) {
+            widget.preProcessor();
+        }
 
-        //
-        // var chart, options;
-        // chart = echarts.init(ele[0], 'macarons');
-        //
-        // //
-        // createChart(scope.widget);
-        //
-        // //
-        // function createChart(options) {
-        //     if (!options) return;
-        //
-        //     chart.setOption(options);
-        //     // scope.$emit('create', chart);
-        //
-        //     angular.element($window).bind('resize', function(){
-        //         chart.resize();
-        //     });
-        //
-        // }
-        //
-        // // при изменении в виджете
-        // scope.$watch('widget', function (newVal, oldVal) {
-        //     if (angular.equals(newVal, oldVal)) return;
-        //     createChart(widget);
-        // })
+        if (widget.draw.preProcessor instanceof Function) {
+            widget.draw.preProcessor();
+        }
+
+
+        // ------------------------------------------------------------------------------------------------------------------
+        if (widget.draw.library=='echarts') {
+            widget.draw.chart.setOption(widget.draw.options);
+            widget.draw.chart.resize();
+            // angular.element($window).bind('resize', function(){
+            //         widget.chart.resize();
+            // });
+            // при изменении в виджете
+            // scope.$watch('widget.draw', function (newVal, oldVal) {
+            //     if (angular.equals(newVal, oldVal)) return;
+            //     createChart(widget);
+            // })
+
+
+            // if(scope.config && scope.config.event){
+            //     if(angular.isArray(scope.config.event)){
+            //         angular.forEach(scope.config.event,function(value,key){
+            //             for(var e in value){
+            //                 chart.on(e,value[e]);
+            //             }
+            //         });
+            //     }
+            // }
+
+
+            // scope.$watch(
+            //     function () { return scope.config; },
+            //     function (value) {if (value) {refreshChart();}},
+            //     true
+            // );
+            //
+            // //图表原生option
+            // scope.$watch(
+            //     function () { return scope.option; },
+            //     function (value) {if (value) {refreshChart();}},
+            //     true
+            // );
+        }
 
         return html;
     }
@@ -164,21 +170,13 @@
             // RIVOT RENDER
             if (scope.widget.type=='draw' && !scope.widget.error )
             {
-                let html=buildDrawChart(scope.widget);
-
-
-                scope.widget.element = angular.element(html);
-
-
-
-
-                if (scope.widget.preProcessor instanceof Function) {
-                    scope.widget.preProcessor();
+                scope.widget.element = false;
+                let html=buildDrawChart(scope.widget,element);
+                if (html)
+                {
+                    scope.widget.element = angular.element(html);
                 }
 
-                if (scope.widget.draw.preProcessor instanceof Function) {
-                    scope.widget.draw.preProcessor();
-                }
 
 
             }
@@ -187,8 +185,11 @@
                 scope.widget.element = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
             }
 
-            element.append(scope.widget.element);
-            $compile(scope.widget.element)(scope);
+            if (scope.widget.element)
+            {
+                element.append(scope.widget.element);
+                $compile(scope.widget.element)(scope);
+            }
 
 
         };
