@@ -38,7 +38,8 @@
     "angular-gridster": "^0.13.15",
     "zeroclipboard": "^2.3.0",
     "ace-builds": "^1.2.6",
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "angular-pivottable": "^1.2.1"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

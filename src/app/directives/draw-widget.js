@@ -108,8 +108,8 @@
             // Если нужно отрисовать PivotJS
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
-                // scope.widget.element = angular.element(`<pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot>`);
-                scope.widget.element = angular.element(`<div ng-pivot="widget.data.data"></div>`);
+                scope.widget.element = angular.element(`<pivot style=" transition: none !important;" data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot>`);
+                // scope.widget.element = angular.element(`<div ng-pivot="widget.data.data"></div>`);
             }
             // Отрисуем элемент
             if (scope.widget.element)
