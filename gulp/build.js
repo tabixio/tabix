@@ -62,7 +62,7 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe(jsFilter)
         .pipe(jsVendor)
         .pipe($.babel({
-            presets: ['es2015', 'stage-0']
+            presets: ['es2015']//, 'stage-0'
         }))
         .on('error', conf.errorHandler('babel'))
         .pipe(jsVendor.restore)

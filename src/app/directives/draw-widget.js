@@ -134,15 +134,16 @@
             // We want to manually handle `window.resize` event in each directive.
             // So that we emulate `resize` event using $broadcast method and internally subscribe to this event in each directive
             // Define event handler
-            //angular.element(window).on('resize', function(e){ scope.$broadcast('resize'); });
-            //scope.events = {
-            //    resize: function(e, scope){
-            //        $timeout(function(){
-            //            console.log("scope.events.resize");
-            //            // scope.api.update()
-            //        },200)
-            //    }
-            //};
+            angular.element(window).on('resize', function(e){ scope.$broadcast('resize'); });
+            scope.events = {
+               resize: function(e, scope){
+                   $timeout(function(){
+                       console.log("scope.events.resize");
+                       scope.widget.scheduledResize();
+                       // scope.api.update()
+                   },200)
+               }
+            };
 
         };
     }
