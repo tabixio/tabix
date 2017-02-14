@@ -38,6 +38,9 @@
                               ThemeService,$timeout) {
 
 
+
+        $scope.tabsRender=true;
+
         $scope.vars = {
             rsw: 0,
             uiTheme: ThemeService.themeObject,
@@ -70,14 +73,14 @@
             isMobile: false, // stacks the grid items if true
             mobileBreakPoint: 600, // if the screen is not wider that this, remove the grid layout and stack the items
             mobileModeEnabled: true, // whether or not to toggle mobile mode when screen width is less than mobileBreakPoint
-            minColumns: 2, // the minimum columns the grid must have
-            minRows: 1, // the minimum height of the grid, in rows
+            minColumns: 1, // the minimum columns the grid must have
+            minRows: 0, // the minimum height of the grid, in rows
             maxRows: 100,
-            defaultSizeX: 2, // the default width of a gridster item, if not specifed
+            defaultSizeX: 1, // the default width of a gridster item, if not specifed
             defaultSizeY: 1, // the default height of a gridster item, if not specified
-            minSizeX: 1, // minimum column width of an item
+            minSizeX: 0, // minimum column width of an item
             maxSizeX: null, // maximum column width of an item
-            minSizeY: 1, // minumum row height of an item
+            minSizeY: 0, // minumum row height of an item
             maxSizeY: null, // maximum row height of an item,
             // static : true,
             resizable: {
@@ -131,6 +134,12 @@
 
         };
 
+        $scope.initNoTabs = () => {
+            console.info("initNoTabs");
+            $scope.vars.active.table=true;
+            $scope.vars.active.draw=true;
+            $scope.vars.active.pivot=true;
+        };
         $scope.initTableTab = () => {
             console.info("initTableTab");
             $scope.vars.active.table=true;

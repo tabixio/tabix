@@ -23,6 +23,7 @@ class Widget {
         this.error=this.data.error;
         this.text=this.data.text;
 
+        this.name="Widget";
 
         this.sizeX=3;// ширина
         this.sizeY=1;// высота

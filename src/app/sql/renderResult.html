@@ -16,7 +16,13 @@
     </div>
 
     <!---->
-    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
+    <div ng-if="!tabsRender"  ng-init="initNoTabs()">
+        <div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>
+        <div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>
+    </div>
+
+    <!---->
+    <md-tabs ng-if="tabsRender" md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
 
         <!-- !TABLES! -->
         <md-tab md-on-select="initTableTab()" ng-click="vars.active.table=true">

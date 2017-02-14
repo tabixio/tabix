@@ -1,18 +1,15 @@
 <div class="row">
     <div class="col-md-12">
-
-
         <div gridster="gridsterOpts">
             <ul>
                 <li
                     gridster-item="w"
                     ng-repeat="w in widgets"  >
-
                     <div class="widget-box">
-                        <div class="widget-box-header widget-draggable">
-                            <h3>{{ widget.name }}</h3>
-                        </div>
-                        <div class="widget-box-content">
+                        <!--<div class="widget-box-header widget-draggable">-->
+                            <!--<h3>{{ widget.name }}</h3>-->
+                        <!--</div>-->
+                        <div class="widget-box-content widget-draggable">
                             <draw-widget
                                     style="display: block;"
                                     widget="w" ng-if="w.init && !w.error"
@@ -24,13 +21,9 @@
                             <div ng-bind-html="w.text"  class="font-monospace" ng-if="w.text"></div>
                             <span ng-if="w.empty">{{'нет данных' | translate}}</span>
 
-                            <!--<nvd3 options="widget.chart.options"-->
-                                  <!--data="widget.chart.data"-->
-                                  <!--api="widget.chart.api"-->
-                                  <!--config="config"-->
+
                         </div>
                     </div>
-
                 </li>
             </ul>
         </div>

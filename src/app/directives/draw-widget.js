@@ -40,6 +40,10 @@
 
         if (widget.draw.library=='d3') {
             console.info('DW:d3');
+            // <!--<nvd3 options="widget.chart.options"-->
+            // <!--data="widget.chart.data"-->
+            // <!--api="widget.chart.api"-->
+            // <!--config="config"-->
         }
 
         if (widget.draw.library=='amchart') {
