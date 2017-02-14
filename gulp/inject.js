@@ -31,7 +31,8 @@ gulp.task('inject', ['scripts', 'styles'], function() {
             path.join('!' + conf.paths.src, '/app/**/*.mock.js')
         ])
         .pipe($.babel({
-            presets: ['es2015', 'stage-0']
+            presets: ['es2015', 'stage-0'],
+            plugins: ["transform-es2015-modules-commonjs"]
         }))
         .on('error', conf.errorHandler('babel'))
         .pipe($.angularFilesort())

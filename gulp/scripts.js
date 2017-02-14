@@ -18,7 +18,8 @@ gulp.task('scripts', function() {
         .pipe($.eslint())
         .pipe($.eslint.format())
         .pipe($.babel({
-            presets: ['es2015', 'stage-0']
+            presets: ['es2015', 'stage-0'],
+            plugins: ["transform-es2015-modules-commonjs"]
         }))
         .on('error', conf.errorHandler('babel'))
         .pipe($.size());
