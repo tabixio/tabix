@@ -109,7 +109,7 @@
 - [ ]  Размер несжатых данных
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
-
+- [ ]  HotTable can insert WHERE column=valuse ...
 
 - [ ]  Документация
 > - Help Modal Window -> Link to github +  Hotkey справочник и/или help
