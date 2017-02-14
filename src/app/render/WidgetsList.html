@@ -8,14 +8,28 @@
                     gridster-item="w"
                     ng-repeat="w in widgets"  >
 
-                    <div class="widget-draggable">
+                    <div class="widget-box">
+                        <div class="widget-box-header widget-draggable">
+                            <h3>{{ widget.name }}</h3>
+                        </div>
+                        <div class="widget-box-content">
+                            <draw-widget
+                                    style="display: block;"
+                                    widget="w" ng-if="w.init && !w.error"
+                                    isdark="vars.isDark" class="widget widget-{{w.type}}" events="events">
+                            </draw-widget>
 
 
-                            <draw-widget widget="w" ng-if="w.init && !w.error" isdark="vars.isDark" class="widget widget-{{w.type}}"></draw-widget>
                             <div ng-bind-html="w.error" class="font-monospace" ng-if="w.error"></div>
                             <div ng-bind-html="w.text"  class="font-monospace" ng-if="w.text"></div>
                             <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+
+                            <!--<nvd3 options="widget.chart.options"-->
+                                  <!--data="widget.chart.data"-->
+                                  <!--api="widget.chart.api"-->
+                                  <!--config="config"-->
                         </div>
+                    </div>
 
                 </li>
             </ul>

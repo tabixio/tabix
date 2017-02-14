@@ -8,8 +8,6 @@
 
 class DrawEcharts {
     constructor(Widget,drawType) {
-        // `<echarts options="widget.draw.options" height="100%" ng-if="widget.draw.init" width="100%"></echarts>`
-        console.warn("Draw   Echarts constructor",Widget.drawCommnads,drawType);
         this.type=drawType.toUpperCase();
         this.library = 'echarts';
         this.widget = Widget;
@@ -30,7 +28,11 @@ class DrawEcharts {
     }
 
     onResize() {
-
+        // отправденна комманда resize
+        if (this.chart) {
+            this.chart.setOption(this.options);
+            this.chart.resize();
+        }
     }
 
     preProcessor() {
@@ -196,6 +198,98 @@ class DrawEcharts {
 
         this.options=Object.assign(o,this.options);
         return true;
+    }
+
+
+    createSanKey() {
+
+        let drawCommand=[];
+        if ('drawCommand' in query)
+        {
+            drawCommand=query.drawCommand;
+        }
+        let levels=[];
+        drawCommand.forEach(i => {
+            try {
+                if (i && !i.code) return;
+                let object=eval('('+i.code+')');
+                console.warn(object);
+                levels=object['levels'];
+
+                // получаем настройки по осям
+            } catch (E) {
+                console.error('error eval ', i.code);
+            }
+        });
+
+
+        // подготовка данных
+        let nodes=[];
+        let links=[];
+        console.warn('levels',levels);
+        levels.forEach(level=>{
+            if (level.source && level.target && level.value) {
+
+                data.forEach(row=>{
+                    nodes[row[level.source]]=1;
+                    nodes[row[level.target]]=1;
+
+                    links.push({
+                        source:row[level.source],
+                        target:row[level.target],
+                        value:row[level.value]
+                    })
+
+                });
+            }
+        });
+        let result_nodes=[];
+        for (let key in nodes) {
+            result_nodes.push({name:key});
+        }
+        let option = {
+            tooltip: {
+                trigger: 'item',
+                triggerOn: 'mousemove'
+
+            },
+            series: [
+                {
+                    type: 'sankey',
+                    layout:'none',
+                    data: result_nodes,
+                    links: links,
+                    itemStyle: {
+                        normal: {
+                            borderWidth: 1,
+                            borderColor: '#aaa'
+                        }
+                    },
+                    lineStyle: {
+                        normal: {
+                            curveness: 0.5
+                        }
+                    }
+                }
+            ]
+        };
+
+        //
+        //
+        console.info(option);
+        // let dom = document.getElementById('sunkeyDiv');
+        // let myChart = echarts.init(dom);
+
+        $scope.echarts.sankeys=option;
+        // myChart.setOption(option);
+        //
+        // $.get('./product.json', function (data) {
+        //
+        //
+        //
+        // });
+        $scope.ready.echarts=true;
+
     }
 }
 
