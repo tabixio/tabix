@@ -60,7 +60,7 @@ class Widget {
             console.info("this exec scheduledResize");
             th._scheduledResize=false;
             th.onResize();
-        }, 1500);
+        }, 400);
 
 
     }
@@ -186,7 +186,7 @@ class WidgetTable extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
         this.type='table';
-
+        this.hotId='hotIdTable'+Math.floor(Math.random() * 10000000);
         if (this.error) {
             this.sizeY=1;
             this.sizeX=6;
@@ -200,6 +200,7 @@ class WidgetTable extends Widget
             return ;
         }
 
+        this.hotRegisterer=false;
         // this.height=4;
         // this.sizeX=12;
         this.init=true;
@@ -215,6 +216,7 @@ class WidgetTable extends Widget
             width:'100%',
             height:'100%',
             settings: {
+
                 dropdownMenu: true,
                 // manualColumnResize: handsontable.columns,
                 // colWidths:handsontable.colWidths;
@@ -300,30 +302,27 @@ class WidgetTable extends Widget
     onDrag() {
         this.onResize();
     }
-    onResize(w,h) {
-        if (!this.table) return;
-
-        if (w && h)
-        {
-            // console.log("> > > hot-table - resize > >",w,h);
-            // this.table.width=w*0.9;
-            // this.table.height=h*0.9;
-            // return;
+    getInstanceHandsontable(){
+        if (this.hotRegisterer && this.init && this.element && this.hotId) {
+            return this.hotRegisterer.getInstance(this.hotId);
         }
-
+    }
+    onResize() {
+        console.info("onResize HotTable");
+        if (!this.table) return;
+        let i=this.getInstanceHandsontable();
+        if (i) {
+            console.info("INSTA!",i);
+            i.render();
+        }
+        // -----------------------------------------------------------------
         // Для hot-table изменим парамер ширины, финт/костыль - хз
-
-        this.table.width='99.9'+Math.floor(100*Math.random())+'%';
-        this.table.height='99.9'+Math.floor(100*Math.random())+'%';
-
-        console.log("> resize > ",this.table.width,this.table.height);
-
-
+        // this.table.width='99.9'+Math.floor(100*Math.random())+'%';
+        // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
         // ngHandsontable содержит Watch на поля width + height который вызывает updateSettings()
         // hotInstance.updateSettings({
         //     width: $('hotWrapperDiv').width()
         // });
-        // -----------------------------------------------------------------
         // Или попробовать вариант hotInstance.redraw()
         // -----------------------------------------------------------------
         // Или таймер на X00 мс который отложет ресайз

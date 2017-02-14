@@ -7,7 +7,7 @@
 ((angular, smi2) => {
     'use strict';
 
-    angular.module(smi2.app.name).directive('drawWidget', ['$compile','$timeout', function ($compile,$timeout) {
+    angular.module(smi2.app.name).directive('drawWidget', ['$compile','$timeout','hotRegisterer', function ($compile,$timeout,hotRegisterer) {
         return {
             restrict: 'EA',
             template: '<div style="width: 100%;height: 100%"></div>',
@@ -16,7 +16,7 @@
                 isdark: '=isdark'
             },
             replace:true,
-            link: buildLinkFunc($compile,$timeout)
+            link: buildLinkFunc($compile,$timeout,hotRegisterer)
         };
     }]);
 
@@ -62,7 +62,7 @@
 
 
 
-    function buildLinkFunc($compile,$timeout) {
+    function buildLinkFunc($compile,$timeout,hotRegisterer) {
 
         return function (scope, element, attrs) {
 
@@ -74,12 +74,12 @@
             {
                 return ;
             }
-
             // ------------------------------------ TABLE ---------------------------------------------------------
             // TABLE RENDER
             if (scope.widget.type=='table' && !scope.widget.error)
             {
                 scope.widget.element = angular.element(`<hot-table
+                        hot-id="`+scope.widget.hotId+`"
                         settings="widget.table.settings"
                         datarows="widget.data.data"
                         ng-class="{'handsontable-dark': widget.isDark}"
@@ -87,6 +87,8 @@
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
+                // пробрасываем внутрь widget hotRegisterer + указываем hotId -> изнутри виджета имеем доступ к самому handsontable
+                scope.widget.hotRegisterer=hotRegisterer;
             }
             // ------------------------------------- DRAW --------------------------------------------------------
             //
@@ -108,18 +110,14 @@
             {
                 scope.widget.element = angular.element(`<div><pivot data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot></div>`);
             }
-
             // Отрисуем элемент
             if (scope.widget.element)
             {
                 element.append(scope.widget.element);
                 $compile(scope.widget.element)(scope);
             }
-
             // после того как виджет подготовлен и отрисован, запланируем widget ресайз
             scope.widget.scheduledResize();
-
-
             // подписываемся на изменение размера, и запланируем widget ресайз
             scope.$watch('widget.sizeY', function(){
                 // изменился размер
@@ -129,7 +127,6 @@
                 // изменился размер
                 scope.widget.scheduledResize();
             }, true);
-
 
 
             // Доп ресайзеры
