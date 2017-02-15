@@ -93,8 +93,8 @@
                         </md-button>
 
                         <div ng-if="tab.loading" style="display: table; width: 100%;">
-                            <md-progress-linear md-mode="indeterminate" ></md-progress-linear>
-                            {{tab.progress}}
+                            <md-progress-linear md-mode="indeterminate" >{{tab.progress.query}} </md-progress-linear>
+                            <i style="font-size: 70%">..... {{tab.progress.query}} </i>
                         </div>
                     </div>
                 </div>

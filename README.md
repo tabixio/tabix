@@ -78,10 +78,11 @@
 - [x]  Рендеры графики AmCharts + resize
 - [x]  Рендеры графики eChars + resize
 - [x]  echarts тема темная
+- [x]  Отображение какой запрос выполняется
+
 
 **Todo high**:
-- [ ] Редактор 
-> - Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
+- [ ] Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
 
 
 - [ ] Переменные
@@ -90,30 +91,48 @@
 > - Таблица редактор $vars
 
 
-- [ ] Рендер
-> - Рендеры графики angular-nvd3
-> - Рендер стандартной таблицы с фильтрами + сортировка ( клиенте/  сервером ) Grid
+- [ ]  drawMAP
+- [ ]  drawMAPFLY
+- [ ]  drawSCATTERMAP
+- [ ]  drawHEATMAP
+- [ ]  drawSANKEYS
+- [ ]  drawTREEMAP
+- [ ]  drawD3
+- [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
+
 
 - [ ]  AmCharts тема темная, color
+
 - [ ]  Поиск в дереве обьектов, фильтрация дерева
 
 
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 - [ ]  HotTable в сплывашке показывается криво
-- [ ]  HotTable CopyPaste to ReadMine markup
+- [ ]  HotTable menu : CopyPaste to ReadMine markup
+- [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
+
+
+
 - [ ]  Export/import Widgets,DrawWidgets
-- [ ]  PivotJS не работает Drag&Drop
+
 - [ ]  Переиминовать в коде CHGui в Tabix
-- [ ]  Поправить верстку шапки
-- [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
+
 - [ ]  Размер несжатых данных
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
-- [ ]  HotTable can insert WHERE column=valuse ... + auto select inserted valuse
+- [ ]  Таблица с информацией о выполненых запросах в конце списка
+
 
 - [ ]  Документация
 > - Help Modal Window -> Link to github +  Hotkey справочник и/или help
 > - Отдельный домен doc.tabix, собранный из md файлов , Live Docs by dgeni https://github.com/angular/dgeni
+
+
+
+
+- [ ]  Поправить верстку шапки
+- [ ]  PivotJS не работает Drag&Drop
+
 
 
 **Todo low**:

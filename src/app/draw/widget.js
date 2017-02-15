@@ -219,7 +219,7 @@ class WidgetTable extends Widget
                 // // colHeaders: _(headers).map(function(header, i) {
                 // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
                 // // }),
-                // //colWidths: 100,
+                colWidths: 100,
                 // rowHeights: [50, 40, 100],
                 // renderer: 'html',
                 fillHandle: false,
@@ -248,15 +248,16 @@ class WidgetTable extends Widget
 
             },
             columns: handsontable.columns,
-
             colHeaders: handsontable.colHeaders
         }
         ;
 
+
+        // ширина
         // init table size тут как бы отрефа
-        let x = 0;
+        let x = 1;
         if (handsontable.columns.length>5) {
-            x=1;
+            x=2;
         }
         if (handsontable.columns.length>10) {
             x=3;
@@ -266,6 +267,8 @@ class WidgetTable extends Widget
         }
         this.sizeX=x;
 
+
+        //  высота
         this.sizeY=0;//1...2...3...4...5..
 
         if (this.data.rows>100) {
@@ -282,12 +285,7 @@ class WidgetTable extends Widget
             // результат толкьо одна отпра
             this.sizeX=6;
             this.sizeY=3;
-
         }
-
-        console.log("SSSS:",this.data.position,this.data.countAll);
-        //    data.position = query.index;
-        // data.countAll = queue.length;
 
     }
     onDrag() {
