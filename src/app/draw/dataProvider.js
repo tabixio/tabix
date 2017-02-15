@@ -8,6 +8,11 @@
 
 class DataProvider {
 
+    /**
+     *
+     * @param result
+     * @param sourceType
+     */
     constructor(result,sourceType) {
         this.data=result.data;
         this.text=false;
@@ -32,6 +37,31 @@ class DataProvider {
 
         this.position = result.query.index;     // порядковый номер
         this.countAll = result.countAllQuery;   // всего запросов в выполнении
+
+    }
+
+    /**
+     * Преобразование массива в обьект для конструктора  DataProvider
+     *
+     * @param data
+     * @returns {DataProvider}
+     */
+    static convertArrayToDataProvider(data) {
+
+        let result={};
+        result.data=data;
+        result.meta=[];
+        result.error=false;
+        result.query={drawCommands:false};
+        result.rows=data.length;
+        result.position=0;
+        result.countAll=0;
+        Object.keys(data[0]).map(key => (
+            result.meta.push({name:key,type:'string'})
+        ));
+        return new DataProvider(result,false);
+
+
 
     }
 

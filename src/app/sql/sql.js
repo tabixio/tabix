@@ -180,7 +180,10 @@ window.global_delimiter             = ";;";
             if ($scope.vars.limitRows) {
                 extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
             }
-            $scope.vars.currentTab.progress.query=query.sql.replace(/(\r\n|\n|\r)$/gm, "").substr(0,130);
+            let progressQuery=query.sql.replace(/(\r\n|\n|\r)$/gm, "").substr(0,130);
+            $scope.vars.currentTab.progress.query=progressQuery;
+
+
 
             let Q_ID='';
 
@@ -205,6 +208,11 @@ window.global_delimiter             = ";;";
                 data.countAllQuery = queue.length;
 
 
+                // Для текущего currentTab, сохраняем statistics массив
+                let st=data.statistics;
+                st.query=progressQuery;
+                st.index=query.index;
+                $scope.vars.currentTab.statistics.push(st);
 
                 // провайдер CH или API
                 let provider='ch';
@@ -247,6 +255,8 @@ window.global_delimiter             = ";;";
                 }
 
             }, (response) => {
+
+                // Ошибка
                 $mdToast.show(
                     $mdToast
                         .simple()
@@ -336,6 +346,12 @@ window.global_delimiter             = ";;";
                 $scope.selectDatabase($scope.vars.db);
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 $rootScope.$emit('handleBroadcastDatabases',{});
+            }
+
+
+            if ($scope.vars.currentTab.statistics[0]) {
+                console.warn($scope.vars.currentTab.statistics);
+                resultContainer.widgets.tables.push(new WidgetTable(DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,false)));
             }
         };
 
@@ -517,6 +533,7 @@ window.global_delimiter             = ";;";
 
             if (queue.length) {
                 $scope.vars.currentTab.progress = {};
+                $scope.vars.currentTab.statistics= [];
                 $scope.executeQuery(queue[0], queue, result);
             }
 
