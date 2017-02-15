@@ -16,7 +16,7 @@ theme: 'material'
 
 # Options
 extra:
-  logo: 'images/logo.svg'
+  logo: 'images/logo_tabix.png'
   palette:
     primary: 'indigo'
     accent: 'indigo'
@@ -42,4 +42,5 @@ markdown_extensions:
   - codehilite(guess_lang=false)
   - footnotes
   - meta
+  - github
   - toc(permalink=true)
