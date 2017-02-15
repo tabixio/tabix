@@ -1,0 +1,45 @@
+# Project information
+site_name: 'Tabix'
+site_description: 'Tabix DB Gui'
+site_author: 'Igor Strykhar'
+site_url: 'https://tabix.io/docs'
+
+# Repository
+repo_name: 'GitHub'
+repo_url: 'https://github.com/smi2/tabix'
+
+# Copyright
+copyright: 'Copyright &copy; 2017 Igor Strykhar'
+
+# Documentation and theme
+theme: 'material'
+
+# Options
+extra:
+  logo: 'images/logo.svg'
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Menlo'
+    code: 'Roboto Mono'
+  social:
+    - type: 'github'
+      link: 'https://github.com/squidfunk'
+    - type: 'twitter'
+      link: 'https://twitter.com/squidfunk'
+    - type: 'linkedin'
+      link: 'https://de.linkedin.com/in/martin-donath-20a95039'
+
+# Google Analytics
+google_analytics:
+  - 'UA-XXXXXXXX-X'
+  - 'auto'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite(guess_lang=false)
+  - footnotes
+  - meta
+  - toc(permalink=true)
