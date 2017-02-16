@@ -25,11 +25,9 @@ extra:
     code: 'Roboto Mono'
   social:
     - type: 'github'
-      link: 'https://github.com/squidfunk'
+      link: 'https://github.com/smi2/tabix'
     - type: 'twitter'
-      link: 'https://twitter.com/squidfunk'
-    - type: 'linkedin'
-      link: 'https://de.linkedin.com/in/martin-donath-20a95039'
+      link: 'https://twitter.com/tabix.io'
 
 # Google Analytics
 google_analytics:
@@ -42,5 +40,4 @@ markdown_extensions:
   - codehilite(guess_lang=false)
   - footnotes
   - meta
-  - github
   - toc(permalink=true)

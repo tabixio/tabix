@@ -219,6 +219,7 @@ class WidgetTable extends Widget
                 // // colHeaders: _(headers).map(function(header, i) {
                 // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
                 // // }),
+                rowHeaders: true,
                 colWidths: 100,
                 // rowHeights: [50, 40, 100],
                 // renderer: 'html',
@@ -226,7 +227,8 @@ class WidgetTable extends Widget
                 stretchH: 'all',
                 // preventOverflow: 'horizontal',
                 persistentState:true,
-                contextMenu: ['row_above', 'row_below', 'remove_row'],
+                contextMenu: true,
+                // contextMenu: ['row_above', 'row_below', 'remove_row'],
                 filters: true,
                 //
                 // // fixedRowsTop: 1,
@@ -244,7 +246,11 @@ class WidgetTable extends Widget
                 },
                 observeDOMVisibility:true,
                 observeChanges:true,
-                width:'100%'
+                width:'100%',
+                // Highlighting selection
+
+                currentRowClassName: 'currentRow',
+                currentColClassName: 'currentCol',
 
             },
             columns: handsontable.columns,

@@ -34,11 +34,15 @@
 - [ ]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
 - [ ]  HotTable menu : HeatMap / DataBars(color) для колонки
 - [ ]  HotTable menu : Фильтр
+- [ ]  HotTable : Searching ячеек + подсветка
+- [ ]  HotTable : ChromaJS heatmaps for the values
+- [ ]  HotTable + Numbro - отображать колонку если цифры с пробелом "1 234 467 764"
+
 
 - [ ]  Export/import Widgets,DrawWidgets
 
 - [ ]  Переиминовать в коде CHGui в Tabix
-
+- [ ]  Настройка показывать скрытые симв. в acejs, задержка LiveAuto
 - [ ]  Размер несжатых данных
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
 - [ ]  Виджет список предустановленных графиков + минимальный редактор

@@ -40,3 +40,11 @@ https://github.com/fasouto/awesome-dataviz
 
 http://raw.densitydesign.org/
 
+
+
+
+**HotTable**
+https://github.com/artbels/handsontable-helpers
+
+
+contextmenu handsontable: http://jsfiddle.net/robin_ap/zjL9bxqw/
