@@ -199,76 +199,33 @@ class WidgetTable extends Widget
 
         // if (this.data.rows)
 
-        let handsontable=this.makeColumns();
+        let ht = new HandsTable(this.data.meta);
 
         // make columns
+        let makeColumns=ht.makeColumns();
 
+        // основной рендер конфиг таблицы
         this.table= {
             width:'100%',
             height:'100%',
-            settings: {
-
-                dropdownMenu: true,
-                // manualColumnResize: handsontable.columns,
-                // colWidths:handsontable.colWidths;
-                manualColumnMove: true,
-                manualColumnResize: true,
-                //
-                // autoWrapRow: true,
-                // // rowHeaders: true,
-                // // colHeaders: _(headers).map(function(header, i) {
-                // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
-                // // }),
-                rowHeaders: true,
-                colWidths: 100,
-                // rowHeights: [50, 40, 100],
-                // renderer: 'html',
-                fillHandle: false,
-                stretchH: 'all',
-                // preventOverflow: 'horizontal',
-                persistentState:true,
-                contextMenu: true,
-                // contextMenu: ['row_above', 'row_below', 'remove_row'],
-                filters: true,
-                //
-                // // fixedRowsTop: 1,
-                // // fixedColumnsLeft: 1,
-                columnSorting: true,
-                sortIndicator: true,
-                manualRowResize: true,
-                viewportColumnRenderingOffset:'auto',
-                // // maxRows: 10,
-                // // visibleRows:10,
-                //
-                wordWrap:false,
-                autoColumnSize: {
-                    samplingRatio: 23
-                },
-                observeDOMVisibility:true,
-                observeChanges:true,
-                width:'100%',
-                // Highlighting selection
-
-                currentRowClassName: 'currentRow',
-                currentColClassName: 'currentCol',
-
-            },
-            columns: handsontable.columns,
-            colHeaders: handsontable.colHeaders
-        }
-        ;
-
-
+            settings: ht.makeSettings(),
+            columns: makeColumns.columns,
+            colHeaders: makeColumns.colHeaders
+        };
+        let countColumns=makeColumns.columns.length;
         // ширина
         // init table size тут как бы отрефа
         let x = 1;
-        if (handsontable.columns.length>5) {
+        if (countColumns>2) {
             x=2;
         }
-        if (handsontable.columns.length>10) {
+        if (countColumns>5) {
             x=3;
         }
-        if (handsontable.columns.length>15) {
+        if (countColumns>10) {
+            x=4;
+        }
+        if (countColumns>15) {
             x=6;
         }
         this.sizeX=x;
@@ -324,36 +281,6 @@ class WidgetTable extends Widget
         // Или передавать точный размер width области после ресайза
         // ----------------------------------------------------------------
     }
-    makeColumns() {
-        let colHeaders = [];
-        let columns = [];
-        this.data.meta.forEach((cell) => {
-
-            colHeaders.push(cell.name);
-            let c={};
-            c.type='text';
-            c.width=100;
-
-
-            switch (cell.type) {
-                case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
-                case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
-                case 'Int32':       c.width=80;c.type='numeric'; break;
-                case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
-                case 'UInt32':      c.width=80; c.type='numeric';break;
-                case 'String':      c.width=180; break;
-            }
-
-            c.data=cell.name;
-            columns.push(c);
-        });
-
-        return {
-            colHeaders: colHeaders,
-            columns: columns
-        };
-    };
-
 }
 
 angular.module(smi2.app.name).service('WidgetTable', WidgetTable);

@@ -31,3 +31,8 @@ INSERT INTO t SELECT toUInt8(123) as a,';;' as b
 
 ```
 
+## B
+Для разработки:
+<pre>
+gulp serve
+</pre>
