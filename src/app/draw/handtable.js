@@ -36,7 +36,7 @@ class HandsTable {
             c.data=cell.name;
             columns.push(c);
         });
-
+        console.log("makeColumns",columns);
         return {
             colHeaders: colHeaders,
             columns: columns
@@ -44,14 +44,25 @@ class HandsTable {
     };
 
 
-    makeBold(ht) {
+    static makeStyle(ht,style) {
+        console.log("makeStyle",style);
+        let selection = ht.getSelectedRange();
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
 
-        var selection = ht.getSelectedRange();
-        console.log("selection",selection);
-        var fromRow = Math.min(selection.from.row, selection.to.row);
-        var toRow = Math.max(selection.from.row, selection.to.row);
-        var fromCol = Math.min(selection.from.col, selection.to.col);
-        var toCol = Math.max(selection.from.col, selection.to.col);
+        for (let row = fromRow; row <= toRow; row++) {
+            for (let col = fromCol; col <= toCol; col++) {
+                let cellMeta = ht.getCellMeta(row, col);
+
+                let cl='htCell'+style;
+                if (!cellMeta.className || (cellMeta.className && cellMeta.className.indexOf(cl) < 0)) {
+                    ht.setCellMeta(row, col, 'className', cl);
+                }
+            }
+        }
+        ht.render();
     }
     makeSettings()
     {
@@ -63,10 +74,13 @@ class HandsTable {
             colWidths: 100,
             fillHandle: false,
             stretchH: 'all',
-            persistentState:true,
-            customBorders:true,
-
-            filters: true,
+            // persistentState:true,
+            // customBorders:true,
+            // fixedRowsTop: 1,
+            // fixedColumnsLeft: 1,
+            // maxRows: 10,
+            visibleRows:10,
+            // filters: true,
             columnSorting: true,
             sortIndicator: true,
             manualRowResize: true,
@@ -84,30 +98,86 @@ class HandsTable {
                 //     }
                 // },
                 items: {
+
+                    "column": {
+                        name: 'Column',
+                        submenu: {
+                            items: [
+                                {
+                                    name: "Hide",
+                                    callback: function (key, options,pf) {
+                                        // HandsTable.makeStyle(this,'Normal');;
+                                    },
+                                    key: "column:Hide"
+                                },
+                                {
+                                    name: 'Show all cols',
+                                    code: this,
+                                    callback: function(key, options) {
+                                        // HandsTable.makeStyle(this,'Bold');
+                                    },
+                                    key:"column:makebold"
+
+                                },
+                                {
+                                    name: 'Red color',
+                                    code: this,
+                                    callback: function(key, options) {
+                                        // HandsTable.makeStyle(this,'Red');
+                                    },
+                                    key:"column:red"
+                                },
+                                {
+                                    name: 'Green color',
+                                    code: this,
+                                    callback: function(key, options) {
+                                        // HandsTable.makeStyle(this,'Green');
+                                    },
+                                    key:"column:green"
+                                }
+                            ]
+                        },
+                    },
+
+
                     "style": {
                             name: 'Style',
                             submenu: {
                                 items: [
                                     {
-                                        name: "Term1",
+                                        name: "Normal",
                                         callback: function (key, options,pf) {
-                                            var selection = this.getSelectedRange();
-                                            console.log(key,options,selection);
+                                            HandsTable.makeStyle(this,'Normal');;
                                         },
-                                        key: "insert_term:1"
+                                        key: "style:normal"
                                     },
                                     {
                                         name: 'Bold',
                                         code: this,
-                                        callback: function (key,code) {
-                                            console.log("BOLD!",key,code);
-                                            // key.makeBold(this);
+                                        callback: function(key, options) {
+                                                HandsTable.makeStyle(this,'Bold');
                                         },
                                         key:"style:makebold"
 
+                                    },
+                                    {
+                                        name: 'Red color',
+                                        code: this,
+                                        callback: function(key, options) {
+                                            HandsTable.makeStyle(this,'Red');
+                                        },
+                                        key:"style:red"
+                                    },
+                                    {
+                                        name: 'Green color',
+                                        code: this,
+                                        callback: function(key, options) {
+                                            HandsTable.makeStyle(this,'Green');
+                                        },
+                                        key:"style:green"
                                     }
                             ]
-                        }
+                        },
                     },//style
                     "hsep1": "---------",
                     "remove_row":{},
@@ -118,6 +188,8 @@ class HandsTable {
                     "undo":{},
                     "make_read_only":{},
                     "alignment":{},
+                    "hsep3": "---------",
+
 
                 }
             },
@@ -134,21 +206,19 @@ class HandsTable {
             // renderer: 'html',
             // contextMenu: ['row_above', 'row_below', 'remove_row'],
             //
-            // // fixedRowsTop: 1,
-            // // fixedColumnsLeft: 1,
-            // // maxRows: 10,
-            // // visibleRows:10,
+
             //
             contextMenuCopyPaste: {
                 swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
             },
-            observeDOMVisibility:true,
-            observeChanges:true,
-            width:'100%',
+            // observeDOMVisibility:true,
+            // observeChanges:true,
+            width:'99%',
+            height:'99%'
             // Highlighting selection
 
-            currentRowClassName: 'currentRow',
-            currentColClassName: 'currentCol',
+            // currentRowClassName: 'currentRow',
+            // currentColClassName: 'currentCol',
 
         };
     }

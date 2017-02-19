@@ -245,11 +245,11 @@ class WidgetTable extends Widget
         }
 
         if (this.data.countAll==1) {
-            // результат толкьо одна отпра
+            // результат толкьо один был запрос
             this.sizeX=6;
-            this.sizeY=3;
         }
 
+        console.info("Table INIT",this);
     }
     onDrag() {
         this.onResize();
