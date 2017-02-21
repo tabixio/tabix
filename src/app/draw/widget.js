@@ -206,8 +206,7 @@ class WidgetTable extends Widget
 
         // основной рендер конфиг таблицы
         this.table= {
-            width:'100%',
-            height:'100%',
+
             settings: ht.makeSettings(),
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders
@@ -262,6 +261,8 @@ class WidgetTable extends Widget
     onResize() {
         console.info("onResize HotTable");
         if (!this.table) return;
+        // this.table.width='100%';
+        // this.table.height='100%';
         let i=this.getInstanceHandsontable();
         if (i) {
             i.render();

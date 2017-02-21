@@ -71,16 +71,17 @@ class HandsTable {
             manualColumnMove: true,
             manualColumnResize: true,
             rowHeaders: true,
+
             colWidths: 100,
             fillHandle: false,
             stretchH: 'all',
-            // persistentState:true,
-            // customBorders:true,
+            persistentState:true,
+            customBorders:true,
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 10,
             // visibleRows:10,
-            // filters: true,
+            filters: true,
             columnSorting: true,
             sortIndicator: true,
             manualRowResize: true,
@@ -88,7 +89,6 @@ class HandsTable {
             wordWrap:false,
             autoColumnSize: { samplingRatio: 23 },
             preventOverflow: 'horizontal',
-            // contextMenu: true,
 
             contextMenu: {
                 items: {
@@ -216,8 +216,7 @@ class HandsTable {
             },
             // observeDOMVisibility:true,
             // observeChanges:true,
-            width:'99%',
-            height:'99%'
+
             // Highlighting selection
 
             // currentRowClassName: 'currentRow',

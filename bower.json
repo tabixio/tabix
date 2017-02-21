@@ -28,7 +28,7 @@
     "d3": "^4.4.1",
     "c3": "^0.4.11",
     "angular-ui-router": "^0.3.2",
-    "handsontable": "~0.30.0",
+    "handsontable": "^0.31.0",
     "sql-formatter": "^1.1.2",
     "amcharts-angular": "*",
     "Sortable": "sortablejs#^1.4.2",
@@ -39,7 +39,8 @@
     "zeroclipboard": "^2.3.0",
     "ace-builds": "^1.2.6",
     "gulp": "^3.9.1",
-    "angular-pivottable": "^1.2.1"
+    "angular-pivottable": "^1.2.1",
+    "angular-dragdrop": "^1.0.13"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

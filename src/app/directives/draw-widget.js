@@ -88,6 +88,7 @@
                         datarows="widget.data.data"
                         ng-class="{'handsontable-dark': widget.isDark}"
                         width="widget.table.width"
+                        height="widget.table.height"
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
