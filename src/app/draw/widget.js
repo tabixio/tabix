@@ -151,8 +151,8 @@ class WidgetPivot extends Widget
         this.init=true;
         this.pivot={
             config:{
-                cols:['sin'],
-                rows:['cos'],
+                // cols:['sin'],
+                // rows:['cos'],
                 // dataClass: $.pivotUtilities.SubtotalPivotData,
                 // renderer: $.extend($.pivotUtilities.renderers,$.pivotUtilities.subtotal_renderers["Table With Subtotal"], $.pivotUtilities.c3_renderers),
                 // rendererOptions: {
@@ -261,8 +261,8 @@ class WidgetTable extends Widget
     onResize() {
         console.info("onResize HotTable");
         if (!this.table) return;
-        // this.table.width='100%';
-        // this.table.height='100%';
+        this.table.width='100%';
+        this.table.height='100%';
         let i=this.getInstanceHandsontable();
         if (i) {
             i.render();

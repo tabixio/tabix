@@ -109,7 +109,8 @@
     },
     "echarts": {
       "main": [
-        "dist/echarts.js"
+        "dist/echarts.js",
+        "map/js/world.js"
       ]
     },
     "jquery-ui": {

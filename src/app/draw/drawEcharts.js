@@ -39,78 +39,78 @@ class DrawEcharts {
         if (this.type=='MAP') {
             this.init=this.createMAP();
         }
-        this.options = {
-            title: {
-                text: '一天用电量分布',
-                subtext: '纯属虚构'
-            },
-            tooltip: {
-                trigger: 'axis'
-            },
-            toolbox: {
-                show: true,
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis:  {
-                type: 'category',
-                boundaryGap: false,
-                data: ['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45']
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: '{value} W'
-                }
-            },
-            visualMap: {
-                show: false,
-                dimension: 0,
-                pieces: [{
-                    lte: 6,
-                    color: 'green'
-                }, {
-                    gt: 6,
-                    lte: 8,
-                    color: 'red'
-                }, {
-                    gt: 8,
-                    lte: 14,
-                    color: 'green'
-                }, {
-                    gt: 14,
-                    lte: 17,
-                    color: 'red'
-                }, {
-                    gt: 17,
-                    color: 'green'
-                }]
-            },
-            series: [
-                {
-                    name:'用电量',
-                    type:'line',
-                    smooth: true,
-                    data: [300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500, 600, 750, 800, 700, 600, 400],
-                    markArea: {
-                        data: [ [{
-                            name: '早高峰',
-                            xAxis: '07:30'
-                        }, {
-                            xAxis: '10:00'
-                        }], [{
-                            name: '晚高峰',
-                            xAxis: '17:30'
-                        }, {
-                            xAxis: '21:15'
-                        }] ]
-                    }
-                }
-            ],
-            width:'100%',
-            height:'100%'
-        };
+        // this.options = {
+        //     title: {
+        //         text: '一天用电量分布',
+        //         subtext: '纯属虚构'
+        //     },
+        //     tooltip: {
+        //         trigger: 'axis'
+        //     },
+        //     toolbox: {
+        //         show: true,
+        //         feature: {
+        //             saveAsImage: {}
+        //         }
+        //     },
+        //     xAxis:  {
+        //         type: 'category',
+        //         boundaryGap: false,
+        //         data: ['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45']
+        //     },
+        //     yAxis: {
+        //         type: 'value',
+        //         axisLabel: {
+        //             formatter: '{value} W'
+        //         }
+        //     },
+        //     visualMap: {
+        //         show: false,
+        //         dimension: 0,
+        //         pieces: [{
+        //             lte: 6,
+        //             color: 'green'
+        //         }, {
+        //             gt: 6,
+        //             lte: 8,
+        //             color: 'red'
+        //         }, {
+        //             gt: 8,
+        //             lte: 14,
+        //             color: 'green'
+        //         }, {
+        //             gt: 14,
+        //             lte: 17,
+        //             color: 'red'
+        //         }, {
+        //             gt: 17,
+        //             color: 'green'
+        //         }]
+        //     },
+        //     series: [
+        //         {
+        //             name:'用电量',
+        //             type:'line',
+        //             smooth: true,
+        //             data: [300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500, 600, 750, 800, 700, 600, 400],
+        //             markArea: {
+        //                 data: [ [{
+        //                     name: '早高峰',
+        //                     xAxis: '07:30'
+        //                 }, {
+        //                     xAxis: '10:00'
+        //                 }], [{
+        //                     name: '晚高峰',
+        //                     xAxis: '17:30'
+        //                 }, {
+        //                     xAxis: '21:15'
+        //                 }] ]
+        //             }
+        //         }
+        //     ],
+        //     width:'100%',
+        //     height:'100%'
+        // };
         console.info('preProcessor',this.init,this.options);
     }
 
@@ -123,8 +123,10 @@ class DrawEcharts {
         // массив состоящий
         let series=[
             {
-                type: 'scatter',
+                type: 'effectScatter',
                 coordinateSystem: 'geo',
+
+
                 data: this.widget.data.data.map(function (itemOpt) {
 
                     return {
@@ -143,7 +145,31 @@ class DrawEcharts {
                         },
                     };
 
-                })
+                }),
+                showEffectOn: 'render',
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                symbolSize: function (val) {
+                    return val[2] / 314;
+                },
+                hoverAnimation: true,
+                label: {
+                    normal: {
+                        formatter: '{b}',
+                        position: 'right',
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#f4e925',
+                        shadowBlur: 10,
+                        shadowColor: '#333'
+                    }
+                },
+                zlevel: 1
+
             }
         ];
 
@@ -165,6 +191,20 @@ class DrawEcharts {
             //     },
             //     selectedMode: 'single'
             // },
+
+            visualMap: {
+                min: 0,
+                max: 1500,
+                left: 'left',
+                top: 'bottom',
+                text: ['High','Low'],
+                seriesIndex: [1],
+                inRange: {
+                    color: ['#e0ffff', '#006edd']
+                },
+                calculable : true
+            },
+
             geo: {
                 name: 'World Population (2010)',
                 type: 'map',
@@ -175,7 +215,7 @@ class DrawEcharts {
                     }
                 },
                 visualMap: {
-                    show: false,
+                    show: true,
                     min: 0,
                     max: 100,// max,
                     inRange: {
