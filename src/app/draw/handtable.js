@@ -79,7 +79,7 @@ class HandsTable {
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 10,
-            visibleRows:10,
+            // visibleRows:10,
             // filters: true,
             columnSorting: true,
             sortIndicator: true,
@@ -91,18 +91,32 @@ class HandsTable {
             // contextMenu: true,
 
             contextMenu: {
-                // callback: function (key, options) {
-                //     if (key === 'kill') {
-                //         console.warn(this);
-                //         console.warn(this.getSelectedRange());
-                //     }
-                // },
                 items: {
-
                     "column": {
                         name: 'Column',
                         submenu: {
                             items: [
+                                {
+                                    name: 'Format',
+                                    key:"column:format",
+                                    // @todo: http://numbrojs.com/format.html
+                                    // тут вызываем ф-ции для определения что выбранно
+                                    //
+                                    submenu: {
+                                        items: [
+                                            {
+                                                name: "Money",
+                                                callback: function (key, options,pf) {
+                                                    // HandsTable.makeStyle(this,'Normal');;
+                                                    console.log("Money");
+                                                },
+                                                key:"column:1:1"
+
+                                            }//Money
+                                        ]//items
+                                    }//submenu
+                                },//Format
+
                                 {
                                     name: "Hide",
                                     callback: function (key, options,pf) {
@@ -119,17 +133,9 @@ class HandsTable {
                                     key:"column:makebold"
 
                                 },
-                                {
-                                    name: 'Red color',
-                                    code: this,
-                                    callback: function(key, options) {
-                                        // HandsTable.makeStyle(this,'Red');
-                                    },
-                                    key:"column:red"
-                                },
+
                                 {
                                     name: 'Green color',
-                                    code: this,
                                     callback: function(key, options) {
                                         // HandsTable.makeStyle(this,'Green');
                                     },
@@ -153,7 +159,6 @@ class HandsTable {
                                     },
                                     {
                                         name: 'Bold',
-                                        code: this,
                                         callback: function(key, options) {
                                                 HandsTable.makeStyle(this,'Bold');
                                         },
@@ -162,7 +167,6 @@ class HandsTable {
                                     },
                                     {
                                         name: 'Red color',
-                                        code: this,
                                         callback: function(key, options) {
                                             HandsTable.makeStyle(this,'Red');
                                         },
@@ -170,7 +174,6 @@ class HandsTable {
                                     },
                                     {
                                         name: 'Green color',
-                                        code: this,
                                         callback: function(key, options) {
                                             HandsTable.makeStyle(this,'Green');
                                         },
