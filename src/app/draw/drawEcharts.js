@@ -315,6 +315,38 @@ class DrawEcharts extends DrawBasicChart {
         return true;
 
     }
+
+
+    createTREEMAP() {
+
+        let o= {
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    type:'treemap',
+                    visibleMin: 300,
+                    label: {
+                        show: true,
+                        formatter: '{b}'
+                    },
+                    itemStyle: {
+                        normal: {
+                            borderColor: '#fff'
+                        }
+                    },
+                    levels: getLevelOption(),
+                    data: diskData
+                }
+            ]
+        };
+
+
+        this.options=Object.assign(o,this.options);
+        return true;
+
+    }
 }
 
 
