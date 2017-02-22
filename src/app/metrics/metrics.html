@@ -1,0 +1,50 @@
+<div>
+    <h1 class="md-title">{{'Метрики' | translate}}</h1>
+    <md-card-content>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
+
+                <label>{{'Частота обновления' | translate}}</label>
+                <md-select ng-model="vars.interval" ng-change="setInterval()" >
+                    <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
+                        {{interval == -1 ? 'Обновление отключено' : interval  + ' сек'}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="table.wordWrap">
+                    {{'Перенос строк' | translate}}
+                </md-switch>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="vars.logMode">
+                    {{'Логирование' | translate}}
+                </md-switch>
+            </md-input-container>
+
+
+            <md-input-container class="md-block" flex-gt-sm ng-click="load()">
+                <md-button class="md-raised md-primary">{{'Обновить' | translate}}</md-button>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm ng-click="flush()">
+                <md-button class="md-raised">{{'Очистить' | translate}}</md-button>
+            </md-input-container>
+
+        </div>
+    </md-card-content>
+</div>
+
+<md-card-content>
+
+
+<div layout="row">
+    <span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
+
+    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
+
+</div>
+
+</md-card-content>

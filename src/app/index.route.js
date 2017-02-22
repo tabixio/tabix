@@ -82,6 +82,13 @@
                     templateUrl: 'app/processes/processes.html',
                     controller: 'ProcessesController'
                 })
+                // Processes list
+                .state('metrics', {
+                    parent: 'layout',
+                    url: '/metrics',
+                    templateUrl: 'app/metrics/metrics.html',
+                    controller: 'MetricsController'
+                })
 
                 // 404 not found handle
                 .state('404', {
