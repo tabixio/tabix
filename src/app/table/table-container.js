@@ -10,7 +10,6 @@
         '$stateParams',
         '$mdSidenav',
         '$mdComponentRegistry',
-        'HandTable'
     ];
 
     /**
@@ -18,7 +17,7 @@
     * @name smi2.controller:TableContainerController
     * @description Контроллер страницы 1 таблицы БД
     */
-    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry,HandTable ) {
+    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
 
         $scope.table = {
             //
@@ -58,7 +57,7 @@
                 // // maxRows: 10,
                 // // visibleRows:10,
                 //
-                wordWrap:false,
+                wordWrap:false
                 // // autoColumnSize: {
                 // //     samplingRatio: 23
                 // // }
@@ -134,10 +133,10 @@
 
             console.log($scope.vars.columns);
 
-            let sort="";
-            if ($scope.vars.sortColumn) {
-                sort="ORDER BY "+$scope.vars.sortColumn+' DESC';
-            }
+            // let sort="";
+            // if ($scope.vars.sortColumn) {
+            //     sort="ORDER BY "+$scope.vars.sortColumn+' DESC';
+            // }
 
             $scope.vars.data = -1;
             API.query( `

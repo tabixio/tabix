@@ -13,6 +13,7 @@ class DrawBasicChart {
         this.options={};
         this.widget.height=2;
         this.widget.width=2;
+
     }
 
 
@@ -63,10 +64,10 @@ class DrawBasicChart {
 
 class DrawEcharts extends DrawBasicChart {
     constructor(Widget,drawType) {
-        this.type=drawType.toUpperCase();
-        this.library = 'echarts';
         super(Widget);
 
+        this.type=drawType.toUpperCase();
+        this.library = 'echarts';
         this.options={
                 version: 3,
                 backgroundColor: '#404a59',
@@ -353,9 +354,11 @@ class DrawEcharts extends DrawBasicChart {
 class DrawAMcharts extends DrawBasicChart{
     constructor(Widget) {
         console.warn("DrawAMcharts constructor");
-        this.library='amchart';
-        super(Widget);
 
+        super(Widget)
+        this.library='amchart';
+
+        // _.set("CODE");
 
     }
     onResize () {
@@ -625,15 +628,19 @@ console.log("this.widget.sizeY",this.widget.sizeY);
 
 class DrawD3 extends DrawBasicChart {
     constructor(Widget) {
-        this.library='d3';
+
         super(Widget);
+        this.library='d3';
+
     }
 }
 
 class DrawC3 extends DrawBasicChart{
     constructor(Widget) {
-        this.library='c3';
+
         super(Widget);
+
+        this.library='c3';
     }
 
 }
