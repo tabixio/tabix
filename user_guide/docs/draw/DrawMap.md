@@ -10,6 +10,24 @@ Example :
 * http://echarts.baidu.com/demo.html#geo-map-scatter
 * http://echarts.baidu.com/demo.html#geo-lines
 
+
+```sql
+SELECT
+    count() as sessions,
+    sum(views_count) as views_count,
+    dictGetString('geonames', 'name_en', toUInt64(geoname_id)) AS name,
+    dictGetFloat32('geonames', 'latitude', toUInt64( geoname_id)) AS latitude,
+    dictGetFloat32('geonames', 'longitude', toUInt64(geoname_id)) AS longitude
+
+FROM sessions
+where create_date=today()
+group by geoname_id
+
+```
+
+
+## Echarts Api
+
 ```javascript
 
 {
@@ -56,7 +74,7 @@ Example :
 
 
 
-finalize
+## Finalize
 
 ```javascript
 DRAWMAP

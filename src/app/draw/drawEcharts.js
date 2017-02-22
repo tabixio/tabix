@@ -5,14 +5,68 @@
  */
 
 'use strict';
-
-class DrawEcharts {
-    constructor(Widget,drawType) {
-        this.type=drawType.toUpperCase();
-        this.library = 'echarts';
+class DrawBasicChart {
+    constructor(Widget) {
         this.widget = Widget;
         this.chart = false;// тут храниться обьект
         this.init = false;
+        this.options={};
+        this.widget.height=2;
+        this.widget.width=2;
+    }
+
+
+    getDrawCodeObject() {
+        let drawCommand=this.widget.drawCommnads;
+
+        if (!drawCommand) {
+            return [];
+        }
+
+        let codeDrawText=false;
+        if (drawCommand && drawCommand.code ){
+            codeDrawText=drawCommand.code;
+        }
+        if (!codeDrawText)
+        {
+            return [];
+        }
+
+
+        let result=[];
+
+        try {
+            let code='('+codeDrawText+')';
+
+            console.warn("drawCommand:CODE:",code);
+            let object=eval(code);
+            console.warn("drawCommand:Result:",object);
+            result.push(object);
+
+            // // получаем настройки по осям
+            // meta.forEach((i) => {
+            //     // получаем ключь для каждой оси
+            //     if (object[i.name])
+            //     {
+            //         chartSets[i.name]=object[i.name];
+            //     }
+            // });
+        } catch (E) {
+            console.error('error eval ',code);
+        }
+        return result;
+
+    };
+}
+
+
+
+class DrawEcharts extends DrawBasicChart {
+    constructor(Widget,drawType) {
+        this.type=drawType.toUpperCase();
+        this.library = 'echarts';
+        super(Widget);
+
         this.options={
                 version: 3,
                 backgroundColor: '#404a59',
@@ -27,6 +81,32 @@ class DrawEcharts {
         };// opthios
     }
 
+
+    preProcessor() {
+
+
+        if (this.type=='SANKEYS') {
+            this.init=this.createSANKEYS();
+        }
+
+        if (this.type=='TREEMAP') {
+            this.init=this.createTREEMAP();
+        }
+        if (this.type=='HEATMAP') {
+            this.init=this.createHEATMAP();
+        }
+        if (this.type=='SCATTERMAP') {
+            this.init=this.createSCATTERMAP();
+        }
+
+        if (this.type=='MAP') {
+            this.init=this.createMAP();
+        }
+
+        console.info('preProcessor',this.init,this.options);
+    }
+
+
     onResize() {
         // отправденна комманда resize
         if (this.chart) {
@@ -35,90 +115,7 @@ class DrawEcharts {
         }
     }
 
-    preProcessor() {
-        if (this.type=='MAP') {
-            this.init=this.createMAP();
-        }
-        // this.options = {
-        //     title: {
-        //         text: '一天用电量分布',
-        //         subtext: '纯属虚构'
-        //     },
-        //     tooltip: {
-        //         trigger: 'axis'
-        //     },
-        //     toolbox: {
-        //         show: true,
-        //         feature: {
-        //             saveAsImage: {}
-        //         }
-        //     },
-        //     xAxis:  {
-        //         type: 'category',
-        //         boundaryGap: false,
-        //         data: ['00:00', '01:15', '02:30', '03:45', '05:00', '06:15', '07:30', '08:45', '10:00', '11:15', '12:30', '13:45', '15:00', '16:15', '17:30', '18:45', '20:00', '21:15', '22:30', '23:45']
-        //     },
-        //     yAxis: {
-        //         type: 'value',
-        //         axisLabel: {
-        //             formatter: '{value} W'
-        //         }
-        //     },
-        //     visualMap: {
-        //         show: false,
-        //         dimension: 0,
-        //         pieces: [{
-        //             lte: 6,
-        //             color: 'green'
-        //         }, {
-        //             gt: 6,
-        //             lte: 8,
-        //             color: 'red'
-        //         }, {
-        //             gt: 8,
-        //             lte: 14,
-        //             color: 'green'
-        //         }, {
-        //             gt: 14,
-        //             lte: 17,
-        //             color: 'red'
-        //         }, {
-        //             gt: 17,
-        //             color: 'green'
-        //         }]
-        //     },
-        //     series: [
-        //         {
-        //             name:'用电量',
-        //             type:'line',
-        //             smooth: true,
-        //             data: [300, 280, 250, 260, 270, 300, 550, 500, 400, 390, 380, 390, 400, 500, 600, 750, 800, 700, 600, 400],
-        //             markArea: {
-        //                 data: [ [{
-        //                     name: '早高峰',
-        //                     xAxis: '07:30'
-        //                 }, {
-        //                     xAxis: '10:00'
-        //                 }], [{
-        //                     name: '晚高峰',
-        //                     xAxis: '17:30'
-        //                 }, {
-        //                     xAxis: '21:15'
-        //                 }] ]
-        //             }
-        //         }
-        //     ],
-        //     width:'100%',
-        //     height:'100%'
-        // };
-        console.info('preProcessor',this.init,this.options);
-    }
-
-
-
     createMAP() {
-        this.widget.height=3;
-        this.widget.width=2;
 
         // массив состоящий
         let series=[
@@ -172,9 +169,6 @@ class DrawEcharts {
 
             }
         ];
-
-        console.log(series);
-
 
 
         let o={
@@ -241,7 +235,8 @@ class DrawEcharts {
     }
 
 
-    createSanKey() {
+    createSANKEYS() {
+
 
         let drawCommand=[];
         if ('drawCommand' in query)
@@ -314,35 +309,20 @@ class DrawEcharts {
             ]
         };
 
-        //
-        //
-        console.info(option);
-        // let dom = document.getElementById('sunkeyDiv');
-        // let myChart = echarts.init(dom);
 
-        $scope.echarts.sankeys=option;
-        // myChart.setOption(option);
-        //
-        // $.get('./product.json', function (data) {
-        //
-        //
-        //
-        // });
-        $scope.ready.echarts=true;
+
+        this.options=Object.assign(option,this.options);
+        return true;
 
     }
 }
 
 
-class DrawAMcharts {
+class DrawAMcharts extends DrawBasicChart{
     constructor(Widget) {
         console.warn("DrawAMcharts constructor");
         this.library='amchart';
-        this.init=false;
-        this.options={};
-        this.widget = Widget;
-        this.widget.height=2;
-        this.widget.width=2;
+        super(Widget);
 
 
     }
@@ -364,47 +344,6 @@ class DrawAMcharts {
 
 
 
-    getDrawCodeObject() {
-        let drawCommand=this.widget.drawCommnads;
-
-        if (!drawCommand) {
-            return [];
-        }
-
-        let codeDrawText=false;
-        if (drawCommand && drawCommand.code ){
-            codeDrawText=drawCommand.code;
-        }
-        if (!codeDrawText)
-        {
-            return [];
-        }
-
-
-        let result=[];
-
-        try {
-            let code='('+codeDrawText+')';
-
-            console.warn("drawCommand:CODE:",code);
-            let object=eval(code);
-            console.warn("drawCommand:Result:",object);
-            result.push(object);
-
-            // // получаем настройки по осям
-            // meta.forEach((i) => {
-            //     // получаем ключь для каждой оси
-            //     if (object[i.name])
-            //     {
-            //         chartSets[i.name]=object[i.name];
-            //     }
-            // });
-        } catch (E) {
-            console.error('error eval ',code);
-        }
-        return result;
-
-    };
 
     createChart() {
 
@@ -608,6 +547,8 @@ console.log("this.widget.sizeY",this.widget.sizeY);
         }
         console.warn(this.options);
     };
+
+
     getChartGraph (meta,chartSets){
 
         // SELECT number,sin(number),cos(number),number as `Title [asix=g2:column:blue]`  from system.numbers limit 40
@@ -650,20 +591,17 @@ console.log("this.widget.sizeY",this.widget.sizeY);
 
 }
 
-class DrawD3 {
+class DrawD3 extends DrawBasicChart {
     constructor(Widget) {
-
         this.library='d3';
-        this.widget = Widget;
-        this.init=false;
+        super(Widget);
     }
 }
 
-class DrawC3 {
+class DrawC3 extends DrawBasicChart{
     constructor(Widget) {
         this.library='c3';
-        this.widget = Widget;
-        this.init=false;
+        super(Widget);
     }
 
 }
