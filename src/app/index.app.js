@@ -28,6 +28,5 @@
         'ngHandsontable',
         'amChartsDirective',
         'gridster'
-        // 'ngecharts','ng-echartsx'
     ]);
 })();
