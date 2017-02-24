@@ -189,10 +189,34 @@ class HandsTable {
         return true;
     }
     static copyToClipboard(val){
-
-        document.getElementById("dummy_id").value=val;
-        dummy.select();
-        document.execCommand("copy");
+        //
+        // // Create a temporary element off screen.
+        // var tmpElem = $('<div>');
+        // tmpElem.css({
+        //     position: "absolute",
+        //     left:     "-1000px",
+        //     top:      "-1000px",
+        // });
+        // // Add the input value to the temp element.
+        // tmpElem.text(input.val());
+        // $("body").append(tmpElem);
+        // // Select temp element.
+        // range.selectNodeContents(tmpElem.get(0));
+        // selection = window.getSelection ();
+        // selection.removeAllRanges ();
+        // selection.addRange (range);
+        // // Lets copy.
+        // try {
+        //     success = document.execCommand ("copy", false, null);
+        // }
+        // catch (e) {
+        //     copyToClipboardFF(input.val());
+        // }
+        // if (success) {
+        //     alert ("The text is on the clipboard, try to paste it!");
+        //     // remove temp element.
+        //     tmpElem.remove();
+        // }
 
     }
 
@@ -239,15 +263,15 @@ class HandsTable {
         //     console.error('Action:', e.action);
         //     console.error('Trigger:', e.trigger);
         // });
-
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", outText);
-
-        //
         //
         // var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data: 'Data to be copied' } );
         // document.dispatchEvent(copyEvent);
         //
         // document.execCommand('copy', false, outText);
+        // this.copyToClipboard();
+
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", outText);
+
 
         }
     static makeStyle(ht,style) {

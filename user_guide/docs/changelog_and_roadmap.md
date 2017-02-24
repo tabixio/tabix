@@ -4,9 +4,13 @@
 
 
 - [ ]  PivotJS не работает Drag&Drop
-- [ ]  Расшить классы
-- [ ]  Поиск в дереве обьектов, фильтрация дерева
+- [ ]  Расшить классы Widget & DrawChart
+- [ ]  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
 - [ ]  Переиминовать в коде CHGui в Tabix
+- [ ]  HotTable menu : CopyPaste - нормальная реализация не через Promnt
+- [ ]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
+
+
 
 **Todo high**:
 
@@ -23,19 +27,9 @@
 
 
 - [ ]  AmCharts тема темная, color
-- [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 
-- [ ]  HotTable menu : CopyPaste to ReadMine markup
 - [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
-- [ ]  HotTable menu : ? Фильтр ?
-- [ ]  HotTable : Searching ячеек
-
-
-- [ ]  HotTable : подсветка активной строки Dark
-- [ ]  HotTable : подсветка активной строки White
-
-
-
+- [ ]  HotTable menu : Highlight Negative/Positive
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
 
 
@@ -48,6 +42,9 @@
 
 
 ## Roadmap Q2
+- [ ]  HotTable : Searching ячеек
+
+- [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 
 - [ ]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
 
@@ -142,7 +139,7 @@
 - [x]  HotTable в сплывашке показывается криво
 - [x]  HotTable + Numbro - отображать колонку если цифры как human
 - [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
-
+- [x]  HotTable menu : CopyPaste to ReadMine markup
 
 ### 2016-12-17
 
