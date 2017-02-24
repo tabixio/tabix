@@ -32,6 +32,8 @@
 
 - [ ]  HotTable + Numbro - отображать колонку если цифры с пробелом "1 234 467 764"
 
+- [!]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
+
 
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
 
@@ -133,9 +135,7 @@
 - [x]  HotTable menu : Style cell Bold/Green/Red
 - [x]  Метрики RealTime charts из system.metrics
 - [x]  Поправить верстку шапки
-- [x]  HotTable : ChromaJS heatmaps for the values
-- [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
-- [x]  HotTable menu : HeatMap / DataBars(color) для колонки
+- [x]  HotTable : ChromaJS heatmaps for the values HeatMap / DataBars(color) для колонки
 - [x]  HotTable в сплывашке показывается криво
 
 
