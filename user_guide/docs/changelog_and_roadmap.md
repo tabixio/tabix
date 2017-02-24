@@ -23,6 +23,7 @@
 - [ ]  drawSANKEYS
 - [ ]  drawTREEMAP
 - [ ]  drawD3
+- [ ]  DrawChartGrid
 - [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
 
 
