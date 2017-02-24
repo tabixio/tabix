@@ -63,7 +63,9 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe(jsVendor)
         .pipe($.babel({
             presets: ['es2015', 'stage-0'],
-            plugins: ["transform-es2015-modules-commonjs"]
+            plugins:  ["transform-es2015-modules-commonjs", {
+                "allowTopLevelThis": true
+            }]
         }))
         .on('error', conf.errorHandler('babel'))
         .pipe(jsVendor.restore)
@@ -124,6 +126,7 @@ gulp.task('other', function () {
         .pipe(fileFilter)
         .pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
+
 
 gulp.task('clean', function () {
     return $.del([path.join(conf.paths.dist, '/'), path.join(conf.paths.tmp, '/')]);

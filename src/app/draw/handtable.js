@@ -8,12 +8,22 @@
 
 class HandsTable {
 
-    constructor(meta) {
-        this.meta=meta;
+    constructor(WidgetTable) {
+        this.WidgetTable=WidgetTable;
+        this.meta=WidgetTable.data.meta;
     }
 
+    _handsRenderer (instance, td, row, col, prop, value, cellProperties) {
+        Handsontable.renderers.TextRenderer.apply(this, arguments);
+        // backgroundColor для ячейки
+        if (cellProperties.backgroundColor) {
+            td.style.backgroundColor = cellProperties.backgroundColor;
+        }
+    };
 
-     makeColumns() {
+
+    makeColumns() {
+
         let colHeaders = [];
         let columns = [];
         this.meta.forEach((cell) => {
@@ -23,16 +33,17 @@ class HandsTable {
             c.type='text';
             c.width=100;
 
+            c.typeOriginal=cell.type;
 
             switch (cell.type) {
-                case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
+                case 'Date':        c.width=90; c.type='date'; c.dateFormat='YYYY-MM-DD';break;
                 case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
                 case 'Int32':       c.width=80;c.type='numeric'; break;
                 case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
                 case 'UInt32':      c.width=80; c.type='numeric';break;
                 case 'String':      c.width=180; break;
             }
-
+            c.renderer=this._handsRenderer;
             c.data=cell.name;
             columns.push(c);
         });
@@ -43,7 +54,87 @@ class HandsTable {
         };
     };
 
+    static makeHeatmaps(ht,format) {
 
+        // Heatmap для выбранных колонок,
+        // @todo Проверить что корректно вычесляет min/max
+        // @todo Подобрать цвета для Dark темы , как передать это дарк ?
+
+        let selection = ht.getSelectedRange();
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+        let heatmapScale  = chroma.scale(['#FFFFFF', '#8BC34A']);
+
+        for (let col = fromCol; col <= toCol; col++) {
+
+            let allRows=ht.countRows();
+            let values = ht.getDataAtCol(col);
+            let min=Math.min.apply(null, values);
+            let max=Math.max.apply(null, values);
+
+
+            if (min !== null && max !==null)
+            {
+                for (let row = 0; row <= allRows; row++) {
+
+                    let value=parseInt(ht.getDataAtCell(row,col),10);
+
+                    let point=(value - min) / (max - min);
+                    let color=heatmapScale(point).hex();
+
+                    let meta=ht.getCellMeta(row,col);
+                    if (meta)
+                    {
+                        // пробрасыавем в ренден _handsRenderer параметр backgroundColor
+                        ht.setCellMeta(row, col, 'backgroundColor', color);
+                    }
+                }
+            }
+            else
+            {
+                console.warn("Can`t find Min&Max in column",col);
+            }
+        }
+        ht.render();
+
+
+    }
+    static makeFormat(ht,makeFormat) {
+
+        console.log("makeFormat",makeFormat);
+
+
+        let selection = ht.getSelectedRange();
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+        // let headers = ht.getColHeader();
+        // let columnName=ht.colToProp(col);
+        // console.log(col,ht.colToProp(col));
+        // console.warn(headers);
+        // console.warn('head',ht.getSettings().colHeaders);
+        // console.warn('columns',ht.getSettings().columns);
+
+
+        let columns = ht.getSettings().columns;
+        for (let col = fromCol; col <= toCol; col++) {
+
+            switch (makeFormat) {
+                case 'Reset':       columns[col].format=false;break; // c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
+                case 'Money':       columns[col].format='$0,0.00'; break;// c.timeFormat='HH:mm:ss'; break;
+                case 'Human':       columns[col].format='5a'; break;
+                case 'Bytes':       columns[col].format='0.0b';      break;
+                case 'Percentages':    columns[col].format='(0.00 %)';     break;
+                case 'Time':           columns[col].dateFormat='00:00:00';     break;
+                case 'Date':        columns[col].dateFormat='YYYY-MM-DD';break;
+                case 'DateLoc':        columns[col].dateFormat='LLLL';break;
+            }
+        }
+        ht.updateSettings({
+            columns:columns
+        });
+        ht.render();
+    }
     static makeStyle(ht,style) {
         console.log("makeStyle",style);
         let selection = ht.getSelectedRange();
@@ -56,8 +147,10 @@ class HandsTable {
             for (let col = fromCol; col <= toCol; col++) {
                 let cellMeta = ht.getCellMeta(row, col);
 
+
                 let cl='htCell'+style;
                 if (!cellMeta.className || (cellMeta.className && cellMeta.className.indexOf(cl) < 0)) {
+                    // добавление класса лучше использовать
                     ht.setCellMeta(row, col, 'className', cl);
                 }
             }
@@ -66,6 +159,10 @@ class HandsTable {
     }
     makeSettings()
     {
+        // make columns
+        let makeColumns=this.makeColumns();
+
+
         return {
             dropdownMenu: true,
             manualColumnMove: true,
@@ -80,7 +177,7 @@ class HandsTable {
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 10,
-            // visibleRows:10,
+            // visibleRows:20000,
             filters: true,
             columnSorting: true,
             sortIndicator: true,
@@ -90,62 +187,64 @@ class HandsTable {
             autoColumnSize: { samplingRatio: 23 },
             preventOverflow: 'horizontal',
 
+            columns: makeColumns.columns,
+            colHeaders: makeColumns.colHeaders,
             contextMenu: {
                 items: {
-                    "column": {
-                        name: 'Column',
+                    "columnformat": {
+                        name: 'Column format',
                         submenu: {
                             items: [
                                 {
-                                    name: 'Format',
-                                    key:"column:format",
-                                    // @todo: http://numbrojs.com/format.html
-                                    // тут вызываем ф-ции для определения что выбранно
-                                    //
-                                    submenu: {
-                                        items: [
-                                            {
-                                                name: "Money",
-                                                callback: function (key, options,pf) {
-                                                    // HandsTable.makeStyle(this,'Normal');;
-                                                    console.log("Money");
-                                                },
-                                                key:"column:1:1"
-
-                                            }//Money
-                                        ]//items
-                                    }//submenu
-                                },//Format
-
+                                    name: "Reset",key:"columnformat:1",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Reset'); },
+                                },
                                 {
-                                    name: "Hide",
+                                    name: "Money",key:"columnformat:2",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Money'); },
+                                },
+                                {
+                                    name: "Human",key:"columnformat:3",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Human'); },
+                                },
+                                {
+                                    name: "Bytes",key:"columnformat:4",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Bytes'); },
+                                },
+                                {
+                                    name: "Percentages",key:"columnformat:5",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Percentages'); },
+                                },
+                                {
+                                    name: "Time only",key:"columnformat:6",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Time'); },
+                                },
+                                {
+                                    name: "Date only",key:"columnformat:7",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Date'); },
+                                },
+                                {
+                                    name: "Date loc.",key:"columnformat:8",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'DateLoc'); },
+                                },
+                                {
+                                    name: "Heatmaps",key:"columnformat:9",  callback: function (key, options,pf) {  HandsTable.makeHeatmaps(this,'Heatmaps'); },
+                                },
+
+
+                            ]//items
+                        }//submenu
+                    },
+                    // -------------------- column Show Hide --------------------------------------------------------------------
+
+                    "columnshowhide": {
+                        name: 'ShowHide Columns',
+                        submenu: {
+                            items: [
+                                {
+                                    name: "Hide this column",
                                     callback: function (key, options,pf) {
                                         // HandsTable.makeStyle(this,'Normal');;
+                                        console.log("Hide this column");
                                     },
-                                    key: "column:Hide"
-                                },
-                                {
-                                    name: 'Show all cols',
-                                    code: this,
-                                    callback: function(key, options) {
-                                        // HandsTable.makeStyle(this,'Bold');
-                                    },
-                                    key:"column:makebold"
-
-                                },
-
-                                {
-                                    name: 'Green color',
-                                    callback: function(key, options) {
-                                        // HandsTable.makeStyle(this,'Green');
-                                    },
-                                    key:"column:green"
-                                }
-                            ]
-                        },
+                                    key:"columnshowhide:1"
+                                }//Money
+                            ]//items
+                        },//submenu
                     },
-
-
+                    // -------------------- Style CELL --------------------------------------------------------------------
                     "style": {
                             name: 'Style',
                             submenu: {
@@ -207,7 +306,6 @@ class HandsTable {
             // // }),
             // rowHeights: [50, 40, 100],
             // renderer: 'html',
-            // contextMenu: ['row_above', 'row_below', 'remove_row'],
             //
 
             //
@@ -216,9 +314,9 @@ class HandsTable {
             },
             // observeDOMVisibility:true,
             // observeChanges:true,
-
             // Highlighting selection
 
+            // подсветка строк
             // currentRowClassName: 'currentRow',
             // currentColClassName: 'currentCol',
 

@@ -61,7 +61,7 @@ class Widget {
         return '(' + this.name + ', ' + this.y + ')';
     }
 }
-// export default Widget;
+// export { Widget };
 
 class WidgetDraw extends Widget
 {
@@ -199,19 +199,19 @@ class WidgetTable extends Widget
 
         // if (this.data.rows)
 
-        let ht = new HandsTable(this.data.meta);
+        let ht = new HandsTable(this);
 
-        // make columns
-        let makeColumns=ht.makeColumns();
 
         // основной рендер конфиг таблицы
         this.table= {
 
             settings: ht.makeSettings(),
-            columns: makeColumns.columns,
-            colHeaders: makeColumns.colHeaders
+
         };
-        let countColumns=makeColumns.columns.length;
+        // let countColumns=makeColumns.columns.length;
+
+        //@Todo FIX
+        let countColumns=5
         // ширина
         // init table size тут как бы отрефа
         let x = 1;

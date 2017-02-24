@@ -7,6 +7,7 @@
     "url": "https://github.com/smi2/clickhouse-frontend.git"
   },
   "dependencies": {
+    "babel": "^6.23.0",
     "glob": "^7.0.3",
     "gulp-ngdocs": "^0.2.13",
     "marked": "^0.3.5"
@@ -15,6 +16,7 @@
     "test": "gulp test"
   },
   "devDependencies": {
+    "babel-core": "^6.23.1",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-syntax-export-extensions": "^6.13.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
@@ -62,6 +64,14 @@
   "babel": {
     "presets": [
       "es2015"
+    ],
+    "plugins": [
+      [
+        "transform-es2015-modules-commonjs",
+        {
+          "allowTopLevelThis": true
+        }
+      ]
     ]
   }
 }
