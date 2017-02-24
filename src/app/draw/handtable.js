@@ -15,11 +15,36 @@ class HandsTable {
     }
 
     _handsRenderer (instance, td, row, col, prop, value, cellProperties) {
-        Handsontable.renderers.TextRenderer.apply(this, arguments);
+
+
+        // if (cellProperties.type)
+        if (cellProperties.type=='numeric'){
+            Handsontable.renderers.NumericRenderer.apply(this, arguments);
+        }
+        else {
+            if (cellProperties.type=='date'|| cellProperties.type=='time')
+            {
+                // кастомный рендер на поле даты/вреря/датавремя
+                if (moment(new Date(value)).isValid()) {
+                    if (cellProperties.renderDateFormat) {
+                        value=moment(value).format(cellProperties.renderDateFormat);
+                    }
+                }
+
+                arguments[5]=value;// так работает ;)
+
+
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+            }
+            else {
+
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+            }
+        }
+
         // backgroundColor для ячейки
         if (cellProperties.backgroundColor) {
             td.style.backgroundColor = cellProperties.backgroundColor;
-            td.style.backgroundSize = '50%';
         }
     };
     static isDark() {
@@ -40,17 +65,28 @@ class HandsTable {
             let c={};
             c.type='text';
             c.width=100;
-
             c.typeOriginal=cell.type;
             c.isDark=this.isDark;
+
+
+
+
+            //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
+            if (cell.type.includes('Int'))
+            {
+                c.width=80;
+                c.type='numeric';
+            }
+            // other type
             switch (cell.type) {
                 case 'Date':        c.width=90; c.type='date'; c.dateFormat='YYYY-MM-DD';break;
-                case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
-                case 'Int32':       c.width=80;c.type='numeric'; break;
-                case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
-                case 'UInt32':      c.width=80; c.type='numeric';break;
+                case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='YYYY-MM-DD HH:mm:ss'; break;
+                case 'Float32':     c.width=80; c.type='numeric';break;
+                case 'Float64':     c.width=80; c.type='numeric';break;
                 case 'String':      c.width=180; break;
             }
+
+
             c.renderer=this._handsRenderer;
             c.data=cell.name;
             columns.push(c);
@@ -107,7 +143,6 @@ class HandsTable {
 
         console.log("makeFormat",makeFormat);
 
-
         let selection = ht.getSelectedRange();
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
@@ -124,20 +159,34 @@ class HandsTable {
         for (let col = fromCol; col <= toCol; col++) {
 
             switch (makeFormat) {
-                case 'Reset':       columns[col].format=false;break; // c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
-                case 'Money':       columns[col].format='$0,0.00'; break;// c.timeFormat='HH:mm:ss'; break;
-                case 'Human':       columns[col].format='5a'; break;
-                case 'Bytes':       columns[col].format='0.0b';      break;
-                case 'Percentages':    columns[col].format='(0.00 %)';     break;
-                case 'Time':           columns[col].dateFormat='00:00:00';     break;
-                case 'Date':        columns[col].dateFormat='YYYY-MM-DD';break;
-                case 'DateLoc':        columns[col].dateFormat='LLLL';break;
+                case 'Reset':           columns[col].format=false;  columns[col].renderDateFormat=false;break;
+                case 'Money':           columns[col].format='$0,0.00'; break;
+                case 'Human':           columns[col].format='5a'; break;
+                case 'Bytes':           columns[col].format='0.0b';      break;
+                case 'Percentages':     columns[col].format='(0.00 %)';     break;
+                case 'Time':            columns[col].renderDateFormat='HH:mm:ss';     break;
+                case 'Date':            columns[col].renderDateFormat='YYYY-MM-DD';break;
+                case 'DateTime':        columns[col].renderDateFormat='YYYY-MM-DD HH:mm:ss';break;
+                case 'DateLoc':         columns[col].renderDateFormat='LLLL';break;
+                case 'Float':           columns[col].format='0,0.0000';break;
             }
         }
         ht.updateSettings({
             columns:columns
         });
-        ht.render();
+        // ht.render();
+    }
+    static isFormatColl(ht,needFormat) {
+
+        needFormat=needFormat.toLowerCase();
+        let selection = ht.getSelectedRange();
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+        let columns = ht.getSettings().columns;
+        for (let col = fromCol; col <= toCol; col++) {
+            if (!columns[col].type.toLowerCase().includes(needFormat)) return false;
+        }
+        return true;
     }
     static makeStyle(ht,style) {
         console.log("makeStyle",style);
@@ -207,27 +256,40 @@ class HandsTable {
                                 },
                                 {
                                     name: "Money",key:"columnformat:2",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Money'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
                                 {
                                     name: "Human",key:"columnformat:3",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Human'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
                                 {
                                     name: "Bytes",key:"columnformat:4",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Bytes'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
                                 {
                                     name: "Percentages",key:"columnformat:5",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Percentages'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
                                 {
-                                    name: "Time only",key:"columnformat:6",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Time'); },
+                                    name: "Time only",key:"columnformat:6",
+                                        callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Time'); },
+                                        disabled: function () { return !HandsTable.isFormatColl(this,'Time'); }
                                 },
                                 {
                                     name: "Date only",key:"columnformat:7",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Date'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'Date'); }
                                 },
                                 {
                                     name: "Date loc.",key:"columnformat:8",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'DateLoc'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'Date'); }
                                 },
                                 {
-                                    name: "Heatmaps",key:"columnformat:9",  callback: function (key, options,pf) {  HandsTable.makeHeatmaps(this,'Heatmaps'); },
+                                    name: "Float",key:"columnformat:9",  callback: function (key, options,pf) {  HandsTable.makeFormat(this,'Float'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
+                                },
+                                {
+                                    name: "Heatmaps",key:"columnformat:10",  callback: function (key, options,pf) {  HandsTable.makeHeatmaps(this,'Heatmaps'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
 
 
