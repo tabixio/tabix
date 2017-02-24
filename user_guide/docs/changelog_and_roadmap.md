@@ -37,7 +37,7 @@
 > - Help Modal Window -> Link to github +  Hotkey справочник и/или help
 > - Отдельный домен doc.tabix, собранный из md файлов , Live Docs by dgeni https://github.com/angular/dgeni
 
-
+- [ ] Hint всплывашка рандомно каждые 5-10 минут, в tips.rand()
 
 
 
