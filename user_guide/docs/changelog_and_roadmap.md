@@ -28,11 +28,12 @@
 - [ ]  HotTable menu : CopyPaste to ReadMine markup
 - [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
 - [ ]  HotTable menu : ? Фильтр ?
-- [ ]  HotTable : Searching ячеек + подсветка
+- [ ]  HotTable : Searching ячеек
 
-- [ ]  HotTable + Numbro - отображать колонку если цифры с пробелом "1 234 467 764"
 
-- [!]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
+- [ ]  HotTable : подсветка активной строки Dark
+- [ ]  HotTable : подсветка активной строки White
+
 
 
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
@@ -49,6 +50,8 @@
 ## Roadmap Q2
 
 - [ ]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
+
+- [ ]  HotTable menu : Hide Column / Show Column
 
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
@@ -137,6 +140,8 @@
 - [x]  Поправить верстку шапки
 - [x]  HotTable : ChromaJS heatmaps for the values HeatMap / DataBars(color) для колонки
 - [x]  HotTable в сплывашке показывается криво
+- [x]  HotTable + Numbro - отображать колонку если цифры как human
+- [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
 
 
 ### 2016-12-17

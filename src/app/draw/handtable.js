@@ -148,7 +148,7 @@ class HandsTable {
         let toCol = Math.max(selection.from.col, selection.to.col);
 
         // let headers = ht.getColHeader();
-        // let columnName=ht.colToProp(col);
+        //
         // console.log(col,ht.colToProp(col));
         // console.warn(headers);
         // console.warn('head',ht.getSettings().colHeaders);
@@ -188,6 +188,68 @@ class HandsTable {
         }
         return true;
     }
+    static copyToClipboard(val){
+
+        document.getElementById("dummy_id").value=val;
+        dummy.select();
+        document.execCommand("copy");
+
+    }
+
+    static copyToClipboard(ht,styleMarkdown) {
+        let selection = ht.getSelectedRange();
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+
+        let outText="";
+        let cols=[];
+        for (let col = fromCol; col <= toCol; col++) {
+            cols.push(ht.colToProp(col));
+        }
+        outText=outText+" | "+cols.join(" | ")+" |\n";
+        cols=[];
+
+
+
+        for (let row = fromRow; row <= toRow; row++) {
+            for (let col = fromCol; col <= toCol; col++) {
+                cols.push(ht.getDataAtCell(row,col));
+            }
+            outText=outText+" | "+cols.join(" | ")+" |\n";
+            cols=[];
+        }
+        // х-й знает почему Clipboard вообще не пещает
+        // <textarea class="clipboardTextArea" id="clipboardTextArea">COPY TEXT</textarea>
+        // остнется prompt - привет WinXP (facepalm)
+        // var btn = document.getElementById('clipboardTextArea');
+        // var clipboard = new Clipboard(btn);
+        //
+        // clipboard.on('success', function(e) {
+        //     console.info('Action:', e.action);
+        //     console.info('Text:', e.text);
+        //     console.info('Trigger:', e.trigger);
+        //
+        //     e.clearSelection();
+        // });
+        //
+        // clipboard.on('error', function(e) {
+        //     console.error('Action:', e.action);
+        //     console.error('Trigger:', e.trigger);
+        // });
+
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", outText);
+
+        //
+        //
+        // var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data: 'Data to be copied' } );
+        // document.dispatchEvent(copyEvent);
+        //
+        // document.execCommand('copy', false, outText);
+
+        }
     static makeStyle(ht,style) {
         console.log("makeStyle",style);
         let selection = ht.getSelectedRange();
@@ -297,22 +359,25 @@ class HandsTable {
                         }//submenu
                     },
                     // -------------------- column Show Hide --------------------------------------------------------------------
+                    //
+                    // "columnshowhide": {
+                    //     name: 'ShowHide Columns',
+                    //     submenu: {
+                    //         items: [
+                    //             {
+                    //                 name: "Hide this column",
+                    //                 callback: function (key, options,pf) {
+                    //                     // HandsTable.makeStyle(this,'Normal');;
+                    //                     console.log("Hide this column");
+                    //                 },
+                    //                 key:"columnshowhide:1"
+                    //             }//Money
+                    //         ]//items
+                    //     },//submenu
+                    // },
+                    //
 
-                    "columnshowhide": {
-                        name: 'ShowHide Columns',
-                        submenu: {
-                            items: [
-                                {
-                                    name: "Hide this column",
-                                    callback: function (key, options,pf) {
-                                        // HandsTable.makeStyle(this,'Normal');;
-                                        console.log("Hide this column");
-                                    },
-                                    key:"columnshowhide:1"
-                                }//Money
-                            ]//items
-                        },//submenu
-                    },
+
                     // -------------------- Style CELL --------------------------------------------------------------------
                     "style": {
                             name: 'Style',
@@ -351,6 +416,25 @@ class HandsTable {
                         },
                     },//style
                     "hsep1": "---------",
+
+                    // -------------------- Copy to  --------------------------------------------------------------------
+
+                    "copyTo": {
+                        name: 'Copy To',
+                        submenu: {
+                            items: [
+                                {
+                                    name: "Redmine Markdown",
+                                    callback: function (key, options,pf) {
+                                        HandsTable.copyToClipboard(this,'Redmine');;
+
+                                    },
+                                    key:"copyTo:1"
+                                }//Money
+                            ]//items
+                        },//submenu
+                    },
+
                     "remove_row":{},
                     "col_left":{},
                     "col_right":{},
