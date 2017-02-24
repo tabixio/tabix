@@ -23,18 +23,13 @@
 
 
 - [ ]  AmCharts тема темная, color
-
-
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
-- [ ]  HotTable в сплывашке показывается криво
 
 - [ ]  HotTable menu : CopyPaste to ReadMine markup
 - [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
-- [ ]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
-- [ ]  HotTable menu : HeatMap / DataBars(color) для колонки
-- [ ]  HotTable menu : Фильтр
+- [ ]  HotTable menu : ? Фильтр ?
 - [ ]  HotTable : Searching ячеек + подсветка
-- [ ]  HotTable : ChromaJS heatmaps for the values
+
 - [ ]  HotTable + Numbro - отображать колонку если цифры с пробелом "1 234 467 764"
 
 
@@ -138,6 +133,10 @@
 - [x]  HotTable menu : Style cell Bold/Green/Red
 - [x]  Метрики RealTime charts из system.metrics
 - [x]  Поправить верстку шапки
+- [x]  HotTable : ChromaJS heatmaps for the values
+- [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
+- [x]  HotTable menu : HeatMap / DataBars(color) для колонки
+- [x]  HotTable в сплывашке показывается криво
 
 
 ### 2016-12-17

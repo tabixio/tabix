@@ -177,6 +177,7 @@ class WidgetTable extends Widget
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
         this.type='table';
+        this.table= {};
         this.hotId='hotIdTable'+Math.floor(Math.random() * 10000000);
         if (this.error) {
             this.sizeY=1;
@@ -190,28 +191,14 @@ class WidgetTable extends Widget
             this.init=false;
             return ;
         }
-
         this.hotRegisterer=false;
-        // this.height=4;
-        // this.sizeX=12;
-        this.init=true;
-
-
-        // if (this.data.rows)
 
         let ht = new HandsTable(this);
-
-
         // основной рендер конфиг таблицы
         this.table= {
-
             settings: ht.makeSettings(),
-
         };
-        // let countColumns=makeColumns.columns.length;
-
-        //@Todo FIX
-        let countColumns=5
+        let countColumns=ht.countColumns();
         // ширина
         // init table size тут как бы отрефа
         let x = 1;
@@ -228,8 +215,6 @@ class WidgetTable extends Widget
             x=6;
         }
         this.sizeX=x;
-
-
         //  высота
         this.sizeY=0;//1...2...3...4...5..
 
@@ -247,8 +232,12 @@ class WidgetTable extends Widget
             // результат толкьо один был запрос
             this.sizeX=6;
         }
+        this.init=true;
+    }
 
-        console.info("Table INIT",this);
+    preProcessor() {
+
+
     }
     onDrag() {
         this.onResize();

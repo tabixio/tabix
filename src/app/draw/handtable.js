@@ -10,6 +10,7 @@ class HandsTable {
 
     constructor(WidgetTable) {
         this.WidgetTable=WidgetTable;
+        this.isDark=WidgetTable.isDark;
         this.meta=WidgetTable.data.meta;
     }
 
@@ -18,10 +19,17 @@ class HandsTable {
         // backgroundColor для ячейки
         if (cellProperties.backgroundColor) {
             td.style.backgroundColor = cellProperties.backgroundColor;
+            td.style.backgroundSize = '50%';
         }
     };
+    static isDark() {
+        // @todo придумать как достать из isDark из глобального обьекта темы
+        return true;
+    }
 
-
+    countColumns() {
+        return this.meta.length;
+    }
     makeColumns() {
 
         let colHeaders = [];
@@ -34,7 +42,7 @@ class HandsTable {
             c.width=100;
 
             c.typeOriginal=cell.type;
-
+            c.isDark=this.isDark;
             switch (cell.type) {
                 case 'Date':        c.width=90; c.type='date'; c.dateFormat='YYYY-MM-DD';break;
                 case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
@@ -47,7 +55,7 @@ class HandsTable {
             c.data=cell.name;
             columns.push(c);
         });
-        console.log("makeColumns",columns);
+
         return {
             colHeaders: colHeaders,
             columns: columns
@@ -57,13 +65,15 @@ class HandsTable {
     static makeHeatmaps(ht,format) {
 
         // Heatmap для выбранных колонок,
-        // @todo Проверить что корректно вычесляет min/max
         // @todo Подобрать цвета для Dark темы , как передать это дарк ?
+        console.info('isDark',ht.getSettings().isDark);
+
+        console.warn(ht.getCellMeta(0,0,'isDark'));
 
         let selection = ht.getSelectedRange();
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
-        let heatmapScale  = chroma.scale(['#FFFFFF', '#8BC34A']);
+        let heatmapScale  = chroma.scale(['red', '008ae5']);
 
         for (let col = fromCol; col <= toCol; col++) {
 
@@ -72,16 +82,12 @@ class HandsTable {
             let min=Math.min.apply(null, values);
             let max=Math.max.apply(null, values);
 
-
             if (min !== null && max !==null)
             {
                 for (let row = 0; row <= allRows; row++) {
-
-                    let value=parseInt(ht.getDataAtCell(row,col),10);
-
+                    let value=parseFloat(ht.getDataAtCell(row,col));
                     let point=(value - min) / (max - min);
                     let color=heatmapScale(point).hex();
-
                     let meta=ht.getCellMeta(row,col);
                     if (meta)
                     {
@@ -96,8 +102,6 @@ class HandsTable {
             }
         }
         ht.render();
-
-
     }
     static makeFormat(ht,makeFormat) {
 
@@ -163,6 +167,8 @@ class HandsTable {
         let makeColumns=this.makeColumns();
 
 
+
+
         return {
             dropdownMenu: true,
             manualColumnMove: true,
@@ -174,6 +180,7 @@ class HandsTable {
             stretchH: 'all',
             persistentState:true,
             customBorders:true,
+            isDark:this.isDark,
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 10,
@@ -314,11 +321,12 @@ class HandsTable {
             },
             // observeDOMVisibility:true,
             // observeChanges:true,
-            // Highlighting selection
 
-            // подсветка строк
-            // currentRowClassName: 'currentRow',
-            // currentColClassName: 'currentCol',
+
+
+            // Highlighting selection подсветка строк
+            currentRowClassName: 'currentRow',
+            currentColClassName: 'currentCol',
 
         };
     }

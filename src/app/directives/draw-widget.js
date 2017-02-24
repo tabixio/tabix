@@ -51,10 +51,7 @@
 
         }
         // ------------------------------------------------------------------------------------------------------------------
-        // Запускаем пре процессоры, преобразуют данные для виджета
-        if (widget.preProcessor instanceof Function) {
-            widget.preProcessor();
-        }
+
 
         if (widget.draw.preProcessor instanceof Function) {
             widget.draw.preProcessor();
@@ -72,6 +69,13 @@
 
             // задаем виджету стиль темный / светлый
             scope.widget.isDark=scope.isdark;
+
+
+            // Запускаем пре процессоры, преобразуют данные для виджета
+            if (scope.widget.preProcessor instanceof Function) {
+                scope.widget.preProcessor();
+            }
+
             // -------------------------------- Text & Error RENDER ----------------------------------------------
             // Если widget содержит ошибку или в поле textformat не false => результат это текс, отрисует сам WidgetsList.html
             if (scope.widget.error || scope.widget.textformat)
