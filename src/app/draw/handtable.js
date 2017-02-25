@@ -46,9 +46,14 @@ class HandsTable {
         if (cellProperties.backgroundColor) {
             td.style.backgroundColor = cellProperties.backgroundColor;
         }
+
+        if (cellProperties.color) {
+            td.style.color = cellProperties.color;
+        }
     };
     static isDark() {
         // @todo придумать как достать из isDark из глобального обьекта темы
+        // ??? window.isDarkThemeGlobal
         return true;
     }
 
@@ -68,9 +73,6 @@ class HandsTable {
             c.typeOriginal=cell.type;
             c.isDark=this.isDark;
 
-
-
-
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
             if (cell.type.includes('Int'))
             {
@@ -81,12 +83,10 @@ class HandsTable {
             switch (cell.type) {
                 case 'Date':        c.width=90; c.type='date'; c.dateFormat='YYYY-MM-DD';break;
                 case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='YYYY-MM-DD HH:mm:ss'; break;
-                case 'Float32':     c.width=80; c.type='numeric';break;
-                case 'Float64':     c.width=80; c.type='numeric';break;
+                case 'Float32':     c.width=80; c.type='numeric';c.format="0.[0000000]";break;
+                case 'Float64':     c.width=80; c.type='numeric';c.format="0.[0000000]";break;
                 case 'String':      c.width=180; break;
             }
-
-
             c.renderer=this._handsRenderer;
             c.data=cell.name;
             columns.push(c);
@@ -100,6 +100,7 @@ class HandsTable {
 
     static makeHeatmaps(ht,format) {
 
+        // format = Heatmaps | NegaPosi
         // Heatmap для выбранных колонок,
         // @todo Подобрать цвета для Dark темы , как передать это дарк ?
         console.info('isDark',ht.getSettings().isDark);
@@ -109,7 +110,11 @@ class HandsTable {
         let selection = ht.getSelectedRange();
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
-        let heatmapScale  = chroma.scale(['red', '008ae5']);
+
+        let h1="#a900e5";
+        let h2="#3668ff";
+
+        let heatmapScale  = chroma.scale([h1, h2]);
 
         for (let col = fromCol; col <= toCol; col++) {
 
@@ -122,14 +127,37 @@ class HandsTable {
             {
                 for (let row = 0; row <= allRows; row++) {
                     let value=parseFloat(ht.getDataAtCell(row,col));
-                    let point=(value - min) / (max - min);
-                    let color=heatmapScale(point).hex();
-                    let meta=ht.getCellMeta(row,col);
-                    if (meta)
-                    {
-                        // пробрасыавем в ренден _handsRenderer параметр backgroundColor
-                        ht.setCellMeta(row, col, 'backgroundColor', color);
+
+
+                    if (format == 'Heatmaps') {
+                        let point=(value - min) / (max - min);
+                        let color=heatmapScale(point).hex();
+                        let meta=ht.getCellMeta(row,col);
+                        if (meta)
+                        {
+                            // пробрасыавем в ренден _handsRenderer параметр backgroundColor
+                            ht.setCellMeta(row, col, 'backgroundColor', color);
+                        }
                     }
+
+                    if (format == 'NegaPosi') {
+
+                        let color=false;
+                        if (value<0) {
+                            color="#e27137";
+                        }
+                        if (value>0) {
+                            color="#31b3e5";
+                        }
+
+                        let meta=ht.getCellMeta(row,col);
+                        if (meta && color)
+                        {
+                            // пробрасыавем в ренден _handsRenderer параметр color
+                            ht.setCellMeta(row, col, 'color', color);
+                        }
+                    }
+
                 }
             }
             else
@@ -141,7 +169,7 @@ class HandsTable {
     }
     static makeFormat(ht,makeFormat) {
 
-        console.log("makeFormat",makeFormat);
+
 
         let selection = ht.getSelectedRange();
         let fromCol = Math.min(selection.from.col, selection.to.col);
@@ -157,6 +185,8 @@ class HandsTable {
 
         let columns = ht.getSettings().columns;
         for (let col = fromCol; col <= toCol; col++) {
+            console.log("makeFormat for coll ="+col,makeFormat);
+
 
             switch (makeFormat) {
                 case 'Reset':           columns[col].format=false;  columns[col].renderDateFormat=false;break;
@@ -168,13 +198,13 @@ class HandsTable {
                 case 'Date':            columns[col].renderDateFormat='YYYY-MM-DD';break;
                 case 'DateTime':        columns[col].renderDateFormat='YYYY-MM-DD HH:mm:ss';break;
                 case 'DateLoc':         columns[col].renderDateFormat='LLLL';break;
-                case 'Float':           columns[col].format='0,0.0000';break;
+                case 'Float':           columns[col].format='0.[0000000]';break;
             }
         }
         ht.updateSettings({
             columns:columns
         });
-        // ht.render();
+        ht.render();
     }
     static isFormatColl(ht,needFormat) {
 
@@ -188,7 +218,7 @@ class HandsTable {
         }
         return true;
     }
-    static copyToClipboard(val){
+    static copyToClipboardText(outText){
         //
         // // Create a temporary element off screen.
         // var tmpElem = $('<div>');
@@ -198,11 +228,30 @@ class HandsTable {
         //     top:      "-1000px",
         // });
         // // Add the input value to the temp element.
-        // tmpElem.text(input.val());
+        // <textarea class="clipboardTextArea" id="clipboardTextArea">COPY TEXT</textarea>
+
+        // $("#clipboardTextArea").text(outText);
+        // var btn = document.getElementById('clipboardTextArea');
+        // var clipboard = new Clipboard(btn);
+        //
+        // clipboard.on('success', function(e) {
+        //     console.info('Action:', e.action);
+        //     console.info('Text:', e.text);
+        //     console.info('Trigger:', e.trigger);
+        //
+        //     e.clearSelection();
+        // });
+        //
+        // clipboard.on('error', function(e) {
+        //     console.error('Action:', e.action);
+        //     console.error('Trigger:', e.trigger);
+        // });
+        //
+
         // $("body").append(tmpElem);
         // // Select temp element.
         // range.selectNodeContents(tmpElem.get(0));
-        // selection = window.getSelection ();
+        // let selection = window.getSelection ();
         // selection.removeAllRanges ();
         // selection.addRange (range);
         // // Lets copy.
@@ -210,43 +259,17 @@ class HandsTable {
         //     success = document.execCommand ("copy", false, null);
         // }
         // catch (e) {
-        //     copyToClipboardFF(input.val());
+        //     // copyToClipboardFF(input.val());
         // }
         // if (success) {
         //     alert ("The text is on the clipboard, try to paste it!");
-        //     // remove temp element.
-        //     tmpElem.remove();
+        //
         // }
+        // // remove temp element.
+        // tmpElem.remove();
 
-    }
-
-    static copyToClipboard(ht,styleMarkdown) {
-        let selection = ht.getSelectedRange();
-        let fromRow = Math.min(selection.from.row, selection.to.row);
-        let toRow = Math.max(selection.from.row, selection.to.row);
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
-
-
-        let outText="";
-        let cols=[];
-        for (let col = fromCol; col <= toCol; col++) {
-            cols.push(ht.colToProp(col));
-        }
-        outText=outText+" | "+cols.join(" | ")+" |\n";
-        cols=[];
-
-
-
-        for (let row = fromRow; row <= toRow; row++) {
-            for (let col = fromCol; col <= toCol; col++) {
-                cols.push(ht.getDataAtCell(row,col));
-            }
-            outText=outText+" | "+cols.join(" | ")+" |\n";
-            cols=[];
-        }
         // х-й знает почему Clipboard вообще не пещает
-        // <textarea class="clipboardTextArea" id="clipboardTextArea">COPY TEXT</textarea>
+        //
         // остнется prompt - привет WinXP (facepalm)
         // var btn = document.getElementById('clipboardTextArea');
         // var clipboard = new Clipboard(btn);
@@ -270,7 +293,38 @@ class HandsTable {
         // document.execCommand('copy', false, outText);
         // this.copyToClipboard();
 
+
+
+
         window.prompt("Copy to clipboard: Ctrl+C, Enter", outText);
+
+    }
+
+    static copyToClipboard(ht,styleMarkdown) {
+        let selection = ht.getSelectedRange();
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+
+        let outText="";
+        let cols=[];
+        for (let col = fromCol; col <= toCol; col++) {
+            cols.push(ht.colToProp(col));
+        }
+
+        outText=outText+" | "+cols.join(" | ")+" |\n";
+        cols=[];
+        for (let row = fromRow; row <= toRow; row++) {
+            for (let col = fromCol; col <= toCol; col++) {
+                cols.push(ht.getDataAtCell(row,col));
+            }
+            outText=outText+" | "+cols.join(" | ")+" |\n";
+            cols=[];
+        }
+
+        HandsTable.copyToClipboardText(outText);
 
 
         }
@@ -377,11 +431,16 @@ class HandsTable {
                                     name: "Heatmaps",key:"columnformat:10",  callback: function (key, options,pf) {  HandsTable.makeHeatmaps(this,'Heatmaps'); },
                                     disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
                                 },
+                                {
+                                    name: "Negative & Positive",key:"columnformat:11",  callback: function (key, options,pf) {  HandsTable.makeHeatmaps(this,'NegaPosi'); },
+                                    disabled: function () { return !HandsTable.isFormatColl(this,'numeric'); }
+                                },
 
 
                             ]//items
                         }//submenu
                     },
+
                     // -------------------- column Show Hide --------------------------------------------------------------------
                     //
                     // "columnshowhide": {
@@ -442,7 +501,6 @@ class HandsTable {
                     "hsep1": "---------",
 
                     // -------------------- Copy to  --------------------------------------------------------------------
-
                     "copyTo": {
                         name: 'Copy To',
                         submenu: {
@@ -458,11 +516,26 @@ class HandsTable {
                             ]//items
                         },//submenu
                     },
+                    "whereIN": {
+                        name: 'where IN',
+                        submenu: {
+                            items: [
+                                {
+                                    name: "col1 (val,val),col2 ...",
+                                    callback: function (key, options,pf) {
+                                        HandsTable.copyToClipboard(this,'Redmine');
 
-                    "remove_row":{},
-                    "col_left":{},
-                    "col_right":{},
-                    "remove_col":{},
+                                    },
+                                    key:"whereIN:1"
+                                }//Money
+                            ]//items
+                        },//submenu
+                    },
+
+                    // "remove_row":{},
+                    // "col_left":{},
+                    // "col_right":{},
+                    // "remove_col":{},
                     "hsep2": "---------",
                     "undo":{},
                     "make_read_only":{},

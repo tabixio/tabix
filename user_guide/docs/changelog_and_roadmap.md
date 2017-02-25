@@ -7,8 +7,9 @@
 - [ ]  Расшить классы Widget & DrawChart
 - [ ]  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
 - [ ]  Переиминовать в коде CHGui в Tabix
-- [ ]  HotTable menu : CopyPaste - нормальная реализация не через Promnt
+- [ ]  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
 - [ ]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
+- [ ]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
 
 
 
@@ -28,17 +29,13 @@
 
 
 - [ ]  AmCharts тема темная, color
-
 - [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
-- [ ]  HotTable menu : Highlight Negative/Positive
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
 
 
 - [ ]  Документация
 > - Help Modal Window -> Link to github +  Hotkey справочник и/или help
 > - Отдельный домен doc.tabix, собранный из md файлов , Live Docs by dgeni https://github.com/angular/dgeni
-
-- [ ] Hint всплывашка рандомно каждые 5-10 минут, в tips.rand()
 
 - [ ] Метрики кнопка очистить
 
@@ -143,6 +140,9 @@
 - [x]  HotTable + Numbro - отображать колонку если цифры как human
 - [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
 - [x]  HotTable menu : CopyPaste to ReadMine markup
+- [x]  HotTable menu : Highlight Negative/Positive
+
+
 
 ### 2016-12-17
 
