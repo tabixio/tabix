@@ -29,7 +29,7 @@
 
 
 - [ ]  AmCharts тема темная, color
-- [ ]  HotTable menu : insert WHERE column=valuse ... + auto select inserted value in ACE
+-
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
 
 
@@ -141,8 +141,7 @@
 - [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
 - [x]  HotTable menu : CopyPaste to ReadMine markup
 - [x]  HotTable menu : Highlight Negative/Positive
-
-
+- [x]  HotTable menu : insert WHERE column=valuse to Clipboard
 
 ### 2016-12-17
 

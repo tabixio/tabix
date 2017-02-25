@@ -218,7 +218,7 @@ class HandsTable {
         }
         return true;
     }
-    static copyToClipboardText(outText){
+    static pushToClipboardText(outText){
         //
         // // Create a temporary element off screen.
         // var tmpElem = $('<div>');
@@ -300,6 +300,51 @@ class HandsTable {
 
     }
 
+    static makeWhereIn(ht) {
+        let selection = ht.getSelectedRange();
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+
+        let outText=[];
+
+        //
+        // for (let col = fromCol; col <= toCol; col++) {
+        //     cols.push(ht.colToProp(col));
+        // }
+
+        let columns = ht.getSettings().columns;
+
+        for (let col = fromCol; col <= toCol; col++) {
+            let rr=[];
+            for (let row = fromRow; row <= toRow; row++) {
+                rr.push(ht.getDataAtCell(row,col));
+            }
+
+            let unique = rr.filter((v, i, a) => a.indexOf(v) === i);
+
+            // get Type of column
+
+            let typeColumn=columns[col].type.toLowerCase();
+            if (typeColumn.includes('numeric')) {
+                // Если числовая колонка
+
+                outText.push(ht.colToProp(col)+" IN ( "+unique.join(" , ")+') ');
+
+            } else {
+                outText.push(ht.colToProp(col)+" IN ( \""+unique.join("\" , \"")+'") ');
+            }
+
+
+
+        }
+        outText="\n"+outText.join("\n\tAND\n")+"\n\n";
+
+        console.log(outText);
+        HandsTable.pushToClipboardText(outText);
+    }
     static copyToClipboard(ht,styleMarkdown) {
         let selection = ht.getSelectedRange();
         let fromRow = Math.min(selection.from.row, selection.to.row);
@@ -324,7 +369,7 @@ class HandsTable {
             cols=[];
         }
 
-        HandsTable.copyToClipboardText(outText);
+        HandsTable.pushToClipboardText(outText);
 
 
         }
@@ -523,7 +568,7 @@ class HandsTable {
                                 {
                                     name: "col1 (val,val),col2 ...",
                                     callback: function (key, options,pf) {
-                                        HandsTable.copyToClipboard(this,'Redmine');
+                                        HandsTable.makeWhereIn(this);
 
                                     },
                                     key:"whereIN:1"
