@@ -22,7 +22,6 @@
                         $state.go('login');
                     }
                 });
-
                 // Требование JSlinter'a (((
                 $rootScope.$on('$destroy', () => stateChangeErrorUnbind);
             }

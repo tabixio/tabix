@@ -63,9 +63,7 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe(jsVendor)
         .pipe($.babel({
             presets: ['es2015', 'stage-0'],
-            plugins:  ["transform-es2015-modules-commonjs", {
-                "allowTopLevelThis": true
-            }]
+            plugins: []
         }))
         .on('error', conf.errorHandler('babel'))
         .pipe(jsVendor.restore)
