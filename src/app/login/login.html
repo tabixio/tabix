@@ -7,7 +7,7 @@
                     <img src="assets/images/logotabix.png"  class="logo"/>
                 </div>
                 <div class="pull-left">
-                    <a ui-sref="dashboard" class="tc-white">tabiX</a>
+                    <a ui-sref="dashboard" class="tc-white"></a>
                 </div>
 
                 <div class="pull-right">
@@ -28,14 +28,14 @@
     <div class="content">
         <div class="sidebar-view login">
 
-            <md-card class="m0 h100" style="width: 180px">
+            <md-card class="m0 h100" style="width: 200px">
                 <div ng-repeat="base in vars.bases">
                     <md-button class="menu-button" ng-click="vars.db = base">
                         <span class="menu-button__title">
                             {{base.name}}
                         </span>
                         <span class="menu-button__subtitle">
-                            {{base.host}}
+                            {{base.host }}
                         </span>
                     </md-button>
                 </div>
@@ -49,7 +49,7 @@
 
                         <md-tab>
                             <md-tab-label>
-                                Direct
+                                Direct CH
                             </md-tab-label>
                             <md-tab-body>
                                 <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
@@ -110,26 +110,44 @@
                                     <form class="p++" name="loginServerForm">
                                         <div>
                                             <md-input-container>
+                                                <label>{{'Название' | translate}}</label>
+                                                <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+
+                                        <div>
+                                            <md-input-container>
                                                 <label>{{'Сервер' | translate}}</label>
-                                                <input ng-model="vars.db.srvname" required placeholder="dev" ng-disabled="vars.loading">
+                                                <input ng-model="vars.db.tabix.server" required placeholder="https://tabix.dev/s1" ng-disabled="vars.loading">
+                                            </md-input-container>
+                                        </div>
+                                        <div>
+                                            <md-input-container>
+                                                <label>{{'Config Key' | translate}}</label>
+                                                <input ng-model="vars.db.tabix.confid" placeholder="empty" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container>
                                                 <label>{{'Логин' | translate}}</label>
-                                                <input ng-model="vars.db.srvlogin" ng-disabled="vars.loading">
+                                                <input ng-model="vars.db.tabix.login" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container>
                                                 <label>{{'Пароль' | translate}}</label>
-                                                <input type="password" ng-model="vars.db.srvpassword" ng-click="onKeypress($event)" ng-disabled="vars.loading">
+                                                <input type="password" ng-model="vars.db.tabix.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div layout="row">
                                             <div flex>
                                                 <md-button class="md-primary md-raised m0 width-100" ng-disabled="vars.loading" ng-click="login()">
                                                     {{'Войти' | translate}}
+                                                </md-button>
+                                            </div>
+                                            <div flex ng-if="vars.db.id" class="pl">
+                                                <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
+                                                    {{'Удалить' | translate}}
                                                 </md-button>
                                             </div>
                                         </div>
@@ -143,7 +161,7 @@
             <div class="footer">
                 <md-card class="m0 p">
                     <div>
-                        <a href="https://github.com/smi2/clickhouse-frontend" target="_blank" class="pull-right">
+                        <a href="https://github.com/smi2/" target="_blank" class="pull-right">
                             <i class="mdi mdi-github-circle mdi-24px"></i>
                         </a>
                         <p class="copyright text-center" style="line-height: 24px">

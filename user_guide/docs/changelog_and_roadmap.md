@@ -10,6 +10,7 @@
 - [ ]  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
 - [ ]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
 - [ ]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
+- [ ]  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
 
 
 

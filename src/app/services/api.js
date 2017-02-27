@@ -60,8 +60,65 @@
                     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
                 return text;
-        }
+        };
 
+        this.isTabixServer = () => {
+
+            if (!connection.tabix) return false;
+
+            if (connection.tabix.server) return true;
+
+            return false;
+        };
+
+        this.tabixQuery = ( request ) => {
+
+
+            console.info("[request]>",request);
+            $http(req).then(
+                response => defer.resolve(response.data),
+                reason => defer.reject(reason)
+            );
+
+            return defer.promise;
+        };
+
+
+        this._tabixRequest = (request,action) => {
+
+
+            let o = {
+                version:1,
+                auth: {
+                    login: connection.tabix.login,
+                    password: connection.tabix.password,
+                    confid:connection.tabix.confid
+                }
+            };
+
+            request = Object.assign(o,request);
+
+            // let parameter = JSON.stringify(Object.assign(o,request));
+
+            let url=connection.tabix.server+'/'+action;
+
+
+            return {
+                method: 'POST',
+                data  : request,
+                // headers: {
+                    // 'Content-Type': 'application/x-www-form-urlencoded'
+                // },
+                url: url,
+                transformResponse: (data, header, status) => {
+                    try {
+                        return angular.fromJson(data);
+                    } catch (err) {
+                        return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
+                    }
+                }
+            };
+        };
         /**
          * @ngdoc method
          * @methodOf smi2.service:API
@@ -73,7 +130,8 @@
         this.query = (sql, format, withDatabase, extend_settings) => {
             let defer = $q.defer();
             let query = '';
-
+            let url = "http://localhost/";
+            let req = false;
             if (format !== false) {
                 format = (format || ' FoRmAt JSON');
                 if (format == 'null') {
@@ -83,43 +141,58 @@
             } else {
                 query = sql;
             }
-            var httpProto = '';
-            if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
-                httpProto = 'http://';
-            }
-            let url = httpProto + connection.host +
-                '/?add_http_cors_header=1';
-            if (connection.login) {
-                url += '&user=' + connection.login;
-            }
-            if (connection.password) {
-                url += '&password=' + connection.password;
-            }
-            if (withDatabase) {
-                url += '&database=' + database;
-            }
-            if (extend_settings) {
-                url += '&' + extend_settings;
-            }
-            if (connection.params){
-                url += '&'+connection.params;
+
+            if (this.isTabixServer()) {
+                // tabix server
+                 req = this._tabixRequest({query:query},'query');
+
+            } else {
+                //direct connect
+
+                let httpProto = '';
+                if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
+                    httpProto = 'http://';
+                }
+                url = httpProto + connection.host +
+                    '/?add_http_cors_header=1';
+                if (connection.login) {
+                    url += '&user=' + connection.login;
+                }
+                if (connection.password) {
+                    url += '&password=' + connection.password;
+                }
+                if (withDatabase) {
+                    url += '&database=' + database;
+                }
+                if (extend_settings) {
+                    url += '&' + extend_settings;
+                }
+                if (connection.params){
+                    url += '&'+connection.params;
+                }
+
+                 req = {
+                    method: 'POST',
+                    data :query,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    url: url,
+                    transformResponse: (data, header, status) => {
+                        try {
+                            return angular.fromJson(data);
+                        } catch (err) {
+                            return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
+                        }
+                    }
+                };
+
             }
 
-            let req = {
-                method: 'POST',
-                data :query,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                url: url,
-                transformResponse: (data, header, status) => {
-                    try {
-                        return angular.fromJson(data);
-                    } catch (err) {
-                        return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
-                    }
-                }
-            };
+
+
+
+
             console.info("SQL>",query);
             $http(req).then(
                 response => defer.resolve(response.data),
@@ -242,38 +315,6 @@
 
             };
         };
-        this.dataToUIGrid = (data) => {
 
-
-            let columnDefs = [];
-            data.meta.forEach((cell) => {
-
-                let minWidth=100;
-                switch (cell.type) {
-                    case 'Date': minWidth=90; break;
-                    case 'DateTime': minWidth=150; break;
-                    case 'Int32': minWidth=80; break;
-                    case 'UInt32': minWidth=80; break;
-                    case 'String': minWidth=180; break;
-                }
-
-                console.info(cell.type);
-                columnDefs.push(
-                    //  pinnedLeft:true , width: 250, enablePinning:false ,pinnedRight:true
-                    {
-                        field: cell.name,
-                        minWidth: minWidth,
-                        headerTooltip: cell.type,
-                        enableColumnMenu:true,
-                        enableFiltering:true}
-                );
-            });
-
-            return {
-                columnDefs: columnDefs,
-                data: data.data
-
-            };
-        };
     }
 })(angular, smi2);
