@@ -26,19 +26,18 @@
 - [ ]  drawTREEMAP
 - [ ]  drawD3
 - [ ]  DrawChartGrid
+- [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 - [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
 
 
 - [ ]  AmCharts тема темная, color
--
+
 - [ ]  Виджет список предустановленных графиков + минимальный редактор
 
 
 - [ ]  Документация
 > - Help Modal Window -> Link to github +  Hotkey справочник и/или help
 > - Отдельный домен doc.tabix, собранный из md файлов , Live Docs by dgeni https://github.com/angular/dgeni
-
-- [ ] Метрики кнопка очистить
 
 
 
@@ -143,6 +142,7 @@
 - [x]  HotTable menu : CopyPaste to ReadMine markup
 - [x]  HotTable menu : Highlight Negative/Positive
 - [x]  HotTable menu : insert WHERE column=valuse to Clipboard
+- [x]  Метрики кнопка очистить
 
 ### 2016-12-17
 

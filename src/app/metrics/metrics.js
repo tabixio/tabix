@@ -77,9 +77,11 @@
 
                     if ($scope.chartData[key].length>$scope.maxlength) {
                         $scope.chartData[key].shift();
-                    }
-                    $scope.chartData[key].push([    d.time,parseInt(d[key])  ]);
+                    }$scope.chartData[key].push([    d.time,parseInt(d[key])  ]);
                 }
+
+                console.info($scope.chartData);
+
 
                 $scope.metrcisChart.setOption($scope.EChartOptions);
                 $scope.metrcisChart.resize();
@@ -88,9 +90,6 @@
             }
 
             // первая строка данных
-            // console.log("initChart",d);
-
-
             if (!d.time) return;
 
             let grids = [];
@@ -180,11 +179,8 @@
 
             }
 
-
             let rowNumber = Math.ceil(Math.sqrt(count));
-
-
-
+            // grids
             grids.forEach((grid,idx)=> {
                 grid.left = ((idx % rowNumber) / rowNumber * 100 + 0.5) + '%';
                 grid.top = (Math.floor(idx / rowNumber) / rowNumber * 100 + 0.5) + '%';
@@ -193,9 +189,7 @@
 
                 titles[idx].left = parseFloat(grid.left) + parseFloat(grid.width) / 2 + '%';
                 titles[idx].top = parseFloat(grid.top) + '%';
-
             });
-
 
 
             //titles
@@ -247,19 +241,13 @@
 
             };
 
-
             $scope.vars.initChart=true;
             $scope.EChartOptions=Object.assign(option,$scope.EChartOptions);
-
-            // console.log("initChart-DONE",$scope.EChartOptions);
-
 
             let theme='macarons';
             if (ThemeService.isDark()) theme='dark';
 
-
-
-
+            // Draw Charts
             $scope.metrcisChart= echarts.init( document.querySelector( '#metrcisChart'  ), theme);
             $scope.metrcisChart.setOption($scope.EChartOptions);
             $scope.metrcisChart.resize();
@@ -270,15 +258,35 @@
 
         let intervalHandle = null;
 
+        /**
+         *
+         */
         $scope.flush = () => {
-            $scope.data=[];
+
+
+
+
+            for(let key in $scope.chartData) {
+
+                let len=$scope.chartData[key].length;
+                for (let i = 0; i < len-2; i++) {
+                    $scope.chartData[key].shift();
+                }
+            }
+
+            $scope.metrcisChart.setOption($scope.EChartOptions);
+            $scope.metrcisChart.resize();
         };
+
+
+        /**
+         *
+         */
         $scope.load = () => {
             $scope.vars.loading=true;
 
 
             let sql = `SELECT * FROM system.metrics ORDER BY metric `;
-
 
 
             API.query(sql).then(function ( raw ) {
@@ -292,17 +300,8 @@
                      // metric + value
                     d[cell.metric]=cell.value;
                 });
-                // $scope.data.push(d); // ? А нужно ли ?
-                // init chart
-                //console.log("$scope.data",$scope.data);
-
                 // инициализация графиков
                 $scope.initChart(d);
-
-                // пихаем данные
-                // $scope.pushChartSeries(d);
-                //console.log($scope.EChartOptions);
-
 
             }, function ( response ) {
                 $scope.vars.loading = false;
