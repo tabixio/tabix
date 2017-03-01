@@ -210,6 +210,9 @@ window.global_delimiter             = ";;";
 
                 // Для текущего currentTab, сохраняем statistics массив
                 let st=data.statistics;
+                if (!angular.isObject(st)) {
+                    st={};
+                }
                 st.query=progressQuery;
                 st.index=query.index;
                 $scope.vars.currentTab.statistics.push(st);
