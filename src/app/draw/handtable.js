@@ -11,6 +11,10 @@ class HandsTable {
     constructor(WidgetTable) {
         this.WidgetTable=WidgetTable;
         this.isDark=WidgetTable.isDark;
+
+
+
+
         this.meta=WidgetTable.data.meta;
     }
 
@@ -64,7 +68,13 @@ class HandsTable {
 
         let colHeaders = [];
         let columns = [];
+        let positions={};
+        let cnt=0;
         this.meta.forEach((cell) => {
+
+
+            positions[cell.name]=cnt;
+            cnt++;
 
             colHeaders.push(cell.name);
             let c={};
@@ -94,7 +104,8 @@ class HandsTable {
 
         return {
             colHeaders: colHeaders,
-            columns: columns
+            columns: columns,
+            colPositions: positions
         };
     };
 
@@ -403,7 +414,7 @@ class HandsTable {
 
 
 
-        return {
+        let o=  {
             dropdownMenu: true,
             manualColumnMove: true,
             manualColumnResize: true,
@@ -617,6 +628,19 @@ class HandsTable {
             currentColClassName: 'currentCol',
 
         };
+
+
+        if (this.WidgetTable.data.sort && this.WidgetTable.data.sortOrder)
+        {
+            o.columnSorting={
+                column: makeColumns.colPositions[this.WidgetTable.data.sort],
+                sortOrder:(this.WidgetTable.data.sortOrder.toLowerCase()=='desc'?false:true)
+            };
+        }
+
+        return o;
+
+
     }
 
 }

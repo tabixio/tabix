@@ -51,12 +51,9 @@
 
         }
         // ------------------------------------------------------------------------------------------------------------------
-
-
         if (widget.draw.preProcessor instanceof Function) {
             widget.draw.preProcessor();
         }
-
         return html;
     }
 

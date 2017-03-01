@@ -11,7 +11,8 @@
 - [ ]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
 - [ ]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
 - [ ]  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
-
+- [ ]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
+- [ ]  Настройка размера шрифта HotTable
 
 
 **Todo high**:
@@ -41,14 +42,13 @@
 
 
 
+
 ## Roadmap Q2
-- [ ]  HotTable : Searching ячеек
 
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
-
-- [ ]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
-
 - [ ]  HotTable menu : Hide Column / Show Column
+
+- [ ] Low hotTable : Searching ячеек
 
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
@@ -143,7 +143,9 @@
 - [x]  HotTable menu : Highlight Negative/Positive
 - [x]  HotTable menu : insert WHERE column=valuse to Clipboard
 - [x]  Метрики кнопка очистить
-
+- [x]  Запросы во вкладке логируются для сравнения производительности
+ 
+ 
 ### 2016-12-17
 
 * "Order by и group by" - подсветка fix

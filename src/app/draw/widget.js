@@ -22,7 +22,6 @@ class Widget {
         // проверка результат с ошибкой или это текстовая строка
         this.error=this.data.error;
         this.text=this.data.text;
-
         this.name="Widget";
 
         this.sizeX=3;// ширина
@@ -178,6 +177,7 @@ class WidgetTable extends Widget
         super(DataProvider, draw);
         this.type='table';
         this.table= {};
+        this.sort=false;
         this.hotId='hotIdTable'+Math.floor(Math.random() * 10000000);
         if (this.error) {
             this.sizeY=1;
@@ -194,6 +194,9 @@ class WidgetTable extends Widget
         this.hotRegisterer=false;
 
         let ht = new HandsTable(this);
+
+
+
         // основной рендер конфиг таблицы
         this.table= {
             settings: ht.makeSettings(),
@@ -214,6 +217,15 @@ class WidgetTable extends Widget
         if (countColumns>15) {
             x=6;
         }
+
+
+
+        // Для таблицы со статистикой выполнения запросов ширина всегда макс
+        if (this.data.sourceType=='statistics') {
+            x=6;
+        }
+
+
         this.sizeX=x;
         //  высота
         this.sizeY=0;//1...2...3...4...5..
@@ -251,9 +263,13 @@ class WidgetTable extends Widget
         console.info("onResize HotTable");
         if (!this.table) return;
         this.table.width='100%';
-        this.table.height='100%';
+        this.table.height='99%';
         let i=this.getInstanceHandsontable();
         if (i) {
+            i.updateSettings({
+                height:'100%' // тут нужно получить размер контейнера gridster и передать его в HotTable
+
+            });
             i.render();
         }
         // -----------------------------------------------------------------

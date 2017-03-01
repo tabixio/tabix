@@ -209,10 +209,14 @@ window.global_delimiter             = ";;";
 
 
                 // Для текущего currentTab, сохраняем statistics массив
-                let st=data.statistics;
-                if (!angular.isObject(st)) {
-                    st={};
+                let st={
+                    time:moment().format('HH:mm:ss')
+                };
+                if (angular.isObject(data.statistics)) {
+                    Object.assign(st,data.statistics);
                 }
+
+
                 st.query=progressQuery;
                 st.index=query.index;
                 $scope.vars.currentTab.statistics.push(st);
@@ -353,8 +357,10 @@ window.global_delimiter             = ";;";
 
 
             if ($scope.vars.currentTab.statistics[0]) {
-                console.warn($scope.vars.currentTab.statistics);
-                resultContainer.widgets.tables.push(new WidgetTable(DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,false)));
+                let d=DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,"statistics");
+                d.sort="time";
+                d.sortOrder="desc";
+                resultContainer.widgets.tables.push(new WidgetTable(d,false));
             }
         };
 
@@ -536,7 +542,10 @@ window.global_delimiter             = ";;";
 
             if (queue.length) {
                 $scope.vars.currentTab.progress = {};
-                $scope.vars.currentTab.statistics= [];
+                if (!$scope.vars.currentTab.statistics)
+                {
+                    $scope.vars.currentTab.statistics= [];
+                }
                 $scope.executeQuery(queue[0], queue, result);
             }
 

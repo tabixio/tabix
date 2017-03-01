@@ -17,7 +17,8 @@ class DataProvider {
         this.data=result.data;
         this.text=false;
 
-
+        this.sort=false;
+        this.sortOrder=false;
         // Если результат строка
         if (!result.error && !angular.isObject(result.data)) {
             if (!angular.isString(result.data)) {
@@ -31,7 +32,14 @@ class DataProvider {
         this.sourceType=sourceType;
         this.meta=result.meta;
         this.query=result.query;
-        this.error=result.error;
+        if (result.error)
+        {
+            this.error=result.error;
+        }
+        else
+        {
+            this.error=false;
+        }
         this.draw=result.query.drawCommands;
         this.rows=result.rows;
 
@@ -46,7 +54,7 @@ class DataProvider {
      * @param data
      * @returns {DataProvider}
      */
-    static convertArrayToDataProvider(data) {
+    static convertArrayToDataProvider(data,sourceType) {
 
         let result={};
         result.data=data;
@@ -59,7 +67,7 @@ class DataProvider {
         Object.keys(data[0]).map(key => (
             result.meta.push({name:key,type:'string'})
         ));
-        return new DataProvider(result,false);
+        return new DataProvider(result,sourceType);
 
 
 
