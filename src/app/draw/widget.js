@@ -262,12 +262,13 @@ class WidgetTable extends Widget
     onResize() {
         console.info("onResize HotTable");
         if (!this.table) return;
-        this.table.width='100%';
-        this.table.height='99%';
+        this.table.width='99.9'+Math.floor(100*Math.random())+'%';
+        this.table.height='99.9'+Math.floor(100*Math.random())+'%';
         let i=this.getInstanceHandsontable();
         if (i) {
             i.updateSettings({
-                height:'100%' // тут нужно получить размер контейнера gridster и передать его в HotTable
+                height:this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
+                width:this.table.width
 
             });
             i.render();
