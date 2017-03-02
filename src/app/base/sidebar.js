@@ -13,10 +13,10 @@
     ];
 
     /**
-	 * @ngdoc controller
-	 * @name smi2.controller:SidebarController
-	 * @description Контроллер бокового меню
-	 */
+     * @ngdoc controller
+     * @name smi2.controller:SidebarController
+     * @description Контроллер бокового меню
+     */
     function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav,$mdToast ) {
         $scope.vars = {
             searchline:'',
@@ -46,27 +46,8 @@
             }
         };
 
-        $scope.$watch('vars.searchline', (curr) =>
-        {
-
-            // деверо должно быть все расскрыть включая филды
-
-            // if (curr.length<3)
-            // {
-            //     $scope.vars.metis.config.toggle=true;
-            //     return ;
-            // }
-            // $scope.vars.metis.config.toggle=false;
-
-            // filter
-            // тут поиск по деверу и установка active / не active
-
-            // нужно добавить таймер задержку в 500 мс на ввод и только после искать/фильтровать
-
-
-
-
-            if (curr.length<2) {
+        $scope.$watch('vars.searchline', curr => {
+            if (curr.length < 2) {
                 // reset
                 console.warn("reset, search box");
                 $scope.vars.databases.forEach((dbase,i_db) => {
@@ -77,18 +58,13 @@
 
                         table.fields.forEach((field, i_fld) => {
                             $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
-                        })
-                    })
+                        });
+                    });
                 });
-
-            }
-            else {
+            } else {
                 $scope.filterCompletions(curr);
             }
-
         });
-
-
 
         $scope.clickInsertField = field => {
             $rootScope.$emit('handleBroadcastInsertInActive', {value:" "+field.name+",\n"});
@@ -100,14 +76,12 @@
                 return false;
             }
 
-
             $scope.selectDatabase( database );
-
         };
 
         /**
-		 * Select database
-		 */
+         * Select database
+         */
         $scope.selectDatabase = database => {
             $rootScope.currentDatabase = database.name;
 
@@ -119,13 +93,12 @@
                     .position('bottom right')
             );
 
-
             $mdSidenav( 'tableSiedenav' ).close( );
         };
 
         /**
-		* Open table in right sidebar
-		*/
+        * Open table in right sidebar
+        */
         $scope.openTable = ( table ) => {
             $mdSidenav( 'tableSiedenav' ).close( );
             $rootScope.currentTable = table.name;
@@ -140,22 +113,15 @@
             console.log(">>>filterCompletions",needle);
 
             // Базовый алгоритм поиска в дереве обьектов
-
             let results = {};
-            let resultsIds = {};
             let upper = needle.toUpperCase();
             let lower = needle.toLowerCase();
 
-
-            let serverName='clickhouse';
             loop: $scope.vars.databases.forEach((dbase,i_db) => {
                 dbase.tables.forEach((table,i_tab) =>{
                     table.fields.forEach((field,i_fld) =>{
 
                         let item={};
-                        // variant 1
-                        // let caption=serverName+'.'+dbase.name+'.'+table.name+'.'+field.name;
-                        // variant 2
                         let caption=table.name+'.'+field.name;
 
                         if (!caption) return;
@@ -171,9 +137,7 @@
                             let i1 = caption.indexOf(lower[j], lastIndex + 1);
                             let i2 = caption.indexOf(upper[j], lastIndex + 1);
                             index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
-                            if (index < 0)
-                            {
-
+                            if (index < 0) {
                                 return;
                             }
                             distance = index - lastIndex - 1;
@@ -196,50 +160,34 @@
                         if (!results[i_db]) results[i_db]={};
                         if (!results[i_db][i_tab]) results[i_db][i_tab]={};
                         results[i_db][i_tab][i_fld]=item;
-
-
                     });
                 });
-
             });//forEach
-            $scope.vars.databases.forEach((dbase,i_db) => {
 
+            $scope.vars.databases.forEach((dbase,i_db) => {
                 if (results[i_db]) {
                     $scope.vars.databases[i_db].active=true;
-                }
-                else
-                {
+                } else {
                     $scope.vars.databases[i_db].active=false;
                 }
-
-
 
                 dbase.tables.forEach((table, i_tab) => {
 
                     if (results[i_db] && results[i_db][i_tab]) {
                         $scope.vars.databases[i_db].tables[i_tab].active=true;
-                    }
-                    else
-                    {
+                    } else {
                         $scope.vars.databases[i_db].tables[i_tab].active=false;
                     }
 
                     table.fields.forEach((field, i_fld) => {
-
-
                         if (results[i_db] && results[i_db][i_tab] && results[i_db][i_tab][i_fld]) {
                             $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
-                        }
-                        else
-                        {
+                        } else {
                             $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=false;
                         }
-
-                    })
-                })
+                    });
+                });
             });
-
-
         };
 
         //gets triggered when an item in the context menu is selected
@@ -252,38 +200,34 @@
                 window.location='/database/'+db+'/table/'+table;
 
             } else if(obj.key == "InsertDescribe"){
-                   API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
+               API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
 
-                       let fields=[];
-                       let where=[];
+                   let fields=[];
+                   let where=[];
 
-                       data.data.forEach((item) => {
-                           fields.push(item.name);
-                           if (item.type=='Date') {
-                               where.push(item.name+'=today()')
-                           }
-                       });
-
-                       let sql="\nSELECT\n\t"+fields.join(",\n\t");
-
-                       if (where.length) {
-                           sql=sql+"\nWHERE\n\t"+where.join("\n AND \n");
+                   data.data.forEach(item => {
+                       fields.push(item.name);
+                       if (item.type=='Date') {
+                           where.push(item.name+'=today()');
                        }
-                       sql=sql+"\nLIMIT 100\n\n";
+                   });
 
-                       console.log(sql);
-                       // вставка текста в активное окно редактора там где курсор, см SQL.JS
-                        $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
-                    });
+                   let sql="\nSELECT\n\t"+fields.join(",\n\t");
 
+                   if (where.length) {
+                       sql=sql+"\nWHERE\n\t"+where.join("\n AND \n");
+                   }
+                   sql=sql+"\nLIMIT 100\n\n";
+
+                   console.log(sql);
+                   // вставка текста в активное окно редактора там где курсор, см SQL.JS
+                    $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
+                });
             }
         };
 
-
-
         $scope.reLoad = () =>   {
             let list_all_fields=[];
-
 
             API.query( "SELECT * FROM system.columns" ).then(res => {
                 let data = res.data || [ ];
@@ -296,8 +240,7 @@
                     let data = res.data || [ ];
                     $scope.vars.databases = data.reduce(( prev, item ) => {
 
-                        let  rightMenuListTable=
-                        [
+                        let  rightMenuListTable = [
                             {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',item:item},
                             {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',item:item}
                         ];
@@ -339,13 +282,11 @@
                                         engine : item.engine,
                                         classEngine : item.classEngine,
                                         rightMenuList:item.rightMenuListTable,
-                                        fields:list_all_fields[item.database+'.'+item.name],
-
+                                        fields:list_all_fields[item.database+'.'+item.name]
                                     }
                                 ]
                             }
                         ];
-
                     }, [ ]);
 
 
@@ -358,26 +299,20 @@
                         data.forEach((item) => {
                             let find=false;
                             $scope.vars.databases.forEach((dbitem) => {
-                                if (dbitem.name==item.name)
-                                {
+                                if (dbitem.name==item.name) {
                                     find=true;
                                 }
 
                             });
-                            if (!find)
-                            {
-                                $scope.vars.databases.push(
-                                    {
-                                        name:item.name,
-                                        // rightMenuList:rightMenuListDatabases,
-                                        tables:[],
-                                        active:true
-                                    });
+                            if (!find) {
+                                $scope.vars.databases.push({
+                                    name:item.name,
+                                    // rightMenuList:rightMenuListDatabases,
+                                    tables:[],
+                                    active:true
+                                });
                             }
-
                         });
-
-
 
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
@@ -394,8 +329,6 @@
                 $scope.vars.loaded = true;
                 $scope.vars.error = true;
             });
-
-
         };
 
         $scope.reLoad();

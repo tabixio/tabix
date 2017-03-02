@@ -18,12 +18,13 @@
                     <ul class="sub-menu">
                         <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
 
-
                             <a ng-mouseenter >
                                 <md-button class="text-left no-txt-transform w100" ng-dblclick="clickAndSelect(database, $event)" >
-                                    <i class="mdi mdi-database"></i>{{database.name}} <span class="pull-right" style="color: silver">{{database.tables.length}} </span></md-button>
+                                    <i class="mdi mdi-database"></i>
+                                    {{database.name}}
+                                    <span class="db__table-count">{{database.tables.length}}</span>
+                                </md-button>
                             </a>
-
 
                             <ul class="sub-menu" ng-if="database.tables.length">
                                 <li ng-repeat="table in database.tables" >
@@ -53,10 +54,6 @@
                                             <pre style="margin: 2px 0px 0px 2px" ng-if="field.active">{{field.name}}</pre>
                                         </li>
                                     </ul>
-
-
-
-
                                 </li>
                             </ul>
                         </li>
