@@ -12,11 +12,9 @@ class Widget {
         this.data = DataProvider;
         this.drawCommnads=draw;
         this._draw=false;
-        if (draw && this.drawCommnads.drawtype)
-        {
+        if (draw && this.drawCommnads.drawtype) {
             this.drawType=this.drawCommnads.drawtype.toUpperCase();
-        }
-        else{
+        } else {
             this.drawType=false;
         }
         // проверка результат с ошибкой или это текстовая строка
@@ -31,8 +29,13 @@ class Widget {
         this.init=false;
 
         this.type=false;
-        this.isDark=false;
+
+        // Адовый костылище, поскольку в конструктор должны передаваться
+        // dependency injecton, а не данные для работы класса. Поэтому я не могу
+        // передать в конструктор сервис и дергаю его по рабоче - крестьянски.
+        this.isDark=angular.element('*[ng-app]').injector().get("ThemeService").isDark();
     }
+
     isDark() {
         return this.isDark;
     }
@@ -40,12 +43,13 @@ class Widget {
     onDrag() {
         // console.info("On widget Draw",this);
     }
+
     onResize() {
         // console.info("On widget Resize",this);
     }
+
     scheduledResize() {
-        if (this._scheduledResize)
-        {
+        if (this._scheduledResize) {
             return;
         }
         // отложенный ресайз , если много изменений
@@ -92,28 +96,23 @@ class WidgetDraw extends Widget
             // результат толкьо одна отпра
             this.sizeX=6;
             this.sizeY=3;
-
         }
-
-
     }
 
     get draw(){
-
-
-        if (this.drawType && !this._draw)
-        {
+        if (this.drawType && !this._draw) {
             this._draw=new this._list[this.drawType](this,this.drawType);
         }
         return this._draw;
     }
+
     onResize() {
         if (this._draw) {
             this._draw.onResize();
         }
     }
-    getChartClass() {
 
+    getChartClass() {
         if (!this.drawType) {
             this.drawType='CHART';
             console.error("Un support DrawType:null");
@@ -135,8 +134,7 @@ class WidgetDraw extends Widget
     }
 }
 
-class WidgetPivot extends Widget
-{
+class WidgetPivot extends Widget {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
@@ -161,18 +159,14 @@ class WidgetPivot extends Widget
             }
         };
 
-
         if (this.data.countAll==1) {
             // результат толкьо одна отпра
             this.sizeX=6;
             this.sizeY=3;
-
         }
-
     }
 }
-class WidgetTable extends Widget
-{
+class WidgetTable extends Widget {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
         this.type='table';
@@ -195,8 +189,6 @@ class WidgetTable extends Widget
 
         let ht = new HandsTable(this);
 
-
-
         // основной рендер конфиг таблицы
         this.table= {
             settings: ht.makeSettings(),
@@ -217,7 +209,6 @@ class WidgetTable extends Widget
         if (countColumns>15) {
             x=6;
         }
-
 
 
         // Для таблицы со статистикой выполнения запросов ширина всегда макс
@@ -249,16 +240,18 @@ class WidgetTable extends Widget
 
     preProcessor() {
 
-
     }
+
     onDrag() {
         this.onResize();
     }
+
     getInstanceHandsontable(){
         if (this.hotRegisterer && this.init && this.element && this.hotId) {
             return this.hotRegisterer.getInstance(this.hotId);
         }
     }
+
     onResize() {
         console.info("onResize HotTable");
         if (!this.table) return;
@@ -293,4 +286,3 @@ class WidgetTable extends Widget
 angular.module(smi2.app.name).service('WidgetTable', WidgetTable);
 angular.module(smi2.app.name).service('WidgetPivot', WidgetPivot);
 angular.module(smi2.app.name).service('WidgetDraw', WidgetDraw);
-angular.module(smi2.app.name).service('Widget', Widget);
