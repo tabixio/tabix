@@ -1,13 +1,3 @@
-# Docker 
-Run command:
-
-```
-docker run -d --name client -p 3000:3000 -e CLICKHOUSE_HOST=http://localhost:1982/ spoonest/clickhouse-web-client
-```
-
-where `http://localhost:1982/` - link to youe clickhouse server.
-Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
-
 ## Назначение
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
 
@@ -19,46 +9,58 @@ Then you can access GUI via http://localhost:3000/. Server takes time to fully s
 ![](https://raw.githubusercontent.com/smi2/clickhouse-frontend/master/media/screen5.jpg)
 
 
-## Требования 
+## Требования
 * Версия сервера CH, старше  v1.1.54019-stable
-* Пользователь с правами _не_ readonly 
+* Пользователь с правами _не_ readonly
 * Разрешенный IP адресс
 
 
 
+# Docker
+Run command:
+
+```
+docker run -d --name client -p 3000:3000 -e CLICKHOUSE_HOST=http://localhost:1982/ spoonest/clickhouse-web-client
+```
+
+where `http://localhost:1982/` - link to youe clickhouse server.
+Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
+
+
+
 ### Roadmap
-Список фич: 
-* Список полей в левом дереве 
+Список фич:
+* Список полей в левом дереве
 * Список процессов, с логированием [SHOW PROCESSLIST FORMAT JSON]
-* Hotkey справочник и/или help 
-* SHOW CREATE TABLE 
-* Изменить Grid, выбрать из [ui-grid.info | ag-grid | paramquery.com | js-grid.com], сортировка на клиенте 
+* Hotkey справочник и/или help
+* SHOW CREATE TABLE
+* Изменить Grid, выбрать из [ui-grid.info | ag-grid | paramquery.com | js-grid.com], сортировка на клиенте
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
 * Выбор разделителя `;;` или `;`
 
 
 
 
-## Changelog 
+## Changelog
 
 ### 2016-12-11
 
 * Добавлена поддержка английского языка. Язык выбирается автоматически в зависимости от настроек браузера
-* httpS поддержка - если указать в подключении https://ip:port 
+* httpS поддержка - если указать в подключении https://ip:port
 
 ### 2016-11-03
-Полностью обновили GUI 
-Вместо слов : https://monosnap.com/file/rIEnBkDoh0jMmhGDsu0umaqk5F0srt 
+Полностью обновили GUI
+Вместо слов : https://monosnap.com/file/rIEnBkDoh0jMmhGDsu0umaqk5F0srt
 
 
 ### 2016-10-12
-* Запрос на create_table из select , если запрос содержит таблицу ответа 
+* Запрос на create_table из select , если запрос содержит таблицу ответа
 * Сортировка словарей по name + удобное отображение
 * Выполнение запроса "под курсором"  
-* Shift-Ctrl-Enter | Shift-Command-Enter - запустить все запросы разделенные ;; или выделенный 
-* Ctrl-Enter | Command-Enter - запускает текущий или выделенный 
-* Размер таблицы 
-* Исправлена загрузка шрифтов. 
+* Shift-Ctrl-Enter | Shift-Command-Enter - запустить все запросы разделенные ;; или выделенный
+* Ctrl-Enter | Command-Enter - запускает текущий или выделенный
+* Размер таблицы
+* Исправлена загрузка шрифтов.
 * Вынесен screenfull из html в зависимости
 * Изменения в шаблоне lumX
 
@@ -72,16 +74,16 @@ Then you can access GUI via http://localhost:3000/. Server takes time to fully s
 ### 2016-10-10
 * Добавили поддержку FORMAT CSV|FORMAT CSVWithNames в запросе + подсветка + дополнение
 * В редакторе добавленна возможность максимальное кол-во строк в ответа
-* Развернуть в полный экран редактор запросов 
-* HotKey ⌘ + ⏎ для мак , выполнить запрос или выполнить выделенный запрос только 
-* История запросов, показывает последний успешный запрос при открытии GUI 
+* Развернуть в полный экран редактор запросов
+* HotKey ⌘ + ⏎ для мак , выполнить запрос или выполнить выделенный запрос только
+* История запросов, показывает последний успешный запрос при открытии GUI
 * Анонимное подключение к базе без указания user+password  
 * Корректная подсветка и автодополние, теперь автодополнение содержит колонки и названия таблиц
 * Последовательное выполнение нескольких запросов которые разделены `;;`
 
 
 
-Пример тестового запроса: 
+Пример тестового запроса:
 ```sql
 
 ;;select 0 as ping;;
