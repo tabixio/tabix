@@ -13,7 +13,7 @@ var gutil = require('gulp-util');
  */
 exports.paths = {
 	src: 'src',
-	dist: 'docs',
+	dist: 'build',
 	tmp: '.tmp',
 	e2e: 'e2e',
 	docs: 'help'
