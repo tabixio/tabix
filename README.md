@@ -16,18 +16,6 @@
 
 
 
-# Docker
-Run command:
-
-```
-docker run -d --name client -p 3000:3000 -e CLICKHOUSE_HOST=http://localhost:1982/ spoonest/clickhouse-web-client
-```
-
-where `http://localhost:1982/` - link to youe clickhouse server.
-Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
-
-
-
 ### Roadmap
 Список фич:
 * Список полей в левом дереве
@@ -38,6 +26,17 @@ Then you can access GUI via http://localhost:3000/. Server takes time to fully s
 * Возможно выбрать pivotJs таблицы,  c поддержкой D3/C3
 * Выбор разделителя `;;` или `;`
 
+
+
+## Docker
+Run command:
+
+```
+docker run -d --name client -p 3000:3000 -e CLICKHOUSE_HOST=http://localhost:1982/ spoonest/clickhouse-web-client
+```
+
+where `http://localhost:1982/` - link to youe clickhouse server.
+Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
 
 
 
