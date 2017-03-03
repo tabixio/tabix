@@ -22,6 +22,9 @@
             title: $filter('translate')('Темная тема')
         }];
         let theme = list.find((item) => (item.name == themeName)) || list[0];
+        if (theme.isDark) {
+            angular.element('body').addClass('dark');
+        }
 
         return {
             isDark: () => theme.isDark,
