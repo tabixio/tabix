@@ -230,85 +230,22 @@ class HandsTable {
         return true;
     }
     static pushToClipboardText(outText){
-        //
-        // // Create a temporary element off screen.
-        // var tmpElem = $('<div>');
-        // tmpElem.css({
-        //     position: "absolute",
-        //     left:     "-1000px",
-        //     top:      "-1000px",
-        // });
-        // // Add the input value to the temp element.
-        // <textarea class="clipboardTextArea" id="clipboardTextArea">COPY TEXT</textarea>
-
-        // $("#clipboardTextArea").text(outText);
-        // var btn = document.getElementById('clipboardTextArea');
-        // var clipboard = new Clipboard(btn);
-        //
-        // clipboard.on('success', function(e) {
-        //     console.info('Action:', e.action);
-        //     console.info('Text:', e.text);
-        //     console.info('Trigger:', e.trigger);
-        //
-        //     e.clearSelection();
-        // });
-        //
-        // clipboard.on('error', function(e) {
-        //     console.error('Action:', e.action);
-        //     console.error('Trigger:', e.trigger);
-        // });
-        //
-
-        // $("body").append(tmpElem);
-        // // Select temp element.
-        // range.selectNodeContents(tmpElem.get(0));
-        // let selection = window.getSelection ();
-        // selection.removeAllRanges ();
-        // selection.addRange (range);
-        // // Lets copy.
-        // try {
-        //     success = document.execCommand ("copy", false, null);
-        // }
-        // catch (e) {
-        //     // copyToClipboardFF(input.val());
-        // }
-        // if (success) {
-        //     alert ("The text is on the clipboard, try to paste it!");
-        //
-        // }
-        // // remove temp element.
-        // tmpElem.remove();
-
-        // х-й знает почему Clipboard вообще не пещает
-        //
-        // остнется prompt - привет WinXP (facepalm)
-        // var btn = document.getElementById('clipboardTextArea');
-        // var clipboard = new Clipboard(btn);
-        //
-        // clipboard.on('success', function(e) {
-        //     console.info('Action:', e.action);
-        //     console.info('Text:', e.text);
-        //     console.info('Trigger:', e.trigger);
-        //
-        //     e.clearSelection();
-        // });
-        //
-        // clipboard.on('error', function(e) {
-        //     console.error('Action:', e.action);
-        //     console.error('Trigger:', e.trigger);
-        // });
-        //
-        // var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data: 'Data to be copied' } );
-        // document.dispatchEvent(copyEvent);
-        //
-        // document.execCommand('copy', false, outText);
-        // this.copyToClipboard();
-
-
-
-
-        window.prompt("Copy to clipboard: Ctrl+C, Enter", outText);
-
+        let textarea = document.createElement('textarea');
+        textarea.style.width = 0;
+        textarea.style.height = 0;
+        textarea.style.border = 0;
+        textarea.style.position = 'absolute';
+        textarea.style.top = 0;
+        document.body.append(textarea);
+        textarea.value = outText;
+        textarea.focus();
+        textarea.select();
+        try {
+            var successful = document.execCommand('copy');
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textarea);
     }
 
     static makeWhereIn(ht) {
@@ -564,8 +501,7 @@ class HandsTable {
                                 {
                                     name: "Redmine Markdown",
                                     callback: function (key, options,pf) {
-                                        HandsTable.copyToClipboard(this,'Redmine');;
-
+                                        HandsTable.copyToClipboard(this,'Redmine');
                                     },
                                     key:"copyTo:1"
                                 }//Money
