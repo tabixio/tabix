@@ -121,6 +121,7 @@ class DrawEcharts extends DrawBasicChart {
         // массив состоящий
         let series=[
             {
+                name: 'Top 5',
                 type: 'effectScatter',
                 coordinateSystem: 'geo',
 
@@ -135,21 +136,22 @@ class DrawEcharts extends DrawBasicChart {
                             itemOpt.views_count
                         ],
 
-                        label: {
-                            emphasis: {
-                                position: 'right',
-                                show: true
-                            }
-                        },
+                        // label: {
+                        //     emphasis: {
+                        //         position: 'right',
+                        //         show: true
+                        //     }
+                        // },
                     };
 
                 }),
+
                 showEffectOn: 'render',
                 rippleEffect: {
                     brushType: 'stroke'
                 },
                 symbolSize: function (val) {
-                    return val[2] / 314;
+                    return val[2] / 10000;
                 },
                 hoverAnimation: true,
                 label: {
@@ -176,29 +178,29 @@ class DrawEcharts extends DrawBasicChart {
             tooltip : {
                 trigger: 'item'
             },
-            // legend: {
-            //     orient: 'vertical',
-            //     top: 'bottom',
-            //     left: 'right',
-            //     data:['data Top10', 'data Top10', 'data Top10'],
-            //     textStyle: {
-            //         color: '#fff'
-            //     },
-            //     selectedMode: 'single'
-            // },
-
-            visualMap: {
-                min: 0,
-                max: 1500,
-                left: 'left',
+            legend: {
+                orient: 'vertical',
                 top: 'bottom',
-                text: ['High','Low'],
-                seriesIndex: [1],
-                inRange: {
-                    color: ['#e0ffff', '#006edd']
+                left: 'right',
+                data:['data Top10', 'data Top10', 'data Top10'],
+                textStyle: {
+                    color: '#fff'
                 },
-                calculable : true
+                selectedMode: 'single'
             },
+            //
+            // visualMap: {
+            //     min: 0,
+            //     max: 1500,
+            //     left: 'left',
+            //     top: 'bottom',
+            //     text: ['High','Low'],
+            //     seriesIndex: [1],
+            //     inRange: {
+            //         color: ['#e0ffff', '#006edd']
+            //     },
+            //     calculable : true
+            // },
 
             geo: {
                 name: 'World Population (2010)',
