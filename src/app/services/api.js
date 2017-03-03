@@ -311,8 +311,8 @@
                 colHeaders: colHeaders,
                 columns: columns,
                 data: data.data,
-
-
+                currentRowClassName: 'currentRow',
+                currentColClassName: 'currentCol'
             };
         };
 
