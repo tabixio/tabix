@@ -19,7 +19,7 @@
 - [ ]  Клустер , состояние, список узлов
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
 - [ ]  Метрики добавить system.events
-
+- [ ]  Ошибка при select правой кнопкой - потерян FROM
 
 ## Roadmap Q2
 
