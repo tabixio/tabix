@@ -11,11 +11,11 @@ class WidgetDraw extends Widget
         this.sizeY=2;
 
         this._list= {
-            'SCATTERMAP': DrawEcharts,
-            'MAP': DrawEcharts,
-            'HEATMAP': DrawEcharts,
-            'TREEMAP': DrawEcharts,
-            'SANKEYS': DrawEcharts,
+            // 'SCATTERMAP': DrawEcharts,
+            // 'HEATMAP': DrawEcharts,
+            'MAP': DrawEchartsMap,
+            'TREEMAP': DrawEchartsTreemap,
+            'SANKEYS': DrawEchartsSunkeys,
             'CHART': DrawAMcharts,
             'D3': DrawD3,
             'C3': DrawC3

@@ -4,7 +4,8 @@
     var smi2 = window.smi2 = window.smi2 || {};
     smi2.app = {
         name: 'SMI2',
-        version: window.clickhouseGuiVersion || ""
+        version: window.TabixVersion || "",
+        buildDate: window.TabixBuildDate || "",
     };
 
     // External libs connection

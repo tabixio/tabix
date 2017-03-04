@@ -55,6 +55,11 @@ gulp.task('html', ['inject', 'partials'], function () {
     });
     var assets;
 
+
+    var rightNow = new Date();
+    var TabixBuildDate = rightNow.toISOString().slice(0,10).replace(/-/g,".");
+
+
     return gulp.src(path.join(conf.paths.tmp, '/serve/*.html'))
         .pipe($.inject(partialsInjectFile, partialsInjectOptions))
         .pipe(assets = $.useref.assets())
@@ -88,7 +93,7 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe($.useref())
         .pipe($.revReplace())
         .pipe(htmlFilter)
-        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
+        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.TabixBuildDate="'+TabixBuildDate+'"; window.TabixVersion="' + packageJson.version + '";</script>'))
         .pipe($.minifyHtml({
             empty: true,
             spare: true,

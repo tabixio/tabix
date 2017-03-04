@@ -12,8 +12,10 @@ http://echarts.baidu.com/examples.html
 
 https://cdn.materialdesignicons.com/1.1.34/
 
-**ACE**
+
 http://krispo.github.io/angular-nvd3/#/
+
+**ACE**
 
 https://github.com/ajaxorg/ace/wiki/Configuring-Ace
 
@@ -25,11 +27,9 @@ https://masonwebdev.wordpress.com/2016/03/22/extending-ace-lets-make-sure-you-ar
 material design icons : https://cdn.materialdesignicons.com/1.1.34/
 ----
 tableau:
-
 https://community.tableau.com/community/developers/web-data-connectors
 https://github.com/justindarc/fxos-web-server
 https://onlinehelp.tableau.com/current/server/en-us/datasource_wdc.htm
-https://github.com/wangshijun/angular-echarts
 
 ----
 
@@ -43,8 +43,6 @@ http://raw.densitydesign.org/
 
 
 
-**HotTable**
-https://github.com/artbels/handsontable-helpers
 
 
 contextmenu handsontable: http://jsfiddle.net/robin_ap/zjL9bxqw/

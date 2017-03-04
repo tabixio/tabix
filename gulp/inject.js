@@ -47,6 +47,9 @@ gulp.task('inject', ['scripts', 'styles'], function() {
         addRootSlash: false
     };
 
+    var rightNow = new Date();
+    var TabixBuildDate = rightNow.toISOString().slice(0,10).replace(/-/g,"");
+
     return gulp.src(path.join(conf.paths.src, '/*.html'))
         .pipe($.inject(injectStyles, injectOptions))
         .pipe($.inject(injectScripts, injectOptions))
@@ -55,7 +58,8 @@ gulp.task('inject', ['scripts', 'styles'], function() {
             addRootSlash: false,
             name: 'assets'
          }))
-        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
+        .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.TabixBuildDate="'+TabixBuildDate+'"; window.TabixVersion="' + packageJson.version + '";</script>'))
+        // .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
         .pipe(wiredep(_.extend({}, conf.wiredep)))
         .pipe(gulp.dest(path.join(conf.paths.tmp, '/serve')));
 });

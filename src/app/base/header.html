@@ -6,6 +6,29 @@
             </div>
 
             <div class="pull-right top-menu">
+
+                <md-button aria-label="menu"  ui-sref="sql">
+                    <i class="mdi mdi-24px mdi-console" ></i>
+                    SQL
+                </md-button>
+
+                <md-button aria-label="menu"  ui-sref="metrics">
+                    <i class="mdi mdi-24px mdi-flash"></i>
+                    {{'Метрики' | translate}}
+                </md-button>
+
+                <md-button aria-label="menu"  ui-sref="processes">
+                    <i class="mdi mdi-24px mdi-playlist-play"></i>
+                    {{'Список процессов' | translate}}
+                </md-button>
+
+
+                <md-button aria-label="menu"  ng-click="help()" style="vertical-align:top">
+                    <i class="mdi mdi-24px mdi-help"></i>
+                    {{'Справка' | translate}}
+                </md-button>
+
+
                 <md-menu md-position-mode="target-right target">
                     <md-button aria-label="menu" ng-click="$mdOpenMenu($event)">
                         <i class="mdi mdi-24px mdi-theme-light-dark"  style="vertical-align:top"></i>
@@ -18,25 +41,12 @@
                     </md-menu-content>
                 </md-menu>
 
-                <md-button aria-label="menu"  ui-sref="metrics">
-                    <i class="mdi mdi-24px mdi-flash"></i>
-                    {{'Метрики' | translate}}
-                </md-button>
-
-                <md-button aria-label="menu"  ui-sref="processes">
-                    <i class="mdi mdi-24px mdi-playlist-play"></i>
-                    {{'Список процессов' | translate}}
-                </md-button>
-
-                <md-button aria-label="menu"  ui-sref="sql">
-                    <i class="mdi mdi-24px mdi-console" ></i>
-                    SQL
-                </md-button>
 
                 <md-button  aria-label="{{'Выход' | translate}}" ng-click="logout()" style="vertical-align:top">
                     <i class="mdi mdi-24px mdi-lock"></i>
                     {{'Выход' | translate}}
                 </md-button>
+
                 <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>
         </div>

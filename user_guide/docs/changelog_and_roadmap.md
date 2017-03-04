@@ -1,54 +1,35 @@
 
 ## Roadmap Q1
 
-
-
-- [ ]  PivotJS не работает Drag&Drop
-- [ ]  Расшить классы Widget & DrawChart
-- [ ]  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
-- [ ]  Переиминовать в коде CHGui в Tabix
-- [ ]  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
-- [ ]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
-- [ ]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
-- [ ]  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
-- [ ]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
-- [ ]  Настройка размера шрифта HotTable
-
-
-**Todo high**:
-
-
-
+- [ ]  DrawChartGrid
 - [ ]  drawMAP
+- [ ]  drawTREEMAP
+- [ ]  DrawChart : AmCharts Кill, use Echarts
+
+
 - [ ]  drawMAPFLY
 - [ ]  drawSCATTERMAP
 - [ ]  drawHEATMAP
 - [ ]  drawSANKEYS
-- [ ]  drawTREEMAP
-- [ ]  drawD3
-- [ ]  DrawChartGrid
+
+- [ ]  drawD3 : Raw
+
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
-- [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
+- [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
 
+- [ ]  Виджет список предустановленных графиков
 
-- [ ]  AmCharts тема темная, color
+- [ ]  Документация : tabix.io/docs/ собранный из md файлов
 
-- [ ]  Виджет список предустановленных графиков + минимальный редактор
-
-
-- [ ]  Документация
-> - Help Modal Window -> Link to github +  Hotkey справочник и/или help
-> - Отдельный домен doc.tabix, собранный из md файлов , Live Docs by dgeni https://github.com/angular/dgeni
-
-
+- [ ]  Клустер , состояние, список узлов
 
 
 ## Roadmap Q2
 
+- [ ]  Минимальный редактор графиков
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 - [ ]  HotTable menu : Hide Column / Show Column
-
-- [ ] Low hotTable : Searching ячеек
+- [ ]  Low hotTable : Searching ячеек
 
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
@@ -144,7 +125,18 @@
 - [x]  HotTable menu : insert WHERE column=valuse to Clipboard
 - [x]  Метрики кнопка очистить
 - [x]  Запросы во вкладке логируются для сравнения производительности
- 
+- [x]  PivotJS не работает Drag&Drop
+- [x]  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
+- [x]  Переиминовать в коде CHGui в Tabix
+- [x]  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
+- [x]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
+- [x]  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
+- [x]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
+- [x]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
+- [x]  Настройка размера шрифта HotTable
+- [x]  Документация : Help Modal Window
+- [x]  Расшить классы DrawChart
+- [x]  Документация : Help Modal : Hotkey + Link to docs
  
 ### 2016-12-17
 
