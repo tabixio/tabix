@@ -16,29 +16,35 @@ class DrawBasicChart {
         this.widget.width=2;
 
 
-
-        this.drawCodeObject={};
+        // тут обьект содержит код ф-ции или обьекта draw
+        this.drawCodeObject={
+            type:false
+        };
         try {
-            this.drawCodeObject=this.getDrawCodeObject();
+            this.drawCodeObject=this.initDrawCodeObject();
         }
         catch (E) {
             console.error('error eval ', E);
         }
-        console.log('drawCodeObject',this.drawCodeObject);
         console.info('isExecutableCode()',this.isExecutableCode());
 
     }
     isExecutableCode() {
-
         if (!this.drawCodeObject) return false;
-        if (!this.drawCodeObject.code) return false;
-
-
-        console.warn(typeof this.drawCodeObject);
-        return angular.isFunction(this.drawCodeObject);
+        if (!this.drawCodeObject.type) return false;
+        return this.drawCodeObject.exec;
+    }
+    executableCode() {
+        return {};
     }
 
-    getDrawCodeObject() {
+    getDrawCommandObject() {
+        if (!this.drawCodeObject) return false;
+        if (!this.drawCodeObject.type) return false;
+        if (this.drawCodeObject.exec) return false;
+        return this.drawCodeObject.code;
+    }
+    initDrawCodeObject() {
         let drawCommand=this.widget.drawCommnads;
 
         if (!drawCommand) {
@@ -54,7 +60,8 @@ class DrawBasicChart {
             return [];
         }
         let draw={
-
+            code:false,
+            type:false
         };
 
         try {
@@ -65,6 +72,7 @@ class DrawBasicChart {
             let type=typeof obj;
 
             draw={
+                isok:true,
                 code:obj,
                 type:type,
                 exec:!!(obj && obj.constructor && obj.call && obj.apply)

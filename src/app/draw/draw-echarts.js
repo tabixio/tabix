@@ -17,24 +17,40 @@ class DrawEcharts extends DrawBasicChart {
         this.options={
             version: 3,
             backgroundColor: '#404a59',
-            title : {
-                text: 'EChart',
-                subtext: 'subtext',
-                left: 'center',
-                textStyle : {
-                    color: '#fff'
-                }
-            },
+            // title : {
+                // text: 'EChart',
+                // subtext: 'subtext',
+                // left: 'center',
+                // textStyle : {
+                //     color: '#fff'
+                // }
+            // },
         };// opthios
     }
 
     onResize() {
         // отправденна комманда resize
-        if (this.chart) {
+        if (this.chart && this.init) {
             this.chart.setOption(this.options);
             this.chart.resize();
         }
     }
+
+    initChartByJsCode() {
+
+        if (this.isExecutableCode())
+        {
+            // тут вызываем jscode -> резульатт this.options
+            let o = this.executableCode();
+            // обьединяем обьекты
+            this.options=Object.assign(this.options,o);
+            return true;
+        }
+
+        // Если это не код инициализация как обычно
+        return false;
+    }
+
 
     preProcessor() {
 

@@ -10,32 +10,51 @@ class DrawEchartsMap extends DrawEcharts
 {
     create() {
 
+        if (this.initChartByJsCode()) {
+            return true;
+        }
+        // Если это код не JS попробуем получить обьект
+        let drw=this.getDrawCommandObject();
+
+        let sets={
+            longitude:'longitude',
+            latitude :'latitude',
+            count    :'count',
+            name     :'name',
+            title    :'Map'
+        };
+
+        let max_value=0;
+        if (drw)
+        {
+            sets=Object.assign(sets,drw);
+        }
+
         // массив состоящий
         let series=[
             {
-                name: 'Top 5',
+                name: sets.title,
                 type: 'effectScatter',
                 coordinateSystem: 'geo',
 
-
                 data: this.widget.data.data.map(function (itemOpt) {
+                    let v=parseInt(itemOpt[sets.count]);
+                    if (max_value<v) max_value=v;
 
                     return {
-                        name: itemOpt.name_ru,
+                        name: itemOpt[sets.name],
                         value: [
-                            itemOpt.longitude,
-                            itemOpt.latitude,
-                            itemOpt.views_count
+                            itemOpt[sets.longitude],
+                            itemOpt[sets.latitude],
+                            v
                         ],
-
-                        // label: {
-                        //     emphasis: {
-                        //         position: 'right',
-                        //         show: true
-                        //     }
-                        // },
+                        label: {
+                            emphasis: {
+                                position: 'right',
+                                show: true
+                            }
+                        },
                     };
-
                 }),
 
                 showEffectOn: 'render',
@@ -43,6 +62,9 @@ class DrawEchartsMap extends DrawEcharts
                     brushType: 'stroke'
                 },
                 symbolSize: function (val) {
+                    if (max_value) {
+                        return (val[2] / max_value)*15;
+                    }
                     return val[2] / 10000;
                 },
                 hoverAnimation: true,
@@ -65,37 +87,25 @@ class DrawEchartsMap extends DrawEcharts
             }
         ];
 
+        console.log("MAX:VALIE:",max_value);
 
         let o={
             tooltip : {
                 trigger: 'item'
             },
-            legend: {
-                orient: 'vertical',
-                top: 'bottom',
-                left: 'right',
-                data:['data Top10', 'data Top10', 'data Top10'],
-                textStyle: {
-                    color: '#fff'
-                },
-                selectedMode: 'single'
-            },
-            //
-            // visualMap: {
-            //     min: 0,
-            //     max: 1500,
-            //     left: 'left',
+            // legend: {
+            //     orient: 'vertical',
             //     top: 'bottom',
-            //     text: ['High','Low'],
-            //     seriesIndex: [1],
-            //     inRange: {
-            //         color: ['#e0ffff', '#006edd']
+            //     left: 'right',
+            //     data:['data Top10', 'data Top10', 'data Top10'],
+            //     textStyle: {
+            //         color: '#fff'
             //     },
-            //     calculable : true
+            //     selectedMode: 'single'
             // },
 
             geo: {
-                name: 'World Population (2010)',
+                name:  sets.title,
                 type: 'map',
                 map: 'world',
                 label: {
@@ -125,7 +135,11 @@ class DrawEchartsMap extends DrawEcharts
             series: series
         };
 
-        this.options=Object.assign(o,this.options);
+        this.options=Object.assign(this.options,o);
+        if (sets.raw)
+        {
+            this.options=Object.assign(this.options,sets.raw);
+        }
         return true;
     }
 

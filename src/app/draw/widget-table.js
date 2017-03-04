@@ -51,16 +51,16 @@ class WidgetTable extends Widget {
 
         this.sizeX=x;
         //  высота
-        this.sizeY=0;//1...2...3...4...5..
+        this.sizeY=1;//1...2...3...4...5..
 
         if (this.data.rows>100) {
-            this.sizeY=1;
-        }
-        if (this.data.rows>250) {
             this.sizeY=2;
         }
-        if (this.data.rows>500) {
+        if (this.data.rows>250) {
             this.sizeY=3;
+        }
+        if (this.data.rows>500) {
+            this.sizeY=4;
         }
 
         if (this.data.countAll==1) {

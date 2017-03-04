@@ -13,9 +13,8 @@ Example :
 
 ```sql
 SELECT
-    count() as sessions,
     sum(views_count) as views_count,
-    dictGetString('geonames', 'name_en', toUInt64(geoname_id)) AS name,
+    dictGetString('geonames', 'name_en', toUInt64(geoname_id)) AS nameX,
     dictGetFloat32('geonames', 'latitude', toUInt64( geoname_id)) AS latitude,
     dictGetFloat32('geonames', 'longitude', toUInt64(geoname_id)) AS longitude
 
@@ -31,18 +30,6 @@ group by geoname_id
 ```javascript
 
 {
-  visualMap: {
-        min: 0,
-        max: 1500,
-        left: 'left',
-        top: 'bottom',
-        text: ['High','Low'],
-        seriesIndex: [1],
-        inRange: {
-            color: ['#e0ffff', '#006edd']
-        },
-        calculable : true
-    },
     geo: {
             map: 'world',
             roam: true,
@@ -70,6 +57,9 @@ group by geoname_id
         },
 
 }
+
+...
+
 ```
 
 
@@ -79,10 +69,12 @@ group by geoname_id
 ```javascript
 DRAWMAP
 {
-    longitude:"longitude",
-    latitude:"latitude",
-    counter:"views_count",
-    category:"session_count"
+    title:"My map"
+    longitude:'longitude',
+    latitude :'latitude',
+    count    :'views_count',
+    name     :'nameX',
+    title    :'Map'
 
     raw:{
         tooltip: {

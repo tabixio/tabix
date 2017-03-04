@@ -1,29 +1,25 @@
 
 ## Roadmap Q1
+- [-]  drawMAP object.raw
+
+
 
 - [ ]  DrawChartGrid
-- [ ]  drawMAP
 - [ ]  drawTREEMAP
 - [ ]  DrawChart : AmCharts Кill, use Echarts
-
-
 - [ ]  drawMAPFLY
 - [ ]  drawSCATTERMAP
 - [ ]  drawHEATMAP
 - [ ]  drawSANKEYS
-
 - [ ]  drawD3 : Raw
-
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 - [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
-
 - [ ]  Виджет список предустановленных графиков
-
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
-
 - [ ]  Клустер , состояние, список узлов
-
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
+- [ ]  Метрики добавить system.events
+
 
 ## Roadmap Q2
 
