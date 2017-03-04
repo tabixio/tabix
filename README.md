@@ -1,4 +1,15 @@
+## Tabix.IO
+
+"Data drive"
+ Open Source Business Intelligence and reporting tool for Clickhouse, and other datasource.
+
+
+ A simple business intelligence application.
+
+
+
 ## Назначение
+
 Данный проект представляет собой GUI для [OLAP Yandex Clickhouse](https://github.com/yandex/ClickHouse).
 
 Последняя версия рабочего приложения: [master buid on github pages](http://guiclickhouse.smi2.ru/)
@@ -39,64 +50,8 @@ where `http://localhost:1982/` - link to youe clickhouse server.
 Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
 
 
+## Develop
 
-## Changelog
-
-### 2016-12-11
-
-* Добавлена поддержка английского языка. Язык выбирается автоматически в зависимости от настроек браузера
-* httpS поддержка - если указать в подключении https://ip:port
-
-### 2016-11-03
-Полностью обновили GUI
-Вместо слов : https://monosnap.com/file/rIEnBkDoh0jMmhGDsu0umaqk5F0srt
-
-
-### 2016-10-12
-* Запрос на create_table из select , если запрос содержит таблицу ответа
-* Сортировка словарей по name + удобное отображение
-* Выполнение запроса "под курсором"  
-* Shift-Ctrl-Enter | Shift-Command-Enter - запустить все запросы разделенные ;; или выделенный
-* Ctrl-Enter | Command-Enter - запускает текущий или выделенный
-* Размер таблицы
-* Исправлена загрузка шрифтов.
-* Вынесен screenfull из html в зависимости
-* Изменения в шаблоне lumX
-
-### 2016-10-11
-* Показ версии сборки
-* Автодополнение, поддержка словарей - отдельная кнопка вставить словать
-* Прогресс бар запросов
-* Правки подсветки IF EXISTS + IF NOT EXISTS
-* Отрисовка ответа после create/drop/insert + обновление автодополнения
-
-### 2016-10-10
-* Добавили поддержку FORMAT CSV|FORMAT CSVWithNames в запросе + подсветка + дополнение
-* В редакторе добавленна возможность максимальное кол-во строк в ответа
-* Развернуть в полный экран редактор запросов
-* HotKey ⌘ + ⏎ для мак , выполнить запрос или выполнить выделенный запрос только
-* История запросов, показывает последний успешный запрос при открытии GUI
-* Анонимное подключение к базе без указания user+password  
-* Корректная подсветка и автодополние, теперь автодополнение содержит колонки и названия таблиц
-* Последовательное выполнение нескольких запросов которые разделены `;;`
-
-
-
-Пример тестового запроса:
-```sql
-
-;;select 0 as ping;;
-select 1 as ping;;select 2 as ping
-;;select 3+sleep(0.1) as ping;;select 4+sleep(0.1) as ping;;
-SELECT 5 As PING format JSON;;select 6 as ping
-;;select 7 as ping FORMAT CSVWithNames
-;;CREATE TABLE IF NOT EXISTS t (a UInt8,b String) ENGINE = Log;;
-INSERT INTO t SELECT toUInt8(123) as a,';;' as b  
-;;DROP TABLE IF EXISTS t;;DROP DATABASE IF EXISTS xzxz;;
-
-```
-
-## B
 Для разработки:
 <pre>
 gulp serve
