@@ -16,7 +16,8 @@ class DrawBasicChart {
         this.widget.width=2;
 
 
-        this.drawCodeObject=[];
+
+        this.drawCodeObject={};
         try {
             this.drawCodeObject=this.getDrawCodeObject();
         }
@@ -24,9 +25,18 @@ class DrawBasicChart {
             console.error('error eval ', E);
         }
         console.log('drawCodeObject',this.drawCodeObject);
+        console.info('isExecutableCode()',this.isExecutableCode());
 
     }
+    isExecutableCode() {
 
+        if (!this.drawCodeObject) return false;
+        if (!this.drawCodeObject.code) return false;
+
+
+        console.warn(typeof this.drawCodeObject);
+        return angular.isFunction(this.drawCodeObject);
+    }
 
     getDrawCodeObject() {
         let drawCommand=this.widget.drawCommnads;
@@ -43,17 +53,23 @@ class DrawBasicChart {
         {
             return [];
         }
+        let draw={
 
-
-        let result=[];
+        };
 
         try {
             let code='('+codeDrawText+')';
 
-//             console.warn("drawCommand:CODE:",code);
-            let object=eval(code);
-//             console.warn("drawCommand:Result:",object);
-            result.push(object);
+            let obj=eval(code);
+
+            let type=typeof obj;
+
+            draw={
+                code:obj,
+                type:type,
+                exec:!!(obj && obj.constructor && obj.call && obj.apply)
+            };
+
 
             // // получаем настройки по осям
             // meta.forEach((i) => {
@@ -66,7 +82,8 @@ class DrawBasicChart {
         } catch (E) {
             console.error('error eval ',code);
         }
-        return result;
+
+        return draw;
 
     };
 }

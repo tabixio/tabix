@@ -23,6 +23,7 @@
 
 - [ ]  Клустер , состояние, список узлов
 
+- [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
 
 ## Roadmap Q2
 
