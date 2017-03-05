@@ -364,7 +364,7 @@ class HandsTable {
             customBorders:true,
             isDark:this.isDark,
             // fixedRowsTop: 1,
-            fixedColumnsLeft: 1,
+            // fixedColumnsLeft: 1,
             // maxRows: 10,
             // visibleRows:20000,
             filters: true,

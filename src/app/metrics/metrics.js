@@ -170,7 +170,7 @@
                     showSymbol: false,
                     // animationEasing: key,
                     // animationDuration: 1000,
-                    // hoverAnimation: false,
+                    hoverAnimation: false,
                 });
 
 
@@ -235,7 +235,7 @@
 
                         let v=params.value[1];
                         let org=v;
-                        if (params.seriesName.includes('Bytes'))
+                        if (params.seriesName.toLowerCase().includes('bytes'))
                         {
                             v=numbro(v).format('0.0000b');
                         }
@@ -327,10 +327,11 @@
 
             //
 
-            let sql = ` SELECT metric,toInt64(value) as value,'metrics' as type FROM system.metrics ORDER BY metric`;
+            let sql = ` SELECT metric,toInt64(value) as value,'metrics' as type FROM system.metrics ORDER BY metric `;
+            sql+=` UNION ALL SELECT metric,toInt64(value) as value,'async' as type FROM system.asynchronous_metrics ORDER BY metric `;
 
             if ($scope.vars.logEvents) {
-                sql=sql+` UNION ALL  SELECT event as metric, toInt64( value) as value,'events' as type FROM system.events`;
+                sql=sql+` UNION ALL  SELECT event as metric, toInt64( value) as value,'events' as type FROM system.events ORDER BY metric`;
             }
 
 

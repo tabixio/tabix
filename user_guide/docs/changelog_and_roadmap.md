@@ -2,8 +2,8 @@
 ## Roadmap Q1
 
 - [-]  drawMAP object.raw
-- [x]  Метрики добавить system.events
-- [ ]  Граф кластера
+- [x]  Метрики добавить system.events + async_metrics
+- [ ]  Граф кластера system.clusters
 
 - [ ]  DrawChartGrid
 - [ ]  drawTREEMAP
@@ -21,7 +21,7 @@
 - [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
 - [ ]  Виджет список предустановленных графиков
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
-- [ ]  Клустер , состояние, список узлов
+- [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
 
 - [ ]  Ошибка при select правой кнопкой - потерян FROM
@@ -33,7 +33,7 @@
 - [ ]  HotTable menu : Hide Column / Show Column
 - [ ]  Low hotTable : Searching ячеек
 - [ ]  Огромное потребление CPU у Метрик
-
+- [ ]  Не просматриваются системные таблицы /system/table/clusters
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
 > - Подстановка в запросах $vars переменных
