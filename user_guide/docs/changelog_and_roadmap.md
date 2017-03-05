@@ -1,8 +1,9 @@
 
 ## Roadmap Q1
+
 - [-]  drawMAP object.raw
-
-
+- [x]  Метрики добавить system.events
+- [ ]  Граф кластера
 
 - [ ]  DrawChartGrid
 - [ ]  drawTREEMAP
@@ -22,7 +23,7 @@
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Клустер , состояние, список узлов
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
-- [x]  Метрики добавить system.events
+
 - [ ]  Ошибка при select правой кнопкой - потерян FROM
 
 ## Roadmap Q2

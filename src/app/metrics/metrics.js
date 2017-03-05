@@ -8,7 +8,8 @@
         'ThemeService',
         '$interval',
         'localStorageService',
-        '$mdDialog'
+        '$mdDialog',
+        '$window'
     ];
 
     /**
@@ -16,7 +17,7 @@
      * @name smi2.controller:LoginController
      * @description Login page controller
      */
-    function MetricsController($scope, API, ThemeService, $interval, localStorageService,$mdDialog) {
+    function MetricsController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,$window) {
 
         const LS_METRICA_INTERVAL_KEY = 'proc.metrica';
         const LS_METRICA_MAX_INTERVAL_KEY = 'proc.metrica_max';
@@ -61,7 +62,10 @@
         };
 
 
-
+        angular.element($window).bind('resize', function () {
+            if ($scope.metrcisChart && $scope.vars.initChart)
+                $scope.metrcisChart.resize();
+        });
 
         $scope.initChart = (d) => {
 
@@ -81,7 +85,7 @@
                 }
 
                 $scope.metrcisChart.setOption($scope.EChartOptions);
-                // $scope.metrcisChart.resize();
+
 
                 return;
             }
@@ -229,7 +233,25 @@
                         let date = new Date(params.value[0]);
 
 
-                        return params.seriesName+"<br>"+moment(date).format('h:mm:ss')+' = <b>' + params.value[1]+'</b>';
+                        let v=params.value[1];
+                        let org=v;
+                        if (params.seriesName.includes('Bytes'))
+                        {
+                            v=numbro(v).format('0.0000b');
+                        }
+                        else
+                        {
+                            if (v>10000)
+                            {
+                                v=numbro(v).format('0.0000a');
+                            }
+
+                        }
+                        return params.seriesName+
+                            "<br><br>"+
+                            moment(date).format('h:mm:ss')+
+                            ' <br><b>'+v+'</b><br>'+
+                            (org!=v?'<br><b>'+org+"</b><br>":"");
                     },
                     axisPointer: {
                         animation: false
