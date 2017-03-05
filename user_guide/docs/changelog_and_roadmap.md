@@ -8,22 +8,18 @@
 - [ ]  drawTREEMAP
 - [ ]  DrawChart : AmCharts Кill, use Echarts
 - [ ]  drawSANKEYS
-
-
 - [ ]  drawSCATTERMAP
 - [ ]  drawHEATMAP
-
 - [ ]  drawD3 : Raw
-
-
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 - [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
 - [ ]  Виджет список предустановленных графиков
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
-
 - [ ]  Ошибка при select правой кнопкой - потерян FROM
+- [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
+
 
 ## Roadmap Q2
 
