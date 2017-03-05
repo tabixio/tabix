@@ -1,8 +1,7 @@
 
 ## Roadmap Q1
 
-- [-]  drawMAP object.raw
-- [x]  Метрики добавить system.events + async_metrics
+
 - [ ]  Граф кластера system.clusters
 
 - [ ]  DrawChartGrid
@@ -13,7 +12,7 @@
 
 - [ ]  drawSCATTERMAP
 - [ ]  drawHEATMAP
-- [ ]  drawMAPFLY
+
 - [ ]  drawD3 : Raw
 
 
@@ -140,7 +139,11 @@
 - [x]  Документация : Help Modal Window
 - [x]  Расшить классы DrawChart
 - [x]  Документация : Help Modal : Hotkey + Link to docs
- 
+- [x]  drawMAP : object.raw
+- [x]  drawMAP(Fly) : object.destination...
+- [x]  Метрики добавить system.events + async_metrics
+
+
 ### 2016-12-17
 
 * "Order by и group by" - подсветка fix

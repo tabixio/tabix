@@ -201,22 +201,13 @@
                     top: 'bottom',
                     left: 'center'
                 }]),
-                // toolbox: {
-                //     feature: {
-                //         dataZoom: {
-                //             yAxisIndex: 'none'
-                //         },
-                //         restore: {},
-                //         saveAsImage: {}
-                //     }
-                // },
-                // dataZoom: [
-                //     {
-                //         show: true,
-                //         realtime: true,
-                //         xAxisIndex: xAxisIndex
-                //     }
-                // ],
+                toolbox: {
+                    show : true,
+                    feature : {
+                        saveAsImage : {show: true}
+                    }
+                },
+
                 width:'100%',
                 group:'group',
                 grid: grids,

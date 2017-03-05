@@ -65,7 +65,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 caseInsensitive: true
             }, {
                 token: "keyword",
-                regex: "GROUP\\W+BY|ORDER\\W+BY"
+                regex: "GROUP\\W+BY|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"
             },
                 {
                     token: "comment",
