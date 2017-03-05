@@ -218,7 +218,7 @@ window.global_delimiter             = ";;";
 
 
                 st.query=progressQuery;
-                st.index=query.index;
+                // st.query_order=query.index;
                 $scope.vars.currentTab.statistics.push(st);
 
                 // провайдер CH или API
