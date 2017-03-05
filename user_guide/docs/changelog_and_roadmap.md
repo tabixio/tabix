@@ -7,18 +7,22 @@
 - [ ]  DrawChartGrid
 - [ ]  drawTREEMAP
 - [ ]  DrawChart : AmCharts Кill, use Echarts
-- [ ]  drawMAPFLY
+- [ ]  drawSANKEYS
+
+
 - [ ]  drawSCATTERMAP
 - [ ]  drawHEATMAP
-- [ ]  drawSANKEYS
+- [ ]  drawMAPFLY
 - [ ]  drawD3 : Raw
+
+
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 - [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
 - [ ]  Виджет список предустановленных графиков
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Клустер , состояние, список узлов
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
-- [ ]  Метрики добавить system.events
+- [x]  Метрики добавить system.events
 - [ ]  Ошибка при select правой кнопкой - потерян FROM
 
 ## Roadmap Q2
@@ -27,6 +31,7 @@
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 - [ ]  HotTable menu : Hide Column / Show Column
 - [ ]  Low hotTable : Searching ячеек
+- [ ]  Огромное потребление CPU у Метрик
 
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка

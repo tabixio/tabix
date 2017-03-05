@@ -28,11 +28,11 @@
                     <!--{{'Перенос строк' | translate}}-->
                 <!--</md-switch>-->
             <!--</md-input-container>-->
-            <!--<md-input-container class="md-block" flex-gt-sm>-->
-                <!--<md-switch class="md-primary" name="special" ng-model="vars.logMode">-->
-                    <!--{{'Логирование' | translate}}-->
-                <!--</md-switch>-->
-            <!--</md-input-container>-->
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="vars.logEvents">
+                    system.events
+                </md-switch>
+            </md-input-container>
 
 
             <md-input-container class="md-block" flex-gt-sm ng-click="load()">

@@ -24,7 +24,7 @@
         $scope.data=[];// основные данные
 
         $scope.metrcisChart=false;
-        $scope.maxlength=localStorageService.get(LS_METRICA_MAX_INTERVAL_KEY) || 600;
+        $scope.maxlength=localStorageService.get(LS_METRICA_MAX_INTERVAL_KEY) || 50;
         $scope.chartData={};
         $scope.orderKeys={};
         // настройки графики
@@ -41,7 +41,7 @@
 
         $scope.vars = {
 
-
+            logEvents:false,
             initChart: false,
             isDark: ThemeService.isDark(),
             interval: localStorageService.get(LS_METRICA_INTERVAL_KEY) || -1,
@@ -80,11 +80,8 @@
                     }$scope.chartData[key].push([    d.time,parseInt(d[key])  ]);
                 }
 
-                console.info($scope.chartData);
-
-
                 $scope.metrcisChart.setOption($scope.EChartOptions);
-                $scope.metrcisChart.resize();
+                // $scope.metrcisChart.resize();
 
                 return;
             }
@@ -138,14 +135,14 @@
                     gridIndex: count
                 });
                 yAxes.push({
-                    type: 'value',
+                    type: 'log',
                     show: false,
                     splitLine: {
                         show: false
                     },
-                    boundaryGap: [0, '100%'],
-                    // min: -0.4,
-                    // max: 1.4,
+                    // boundaryGap: [0, '100%'],
+                    min: 'dataMin',
+                    max: 'dataMax',
                     gridIndex: count
                 });
                 // -------------- TITLE --------------
@@ -169,7 +166,7 @@
                     showSymbol: false,
                     // animationEasing: key,
                     // animationDuration: 1000,
-                    hoverAnimation: false,
+                    // hoverAnimation: false,
                 });
 
 
@@ -200,22 +197,22 @@
                     top: 'bottom',
                     left: 'center'
                 }]),
-                toolbox: {
-                    feature: {
-                        dataZoom: {
-                            yAxisIndex: 'none'
-                        },
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
-                dataZoom: [
-                    {
-                        show: true,
-                        realtime: true,
-                        xAxisIndex: xAxisIndex
-                    }
-                ],
+                // toolbox: {
+                //     feature: {
+                //         dataZoom: {
+                //             yAxisIndex: 'none'
+                //         },
+                //         restore: {},
+                //         saveAsImage: {}
+                //     }
+                // },
+                // dataZoom: [
+                //     {
+                //         show: true,
+                //         realtime: true,
+                //         xAxisIndex: xAxisIndex
+                //     }
+                // ],
                 width:'100%',
                 group:'group',
                 grid: grids,
@@ -258,14 +255,33 @@
 
         let intervalHandle = null;
 
+        $scope.$watch('vars.logEvents', function(){
+            // изменился размер
+            $scope.flushChart();
+        }, true);
+
+
         /**
          *
          */
+        $scope.flushChart = () => {
+            // очистить полностью график
+
+            if (!$scope.vars.initChart) return;
+
+            // данные
+            $scope.chartData={};
+            // удалить echarts
+            $scope.metrcisChart.dispose();
+            // сбросить настройки
+            $scope.EChartOptions={};
+            // отправить на переинициализацию
+            $scope.vars.initChart=false;
+
+            $scope.load();
+        };
         $scope.flush = () => {
-
-
-
-
+            // очистить данные
             for(let key in $scope.chartData) {
 
                 let len=$scope.chartData[key].length;
@@ -276,6 +292,8 @@
 
             $scope.metrcisChart.setOption($scope.EChartOptions);
             $scope.metrcisChart.resize();
+
+            $scope.load();
         };
 
 
@@ -285,8 +303,13 @@
         $scope.load = () => {
             $scope.vars.loading=true;
 
+            //
 
-            let sql = `SELECT * FROM system.metrics ORDER BY metric `;
+            let sql = ` SELECT metric,toInt64(value) as value,'metrics' as type FROM system.metrics ORDER BY metric`;
+
+            if ($scope.vars.logEvents) {
+                sql=sql+` UNION ALL  SELECT event as metric, toInt64( value) as value,'events' as type FROM system.events`;
+            }
 
 
             API.query(sql).then(function ( raw ) {
@@ -297,8 +320,14 @@
                 };
 
                 raw.data.forEach((cell) => {
-                     // metric + value
-                    d[cell.metric]=cell.value;
+
+
+                    let xx='';
+                    if (cell.type=='events') {
+                        xx=' ';
+                    }
+
+                    d[cell.metric+xx]=cell.value;
                 });
                 // инициализация графиков
                 $scope.initChart(d);
