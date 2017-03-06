@@ -1,23 +1,28 @@
 
 ## Roadmap Q1
 
+- [ ]  Виджет список предустановленных графиков
+
 
 - [ ]  Граф кластера system.clusters
 
-- [ ]  DrawChartGrid
-- [ ]  drawTREEMAP
-- [ ]  DrawChart : AmCharts Кill, use Echarts
-- [ ]  drawSANKEYS
-- [ ]  drawSCATTERMAP
-- [ ]  drawHEATMAP
-- [ ]  drawD3 : Raw
+- [ ]  DRAW GRID CHART
+- [ ]  DRAW BAR
+- [ ]  draw TREEMAP
+- [ ]  Draw Chart : AmCharts Кill, use Echarts
+- [ ]  draw SANKEYS
+- [ ]  draw HEATMAP
+- [ ]  draw River
+- [ ]  draw as js function result
+- [ ]  drawD3 : RawAsFunction
+- [ ]  drawC3 : Raw
+
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
-- [ ]  DrawRawECHART,DRAWSET, реализовать парсер, задает параметры области рендера результата
-- [ ]  Виджет список предустановленных графиков
+
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
-- [ ]  Ошибка при select правой кнопкой - потерян FROM
+- [ ]  Ошибка при создании select правой кнопкой - потерян FROM
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 
 
@@ -25,9 +30,11 @@
 
 - [ ]  Минимальный редактор графиков
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
+- [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
 - [ ]  HotTable menu : Hide Column / Show Column
 - [ ]  Low hotTable : Searching ячеек
 - [ ]  Огромное потребление CPU у Метрик
+- [ ]  Утечки ram и cpu при длительном использовании
 - [ ]  Не просматриваются системные таблицы /system/table/clusters
 - [ ] Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
@@ -45,7 +52,7 @@
                       select 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
 
 
-
+-  [ ] polar-dataZoom http://gallery.echartsjs.com/editor.html?c=polar-dataZoom
 
 ## Changelog
 
