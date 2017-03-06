@@ -13,6 +13,8 @@ class WidgetDraw extends Widget
         this._list= {
             // 'SCATTERMAP': DrawEcharts,
             // 'HEATMAP': DrawEcharts,
+            'ECHARTS': DrawEchartsMap,
+            'RIVER': DrawEchartsRiver,
             'MAP': DrawEchartsMap,
             'TREEMAP': DrawEchartsTreemap,
             'SANKEYS': DrawEchartsSunkeys,

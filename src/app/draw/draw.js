@@ -35,7 +35,15 @@ class DrawBasicChart {
         return this.drawCodeObject.exec;
     }
     executableCode() {
-        return {};
+        let ret={};
+        if (this.isExecutableCode())
+        {
+            console.log(this.drawCodeObject.code);
+            ret=this.drawCodeObject.code.call(window, this.widget.data);
+
+        }
+        console.warn("ResultFunction",ret);
+        return ret;
     }
 
     getDrawCommandObject() {
