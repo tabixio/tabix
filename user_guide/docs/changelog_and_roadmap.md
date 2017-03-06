@@ -4,8 +4,9 @@
 > Фичи
 
 - [ ]  Виджет список предустановленных графиков
-- [ ]  Граф кластера system.clusters
-- [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
+- [ ]  Граф кластера system.clusters, состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
+
+> Фичи DRAW
 
 - [ ]  DRAW GRID CHART
 - [ ]  DRAW BAR
@@ -14,9 +15,8 @@
 - [ ]  draw SANKEYS
 - [ ]  draw HEATMAP
 - [ ]  draw River
-
 - [ ]  drawD3 : RawAsFunction
-- [ ]  drawC3 : Raw
+- [ ]  drawC3 : RawAsFunction
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 
 > Дока
