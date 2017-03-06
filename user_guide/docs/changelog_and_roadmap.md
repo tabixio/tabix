@@ -5,7 +5,7 @@
 
 
 - [ ]  Граф кластера system.clusters
-
+- [ ]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
 - [ ]  DRAW GRID CHART
 - [ ]  DRAW BAR
 - [ ]  draw TREEMAP
@@ -18,7 +18,7 @@
 - [ ]  drawC3 : Raw
 
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
-
+-
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
@@ -65,7 +65,7 @@
 - [x]  Словари в автоподсказках "dic_*"
 - [x]  Отображение числа таблиц у базы
 - [x]  fix : Не показываются пустые базы
-- [x]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
+
 - [x]  Иконка таблицы зависит от Engine
 - [x]  Подсказка при подключении в виде http://127.0.0.1:8123 , возможно использование httpS
 - [x]  HTTP параметр,возможность устанавливать настройки для севера
