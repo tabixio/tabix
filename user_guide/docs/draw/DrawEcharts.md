@@ -1,7 +1,8 @@
 ## Direct chart by JS code
 
 
-example
+Доступно у любого типа DRAWMAP / DRAWC3 / DRAWCHART -> результат ф-ции передается в обьект графика как настройки
+
 
 ```sql
 

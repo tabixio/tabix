@@ -1,11 +1,12 @@
 
 ## Roadmap Q1
 
+> Фичи
+
 - [ ]  Виджет список предустановленных графиков
-
-
 - [ ]  Граф кластера system.clusters
-- [ ]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
+- [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
+
 - [ ]  DRAW GRID CHART
 - [ ]  DRAW BAR
 - [ ]  draw TREEMAP
@@ -13,15 +14,20 @@
 - [ ]  draw SANKEYS
 - [ ]  draw HEATMAP
 - [ ]  draw River
-- [ ]  draw as js function result
+
 - [ ]  drawD3 : RawAsFunction
 - [ ]  drawC3 : Raw
-
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
--
+
+> Дока
+
 - [ ]  Документация : tabix.io/docs/ собранный из md файлов
-- [ ]  Клустер , состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
+
+
+> Bugs
+
+- [ ]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
 - [ ]  Ошибка при создании select правой кнопкой - потерян FROM
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 - [ ]  Не правильно показывается таблица визитов
@@ -57,7 +63,7 @@
 ## Changelog
 
 
-### Dev ( > 2016-12-22  )
+### DevTabix02 Branch ( > 2016-12-22 to 2017-03-15 )
 - [x]  Bind: Cmd-Y | Ctrl-Y = removeLines
 - [x]  Автодополнение + подсказка по полям с типом
 - [x]  Автодополнение словарей + подсказка
@@ -145,7 +151,7 @@
 - [x]  drawMAP : object.raw
 - [x]  drawMAP(Fly) : object.destination...
 - [x]  Метрики добавить system.events + async_metrics
-
+- [x]  draw as js function result
 
 ### 2016-12-17
 
