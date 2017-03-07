@@ -6,6 +6,9 @@
 - [ ]  Виджет список предустановленных графиков
 - [ ]  Граф кластера system.clusters, состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
 - [ ]  Ошибка кода JS отображать в поле draw
+- [ ]  PivotJS D3/C3/Export
+- [ ]  PivotJS Subtotal
+
 > Фичи DRAW
 
 - [ ]  DRAW GRID CHART

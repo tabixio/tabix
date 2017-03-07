@@ -15,7 +15,14 @@ class WidgetPivot extends Widget {
                 // cols:['sin'],
                 // rows:['cos'],
                 // dataClass: $.pivotUtilities.SubtotalPivotData,
-                // renderer: $.extend($.pivotUtilities.renderers,$.pivotUtilities.subtotal_renderers["Table With Subtotal"], $.pivotUtilities.c3_renderers),
+                // renderers: $.pivotUtilities.d3_renderers,
+
+                renderer: $.extend(
+                    // $.pivotUtilities.subtotal_renderers["Table With Subtotal"],
+                    $.pivotUtilities.c3_renderers,
+                    $.pivotUtilities.export_renderers,
+                    $.pivotUtilities.d3_renderers
+                ),
                 // rendererOptions: {
                 //     collapseRowsAt: 1,
                 //     collapseColsAt: 0
@@ -30,6 +37,5 @@ class WidgetPivot extends Widget {
         }
     }
 }
-
 
 angular.module(smi2.app.name).service('WidgetPivot', WidgetPivot);

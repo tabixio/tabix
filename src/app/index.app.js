@@ -5,7 +5,7 @@
     smi2.app = {
         name: 'SMI2',
         version: window.TabixVersion || "",
-        buildDate: window.TabixBuildDate || "",
+        buildDate: window.TabixBuildDate || ""
     };
 
     // External libs connection
