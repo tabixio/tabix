@@ -100,9 +100,6 @@ class DataProvider {
     }
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
-        /**
-         *
-         */
     }
 
 }
