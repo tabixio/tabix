@@ -1,10 +1,10 @@
 {
   "name": "SMI2-clickhouse",
-  "version": "17.02.ß1",
+  "version": "17.03.1",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/smi2/clickhouse-frontend.git"
+    "url": "https://github.com/smi2/tabix.ui.git"
   },
   "dependencies": {
     "babel": "^6.23.0",
