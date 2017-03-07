@@ -15,8 +15,10 @@
 - [ ]  draw SANKEYS
 - [ ]  draw HEATMAP
 - [ ]  draw River
+
 - [ ]  drawD3 : RawAsFunction
 - [ ]  drawC3 : RawAsFunction
+
 - [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
 
 > Дока
@@ -27,8 +29,6 @@
 
 > Bugs
 
-- [ ]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
-- [ ]  Ошибка при создании select правой кнопкой - потерян FROM
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 - [ ]  Не правильно показывается таблица визитов
 
@@ -42,7 +42,8 @@
 - [ ]  Огромное потребление CPU у Метрик
 - [ ]  Утечки ram и cpu при длительном использовании
 - [ ]  Не просматриваются системные таблицы /system/table/clusters
-- [ ] Переменные
+
+> Переменные
 > - Парсинг в тексте "Переменные" и их подсветка
 > - Подстановка в запросах $vars переменных
 > - Таблица редактор $vars
@@ -152,6 +153,9 @@
 - [x]  drawMAP(Fly) : object.destination...
 - [x]  Метрики добавить system.events + async_metrics
 - [x]  draw as js function result
+- [x]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
+- [x]  Ошибка при создании select правой кнопкой - потерян FROM
+
 
 ### 2016-12-17
 

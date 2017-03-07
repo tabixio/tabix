@@ -212,7 +212,7 @@
                        }
                    });
 
-                   let sql="\nSELECT\n\t"+fields.join(",\n\t");
+                   let sql="\nSELECT\n\t"+fields.join(",\n\t")+"\nFROM\n\t"+db+'.'+table+"\n";
 
                    if (where.length) {
                        sql=sql+"\nWHERE\n\t"+where.join("\n AND \n");

@@ -342,20 +342,20 @@ window.global_delimiter             = ";;";
             $scope.vars.currentTab.loading = false;
             $scope.vars.currentTab.progress = false;
 
-            // todo проверить
+
+            // -------------------------------------------------------
             if (resultContainer.data.find((item) => (
-                    item.query &&
-                    item.query.keyword &&
+                    item.keyword &&
                     ['DROP', 'CREATE', 'ALTER'].indexOf(
-                        item.query.keyword.toUpperCase()
+                        item.keyword.toUpperCase()
                     ) != -1
                 ))) {
+
                 $scope.selectDatabase($scope.vars.db);
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 $rootScope.$emit('handleBroadcastDatabases',{});
             }
-
-
+            // -------------------------------------------------------
             if ($scope.vars.currentTab.statistics[0]) {
                 let d=DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,"statistics");
                 d.sort="time";

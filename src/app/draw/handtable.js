@@ -509,7 +509,7 @@ class HandsTable {
                         },//submenu
                     },
                     "whereIN": {
-                        name: 'where IN',
+                        name: 'copy `where IN`',
                         submenu: {
                             items: [
                                 {
