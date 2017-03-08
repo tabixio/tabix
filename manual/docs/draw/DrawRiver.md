@@ -1,4 +1,7 @@
 
+![DrawRiver](/img/draw-river.png)
+
+
 EchartAPI:
 * [series-themeRiver](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
 * [singleAxis](https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis)
@@ -67,5 +70,3 @@ DRAWRIVER
 
 ```
 
-
-![DrawRiver](/img/draw-river.png)
