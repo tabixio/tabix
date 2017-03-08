@@ -68,4 +68,4 @@ DRAWRIVER
 ```
 
 
-![DrawRiver](img/draw-river.png)
+![DrawRiver](/img/draw-river.png)
