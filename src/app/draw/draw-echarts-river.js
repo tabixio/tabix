@@ -102,10 +102,6 @@ class DrawEchartsRiver extends DrawEcharts
         };
 
         this.options=Object.assign(this.options,o);
-        if (sets.raw)
-        {
-            this.options=Object.assign(this.options,sets.raw);
-        }
         return true;
     }
 

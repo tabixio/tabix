@@ -17,6 +17,13 @@ where `http://localhost:1982/` - link to youe clickhouse server.
 Then you can access GUI via http://localhost:3000/. Server takes time to fully start.
 
 
+
+## Echarts Api
+
+* [option geo](https://ecomfe.github.io/echarts-doc/public/en/option.html#geo)
+
+
+
 ## Develop
 
 Для разработки:

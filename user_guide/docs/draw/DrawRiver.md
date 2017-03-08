@@ -1,4 +1,10 @@
 
+EchartAPI:
+https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver
+https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis
+
+
+
 ```sql
 SELECT
 create_date as dt,
@@ -26,4 +32,34 @@ DRAWRIVER
             title      :'title chart'
 
 }
+```
+
+
+
+## RAW
+
+```JS
+DRAWRIVER
+{
+            x          :'dt',
+            y          :'cnt',
+            name       :'name',
+            title      :'title',
+            raw:{
+                series:[
+                {
+
+                    itemStyle:{
+                        emphasis:{
+
+                            opacity:0.1
+                        }
+                    }
+
+                }
+                ]
+            }
+
+}
+
 ```
