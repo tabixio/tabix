@@ -1,9 +1,9 @@
 
 EchartAPI:
-https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver
-https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis
+* [series-themeRiver](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
+* [singleAxis](https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis)
 
-
+## SQL
 
 ```sql
 SELECT
@@ -37,6 +37,9 @@ DRAWRIVER
 
 
 ## RAW
+
+Example `series[0].itemStyle.emphasis.opacity=number`
+See [api](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
 
 ```JS
 DRAWRIVER
