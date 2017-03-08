@@ -16,7 +16,7 @@ theme: 'material'
 
 # Options
 extra:
-  logo: 'images/logo_tabix.png'
+  logo: 'img/logo_tabix.png'
   palette:
     primary: 'indigo'
     accent: 'indigo'
