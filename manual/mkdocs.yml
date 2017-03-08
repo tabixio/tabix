@@ -2,7 +2,7 @@
 site_name: 'Tabix'
 site_description: 'Tabix DB Gui'
 site_author: 'Igor Strykhar'
-site_url: 'https://tabix.io/docs'
+site_url: 'https://tabix.io/doc'
 
 # Repository
 repo_name: 'GitHub'
@@ -34,6 +34,8 @@ google_analytics:
   - 'UA-XXXXXXXX-X'
   - 'auto'
 
+extra_css:
+  - 'stylesheets/extra.css'
 # Extensions
 markdown_extensions:
   - admonition
