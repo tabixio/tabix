@@ -3,7 +3,7 @@ node_modules
 .tmp
 coverage
 help
-
+manual/site
 # IntelliJ project files
 .idea
 *.iml
