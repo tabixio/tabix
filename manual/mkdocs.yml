@@ -7,7 +7,7 @@ site_url: 'https://tabix.io/doc'
 # Repository
 repo_name: 'GitHub'
 repo_url: 'https://github.com/smi2/tabix.ui'
-edit_uri: 'edit/master/manual/'
+edit_uri: 'edit/master/manual/docs/'
 # Copyright
 copyright: 'Copyright &copy; 2017 Igor Strykhar '
 
