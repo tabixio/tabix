@@ -1,96 +1,96 @@
 ### Tabix master branch ( > 2016-12-22 to 2017-03-15 )
-- [x]  Bind: Cmd-Y | Ctrl-Y = removeLines
-- [x]  Автодополнение + подсказка по полям с типом
-- [x]  Автодополнение словарей + подсказка
-- [x]  Возможность уменьшать редактор SQL
-- [x]  Словари в автоподсказках "dic_*"
-- [x]  Отображение числа таблиц у базы
-- [x]  fix : Не показываются пустые базы
-
-- [x]  Иконка таблицы зависит от Engine
-- [x]  Подсказка при подключении в виде http://127.0.0.1:8123 , возможно использование httpS
-- [x]  HTTP параметр,возможность устанавливать настройки для севера
-- [x]  Список полей в таблице (левом дереве) и вставка поля при клике в редактор
-- [x]  Запрос создания таблицы, через SHOW CREATE TABLE - в "информации"
-- [x]  Настройка автодополнение / enableLiveAutocompletion
-- [x]  Размер div результата компактнее
-- [x]  Подсветка скобок
-- [x]  Список ф-ций загружатеся исходя из возможностей сервера. Из таблицы `system.functions` + keywordMapper.builtinFunctions
-- [x]  Подсказка по функции (загрузка из json)
-- [x]  [Command | Ctrl ] + [ Right | Left ] переключает вкладки
-- [x]  Shift-Ctrl-[1...0] переключает вкладки
-- [x]  Редактор - иконки в подсказках
-- [x]  Отдельное окно SHOW PROCESSLIST FORMAT JSON
-- [x]  Подсказки из офф документации в виде Json/js
-- [x]  Редактор:Сворачивать скобки / Подзапросы
-- [x]  Редактор:Выбор разделителя запросов `;;` или `;`
-- [x]  Комманда DRAW подсветка
-- [x]  Отправка запросов post
-- [x]  Сворачивать _все_ скобки
-- [x]  Переформатирование запросов/автоформат
-- [x]  Контекстное меню у редактора, свернуть все/развернуть
-- [x]  [Command|Ctrl+Shift+Plus | Command|Ctrl+Shift+Minus ] - свернуть все/развернуть
-- [x]  [Command|Ctrl+Shift+F ] - Format code
-- [x]  Виджет-ная стуктура (Плагинная структура для Renders)
-- [x]  Виджеты через отрисовка gridster, резайз move, фиксация
-- [x]  Моноширинная таблица результата и код ошибки, или текстовый ответ
-- [x]  handsontable Таблица результата с сортировкой
-- [x]  Автоподбор ширины таблицы результата
-- [x]  TabiX name
-- [X]  HotTable темная тема для меню и hottable в списке процессов
-- [x]  PROCESSLIST режим логировать запросы
-- [x]  HotTable ресайз колонок
-- [x]  HotTable CopyPaste menu
-- [x]  Menlo font
-- [x]  В словарях поле ID строится из названия словаря, ads.blocks => block_id , ads.campaigns => campaign_id , ads.news => news_id , geonames => geoname_id
-- [x]  SHOW PROCESSLIST не останавливается
-- [x]  Меню по правой кнопке на таблице, наполнить элементы
-- [x]  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
-- [x]  Меню для таблицы (по прав.кнопке )
-- [x]  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
-- [x]  Редактор ACEjs,вынести из под Bower, ACE скрестить с Ace.Tern
-- [x]  Live autocomplete delay
-- [x]  KILL QUERY по query_id не по hash
-- [x]  Выбор DB через двойной клик в дереве, вслывашка о выборе
-- [x]  Дерево теперь не переключается
-- [x]  HotTable ресайз виджета, и при инициализации не правильный размер
-- [x]  Рендеры графики AmCharts + resize
-- [x]  Рендеры графики eChars + resize
-- [x]  echarts тема темная
-- [x]  Отображение какой запрос выполняется
-- [x]  Таблица с информацией о выполненых запросах в конце списка
-- [x]  HotTable menu : Style cell Bold/Green/Red
-- [x]  Метрики RealTime charts из system.metrics
-- [x]  Поправить верстку шапки
-- [x]  HotTable : ChromaJS heatmaps for the values HeatMap / DataBars(color) для колонки
-- [x]  HotTable в сплывашке показывается криво
-- [x]  HotTable + Numbro - отображать колонку если цифры как human
-- [x]  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
-- [x]  HotTable menu : CopyPaste to ReadMine markup
-- [x]  HotTable menu : Highlight Negative/Positive
-- [x]  HotTable menu : insert WHERE column=valuse to Clipboard
-- [x]  Метрики кнопка очистить
-- [x]  Запросы во вкладке логируются для сравнения производительности
-- [x]  PivotJS не работает Drag&Drop
-- [x]  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
-- [x]  Переиминовать в коде CHGui в Tabix
-- [x]  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
-- [x]  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
-- [x]  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
-- [x]  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
-- [x]  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
-- [x]  Настройка размера шрифта HotTable
-- [x]  Документация : Help Modal Window
-- [x]  Расшить классы DrawChart
-- [x]  Документация : Help Modal : Hotkey + Link to docs
-- [x]  drawMAP : object.raw
-- [x]  drawMAP(Fly) : object.destination...
-- [x]  Метрики добавить system.events + async_metrics
-- [x]  draw as js function result
-- [x]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
-- [x]  Ошибка при создании select правой кнопкой - потерян FROM
-- [x]  drawC3 : RawAsFunction
-- [x]  draw RIVER
+*  Bind: Cmd-Y | Ctrl-Y = removeLines
+*  Автодополнение + подсказка по полям с типом
+*  Автодополнение словарей + подсказка
+*  Возможность уменьшать редактор SQL
+*  Словари в автоподсказках "dic_*"
+*  Отображение числа таблиц у базы
+*  fix : Не показываются пустые базы
+*  Иконка таблицы зависит от Engine
+*  Подсказка при подключении в виде http://127.0.0.1:8123 , возможно использование httpS
+*  HTTP параметр,возможность устанавливать настройки для севера
+*  Список полей в таблице (левом дереве) и вставка поля при клике в редактор
+*  Запрос создания таблицы, через SHOW CREATE TABLE - в "информации"
+*  Настройка автодополнение / enableLiveAutocompletion
+*  Размер div результата компактнее
+*  Подсветка скобок
+*  Список ф-ций загружатеся исходя из возможностей сервера. Из таблицы `system.functions` + keywordMapper.builtinFunctions
+*  Подсказка по функции (загрузка из json)
+*  [Command | Ctrl ] + [ Right | Left ] переключает вкладки
+*  Shift-Ctrl-[1...0] переключает вкладки
+*  Редактор - иконки в подсказках
+*  Отдельное окно SHOW PROCESSLIST FORMAT JSON
+*  Подсказки из офф документации в виде Json/js
+*  Редактор:Сворачивать скобки / Подзапросы
+*  Редактор:Выбор разделителя запросов `;;` или `;`
+*  Комманда DRAW подсветка
+*  Отправка запросов post
+*  Сворачивать _все_ скобки
+*  Переформатирование запросов/автоформат
+*  Контекстное меню у редактора, свернуть все/развернуть
+*  [Command|Ctrl+Shift+Plus | Command|Ctrl+Shift+Minus ] - свернуть все/развернуть
+*  [Command|Ctrl+Shift+F ] - Format code
+*  Виджет-ная стуктура (Плагинная структура для Renders)
+*  Виджеты через отрисовка gridster, резайз move, фиксация
+*  Моноширинная таблица результата и код ошибки, или текстовый ответ
+*  handsontable Таблица результата с сортировкой
+*  Автоподбор ширины таблицы результата
+*  TabiX name
+*  HotTable темная тема для меню и hottable в списке процессов
+*  PROCESSLIST режим логировать запросы
+*  HotTable ресайз колонок
+*  HotTable CopyPaste menu
+*  Menlo font
+*  В словарях поле ID строится из названия словаря, ads.blocks => block_id , ads.campaigns => campaign_id , ads.news => news_id , geonames => geoname_id
+*  SHOW PROCESSLIST не останавливается
+*  Меню по правой кнопке на таблице, наполнить элементы
+*  KILL QUERY WHERE в SHOW PROCESSLIST ("KILL QUERY WHERE query LIKE 'SELECT sleep(%' AND (elapsed >= 0.) SYNC"
+*  Меню для таблицы (по прав.кнопке )
+*  Улучшить отображение полей таблицы в дереве, поддержка клика , доп элементы у таблицы - меню по правому клику
+*  Редактор ACEjs,вынести из под Bower, ACE скрестить с Ace.Tern
+*  Live autocomplete delay
+*  KILL QUERY по query_id не по hash
+*  Выбор DB через двойной клик в дереве, вслывашка о выборе
+*  Дерево теперь не переключается
+*  HotTable ресайз виджета, и при инициализации не правильный размер
+*  Рендеры графики AmCharts + resize
+*  Рендеры графики eChars + resize
+*  echarts тема темная
+*  Отображение какой запрос выполняется
+*  Таблица с информацией о выполненых запросах в конце списка
+*  HotTable menu : Style cell Bold/Green/Red
+*  Метрики RealTime charts из system.metrics
+*  Поправить верстку шапки
+*  HotTable : ChromaJS heatmaps for the values HeatMap / DataBars(color) для колонки
+*  HotTable в сплывашке показывается криво
+*  HotTable + Numbro - отображать колонку если цифры как human
+*  HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
+*  HotTable menu : CopyPaste to ReadMine markup
+*  HotTable menu : Highlight Negative/Positive
+*  HotTable menu : insert WHERE column=valuse to Clipboard
+*  Метрики кнопка очистить
+*  Запросы во вкладке логируются для сравнения производительности
+*  PivotJS не работает Drag&Drop
+*  Поиск в дереве обьектов, фильтрация дерева - оптимизация, иконка сброса поиска
+*  Переиминовать в коде CHGui в Tabix
+*  HotTable menu : CopyPaste - нормальная реализация не через Promnt, можно всплывающим Dialog c TextArea
+*  HotTable : подсветка активной строки для темы Dark/White : currentRow : https://docs.handsontable.com/0.31.0/demo-highlighting-selection.html
+*  class HandsTable.isDark() придумать как достать из isDark из глобального обьекта темы
+*  Hints всплывашка рандомно каждые 5-10 минут, в tips.rand() , отдельный массив ru/eng
+*  Настройка показывать скрытые символы  в acejs, задержка LiveAuto
+*  Настройка размера шрифта HotTable
+*  Документация : Help Modal Window
+*  Расшить классы DrawChart
+*  Документация : Help Modal : Hotkey + Link to docs
+*  drawMAP : object.raw
+*  drawMAP(Fly) : object.destination...
+*  Метрики добавить system.events + async_metrics
+*  draw as js function result
+*  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
+*  Ошибка при создании select правой кнопкой - потерян FROM
+*  drawC3 : RawAsFunction
+*  draw RIVER
+*  Документация : https://tabix.io/doc/ собранный из md файлов
 
 
 ### 2016-12-17

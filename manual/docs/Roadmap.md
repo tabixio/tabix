@@ -1,5 +1,4 @@
-
-## Roadmap Q1
+## Roadmap 17Q1
 
 > Фичи
 
@@ -23,8 +22,9 @@
 
 > Дока
 
-- [ ]  Документация : tabix.io/docs/ собранный из md файлов
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
+- [ ]  Оформить Tabix.IO
+
 
 
 > Bugs
@@ -32,7 +32,7 @@
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 - [ ]  Не правильно показывается таблица визитов, переделать на Виджет таблицы и класс DataProvider+HandsTable
 
-## Roadmap Q2
+## Roadmap 17Q2 - UI
 
 - [ ]  С3 DarkTheme
 - [ ]  draw HEATMAP
@@ -64,3 +64,6 @@
 
 
 -  [ ] polar-dataZoom http://gallery.echartsjs.com/editor.html?c=polar-dataZoom
+
+
+## Roadmap 17Q2 - Server
