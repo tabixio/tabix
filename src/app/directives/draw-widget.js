@@ -35,7 +35,10 @@
 
 
         if (widget.draw.library=='c3') {
-            console.info('DW:c3');
+
+            widget.draw.bindto=element[0];
+
+            html=false;
         }
 
         if (widget.draw.library=='d3') {
@@ -51,9 +54,13 @@
 
         }
         // ------------------------------------------------------------------------------------------------------------------
+        console.group("widget.draw.preProcessor");
+        console.time("widget.draw.preProcessor time took");
         if (widget.draw.preProcessor instanceof Function) {
             widget.draw.preProcessor();
         }
+        console.timeEnd("widget.draw.preProcessor time took");
+        console.groupEnd();
         return html;
     }
 

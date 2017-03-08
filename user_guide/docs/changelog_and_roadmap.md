@@ -4,25 +4,22 @@
 > Фичи
 
 - [ ]  Виджет список предустановленных графиков
-- [ ]  Граф кластера system.clusters, состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
-- [ ]  Ошибка кода JS отображать в поле draw
 - [ ]  PivotJS D3/C3/Export
 - [ ]  PivotJS Subtotal
+- [ ]  DrawBasicChart.getDateColumn()
+- [ ]  DrawBasicChart.getDateTimeColumn()
 
 > Фичи DRAW
 
-- [ ]  DRAW GRID CHART
-- [ ]  DRAW BAR
+- [ ]  dRAW GRID CHART
+- [ ]  dRAW BAR
 - [ ]  draw TREEMAP
-- [ ]  Draw Chart : AmCharts Кill, use Echarts
 - [ ]  draw SANKEYS
-- [ ]  draw HEATMAP
-- [ ]  draw River
 
-- [ ]  drawD3 : RawAsFunction
-- [ ]  drawC3 : RawAsFunction
+- [ ]  draw CHART : AmCharts Кill, use Echarts
 
-- [ ]  DrawSolar  - http://datareview.info/article/novyj-tip-vizualizacii-dlya-issledovaniya-korrelyacij/
+- [ ]  draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
+- [ ]  draw SOLAR  - Новый тип визуализации для исследования корреляций
 
 > Дока
 
@@ -33,10 +30,14 @@
 > Bugs
 
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
-- [ ]  Не правильно показывается таблица визитов
+- [ ]  Не правильно показывается таблица визитов, переделать на Виджет таблицы и класс DataProvider+HandsTable
 
 ## Roadmap Q2
 
+- [ ]  С3 DarkTheme
+- [ ]  draw HEATMAP
+- [ ]  Граф кластера system.clusters, состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep
+- [ ]  Ошибка кода JS отображать в поле draw
 - [ ]  Минимальный редактор графиков
 - [ ]  HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 - [ ]  DRAWSET, реализовать парсер, задает параметры области рендера результата
@@ -158,6 +159,8 @@
 - [x]  draw as js function result
 - [x]  Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
 - [x]  Ошибка при создании select правой кнопкой - потерян FROM
+- [x]  drawC3 : RawAsFunction
+- [x]  draw RIVER
 
 
 ### 2016-12-17

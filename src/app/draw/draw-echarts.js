@@ -36,21 +36,6 @@ class DrawEcharts extends DrawBasicChart {
         }
     }
 
-    initChartByJsCode() {
-
-        if (this.isExecutableCode())
-        {
-            // тут вызываем jscode -> резульатт this.options
-            let o = this.executableCode();
-            // обьединяем обьекты
-            this.options=Object.assign(this.options,o);
-            return true;
-        }
-
-        // Если это не код инициализация как обычно
-        return false;
-    }
-
 
     preProcessor() {
 
