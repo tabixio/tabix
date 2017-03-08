@@ -5,9 +5,7 @@ brew install python
 
 pip install mkdocs && mkdocs --version
 
-pip install pygments
-
-pip install pymdown-extensions
+pip install pygments && pip install pymdown-extensions
 
 pip install mkdocs-material
 
