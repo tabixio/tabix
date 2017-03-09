@@ -31,11 +31,6 @@
         // настройки графики
         $scope.preState={};
         $scope.EChartOptions={
-
-
-
-
-
         };
 
 

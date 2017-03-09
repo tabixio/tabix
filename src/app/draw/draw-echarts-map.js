@@ -10,9 +10,7 @@ class DrawEchartsMap extends DrawEcharts
 {
     create() {
 
-        if (this.initChartByJsCode()) {
-            return true;
-        }
+
         // Если это код не JS попробуем получить обьект
         let drw=this.getDrawCommandObject();
 
@@ -40,7 +38,7 @@ class DrawEchartsMap extends DrawEcharts
         let seriesScatter=[];
         let flySeries=[];
 
-        this.widget.data.data.forEach(function (itemOpt, i) {
+        this.data().forEach(function (itemOpt, i) {
 
             let v=parseInt(itemOpt[sets.count]);
             if (max_value<v) max_value=v;

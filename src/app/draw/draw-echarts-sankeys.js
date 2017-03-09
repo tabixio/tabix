@@ -9,46 +9,96 @@
 class DrawEchartsSunkeys extends DrawEcharts {
 
     create() {
-        let drawCommand=[];
-        if ('drawCommand' in query)
+
+        // Если это код не JS попробуем получить обьект
+        let drw=this.getDrawCommandObject();
+
+        let sets={
+            path        :'',
+            value       :'value',
+            source      :'source',
+            target      :'target'
+        };
+
+        if (drw)
         {
-            drawCommand=query.drawCommand;
+            sets=Object.assign(sets,drw);
         }
-        let levels=[];
-        drawCommand.forEach(i => {
-            try {
-                if (i && !i.code) return;
-                let object=eval('('+i.code+')');
-                console.warn(object);
-                levels=object['levels'];
+        // ---------------------------------------------------------------------------
+        let path='';
 
-                // получаем настройки по осям
-            } catch (E) {
-                console.error('error eval ', i.code);
+        if (!this.haveColumn(sets['value'])) {
+            this.setError("Not set column value");
+            return false;
+        }
+        console.log("sets['path']:",sets['path']);
+        if (sets['path']) {
+            path =sets['path'];
+        } else {
+            if (!this.haveColumn(sets['source']) || !this.haveColumn(sets['target'])) {
+                this.setError("Not set column path or source & target");
+                return false;
             }
-        });
+            path = sets['source']+'.'+sets['target'];
+        }
+
+        let patharr=_.split(path,'.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+
+        // a - node1
+        // b - count 1-2
+        // c - node2
+        // d - count 2-3
+        // e - node3
 
 
-        // подготовка данных
-        let nodes=[];
+        if (!( patharr.length & 1)) {
+            //
+            this.setError("Path четно");
+            return false;
+        }
+
         let links=[];
-        console.warn('levels',levels);
-        levels.forEach(level=>{
-            if (level.source && level.target && level.value) {
+        let nodes=[];
 
-                data.forEach(row=>{
-                    nodes[row[level.source]]=1;
-                    nodes[row[level.target]]=1;
+        // установлен path ,
+        //        Format :  [ _source_ . _count_ . _target_ . _count2_ . _target2_
+        //         DRAWSANKEY
+        //         {
+        //             "region.count_in_city.city.count_in_street.street"
+        //         }
+        //         DRAWSANKEY
+        //         {
+        //             path : "region.count_in_city.city.count_in_street.street",
+        //         }
 
-                    links.push({
-                        source:row[level.source],
-                        target:row[level.target],
-                        value:row[level.value]
-                    })
 
-                });
+        this.data().forEach((row)=>{
+
+            console.log(row);
+            // цикл по каждому patharr
+
+            for (let i = 0; i < patharr.length; i=i+2) {
+                let l_source=patharr[i];
+                let l_value=patharr[i+1];
+                let l_target=patharr[i+2];
+                if (_.isUndefined(l_value) || _.isUndefined(l_target)) break;
+                nodes[row[l_source]]=1;
+                nodes[row[l_target]]=1;
+                links.push({
+                    source:row[l_source],
+                    target:row[l_target],
+                    value:row[l_value]
+                })
             }
         });
+
+
+
+
+        console.log("PATH",path,"links",links,"nodes",nodes);
+
+
+
         let result_nodes=[];
         for (let key in nodes) {
             result_nodes.push({name:key});

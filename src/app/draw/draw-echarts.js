@@ -40,8 +40,19 @@ class DrawEcharts extends DrawBasicChart {
     preProcessor() {
 
         // init chart & call before render
-        this.init=this.create();
 
+
+        if (this.initChartByJsCode()) {
+            this.init=true;
+        }
+        else {
+            this.init=this.create();
+        }
+
+        if (this.getError()) {
+            console.error(this.getError());
+            return false;
+        }
 
         let drw=this.getDrawCommandObject();
         if (drw.raw)

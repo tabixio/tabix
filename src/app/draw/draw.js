@@ -14,6 +14,7 @@ class DrawBasicChart {
         this.options={};
         this.widget.height=2;
         this.widget.width=2;
+        this.errorMessage='';
 
 
         // тут обьект содержит код ф-ции или обьекта draw
@@ -29,6 +30,13 @@ class DrawBasicChart {
         console.info('isExecutableCode()',this.isExecutableCode());
 
     }
+    setError(msg) {
+        this.errorMessage=msg;
+    }
+    getError() {
+        return this.errorMessage;
+    }
+
     isExecutableCode() {
         if (!this.drawCodeObject) return false;
         if (!this.drawCodeObject.type) return false;
@@ -61,6 +69,39 @@ class DrawBasicChart {
         return false;
     }
 
+
+    data() {
+        return this.widget.data.data;
+    }
+
+    meta() {
+        return this.widget.data.meta;
+    }
+    haveColumn(col) {
+
+        let position=_.findKey(this.meta(),{'name':col});
+        return !_.isUndefined(position); // not undef
+
+    }
+    getDateTimeColumn() {
+        this.meta().forEach((i) => {
+            if (i.type=='DateTime') {
+                return i.name;
+            }
+        });
+        return false;
+    }
+    /**
+     * Получить колонку с датой
+     */
+    getDateColumn() {
+        this.meta().forEach((i) => {
+            if (i.type=='Date') {
+                return i.name;
+            }
+        });
+        return false;
+    }
     getDrawCommandObject() {
         if (!this.drawCodeObject) return false;
         if (!this.drawCodeObject.type) return false;

@@ -5,18 +5,15 @@
 - [ ]  Виджет список предустановленных графиков
 - [ ]  PivotJS D3/C3/Export
 - [ ]  PivotJS Subtotal
-- [ ]  DrawBasicChart.getDateColumn()
-- [ ]  DrawBasicChart.getDateTimeColumn()
+
 
 > Фичи DRAW
 
 - [ ]  dRAW GRID CHART
 - [ ]  dRAW BAR
 - [ ]  draw TREEMAP
-- [ ]  draw SANKEYS
 
 - [ ]  draw CHART : AmCharts Кill, use Echarts
-
 - [ ]  draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
 - [ ]  draw SOLAR  - Новый тип визуализации для исследования корреляций
 
