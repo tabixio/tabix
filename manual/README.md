@@ -1,6 +1,6 @@
 Prepare
 
-```php
+```bash
 brew install python
 
 pip install mkdocs && mkdocs --version

@@ -29,6 +29,7 @@
         $scope.chartData={};
         $scope.orderKeys={};
         // настройки графики
+        $scope.preState={};
         $scope.EChartOptions={
 
 
@@ -81,25 +82,34 @@
 
                     if ($scope.chartData[key].length>$scope.maxlength) {
                         $scope.chartData[key].shift();
-                    }$scope.chartData[key].push([    d.time,parseInt(d[key])  ]);
+                        // $scope.chartData['bar_'+key].shift();
+                    }
+
+                    let v=parseInt(d[key]);
+                    let diff=v-parseInt($scope.preState[key]);
+
+                    $scope.chartData[key].push([    d.time,v  ]);
+                    // $scope.chartData['bar_'+key].push([    d.time,diff]);
+                    // console.log("diff",key,diff)
                 }
 
                 $scope.metrcisChart.setOption($scope.EChartOptions);
 
-
+                $scope.preState=d;
                 return;
             }
 
             // первая строка данных
             if (!d.time) return;
-
+            $scope.preState=d;
             let grids = [];
             let xAxes = [];
             let yAxes = [];
             let series = [];
             let titles = [];
             let count = 0;
-            let xAxisIndex=[];
+
+            let yAxesCount=0;
 
 
             for(let key in d) {
@@ -116,7 +126,9 @@
 
 
                 $scope.chartData[key]=[];
+                // $scope.chartData['bar_'+key]=[];
                 $scope.chartData[key].push([d.time,val]);
+                // $scope.chartData['bar_'+key].push([d.time,0]);
 
                 // ------------------ Grids -------------
                 grids.push({
@@ -141,14 +153,32 @@
                 yAxes.push({
                     type: 'log',
                     show: false,
+                    scale: true,
                     splitLine: {
                         show: false
                     },
+                    name:'value',
                     // boundaryGap: [0, '100%'],
                     min: 'dataMin',
                     max: 'dataMax',
                     gridIndex: count
                 });
+                // yAxes.push(
+                // {
+                //     type: 'value',
+                //     name: 'bars',
+                //     show: false,
+                //     scale: true,
+                //     splitLine: {
+                //         show: false
+                //     },
+                //     inverse: true,
+                //     boundaryGap: [0.2, 0.2],
+                //     // min: 'dataMin',
+                //     // max: 'dataMax',
+                //     gridIndex: count
+                // }
+                // );
                 // -------------- TITLE --------------
                 titles.push({
                     textAlign: 'center',
@@ -166,17 +196,29 @@
                     type: 'line',
                     data: $scope.chartData[key],
                     xAxisIndex: count,
-                    yAxisIndex: count,
+                    yAxisIndex: yAxesCount,
                     showSymbol: false,
                     // animationEasing: key,
                     // animationDuration: 1000,
                     hoverAnimation: false,
                 });
+                // series.push(
+                // {
+                //     name: 'bar_'+key,
+                //     type: 'bar',
+                //     data: $scope.chartData['bar_'+key],
+                //     xAxisIndex: count,
+                //     yAxisIndex: yAxesCount+1,
+                //     showSymbol: false,
+                //     hoverAnimation: false,
+                // }
+                // );
 
 
-                xAxisIndex.push(count);
                 // ID оси
                 count=count+1;
+                // yAxesCount=yAxesCount+2;
+                yAxesCount=yAxesCount+1;
 
             }
 
@@ -300,6 +342,7 @@
                 let len=$scope.chartData[key].length;
                 for (let i = 0; i < len-2; i++) {
                     $scope.chartData[key].shift();
+                    // $scope.chartData['bar_'+key].shift();
                 }
             }
 

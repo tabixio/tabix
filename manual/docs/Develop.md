@@ -2,10 +2,13 @@
 # Dev
 
 ## Зависимости
-Необходимо установить
+Необходимо установить:
+
 * NodeJS >= 5.x. ( лучше v6.7.0 )
 
 Установить глобальные NPM пакеты Gulp и Bower, загрузить зависимости:
+
+
 <pre>
 sudo npm install bower -g
 sudo npm install gulp -g
@@ -23,7 +26,3 @@ gulp serve
 gulp build
 </pre>
 
-Для сборки документации:
-<pre>
-gulp docs
-</pre>
