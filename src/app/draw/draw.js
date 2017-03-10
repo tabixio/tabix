@@ -33,6 +33,9 @@ class DrawBasicChart {
     setError(msg) {
         this.errorMessage=msg;
     }
+    isDark() {
+        return this.widget.isDark;
+    }
     getError() {
         return this.errorMessage;
     }

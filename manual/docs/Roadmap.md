@@ -32,6 +32,7 @@
 
 ## Roadmap 17Q2 - UI
 
+- [ ]  draw SANKEY автоформат, вариант key+value
 - [ ]  С3 DarkTheme
 - [ ]  draw HEATMAP
 - [ ]  Граф кластера system.clusters, состояние, список узлов https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-force https://ecomfe.github.io/echarts-examples/public/editor.html?c=graph-webkit-dep

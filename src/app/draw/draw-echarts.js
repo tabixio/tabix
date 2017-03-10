@@ -16,7 +16,7 @@ class DrawEcharts extends DrawBasicChart {
         // базовые опиции
         this.options={
             version: 3,
-            backgroundColor: '#404a59',
+            // backgroundColor: '#404a59',
             // title : {
                 // text: 'EChart',
                 // subtext: 'subtext',
@@ -26,6 +26,8 @@ class DrawEcharts extends DrawBasicChart {
                 // }
             // },
         };// opthios
+
+
     }
 
     onResize() {
@@ -51,6 +53,9 @@ class DrawEcharts extends DrawBasicChart {
 
         if (this.getError()) {
             console.error(this.getError());
+
+            this.chart.before( "<p>"+this.getError()+"</p>" );
+
             return false;
         }
 
@@ -61,6 +66,10 @@ class DrawEcharts extends DrawBasicChart {
         }
 
 
+        if (this.isDark()) {
+            this.options.backgroundColor='#404a59';
+            this.options.color= [ '#dd4444', '#fec42c', '#80F1BE' ];
+        }
         // log
         console.info('preProcessor',this.init,this.options);
     }

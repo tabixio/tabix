@@ -112,17 +112,19 @@ class DrawEchartsSunkeys extends DrawEcharts {
             series: [
                 {
                     type: 'sankey',
-                    layout:'none',
+                    // layout:'none',
                     data: result_nodes,
                     links: links,
                     itemStyle: {
                         normal: {
+
                             borderWidth: 1,
                             borderColor: '#aaa'
                         }
                     },
                     lineStyle: {
                         normal: {
+                            color: 'source',
                             curveness: 0.5
                         }
                     }

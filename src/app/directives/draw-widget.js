@@ -28,6 +28,7 @@
             let theme='macarons';
             if (widget.isDark) theme='dark';
 
+
             // результат работы сам компонент, а не HTML код
             widget.draw.chart = echarts.init(element[0], theme);
             html=false;
