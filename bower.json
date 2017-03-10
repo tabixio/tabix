@@ -2,10 +2,11 @@
   "name": "SMI2-clickhouse",
   "version": "2.0.0",
   "dependencies": {
-    "angular-animate": "~1.5.0",
+    "angular-animate": "1.5.9",
+    "angular-aria": "1.5.9",
     "jquery": "^3.1.1",
     "jquery-ui": "1.12.1",
-    "angular": "angularjs#^1.5.11",
+    "angular": "1.5.9",
     "angular-ui-ace": "~0.2.3",
     "angular-local-storage": "~0.2.7",
     "angular-screenfull": "^0.1.1",
