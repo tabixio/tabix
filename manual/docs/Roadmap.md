@@ -1,3 +1,8 @@
+## kanban
+
+https://tree.taiga.io/project/isublimity-chg/kanban
+
+
 ## Roadmap 17Q1
 
 > Фичи
@@ -9,12 +14,10 @@
 
 > Фичи DRAW
 
-- [ ]  dRAW GRID CHART
 - [ ]  dRAW BAR
 - [ ]  draw TREEMAP
+- [ ]  dRAW GRID CHART
 - [ ]  draw CHART : AmCharts Кill, use Echarts
-- [ ]  draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
-- [ ]  draw SOLAR  - Новый тип визуализации для исследования корреляций
 
 > Дока
 
@@ -32,6 +35,9 @@
 
 ## Roadmap 17Q2 - UI
 
+- [ ]  draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
+- [ ]  draw SOLAR  - Новый тип визуализации для исследования корреляций
+- [ ]  dRAW GRID CHART - единая ось
 - [ ]  draw SANKEY автоформат, вариант key+value
 - [ ]  С3 DarkTheme
 - [ ]  draw HEATMAP
@@ -45,15 +51,13 @@
 - [ ]  Огромное потребление CPU у Метрик
 - [ ]  Утечки ram и cpu при длительном использовании
 - [ ]  Не просматриваются системные таблицы /system/table/clusters
-
-> Переменные
-> - Парсинг в тексте "Переменные" и их подсветка
-> - Подстановка в запросах $vars переменных
-> - Таблица редактор $vars
-
-- [ ] Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
-- [ ] Размер несжатых данных
-- [ ] Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
+- [ ]  polar-dataZoom http://gallery.echartsjs.com/editor.html?c=polar-dataZoom
+- [ ]  Переменные: Парсинг в тексте "Переменные" и их подсветка
+- [ ]  Переменные: Подстановка в запросах $vars переменных
+- [ ]  Переменные: Таблица редактор $vars
+- [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
+- [ ]  Размер несжатых данных
+- [ ]  Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
 - [ ] tableau export via WDC/ODATA
 - [ ] Ошибка ``Не введен SQL``
 - [ ] Ошибка позиции `;;\n
@@ -61,8 +65,6 @@
                       ;;<cursor>\n
                       select 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
 
-
--  [ ] polar-dataZoom http://gallery.echartsjs.com/editor.html?c=polar-dataZoom
 
 
 ## Roadmap 17Q2 - Server
