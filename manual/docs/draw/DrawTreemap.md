@@ -6,6 +6,10 @@ JSAPI :
 
 * https://ecomfe.github.io/echarts-doc/public/en/option.html#series-treemap
 
+Echarts examples :
+
+* [Echarts Data Json](https://ecomfe.github.io/echarts-examples/public/data/asset/data/disk.tree.json)
+* [Echarts example](https://ecomfe.github.io/echarts-examples/public/editor.html?c=treemap-disk)
 
 
 Original, the the data format of series-treemap.data is a forest.
