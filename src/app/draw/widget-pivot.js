@@ -2,16 +2,16 @@ class WidgetPivot extends Widget {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.type="pivot";
+        this.type = "pivot";
 
         if (this.error || this.text) {
             return;
         }
         // this.height=1;
         // this.sizeX=6;
-        this.init=true;
-        this.pivot={
-            config:{
+        this.init = true;
+        this.pivot = {
+            config: {
                 // cols:['sin'],
                 // rows:['cos'],
                 // dataClass: $.pivotUtilities.SubtotalPivotData,
@@ -30,10 +30,10 @@ class WidgetPivot extends Widget {
             }
         };
 
-        if (this.data.countAll==1) {
+        if (this.data.countAll == 1) {
             // результат толкьо одна отпра
-            this.sizeX=6;
-            this.sizeY=3;
+            this.sizeX = 6;
+            this.sizeY = 3;
         }
     }
 }

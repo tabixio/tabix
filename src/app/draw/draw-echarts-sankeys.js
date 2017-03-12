@@ -11,38 +11,37 @@ class DrawEchartsSunkeys extends DrawEcharts {
     create() {
 
         // Если это код не JS попробуем получить обьект
-        let drw=this.getDrawCommandObject();
+        let drw = this.getDrawCommandObject();
 
-        let sets={
-            path        :'',
-            value       :'value',
-            source      :'source',
-            target      :'target'
+        let sets = {
+            path: '',
+            value: 'value',
+            source: 'source',
+            target: 'target'
         };
 
-        if (drw)
-        {
-            sets=Object.assign(sets,drw);
+        if (drw) {
+            sets = Object.assign(sets, drw);
         }
         // ---------------------------------------------------------------------------
-        let path='';
+        let path = '';
 
         if (!this.haveColumn(sets['value'])) {
             this.setError("Not set column value");
             return false;
         }
-        console.log("sets['path']:",sets['path']);
+        console.log("sets['path']:", sets['path']);
         if (sets['path']) {
-            path =sets['path'];
+            path = sets['path'];
         } else {
             if (!this.haveColumn(sets['source']) || !this.haveColumn(sets['target'])) {
                 this.setError("Not set column path or source & target");
                 return false;
             }
-            path = sets['source']+'.'+sets['target'];
+            path = sets['source'] + '.' + sets['target'];
         }
 
-        let patharr=_.split(path,'.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+        let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
 
         // a - node1
         // b - count 1-2
@@ -57,8 +56,8 @@ class DrawEchartsSunkeys extends DrawEcharts {
             return false;
         }
 
-        let links=[];
-        let nodes=[];
+        let links = [];
+        let nodes = [];
 
         // установлен path ,
         //        Format :  [ _source_ . _count_ . _target_ . _count2_ . _target2_
@@ -72,36 +71,30 @@ class DrawEchartsSunkeys extends DrawEcharts {
         //         }
 
 
-        this.data().forEach((row)=>{
+        this.data().forEach((row) => {
 
-            console.log(row);
-            // цикл по каждому patharr
-
-            for (let i = 0; i < patharr.length; i=i+2) {
-                let l_source=patharr[i];
-                let l_value=patharr[i+1];
-                let l_target=patharr[i+2];
+            for (let i = 0; i < patharr.length; i = i + 2) {
+                let l_source = patharr[i];
+                let l_value = patharr[i + 1];
+                let l_target = patharr[i + 2];
                 if (_.isUndefined(l_value) || _.isUndefined(l_target)) break;
-                nodes[row[l_source]]=1;
-                nodes[row[l_target]]=1;
+                nodes[row[l_source]] = 1;
+                nodes[row[l_target]] = 1;
                 links.push({
-                    source:row[l_source],
-                    target:row[l_target],
-                    value:row[l_value]
+                    source: row[l_source],
+                    target: row[l_target],
+                    value: row[l_value]
                 })
             }
         });
 
 
+        console.log("PATH", path, "links", links, "nodes", nodes);
 
 
-        console.log("PATH",path,"links",links,"nodes",nodes);
-
-
-
-        let result_nodes=[];
+        let result_nodes = [];
         for (let key in nodes) {
-            result_nodes.push({name:key});
+            result_nodes.push({name: key});
         }
         let option = {
             tooltip: {
@@ -133,8 +126,7 @@ class DrawEchartsSunkeys extends DrawEcharts {
         };
 
 
-
-        this.options=Object.assign(option,this.options);
+        this.options = Object.assign(option, this.options);
         return true;
 
     }

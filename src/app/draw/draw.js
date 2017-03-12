@@ -11,31 +11,34 @@ class DrawBasicChart {
         this.widget = Widget;
         this.chart = false;// тут храниться обьект
         this.init = false;
-        this.options={};
-        this.widget.height=2;
-        this.widget.width=2;
-        this.errorMessage='';
+        this.options = {};
+        this.widget.height = 2;
+        this.widget.width = 2;
+        this.errorMessage = '';
 
 
         // тут обьект содержит код ф-ции или обьекта draw
-        this.drawCodeObject={
-            type:false
+        this.drawCodeObject = {
+            type: false
         };
         try {
-            this.drawCodeObject=this.initDrawCodeObject();
+            this.drawCodeObject = this.initDrawCodeObject();
         }
         catch (E) {
             console.error('error eval ', E);
         }
-        console.info('isExecutableCode()',this.isExecutableCode());
+        console.info('isExecutableCode()', this.isExecutableCode());
 
     }
+
     setError(msg) {
-        this.errorMessage=msg;
+        this.errorMessage = msg;
     }
+
     isDark() {
         return this.widget.isDark;
     }
+
     getError() {
         return this.errorMessage;
     }
@@ -45,26 +48,25 @@ class DrawBasicChart {
         if (!this.drawCodeObject.type) return false;
         return this.drawCodeObject.exec;
     }
+
     executableCode() {
-        let ret={};
-        if (this.isExecutableCode())
-        {
+        let ret = {};
+        if (this.isExecutableCode()) {
             console.log(this.drawCodeObject.code);
-            ret=this.drawCodeObject.code.call(window, this.widget.data);
+            ret = this.drawCodeObject.code.call(window, this.widget.data);
 
         }
-        console.warn("ResultFunction",ret);
+        console.warn("ResultFunction", ret);
         return ret;
     }
 
     initChartByJsCode() {
 
-        if (this.isExecutableCode())
-        {
+        if (this.isExecutableCode()) {
             // тут вызываем jscode -> резульатт this.options
             let o = this.executableCode();
             // обьединяем обьекты
-            this.options=Object.assign(this.options,o);
+            this.options = Object.assign(this.options, o);
             return true;
         }
 
@@ -80,69 +82,99 @@ class DrawBasicChart {
     meta() {
         return this.widget.data.meta;
     }
+
+    isNumericColumn(col) {
+        let position = this.getColumnPosition(col);
+
+        if (_.isUndefined(position)) {
+            return;
+        }
+        let type = this.meta()[position]['type'];
+        if (!type) return false;
+        type=type.toLowerCase();
+        if (type.includes('int')
+            || type.includes('float')
+        ) {
+            return true;
+        }
+        return false;
+    }
+    
+
+    getColumnPosition(col) {
+        return _.findKey(this.meta(), {'name': col});
+    }
+
     haveColumn(col) {
 
-        let position=_.findKey(this.meta(),{'name':col});
-        return !_.isUndefined(position); // not undef
+        let position = this.getColumnPosition(col);
+        if (_.isUndefined(position)) {
+            // not undef
+            return false;
+        }
+        return true;
 
     }
+
     getDateTimeColumn() {
         this.meta().forEach((i) => {
-            if (i.type=='DateTime') {
+            if (i.type == 'DateTime') {
                 return i.name;
             }
         });
         return false;
     }
+
     /**
      * Получить колонку с датой
      */
     getDateColumn() {
         this.meta().forEach((i) => {
-            if (i.type=='Date') {
+            if (i.type == 'Date') {
                 return i.name;
             }
         });
         return false;
     }
+
     getDrawCommandObject() {
         if (!this.drawCodeObject) return false;
         if (!this.drawCodeObject.type) return false;
         if (this.drawCodeObject.exec) return false;
         return this.drawCodeObject.code;
     }
+
     initDrawCodeObject() {
-        let drawCommand=this.widget.drawCommnads;
+        let drawCommand = this.widget.drawCommnads;
 
         if (!drawCommand) {
             return [];
         }
 
-        let codeDrawText=false;
-        if (drawCommand && drawCommand.code ){
-            codeDrawText=drawCommand.code;
+        let codeDrawText = false;
+        if (drawCommand && drawCommand.code) {
+            codeDrawText = drawCommand.code;
         }
-        if (!codeDrawText)
-        {
+        if (!codeDrawText) {
             return [];
         }
-        let draw={
-            code:false,
-            type:false
+        let draw = {
+            code: false,
+            type: false
         };
 
         try {
-            let code='('+codeDrawText+')';
+            let code = '(' + codeDrawText + ')';
 
-            let obj=eval(code);
+            let obj = eval(code);
 
-            let type=typeof obj;
+            let type = typeof obj;
 
-            draw={
-                isok:true,
-                code:obj,
-                type:type,
-                exec:!!(obj && obj.constructor && obj.call && obj.apply)
+            draw = {
+                isok: true,
+                code: obj,
+                type: type,
+                exec: !!(obj && obj.constructor && obj.call && obj.apply)
             };
 
 
@@ -155,7 +187,7 @@ class DrawBasicChart {
             //     }
             // });
         } catch (E) {
-            console.error('error eval ',code);
+            console.error('error eval ', code);
         }
 
         return draw;

@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "babel": "^6.23.0",
+    "flat-to-nested": "^1.0.2",
     "glob": "^7.0.3",
     "gulp-ngdocs": "^0.2.13",
     "marked": "^0.3.5"

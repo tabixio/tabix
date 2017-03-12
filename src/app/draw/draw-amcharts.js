@@ -6,76 +6,73 @@
 
 'use strict';
 
-class DrawAMcharts extends DrawBasicChart{
+class DrawAMcharts extends DrawBasicChart {
     constructor(Widget) {
         console.warn("DrawAMcharts constructor");
 
         super(Widget)
-        this.library='amchart';
+        this.library = 'amchart';
 
         // _.set("CODE");
 
     }
-    onResize () {
+
+    onResize() {
         this.makeLegend();
     }
-    preProcessor () {
+
+    preProcessor() {
 
         if (this.createChart()) {
-            this.init=true;
+            this.init = true;
         }
 
 
-        console.log("!preProcessor,done",this.init,this.options);
-
+        console.log("!preProcessor,done", this.init, this.options);
 
 
     }
-
-
 
 
     createChart() {
 
 
-        let chartSets={};
+        let chartSets = {};
 
-        let meta=this.widget.data.meta;
+        let meta = this.widget.data.meta;
 
         // ------------- Create Axes
         //
         //
 
-        let dataDateFormat=false;
-        let categoryField="";
-        let minPeriod='mm';//minute
-        let graphs=[];
-        let counter=0;
-        let axes=[];
+        let dataDateFormat = false;
+        let categoryField = "";
+        let minPeriod = 'mm';//minute
+        let graphs = [];
+        let counter = 0;
+        let axes = [];
         meta.forEach((i) => {
 
-            if (i.type=='DateTime') {
-                dataDateFormat="YYYY-MM-DD JJ:NN:SS";
-                categoryField=i.name;
-            }else {
-                if (i.type=='Date') {
-                    dataDateFormat="YYYY-MM-DD";
-                    minPeriod='DD';
-                    categoryField=i.name;
+            if (i.type == 'DateTime') {
+                dataDateFormat = "YYYY-MM-DD JJ:NN:SS";
+                categoryField = i.name;
+            } else {
+                if (i.type == 'Date') {
+                    dataDateFormat = "YYYY-MM-DD";
+                    minPeriod = 'DD';
+                    categoryField = i.name;
                 }
                 else {
-                    if (!categoryField)
-                    {
-                        categoryField=i.name;
+                    if (!categoryField) {
+                        categoryField = i.name;
                         return;
                     }
-                    counter=counter+1;
-                    let g=this.getChartGraph(i,chartSets[i.name]);
-                    g.id='g'+counter;
+                    counter = counter + 1;
+                    let g = this.getChartGraph(i, chartSets[i.name]);
+                    g.id = 'g' + counter;
 
 
-                    if (g.valueAxis!=='v1')
-                    {
+                    if (g.valueAxis !== 'v1') {
                         axes.push(g.valueAxis);
                     }
                     graphs.push(g);
@@ -83,7 +80,7 @@ class DrawAMcharts extends DrawBasicChart{
             }
         });
 
-        let obl={
+        let obl = {
 
             theme: Widget.isDark ? 'dark' : 'light',
             color: Widget.isDark ? '#eee' : '#333',
@@ -109,7 +106,7 @@ class DrawAMcharts extends DrawBasicChart{
 
             "categoryField": categoryField,
 
-            "valueAxes": [ {
+            "valueAxes": [{
                 "id": "v1",
                 "axisAlpha": 1,
                 // "stackType": "100%",// "stackType": "regular",
@@ -119,12 +116,13 @@ class DrawAMcharts extends DrawBasicChart{
                 // "axisThickness": 2,
                 // "position": "left",
                 "ignoreAxisWidth": true
-            } ],
+            }],
 
-            "balloon": {  "borderThickness": 1,  "shadowAlpha": 0
+            "balloon": {
+                "borderThickness": 1, "shadowAlpha": 0
             },
 
-            "graphs": graphs ,
+            "graphs": graphs,
             "chartCursor": {
                 "valueLineEnabled": true,
                 "valueLineBalloonEnabled": true,
@@ -141,49 +139,46 @@ class DrawAMcharts extends DrawBasicChart{
             // },
 
             "chartScrollbar": {
-                "graph":"g1",
-                "gridAlpha":0,
-                "color":"#888888",
-                "scrollbarHeight":25,
-                "backgroundAlpha":0,
-                "selectedBackgroundAlpha":0.1,
-                "selectedBackgroundColor":"#888888",
-                "graphFillAlpha":0,
-                "autoGridCount":true,
-                "selectedGraphFillAlpha":0,
-                "graphLineAlpha":0.2,
-                "graphLineColor":"#c2c2c2",
-                "selectedGraphLineColor":"#888888",
-                "selectedGraphLineAlpha":1
+                "graph": "g1",
+                "gridAlpha": 0,
+                "color": "#888888",
+                "scrollbarHeight": 25,
+                "backgroundAlpha": 0,
+                "selectedBackgroundAlpha": 0.1,
+                "selectedBackgroundColor": "#888888",
+                "graphFillAlpha": 0,
+                "autoGridCount": true,
+                "selectedGraphFillAlpha": 0,
+                "graphLineAlpha": 0.2,
+                "graphLineColor": "#c2c2c2",
+                "selectedGraphLineColor": "#888888",
+                "selectedGraphLineAlpha": 1
             },
             "categoryAxis": {
                 "dashLength": 1,
                 "minorGridEnabled": true,
-                "axisColor": Widget.isDark  ? '#eee' : '#333',
-                "gridColor": Widget.isDark  ? '#eee' : '#333'
+                "axisColor": Widget.isDark ? '#eee' : '#333',
+                "gridColor": Widget.isDark ? '#eee' : '#333'
             },
             "data": this.widget.data.data,
 
         };
 
 
-
         // dateforamt
-        obl.categoryAxis.parseDates=false;
+        obl.categoryAxis.parseDates = false;
 
-        if (dataDateFormat)
-        {
-            obl.dataDateFormat=dataDateFormat;
-            obl.categoryAxis.parseDates=true;
-            obl.categoryAxis.minPeriod=minPeriod;
+        if (dataDateFormat) {
+            obl.dataDateFormat = dataDateFormat;
+            obl.categoryAxis.parseDates = true;
+            obl.categoryAxis.minPeriod = minPeriod;
         }
 
-        if (axes)
-        {
-            let a_offset=0;
+        if (axes) {
+            let a_offset = 0;
             axes.forEach((a) => {
                 a_offset++;
-                let ax=
+                let ax =
                     {
                         "id": a,
                         "axisAlpha": 1,
@@ -198,28 +193,26 @@ class DrawAMcharts extends DrawBasicChart{
 
 
         //
-        this.options=obl;
-        this.init=true;
+        this.options = obl;
+        this.init = true;
         this.makeLegend();
 
 
         return true;
 
 
-
     };// create chart
 
 
-    makeLegend(){
+    makeLegend() {
 
 
-        console.log("this.widget.sizeY",this.widget.sizeY);
-        if (this.widget.sizeY<2) {
+        console.log("this.widget.sizeY", this.widget.sizeY);
+        if (this.widget.sizeY < 2) {
             delete this.options.legend;
         }
-        else
-        {
-            this.options.legend= {
+        else {
+            this.options.legend = {
                 "align": "center",
                 "equalWidths": false,
                 "periodValueText": "total: [[value.sum]]",
@@ -232,25 +225,24 @@ class DrawAMcharts extends DrawBasicChart{
     };
 
 
-    getChartGraph (meta,chartSets){
+    getChartGraph(meta, chartSets) {
 
         // SELECT number,sin(number),cos(number),number as `Title [asix=g2:column:blue]`  from system.numbers limit 40
-        let showname=meta.name;
-        let name=meta.name;
-        let useaxis="v1";
+        let showname = meta.name;
+        let name = meta.name;
+        let useaxis = "v1";
 
-        showname=showname.replace(/_axis\d+/gm,'');
+        showname = showname.replace(/_axis\d+/gm, '');
         // showname=showname.replace(/_column\d+/gm,'');
 
-        var re=/.*_axis(\d+).*/i;
+        var re = /.*_axis(\d+).*/i;
         var axis = name.match(re);
 
 
-        if (axis && axis[1])
-        {
-            useaxis='v'+axis[1];
+        if (axis && axis[1]) {
+            useaxis = 'v' + axis[1];
         }
-        let f= {
+        let f = {
             "id": "g1",
             "valueAxis": useaxis,
             "fillAlphas": 0.2,
@@ -265,11 +257,10 @@ class DrawAMcharts extends DrawBasicChart{
             "balloonText": "[[title]] [[category]]<br><b><span style='font-size:14px;'>[[value]]</span></b>"
         };
 
-        if (!chartSets) chartSets={};
+        if (!chartSets) chartSets = {};
 
-        return Object.assign(f,chartSets);
+        return Object.assign(f, chartSets);
     }; // getChartGraph
-
 
 
 }

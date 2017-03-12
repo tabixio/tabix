@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2017 IgorStrykhar  in  SMI2
  * All rights reserved.
@@ -8,13 +7,13 @@
 'use strict';
 
 
-class DrawC3 extends DrawBasicChart{
+class DrawC3 extends DrawBasicChart {
     constructor(Widget) {
 
         super(Widget);
 
-        this.library='c3';
-        this.bindto=false;//buildDrawChart запишет сюда элемент в котором рисовать
+        this.library = 'c3';
+        this.bindto = false;//buildDrawChart запишет сюда элемент в котором рисовать
     }
 
 
@@ -28,20 +27,21 @@ class DrawC3 extends DrawBasicChart{
 
     preProcessor() {
         //
-        console.log('preProcessor>c3.generate');;
+        console.log('preProcessor>c3.generate');
+        ;
         if (!this.initChartByJsCode()) {
             console.error("C3.Init by code");
             return false;
         }
 
-        console.log("c3.options>",this.options);
+        console.log("c3.options>", this.options);
 
 
-        this.options.bindto=this.bindto;
+        this.options.bindto = this.bindto;
 
-        console.log("c3.options>",this.options);
+        console.log("c3.options>", this.options);
 
-        this.chart = c3.generate(  this.options );
+        this.chart = c3.generate(this.options);
     }
 
 }

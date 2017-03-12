@@ -7,12 +7,11 @@
 'use strict';
 
 
-
 class DrawD3 extends DrawBasicChart {
     constructor(Widget) {
 
         super(Widget);
-        this.library='d3';
+        this.library = 'd3';
 
     }
 }

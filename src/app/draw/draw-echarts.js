@@ -7,23 +7,23 @@
 'use strict';
 
 class DrawEcharts extends DrawBasicChart {
-    constructor(Widget,drawType) {
+    constructor(Widget, drawType) {
         super(Widget);
 
-        this.type=drawType.toUpperCase();
+        this.type = drawType.toUpperCase();
         this.library = 'echarts';
 
         // базовые опиции
-        this.options={
+        this.options = {
             version: 3,
             // backgroundColor: '#404a59',
             // title : {
-                // text: 'EChart',
-                // subtext: 'subtext',
-                // left: 'center',
-                // textStyle : {
-                //     color: '#fff'
-                // }
+            // text: 'EChart',
+            // subtext: 'subtext',
+            // left: 'center',
+            // textStyle : {
+            //     color: '#fff'
+            // }
             // },
         };// opthios
 
@@ -45,36 +45,33 @@ class DrawEcharts extends DrawBasicChart {
 
 
         if (this.initChartByJsCode()) {
-            this.init=true;
+            this.init = true;
         }
         else {
-            this.init=this.create();
+            this.init = this.create();
         }
 
         if (this.getError()) {
             console.error(this.getError());
 
-            this.chart.before( "<p>"+this.getError()+"</p>" );
+            this.chart.before("<p>" + this.getError() + "</p>");
 
             return false;
         }
 
-        let drw=this.getDrawCommandObject();
-        if (drw.raw)
-        {
-            this.options=_.merge(this.options,drw.raw);
+        let drw = this.getDrawCommandObject();
+        if (drw.raw) {
+            this.options = _.merge(this.options, drw.raw);
         }
 
 
         if (this.isDark()) {
-            this.options.backgroundColor='#404a59';
-            this.options.color= [ '#dd4444', '#fec42c', '#80F1BE' ];
+            this.options.backgroundColor = '#404a59';
+            this.options.color = ['#dd4444', '#fec42c', '#80F1BE'];
         }
         // log
-        console.info('preProcessor',this.init,this.options);
+        console.info('preProcessor', this.init, this.options);
     }
-
-
 
 
 }

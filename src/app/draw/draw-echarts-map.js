@@ -6,49 +6,46 @@
 
 'use strict';
 
-class DrawEchartsMap extends DrawEcharts
-{
+class DrawEchartsMap extends DrawEcharts {
     create() {
 
 
         // Если это код не JS попробуем получить обьект
-        let drw=this.getDrawCommandObject();
+        let drw = this.getDrawCommandObject();
 
-        let sets={
-            longitude   :'longitude',
-            latitude    :'latitude',
-            count       :'count',
-            name        :'name',
-            title       :'Map',
-            destination : {
-                longitude:'destination_longitude',
-                latitude :'destination_latitude',
-                speed    : 'destination_speed',
-                name     : 'destination_name',
-                count    : 'destination_count'
+        let sets = {
+            longitude: 'longitude',
+            latitude: 'latitude',
+            count: 'count',
+            name: 'name',
+            title: 'Map',
+            destination: {
+                longitude: 'destination_longitude',
+                latitude: 'destination_latitude',
+                speed: 'destination_speed',
+                name: 'destination_name',
+                count: 'destination_count'
             }
         };
 
-        let max_value=0;
-        if (drw)
-        {
-            sets=Object.assign(sets,drw);
+        let max_value = 0;
+        if (drw) {
+            sets = Object.assign(sets, drw);
         }
         // ---------------------------------------------------------------------------
-        let seriesScatter=[];
-        let flySeries=[];
+        let seriesScatter = [];
+        let flySeries = [];
 
         this.data().forEach(function (itemOpt, i) {
 
-            let v=parseInt(itemOpt[sets.count]);
-            if (max_value<v) max_value=v;
+            let v = parseInt(itemOpt[sets.count]);
+            if (max_value < v) max_value = v;
 
 
-            if (itemOpt[sets.destination.longitude] && itemOpt[sets.destination.latitude])
-            {
-                let toName='';
+            if (itemOpt[sets.destination.longitude] && itemOpt[sets.destination.latitude]) {
+                let toName = '';
                 if (itemOpt[sets.destination.name]) {
-                    toName=itemOpt[sets.destination.name];
+                    toName = itemOpt[sets.destination.name];
                 }
                 flySeries.push({
                     fromName: itemOpt[sets.name],
@@ -57,14 +54,13 @@ class DrawEchartsMap extends DrawEcharts
                         [
                             itemOpt[sets.longitude],
                             itemOpt[sets.latitude],
-                    ],
-                    [
-                        itemOpt[sets.destination.longitude],
-                        itemOpt[sets.destination.latitude]
-                    ]]
+                        ],
+                        [
+                            itemOpt[sets.destination.longitude],
+                            itemOpt[sets.destination.latitude]
+                        ]]
                 });
             }
-
 
 
             seriesScatter.push(
@@ -86,7 +82,7 @@ class DrawEchartsMap extends DrawEcharts
         });
 
         // ---------------------------------------------------------------------------
-        let series=[
+        let series = [
             {
                 name: sets.title,
                 type: 'effectScatter',
@@ -99,7 +95,7 @@ class DrawEchartsMap extends DrawEcharts
 
                 symbolSize: function (val) {
                     if (max_value) {
-                        return (val[2] / max_value)*15;
+                        return (val[2] / max_value) * 15;
                     }
                     return val[2] / 10000;
                 },
@@ -127,7 +123,7 @@ class DrawEchartsMap extends DrawEcharts
         // Fly
 
         // ---------------------------------------------------------------------------
-        if (flySeries.length>0) {
+        if (flySeries.length > 0) {
 
             let planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
 
@@ -179,10 +175,11 @@ class DrawEchartsMap extends DrawEcharts
                     data: flySeries
                 }
             );//push
-        };//if
+        }
+        ;//if
         // ---------------------------------------------------------------------------
-        let o={
-            tooltip : {
+        let o = {
+            tooltip: {
                 trigger: 'item'
             },
             // legend: {
@@ -197,7 +194,7 @@ class DrawEchartsMap extends DrawEcharts
             // },
 
             geo: {
-                name:  sets.title,
+                name: sets.title,
                 type: 'map',
                 map: 'world',
                 label: {
@@ -227,7 +224,7 @@ class DrawEchartsMap extends DrawEcharts
             series: series
         };
 
-        this.options=Object.assign(this.options,o);
+        this.options = Object.assign(this.options, o);
         return true;
     }
 

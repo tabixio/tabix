@@ -1,5 +1,23 @@
-https://en.wikipedia.org/wiki/Treemapping
 
+```sql
+SELECT 'RU' as cntr,'MOS' as city,'Izmailovo' as Street,331 as counter
+UNION ALL
+SELECT 'RU' as cntr,'MOS' as city,'Shelkovo' as Street,931 as counter
+UNION ALL
+SELECT 'RU' as cntr,'MOS' as city,'Perovo' as Street,7331 as counter
+UNION ALL
+SELECT 'RU' as cntr,'SPB' as city, 'Centralnay' as Street,5331 as counter
+UNION ALL
+SELECT 'RU' as cntr,'SPB' as city, 'Vokzalnay' as Street,3413 as counter
+UNION ALL
+SELECT 'DE' as cntr,'Munxen' as city, 'Destren' as Street,8413 as counter
+DRAWTREEMAP
+{
+    path:'cntr.city.Street.counter'
+}
+```
+
+![DrawTreemap](/img/draw-treemap.png)
 
 
 JSAPI :
@@ -60,16 +78,9 @@ Convert table to forest :
 
 =>
 
-path : "region.city.street",
-value:"count_people"
-
-
-
+path : "region.city.street.count_people"
 
 ```
 
-Use code :
-http://stackoverflow.com/questions/18017869/build-tree-array-from-flat-array-in-javascript
-+ lodash
 
 

@@ -1,16 +1,15 @@
-class WidgetDraw extends Widget
-{
+class WidgetDraw extends Widget {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
 
-        this.type="draw";
+        this.type = "draw";
         if (this.error || this.text) {
             return;
         }
-        this.library=false;
-        this.sizeY=2;
+        this.library = false;
+        this.sizeY = 2;
 
-        this._list= {
+        this._list = {
             // 'SCATTERMAP': DrawEcharts,
             // 'HEATMAP': DrawEcharts,
             'ECHARTS': DrawEchartsMap,
@@ -23,19 +22,19 @@ class WidgetDraw extends Widget
             'C3': DrawC3
         };
         // if class exists -> init ok
-        this.init=this.getChartClass();
+        this.init = this.getChartClass();
 
 
-        if (this.data.countAll==1) {
+        if (this.data.countAll == 1) {
             // результат толкьо одна отпра
-            this.sizeX=6;
-            this.sizeY=3;
+            this.sizeX = 6;
+            this.sizeY = 3;
         }
     }
 
-    get draw(){
+    get draw() {
         if (this.drawType && !this._draw) {
-            this._draw=new this._list[this.drawType](this,this.drawType);
+            this._draw = new this._list[this.drawType](this, this.drawType);
         }
         return this._draw;
     }
@@ -48,12 +47,12 @@ class WidgetDraw extends Widget
 
     getChartClass() {
         if (!this.drawType) {
-            this.drawType='CHART';
+            this.drawType = 'CHART';
             console.error("Un support DrawType:null");
             // return false;
         }
         if (!this._list[this.drawType]) {
-            console.error("Un support DrawType:"+this.drawType);
+            console.error("Un support DrawType:" + this.drawType);
             return false;
         }
         return true;

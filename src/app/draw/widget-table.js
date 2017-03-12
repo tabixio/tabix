@@ -1,73 +1,73 @@
 class WidgetTable extends Widget {
     constructor(DataProvider, draw) {
         super(DataProvider, draw);
-        this.type='table';
-        this.table= {};
-        this.sort=false;
-        this.hotId='hotIdTable'+Math.floor(Math.random() * 10000000);
+        this.type = 'table';
+        this.table = {};
+        this.sort = false;
+        this.hotId = 'hotIdTable' + Math.floor(Math.random() * 10000000);
         if (this.error) {
-            this.sizeY=1;
-            this.sizeX=6;
-            this.init=false;
-            return ;
+            this.sizeY = 1;
+            this.sizeX = 6;
+            this.init = false;
+            return;
         }
         if (this.text) {
-            this.sizeY=2;
-            this.sizeX=6;
-            this.init=false;
-            return ;
+            this.sizeY = 2;
+            this.sizeX = 6;
+            this.init = false;
+            return;
         }
-        this.hotRegisterer=false;
+        this.hotRegisterer = false;
 
         let ht = new HandsTable(this);
 
         // основной рендер конфиг таблицы
-        this.table= {
+        this.table = {
             settings: ht.makeSettings(),
         };
-        let countColumns=ht.countColumns();
+        let countColumns = ht.countColumns();
         // ширина
         // init table size тут как бы отрефа
         let x = 1;
-        if (countColumns>2) {
-            x=2;
+        if (countColumns > 2) {
+            x = 2;
         }
-        if (countColumns>5) {
-            x=3;
+        if (countColumns > 5) {
+            x = 3;
         }
-        if (countColumns>10) {
-            x=4;
+        if (countColumns > 10) {
+            x = 4;
         }
-        if (countColumns>15) {
-            x=6;
+        if (countColumns > 15) {
+            x = 6;
         }
 
 
         // Для таблицы со статистикой выполнения запросов ширина всегда макс
-        if (this.data.sourceType=='statistics') {
-            x=6;
+        if (this.data.sourceType == 'statistics') {
+            x = 6;
         }
 
 
-        this.sizeX=x;
+        this.sizeX = x;
         //  высота
-        this.sizeY=1;//1...2...3...4...5..
+        this.sizeY = 1;//1...2...3...4...5..
 
-        if (this.data.rows>100) {
-            this.sizeY=2;
+        if (this.data.rows > 100) {
+            this.sizeY = 2;
         }
-        if (this.data.rows>250) {
-            this.sizeY=3;
+        if (this.data.rows > 250) {
+            this.sizeY = 3;
         }
-        if (this.data.rows>500) {
-            this.sizeY=4;
+        if (this.data.rows > 500) {
+            this.sizeY = 4;
         }
 
-        if (this.data.countAll==1) {
+        if (this.data.countAll == 1) {
             // результат толкьо один был запрос
-            this.sizeX=6;
+            this.sizeX = 6;
         }
-        this.init=true;
+        this.init = true;
     }
 
     preProcessor() {
@@ -78,7 +78,7 @@ class WidgetTable extends Widget {
         this.onResize();
     }
 
-    getInstanceHandsontable(){
+    getInstanceHandsontable() {
         if (this.hotRegisterer && this.init && this.element && this.hotId) {
             return this.hotRegisterer.getInstance(this.hotId);
         }
@@ -87,13 +87,13 @@ class WidgetTable extends Widget {
     onResize() {
         console.info("onResize HotTable");
         if (!this.table) return;
-        this.table.width='99.9'+Math.floor(100*Math.random())+'%';
-        this.table.height='99.9'+Math.floor(100*Math.random())+'%';
-        let i=this.getInstanceHandsontable();
+        this.table.width = '99.9' + Math.floor(100 * Math.random()) + '%';
+        this.table.height = '99.9' + Math.floor(100 * Math.random()) + '%';
+        let i = this.getInstanceHandsontable();
         if (i) {
             i.updateSettings({
-                height:this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
-                width:this.table.width
+                height: this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
+                width: this.table.width
 
             });
             i.render();
