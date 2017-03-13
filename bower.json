@@ -1,5 +1,5 @@
 {
-  "name": "SMI2-clickhouse",
+  "name": "Tabix",
   "version": "2.0.0",
   "dependencies": {
     "angular-animate": "1.5.9",
@@ -12,7 +12,8 @@
     "angular-screenfull": "^0.1.1",
     "angular-ui-grid": "^4.0.2",
     "screenfull": "~3.0.2",
-    "angular-sanitize": "^1.5.8",
+    "angular-sanitize": "1.6.2",
+    "angular-messages": "1.6.2",
     "angular-material": "^1.1.1",
     "mdi": "^1.7.22",
     "ng-scrollbars": "^0.0.11",
@@ -175,7 +176,9 @@
   },
   "resolutions": {
     "jquery": "~2.1.4",
-    "angular": "~1.4.12",
-    "handsontable": "~0.30.0"
+    "angular": "~1.5.11",
+    "handsontable": "~0.30.0",
+    "d3": "~4.4.1",
+    "jquery-ui": "~1.12.1"
   }
 }

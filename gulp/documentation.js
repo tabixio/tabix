@@ -20,7 +20,7 @@ gulp.task('docs:generate', [], function() {
 			loadDefaults: {},
 			html5Mode: false,
 			startPage: '/api',
-			title: "Документация Clickhouse Frontend",
+			title: "Документация Tabix",
 			image: "https://smi2.net/wp-content/uploads/2016/02/icon-smi2.png",
 			imageLink: "http://smi2.net",
 			titleLink: "/api"

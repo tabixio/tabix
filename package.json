@@ -1,5 +1,5 @@
 {
-  "name": "SMI2-clickhouse",
+  "name": "Tabix",
   "version": "17.03.1",
   "license": "MIT",
   "repository": {
@@ -11,6 +11,7 @@
     "flat-to-nested": "^1.0.2",
     "glob": "^7.0.3",
     "gulp-ngdocs": "^0.2.13",
+    "gulp-tap": "^0.1.3",
     "marked": "^0.3.5"
   },
   "scripts": {

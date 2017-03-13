@@ -2,8 +2,10 @@
 
 var path = require('path');
 var gulp = require('gulp');
+var tap = require('gulp-tap');
 var conf = require('./conf');
 var packageJson = require('../package.json');
+var orderBowerComponents = require('./bower.js');
 
 var $ = require('gulp-load-plugins')();
 
@@ -57,9 +59,9 @@ gulp.task('inject', ['scripts', 'styles'], function() {
             ignorePath: [conf.paths.src, path.join(conf.paths.tmp, '/serve')],
             addRootSlash: false,
             name: 'assets'
-         }))
+        }))
         .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.TabixBuildDate="'+TabixBuildDate+'"; window.TabixVersion="' + packageJson.version + '";</script>'))
-        // .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.clickhouseGuiVersion="' + packageJson.version + '";</script>'))
         .pipe(wiredep(_.extend({}, conf.wiredep)))
+        .pipe(tap(orderBowerComponents))
         .pipe(gulp.dest(path.join(conf.paths.tmp, '/serve')));
 });

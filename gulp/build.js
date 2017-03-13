@@ -2,12 +2,16 @@
 
 var path = require('path');
 var gulp = require('gulp');
+var tap = require('gulp-tap');
+var fs = require('fs');
 var conf = require('./conf');
 var packageJson = require('../package.json');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
 });
+
+var binaryFiles = [];
 
 gulp.task('partials', function () {
     return gulp.src([
@@ -92,6 +96,11 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe($.revReplace())
+        .pipe(tap(function(file) {
+            if (/\/(vendor|app)-(.{10})/.test(file.path)) {
+                binaryFiles.push(file.path);
+            }
+        }))
         .pipe(htmlFilter)
         .pipe($.replace('<!-- version -->', '<script type="text/javascript">window.TabixBuildDate="'+TabixBuildDate+'"; window.TabixVersion="' + packageJson.version + '";</script>'))
         .pipe($.minifyHtml({
@@ -139,4 +148,17 @@ gulp.task('cname', function () {
     return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
-gulp.task('build', ['html', 'fonts', 'other', 'cname']);
+gulp.task('build', ['html', 'fonts', 'other', 'cname'], function() {
+    for (var i = 0; i < binaryFiles.length; i++) {
+        var path = binaryFiles[i];
+        try {
+            fs.createReadStream(
+                path.replace(/\.tmp\/serve/, conf.paths.dist)
+            ).pipe(fs.createWriteStream(
+                path.replace(/^(.*\/)\.tmp\/serve\/(.*)(app|vendor)-(.{10})(\..*)/, '$1' + conf.paths.dist + '/$2$3$5')
+            ));
+        } catch (e) {
+            console.log('ERROR', e);
+        }
+    }
+});
