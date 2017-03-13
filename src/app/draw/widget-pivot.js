@@ -9,7 +9,14 @@ class WidgetPivot extends Widget {
         }
         // this.height=1;
         // this.sizeX=6;
+        // $.pivotUtilities.subtotal_renderers["Table With Subtotal"],
         this.init = true;
+        this.renderers = $.extend(
+                $.pivotUtilities.renderers,
+                $.pivotUtilities.c3_renderers,
+                $.pivotUtilities.d3_renderers,
+                $.pivotUtilities.export_renderers
+        );
         this.pivot = {
             config: {
                 // cols:['sin'],
@@ -17,12 +24,7 @@ class WidgetPivot extends Widget {
                 // dataClass: $.pivotUtilities.SubtotalPivotData,
                 // renderers: $.pivotUtilities.d3_renderers,
 
-                renderer: $.extend(
-                    // $.pivotUtilities.subtotal_renderers["Table With Subtotal"],
-                    $.pivotUtilities.c3_renderers,
-                    $.pivotUtilities.export_renderers,
-                    $.pivotUtilities.d3_renderers
-                ),
+                renderer: this.renderers
                 // rendererOptions: {
                 //     collapseRowsAt: 1,
                 //     collapseColsAt: 0
