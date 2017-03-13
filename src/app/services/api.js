@@ -307,7 +307,7 @@
             });
 
             return {
-                colWidths: colWidths,
+
                 colHeaders: colHeaders,
                 columns: columns,
                 data: data.data,

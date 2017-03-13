@@ -10,6 +10,7 @@
         '$stateParams',
         '$mdSidenav',
         '$mdComponentRegistry',
+        'hotRegisterer'
     ];
 
     /**
@@ -17,55 +18,9 @@
     * @name smi2.controller:TableContainerController
     * @description Контроллер страницы 1 таблицы БД
     */
-    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry ) {
+    function TableController( $scope, $rootScope, API, ThemeService, $stateParams, $mdSidenav, $mdComponentRegistry,hotRegisterer ) {
 
-        $scope.table = {
-            //
-            //
-            //
-            //
-            data:{
 
-            },
-            settings : {
-                // manualColumnMove: true,
-                // manualColumnResize: true,
-                //
-                // autoWrapRow: true,
-                // // rowHeaders: true,
-                colWidths: 100,
-                // rowHeights: [50, 40, 100],
-                // renderer: 'html',
-                // fillHandle: false,
-                dropdownMenu: true,
-                contextMenu: true,
-                contextMenuCopyPaste: {
-                    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
-                },
-                stretchH: 'all',
-                preventOverflow: 'horizontal',
-                // persistentState:true,
-                // contextMenu: ['row_above', 'row_below', 'remove_row'],
-                // filters: true,
-                //
-                // // fixedRowsTop: 1,
-                // // fixedColumnsLeft: 1,
-                columnSorting: true,
-                sortIndicator: true,
-                // manualRowResize: true,
-                // viewportColumnRenderingOffset:'auto',
-                // // maxRows: 10,
-                // // visibleRows:10,
-                //
-                wordWrap:false
-                // // autoColumnSize: {
-                // //     samplingRatio: 23
-                // // }
-            }
-            // colHeaders: ['A', 'B', 'C', 'D'],
-            // colWidths: [200, 200, 200, 200, 200],
-
-        };
 
 
         $scope.vars = {
@@ -109,10 +64,8 @@
         $scope.onAfterInit = ( ) => {
             // this.validateCells();
         };
-        $scope.initHandTable = ( ) => {
-
-
-                // init
+        $scope.updateHandTable = ( ) => {
+            hotRegisterer.getInstance('hotTableContain').render();
         };
         $scope.initOnGo = ( ) => {
             if ( $scope.$parent.vars ) {
@@ -125,7 +78,39 @@
 
             }
         };
+        $scope.initTableSettings = () => {
 
+            $scope.table = {
+                //
+                //
+                //
+                colHeaders:{
+
+                },
+                data:{
+
+                },
+                settings : {
+                    manualColumnMove: true,
+                    manualColumnResize: true,
+                    autoWrapRow: true,
+                    colWidths: 70,
+                    dropdownMenu: true,
+                    stretchH: 'all',
+                    preventOverflow: 'horizontal',
+                    persistentState:true,
+                    columnSorting: true,
+                    sortIndicator: true,
+                    manualRowResize: true,
+                    viewportColumnRenderingOffset:'auto',
+                    autoColumnSize: {
+                        samplingRatio: 23
+                    }
+                }
+            };
+
+
+        };
         /**
         * Загрузка данных
         */
@@ -133,32 +118,34 @@
 
             console.log($scope.vars.columns);
 
-            // let sort="";
-            // if ($scope.vars.sortColumn) {
-            //     sort="ORDER BY "+$scope.vars.sortColumn+' DESC';
-            // }
-
             $scope.vars.data = -1;
             API.query( `
-                select *
-                from ${ $scope.vars.currentDatabase }.${ $scope.vars.currentTable }
-                
-                
-                
-                limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
+            select * from ${ $scope.vars.currentDatabase }.${ $scope.vars.currentTable } limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
                 ` ).then( function ( data ) {
+
+
+                // провайдер CH или API
+                // let provider='ch';
+                // передаем в
+                // let dp= new DataProvider(data,provider);
+                // new WidgetTable(dp)
+
+
                 // $scope.vars.odata = data.data;
                 let handsontable = API.dataToHandsontable( data );
                 $scope.table.colHeaders=handsontable.colHeaders;
-                // $scope.table.settings.columns=handsontable.columns;
+                $scope.table.settings.columns=handsontable.columns;
                 $scope.table.settings.manualColumnResize=handsontable.columns;
-                $scope.table.settings.colWidths=handsontable.colWidths;
                 $scope.table.data=handsontable.data;
 
-                //
-                // $scope.ugrid.onRegisterApi = function(gridApi){
-                //     $scope.gridApi = gridApi;
-                // };
+
+                $scope.table.settings.width = '99.9' + Math.floor(100 * Math.random()) + '%';
+                $scope.table.settings.height = '99.9' + Math.floor(100 * Math.random()) + '%';
+
+                console.info($scope.table);
+
+                $scope.updateHandTable();
+
 
                 $scope.vars.loading = false;
             }, function ( response ) {
@@ -190,7 +177,7 @@
         };
         $scope.init = ( ) => {
             $scope.vars.loading = true;
-
+            $scope.initTableSettings();
             $scope.vars.createtable = "N/A";
             API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
                 $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
@@ -198,8 +185,8 @@
 
 
             /**
-                * Запрос статистики по таблице
-                */
+            * Запрос статистики по таблице
+            */
             API.query( 'SELECT ' +
                 '	table, ' +
                 '	formatReadableSize(sum(bytes)) as size, ' +
@@ -212,7 +199,6 @@
                 '	database = \'' + $scope.vars.currentDatabase + '\' AND ' + '	( ' + '		table = \'' + $scope.vars.currentTable + '\' OR ' + '		table = \'' + $scope.vars.currentTable + '_sharded\'' + '    ) ' + 'GROUP BY ' + '    table ' ).
             then(response => $scope.vars.statistics = (response && response.data.length && response.data[0]) || {});
 
-            $scope.initHandTable( );
             /**
              * Запрос полей таблицы
              */

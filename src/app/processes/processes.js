@@ -8,7 +8,8 @@
         'ThemeService',
         '$interval',
         'localStorageService',
-        '$mdDialog'
+        '$mdDialog',
+        'hotRegisterer'
     ];
 
     /**
@@ -16,7 +17,7 @@
      * @name smi2.controller:LoginController
      * @description Login page controller
      */
-    function ProcessesController($scope, API, ThemeService, $interval, localStorageService,$mdDialog) {
+    function ProcessesController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,hotRegisterer) {
 
         const LS_INTERVAL_KEY = 'proc.interval';
         const LS_SORT_KEY = 'proc.key';
@@ -45,6 +46,10 @@
             }
         };
 
+        $scope.updateHandTable = ( ) => {
+            hotRegisterer.getInstance('hotTableProcesses').render();
+        };
+
 
         $scope.table = {
             wordWrap:false,
@@ -55,24 +60,12 @@
             settings : {
                 manualColumnMove: true,
                 manualColumnResize: true,
-                //
                 autoWrapRow: true,
-                // // rowHeaders: true,
-                // // colHeaders: _(headers).map(function(header, i) {
-                // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
-                // // }),
                 colWidths: 70,
-                // rowHeights: [50, 40, 100],
-                // renderer: 'html',
-                // fillHandle: false,
                 dropdownMenu: true,
                 stretchH: 'all',
                 preventOverflow: 'horizontal',
                 persistentState:true,
-                // contextMenu: ['row_above', 'row_below', 'remove_row'],
-                // filters: true,
-                //
-                // https://docs.handsontable.com/0.30.1/demo-context-menu.html
                 contextMenu: {
                     callback: function (key, options) {
                         if (key === 'kill') {
@@ -88,14 +81,10 @@
                         "kill": {name: 'Kill query'}
                     }
                 },
-                // fixedRowsTop: 1,
-                // fixedColumnsLeft: 1,
                 columnSorting: true,
                 sortIndicator: true,
                 manualRowResize: true,
                 viewportColumnRenderingOffset:'auto',
-                // // maxRows: 10,
-                // // visibleRows:10,
                 autoColumnSize: {
                     samplingRatio: 23
                 }
@@ -110,9 +99,6 @@
             $scope.table.data=[];
         };
         $scope.load = () => {
-
-            console.info("SHOW PROCESS");
-
             let sql = `SELECT 
                     now() as dt,
                     query,
@@ -179,6 +165,8 @@
                 $scope.vars.data = true;
                 // $scope.vars.cols = data.meta.map(col => col.name);
                 $scope.vars.loading = false;
+                $scope.updateHandTable();
+
             }, function ( response ) {
                 $scope.vars.loading = false;
                 console.error( 'Ошибка ' + response );

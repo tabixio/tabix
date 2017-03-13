@@ -1,4 +1,4 @@
-<div style="position: absolute;top: 0px;bottom: 59px;left: 16px;right: 16px;" class="md-tabs-fix">
+<div style="position: absolute;top: 0px;bottom: 59px;left: 16px;right: 16px;z-index: 1" class="md-tabs-fix">
 
     <h3>{{vars.currentDatabase}}
         <i class="mdi mdi-chevron-right"></i>
@@ -125,7 +125,7 @@
                     <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
                     <hot-table
                         ng-class="{'handsontable-dark': vars.isDark}"
-                        hot-id="hottable"
+                        hot-id="hotTableContain"
                         settings="table.settings"
                         datarows="table.data"
                         style="width: 99%;height: 99%"
