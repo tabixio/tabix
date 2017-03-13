@@ -92,6 +92,12 @@
 *  draw RIVER
 *  Документация : https://tabix.io/doc/ собранный из md файлов
 *  draw SANKEYS
+*  PivotJS D3/C3/Export
+*  draw TREEMAP
+*  Ошибка ``Не введен SQL``
+*  Ошибка позиции `;;\nselect 2\n;;<cursor>\nselect 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
+
+
 
 ### 2016-12-17
 

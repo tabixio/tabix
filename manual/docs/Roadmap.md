@@ -6,34 +6,25 @@ https://tree.taiga.io/project/isublimity-chg/kanban
 ## Roadmap 17Q1
 
 > Фичи
-
 - [ ]  Виджет список предустановленных графиков
-- [ ]  PivotJS D3/C3/Export
-- [ ]  PivotJS Subtotal
-
 
 > Фичи DRAW
-
 - [ ]  dRAW BAR & draw CHART : AmCharts Кill, use Echarts
 - [ ]  dRAW GRID CHART
-- [x]  draw TREEMAP
-
 
 > Дока
-
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
 - [ ]  Оформить Tabix.IO
 
 
 
 > Bugs
-
 - [ ]  draw Sankeys - цвет не подставляет под тему
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 - [ ]  Не правильно показывается таблица визитов, переделать на Виджет таблицы и класс DataProvider+HandsTable
 
 ## Roadmap 17Q2 - UI
-
+- [ ]  PivotJS Subtotal
 - [ ]  draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
 - [ ]  draw SOLAR  - Новый тип визуализации для исследования корреляций
 - [ ]  dRAW GRID CHART - единая ось
@@ -58,12 +49,6 @@ https://tree.taiga.io/project/isublimity-chg/kanban
 - [ ]  Размер несжатых данных
 - [ ]  Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
 - [ ] tableau export via WDC/ODATA
-- [ ] Ошибка ``Не введен SQL``
-- [ ] Ошибка позиции `;;\n
-                      select 2\n
-                      ;;<cursor>\n
-                      select 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
-
 
 
 ## Roadmap 17Q2 - Server
