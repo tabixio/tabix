@@ -445,6 +445,10 @@ window.global_delimiter             = ";;";
                 .$mode
                 .splitByTokens(sql, 'constant.character.escape', use_delimiter)
                 .forEach((item) => {
+
+
+                    // Если исполнить текущий - то дальше не парсим если уже есть один в списке
+                    if (type == 'current' && numquery>0) return;
                     let drawCommand=[];
                     let subSql = item.sql;
                     // Ignore short queries
