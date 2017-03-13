@@ -93,9 +93,10 @@
                 settings : {
                     manualColumnMove: true,
                     manualColumnResize: true,
-                    autoWrapRow: true,
+                    autoWrapRow: false,
+                    wordWrap:false,
                     colWidths: 70,
-                    dropdownMenu: true,
+
                     stretchH: 'all',
                     preventOverflow: 'horizontal',
                     persistentState:true,

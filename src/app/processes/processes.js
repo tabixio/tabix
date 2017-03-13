@@ -99,19 +99,9 @@
             $scope.table.data=[];
         };
         $scope.load = () => {
-            let sql = `SELECT 
-                    now() as dt,
-                    query,
-                    1 as count,
-                     
-                formatReadableSize(read_bytes) as bytes_read, 
-                formatReadableSize(written_bytes) as written_bytes, 
-                formatReadableSize(memory_usage) as memory_usage,
-                read_rows,written_rows,
-                round(elapsed,4) as elapsed ,  * ,  
-                cityHash64(query) as hash,
-                hostName()
-            FROM system.processes `;
+            let sql = `SELECT  now() as dt, query,  1 as count,  formatReadableSize(read_bytes) as bytes_read, 
+                formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
+                read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName() FROM system.processes `;
 
             if ($scope.vars.logMode) {
                 // исключить запрос
