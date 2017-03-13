@@ -81,6 +81,10 @@ class DrawEchartsTreemap extends DrawEcharts {
         if (sets['path']) {
             path = sets['path'];
         }
+        // если короткий вариант это строка с путем
+        if (_.isString(drw)) {
+            path=drw;
+        }
 
         let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
         let len=patharr.length;

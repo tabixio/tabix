@@ -13,11 +13,15 @@ class WidgetDraw extends Widget {
             // 'SCATTERMAP': DrawEcharts,
             // 'HEATMAP': DrawEcharts,
             'ECHARTS': DrawEchartsMap,
+            'BAR': DrawEchartsBar,
             'RIVER': DrawEchartsRiver,
             'MAP': DrawEchartsMap,
             'TREEMAP': DrawEchartsTreemap,
             'SANKEYS': DrawEchartsSunkeys,
+
             'CHART': DrawAMcharts,
+            'GRIDCHART': DrawEchartsGridChart,
+
             'D3': DrawD3,
             'C3': DrawC3
         };

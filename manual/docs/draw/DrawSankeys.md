@@ -59,6 +59,10 @@ DRAWSANKEY
 {
     path : "region.count_in_city.city.count_in_street.street",
 }
+
+or
+DRAWSANKEY
+"region.count_in_city.city.count_in_street.street"
 ```
 
 

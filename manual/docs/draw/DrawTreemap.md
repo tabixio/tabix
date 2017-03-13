@@ -20,6 +20,19 @@ DRAWTREEMAP
 ![DrawTreemap](/img/draw-treemap.png)
 
 
+
+Short :
+
+```sql
+SELECT 'RU' as cntr,'MOS' as city,'Izmailovo' as Street,331 as counter
+UNION ALL
+SELECT 'RU' as cntr,'MOS' as city,'Shelkovo' as Street,931 as counter
+DRAWTREEMAP
+'cntr.city.Street.counter'
+
+```
+
+
 JSAPI :
 
 * https://ecomfe.github.io/echarts-doc/public/en/option.html#series-treemap

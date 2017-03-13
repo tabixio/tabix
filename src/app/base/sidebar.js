@@ -101,6 +101,23 @@
         */
         $scope.openTable = ( table ) => {
             $mdSidenav( 'tableSiedenav' ).close( );
+
+            if ($rootScope.currentDatabase != table.database)
+            {
+
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('USE '+table.database+' database')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                );
+
+
+                $rootScope.currentDatabase = table.database;
+
+            }
+
             $rootScope.currentTable = table.name;
             $mdSidenav( 'tableSiedenav' ).open( );
         };
@@ -261,6 +278,7 @@
                                 a.tables.push(
                                         {
                                                 active:true,
+                                                database:item.database,
                                                 name: item.name,
                                                 engine : item.engine,
                                                 classEngine:item.classEngine,
@@ -278,6 +296,7 @@
                                 tables: [
                                     {
                                         active:true,
+                                        database:item.database,
                                         name: item.name,
                                         engine : item.engine,
                                         classEngine : item.classEngine,

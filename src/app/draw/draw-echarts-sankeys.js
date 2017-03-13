@@ -31,15 +31,29 @@ class DrawEchartsSunkeys extends DrawEcharts {
             return false;
         }
         console.log("sets['path']:", sets['path']);
-        if (sets['path']) {
-            path = sets['path'];
-        } else {
-            if (!this.haveColumn(sets['source']) || !this.haveColumn(sets['target'])) {
-                this.setError("Not set column path or source & target");
-                return false;
-            }
-            path = sets['source'] + '.' + sets['target'];
+
+
+
+        if (_.isString(drw)) {
+            // если короткий вариант это строка с путем
+            path=drw;
         }
+        else {
+
+            // ишем path
+            if (sets['path']) {
+                path = sets['path'];
+            } else {
+                // ищем source+target
+                if (!this.haveColumn(sets['source']) || !this.haveColumn(sets['target'])) {
+                    this.setError("Not set column path or source & target");
+                    return false;
+                }
+                path = sets['source'] + '.' + sets['target'];
+            }
+
+        }
+
 
         let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
 
@@ -51,11 +65,9 @@ class DrawEchartsSunkeys extends DrawEcharts {
 
 
         if (!( patharr.length & 1)) {
-            //
             this.setError("Path четно");
             return false;
         }
-
         let links = [];
         let nodes = [];
 
@@ -69,7 +81,8 @@ class DrawEchartsSunkeys extends DrawEcharts {
         //         {
         //             path : "region.count_in_city.city.count_in_street.street",
         //         }
-
+        //
+        //          DRAWSANKEY  "region.count_in_city.city.count_in_street.street"
 
         this.data().forEach((row) => {
 
@@ -88,8 +101,6 @@ class DrawEchartsSunkeys extends DrawEcharts {
             }
         });
 
-
-        console.log("PATH", path, "links", links, "nodes", nodes);
 
 
         let result_nodes = [];

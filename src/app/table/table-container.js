@@ -191,7 +191,7 @@
         $scope.init = ( ) => {
             $scope.vars.loading = true;
 
-
+            $scope.vars.createtable = "N/A";
             API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
                 $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
             } );
@@ -209,7 +209,8 @@
                 'FROM  ' +
                 '	system.parts ' +
                 'WHERE ' +
-                '	database = \'' + $scope.vars.currentDatabase + '\' AND ' + '	( ' + '		table = \'' + $scope.vars.currentTable + '\' OR ' + '		table = \'' + $scope.vars.currentTable + '_sharded\'' + '    ) ' + 'GROUP BY ' + '    table ' ).then(response => $scope.vars.statistics = (response && response.data.length && response.data[0]) || {});
+                '	database = \'' + $scope.vars.currentDatabase + '\' AND ' + '	( ' + '		table = \'' + $scope.vars.currentTable + '\' OR ' + '		table = \'' + $scope.vars.currentTable + '_sharded\'' + '    ) ' + 'GROUP BY ' + '    table ' ).
+            then(response => $scope.vars.statistics = (response && response.data.length && response.data[0]) || {});
 
             $scope.initHandTable( );
             /**
