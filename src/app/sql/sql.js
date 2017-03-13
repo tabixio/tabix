@@ -580,7 +580,7 @@ window.global_delimiter             = ";;";
             $scope.vars.databasesList=[];
 
             API.setDatabase(db);
-
+            // @todo : тут можно закешить это все )) но сбрасывать при DROP/CREATE запроса
             API.query("SELECT database,table,name,type,default_type,default_expression FROM system.columns", null)
                 .then((data) => {
 
