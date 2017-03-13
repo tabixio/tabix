@@ -76,6 +76,7 @@ window.global_delimiter             = ";;";
                     delimiter : ';'
                 }
             ],
+            databasesList:[],
             currentTab: {},
             selectedTab: 0,
             sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
@@ -576,6 +577,8 @@ window.global_delimiter             = ";;";
             }
 
             $scope.vars.db = db;
+            $scope.vars.databasesList=[];
+
             API.setDatabase(db);
 
             API.query("SELECT database,table,name,type,default_type,default_expression FROM system.columns", null)
@@ -586,7 +589,7 @@ window.global_delimiter             = ";;";
                     let tables = [], dbtables={},
                         utables = {};
                     let keys = [];
-
+                    let dblists={};
                     window.global_keywords_fieldsList = [];
 
 
@@ -598,6 +601,12 @@ window.global_delimiter             = ";;";
                     data.data.forEach((row) => {
                         dbtables[row.database+'.'+row.table]=1;
 
+
+                        if (!_.isString(dblists[row.database]))
+                        {
+                            $scope.vars.databasesList.push(row.database);
+                            dblists[row.database]="y";
+                        }
                         if (row.database==db)
                         {
                             window.global_keywords_fieldsList.push(row);
