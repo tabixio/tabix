@@ -30,7 +30,7 @@
     "d3": "^4.4.1",
     "c3": "^0.4.11",
     "angular-ui-router": "^0.3.2",
-    "handsontable": "^0.31.0",
+    "handsontable": "^0.31.1",
     "sql-formatter": "^1.1.2",
     "amcharts-angular": "*",
     "echarts": "^3.4.0",

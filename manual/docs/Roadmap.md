@@ -21,7 +21,7 @@ https://tree.taiga.io/project/isublimity-chg/kanban
 > Bugs
 - [ ]  draw Sankeys - цвет не подставляет под тему
 - [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
-- [ ]  Не правильно показывается таблица визитов, переделать на Виджет таблицы и класс DataProvider+HandsTable
+
 
 ## Roadmap 17Q2 - UI
 - [ ]  PivotJS Subtotal

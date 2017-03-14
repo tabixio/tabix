@@ -36,10 +36,6 @@ class Widget {
         this.isDark = angular.element('*[ng-app]').injector().get("ThemeService").isDark();
     }
 
-    isDark() {
-        return this.isDark;
-    }
-
     onDrag() {
         // console.info("On widget Draw",this);
     }

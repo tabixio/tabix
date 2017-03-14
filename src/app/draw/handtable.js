@@ -10,8 +10,9 @@ class HandsTable {
 
     constructor(WidgetTable) {
         this.WidgetTable = WidgetTable;
-        this.isDark = WidgetTable.isDark;
 
+        this.isDarkTheme = WidgetTable.isDark;
+        window.isDarkTheme=this.isDarkTheme;
 
         this.meta = WidgetTable.data.meta;
     }
@@ -54,9 +55,8 @@ class HandsTable {
     };
 
     static isDark() {
-        // @todo придумать как достать из isDark из глобального обьекта темы
-        // ??? window.isDarkThemeGlobal
-        return true;
+        return window.isDarkTheme;
+
     }
 
     countColumns() {
@@ -80,7 +80,7 @@ class HandsTable {
             c.type = 'text';
             c.width = 100;
             c.typeOriginal = cell.type;
-            c.isDark = this.isDark;
+            c.isDark = this.isDarkTheme;
 
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
             if (cell.type.includes('Int')) {
@@ -130,7 +130,7 @@ class HandsTable {
         // format = Heatmaps | NegaPosi
         // Heatmap для выбранных колонок,
         // @todo Подобрать цвета для Dark темы , как передать это дарк ?
-        console.info('isDark', ht.getSettings().isDark);
+        console.info('isDark', window.isDarkTheme);
 
         console.warn(ht.getCellMeta(0, 0, 'isDark'));
 
@@ -191,12 +191,31 @@ class HandsTable {
         ht.render();
     }
 
-    static getSelected(ht,autoFullSelect) {
+    static getSelected(ht,autoFullSelect,needFullTable) {
         // отдельный метод - выделение если оно пустое - выделять всю таблицу
-
         let selection = ht.getSelectedRange();
-
         let isSelection=false;
+        if ((!selection && autoFullSelect) || needFullTable)
+        {
+            // тут получаем число строк + число колонок
+            return {
+                isSelection:false,
+                fromRow:0,
+                toRow:ht.countRows(),
+                toCol:ht.countCols(),
+                fromCol:0,
+            }
+        }
+        if (!selection)
+        {
+            return {
+                isSelection:false,
+                fromRow:-1,
+                toRow:-1,
+                toCol:-1,
+                fromCol:-1,
+            }
+        }
 
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
@@ -215,20 +234,12 @@ class HandsTable {
 
     static makeFormat(ht, makeFormat) {
 
-
-        let selection = ht.getSelectedRange();
-        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
-
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
-
-
+        let selection = HandsTable.getSelected(ht,true);
 
 
         let columns = ht.getSettings().columns;
-        for (let col = fromCol; col <= toCol; col++) {
+        for (let col = selection.fromCol; col <= selection.toCol; col++) {
             console.log("makeFormat for coll =" + col, makeFormat);
-
 
             switch (makeFormat) {
                 case 'Reset':
@@ -304,32 +315,57 @@ class HandsTable {
 
     static makeCreateTable(ht) {
         // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
-        let selection = ht.getSelectedRange();
-        let fromRow = Math.min(selection.from.row, selection.to.row);
-        let toRow = Math.max(selection.from.row, selection.to.row);
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
+        let selection = HandsTable.getSelected(ht,true,true);
 
         let outText = [];
+        // let q = "\n" + 'CREATE TABLE x (' + "\n";
+        // let keys = [];
+        //
+        // return q + keys.join(",\n") + "\n ) ENGINE = Log \n;;\n";
+
+
+        let columns = ht.getSettings().columns;
+
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            let rr = [];
+            for (let row = s.fromRow; row <= s.toRow; row++) {
+                rr.push(ht.getDataAtCell(row, col));
+            }
+
+            let unique = rr.filter((v, i, a) => a.indexOf(v) === i);
+
+            // get Type of column
+
+            let typeColumn = columns[col].type.toLowerCase();
+            if (typeColumn.includes('numeric')) {
+                // Если числовая колонка
+
+                outText.push(ht.colToProp(col) + " IN ( " + unique.join(" , ") + ') ');
+
+            } else {
+                outText.push(ht.colToProp(col) + " IN ( '" + unique.join("' , '") + "') ");
+            }
+
+
+        }
+        outText = "\n" + outText.join("\n\tAND\n") + "\n\n";
+
+        console.log(outText);
+        HandsTable.pushToClipboardText(outText);
+
 
     }
 
     static makeWhereIn(ht) {
-        let selection = ht.getSelectedRange();
-        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
 
-        let fromRow = Math.min(selection.from.row, selection.to.row);
-        let toRow = Math.max(selection.from.row, selection.to.row);
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
-
+        let s = HandsTable.getSelected(ht,true);
 
         let outText = [];
         let columns = ht.getSettings().columns;
 
-        for (let col = fromCol; col <= toCol; col++) {
+        for (let col = s.fromCol; col <= s.toCol; col++) {
             let rr = [];
-            for (let row = fromRow; row <= toRow; row++) {
+            for (let row = s.fromRow; row <= s.toRow; row++) {
                 rr.push(ht.getDataAtCell(row, col));
             }
 
@@ -355,27 +391,19 @@ class HandsTable {
         HandsTable.pushToClipboardText(outText);
     }
 
-    static copyToClipboard(ht, styleMarkdown) {
-        let selection = ht.getSelectedRange();
-
-        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
-
-        let fromRow = Math.min(selection.from.row, selection.to.row);
-        let toRow = Math.max(selection.from.row, selection.to.row);
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
-
+    static copyToClipboard(ht, styleMarkdown,fullTable) {
+        let s = HandsTable.getSelected(ht,true,fullTable);
 
         let outText = "";
         let cols = [];
-        for (let col = fromCol; col <= toCol; col++) {
+        for (let col = s.fromCol; col <= s.toCol; col++) {
             cols.push(ht.colToProp(col));
         }
 
         outText = outText + " | " + cols.join(" | ") + " |\n";
         cols = [];
-        for (let row = fromRow; row <= toRow; row++) {
-            for (let col = fromCol; col <= toCol; col++) {
+        for (let row = s.fromRow; row <= s.toRow; row++) {
+            for (let col = s.fromCol; col <= s.toCol; col++) {
                 cols.push(ht.getDataAtCell(row, col));
             }
             outText = outText + " | " + cols.join(" | ") + " |\n";
@@ -389,20 +417,12 @@ class HandsTable {
 
     static makeStyle(ht, style) {
         console.log("makeStyle", style);
+        let s = HandsTable.getSelected(ht,true);
 
 
-        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
-        let selection = ht.getSelectedRange();
-        let fromRow = Math.min(selection.from.row, selection.to.row);
-        let toRow = Math.max(selection.from.row, selection.to.row);
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
-
-        for (let row = fromRow; row <= toRow; row++) {
-            for (let col = fromCol; col <= toCol; col++) {
+        for (let row = s.fromRow; row <= s.toRow; row++) {
+            for (let col = s.fromCol; col <= s.toCol; col++) {
                 let cellMeta = ht.getCellMeta(row, col);
-
-
                 let cl = 'htCell' + style;
                 if (!cellMeta.className || (cellMeta.className && cellMeta.className.indexOf(cl) < 0)) {
                     // добавление класса лучше использовать
@@ -417,19 +437,17 @@ class HandsTable {
         // make columns
         let makeColumns = this.makeColumns();
 
-
         let o = {
             dropdownMenu: true,
             manualColumnMove: true,
             manualColumnResize: true,
             rowHeaders: true,
-
             colWidths: 100,
             fillHandle: false,
             stretchH: 'all',
             // persistentState:true,
             customBorders: true,
-            isDark: this.isDark,
+            isDark: this.isDarkTheme,
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 10,
@@ -574,7 +592,6 @@ class HandsTable {
                                     name: "Normal",
                                     callback: function (key, options, pf) {
                                         HandsTable.makeStyle(this, 'Normal');
-                                        ;
                                     },
                                     key: "style:normal"
                                 },
@@ -619,21 +636,28 @@ class HandsTable {
                                     key: "copyTo:1"
                                 },//
                                 {
+                                    name: "Redmine Markdown (full)",
+                                    callback: function (key, options, pf) {
+                                        console.info("copyToClipboard");
+                                        HandsTable.copyToClipboard(this, 'Redmine',true);
+                                    },
+                                    key: "copyTo:2"
+                                },//
+                                {
                                     name: "WHERE col1 IN (val,val),col2 IN ...",
                                     callback: function (key, options, pf) {
                                         console.info("makeWhereIn");
                                         HandsTable.makeWhereIn(this);
                                     },
-                                    key: "copyTo:2"
-                                },
-                                {
-                                    name: "Create table",
-                                    callback: function (key, options, pf) {
-                                        console.info("Create table");
-                                        HandsTable.makeCreateTable(this);
-                                    },
                                     key: "copyTo:3"
-                                }
+                                },
+                                // {
+                                //     name: "make Create Table",
+                                //     callback: function (key, options, pf) {
+                                //         HandsTable.makeCreateTable(this);
+                                //     },
+                                //     key: "copyTo:4"
+                                // }
                             ]//items
                         },//submenu
                     },
@@ -651,26 +675,12 @@ class HandsTable {
 
                 }
             },
-            //
-            //
-            // manualColumnResize: handsontable.columns,
             // colWidths:handsontable.colWidths;
-            // autoWrapRow: true,
-            // // rowHeaders: true,
-            // // colHeaders: _(headers).map(function(header, i) {
-            // //     return "<report-header display-name='" + header.colName + "' index='" + i + "' > </report-header>";
-            // // }),
-            // rowHeights: [50, 40, 100],
-            // renderer: 'html',
-            //
-
-            //
             contextMenuCopyPaste: {
                 swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
             },
             // observeDOMVisibility:true,
             // observeChanges:true,
-
 
             // Highlighting selection подсветка строк
             currentRowClassName: 'currentRow',
