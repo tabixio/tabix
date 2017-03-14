@@ -191,19 +191,38 @@ class HandsTable {
         ht.render();
     }
 
+    static getSelected(ht,autoFullSelect) {
+        // отдельный метод - выделение если оно пустое - выделять всю таблицу
+
+        let selection = ht.getSelectedRange();
+
+        let isSelection=false;
+
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+
+        return {
+            isSelection:isSelection,
+            fromRow:fromRow,
+            toRow:toRow,
+            toCol:toCol,
+            fromCol:fromCol,
+
+        }
+    }
+
     static makeFormat(ht, makeFormat) {
 
 
         let selection = ht.getSelectedRange();
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
+
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
 
-        // let headers = ht.getColHeader();
-        //
-        // console.log(col,ht.colToProp(col));
-        // console.warn(headers);
-        // console.warn('head',ht.getSettings().colHeaders);
-        // console.warn('columns',ht.getSettings().columns);
+
 
 
         let columns = ht.getSettings().columns;
@@ -283,8 +302,22 @@ class HandsTable {
         document.body.removeChild(textarea);
     }
 
+    static makeCreateTable(ht) {
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
+        let selection = ht.getSelectedRange();
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+        let outText = [];
+
+    }
+
     static makeWhereIn(ht) {
         let selection = ht.getSelectedRange();
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
+
         let fromRow = Math.min(selection.from.row, selection.to.row);
         let toRow = Math.max(selection.from.row, selection.to.row);
         let fromCol = Math.min(selection.from.col, selection.to.col);
@@ -292,12 +325,6 @@ class HandsTable {
 
 
         let outText = [];
-
-        //
-        // for (let col = fromCol; col <= toCol; col++) {
-        //     cols.push(ht.colToProp(col));
-        // }
-
         let columns = ht.getSettings().columns;
 
         for (let col = fromCol; col <= toCol; col++) {
@@ -317,7 +344,7 @@ class HandsTable {
                 outText.push(ht.colToProp(col) + " IN ( " + unique.join(" , ") + ') ');
 
             } else {
-                outText.push(ht.colToProp(col) + " IN ( \"" + unique.join("\" , \"") + '") ');
+                outText.push(ht.colToProp(col) + " IN ( '" + unique.join("' , '") + "') ");
             }
 
 
@@ -330,6 +357,9 @@ class HandsTable {
 
     static copyToClipboard(ht, styleMarkdown) {
         let selection = ht.getSelectedRange();
+
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
+
         let fromRow = Math.min(selection.from.row, selection.to.row);
         let toRow = Math.max(selection.from.row, selection.to.row);
         let fromCol = Math.min(selection.from.col, selection.to.col);
@@ -359,6 +389,9 @@ class HandsTable {
 
     static makeStyle(ht, style) {
         console.log("makeStyle", style);
+
+
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
         let selection = ht.getSelectedRange();
         let fromRow = Math.min(selection.from.row, selection.to.row);
         let toRow = Math.max(selection.from.row, selection.to.row);
@@ -574,31 +607,33 @@ class HandsTable {
 
                     // -------------------- Copy to  --------------------------------------------------------------------
                     "copyTo": {
-                        name: 'Copy To',
+                        name: 'To Clipboard',
                         submenu: {
                             items: [
                                 {
                                     name: "Redmine Markdown",
                                     callback: function (key, options, pf) {
+                                        console.info("copyToClipboard");
                                         HandsTable.copyToClipboard(this, 'Redmine');
                                     },
                                     key: "copyTo:1"
-                                }//Money
-                            ]//items
-                        },//submenu
-                    },
-                    "whereIN": {
-                        name: 'copy `where IN`',
-                        submenu: {
-                            items: [
+                                },//
                                 {
-                                    name: "col1 (val,val),col2 ...",
+                                    name: "WHERE col1 IN (val,val),col2 IN ...",
                                     callback: function (key, options, pf) {
+                                        console.info("makeWhereIn");
                                         HandsTable.makeWhereIn(this);
-
                                     },
-                                    key: "whereIN:1"
-                                }//Money
+                                    key: "copyTo:2"
+                                },
+                                {
+                                    name: "Create table",
+                                    callback: function (key, options, pf) {
+                                        console.info("Create table");
+                                        HandsTable.makeCreateTable(this);
+                                    },
+                                    key: "copyTo:3"
+                                }
                             ]//items
                         },//submenu
                     },
