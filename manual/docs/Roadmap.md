@@ -16,11 +16,8 @@ https://tree.taiga.io/project/isublimity-chg/kanban
 - [ ]  Оформить readme https://habrahabr.ru/company/everydaytools/blog/322694/
 - [ ]  Оформить Tabix.IO
 
-
-
 > Bugs
 - [ ]  draw Sankeys - цвет не подставляет под тему
-- [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 
 
 ## Roadmap 17Q2 - UI
@@ -48,7 +45,7 @@ https://tree.taiga.io/project/isublimity-chg/kanban
 - [ ]  Позиция ошибки в корявом sql, парсить ошибку на строку + позицию , заставить Ace найти этот запрос и отпозиционироваться Syntax error: failed at position 25 (line 2, col 4)
 - [ ]  Размер несжатых данных
 - [ ]  Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
-- [ ] tableau export via WDC/ODATA
+- [ ]  Не перенесенно из старой версии - кнопка экспорта и кнопка создать таблицу в HotTable
 
 
 ## Roadmap 17Q2 - Server

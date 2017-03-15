@@ -1,3 +1,26 @@
+### SQL
+
+
+```sql
+
+SELECT 'RU' as cntr,'MOS' as city,12 as value,'Izmailovo' as Street,3 as strval
+UNION ALL
+SELECT 'RU' as cntr,'MOS' as city,12 as value,'Perovo' as Street,4 as strval
+UNION ALL
+SELECT 'RU' as cntr,'SPB' as city,8 as value,'Centralnay' as Street,1 as strval
+UNION ALL
+SELECT 'RU' as cntr,'SPB' as city,8 as value,'Vokzalnay' as Street,3 as strval
+
+DRAW_SANKEYS
+{
+    path:'cntr.value.city.strval.Street'
+}
+
+```
+
+![DRAW_sankeys](/img/draw-sankeys.png)
+
+
 ----
 
 Echart API:
@@ -48,20 +71,20 @@ Format :
 [ _source_ . _count_ . _target_ . _count2_ . _target2_
 
 
-DRAWSANKEY
+DRAW_SANKEY
 {
 "region.count_in_city.city.count_in_street.street"
 }
 
 or
 
-DRAWSANKEY
+DRAW_SANKEY
 {
     path : "region.count_in_city.city.count_in_street.street",
 }
 
 or
-DRAWSANKEY
+DRAW_SANKEY
 "region.count_in_city.city.count_in_street.street"
 ```
 
@@ -78,7 +101,7 @@ not set path, must set columns: `source + target + value`
 
 =>
 
-DRAWSANKEY
+DRAW_SANKEY
 {
 
 }
@@ -88,29 +111,10 @@ DRAWSANKEY
 Rename `value`
 
 ```
-DRAWSANKEY
+DRAW_SANKEY
 {
     value:'my_count_column'
 }
 ```
 
 
-### Example
-
-
-```sql
-
-SELECT 'RU' as cntr,'MOS' as city,12 as value,'Izmailovo' as Street,3 as strval
-UNION ALL
-SELECT 'RU' as cntr,'MOS' as city,12 as value,'Perovo' as Street,4 as strval
-UNION ALL
-SELECT 'RU' as cntr,'SPB' as city,8 as value,'Centralnay' as Street,1 as strval
-UNION ALL
-SELECT 'RU' as cntr,'SPB' as city,8 as value,'Vokzalnay' as Street,3 as strval
-
-DRAWSANKEYS
-{
-    path:'cntr.value.city.strval.Street'
-}
-
-```

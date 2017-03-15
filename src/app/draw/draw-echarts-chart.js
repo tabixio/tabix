@@ -3,4 +3,11 @@
 
 class DrawEchartsChart extends DrawEcharts {
 
+
+    create(){
+
+
+
+
+    }
 }

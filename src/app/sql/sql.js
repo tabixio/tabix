@@ -485,7 +485,7 @@ window.global_delimiter             = ";;";
 
                             if (angular.isDefined(i.keyword) && i.keyword)
                             {
-                                let d=/DRAW(\w+)/img;
+                                let d=/DRAW_(\w+)/img;
                                 let found=d.exec(i.keyword);
                                 if (found && found[1])
                                 {

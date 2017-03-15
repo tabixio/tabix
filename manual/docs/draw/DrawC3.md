@@ -6,7 +6,7 @@ http://c3js.org/samples/simple_multiple.html
     
 select 1
 
-DRAWC3
+DRAW_C3
 function (d)
 {
     let x={

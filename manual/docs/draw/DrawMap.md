@@ -1,7 +1,7 @@
 ## Params
 
 ```javascript
-DRAWMAP
+DRAW_MAP
 {
     longitude   :'longitude',
     latitude    :'latitude',
@@ -34,7 +34,7 @@ FROM sessions
 where create_date=today()
 group by geoname_id
 
-DRAWMAP
+DRAW_MAP
 {
   name        :'nameXYRU'
 }

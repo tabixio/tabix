@@ -1,13 +1,13 @@
 ## Direct chart by JS code
 
 
-Доступно у любого типа DRAWMAP / DRAWC3 / DRAWCHART -> результат ф-ции передается в обьект графика как настройки
+Доступно у любого типа DRAW_MAP / DRAW_C3 / DRAW_CHART -> результат ф-ции передается в обьект графика как настройки
 
 
 ```sql
 
 SELECT 1
-DRAWECHARTS
+DRAW_ECHARTS
 function (d)
 {
     console.log(d.data);
@@ -43,7 +43,7 @@ GROUP BY event_date,campaign_id
 ORDER BY event_date,views DESC
 LIMIT 10 BY event_date
 LIMIT 1400
-DRAWECHARTS
+DRAW_ECHARTS
 function (d)
 {
     let x={

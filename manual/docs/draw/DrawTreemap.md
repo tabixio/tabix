@@ -11,13 +11,13 @@ UNION ALL
 SELECT 'RU' as cntr,'SPB' as city, 'Vokzalnay' as Street,3413 as counter
 UNION ALL
 SELECT 'DE' as cntr,'Munxen' as city, 'Destren' as Street,8413 as counter
-DRAWTREEMAP
+DRAW_TREEMAP
 {
     path:'cntr.city.Street.counter'
 }
 ```
 
-![DrawTreemap](/img/draw-treemap.png)
+![DRAW_Treemap](/img/draw-treemap.png)
 
 
 
@@ -27,7 +27,7 @@ Short :
 SELECT 'RU' as cntr,'MOS' as city,'Izmailovo' as Street,331 as counter
 UNION ALL
 SELECT 'RU' as cntr,'MOS' as city,'Shelkovo' as Street,931 as counter
-DRAWTREEMAP
+DRAW_TREEMAP
 'cntr.city.Street.counter'
 
 ```

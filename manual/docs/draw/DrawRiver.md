@@ -27,7 +27,7 @@ LIMIT 3 BY dt
 
 LIMIT 1601
 
-DRAWRIVER
+DRAW_RIVER
 {
             x          :'dt',
             y          :'cnt',
@@ -45,7 +45,7 @@ Example `series[0].itemStyle.emphasis.opacity=number`
 See [api](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
 
 ```JS
-DRAWRIVER
+DRAW_RIVER
 {
             x          :'dt',
             y          :'cnt',
