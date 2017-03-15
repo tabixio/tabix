@@ -74,6 +74,35 @@ class DrawEcharts extends DrawBasicChart {
     }
 
 
+    getParameterPath()
+    {
+        let drw = this.getDrawCommandObject();
+
+        let sets = {
+            path: '',
+        };
+        if (drw) {
+            sets = Object.assign(sets, drw);
+        }
+        // -----------------------------------
+        let path = '';
+
+        if (_.isString(drw)) {
+            // если короткий вариант это строка с путем
+            path=drw;
+        }
+        else {
+            // ишем path
+            if (sets['path']) {
+                path = sets['path'];
+            }
+        }
+        // -----------------------------------
+        if (!path) return false;
+        // -----------------------------------
+        let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+        return patharr;
+    }
 
     applyDataZoom()
     {

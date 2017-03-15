@@ -60,13 +60,6 @@ class WidgetDraw extends Widget {
         }
         return true;
 
-        // if this.draw.code - exec/eval code and merge objects
-
-        // merging objects
-        // let ob = Object.assign(defaults,list[this.drawType]);
-        // for (let [k, v] of Object.entries(ob)) {
-        //     this[k]=v;
-        // }
     }
 }
 
