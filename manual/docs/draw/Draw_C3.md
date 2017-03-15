@@ -1,6 +1,4 @@
-Example
-
-http://c3js.org/samples/simple_multiple.html
+## SQL
 
 ```sql
     
@@ -21,3 +19,9 @@ function (d)
     
 ```
 
+![DrawRiver](/img/draw-c3.png)
+
+
+Example
+
+http://c3js.org/samples/simple_multiple.html

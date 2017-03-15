@@ -1,11 +1,3 @@
-
-![DrawRiver](/img/draw-river.png)
-
-
-EchartAPI:
-* [series-themeRiver](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
-* [singleAxis](https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis)
-
 ## SQL
 
 ```sql
@@ -37,9 +29,16 @@ DRAW_RIVER
 }
 ```
 
+![DrawRiver](/img/draw-river.png)
 
 
 ## RAW
+
+
+EchartAPI:
+* [series-themeRiver](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
+* [singleAxis](https://ecomfe.github.io/echarts-doc/public/en/option.html#singleAxis)
+
 
 Example `series[0].itemStyle.emphasis.opacity=number`
 See [api](https://ecomfe.github.io/echarts-doc/public/en/option.html#series-themeRiver)
