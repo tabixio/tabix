@@ -19,3 +19,4 @@ DRAW_HEATMAP
 }
 ```
 
+![heatmap](/img/draw-heatmap.png)
