@@ -3,8 +3,8 @@
 var path = require('path');
 var gulp = require('gulp');
 var tap = require('gulp-tap');
-var fs = require('fs');
 var conf = require('./conf');
+var loader = require('./loader');
 var packageJson = require('../package.json');
 
 var $ = require('gulp-load-plugins')({
@@ -109,6 +109,9 @@ gulp.task('html', ['inject', 'partials'], function () {
             quotes: true,
             conditionals: true
         }))
+        .pipe(tap(function(file) {
+            loader(file);
+        }))
         .pipe(htmlFilter.restore)
         .pipe(gulp.dest(path.join(conf.paths.dist, '/')))
         .pipe($.size({
@@ -148,17 +151,4 @@ gulp.task('cname', function () {
     return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
-gulp.task('build', ['html', 'fonts', 'other', 'cname'], function() {
-    for (var i = 0; i < binaryFiles.length; i++) {
-        var path = binaryFiles[i];
-        try {
-            fs.createReadStream(
-                path.replace(/\.tmp\/serve/, conf.paths.dist)
-            ).pipe(fs.createWriteStream(
-                path.replace(/^(.*\/)\.tmp\/serve\/(.*)(app|vendor)-(.{10})(\..*)/, '$1' + conf.paths.dist + '/$2$3$5')
-            ));
-        } catch (e) {
-            console.log('ERROR', e);
-        }
-    }
-});
+gulp.task('build', ['html', 'fonts', 'other', 'cname']);
