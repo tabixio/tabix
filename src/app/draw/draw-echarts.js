@@ -101,6 +101,17 @@ class DrawEcharts extends DrawBasicChart {
         if (!path) return false;
         // -----------------------------------
         let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+
+
+        // проверка что колонки установленны
+        for (let i = 0; i < patharr.length;i++)
+        {
+            if (!this.haveColumn(patharr[i])) {
+                this.setError("Not set column in path :"+patharr[i]);
+                return false;
+            }
+        }
+
         return patharr;
     }
 
