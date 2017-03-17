@@ -19,13 +19,15 @@
                             <th style="width: 10%">{{'Тип' | translate}}</th>
                             <th style="width: 10%">{{'Default тип' | translate}}</th>
                             <th style="width: 10%">{{'Значение' | translate}}</th>
+                            <th style="width: 10%">{{'Размер' | translate}}</th>
+                            <th style="width: 10%">Compress</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         <tr class="text-left" ng-repeat="field in vars.columns.data">
                             <td class="tc-grey-400">{{$index + 1}}</td>
-                            <td ng-repeat="key in ['name', 'type', 'default_type', 'default_expression'] track by $index">
+                            <td ng-repeat="key in ['name', 'type', 'default_type', 'default_expression','size','ratio'] track by $index">
                                 {{field[key]}}
                             </td>
                         </tr>
@@ -70,17 +72,17 @@
                                     {{vars.statistics.maxDate}}
                                 </td>
                             </tr>
-                            <tr class="data-table-row">
-                                <td class="tc-grey-400">4</td>
-                                <td>{{'Примерный размер несжатых данных' | translate}}</td>
-                                <td ng-if="!vars.isRawStatistics" >
-                                    <md-button class="md-primary" ng-click="calcRawSize()">{{'Расчитать' | translate}}
-                                    </md-button>
-                                </td>
-                                <td ng-if="vars.isRawStatistics">
-                                    {{vars.rawstatistics}}
-                                </td>
-                            </tr>
+                            <!--<tr class="data-table-row">-->
+                                <!--<td class="tc-grey-400">4</td>-->
+                                <!--<td>{{'Примерный размер несжатых данных' | translate}}</td>-->
+                                <!--<td ng-if="!vars.isRawStatistics" >-->
+                                    <!--<md-button class="md-primary" ng-click="calcRawSize()">{{'Расчитать' | translate}}-->
+                                    <!--</md-button>-->
+                                <!--</td>-->
+                                <!--<td ng-if="vars.isRawStatistics">-->
+                                    <!--{{vars.rawstatistics}}-->
+                                <!--</td>-->
+                            <!--</tr>-->
                         </tbody>
                     </table>
 

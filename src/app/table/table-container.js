@@ -203,32 +203,53 @@
             /**
              * Запрос полей таблицы
              */
-            API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => {
-                $scope.vars.columns = data;
+            API.query( 'SELECT * FROM system.columns WHERE database=\'' + $scope.vars.currentDatabase + '\' AND table=\'' + $scope.vars.currentTable+'\'' ).then( columnsData => {
+
+                // columnsData
+
+                API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => {
 
 
+                    _.map(data.data,function(o) {
+                        let k=_.find(columnsData.data, {'name': o.name});
+                        _.merge(o, k);
 
-                // Загружаем данные
+                        o.size='-';
+                        o.ratio='-';
 
-                $scope.vars.sortColumn=false;
-                let c=0;
-                data.data.forEach((col) =>
-                {
-                    if (c<3) {
-                        if (col.type=='Date') {
-                            $scope.vars.sortColumn=col.name;
+                        console.log(o);
+                        //появились data_compressed_bytes, data_uncompressed_bytes,
+                        if (o.data_compressed_bytes)
+                        {
+                            o.size=numbro(o.data_compressed_bytes).format('0.0 b')+' / '+numbro(o.data_uncompressed_bytes).format('0.0 b');
+
+                            o.ratio=numbro(parseInt(o.data_uncompressed_bytes)/parseInt(o.data_compressed_bytes)).format('0.0');
                         }
-                        if (col.type=='DateTime') {
-                            $scope.vars.sortColumn=col.name;
+                        return o;
+                    });
+
+                    $scope.vars.columns = data;
+
+                    // Загружаем данные
+
+                    $scope.vars.sortColumn=false;
+                    let c=0;
+                    data.data.forEach((col) =>
+                    {
+                        if (c<3) {
+                            if (col.type=='Date') {
+                                $scope.vars.sortColumn=col.name;
+                            }
+                            if (col.type=='DateTime') {
+                                $scope.vars.sortColumn=col.name;
+                            }
+
                         }
+                        c=c+1;
+                    });
 
-                    }
-                    c=c+1;
-
-
-                });
-
-                $scope.load( );
+                    $scope.load( );
+                } );
             } );
 
 

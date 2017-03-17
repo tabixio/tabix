@@ -136,7 +136,7 @@
                 'сек':'sec',
                 'Обновление отключено':'Disable refresh',
                 'Логирование':'Logs',
-                'Перенос строк':'TextWrap'
+                'Перенос строк':'TextWrap',
 
             })
             .translations('ru', {
