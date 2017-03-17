@@ -139,20 +139,26 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
 
             if (typeof window.global_chFunctionsHelp['functions'][use] != 'undefined')
             {
+                let lang=window.global_lang;
+                if (!lang) lang='ru';
                 let help=window.global_chFunctionsHelp['functions'][use];
                 let brackets='';
-                let desc_ru='';
-                let desc_en='';
-                if (help['desc']['ru'])
+                let desc='';
+                if (help['desc'])
                 {
+
+
                     brackets=help['bracket'];
-                    desc_ru=help['desc']['ru'];
-                    desc_en=help['desc']['en'];
+                    desc=help['desc'][lang];
+                    if (!desc) {
+                        desc=(help['desc']['en']?help['desc']['en']:help['desc']['ru']);
+                    }
+
                 }
 
 
-                if (desc_ru) desc_ru=desc_ru.replace(/\.\s*/gm, ".<br>");
-                body='<span class="ace_doc-header"><b>' + fn + brackets+'</b></span><br><span class="ace_doc-description">' + desc_ru +' </span>';
+                if (desc) desc=desc.replace(/\.\s*/gm, ".<br>");
+                body='<span class="ace_doc-header"><b>' + fn + brackets+'</b></span><br><span class="ace_doc-description">' + desc +' </span>';
             }
             else {
                 body='<span class="ace_doc-header"><b>' + fn + '( ) </b></span><br>' + origin;

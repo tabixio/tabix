@@ -10,6 +10,7 @@ window.global_keywords_fieldsList   = "";
 window.global_keywords_dictList     = "";
 window.global_builtinFunctions      = [];
 window.global_delimiter             = ";;";
+window.global_lang                  = "ru";
 
 ((angular, smi2) => {
     'use strict';
@@ -27,7 +28,8 @@ window.global_delimiter             = ";;";
         'ThemeService',
         '$timeout',
         '$filter',
-        'hotkeys'
+        'hotkeys',
+        '$translate'
     ];
 
     /**
@@ -46,7 +48,8 @@ window.global_delimiter             = ";;";
                            ThemeService,
                            $timeout,
                            $filter,
-                           hotkeys) {
+                           hotkeys,
+                           $translate) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -690,6 +693,11 @@ window.global_delimiter             = ";;";
                 return;
             }
             console.log("loadDictionaries");
+
+            window.global_lang =$translate.use(); // проброс языка в ACE
+
+
+
             $scope.vars.dictionaries = [];
             window.global_keywords_dictList=[];
             API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
