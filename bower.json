@@ -115,7 +115,6 @@
     "echarts": {
       "main": [
         "dist/echarts.js",
-        "map/js/world.js",
         "theme/dark.js",
         "theme/macarons.js",
         "theme/vintage.js"
