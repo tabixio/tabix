@@ -371,6 +371,7 @@ window.global_delimiter             = ";;";
          * @param tab
          */
         $scope.execute = (type, tab) => {
+            console.groupCollapsed("Execute query");
 
             let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
             let numquery = 0;
@@ -415,8 +416,8 @@ window.global_delimiter             = ";;";
             }
 
             // ------------------------------------------------------------------------------------------------
-            console.log("window.performance.memory",window.performance.memory);
-
+            console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+            console.info( 'Cache:',$.cache);
 
             // Clear not-pinned tabs
             tab.results = tab.results.reduce((arr, item) => {
@@ -427,8 +428,6 @@ window.global_delimiter             = ";;";
             }, []);
 
             tab.results.unshift(result);
-
-            console.log("window.performance.memory",window.performance.memory);
 
             // ------------------------------------------------------------------------------------------------
             // Save to SQL log
@@ -458,6 +457,9 @@ window.global_delimiter             = ";;";
 
                     // Если исполнить текущий - то дальше не парсим если уже есть один в списке
                     if (type == 'current' && numquery>0) return;
+
+
+
                     let drawCommand=[];
                     let subSql = item.sql;
                     // Ignore short queries
@@ -468,17 +470,18 @@ window.global_delimiter             = ";;";
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
+                        console.log("Exec current position :",cursor);
+                        console.log("Item range :",item.range);
                         if (!cursor || angular.isUndefined(cursor)) {
                             return;
                         }
                         else
                         {
                             let rg=item.range.compare(cursor.row, cursor.column);
+                            console.log("Range compare = ",rg);
+
                             if (rg !== 0) return ;
-
                         }
-
-
                     }
 
                     // определяем есть ли комманда DRAW .* - все что после нее есть JavaScript
@@ -552,6 +555,8 @@ window.global_delimiter             = ";;";
 
                     numquery++;
                 });
+
+            console.groupEnd();
 
             if (queue.length) {
                 $scope.vars.currentTab.progress = {};

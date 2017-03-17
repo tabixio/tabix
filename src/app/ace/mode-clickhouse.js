@@ -74,13 +74,13 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
         // ------------------------------------------------------------------------------
         this.trim = function (text , value) {
 
-            text = text.trim().replace(/^(\r\n|\n|\r)/gm, " ").replace(/(\r\n|\n|\r)$/gm, " ");
+            // text = text.trim().replace(/^(\r\n|\n|\r)/gm, " ").replace(/(\r\n|\n|\r)$/gm, " ");
             if (value!==true &&  typeof value === 'string' && value.length>0)
             {
                 text=text.replace("^(" + value + ")", "  ").replace(value + "$", "  ");
                 text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "  ");
             }
-            text = text.replace(/^(\r\n|\n|\r)/gm, "  ").replace(/(\r\n|\n|\r)$/gm, "  ");
+            // text = text.replace(/^(\r\n|\n|\r)/gm, "  ").replace(/(\r\n|\n|\r)$/gm, "  ");
             return text.trim();
         };
         // ------------------------------------------------------------------------------
