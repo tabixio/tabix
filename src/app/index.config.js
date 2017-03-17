@@ -114,17 +114,27 @@
                 'с': 'from',
                 'по': 'to',
                 'Открыть таблицу': 'Open table',
-
-
+                'Метрики': 'Metrics',
+                'Поиск': 'Search',
+                'Справка': 'Help',
+                'Список процессов': 'Processes',
+                'История зарпросов': 'Query log',
                 ';; Двойной':';; Double',
                 '; Одинарный':'; Single',
-                'Разделитель запросов':'Delimiters queries'
+                'Разделитель запросов':'Delimiters queries',
+                'Сборка':'Build',
+                'СМИ2':'Smi2',
+                'Сервер':'Server',
+                'Config':'Config',
+                'Config Key':'Config Key',
+                'все права защищены':'all rights reserved',
+                'Привязка':'Pinned'
             })
             .translations('ru', {
-            })
+            }).useMissingTranslationHandlerLog()
             .registerAvailableLanguageKeys(['en', 'ru'], {
-                'ru_*': 'ru',
-                'ru-*': 'ru',
+                // 'ru_*': 'ru',
+                // 'ru-*': 'ru',
                 '*': 'en'
             })
             .determinePreferredLanguage();

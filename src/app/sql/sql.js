@@ -414,6 +414,10 @@ window.global_delimiter             = ";;";
                 return;
             }
 
+            // ------------------------------------------------------------------------------------------------
+            console.log("window.performance.memory",window.performance.memory);
+
+
             // Clear not-pinned tabs
             tab.results = tab.results.reduce((arr, item) => {
                 if (item.pinned) {
@@ -421,8 +425,12 @@ window.global_delimiter             = ";;";
                 }
                 return arr;
             }, []);
+
             tab.results.unshift(result);
 
+            console.log("window.performance.memory",window.performance.memory);
+
+            // ------------------------------------------------------------------------------------------------
             // Save to SQL log
             if ($scope.vars.sqlLog.indexOf(sql) == -1) {
                 $scope.vars.sqlLog.unshift(sql);

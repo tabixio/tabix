@@ -71,7 +71,7 @@
     function buildLinkFunc($compile,$timeout,hotRegisterer) {
 
         return function (scope, element, attrs) {
-
+            console.warn("buildLinkFunc:!!!!!!!!!!!!",scope.widget.type);
             // задаем виджету стиль темный / светлый
             scope.widget.isDark=scope.isdark;
 
