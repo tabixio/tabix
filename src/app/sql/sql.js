@@ -593,19 +593,20 @@ window.global_lang                  = "ru";
             }
 
             $scope.vars.db = db;
-            $scope.vars.databasesList=[];
+
+            let dblists={};
 
             API.setDatabase(db);
-            // @todo : тут можно закешить это все )) но сбрасывать при DROP/CREATE запроса
+            // @todo : тут _НУЖНО_ закешить это все )) но сбрасывать при DROP/CREATE запроса
             API.query("SELECT database,table,name,type,default_type,default_expression FROM system.columns", null)
                 .then((data) => {
-
+                    $scope.vars.databasesList=[];
                     let fields = [],
                         ufields = {};
                     let tables = [], dbtables={},
                         utables = {};
                     let keys = [];
-                    let dblists={};
+
                     window.global_keywords_fieldsList = [];
 
 

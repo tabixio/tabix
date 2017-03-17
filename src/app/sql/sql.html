@@ -95,7 +95,7 @@
                         <md-input-container>
                             <md-select ng-model="vars.db" placeholder="Select database">
                                 <md-optgroup label="Database">
-                                    <md-option ng-value="dbb" ng-repeat="dbb in vars.databasesList" ng-click="selectDatabase(dbb)">USE {{dbb}}</md-option>
+                                    <md-option ng-value="dbb" ng-repeat="dbb in vars.databasesList track by $index" ng-click="selectDatabase(dbb)">USE {{dbb}}</md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>

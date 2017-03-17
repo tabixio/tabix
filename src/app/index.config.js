@@ -128,7 +128,16 @@
                 'Config':'Config',
                 'Config Key':'Config Key',
                 'все права защищены':'all rights reserved',
-                'Привязка':'Pinned'
+                'Привязка':'Pinned',
+                'Обновить':'Refresh',
+                'Очистить':'Reset',
+                'Максимально точек':'Max points',
+                'Частота обновления':'Frequency',
+                'сек':'sec',
+                'Обновление отключено':'Disable refresh',
+                'Логирование':'Logs',
+                'Перенос строк':'TextWrap'
+
             })
             .translations('ru', {
             }).useMissingTranslationHandlerLog()
