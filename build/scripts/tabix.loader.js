@@ -2,8 +2,8 @@
     var domain = '';
     var elements = document.getElementsByTagName("script");
     for (var i = 0; i < elements.length; i++) {
-        if (/tabix\.loader\.js$/.test(elements[i].src)) {
-            domain = elements[i].src.match(/(https?://[^/]+/)/)[1];
+        if (/tabix.loader.js$/.test(elements[i].src)) {
+            domain = elements[i].src.match(/(https?\:\/\/[^\/]+\/)/)[1];
             break;
         }
     }
@@ -74,5 +74,5 @@
     "assets/js/ace/themes/theme-vibrant_ink.js",
     "assets/js/ace/themes/theme-xcode.js",
     "scripts/vendor-baf27d548c.js",
-    "scripts/app-4206e0d3a0.js"
+    "scripts/app-0970180463.js"
     ].forEach(loadFile);

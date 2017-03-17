@@ -21,8 +21,8 @@ module.exports = function(file) {
     var domain = '';
     var elements = document.getElementsByTagName("script");
     for (var i = 0; i < elements.length; i++) {
-        if (/${loaderName.replace(/\./g, '\\.')}$/.test(elements[i].src)) {
-            domain = elements[i].src.match(/(https?\:\/\/[^\/]+\/)/)[1];
+        if (/${loaderName.replace(/\\./g, '\\.')}$/.test(elements[i].src)) {
+            domain = elements[i].src.match(/(https?\\:\\/\\/[^\\/]+\\/)/)[1];
             break;
         }
     }
