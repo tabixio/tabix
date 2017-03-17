@@ -151,4 +151,10 @@ gulp.task('cname', function () {
     return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
-gulp.task('build', ['html', 'fonts', 'other', 'cname']);
+gulp.task('copy:assets', function () {
+    return gulp
+        .src(path.join(conf.paths.src, '/assets/**/*.*'))
+        .pipe(gulp.dest(path.join(conf.paths.dist, '/assets/')));
+});
+
+gulp.task('build', ['html', 'fonts', 'other', 'cname', 'copy:assets']);

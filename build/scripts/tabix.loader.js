@@ -74,5 +74,5 @@
     "assets/js/ace/themes/theme-vibrant_ink.js",
     "assets/js/ace/themes/theme-xcode.js",
     "scripts/vendor-baf27d548c.js",
-    "scripts/app-0970180463.js"
+    "scripts/app-394948aee2.js"
     ].forEach(loadFile);
