@@ -140,13 +140,12 @@ class DrawBasicChart {
     getDrawCommandObject() {
         if (!this.drawCodeObject) return false;
         if (!this.drawCodeObject.type) return false;
-        if (this.drawCodeObject.exec) return false;
+        // if (this.drawCodeObject.exec) return false;
         return this.drawCodeObject.code;
     }
 
     initDrawCodeObject() {
         let drawCommand = this.widget.drawCommnads;
-
         if (!drawCommand) {
             return [];
         }
@@ -158,10 +157,27 @@ class DrawBasicChart {
         if (!codeDrawText) {
             return [];
         }
+
+        codeDrawText=codeDrawText.trim();
+
         let draw = {
             code: false,
             type: false
         };
+
+        if (drawCommand.drawtype.toLowerCase()=='text') {
+
+            let obj=codeDrawText;
+
+            draw = {
+                isok: true,
+                code: obj,
+                type: typeof obj,
+                exec: false
+            };
+            return draw;
+        }
+
 
         try {
             let code = '(' + codeDrawText + ')';
@@ -176,16 +192,6 @@ class DrawBasicChart {
                 type: type,
                 exec: !!(obj && obj.constructor && obj.call && obj.apply)
             };
-
-
-            // // получаем настройки по осям
-            // meta.forEach((i) => {
-            //     // получаем ключь для каждой оси
-            //     if (object[i.name])
-            //     {
-            //         chartSets[i.name]=object[i.name];
-            //     }
-            // });
         } catch (E) {
             console.error('error eval ', code);
         }

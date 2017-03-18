@@ -18,47 +18,25 @@ class DrawText extends DrawBasicChart {
 
     preProcessor() {
 
-        if (this.initChartByJsCode()) {
-            this.init = true;
+        // find template in DrawCommand
+        let template = this.getDrawCommandObject();
+        this.init = this.applyText(template);
+    }
+    applyText(template)
+    {
+        if (this.isDark()) {
+            this.widget.element[0].style.background = '#404a59';
+        }
+        if (!template) {
+            this.widget.element[0].innerHTML='<pre>'+JSON.stringify(this.widget.data, null, '\t')+'</pre>';
         }
         else {
-            this.init = this.create();
+            this.widget.element[0].innerHTML= Mustache.render(template, this.widget.data);
         }
-
-        if (this.getError()) {
-            console.error(this.getError());
-
-            this.chart.before("<p>" + this.getError() + "</p>");
-
-            return false;
-        }
-
-        let drw = this.getDrawCommandObject();
-        if (drw.raw) {
-            this.options = _.merge(this.options, drw.raw);
-        }
-
-
-        if (this.isDark()) {
-            this.options.backgroundColor = '#404a59';
-            this.options.color = ['#dd4444', '#fec42c', '#80F1BE'];
-        }
-        // log
-        console.info('preProcessor', this.init, this.options);
-    }
-    applyText()
-    {
-        this.widget.element[0].style.background='silver';
-        this.widget.element[0].innerHTML='<pre>HH!!!!</pre>';
-        console.log(this.widget.element);
+        return true;
     }
     onResize() {
 
     }
 
-    create() {
-
-        this.applyText();
-
-    }
 }
