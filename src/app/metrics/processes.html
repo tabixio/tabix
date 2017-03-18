@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="ProcessesController as render"   style="width: 100%;height: 100%">
     <h1 class="md-title">{{'Список процессов' | translate}}</h1>
     <md-card-content>
         <div layout="row">
@@ -38,6 +38,24 @@
             </md-input-container>
 
         </div>
+
+        <div layout="row">
+        <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
+        <hot-table
+                ng-class="{'handsontable-dark': vars.isDark}"
+                hot-id="hotTableProcesses"
+                word-wrap="table.wordWrap"
+                settings="table.settings"
+                datarows="table.data"
+                style="width: 100%;height: 100%;"
+                col-headers="table.colHeaders"
+                manual-column-resize="true"
+                class="font-monospace"
+        >
+        </hot-table>
+
+
+        </div>
     </md-card-content>
 </div>
 
@@ -45,23 +63,7 @@
 <!--<div class="card__actions pl pr+ pt+ pb" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden;">-->
 
 
-<div layout="row">
-     <!--ng-scrollbars ng-scrollbars-config="vars.scrollConfig"-->
-    <span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
 
-    <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
-    <hot-table
-            ng-class="{'handsontable-dark': vars.isDark}"
-            hot-id="hotTableProcesses"
-            word-wrap="table.wordWrap"
-            settings="table.settings"
-            datarows="table.data"
-            style="width: 100%;height: 100%"
-            col-headers="table.colHeaders"
-            manual-column-resize="true"
-            class="font-monospace"
-    >
-    </hot-table>
 
     <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
 </div>

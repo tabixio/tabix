@@ -14,13 +14,14 @@
 
     /**
      * @ngdoc controller
-     * @name smi2.controller:LoginController
-     * @description Login page controller
      */
     function ProcessesController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,hotRegisterer) {
 
         const LS_INTERVAL_KEY = 'proc.interval';
         const LS_SORT_KEY = 'proc.key';
+
+
+        //
 
         $scope.vars = {
             queryesToKill:{},
@@ -50,7 +51,7 @@
             hotRegisterer.getInstance('hotTableProcesses').render();
         };
 
-
+//
         $scope.table = {
             wordWrap:false,
 

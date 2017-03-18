@@ -1,63 +1,34 @@
-<div>
-    <h1 class="md-title">{{'Метрики' | translate}}</h1>
-    <md-card-content>
-        <div layout="row">
-            <md-input-container class="md-block" flex-gt-sm>
+<md-tabs md-stretch-tabs="yes" md-border-bottom md-autoselect layout-fill md-selected="vars.selectedTabResultIndex" style="width: 100%;height: 100%">
 
-                <label>{{'Частота обновления' | translate}}</label>
-                <md-select ng-model="vars.interval" ng-change="setInterval()" >
-                    <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
-                        {{interval == -1 ? ('Обновление отключено'|translate) : interval  +' '+('сек'|translate)}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
-
-            <md-input-container class="md-block" flex-gt-sm>
-
-                <label>{{'Максимально точек' | translate}}</label>
-                <md-select ng-model="maxlength" ng-change="setMaxlength()" >
-                    <md-option ng-repeat="interval in [50, 100, 500, 1500,3600,5000,10000]" ng-value="interval">
-                        {{interval}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
+<!-- !Overview! -->
+        <md-tab md-on-select="initOverviewTab()" ng-click="initOverviewTab()" layout-fill>
+            <md-tab-label>
+                {{'Обзор' | translate}} <i class="mdi mdi-18px mdi-table-large"></i>
+            </md-tab-label>
+            <md-tab-body>
+                <div ng-include="'app/metrics/overview.html'" ng-if="vars.active.Overview"></div>
+            </md-tab-body>
+        </md-tab>
 
 
-            <!--<md-input-container class="md-block" flex-gt-sm>-->
-                <!--<md-switch class="md-primary" name="special" ng-model="table.wordWrap">-->
-                    <!--{{'Перенос строк' | translate}}-->
-                <!--</md-switch>-->
-            <!--</md-input-container>-->
-            <md-input-container class="md-block" flex-gt-sm>
-                <md-switch class="md-primary" name="special" ng-model="vars.logEvents">
-                    system.events
-                </md-switch>
-            </md-input-container>
+<!-- !Chart metrics! -->
+        <md-tab md-on-select="initChartTab()" layout-fill>
+            <md-tab-label>
+                {{'Метрики' | translate}} <i class="mdi mdi-18px mdi-chart-bar"></i>
+            </md-tab-label>
+            <md-tab-body>
+                <div flex layout-fill ng-include="'app/metrics/metricschart.html'" ng-if="vars.active.Chart"></div>
+            </md-tab-body>
+        </md-tab>
 
 
-            <md-input-container class="md-block" flex-gt-sm ng-click="load()">
-                <md-button class="md-raised md-primary">{{'Обновить' | translate}}</md-button>
-            </md-input-container>
-
-            <md-input-container class="md-block" flex-gt-sm ng-click="flush()">
-                <md-button class="md-raised">{{'Очистить' | translate}}</md-button>
-            </md-input-container>
-
-        </div>
-    </md-card-content>
-</div>
-
-<md-card-content>
-
-
-<div layout="row">
-    <!--<span ng-if="vars.data === null && !vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>-->
-
-    <!--<md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>-->
-
-</div>
-
-
-    <div id="metrcisChart" style="width: 100%;height: 100%"></div>
-
-</md-card-content>
+<!-- !Show Processes! -->
+        <md-tab md-on-select="initProcessesTab()" layout-fill>
+            <md-tab-label>
+                {{'Список процессов' | translate}} <i class="mdi mdi-18px mdi-palette-advanced"></i>
+            </md-tab-label>
+            <md-tab-body >
+                <div flex  layout-fill ng-include="'app/metrics/processes.html'" ng-if="vars.active.Processes"></div>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>

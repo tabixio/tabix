@@ -115,6 +115,7 @@
                 'по': 'to',
                 'Открыть таблицу': 'Open table',
                 'Метрики': 'Metrics',
+                'Метрики и список процессов': 'Metrics & Processes',
                 'Поиск': 'Search',
                 'Справка': 'Help',
                 'Список процессов': 'Processes',
@@ -137,7 +138,7 @@
                 'Обновление отключено':'Disable refresh',
                 'Логирование':'Logs',
                 'Перенос строк':'TextWrap',
-
+                'Обзор':'Overview'
             })
             .translations('ru', {
             }).useMissingTranslationHandlerLog()

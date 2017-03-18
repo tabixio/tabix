@@ -1,0 +1,56 @@
+<div ng-controller="MetricschartController as render"   style="width: 100%;height: 100%">
+    <h1 class="md-title">{{'Метрики' | translate}}</h1>
+    <md-card-content>
+        <div layout="row">
+            <md-input-container class="md-block" flex-gt-sm>
+
+                <label>{{'Частота обновления' | translate}}</label>
+                <md-select ng-model="vars.interval" ng-change="setInterval()" >
+                    <md-option ng-repeat="interval in [-1, 1, 5, 10, 20, 30]" ng-value="interval">
+                        {{interval == -1 ? ('Обновление отключено'|translate) : interval  +' '+('сек'|translate)}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm>
+
+                <label>{{'Максимально точек' | translate}}</label>
+                <md-select ng-model="maxlength" ng-change="setMaxlength()" >
+                    <md-option ng-repeat="interval in [50, 100, 500, 1500,3600,5000,10000]" ng-value="interval">
+                        {{interval}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+
+            <!--<md-input-container class="md-block" flex-gt-sm>-->
+                <!--<md-switch class="md-primary" name="special" ng-model="table.wordWrap">-->
+                    <!--{{'Перенос строк' | translate}}-->
+                <!--</md-switch>-->
+            <!--</md-input-container>-->
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="vars.logEvents">
+                    system.events
+                </md-switch>
+            </md-input-container>
+
+
+            <md-input-container class="md-block" flex-gt-sm ng-click="load()">
+                <md-button class="md-raised md-primary">{{'Обновить' | translate}}</md-button>
+            </md-input-container>
+
+            <md-input-container class="md-block" flex-gt-sm ng-click="flush()">
+                <md-button class="md-raised">{{'Очистить' | translate}}</md-button>
+            </md-input-container>
+
+        </div>
+    </md-card-content>
+
+
+<md-card-content>
+    <div style="width: 100%;height: 100%" >
+        <div id="metrcisChart" style="width: 100%;height: 100%"></div>
+    </div>
+</md-card-content>
+
+</div>
