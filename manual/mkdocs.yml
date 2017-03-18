@@ -30,10 +30,10 @@ extra:
       link: 'https://twitter.com/tabix.io'
 
 # Google Analytics
-google_analytics:
-  - 'UA-XXXXXXXX-X'
-  - 'auto'
-
+#google_analytics:
+#  - 'UA-XXXXXXXX-X'
+#  - 'auto'
+site_favicon: 'favicon.ico'
 extra_css:
   - 'stylesheets/extra.css'
 # Extensions
