@@ -153,8 +153,10 @@
                 if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
                     httpProto = 'http://';
                 }
+
                 url = httpProto + connection.host +
-                    '/?add_http_cors_header=1';
+                    '/?add_http_cors_header=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
+
                 if (connection.login) {
                     url += '&user=' + connection.login;
                 }
@@ -171,6 +173,9 @@
                     url += '&'+connection.params;
                 }
 
+                //
+                // https://github.com/sockjs/sockjs-client
+
                  req = {
                     method: 'POST',
                     data :query,
@@ -178,6 +183,20 @@
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     url: url,
+                    //  eventHandlers:{
+                    //      readystatechange: function(event) {
+                    //          console.log("readystatechange");
+                    //          console.log(event);
+                    //      },
+                    //      progress:function(event){
+                    //          console.log("progress",event.lengthComputable);
+                    //          console.log(event);
+                    //      },onreadystatechange:function(event){
+                    //          console.log("change");
+                    //          console.log(event);
+                    //      }
+                    // },
+
                     transformResponse: (data, header, status) => {
                         try {
                             return angular.fromJson(data);

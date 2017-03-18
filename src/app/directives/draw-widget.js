@@ -38,10 +38,13 @@
         if (widget.draw.library=='c3') {
 
             widget.draw.bindto=element[0];
-
             html=false;
         }
 
+        if (widget.draw.library=='text') {
+            widget.element = angular.element(`<div style="width: 100%;height: 100%">&nbsp;</div>`);
+            html=false;
+        }
         if (widget.draw.library=='d3') {
             console.info('DW:d3');
             // <!--<nvd3 options="widget.chart.options"-->

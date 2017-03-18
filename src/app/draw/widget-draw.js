@@ -1,5 +1,5 @@
 class WidgetDraw extends Widget {
-    constructor(DataProvider, draw) {
+    constructor(DataProvider, draw,sizeX,sizeY) {
         super(DataProvider, draw);
 
         this.type = "draw";
@@ -20,13 +20,24 @@ class WidgetDraw extends Widget {
             'SANKEYS': DrawEchartsSunkeys,
             'CHART': DrawAMcharts,
             'GRIDCHART': DrawEchartsGridChart,
-
+            'TEXT': DrawText,
             'D3': DrawD3,
             'C3': DrawC3
         };
         // if class exists -> init ok
         this.init = this.getChartClass();
 
+        if (this.drawType=='TEXT') {
+            this.sizeX = 0;
+            this.sizeY = 0;
+        }
+
+        if (_.isNumber(sizeX)) {
+            this.sizeX = sizeX;
+        }
+        if (_.isNumber(sizeY)) {
+            this.sizeY = sizeY;
+        }
 
         if (this.data.countAll == 1) {
             // результат толкьо одна отпра

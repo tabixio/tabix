@@ -28,20 +28,26 @@ class DataProvider {
                 this.text = result.data
             }
         }
-
+        if (!sourceType) sourceType='ch';
         this.sourceType = sourceType;
         this.meta = result.meta;
-        this.query = result.query;
+
+        if (result.query) {
+            this.query = result.query;
+        }
+        else {
+            this.query = {index:0,drawCommands:false}
+        }
         if (result.error) {
             this.error = result.error;
         }
         else {
             this.error = false;
         }
-        this.draw = result.query.drawCommands;
+        this.draw = this.query.drawCommands;
         this.rows = result.rows;
 
-        this.position = result.query.index;     // порядковый номер
+        this.position = this.query.index;     // порядковый номер
         this.countAll = result.countAllQuery;   // всего запросов в выполнении
 
     }
