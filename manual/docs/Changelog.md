@@ -97,7 +97,8 @@
 *  Ошибка ``Не введен SQL``
 *  Ошибка позиции `;;\nselect 2\n;;<cursor>\nselect 4\n` в коде `item.range.compare(cursor.row, cursor.column) !== 0)`
 *  Не правильно показывается таблица в сплывашке
-
+*  Обзор сервера
+*  Draw_TEXT
 
 ### 2016-12-17
 

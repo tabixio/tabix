@@ -45,6 +45,18 @@ Echarts examples :
 * [Echarts example](https://ecomfe.github.io/echarts-examples/public/editor.html?c=treemap-disk)
 
 
+```SQL
+DRAW_TREEMAP
+{
+    path:'cntr.city.Street.counter',
+    title:'My Title Chart',
+    tooltip:'My tooltip',
+    valueformat:'0.0b',//tooltip format by numbrojs
+
+}
+
+```
+
 Original, the the data format of series-treemap.data is a forest.
 
 ```javascript

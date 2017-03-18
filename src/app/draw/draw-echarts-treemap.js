@@ -71,6 +71,9 @@ class DrawEchartsTreemap extends DrawEcharts {
 
         let sets = {
             path: '',
+            title:'TreeMap',
+            tooltip:'Usage',
+            valueformat:false
         };
 
         if (drw) {
@@ -130,7 +133,7 @@ class DrawEchartsTreemap extends DrawEcharts {
             for (let i = 0; i < len-1; i = i + 1) {
                 p.push(row[patharr[i]]);
                 let sum=_.get(sumTree,p.join('_'),0);
-                _.set(sumTree,p.join('.')+'.__value',sum+value);
+                _.set(sumTree,p.join('.')+'.__value',parseFloat(sum)+parseFloat(value));
             }
             _.set(treeData,p.join('.'),value);
         });
@@ -146,12 +149,13 @@ class DrawEchartsTreemap extends DrawEcharts {
             }
 
         };
-        var formatUtil = echarts.format;
+
+        let  formatUtil = echarts.format;
 
         o.series = [
             {
                 type: 'treemap',
-                name: 'treemap',
+                name: sets['title'],
                 // visibleMin: 300,
                 label: {
                     show: true,
@@ -160,17 +164,22 @@ class DrawEchartsTreemap extends DrawEcharts {
 
                 tooltip: {
                     formatter: function (info) {
-                        var value = info.value;
-                        var treePath = [];
-                        var treePathInfo = info.treePathInfo;
-
-                        for (var i = 1; i < treePathInfo.length; i++) {
+                        let value = info.value;
+                        let treePath = [];
+                        let treePathInfo = info.treePathInfo;
+                        for (let i = 1; i < treePathInfo.length; i++) {
                             treePath.push(treePathInfo[i].name);
                         }
 
+                        let valueformat=sets['valueformat'];
+
+                        if (!valueformat) valueformat='0,0.0';
+                        //value
+
+
                         return [
-                            '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('/')) + '</div>',
-                            'Disk Usage: ' + formatUtil.addCommas(value) + ' KB',
+                            '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('.')) + '</div>',
+                            sets['tooltip']+' : ' + numbro(value).format(valueformat),
                         ].join('');
                     }
                 },

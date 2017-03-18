@@ -12,8 +12,8 @@ class DrawBasicChart {
         this.chart = false;// тут храниться обьект
         this.init = false;
         this.options = {};
-        this.widget.height = 2;
-        this.widget.width = 2;
+        this.widget.height = 1;
+        this.widget.width = 1;
         this.errorMessage = '';
 
 
@@ -158,17 +158,26 @@ class DrawBasicChart {
             return [];
         }
 
-        codeDrawText=codeDrawText.trim();
+
 
         let draw = {
             code: false,
             type: false
         };
 
+        if (_.isObject(codeDrawText)) {
+            draw = {
+                isok: true,
+                code: codeDrawText,
+                type: typeof codeDrawText,
+                exec: false
+            };
+            return draw;
+        }
+
+
         if (drawCommand.drawtype.toLowerCase()=='text') {
-
-            let obj=codeDrawText;
-
+            let obj=codeDrawText.trim();
             draw = {
                 isok: true,
                 code: obj,

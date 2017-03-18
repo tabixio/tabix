@@ -111,8 +111,22 @@
         $scope.init = () => {
             console.info("Init OverviewController");
             API.query(`SELECT hostName() as h,version() as v,uptime() as up`).then(function ( queryResult ) {
-                let drawCommand={drawtype:'TEXT',code:'{}'};
-                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,0,3));
+                let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,0,0));
+
+            });
+
+            API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
+
+                let obj={
+                        path:'database.table.name.data_compressed_bytes' ,
+                        title:'columns data_compressed_bytes',
+                        tooltip:'Size',
+                        valueformat:'0.00 b'
+                };
+
+                let drawCommand={drawtype:'TREEMAP',code:obj};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
 
             });
 
