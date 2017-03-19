@@ -17,3 +17,18 @@ DRAW_CHART
 
 
 ![AutoAxis](/img/draw-chart-noautoAxis.png)
+
+
+### Chart & markLine
+
+Draw median line
+
+
+```javascript
+DRAW_CHART
+{
+    markLine:true
+}
+```
+
+![AutoAxis](/img/draw-chart-markLine.png)

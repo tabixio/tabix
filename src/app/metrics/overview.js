@@ -116,9 +116,10 @@
             //
             // });
 
-            API.query(`select modification_time,bytes,marks,table,  primary_key_bytes_in_memory from system.parts order by modification_time LIMIT 1000`).then(function ( queryResult ) {
+            API.query(`select modification_time,bytes,marks,table,  primary_key_bytes_in_memory from system.parts order by modification_time LIMIT 123`).then(function ( queryResult ) {
                 let obj={
-                    autoAxis:true
+                    autoAxis:true,
+                    markLine:false
                     // path:'database.table.name.data_compressed_bytes' ,
                     // title:'columns data_compressed_bytes',
                     // tooltip:'Size',

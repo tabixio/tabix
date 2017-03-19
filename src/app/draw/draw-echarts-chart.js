@@ -90,6 +90,8 @@ class DrawEchartsChart extends DrawEcharts {
 
         let sets = {
             autoAxis: true,
+            // markPoint: false,
+            markLine:true,
         };
         if (drw) {
             sets = Object.assign(sets, drw);
@@ -149,6 +151,17 @@ class DrawEchartsChart extends DrawEcharts {
 
                     data:dataThisColumn
                 };
+
+
+                if (sets.markLine){
+                    seria.markLine={data:[
+                        {
+                            name: 'mediana',
+                            yAxis: mediana,
+                        },
+                    ]};
+                }
+
                 // добавляем в серию
                 series.push(seria);
 
@@ -158,6 +171,8 @@ class DrawEchartsChart extends DrawEcharts {
                     median:mediana,
                     index:index
                 });
+
+
                 // index series
                 index=index+1;
             }
