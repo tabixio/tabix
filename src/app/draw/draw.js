@@ -137,6 +137,21 @@ class DrawBasicChart {
         return false;
     }
 
+    getColumns(position) {
+        let list=_.map(this.meta(),'name');
+        if (!_.isUndefined(position)) {
+            return list[position];
+        }
+        return list;
+
+    }
+
+    getFirstColumn() {
+        return this.getColumns(0);
+    }
+
+
+
     getDrawCommandObject() {
         if (!this.drawCodeObject) return false;
         if (!this.drawCodeObject.type) return false;

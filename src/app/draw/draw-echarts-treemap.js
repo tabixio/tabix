@@ -47,7 +47,7 @@ class DrawEchartsTreemap extends DrawEcharts {
             x.value=sumNode.__value;
             if (_.isObject(node))
             {
-                console.log('! forEach',node,key);
+                // console.log('! forEach',node,key);
                 let children=self.buildTreeData(node,sumNode);
 
                 if (_.isArray(children) && children.length){
@@ -137,8 +137,8 @@ class DrawEchartsTreemap extends DrawEcharts {
             }
             _.set(treeData,p.join('.'),value);
         });
-        console.log("treeData",treeData);
-        console.log("sumTree",sumTree);
+        // console.log("treeData",treeData);
+        // console.log("sumTree",sumTree);
 
         let bTree=this.buildTreeData(treeData,sumTree);
         // ------------------------------------------------------------------------------

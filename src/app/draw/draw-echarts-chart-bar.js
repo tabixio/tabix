@@ -10,11 +10,9 @@ class DrawEchartsBar extends DrawEchartsChart {
 
 
 
-    create() {
+    createChart(drw) {
 
 
-        // Если это код не JS попробуем получить обьект
-        let drw = this.getDrawCommandObject();
 
         let sets = {
             path: '',
@@ -28,17 +26,10 @@ class DrawEchartsBar extends DrawEchartsChart {
         if (sets['path']) {
             path = sets['path'];
         }
-        // если короткий вариант это строка с путем
-        if (_.isString(drw)) {
-            path=drw;
-        }
-
-        let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
-        let len=patharr.length;
 
 
 
-        this.options = Object.assign(o, this.options);
+
         return true;
 
     }

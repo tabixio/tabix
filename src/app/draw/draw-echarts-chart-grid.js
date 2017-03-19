@@ -10,11 +10,10 @@ class DrawEchartsGridChart extends DrawEchartsChart {
 
 
 
-    create() {
+    createChart(drw) {
 
 
         // Если это код не JS попробуем получить обьект
-        let drw = this.getDrawCommandObject();
 
         let sets = {
             path: '',
