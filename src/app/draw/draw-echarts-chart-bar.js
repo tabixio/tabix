@@ -8,29 +8,9 @@
 
 class DrawEchartsBar extends DrawEchartsChart {
 
-
-
-    createChart(drw) {
-
-
-
-        let sets = {
-            path: '',
+    preCreate(drw) {
+        this.preference.bar=true;
+        return {
         };
-
-        if (drw) {
-            sets = Object.assign(sets, drw);
-        }
-
-        let path = '';
-        if (sets['path']) {
-            path = sets['path'];
-        }
-
-
-
-
-        return true;
-
     }
 }

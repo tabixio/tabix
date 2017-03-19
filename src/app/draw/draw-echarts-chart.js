@@ -9,13 +9,7 @@ class DrawEchartsChart extends DrawEcharts {
         let drw = this.getDrawCommandObject();
 
         let optionsPreCreate = this.preCreate(drw);
-
-
-
         let options = this.createChart(drw);
-
-
-
         let GlobalOption = {
 
             toolbox: {
@@ -33,49 +27,31 @@ class DrawEchartsChart extends DrawEcharts {
             tooltip: {
                 trigger: 'axis'
             },
-            title: {
-                textAlign:'center'
-            },
             grid: {
                 left: '3%',
                 right: '4%',
                 bottom: '3%',
                 containLabel: true
             },
-            dataZoom: [
-                {
-                    type: 'inside',
-                    show: true,
-                    realtime: true,
-                },
-                {
-                    show: true,
-                    realtime: true,
-                }
-            ]
+
         };
 
-
-
         if (drw['title']) {
-            GlobalOption.title.text=drw['title'];
+            this.applyTitle(drw['title']);
         }
+        this.applyDataZoom();
+        this.applyLegend();
+
+
+
+
         this.options = Object.assign(options, this.options,GlobalOption,optionsPreCreate);
 
 
 
-
-        this.makeLegend();
-
         console.info(this.options);
 
         return true;
-
-        // stack - если указан общий то группируется по полю
-
-        // Включение подсветки min/max/avg - линий или точками
-        // series.0.markPoint.data=[{type: 'max' }, {type: 'min' }, {type: 'average' }]
-        // series.0.markLine.data=[{type: 'max' }, {type: 'min' }, {type: 'average' }]
 
 
         // BAR отличается от Line указанием серии + можно повернуть на 90гр.
@@ -84,13 +60,7 @@ class DrawEchartsChart extends DrawEcharts {
 
     }
 
-    makeLegend(drw) {
-        // достаем из series все Name для создания legend.data[]
-        this.options.legend={
-            data:_.map(this.options.series,'name'),
-            x: 'left'
-        };
-    }
+
 
     findDateTimeAxis() {
         // Автоматическое определение

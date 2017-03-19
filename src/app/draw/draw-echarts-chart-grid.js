@@ -8,14 +8,9 @@
 
 class DrawEchartsGridChart extends DrawEchartsChart {
 
-
-
     preCreate(drw) {
-
+        this.preference.gridchart=true;
         return {
-
         };
-
-
     }
 }

@@ -1,5 +1,5 @@
 class WidgetTable extends Widget {
-    constructor(DataProvider, draw) {
+    constructor(DataProvider, draw,sizeX,sizeY) {
         super(DataProvider, draw);
         this.type = 'table';
         this.table = {};
@@ -67,6 +67,13 @@ class WidgetTable extends Widget {
             // результат толкьо один был запрос
             this.sizeX = 6;
         }
+        if (_.isNumber(sizeX)) {
+            this.sizeX = sizeX;
+        }
+        if (_.isNumber(sizeY)) {
+            this.sizeY = sizeY;
+        }
+
         this.init = true;
     }
 
