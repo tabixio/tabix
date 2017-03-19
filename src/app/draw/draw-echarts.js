@@ -16,6 +16,7 @@ class DrawEcharts extends DrawBasicChart {
         // базовые опиции
         this.options = {
             version: 3,
+            textStyle:{fontFamily:'Menlo'},
             // backgroundColor: '#404a59',
             // title : {
             // text: 'EChart',

@@ -110,17 +110,19 @@
 
         $scope.init = () => {
             console.info("Init OverviewController");
-            // API.query(`SELECT hostName() as h,version() as v,uptime() as up`).then(function ( queryResult ) {
-            //     let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
-            //     $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,0,0));
-            //
-            // });
+            API.query(`SELECT hostName() as h,version() as v,uptime() as up`).then(function ( queryResult ) {
+                let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,0,0));
 
-            API.query(`select modification_time,bytes,marks,table,  primary_key_bytes_in_memory from system.parts order by modification_time LIMIT 123`).then(function ( queryResult ) {
+            });
+
+            API.query(`select toStartOfFiveMinute(modification_time) as dt,
+            sum(bytes) as bytes from system.parts group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
                 let obj={
                     autoAxis:true,
                     markLine:false,
-                    stack:true
+                    stack:true,
+                    title:'system.parts bytes'
                     // path:'database.table.name.data_compressed_bytes' ,
                     // title:'columns data_compressed_bytes',
                     // tooltip:'Size',
@@ -130,19 +132,19 @@
                 let drawCommand={drawtype:'CHART',code:obj};
                 $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,4,4));
             });
-            // API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
-            //
-            //     let obj={
-            //             path:'database.table.name.data_compressed_bytes' ,
-            //             title:'columns data_compressed_bytes',
-            //             tooltip:'Size',
-            //             valueformat:'0.00 b'
-            //     };
-            //
-            //     let drawCommand={drawtype:'TREEMAP',code:obj};
-            //     $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
-            //
-            // });
+            API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
+
+                let obj={
+                        path:'database.table.name.data_compressed_bytes' ,
+                        title:'columns data_compressed_bytes',
+                        tooltip:'Size',
+                        valueformat:'0.00 b'
+                };
+
+                let drawCommand={drawtype:'TREEMAP',code:obj};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
+
+            });
 
             };
 

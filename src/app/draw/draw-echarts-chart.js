@@ -15,7 +15,9 @@ class DrawEchartsChart extends DrawEcharts {
         let options = this.createChart(drw);
 
 
+
         let GlobalOption = {
+
             toolbox: {
                 show: true,
                 feature: {
@@ -32,7 +34,7 @@ class DrawEchartsChart extends DrawEcharts {
                 trigger: 'axis'
             },
             title: {
-
+                textAlign:'center'
             },
             grid: {
                 left: '3%',
@@ -53,6 +55,11 @@ class DrawEchartsChart extends DrawEcharts {
             ]
         };
 
+
+
+        if (drw['title']) {
+            GlobalOption.title.text=drw['title'];
+        }
         this.options = Object.assign(options, this.options,GlobalOption,optionsPreCreate);
 
 
