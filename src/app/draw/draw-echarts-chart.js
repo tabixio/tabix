@@ -8,12 +8,11 @@ class DrawEchartsChart extends DrawEcharts {
         console.log("DrawEchartsChart");
         let drw = this.getDrawCommandObject();
 
+        let optionsPreCreate = this.preCreate(drw);
+
+
+
         let options = this.createChart(drw);
-
-
-
-
-
 
 
         let GlobalOption = {
@@ -54,14 +53,17 @@ class DrawEchartsChart extends DrawEcharts {
             ]
         };
 
+        this.options = Object.assign(options, this.options,GlobalOption,optionsPreCreate);
 
-        this.options = Object.assign(options, this.options,GlobalOption);
 
+
+
+        this.makeLegend();
 
         console.info(this.options);
 
         return true;
-        // цикл по series для создания legend.data[]
+
         // stack - если указан общий то группируется по полю
 
         // Включение подсветки min/max/avg - линий или точками
@@ -75,6 +77,14 @@ class DrawEchartsChart extends DrawEcharts {
 
     }
 
+    makeLegend(drw) {
+        // достаем из series все Name для создания legend.data[]
+        this.options.legend={
+            data:_.map(this.options.series,'name'),
+            x: 'left'
+        };
+    }
+
     findDateTimeAxis() {
         // Автоматическое определение
         let dt=this.getDateTimeColumn();
@@ -85,6 +95,9 @@ class DrawEchartsChart extends DrawEcharts {
         return false;
     }
 
+    preCreate(drw) {
+        return {};
+    }
     createChart(drw) {
 
 
@@ -92,6 +105,7 @@ class DrawEchartsChart extends DrawEcharts {
             autoAxis: true,
             // markPoint: false,
             markLine:true,
+            stack:false,
         };
         if (drw) {
             sets = Object.assign(sets, drw);
@@ -192,6 +206,11 @@ class DrawEchartsChart extends DrawEcharts {
                     // Для каждой серии мы определяем привязанную ось
                     _.forEach(group,function (c) {
                             series[c.index]['yAxisIndex']=yAxis.length;
+
+                            if (sets.stack) {
+                                series[c.index]['stack']=axis_name;
+                                series[c.index]['areaStyle']={normal: {}};
+                            }
                     });
 
                     // добавляем новую ось

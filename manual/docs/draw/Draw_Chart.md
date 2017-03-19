@@ -32,3 +32,18 @@ DRAW_CHART
 ```
 
 ![AutoAxis](/img/draw-chart-markLine.png)
+
+
+### Chart & Stack
+
+
+```javascript
+DRAW_CHART
+{
+    stack:true
+}
+```
+
+![AutoAxis](/img/draw-chart-stack.png)
+
+![AutoAxis](/img/draw-chart-stack-bar.png)
