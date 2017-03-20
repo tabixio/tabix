@@ -155,7 +155,7 @@
                 }
 
                 url = httpProto + connection.host +
-                    '/?add_http_cors_header=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
+                    '/?add_http_cors_header=1';//&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
 
                 if (connection.login) {
                     url += '&user=' + connection.login;

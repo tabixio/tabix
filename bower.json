@@ -65,6 +65,7 @@
     },
     "ace-builds": {
       "main": [
+        "src-noconflict/ace.js",
         "src-noconflict/ext-language_tools.js",
         "src-noconflict/ext-beautify.js",
         "src-noconflict/ext-statusbar.js",

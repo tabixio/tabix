@@ -4,7 +4,7 @@ var path = require('path');
 var gulp = require('gulp');
 var tap = require('gulp-tap');
 var conf = require('./conf');
-var loader = require('./loader');
+//var loader = require('./loader');
 var packageJson = require('../package.json');
 
 var $ = require('gulp-load-plugins')({
@@ -98,7 +98,7 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe($.revReplace())
         .pipe(tap(function(file) {
             if (/\/(vendor|app)-(.{10})/.test(file.path)) {
-                binaryFiles.push(file.path);
+                binaryFiles.unshift(file.path.replace(/\.tmp\/serve/, conf.paths.dist));
             }
         }))
         .pipe(htmlFilter)
@@ -109,9 +109,9 @@ gulp.task('html', ['inject', 'partials'], function () {
             quotes: true,
             conditionals: true
         }))
-        .pipe(tap(function(file) {
-            loader(file);
-        }))
+        // .pipe(tap(function(file) {
+        //     loader(file);
+        // }))
         .pipe(htmlFilter.restore)
         .pipe(gulp.dest(path.join(conf.paths.dist, '/')))
         .pipe($.size({
@@ -151,10 +151,20 @@ gulp.task('cname', function () {
     return gulp.src('./assets/*').pipe(gulp.dest(path.join(conf.paths.dist, '/')));
 });
 
-gulp.task('copy:assets', function () {
+gulp.task('prebuild', ['html', 'fonts', 'other', 'cname']);
+
+gulp.task('copy:appjs', ['prebuild'], function() {
     return gulp
-        .src(path.join(conf.paths.src, '/assets/**/*.*'))
-        .pipe(gulp.dest(path.join(conf.paths.dist, '/assets/')));
+        .src(binaryFiles.filter(function(item) { return /\.js$/.test(item); }))
+        .pipe($.concat('app.js'))
+        .pipe(gulp.dest(path.join(conf.paths.dist, '/scripts')));
 });
 
-gulp.task('build', ['html', 'fonts', 'other', 'cname', 'copy:assets']);
+gulp.task('copy:appcss', ['prebuild'], function() {
+    return gulp
+        .src(binaryFiles.filter(function(item) { return /\.css$/.test(item); }))
+        .pipe($.concat('app.css'))
+        .pipe(gulp.dest(path.join(conf.paths.dist, '/styles')));
+});
+
+gulp.task('build', ['copy:appjs', 'copy:appcss']);
