@@ -14,13 +14,14 @@ class DrawEchartsMap extends DrawEcharts {
         if (window.loadWorldMapJSEcharts) return false;
 
         console.warn("MAP >loadWorldMapJS");
-        var sc = document.createElement('script');
+        let sc = document.createElement('script');
         sc.type = 'text/javascript';
-        sc.async = true;
+        sc.async = false; // SYNCHRONOUSLY
         sc.src = 'https://tabix.io/doc/img/echarts_world.js';
         sc.charset = 'utf-8';
-        var s = document.getElementsByTagName('script')[0];
+        let s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);
+
         window.loadWorldMapJSEcharts=true;
     }
 

@@ -1,3 +1,37 @@
+```sql
+SELECT 22 as count,	'Shenzhen'  as city,	22.5455 as latitude,	114.068	as longitude
+UNION ALL
+SELECT 32 as count,	'Brozanky'  as city,	50.3519 as latitude,	14.4596	as longitude
+UNION ALL
+SELECT 22 as count,	'Enfield' as city,	41.9762 as latitude,	-72.5918 as longitude
+DRAW_MAP
+{
+    name:'city'
+}
+
+```
+
+![heatmap](/img/draw-map.png)
+
+### Destination fly
+
+```sql
+
+SELECT 22 as count,	'Shenzhen'  as city,	22.5455 as latitude,	114.068	as longitude, 14.4596 as destination_longitude, 50.3519 as destination_latitude
+UNION ALL
+SELECT 32 as count,	'Brozanky'  as city,	50.3519 as latitude,	14.4596	as longitude, -73.9496 as destination_longitude, 40.6501 as destination_latitude
+UNION ALL
+SELECT 22 as count,	'Enfield' as city,	41.9762 as latitude,	-72.5918 as longitude,	-73.9496 as destination_longitude, 40.6501 as destination_latitude
+
+DRAW_MAP
+{
+name:'city'
+}
+```
+
+![heatmap](/img/draw-map-fly.png)
+
+
 ## Params
 
 ```javascript
