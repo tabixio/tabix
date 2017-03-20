@@ -47,7 +47,7 @@ class DrawEchartsChart extends DrawEcharts {
 
         this.options = Object.assign(options, this.options,GlobalOption,optionsPreCreate);
 
-
+        this.postCreate(drw);
 
         console.info(this.options);
 
@@ -72,6 +72,9 @@ class DrawEchartsChart extends DrawEcharts {
         return false;
     }
 
+    postCreate(drw) {
+        return {};
+    }
     preCreate(drw) {
         return {};
     }
@@ -98,23 +101,23 @@ class DrawEchartsChart extends DrawEcharts {
         let series=[];
         if (dtCol) {
             firstCol=dtCol;
-            xAxis={
+            xAxis=[{
                 name : dtCol,
                 type : 'time',
                 // boundaryGap : false,
                 // axisLine: {onZero: true},
                 data: _.map(this.data(),dtCol)
-            };
+            }];
         }
         else {
             // Берем первую колонку
-            xAxis={
+            xAxis=[{
                 name : firstCol,
                 type : 'category',
                 boundaryGap : false,
                 // axisLine: {onZero: true},
                 data: _.map(this.data(),firstCol)
-            };
+            }];
         }
 
 

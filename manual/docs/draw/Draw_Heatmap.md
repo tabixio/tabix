@@ -14,9 +14,7 @@ SELECT 'Boston' as City,'11' as Month,5 as Value
 UNION ALL
 SELECT 'Boston' as City,'10' as Month,32 as Value
 DRAW_HEATMAP
-{
 "City.Month.Value"
-}
 ```
 
 ![heatmap](/img/draw-heatmap.png)

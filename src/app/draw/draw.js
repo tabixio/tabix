@@ -217,7 +217,7 @@ class DrawBasicChart {
                 exec: !!(obj && obj.constructor && obj.call && obj.apply)
             };
         } catch (E) {
-            console.error('error eval ', code);
+            console.error('error eval ',codeDrawText, E);
         }
 
         return draw;

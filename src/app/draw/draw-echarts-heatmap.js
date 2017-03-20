@@ -7,7 +7,7 @@ class DrawEchartsHeatmap extends DrawEcharts {
     create(){
 
         let path=this.getParameterPath();
-        console.info("Path:",path);
+
         if (!path) {
             this.setError("Not set path");
             return false;
@@ -56,9 +56,9 @@ class DrawEchartsHeatmap extends DrawEcharts {
             });
         });
 
-        console.info(dd_xAxis);
-        console.info(dd_yAxis);
-        console.info(data);
+        // console.info(dd_xAxis);
+        // console.info(dd_yAxis);
+        // console.info(data);
         let o = {
             tooltip: {
                 position: 'top'

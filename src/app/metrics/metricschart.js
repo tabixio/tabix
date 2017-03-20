@@ -96,6 +96,8 @@
             // первая строка данных
             if (!d.time) return;
             $scope.preState=d;
+
+
             let grids = [];
             let xAxes = [];
             let yAxes = [];
