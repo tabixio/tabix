@@ -9,19 +9,23 @@
 class DrawEchartsMap extends DrawEcharts {
 
 
-    preCreate(drw) {
-        console.warn("MAP preCreate(drw)");
+    loadWorldMapJS() {
+
+        if (window.loadWorldMapJSEcharts) return false;
+
+        console.warn("MAP >loadWorldMapJS");
         var sc = document.createElement('script');
         sc.type = 'text/javascript';
         sc.async = true;
-        sc.src = '//news.smi2.ru/aggr/js/81946.js';
+        sc.src = 'https://tabix.io/doc/img/echarts_world.js';
         sc.charset = 'utf-8';
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);
+        window.loadWorldMapJSEcharts=true;
     }
 
     create() {
-
+        this.loadWorldMapJS();
 
         // Если это код не JS попробуем получить обьект
         let drw = this.getDrawCommandObject();
