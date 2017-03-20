@@ -27,4 +27,4 @@ DRAW_BAR
 
 ```
 
-![AutoAxis](/img/draw-chart-bar-autoAxis.png)
+![AutoAxis](/img/draw-chart-bar-noautoAxis.png)
