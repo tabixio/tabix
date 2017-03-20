@@ -123,6 +123,9 @@ class DrawEchartsChart extends DrawEcharts {
         let lastColumn=''; // нужно чтобы задать название оси
         let index=0;
 
+        let typeChart='line';
+        if (this.preference.bar) typeChart='bar';
+
         for ( let colPos in columns) {
             // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
             let yAxisIndex=0;
@@ -135,7 +138,7 @@ class DrawEchartsChart extends DrawEcharts {
                 lastColumn=col;
                 let seria={
                     name:col,
-                    type:'line',
+                    type:typeChart,
                     symbolSize: 8,
                     hoverAnimation: false,
                     //yAxisIndex:yAxisIndex
@@ -168,7 +171,7 @@ class DrawEchartsChart extends DrawEcharts {
                 index=index+1;
             }
         }// for columns
-
+        console.log("colsMedianAxis",colsMedianAxis);
         if (sets.autoAxis  && colsMedianAxis.length>1) {
 
             // Разбиваем на группы значение median по делению на 1000

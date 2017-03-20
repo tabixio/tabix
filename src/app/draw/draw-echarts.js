@@ -73,7 +73,7 @@ class DrawEcharts extends DrawBasicChart {
 
         if (this.isDark()) {
             this.options.backgroundColor = '#404a59';
-            this.options.color = ['#dd4444', '#fec42c', '#80F1BE'];
+            // this.options.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
         }
         // log
         console.info('preProcessor', this.init, this.options);
