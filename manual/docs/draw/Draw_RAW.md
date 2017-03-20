@@ -7,7 +7,7 @@
 ```sql
 
 SELECT 1
-DRAW_ECHARTS
+DRAW_RAW
 function (d)
 {
     console.log(d.data);
@@ -23,8 +23,8 @@ Function arguments : ( dataProvider  )
 
 ## Object data
 
-dataProvider.data - result from SQL
-dataProvider.meta - columns meta
+* dataProvider.data - result from SQL
+* dataProvider.meta - columns meta
 
 
 
@@ -43,7 +43,7 @@ GROUP BY event_date,campaign_id
 ORDER BY event_date,views DESC
 LIMIT 10 BY event_date
 LIMIT 1400
-DRAW_ECHARTS
+DRAW_RAW
 function (d)
 {
     let x={

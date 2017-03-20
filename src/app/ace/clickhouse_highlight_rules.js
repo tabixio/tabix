@@ -47,7 +47,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         else{
             delit=new RegExp(';;');
         }
-        let drawCommand="DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_ECHARTS|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
+        let drawCommand="DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
 
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
