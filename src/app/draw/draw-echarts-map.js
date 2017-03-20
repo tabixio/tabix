@@ -7,6 +7,19 @@
 'use strict';
 
 class DrawEchartsMap extends DrawEcharts {
+
+
+    preCreate(drw) {
+        console.warn("MAP preCreate(drw)");
+        var sc = document.createElement('script');
+        sc.type = 'text/javascript';
+        sc.async = true;
+        sc.src = '//news.smi2.ru/aggr/js/81946.js';
+        sc.charset = 'utf-8';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(sc, s);
+    }
+
     create() {
 
 
