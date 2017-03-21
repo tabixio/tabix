@@ -118,7 +118,7 @@
             console.info("Init OverviewController");
 
             API.query(`select toStartOfFiveMinute(modification_time) as dt,
-            sum(bytes) as bytes,sum(marks) as marks from system.parts 
+            sum(bytes) as bytes,sum(marks) as marks ,sum(active) as active from system.parts 
             group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
                 let obj={
                     autoAxis:false,//true,

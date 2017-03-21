@@ -23,26 +23,31 @@ class DrawEchartsGridChart extends DrawEchartsChart {
         // Идем в цикле по каждой Series и проставляем им
         let yAxesCount=0;
         console.info("postCreate!!!!!!",this.options);
-
+        let dataZoomxAxisIndex=[];
         let baseSet_xAxes=this.options.xAxis[0];
         let baseSet_yAxes=this.options.yAxis[0];
         let count_series=0;
         for ( let count in this.options.series) {
+            count=parseInt(count);
             let key=this.options.series[count].name;
 
 
             this.options.series[count].xAxisIndex=count;
-            this.options.series[count].yAxesCount=yAxesCount;
+            this.options.series[count].yAxisIndex=yAxesCount;
 
 
             console.log(key,this.options.series[count]);
+
+            baseSet_xAxes.show=false;
             baseSet_xAxes.gridIndex=count;
             baseSet_yAxes.gridIndex=count;
+            baseSet_yAxes.show=false;
+            baseSet_yAxes.name=key;
 
             grids.push({ show: true, borderWidth: 0, shadowBlur: 2 });
 
-            xAx.push(baseSet_xAxes);
-            yAx.push(baseSet_yAxes);
+            xAx.push(_.clone(baseSet_xAxes));
+            yAx.push(_.clone(baseSet_yAxes));
 
 
             titles.push({
@@ -53,8 +58,10 @@ class DrawEchartsGridChart extends DrawEchartsChart {
                     fontWeight: 'normal'
                 }
             });
+            dataZoomxAxisIndex.push(count);
             yAxesCount=yAxesCount+1;
         }
+
 
         let rowNumber = Math.ceil(Math.sqrt(yAxesCount));
         grids.forEach((grid,idx)=> {
@@ -67,6 +74,9 @@ class DrawEchartsGridChart extends DrawEchartsChart {
             titles[idx].top = parseFloat(grid.top) + '%';
         });
 
+        if (this.options.dataZoom && this.options.dataZoom[0]) {
+            this.options.dataZoom[0].xAxisIndex=dataZoomxAxisIndex;
+        }
         this.options.titles=titles;
         this.options.grid=grids;
         this.options.xAxis=xAx;
