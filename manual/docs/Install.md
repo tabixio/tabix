@@ -15,25 +15,7 @@ Not need install
 ### Variant 3, Embedded
 
 
-```html
-<!doctype html>
-<html ng-app="SMI2">
-<head>
-    <meta charset="utf-8">
-    <title>Tabix.IO by SMI2</title>
-    <meta name="viewport" content="width=device-width">
-    <base href="/">
-</head>
-<body>
-<div ui-view="" class="content-ui"></div>
-<script>
-    var scr = document.createElement("script");
-    scr.src = "https://loader.tabux.io/master.js" + "?cache=" + new Date().getTime();
-    document.getElementsByTagName("head")[0].appendChild(scr);
-</script>
-</body>
-</html>
-```
+See https://github.com/smi2/tabix.ui/blob/master/loader/index.html
 
 ### Variant 4, compile from source
 
