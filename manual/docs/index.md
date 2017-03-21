@@ -1,4 +1,4 @@
-Tabix.IO
+tabix.io
 
 
 # Достоинства
