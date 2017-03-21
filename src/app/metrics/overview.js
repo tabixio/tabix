@@ -116,55 +116,55 @@
             // https://ecomfe.github.io/echarts-examples/public/data/asset/data/npmdepgraph.min10.json
 
             console.info("Init OverviewController");
-
-            API.query(`select toStartOfFiveMinute(modification_time) as dt,
-            sum(bytes) as bytes,sum(marks) as marks ,sum(active) as active from system.parts 
-            group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
-                let obj={
-                    autoAxis:false,//true,
-                    markLine:true,
-                    // stack:true,
-                    title:'system.parts bytes'
-                };
-
-                // let drawCommand={drawtype:'BAR',code:obj};
-                let drawCommand={drawtype:'GRIDCHART',code:obj};
-                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
-            });
-
             //
-            // API.query(`SELECT * FROM system.build_options`).then(function ( queryResult ) {
-            //     // let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
-            //     $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),1,3));
-            //     // $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
-            //
-            // });
-            //
-            // API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
-            //
-            //     let obj={
-            //         path:'database.table.name.data_compressed_bytes' ,
-            //         title:'columns data_compressed_bytes',
-            //         tooltip:'Size',
-            //         valueformat:'0.00 b'
-            //     };
-            //
-            //     let drawCommand={drawtype:'TREEMAP',code:obj};
-            //     $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
-            //
-            // });
             // API.query(`select toStartOfFiveMinute(modification_time) as dt,
-            // sum(bytes) as bytes from system.parts group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
+            // sum(bytes) as bytes,sum(marks) as marks ,sum(active) as active from system.parts
+            // group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
             //     let obj={
-            //         autoAxis:true,
+            //         autoAxis:false,//true,
             //         markLine:true,
             //         // stack:true,
             //         title:'system.parts bytes'
             //     };
             //
-            //     let drawCommand={drawtype:'CHART',code:obj};
+            //     // let drawCommand={drawtype:'BAR',code:obj};
+            //     let drawCommand={drawtype:'GRIDCHART',code:obj};
             //     $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
             // });
+
+            //
+            API.query(`SELECT * FROM system.build_options`).then(function ( queryResult ) {
+                // let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
+                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),1,3));
+                // $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
+
+            });
+
+            API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
+
+                let obj={
+                    path:'database.table.name.data_compressed_bytes' ,
+                    title:'columns data_compressed_bytes',
+                    tooltip:'Size',
+                    valueformat:'0.00 b'
+                };
+
+                let drawCommand={drawtype:'TREEMAP',code:obj};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
+
+            });
+            API.query(`select toStartOfFiveMinute(modification_time) as dt,
+            sum(bytes) as bytes from system.parts group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
+                let obj={
+                    autoAxis:true,
+                    markLine:true,
+                    // stack:true,
+                    title:'system.parts bytes'
+                };
+
+                let drawCommand={drawtype:'CHART',code:obj};
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
+            });
 
             };
 
