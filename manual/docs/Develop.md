@@ -8,8 +8,11 @@
 <pre>
 sudo npm install bower -g
 sudo npm install gulp -g
+
 npm install
+
 bower install
+
 </pre>
 
 ## Сборка
