@@ -23,6 +23,7 @@ Tabix.IO
 * Подсветка скобок
 * Список ф-ций загружатеся исходя из возможностей сервера
 * Отображение какой запрос выполняется
+![SQL_Editor](https://tabix.io/anime/SQL_Editor.gif)
 
 ### Работа с запросами - Вкладки
 * Rename
@@ -36,6 +37,8 @@ Tabix.IO
 * Выбор DB через двойной клик в дереве, вслывашка о выборе
 * Поиск в дереве обьектов, фильтрация дерева 
 * Перестроение списка баз/таблиц после выволенения запроса DROP/CREATE
+
+![DBView](https://tabix.io/anime/DB_Left_View.gif)
 
 
 ### HotKeys
@@ -70,6 +73,7 @@ Tabix.IO
 * Метрики RealTime charts из system.metrics
 * system.events + async_metrics
 
+![Mectrics](https://tabix.io/anime/Metrics.gif)
 
 ### Draw
 * Комманда DRAW подсветка
