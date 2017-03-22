@@ -54,6 +54,7 @@ window.global_lang                  = "ru";
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
         const SQL_SAVE_TABS_KEY = 'saveTabs';
+        const SQL_SAVE_DISABLE_AUTOHELP_KEY = 'DISABLE_AUTOHELP';
         const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion';
         const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
@@ -66,6 +67,7 @@ window.global_lang                  = "ru";
             isDictionariesLoad:false,
             tabs: [],
             enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
+            disableAutohelp: localStorageService.get(SQL_SAVE_DISABLE_AUTOHELP_KEY) || false,
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
@@ -80,9 +82,11 @@ window.global_lang                  = "ru";
                 }
             ],
             databasesList:[],
+            searchQueryOnServer:'',
             currentTab: {},
             selectedTab: 0,
             sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
+            sqlLogServer: [],
             formats: [{
                 name: $filter('translate')('Таблица'),
                 sql: ' format JSON',
@@ -192,7 +196,7 @@ window.global_lang                  = "ru";
             let Q_ID='';
 
             if (query.qid) {
-                Q_ID=' /*GUI_QUERY_ID_'+query.qid+'*/';
+                Q_ID=' /*TABIX_QUERY_ID_'+query.qid+'_()*/';
             }
 
             API.query(query.sql+Q_ID, query.format, true, extendSettings).then((data) => {
@@ -1161,6 +1165,38 @@ window.global_lang                  = "ru";
                 saveSession();
             }
         });
+        $scope.searchSqlLogServer = () => {
+            $scope.vars.sqlLogServer=[];
+            let like=$scope.vars.searchQueryOnServer;
+
+
+            let sql=`
+            SELECT query FROM ( SELECT query FROM system.query_log 
+WHERE query like '%TABIX_QUERY%' AND query not like '%system.query_log%' and exception=''  AND query LIKE '%`+like+`%'
+ORDER BY event_time desc  ) GROUP BY query`;
+
+            if (like){
+
+                console.info("Search on server query like : "+sql);
+                API.query(sql).then(function ( queryResult ) {
+                    $scope.vars.sqlLogServer=_.map(queryResult.data,'query');
+                });
+
+            }
+
+            };
+        $scope.setDisableAutoHelp = () => {
+            let value=$scope.vars.disableAutohelp
+            localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
+            console.info("SET>window.global_chFunctionsHelp = {};",value);
+            if (value) {
+                window.global_chFunctionsHelp = {};
+            }
+            else {
+
+            }
+        };
+
 
         $scope.$watch('vars.enableLiveAutocompletion', (value) => {
             localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);

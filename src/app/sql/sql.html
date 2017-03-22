@@ -54,6 +54,8 @@
                             <i class="mdi mdi-fullscreen"></i>
                             <md-tooltip>{{'На весь экран' | translate}}</md-tooltip>
                         </md-button>
+
+
                         <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
                             <i class="mdi mdi-content-save"></i>
                             <md-tooltip>{{'Сохранить' | translate}}</md-tooltip>
@@ -74,19 +76,7 @@
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
-                        <md-menu md-position-mode="target-right target" show-if-fullscreen="false">
-                            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                                <i class="mdi mdi-code-braces"></i>
-                                <md-tooltip>{{'Словари' | translate}}</md-tooltip>
-                            </md-button>
-                            <md-menu-content>
-                                <md-menu-item ng-repeat="dictionary in vars.dictionaries">
-                                    <md-button ng-click="addDictionariesWord(dictionary.dic)">
-                                        {{dictionary.title}}
-                                    </md-button>
-                                </md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
+
                         <md-button class="md-icon-button" ng-click="toggleSidenav('log')" show-if-fullscreen="false" aria-label="log">
                             <i class="mdi mdi-view-headline"></i>
                             <md-tooltip>{{'Лог запросов' | translate}}</md-tooltip>
@@ -174,6 +164,12 @@
             </md-checkbox>
         </md-input-container>
 
+        <md-input-container class="width-100 mt">
+            <md-checkbox ng-click="setDisableAutoHelp()" ng-model="vars.disableAutohelp" aria-label="LiveAutocompletion">
+                Disable auto-help
+            </md-checkbox>
+        </md-input-container>
+
         <md-input-container class="width-100 mt mb+">
             <label>{{'Разделитель запросов' | translate }}</label>
             <md-select ng-model="vars.delimiter">
@@ -199,6 +195,21 @@
             {{'Лог запросов' | translate}}
         </h4>
     </div>
+    <div>
+    <md-input-container>
+        <label>{{'Искать на сервере' | translate}}</label>
+        <input ng-model="vars.searchQueryOnServer"/>
+    </md-input-container>
+    <md-button md-no-ink class="md-primary" ng-click="searchSqlLogServer()">Search</md-button>
+
+    </div>
+    <div>
+            <hr>
+            <div ng-repeat="sql in vars.sqlLogServer" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">
+                <pre class="p0 m0" style="max-height: 88px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
+            </div>
+    </div>
+
     <div ng-repeat="sql in vars.sqlLog" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">
         <pre class="p0 m0" style="max-height: 48px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
     </div>

@@ -125,6 +125,8 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         let makeCompletionsDocFunctions = function (fn, origin,comb) {
 
 
+            if (!window.global_chFunctionsHelp) return false;
+            if (!window.global_chFunctionsHelp['functions']) return false;
             let body='<span>';
             let use=fn;
 

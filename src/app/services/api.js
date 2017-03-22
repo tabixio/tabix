@@ -58,7 +58,6 @@
                 let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 for( let i=0; i < 15; i++ )
                     text += possible.charAt(Math.floor(Math.random() * possible.length));
-
                 return text;
         };
 
@@ -154,8 +153,7 @@
                     httpProto = 'http://';
                 }
 
-                url = httpProto + connection.host +
-                    '/?add_http_cors_header=1';//&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
+                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1';//&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
 
                 if (connection.login) {
                     url += '&user=' + connection.login;
@@ -172,9 +170,7 @@
                 if (connection.params){
                     url += '&'+connection.params;
                 }
-
-                //
-                // https://github.com/sockjs/sockjs-client
+                // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
 
                  req = {
                     method: 'POST',

@@ -138,6 +138,7 @@
                 'Обновление отключено':'Disable refresh',
                 'Логирование':'Logs',
                 'Перенос строк':'TextWrap',
+                'Искать на сервере':'Search on server',
                 'Обзор':'Overview'
             })
             .translations('ru', {
