@@ -4,7 +4,10 @@
 Open source simple business intelligence application and sql editor tool for Clickhouse.
 
 
-![Tabix](https://tabix.io/anime/SQL_Editor.gif)
+![Tabix](media/fullsceen.png)
+
+
+<!-- ![Tabix](https://tabix.io/anime/SQL_Editor.gif) -->
 
 ## Documentation
 

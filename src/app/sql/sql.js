@@ -243,6 +243,7 @@ window.global_lang                  = "ru";
 
                 if ('drawCommand' in query && query.drawCommand.length)
                 {
+                    dp.countAll=query.drawCommand.length;
                     // У запроса есть список DRAW комманд каждая идет в стек
                     query.drawCommand.forEach((item) => {
                         resultContainer.widgets.draw.push(new WidgetDraw(dp,item));
