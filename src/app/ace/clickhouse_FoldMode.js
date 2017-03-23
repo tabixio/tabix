@@ -1,6 +1,4 @@
-var define = window.define || window.ace.define;
-
-define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
+ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/range"], function(require, exports, module) {
     "use strict";
 
     var Range = require("ace/range").Range;
@@ -41,15 +39,15 @@ define("ace/mode/matching_brace_outdent",["require","exports","module","ace/rang
 });
 
 
-define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "module", "ace/lib/oop",
+ace.define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "module", "ace/lib/oop",
     "ace/range",'ace/mode/sqlserver','ace/mode/folding/cstyle'], function (require, exports, module) {
 
 
-    var oop = require("../lib/oop");
-    var BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
-    var Range = require("ace/range").Range;
-    var TokenIterator = require("ace/token_iterator").TokenIterator;
-    var FoldMode = exports.FoldMode = function () {
+    let oop = require("../lib/oop");
+    let BaseFoldMode = require("ace/mode/folding/cstyle").FoldMode;
+    let Range = require("ace/range").Range;
+    let TokenIterator = require("ace/token_iterator").TokenIterator;
+    let FoldMode = exports.FoldMode = function () {
 
     };
 
@@ -63,41 +61,32 @@ define("ace/mode/clickhouse_FoldMode", ["$rootScope", "require", "exports", "mod
         this.foldingStartMarker = /\(|\{/;
 
         this.getFoldWidgetRange = function(session, foldStyle, row, forceMultiline) {
-            // var re = this.foldingStartMarker;
-            // var line = session.getLine(row);
-            // var m = line.match(re);
+            // let re = this.foldingStartMarker;
+            // let line = session.getLine(row);
+            // let m = line.match(re);
             // были ли вообще совпадения по ( SELECT
             //if (!m) return;
 
             // позиционируем TokenIterator на нужную строку
-            var iterator = new TokenIterator(session, row, 0);
+            let iterator = new TokenIterator(session, row, 0);
             //  получаем token
-            var token = iterator.getCurrentToken();
+            let token = iterator.getCurrentToken();
 
-            var range=false;
+            let range=false;
             // if find : ` ( SELECT `
             while (token) {
-                var t = token;
+                let t = token;
                 // позиция текущего токена
-                var pos = iterator.getCurrentTokenPosition();
+                let pos = iterator.getCurrentTokenPosition();
                 token = iterator.stepForward();
                 // если текущий токен скобка а следующий текст и далее SELECT
-                if (t.type=='paren.lparen' && ( t.value=='(' || t.value=='{') )// && token.type
+                if
+                (
+                 (t.type=='paren.lparen' && ( t.value=='(' ||  t.value=='{' ) )
+
+                )
                 {
                    range=session.getBracketRange(pos);
-                    //
-                    //
-                    // if (token.type=='keyword' && token.value=='SELECT')
-                    // {
-                    //     range=session.getBracketRange(pos);
-                    // }
-                    // else
-                    // {
-                    //     if  (token.type=='text' && token2.type=='keyword' && token2.value=='SELECT')
-                    //     {
-                    //         range=session.getBracketRange(pos);
-                    //     }
-                    // }
                 }
                 // Если мы нашли рендж - отлично
                 if (range) break;
