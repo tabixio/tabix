@@ -21,3 +21,9 @@ https://tabix.io/doc/
 ![Tabix](https://tabix.io/anime/draws.gif)
 
 
+## Requirements
+
+* Google chrome version up 55
+* Clickhouse server version up v1.1.54164
+* Not readonly CH user
+
