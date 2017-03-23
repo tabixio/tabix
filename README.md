@@ -36,7 +36,8 @@ https://tabix.io/doc/
 
 ## License
 
-GPL_V3
+Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
+Licensed under the Apache License, Version 2.0
 
 Use components:
 * [Ace.JS](https://ace.c9.io/) Copyright (c) 2010, Ajax.org B.V.
