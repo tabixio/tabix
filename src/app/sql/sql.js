@@ -1190,7 +1190,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
             localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
             console.info("SET>window.global_chFunctionsHelp = {};",value);
             if (value) {
-                window.global_chFunctionsHelp = {};
+                // window.global_chFunctionsHelp = {};
             }
             else {
 
