@@ -27,3 +27,20 @@ https://tabix.io/doc/
 * Clickhouse server version up v1.1.54164
 * Not readonly CH user
 
+## Roadmap
+
+[Kanban board](https://tree.taiga.io/project/isublimity-chg/kanban)
+
+##
+
+
+## License
+
+GPL_V3
+
+Use components:
+* [Ace.JS](https://ace.c9.io/) Copyright (c) 2010, Ajax.org B.V.
+* [eCharts](https://github.com/ecomfe/echarts) Copyright (c) 2017, Baidu Inc.
+* [Handsontable](https://github.com/handsontable/handsontable)
+* [Lodash](https://github.com/lodash/lodash) Copyright JS Foundation
+* [pivottable](https://github.com/nicolaskruchten/pivottable)

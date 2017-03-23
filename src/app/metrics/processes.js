@@ -285,7 +285,7 @@
                             $mdDialog.cancel();
                         };
                     },
-                    templateUrl: 'app/processes/dialog.kill.html',
+                    templateUrl: 'app/metrics/dialog.kill.html',
                     parent: angular.element(document.body),
                     targetEvent: ev,
                     clickOutsideToClose:true
