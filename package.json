@@ -1,7 +1,8 @@
 {
   "name": "Tabix",
-  "version": "17.03.1",
-  "license": "MIT",
+  "version": "17.03.2",
+  "license": "Apache-2.0",
+  "homepage": "https://tabix.io",
   "repository": {
     "type": "git",
     "url": "https://github.com/smi2/tabix.ui.git"
