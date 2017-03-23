@@ -83,8 +83,7 @@ class DrawEchartsChart extends DrawEcharts {
 
 
         let sets = {
-            autoAxis: true,
-            // markPoint: false,
+            autoAxis: false,
             markLine:true,
             stack:false,
         };

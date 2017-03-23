@@ -15,9 +15,10 @@ DRAW_CHART
 **autoAxis:false**
 
 
-
 ![AutoAxis](/img/draw-chart-noautoAxis.png)
 
+
+autoAxis - default is false
 
 ### Chart & markLine
 
