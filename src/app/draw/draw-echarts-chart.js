@@ -25,7 +25,8 @@ class DrawEchartsChart extends DrawEcharts {
                 }
             },
             tooltip: {
-                trigger: 'axis'
+                trigger: 'axis',
+                axisPointer:{type : 'shadow'}
             },
             grid: {
                 left: '3%',
@@ -114,7 +115,7 @@ class DrawEchartsChart extends DrawEcharts {
             xAxis=[{
                 name : firstCol,
                 type : 'category',
-                boundaryGap : false,
+                // boundaryGap : false,
                 // axisLine: {onZero: true},
                 data: _.map(this.data(),firstCol)
             }];
@@ -126,8 +127,6 @@ class DrawEchartsChart extends DrawEcharts {
         let lastColumn=''; // нужно чтобы задать название оси
         let index=0;
 
-        let typeChart='line';
-        if (this.preference.bar) typeChart='bar';
 
         for ( let colPos in columns) {
             // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
@@ -141,13 +140,21 @@ class DrawEchartsChart extends DrawEcharts {
                 lastColumn=col;
                 let seria={
                     name:col,
-                    type:typeChart,
+                    type:'line',
                     symbolSize: 8,
                     hoverAnimation: false,
                     //yAxisIndex:yAxisIndex
 
                     data:dataThisColumn
                 };
+
+
+                if (this.preference.bar) {
+
+                    seria.type='bar';
+                    seria.barGap='-100%';
+                    seria.barCategoryGap='40%';
+                }
 
 
                 if (sets.markLine){
