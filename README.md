@@ -2,13 +2,13 @@
 
 
 Open source simple business intelligence application and sql editor tool for Clickhouse.
+![Tabix](media/fullsceen.png)
 
 
 ## Install
 
 Not need, open in browser http://ui.tabix.io/
 
-![Tabix](media/fullsceen.png)
 
 
 ## Documentation
