@@ -20,6 +20,26 @@ class DrawEcharts extends DrawBasicChart {
         this.options = {
             version: 3,
             textStyle:{fontFamily:'Menlo'},
+            toolbox: {
+                show: true,
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: 'none',title:'data Zoom'
+                    },
+                    dataView: {readOnly: false,title:'data View'},
+                    magicType: {type: ['line', 'bar', 'stack', 'tiled'],
+
+                        title: {
+                            line: 'line',
+                            bar: 'bar',
+                            stack: 'stack',
+                            tiled: 'tiled'
+                        },
+                    },
+                    restore: {title:'Restore'},
+                    saveAsImage: {title:'Save as Image'}
+                }
+            },
             // backgroundColor: '#404a59',
             // title : {
             // text: 'EChart',

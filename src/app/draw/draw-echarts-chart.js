@@ -15,18 +15,7 @@ class DrawEchartsChart extends DrawEcharts {
         let options = this.createChart(drw);
         let GlobalOption = {
 
-            toolbox: {
-                show: true,
-                feature: {
-                    dataZoom: {
-                        yAxisIndex: 'none'
-                    },
-                    dataView: {readOnly: false},
-                    magicType: {type: ['line', 'bar']},
-                    restore: {},
-                    saveAsImage: {}
-                }
-            },
+
             tooltip: {
                 trigger: 'axis',
                 axisPointer:{type : 'shadow'}
