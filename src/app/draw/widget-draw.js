@@ -46,7 +46,7 @@ class WidgetDraw extends Widget {
         if (this.data.countAll == 1) {
             // результат толкьо одна отпра
             this.sizeX = 6;
-            this.sizeY = 3;
+            this.sizeY = 2;
         }
     }
 
