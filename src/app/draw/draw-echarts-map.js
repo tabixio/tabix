@@ -1,7 +1,5 @@
 /*
- * Copyright (C) 2017 IgorStrykhar  in  SMI2
- * All rights reserved.
- * GPLv3
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
  */
 
 'use strict';
@@ -17,7 +15,7 @@ class DrawEchartsMap extends DrawEcharts {
         let sc = document.createElement('script');
         sc.type = 'text/javascript';
         sc.async = false; // SYNCHRONOUSLY
-        sc.src = 'https://tabix.io/doc/img/echarts_world.js';
+        sc.src = '/assets/echarts_world_map.js';
         sc.charset = 'utf-8';
         let s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);

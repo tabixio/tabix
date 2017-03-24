@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2017  SMI2
- * All rights reserved.
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
  */
+
 
 // @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
 window.global_keywords_fields       = "";
@@ -1190,7 +1190,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
             localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
             console.info("SET>window.global_chFunctionsHelp = {};",value);
             if (value) {
-                window.global_chFunctionsHelp = {};
+                // window.global_chFunctionsHelp = {};
             }
             else {
 
