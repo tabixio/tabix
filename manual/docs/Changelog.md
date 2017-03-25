@@ -6,6 +6,10 @@
 * Fix CSS widgets, external white border
 * Support Subtotal Pivot Data
 * Fix C3 render style
+* Fix XSS
+* Public build 17.03.3
+
+
 
 ### Tabix  2017-03-24 Init release
 *  Bind: Cmd-Y | Ctrl-Y = removeLines
