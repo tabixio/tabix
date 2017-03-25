@@ -25,6 +25,8 @@ class DataProvider {
             else {
                 this.text = result.data
             }
+            // XSS
+            this.text=this.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
         if (!sourceType) sourceType='ch';
         this.sourceType = sourceType;
@@ -38,7 +40,7 @@ class DataProvider {
         }
         if (result.error) {
             // XSS
-            this.error = result.error.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');;
+            this.error = result.error.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
         else {
             this.error = false;

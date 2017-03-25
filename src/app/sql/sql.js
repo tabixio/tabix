@@ -199,7 +199,7 @@ window.global_lang                  = "ru";
                 Q_ID=' /*TABIX_QUERY_ID_'+query.qid+'_()*/';
             }
 
-            API.query(query.sql+Q_ID, query.format, true, extendSettings).then((data) => {
+            API.query(query.sql+"\n"+Q_ID, query.format, true, extendSettings).then((data) => {
 
                 let r = data;
 

@@ -134,23 +134,19 @@
         };
 
         $scope.initNoTabs = () => {
-            console.info("initNoTabs");
             $scope.vars.active.table=true;
             $scope.vars.active.draw=true;
             $scope.vars.active.pivot=true;
         };
         $scope.initTableTab = () => {
-            console.info("initTableTab");
             $scope.vars.active.table=true;
         };
 
         $scope.initDrawTab = () => {
-            console.info("initDrawTab");
             $scope.vars.active.draw=true;
         };
 
         $scope.initPivotTab = () => {
-            console.info("initPivotTab");
             $scope.vars.active.pivot=true;
         };
 

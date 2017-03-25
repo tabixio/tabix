@@ -140,7 +140,7 @@
                 if (format == 'null') {
                     format = '';
                 }
-                query = sql + ' ' + format;
+                query = sql + "\n\n" + format;
             } else {
                 query = sql;
             }
