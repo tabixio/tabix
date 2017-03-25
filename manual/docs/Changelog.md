@@ -1,4 +1,13 @@
-### Tabix master branch ( > 2016-12-22 to 2017-03-15 )
+### 2017-03-25
+
+* Draw_Calendar
+* Echarts update to 3.5.0
+* Translate echarts toolbox
+* Fix CSS widgets, external white border
+* Support Subtotal Pivot Data
+* Fix C3 render style
+
+### Tabix  2017-03-24 Init release
 *  Bind: Cmd-Y | Ctrl-Y = removeLines
 *  Автодополнение + подсказка по полям с типом
 *  Автодополнение словарей + подсказка

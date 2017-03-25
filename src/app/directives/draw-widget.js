@@ -35,7 +35,9 @@
 
         if (widget.draw.library=='c3') {
 
-            widget.draw.bindto=element[0];
+            let elemDiv= document.createElement('div');
+            widget.draw.bindto=elemDiv;
+            element[0].appendChild(elemDiv);
             html=false;
         }
 
@@ -97,7 +99,6 @@
                         settings="widget.table.settings"
                         datarows="widget.data.data"
                         ng-class="{'handsontable-dark': widget.isDark}"
-                     
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
                     ></hot-table>`);
@@ -123,7 +124,6 @@
             if (scope.widget.type=='pivot' && !scope.widget.error)
             {
                 scope.widget.element = angular.element(`<pivot style=" transition: none !important;" data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot>`);
-                // scope.widget.element = angular.element(`<div ng-pivot="widget.data.data"></div>`);
             }
             // Отрисуем элемент
             if (scope.widget.element)

@@ -34,7 +34,8 @@ class DrawC3 extends DrawBasicChart {
 
         console.log("c3.options>", this.options);
 
-
+        this.bindto.className += " c3";
+        console.log('this.bindto.className',this.bindto.className);
         this.options.bindto = this.bindto;
 
         console.log("c3.options>", this.options);

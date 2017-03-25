@@ -37,7 +37,8 @@ class DataProvider {
             this.query = {index:0,drawCommands:false}
         }
         if (result.error) {
-            this.error = result.error;
+            // XSS
+            this.error = result.error.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');;
         }
         else {
             this.error = false;

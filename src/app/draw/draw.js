@@ -100,7 +100,7 @@ class DrawBasicChart {
     
 
     getColumnPosition(col) {
-        return _.findKey(this.meta(), {'name': col});
+        return parseInt(_.findKey(this.meta(), {'name': col}));
     }
 
     haveColumn(col) {
@@ -114,25 +114,23 @@ class DrawBasicChart {
 
     }
 
+    getColumnByType(type) {
+        let v=_.findIndex(this.meta(),{type:type});
+        if (v<0) return false;
+        return this.getColumns(v);
+
+    }
+
     getDateTimeColumn() {
-        this.meta().forEach((i) => {
-            if (i.type == 'DateTime') {
-                return i.name;
-            }
-        });
-        return false;
+        return this.getColumnByType('DateTime');
     }
 
     /**
      * Получить колонку с датой
      */
     getDateColumn() {
-        this.meta().forEach((i) => {
-            if (i.type == 'Date') {
-                return i.name;
-            }
-        });
-        return false;
+        return this.getColumnByType('Date');
+
     }
 
     getColumns(position) {

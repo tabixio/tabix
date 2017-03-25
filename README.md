@@ -29,10 +29,11 @@ https://tabix.io/doc/
 
 ## Roadmap
 
-[Kanban board](https://tree.taiga.io/project/isublimity-chg/kanban)
+[Tabix kanban board](https://tree.taiga.io/project/isublimity-chg/kanban)
 
-##
+## Tabix changelog & news
 
+[Tabix changelog & news in twitter](http://twitter.com/tabix_io)
 
 ## License
 

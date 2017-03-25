@@ -11,28 +11,21 @@ class WidgetPivot extends Widget {
         if (this.error || this.text) {
             return;
         }
-        // this.height=1;
-        // this.sizeX=6;
-        // $.pivotUtilities.subtotal_renderers["Table With Subtotal"],
+
         this.init = true;
         this.renderers = $.extend(
                 $.pivotUtilities.renderers,
                 $.pivotUtilities.c3_renderers,
                 $.pivotUtilities.d3_renderers,
-                $.pivotUtilities.export_renderers
+                $.pivotUtilities.export_renderers,
+                $.pivotUtilities.subtotal_renderers
         );
         this.pivot = {
             config: {
-                // cols:['sin'],
-                // rows:['cos'],
-                // dataClass: $.pivotUtilities.SubtotalPivotData,
+                dataClass: $.pivotUtilities.SubtotalPivotData,
                 // renderers: $.pivotUtilities.d3_renderers,
 
                 renderer: this.renderers
-                // rendererOptions: {
-                //     collapseRowsAt: 1,
-                //     collapseColsAt: 0
-                // }
             }
         };
 

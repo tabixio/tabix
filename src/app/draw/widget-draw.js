@@ -16,6 +16,7 @@ class WidgetDraw extends Widget {
         this._list = {
             // 'SCATTERMAP': DrawEcharts,
             'HEATMAP': DrawEchartsHeatmap,
+            'CALENDAR': DrawEchartsCalendar,
             'RAW': DrawEchartsMap,
             'BAR': DrawEchartsBar,
             'RIVER': DrawEchartsRiver,
