@@ -25,7 +25,11 @@ gulp.task('watch', ['favicons','inject'], function () {
     }
   });
 
-  gulp.watch(path.join(conf.paths.src, '/app/**/*.js'), function(event) {
+  gulp.watch(
+      [
+          path.join(conf.paths.src, '/app/**/*.js'),
+          path.join(conf.paths.src, '/app/**/*.html')
+      ],function(event) {
     if(isOnlyChange(event)) {
       gulp.start('scripts-reload');
     } else {

@@ -96,10 +96,11 @@ class WidgetTable extends Widget {
     }
 
     onResize() {
-        console.info("onResize HotTable");
         if (!this.table) return;
         this.table.width = '99.9' + Math.floor(100 * Math.random()) + '%';
         this.table.height = '99.9' + Math.floor(100 * Math.random()) + '%';
+
+        // console.log("onResize HotTable,this.table.width",this.table.width,this.table.height);
         let i = this.getInstanceHandsontable();
         if (i) {
             i.updateSettings({

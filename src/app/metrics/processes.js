@@ -62,26 +62,14 @@
                 manualColumnMove: true,
                 manualColumnResize: true,
                 autoWrapRow: true,
+                rowHeaders: true,
                 colWidths: 70,
                 dropdownMenu: true,
                 stretchH: 'all',
+                fillHandle: false,
                 preventOverflow: 'horizontal',
-                persistentState:true,
-                contextMenu: {
-                    callback: function (key, options) {
-                        if (key === 'kill') {
-                            setTimeout(function () {
+                // persistentState:true,
 
-                                console.warn(options);
-                                // timeout is used to make sure the menu collapsed before alert is shown
-                                // alert("This is a context menu with default and custom options mixed");
-                            }, 100);
-                        }
-                    },
-                    items: {
-                        "kill": {name: 'Kill query'}
-                    }
-                },
                 columnSorting: true,
                 sortIndicator: true,
                 manualRowResize: true,

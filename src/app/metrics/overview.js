@@ -126,6 +126,13 @@
 
             });
 
+            API.query(`SELECT * FROM system.clusters`).then(function ( queryResult ) {
+                // let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
+                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),1,3));
+                // $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
+
+            });
+
             API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
 
                 let obj={
