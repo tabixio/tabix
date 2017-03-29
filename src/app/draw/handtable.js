@@ -459,9 +459,17 @@ class HandsTable {
             wordWrap: false,
             autoColumnSize: {samplingRatio: 23},
             preventOverflow: 'horizontal',
+            visibleRows:120,
+            // width:'100%',
+            // height:'100%',
 
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders,
+
+
+
+
+
             contextMenu: {
                 items: {
                     "columnformat": {

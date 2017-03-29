@@ -57,7 +57,7 @@ class WidgetTable extends Widget {
         //  высота
         this.sizeY = 1;//1...2...3...4...5..
 
-        if (this.data.rows > 100) {
+        if (this.data.rows > 60) {
             this.sizeY = 2;
         }
         if (this.data.rows > 250) {
@@ -71,6 +71,8 @@ class WidgetTable extends Widget {
             // результат толкьо один был запрос
             this.sizeX = 6;
         }
+
+        // overWrite
         if (_.isNumber(sizeX)) {
             this.sizeX = sizeX;
         }
@@ -97,17 +99,15 @@ class WidgetTable extends Widget {
 
     onResize() {
         if (!this.table) return;
-        this.table.width = '99.9' + Math.floor(100 * Math.random()) + '%';
-        this.table.height = '99.9' + Math.floor(100 * Math.random()) + '%';
 
         // console.log("onResize HotTable,this.table.width",this.table.width,this.table.height);
         let i = this.getInstanceHandsontable();
         if (i) {
-            i.updateSettings({
-                height: this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
-                width: this.table.width
-
-            });
+            // i.updateSettings({
+            //     height: this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
+            //     width: this.table.width
+            //
+            // });
             i.render();
         }
         // -----------------------------------------------------------------
