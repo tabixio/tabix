@@ -116,7 +116,10 @@ class DrawEchartsSunkeys extends DrawEcharts {
                     type: 'sankey',
                     // layout:'none',
                     data: result_nodes,
+                    animationThreshold:300,
+                    animationDuration:300,
                     links: links,
+
                     itemStyle: {
                         normal: {
 
@@ -134,6 +137,10 @@ class DrawEchartsSunkeys extends DrawEcharts {
             ]
         };
 
+
+        if (this.isDark()) {
+            _.set(option.series[0],'label.normal.textStyle.color','white');
+        }
 
         this.options = Object.assign(option, this.options);
         return true;
