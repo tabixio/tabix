@@ -40,7 +40,12 @@ class DataProvider {
         }
         if (result.error) {
             // XSS
-            this.error = result.error.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            this.error = result.error.replace('<br/>',"\n").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            // console.log("Error Text",this.error);
+
+            this.error = this.error.replace('\\'+'n','<br/>');
+            // console.log("Error Text",this.error);
+
         }
         else {
             this.error = false;

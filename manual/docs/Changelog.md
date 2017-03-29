@@ -1,3 +1,10 @@
+### 2017-03-29
+
+* Sankeys - fix dark theme
+* Fix table resize
+* Add processes reload 0.5 seconds
+
+
 ### 2017-03-25
 
 * Draw_Calendar

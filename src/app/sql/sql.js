@@ -288,7 +288,7 @@ window.global_lang                  = "ru";
                     statistics: null
                 };
                 if (response && response.data) {
-                    result.error = angular.toJson(response.data).replace(/\\n/gi, '<br/>').replace(/^"/, '').replace(/"$/, '');
+                    result.error = angular.toJson(response.data).replace(/^"/, '').replace(/"$/, '');
                 } else {
                     result.error = response;
                 }
