@@ -59,60 +59,68 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         }, "identifier", true);
 
         this.$rules = {
-            "start": [{
+            "start": [
+            {
                 token: "comment",
                 regex: "--.*$",
                 caseInsensitive: true
-            }, {
+            },
+            {
                 token: "keyword",
                 regex: "GROUP\\W+BY|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"
             },
-                {
-                    token: "comment",
-                    start: "/\\*",
-                    end: "\\*/"
-                }, {
-                    token: "string", // " string
-                    regex: '".*?"'
-                }, {
-                    token: "storage",
-                    regex: keywordsDouble
-                },
-                {
-                    token: "invalid.illegal",
-                    regex: drawCommand
-                },
-                {
-                    token: "string", // ' string
-                    regex: "'.*?'"
-                }, {
-                    token: "constant.numeric", // float
-                    regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-                }, {
-                    token: keywordMapper,
-                    regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-                },
-                {
-                    token: "constant.character.escape",
-                    regex: delit
-                },
-                {
-                    token: "punctuation",
-                    regex: /[?:,;.]/
-                },
-                {
-                    token: "keyword.operator",
-                    regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
-                }, {
-                    token: "paren.lparen",
-                    regex: "[\\(\\{]"
-                }, {
-                    token: "paren.rparen",
-                    regex: "[\\)\\}]"
-                }, {
-                    token: "text",
-                    regex: "\\s+"
-                }
+            {
+                token: "variable",
+                regex : /\$[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
+            },
+            {
+                token: "comment",
+                start: "/\\*",
+                end: "\\*/"
+            },
+            {
+                token: "string", // " string
+                regex: '".*?"'
+            },
+            {
+                token: "storage",
+                regex: keywordsDouble
+            },
+            {
+                token: "invalid.illegal",
+                regex: drawCommand
+            },
+            {
+                token: "string", // ' string
+                regex: "'.*?'"
+            }, {
+                token: "constant.numeric", // float
+                regex: "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+            }, {
+                token: keywordMapper,
+                regex: "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            },
+            {
+                token: "constant.character.escape",
+                regex: delit
+            },
+            {
+                token: "punctuation",
+                regex: /[?:,;.]/
+            },
+            {
+                token: "keyword.operator",
+                regex: "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
+            }, {
+                token: "paren.lparen",
+                regex: "[\\(\\{]"
+            }, {
+                token: "paren.rparen",
+                regex: "[\\)\\}]"
+            }, {
+                token: "text",
+                regex: "\\s+"
+            }
 
             ]
         };

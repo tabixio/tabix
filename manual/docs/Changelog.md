@@ -4,7 +4,7 @@
 * Fix table resize
 * Add processes reload 0.5 seconds
 * Parse error and move cursor
-
+* Parse & highlight $variable in SQL Query
 
 ### 2017-03-25
 
