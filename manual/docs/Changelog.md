@@ -3,6 +3,7 @@
 * Sankeys - fix dark theme
 * Fix table resize
 * Add processes reload 0.5 seconds
+* Parse error and move cursor
 
 
 ### 2017-03-25

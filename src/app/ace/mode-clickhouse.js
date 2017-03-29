@@ -81,7 +81,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "  ");
             }
             // text = text.replace(/^(\r\n|\n|\r)/gm, "  ").replace(/(\r\n|\n|\r)$/gm, "  ");
-            return text.trim();
+            return text;
         };
         // ------------------------------------------------------------------------------
         this.collapseAll = function (session) {

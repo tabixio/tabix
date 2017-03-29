@@ -291,8 +291,36 @@ window.global_lang                  = "ru";
                     result.error = angular.toJson(response.data).replace(/^"/, '').replace(/"$/, '');
                 } else {
                     result.error = response;
+
+
                 }
 
+                // Поиск ошибки в тексте ответа
+                let moveCol=-1;
+                let moveRow=-1;
+                let match= result.error.match(/position\s(\d+)\s\(line\s(\d+).\s+col\s+(\d+)\)/);
+
+                if (match && match[1] && match[2] && match[3]) {
+
+                    console.log("Error in POS"+match[1]+' in '+match[2]+','+match[3],query.itemRange.start);
+                    if (query.itemRange && query.itemRange.start) {
+                        moveCol=parseInt(match[3])+query.itemRange.start.column;
+                        moveRow=parseInt(match[2])+query.itemRange.start.row;
+                    }
+                }
+                else
+                {
+                    if (query.itemRange && query.itemRange.start) {
+                        moveCol=query.itemRange.start.column;
+                        moveRow=query.itemRange.start.row;
+                    }
+                }
+
+
+                $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
+
+
+                console.log("move cursor to",moveRow,moveCol);
                 // провайдер CH или API
                 let provider='ch';
                 // передаем в
@@ -478,8 +506,11 @@ window.global_lang                  = "ru";
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
+                        console.log("---------------");
+                        console.info(item.sql);
                         console.log("Exec current position :",cursor);
-                        console.log("Item range :",item.range);
+                        console.log("Item range :",item.range.start,item.range.end);
+                        console.log("Item  :",item);
                         if (!cursor || angular.isUndefined(cursor)) {
                             return;
                         }
@@ -558,6 +589,7 @@ window.global_lang                  = "ru";
                         keyword: _keyword,
                         storage: storage,
                         drawCommand: drawCommand,
+                        itemRange:item.range,
                         qid:API.makeQueryId()
                     });
 
