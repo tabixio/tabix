@@ -10,8 +10,6 @@ class DrawEchartsMap extends DrawEcharts {
     loadWorldMapJS() {
 
         if (window.loadWorldMapJSEcharts) return false;
-
-        console.warn("MAP >loadWorldMapJS");
         let sc = document.createElement('script');
         sc.type = 'text/javascript';
         sc.async = false; // SYNCHRONOUSLY

@@ -21,18 +21,16 @@
 
     function buildDrawChart(widget,element,$timeout) {
         let html='';
-
+        // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='echarts') {
             let theme='macarons';
             if (widget.isDark) theme='dark';
-
-
             // результат работы сам компонент, а не HTML код
             widget.draw.chart = echarts.init(element[0], theme);
             html=false;
         }
 
-
+        // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='c3') {
 
             let elemDiv= document.createElement('div');
@@ -40,11 +38,12 @@
             element[0].appendChild(elemDiv);
             html=false;
         }
-
+        // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='text') {
             widget.element = angular.element(`<div style="width: 100%;height: 100%">&nbsp;</div>`);
             html=false;
         }
+        // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='d3') {
             console.info('DW:d3');
             // <!--<nvd3 options="widget.chart.options"-->
@@ -52,10 +51,11 @@
             // <!--api="widget.chart.api"-->
             // <!--config="config"-->
         }
-
-        if (widget.draw.library=='amchart') {
-            html = `<am-chart options="widget.draw.options" height="100%"  width="100%"></am-chart>`;
-
+        // ------------------------------------------------------------------------------------------------------------------
+        // Google MAPs
+        if (widget.draw.library == 'gmaps') {
+            widget.element = angular.element(`<div style="width: 100%;height: 100%">&nbsp;</div>`);
+            html = false;
         }
         // ------------------------------------------------------------------------------------------------------------------
         console.group("widget.draw.preProcessor");
@@ -142,9 +142,8 @@
                 scope.widget.scheduledResize();
             }, true);
 
-
+            // ------------------------------------------------------------------------------------------------------------------
             // Доп ресайзеры
-
             // We want to manually handle `window.resize` event in each directive.
             // So that we emulate `resize` event using $broadcast method and internally subscribe to this event in each directive
             // Define event handler

@@ -21,6 +21,7 @@ class WidgetDraw extends Widget {
             'BAR': DrawEchartsBar,
             'RIVER': DrawEchartsRiver,
             'MAP': DrawEchartsMap,
+            'GMAPS': DrawGoogleMap,
             'TREEMAP': DrawEchartsTreemap,
             'SANKEYS': DrawEchartsSunkeys,
             'CHART': DrawEchartsChart,
