@@ -1,6 +1,8 @@
 var cssId = 'TabixCss';
 var tabix_build = "201703";
 
+window.global_tabix_embedded = true;
+
 if (!document.getElementById(cssId))
 {
     var head  = document.getElementsByTagName('head')[0];
