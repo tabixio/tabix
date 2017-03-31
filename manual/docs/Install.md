@@ -22,7 +22,7 @@ Or git master
 ### Variant 3, Embedded
 
 
-See https://github.com/smi2/tabix.ui/blob/master/loader/index.html
+See https://github.com/smi2/tabix.ui/tree/master/loader
 
 ### Variant 4, compile from source
 
