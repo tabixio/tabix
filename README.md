@@ -25,7 +25,7 @@ https://tabix.io/doc/
 
 * Google chrome version up 55
 * Clickhouse server version up v1.1.54164
-* Not readonly CH user
+* Not readonly CH user [note](https://tabix.io/doc/Requirements/#note)
 
 ## Roadmap
 
@@ -34,6 +34,12 @@ https://tabix.io/doc/
 ## Tabix changelog & news
 
 [Tabix changelog & news in twitter](http://twitter.com/tabix_io)
+
+
+## If need install
+
+[Install to you host](https://tabix.io/doc/Install/)
+
 
 ## License
 
