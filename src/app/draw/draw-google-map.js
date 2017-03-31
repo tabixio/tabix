@@ -13,25 +13,23 @@ class DrawGoogleMap extends DrawBasicChart {
         this.library = 'gmaps';
         this._map = false;
         this.mapOptions = {
-            center: {lat: -34.397, lng: 150.644},
-            zoom: 8
+            // center: {lat: -34.397, lng: 150.644},
+            zoom: 3
         }
 
 
     }
 
     onResize() {
+        if (this._map) {
+            google.maps.event.trigger(this._map, 'resize');
+        }
         // отправденна комманда resize
         // if (this.chart && this.init) {
         //     this.chart.resize();
         // }
     }
 
-
-    mapInitialized(map) {
-        console.log("mapInitialized");
-        console.warn(map);
-    }
 
     preProcessor() {
         // загрузка карты
@@ -40,7 +38,7 @@ class DrawGoogleMap extends DrawBasicChart {
 
     afterLoadMapProcessor() {
         // карты загружены
-        window.loadyandexJSMAP = true;
+
         if (this.initChartByJsCode()) {
             this.init = true;
         }
@@ -74,12 +72,19 @@ class DrawGoogleMap extends DrawBasicChart {
     loadGoogleMapJS(callback) {
         // https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/load-docpage/
 
-        if (window.loadyandexJSMAP) {
 
-            callback.afterLoadMapProcessor();
-            return false;
+        if (window._sendGoogleMapLoad) {
+            // уже отправили запрос на загрузку карты
+            // @todo : rewrite &&& тут нужно дождаться когда _isGoogleMapLoaded=true
+
+            this.afterLoadMapProcessor();
+
+            //window.setTimeout(, 5000);
+
+            return;
         }
-
+        window._sendGoogleMapLoad = true;
+        window._isGoogleMapLoaded = false;
         console.info("YA_MAP>Start load map : api-maps.yandex.ru");
         let sc = document.createElement('script');
         sc.type = 'text/javascript';
@@ -97,6 +102,7 @@ class DrawGoogleMap extends DrawBasicChart {
             sc.onload = sc.onreadystatechange = null;
             // ready & callback
             callback.afterLoadMapProcessor();
+            window._isGoogleMapLoaded = true;
 
         };
 
