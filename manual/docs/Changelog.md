@@ -1,3 +1,8 @@
+### 2017-03-31
+
+* Add google map
+
+
 ### 2017-03-29
 
 * Sankeys - fix dark theme
