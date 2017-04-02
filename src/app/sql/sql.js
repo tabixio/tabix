@@ -316,10 +316,8 @@ window.global_lang                  = "ru";
                     }
                 }
 
-
-                $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
-
-
+                // @todo : плохой парсинг ошибки т/к строки тримятся в SQL
+                // $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
                 console.log("move cursor to",moveRow,moveCol);
                 // провайдер CH или API
                 let provider='ch';
