@@ -683,7 +683,7 @@ window.global_lang                  = "ru";
 
                     }); // data.data.forEach
 
-                    window.global_keywords_fields = fields.join('|') + '|';
+                    window.global_keywords_fields = fields;//.join('|') + '|';
                     // window.global_keywords_tables = tables.join('|') + '|' + db;
 
                     window.global_keywords_tables=db;

@@ -49,13 +49,27 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         }
         let drawCommand = "DRAW_GMAPS|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
 
+
+        let $_fields = [];
+        let _keywords = keywords.toLowerCase();
+        if (_.isArray(window.global_keywords_fieldsList)) {
+            window.global_keywords_fieldsList.forEach(function (v) {
+                let p = v['name'].toLowerCase() + '|';
+                if (_keywords.indexOf(p) > -1) {
+                    // skip fields if == keyword ( like from )
+                    return;
+                }
+                $_fields.push(v['name']);
+            });
+        }
+        // ------------------------------
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
             "keyword": keywords,
             "constant.language": builtinConstants,
             "storage.type": dataTypes,
             "markup.bold": window.global_keywords_tables,
-            "markup.heading": window.global_keywords_fields
+            "markup.heading": $_fields.join('|')
         }, "identifier", true);
 
         this.$rules = {
@@ -224,14 +238,12 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                     iconClass:'function',
                     docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
                 });
-
-
             });
 
         }
         // ------------------------------------------------------------------------------
         if (window.global_keywords_dictList) {
-            // автодополнение полей таблицы
+            // автодополнение dic таблицы
             window.global_keywords_dictList.forEach(function (v) {
                     completions.push({
                         name: v['dic'],
@@ -250,22 +262,24 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         // ------------------------------------------------------------------------------
         if (window.global_keywords_fieldsList) {
 
+
+
             // автодополнение полей таблицы
             window.global_keywords_fieldsList.forEach(function (v) {
 
-                    let name = v['table'] + '.' + v['name'];
-                    let value = v['name'];
-                    let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
+                let name = v['table'] + '.' + v['name'];
+                let value = v['name'];
+                let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
 
-                    completions.push({
-                        name: name,
-                        // caption: name,
-                        value: value,
-                        score: 20,
-                        meta: v['table'],
-                        iconClass:'field',
-                        docHTML: makeCompletionsdocHTML(name, meta)
-                    });
+                completions.push({
+                    name: name,
+                    // caption: name,
+                    value: value,
+                    score: 20,
+                    meta: v['table'],
+                    iconClass: 'field',
+                    docHTML: makeCompletionsdocHTML(name, meta)
+                });
 
 
                 }

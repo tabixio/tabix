@@ -35,9 +35,6 @@ class DrawEchartsChart extends DrawEcharts {
         this.applyDataZoom();
         this.applyLegend();
 
-
-
-
         this.options = Object.assign(options, this.options,GlobalOption,optionsPreCreate);
 
         this.postCreate(drw);
@@ -91,11 +88,12 @@ class DrawEchartsChart extends DrawEcharts {
         let firstCol=this.getFirstColumn();
         let dtCol=this.findDateTimeAxis();
         let series=[];
+
         if (dtCol) {
             firstCol=dtCol;
             xAxis=[{
                 name : dtCol,
-                type : 'time',
+                type: 'category',
                 // boundaryGap : false,
                 // axisLine: {onZero: true},
                 data: _.map(this.data(),dtCol)
