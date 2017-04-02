@@ -528,8 +528,9 @@ window.global_lang                  = "ru";
 
                     if (editor.session.$mode.findTokens(subSql, "invalid.illegal", true))
                     {
-                        let draw=editor.session.$mode.splitByTokens(subSql,'invalid.illegal',true);
 
+                        let draw=editor.session.$mode.splitByTokens(subSql,'invalid.illegal',true);
+                        console.log("Find DRAW COMMAND", draw);
                         subSql=draw[0]['sql'];
                         draw.forEach((i)=>{
 

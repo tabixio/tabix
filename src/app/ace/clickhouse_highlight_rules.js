@@ -7,7 +7,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
 
     let ClickhouseHighlightRules = function () {
         let keywords = (
-            "SELECT|CASE|THEN|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|LIMIT|OFFSET|HAVING|AS|" +
+            "SELECT|CASE|THEN|INSERT|UPDATE|DELETE|WHERE|AND|OR|LIMIT|OFFSET|HAVING|AS|FROM|" +
             "WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|" +
             "FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
             "ANY|BETWEEN|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
@@ -65,6 +65,11 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 regex: "--.*$",
                 caseInsensitive: true
             },
+                {
+                    token: "comment.block",
+                    start: "```",
+                    end: "```"
+                },
             {
                 token: "keyword",
                 regex: "GROUP\\W+BY|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"

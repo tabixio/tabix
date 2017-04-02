@@ -81,7 +81,10 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "  ");
             }
             // text = text.replace(/^(\r\n|\n|\r)/gm, "  ").replace(/(\r\n|\n|\r)$/gm, "  ");
-            return text;
+
+            return text.trim();
+
+            // return text;
         };
         // ------------------------------------------------------------------------------
         this.collapseAll = function (session) {
@@ -120,11 +123,13 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             let EditSession = require("ace/edit_session").EditSession;
             let Range = require("ace/range").Range;
 
+            // console.info(sql);
+
             let session = new EditSession(sql, this);
 
             session.bgTokenizer.start(0);// force rehighlight whole document
             // foreach $rules find type=$type and update value
-
+            // @todo: Ошибка если в начале стоит \n то не происходит парсинг первой строки
             let iterator = new TokenIterator(session, 0, 0);
 
             let token = iterator.getCurrentToken();
@@ -132,12 +137,15 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             let startRow = 0, startCol = 0;
             let trimValue=false;
             let range1, text;
+
+            // console.log("splitByTokens",type,value,token);
+
             while (token) {
                 let t = token;
 
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
-
+                // console.log("token:",t);
                 if (
                     t.type == type &&
                     (
