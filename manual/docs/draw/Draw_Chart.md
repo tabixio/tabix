@@ -1,3 +1,9 @@
+### Chart by DateTime column
+
+* First column must be : Date or DateTime
+* Use order by Date
+
+![AutoAxis](/img/draw-chart-datetime.png)
 
 ### Chart & autoAxis
 
