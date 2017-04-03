@@ -18,7 +18,7 @@ https://tabix.io/doc/
 
 ## Draw charts & map
 
-![Tabix](https://tabix.io/anime/draws.gif)
+![Tabix](https://tabix.io/anime/draws.gif?gigig)
 
 
 ## Requirements
