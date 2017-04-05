@@ -13,7 +13,7 @@ class DrawEchartsMap extends DrawEcharts {
         let sc = document.createElement('script');
         sc.type = 'text/javascript';
         sc.async = false; // SYNCHRONOUSLY
-        sc.src = '/assets/echarts_world_map.js';
+        sc.src = 'http://loader.tabix.io/extend/echarts_world_map.js';
         sc.charset = 'utf-8';
         let s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);
