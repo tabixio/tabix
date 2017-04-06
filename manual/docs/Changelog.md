@@ -1,3 +1,11 @@
+
+### 2017-04-06
+
+* Export CSV + add support multi query
+* Move Stats table to Tab
+* Public build 17.04.2
+
+
 ### 2017-04-03
 
 * Fix render FORMAT CSVWithNames
