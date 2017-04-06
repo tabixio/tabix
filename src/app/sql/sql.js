@@ -99,7 +99,11 @@ window.global_lang                  = "ru";
             db: null,
             limitRows: localStorageService.get('editorLimitRows') || 500,
             fontSize: localStorageService.get('editorFontSize') || 16,
-            theme: localStorageService.get('editorTheme') || 'cobalt'
+            theme: localStorageService.get('editorTheme') || 'cobalt',
+
+
+
+
         };
 
         $scope.vars.delimiter = localStorageService.get('delimiter') || ';;';
@@ -1343,6 +1347,61 @@ ORDER BY event_time desc  ) GROUP BY query`;
             {active: true, value: 'Collapse',icon:'arrow-compress'},
             {active: true, value: 'Collapse All',icon:'arrow-compress'},
         ];
+
+
+        $scope.showDialogUpload = function(ev){
+
+            function DialogController($scope, $mdDialog) {
+                $scope.vars={
+                    UploadCsv : {
+                        content: null,
+                        header: true,
+                        headerVisible: true,
+                        separator: ',',
+                        separatorVisible: true,
+                        result: null,
+                        encoding: 'ISO-8859-1',
+                        encodingVisible: true,
+                        uploadButtonLabel:'Upload',
+                        callback:function (c) {
+                            console.log("callback");
+                            $mdDialog.hide();
+                        }
+                    }
+                };
+                $scope.$watch('vars.UploadCsv.result',(value) => {
+                    if (value)
+                    {
+                        $mdDialog.hide(value);
+                    }
+                });
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+
+            };
+            // --
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'app/sql/showDialogUpload.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+            })
+                .then(function(csvObject) {
+                    if (csvObject) {
+
+                        // $scope.vars.currentTab.results
+                    }
+
+                }, function() {
+                    // $scope.status = 'You cancelled the dialog.';
+                });
+        };
 
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcess = function(item){
