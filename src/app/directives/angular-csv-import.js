@@ -87,6 +87,9 @@ csvImport.directive('ngCsvImport', function() {
 			});
 
 			element.on('change', function(onChangeEvent) {
+                if (!onChangeEvent.target.files) {
+                    return;
+                }
 				if (!onChangeEvent.target.files.length){
 					return;
 				}

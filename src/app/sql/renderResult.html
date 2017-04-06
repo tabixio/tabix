@@ -10,7 +10,8 @@
 <md-tab-body>
     <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
         <!-- ------------------------------------ -->
-        <md-menu md-position-mode="target" ng-repeat="tableData in resultContainer.widgets.tables">
+        <md-menu md-position-mode="target" ng-repeat="tableData in resultContainer.widgets.tables"
+                 ng-if="tableData.data.progressQuery">
             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                 <md-tooltip>{{tableData.data.progressQuery}}</md-tooltip>
                 <i class="mdi mdi-file-excel"></i>
@@ -60,7 +61,7 @@
             </md-menu-content>
         </md-menu>
         <md-button aria-label="menu" class="md-icon-button">
-            <i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload()"></i>
+            <i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>
             <md-tooltip>Upload CSV</md-tooltip>
         </md-button>
         <md-button aria-label="menu" class="md-icon-button">

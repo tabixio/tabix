@@ -1349,7 +1349,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
         ];
 
 
-        $scope.showDialogUpload = function(ev){
+        $scope.showDialogUpload = function (resultContainer_widgets, ev) {
 
             function DialogController($scope, $mdDialog) {
                 $scope.vars={
@@ -1372,6 +1372,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
                 $scope.$watch('vars.UploadCsv.result',(value) => {
                     if (value)
                     {
+
                         $mdDialog.hide(value);
                     }
                 });
@@ -1393,9 +1394,10 @@ ORDER BY event_time desc  ) GROUP BY query`;
                 clickOutsideToClose:true,
             })
                 .then(function(csvObject) {
-                    if (csvObject) {
-
-                        // $scope.vars.currentTab.results
+                    if (csvObject && resultContainer_widgets && resultContainer_widgets.tables) {
+                        let dp = DataProvider.convertArrayToDataProvider(csvObject, "csv");
+                        // push Data
+                        resultContainer_widgets.tables.push(new WidgetTable(dp));
                     }
 
                 }, function() {
