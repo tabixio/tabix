@@ -233,7 +233,7 @@ window.global_lang                  = "ru";
                 let provider='ch';
                 // передаем в
                 let dp= new DataProvider(data,provider);
-
+                dp.progressQuery = progressQuery;
 
 
                 // Получаем список виджетов в каждый передаем DP
@@ -395,7 +395,7 @@ window.global_lang                  = "ru";
                 let d=DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,"statistics");
                 d.sort="time";
                 d.sortOrder="desc";
-                resultContainer.widgets.tables.push(new WidgetTable(d,false));
+                resultContainer.widgets.stats.push(new WidgetTable(d, false));
             }
         };
 
@@ -426,7 +426,8 @@ window.global_lang                  = "ru";
                 widgets:{
                     tables:[],
                     pivot:[],
-                    draw:[]
+                    draw: [],
+                    stats: []
                 }
             };
 
@@ -1078,13 +1079,15 @@ window.global_lang                  = "ru";
          * @param result
          * @returns {number[]}
          */
-        $scope.getExportData = result => (
-            result.map(item => Object.keys(item).map(key => (
-                angular.isArray(item[key]) ? item[key].join(', ') : item[key]
-            )))
-        );
+        $scope.getExportData = (tableData) => {
 
-        $scope.getExportHeaders = result => result.map(item => item.name);
+            return tableData.data.data.map(item => Object.keys(item).map(key => (
+                angular.isArray(item[key]) ? item[key].join(', ') : item[key]
+            )));
+
+        };
+
+        $scope.getExportHeaders = result => result.data.meta.map(item => item.name);
 
         /**
          * Inserting new SQL tab

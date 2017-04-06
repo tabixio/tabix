@@ -9,7 +9,60 @@
 </md-tab-label>
 <md-tab-body>
     <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
-       <md-button aria-label="menu" class="md-icon-button">
+
+
+        <md-menu md-position-mode="target" ng-repeat="tableData in resultContainer.widgets.tables">
+            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                <md-tooltip>{{tableData.data.progressQuery}}</md-tooltip>
+                <i class="mdi mdi-file-excel"></i>
+            </md-button>
+            <md-menu-content>
+                <md-menu-item>
+                    <md-button
+                            ng-csv="getExportData(tableData)"
+                            quote-strings='"'
+                            filename="{{tab.name}}-{{result.time}}.csv"
+                            csv-header="getExportHeaders(tableData)"
+                    >
+                        {{'CSV с заголовком' | translate}}
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button
+                            ng-csv="getExportData(tableData)"
+                            quote-strings='"'
+                            filename="{{tab.name}}-{{result.time}}.csv"
+                    >
+                        {{'CSV без заголовка' | translate}}
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button
+                            ng-csv="getExportData(tableData)"
+                            quote-strings=''
+                            filename="{{tab.name}}-{{result.time}}.txt"
+                            field-separator="\t"
+                            csv-header="getExportHeaders()"
+                    >
+                        {{'Табулированный текст с заголовками' | translate}}
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button
+                            ng-csv="getExportData(tableData)"
+                            quote-strings=" "
+                            filename="{{tab.name}}-{{result.time}}.txt"
+                            field-separator="\t"
+                            csv-header="getExportHeaders(tableData)"
+                    >
+                        {{'Табулированный текст без заголовков' | translate}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
+
+        <md-button aria-label="menu" class="md-icon-button">
             <i class="mdi mdi-18px ml+" ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
             <md-tooltip>{{'Привязка' | translate}}</md-tooltip>
         </md-button>
@@ -58,6 +111,16 @@
             </md-tab-body>
         </md-tab>
 
+        <!-- !STATS! -->
+        <md-tab md-on-select="vars.active.stats=true">
+            <md-tab-label>
+                Stats <i class="mdi mdi-18px mdi-school"></i>
+            </md-tab-label>
+            <md-tab-body>
+                <div ng-init="widgets = resultContainer.widgets.stats" ng-include="'app/render/WidgetsList.html'"
+                     ng-if="vars.active.stats"></div>
+            </md-tab-body>
+        </md-tab>
 
 
 

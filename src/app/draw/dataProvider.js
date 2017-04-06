@@ -14,7 +14,7 @@ class DataProvider {
     constructor(result, sourceType) {
         this.data = result.data;
         this.text = false;
-
+        this.progressQuery = '';
         this.sort = false;
         this.sortOrder = false;
         // Если результат строка
