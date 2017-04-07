@@ -214,7 +214,7 @@
             let db=obj.item.database;
             if(obj.key == "OpenTables"){
                 // тут можно что то  получше чем location
-                window.location='/database/'+db+'/table/'+table;
+                window.location = '/#/database/' + db + '/table/' + table;
 
             } else if(obj.key == "InsertDescribe"){
                API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{

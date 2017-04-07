@@ -26,7 +26,7 @@
                       ThemeService) {
 
                 // Запуск HTML5 режима HISTORY API, без решетки
-                $locationProvider.html5Mode(true).hashPrefix('!');
+                // $locationProvider.html5Mode(true).hashPrefix('!');
 
                 // Проверка авторизации в httpInterceptor
                 $httpProvider.interceptors.push('HttpInterceptor');

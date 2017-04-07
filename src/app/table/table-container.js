@@ -117,7 +117,7 @@
         */
         $scope.load = ( ) => {
 
-            console.log($scope.vars.columns);
+            // console.log($scope.vars.columns);
 
             $scope.vars.data = -1;
             API.query( `
@@ -143,7 +143,7 @@
                 $scope.table.settings.width = '99.9' + Math.floor(100 * Math.random()) + '%';
                 $scope.table.settings.height = '99.9' + Math.floor(100 * Math.random()) + '%';
 
-                console.info($scope.table);
+                // console.info($scope.table);
 
                 $scope.updateHandTable();
 
@@ -156,7 +156,7 @@
         };
 
         $scope.calcRawSize = ( ) => {
-            console.log('RAcalcRawSizeW');
+            // console.log('RAcalcRawSizeW');
             //SELECT any(ignore(*)) FROM merge.hits SAMPLE 1 / 10000
 
             // А размер данных без учета компрессии -- никак?
@@ -169,7 +169,7 @@
             API.query( 'SELECT any(ignore(*)) FROM ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable +' SAMPLE 1 / 10000 ' ).then( data => {
                 //
                 $scope.vars.rawstatistics=data.statistics;
-                console.log("RAcalcRawSizeWresult",data);
+                // console.log("RAcalcRawSizeWresult",data);
             } , function(reason) {
                 $scope.vars.rawstatistics=reason.data;
             });
@@ -217,7 +217,6 @@
                         o.size='-';
                         o.ratio='-';
 
-                        console.log(o);
                         //появились data_compressed_bytes, data_uncompressed_bytes,
                         if (o.data_compressed_bytes)
                         {

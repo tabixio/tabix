@@ -57,6 +57,9 @@
          * Change UI theme
          * @param theme
          */
-		$scope.setUiTheme = (theme) => ThemeService.set(theme.name);
+        $scope.setUiTheme = (theme) => {
+            ThemeService.set(theme.name);
+            window.location.reload();
+        }
 	}
 })(angular, smi2);
