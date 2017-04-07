@@ -142,6 +142,9 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             let trimValue=false;
             let range1, text;
 
+            // token: Object {type: "keyword", value: "GROUP BY", row: 10, col: 0}
+            // token: Object {type: "text", value: " ", row: 10, col: 8}
+            // token: Object {type: "markup.heading", value: "click_status_old", row: 10, col: 9}
 
             while (token) {
                 let t = token;
