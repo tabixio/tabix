@@ -1,4 +1,10 @@
 
+### 2017-04-07
+
+* Change route to `#`
+* Add load CSV to Browser table
+* Add WHERE IN (`@local_csv`)
+
 ### 2017-04-06
 
 * Export CSV + add support multi query

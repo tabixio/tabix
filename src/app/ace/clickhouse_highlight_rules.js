@@ -72,6 +72,9 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "markup.heading": $_fields.join('|')
         }, "identifier", true);
 
+
+        // https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode
+
         this.$rules = {
             "start": [
             {
@@ -89,8 +92,12 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 regex: "GROUP\\W+BY|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"
             },
             {
-                token: "variable",
+                token: "variable.language",
                 regex : /\$[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
+            },
+                {
+                    token: "variable.other",
+                    regex: /@[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
             },
             {
                 token: "comment",
