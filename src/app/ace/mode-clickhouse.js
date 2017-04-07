@@ -115,6 +115,53 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 }
             }
         };
+
+        this.replaceVars = function (sql,vars) {
+            return sql;
+
+        };
+        this.fetchTokens = function (sql) {
+            // получить список VARS_REPLACE = $var_xxx
+            // получить список VARS_MARK    = @file
+            // получить список GROUP BY последнего
+            // кол-во в limit
+            // where (ключи)
+            let TokenIterator = require("ace/token_iterator").TokenIterator;
+            let EditSession = require("ace/edit_session").EditSession;
+            let Range = require("ace/range").Range;
+
+            // console.info(sql);
+
+            let session = new EditSession(sql, this);
+
+            session.bgTokenizer.start(0);// force rehighlight whole document
+            let iterator = new TokenIterator(session, 0, 0);
+            let token = iterator.getCurrentToken();
+            let matches = [];
+            let startRow = 0, startCol = 0;
+            let trimValue=false;
+            let range1, text;
+
+
+            while (token) {
+                let t = token;
+
+                t['row'] = iterator.getCurrentTokenRow();
+                t['col'] = iterator.getCurrentTokenColumn();
+
+                token = iterator.stepForward();
+                console.log("token:",t);
+                // if (
+                //     t.type == type &&
+                //     (
+                //         (value !== true && t.value == value )
+                //         ||
+                //         value === true
+                //     )
+                // )
+            }
+
+        };
         this.splitByTokens = function (sql, type, value) {
             sql = this.trim(sql,';;');
             sql = this.trim(sql,';');

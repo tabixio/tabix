@@ -565,6 +565,7 @@ window.global_lang                  = "ru";
                     let storage = false;
                     let _keyword = null;
                     let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
+                    let fetchTokens = editor.session.$mode.fetchTokens(subSql);
                     let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
 
                     if (set_format.hasOwnProperty('value')) {
