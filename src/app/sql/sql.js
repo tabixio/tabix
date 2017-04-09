@@ -200,7 +200,7 @@ window.global_lang                  = "ru";
             let Q_ID='';
 
             if (query.qid) {
-                Q_ID = ' /*TABIX_QUERY_ID_' + query.qid + '*/ ';
+                Q_ID = ' /*TABIX_QID_' + query.qid + '*/ ';
             }
 
             API.query(Q_ID + query.sql, query.format, true, extendSettings).then((data) => {
@@ -1211,7 +1211,7 @@ window.global_lang                  = "ru";
 
             let sql=`
             SELECT query FROM ( SELECT query FROM system.query_log 
-WHERE query like '%TABIX_QUERY%' AND query not like '%system.query_log%' and exception=''  AND query LIKE '%`+like+`%'
+WHERE query like '%TABIX_QID%' AND query not like '%system.query_log%' and exception=''  AND query LIKE '%` + like + `%'
 ORDER BY event_time desc  ) GROUP BY query`;
 
             if (like){

@@ -4,7 +4,8 @@
         <md-icon class="mdi mdi-filter-remove" ng-click="vars.searchline=''" style="display:inline-block;"></md-icon>
     </md-input-container>
 
-    <fun-metis-menu ng-if="vars.loaded && !vars.error" fun-metis-config="vars.metis.config" fun-metis-events="vars.metis.events" class="metismenu">
+    <fun-metis-menu ng-if="vars.loaded && !vars.error" fun-metis-config="vars.metis.config"
+                    fun-metis-events="vars.metis.events" class="metismenu" id="sideBarMetismenu">
         <nav>
             <ul>
                 <li class="active">

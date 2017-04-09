@@ -8,7 +8,7 @@
         '$state',
         'API',
         'ThemeService',
-        '$mdSidenav','$mdToast'
+        '$mdSidenav', '$mdToast', '$timeout'
 
     ];
 
@@ -17,9 +17,10 @@
      * @name smi2.controller:SidebarController
      * @description Контроллер бокового меню
      */
-    function SidebarController( $scope, $rootScope, $state, API, ThemeService, $mdSidenav,$mdToast ) {
+    function SidebarController($scope, $rootScope, $state, API, ThemeService, $mdSidenav, $mdToast, $timeout) {
         $scope.vars = {
             searchline:'',
+            counter: 0,
             loaded: false,
             error: false,
             databases: [ ]
@@ -64,6 +65,12 @@
             } else {
                 $scope.filterCompletions(curr);
             }
+
+
+            $timeout(function () {
+                $('#sideBarMetismenu').metisMenu();
+            }, 250)
+
         });
 
         $scope.clickInsertField = field => {
@@ -246,6 +253,11 @@
         $scope.reLoad = () =>   {
             let list_all_fields=[];
 
+            $scope.vars.loaded = false;
+            $scope.vars.error = false;
+
+            $scope.vars.databases = [];
+
             API.query( "SELECT * FROM system.columns" ).then(res => {
                 let data = res.data || [ ];
                 data.forEach((item) => {
@@ -332,13 +344,20 @@
                                 });
                             }
                         });
-
+                        console.log('$scope.vars.databases', $scope.vars.databases);
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
                     }, () => {
                         $scope.vars.loaded = true;
                         $scope.vars.error = true;
                     });
+
+                    // ----- done - reRender metisMenu
+
+                    $timeout(function () {
+                        $('#sideBarMetismenu').metisMenu();
+                    }, 250)
+
 
                 }, () => {
                     $scope.vars.loaded = true;
@@ -348,6 +367,8 @@
                 $scope.vars.loaded = true;
                 $scope.vars.error = true;
             });
+
+
         };
 
         $scope.reLoad();
