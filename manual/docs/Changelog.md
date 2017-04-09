@@ -1,3 +1,9 @@
+### 2017-04-09
+
+* Fix : Cannot parse input: expected ( before: /TABIX_QUERY_ID_ec0JCHn37U409iQ_()/
+* Fix : SideBar menu reload on DROP/CREATE table
+* Public build 17.04.3
+
 
 ### 2017-04-07
 
