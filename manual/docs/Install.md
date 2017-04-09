@@ -18,11 +18,47 @@ Or git master
 * done
 
 
+example nginx config
+```
+
+server {
+    listen 80;
+    server_name ui.tabix.io;
+    charset        utf-8;
+    root /var/www/tabix.ui/build;
+    location / {
+        if (!-f $request_filename) {
+            rewrite ^(.*)$ /index.html last;
+        }
+        index  index.html index.htm;
+    }
+}
+
+
+```
+
 
 ### Variant 3, Embedded
 
 
-See https://github.com/smi2/tabix.ui/tree/master/loader
+Add http_server_default_response IN `/etc/clickhouse-server/config.xml`
+
+
+
+```
+<!-- Default root page on http[s] server. For example load UI from https://tabix.io/ when opening http://localhost:8123 -->
+
+
+
+<http_server_default_response><![CDATA[<html ng-app="SMI2"><head><base href="http://ui.tabix.io/"></head><body><div ui-view="" class="content-ui"></div><script src="http://loader.tabix.io/master.js"></script></body></html>]]></http_server_default_response>
+
+
+
+```
+
+
+Then open http://localhost:8123
+
 
 ### Variant 4, compile from source
 
