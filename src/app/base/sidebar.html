@@ -30,7 +30,8 @@
                             <ul class="sub-menu" ng-if="database.tables.length">
                                 <li ng-repeat="table in database.tables" >
 
-                                    <a class="has-arrow" ng-if="table.active">
+                                    <a class="has-arrow"
+                                       ng-class="table.active?'side_tableactive':'side_tablenoactive'">
                                         <md-menu mousepoint-menu>
 
                                             <md-button ng-mouseenter class="text-left no-txt-transform" ng-dblclick="openTable(table)"
@@ -52,7 +53,8 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li ng-repeat="field in table.fields" class="text-left no-txt-transform table-fields-sidebar" ng-click="clickInsertField(field)">
-                                            <pre style="margin: 2px 0px 0px 2px" ng-if="field.active">{{field.name}}</pre>
+                                            <pre style="margin: 2px 0px 0px 2px"
+                                                 ng-class="field.active?'side_fieldactive':'side_fieldnoactive'">{{field.name}}</pre>
                                         </li>
                                     </ul>
                                 </li>
