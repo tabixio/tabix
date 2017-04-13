@@ -27,7 +27,7 @@ extra:
     - type: 'github'
       link: 'https://github.com/smi2/tabix.ui'
     - type: 'twitter'
-      link: 'https://twitter.com/tabix.io'
+      link: 'https://twitter.com/tabix_io'
 
 # Google Analytics
 #google_analytics:
