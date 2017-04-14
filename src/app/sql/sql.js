@@ -455,8 +455,8 @@ window.global_lang                  = "ru";
             }
 
             // ------------------------------------------------------------------------------------------------
-            console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
-            console.info( 'Cache:',$.cache);
+            // console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+            // console.info( 'Cache:',$.cache);
 
             // Clear not-pinned tabs
             tab.results = tab.results.reduce((arr, item) => {
