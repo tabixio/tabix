@@ -29,7 +29,7 @@ https://tabix.io/doc/
 
 ## Roadmap
 
-[Tabix kanban board](https://tree.taiga.io/project/isublimity-chg/kanban)
+[Tabix roadmap board](https://github.com/smi2/tabix.ui/issues/12)
 
 ## Tabix changelog & news
 
