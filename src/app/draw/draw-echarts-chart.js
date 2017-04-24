@@ -68,6 +68,10 @@ class DrawEchartsChart extends DrawEcharts {
     preCreate(drw) {
         return {};
     }
+
+
+
+
     createChart(drw) {
 
 
@@ -75,6 +79,8 @@ class DrawEchartsChart extends DrawEcharts {
             autoAxis: false,
             markLine:true,
             stack:false,
+            path:false,
+            sort:true
         };
         if (drw) {
             sets = Object.assign(sets, drw);
@@ -82,33 +88,38 @@ class DrawEchartsChart extends DrawEcharts {
 
 
         let columns=this.getColumns();
+        let firstCol=this.getFirstColumn();
+        let dtCol=this.findDateTimeAxis();
+
         let options={};
         let yAxis=[];
         let xAxis=[];
-        let firstCol=this.getFirstColumn();
-        let dtCol=this.findDateTimeAxis();
         let series=[];
+        let $series={};
+
+
+        // ---------------------------------------------------------------
+        let $data=this.data();
+
 
         if (dtCol) {
             firstCol=dtCol;
-            xAxis=[{
-                name : dtCol,
-                type: 'category',
-                // boundaryGap : false,
-                // axisLine: {onZero: true},
-                data: _.map(this.data(),dtCol)
-            }];
         }
-        else {
-            // Берем первую колонку
-            xAxis=[{
-                name : firstCol,
-                type : 'category',
-                // boundaryGap : false,
-                // axisLine: {onZero: true},
-                data: _.map(this.data(),firstCol)
-            }];
+
+
+        // Отсортируем данные
+        if (sets.sort) {
+            $data=_.sortBy($data,firstCol);
         }
+
+        // Берем первую колонку
+        xAxis=[{
+            name : firstCol,
+            type : 'category',
+            // boundaryGap : false,
+            // axisLine: {onZero: true},
+            data: _.map($data,firstCol)
+        }];
 
 
 
@@ -116,6 +127,89 @@ class DrawEchartsChart extends DrawEcharts {
         let lastColumn=''; // нужно чтобы задать название оси
         let index=0;
 
+
+        // если указана группировка по колонкам
+        let path=this.getParameterPath();
+
+
+        let groupPath=false;
+
+        if (path)
+        {
+            groupPath=true;
+            // указан путь данных - т/е группировка
+            // разбиваем данные по этим группировочным полям
+
+
+        }
+
+
+
+        let cntStrAdd=0;
+        let colValues=[];
+        for ( let colPos in columns) {
+            // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+            let col=columns[colPos];
+            if (col!=firstCol)
+            {
+                if (this.isStringColumn(col) && cntStrAdd<2 && !groupPath) {
+                    // Автопуть - автоматические создание групп если вторая и/или третья колонка строки
+                    if (!_.isArray(path)) {
+                        path=[];
+                    }
+
+                    path.push(col);
+                    cntStrAdd++;
+                }
+                else {
+                    if (this.isNumericColumn(col)) {
+                        colValues.push(col);
+                    }
+                }
+            }
+        }
+        // ---------------------------------------------------------------
+        let len = $data.length;
+        for (index = 0; index < len; ++index) {
+            let item=$data[index];
+
+            for ( let colPos in columns) {
+                // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+                let col = columns[colPos];
+                let series_path=[firstCol];
+                if (col != firstCol && this.isNumericColumn(col) && _.findIndex(path,col)<0) {
+                    if (path) {
+                        series_path=_.merge(series_path,path);
+                    }
+                    series_path.push(col);
+                    series_path=series_path.join(':');
+
+                    if (!$series[series_path]) {
+
+                        xAxis[0].data.forEach(function (x) {
+                            _.set($series,series_path+'.'+x,null);
+                        });
+                    }
+                    else {
+                        $series[series_path][item[firstCol]]=item[col];
+                    }
+                    // _.set($series,series_path.join(':'),[item[firstCol],item[col]]);
+                }
+
+            }
+        } // for $data
+
+
+
+        // ---------------------------------------------------------------
+        console.log("firstCol",firstCol);
+        console.log("colValues",colValues);
+        console.log("path",path);
+        console.log("$series",$series);
+        console.log("$data",$data);
+        // ---------------------------------------------------------------
+
+        return;
 
         for ( let colPos in columns) {
             // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
@@ -139,13 +233,10 @@ class DrawEchartsChart extends DrawEcharts {
 
 
                 if (this.preference.bar) {
-
                     seria.type='bar';
                     seria.barGap='-100%';
                     seria.barCategoryGap='40%';
                 }
-
-
                 if (sets.markLine){
                     seria.markLine={data:[
                         {
@@ -164,12 +255,15 @@ class DrawEchartsChart extends DrawEcharts {
                     median:mediana,
                     index:index
                 });
-
-
                 // index series
                 index=index+1;
             }
         }// for columns
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+
         console.log("colsMedianAxis",colsMedianAxis);
         if (sets.autoAxis  && colsMedianAxis.length>1) {
 

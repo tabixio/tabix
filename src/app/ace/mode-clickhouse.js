@@ -120,27 +120,46 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             return sql;
 
         };
+
+        // this.fetchTokensParts = function (sql,token) {
+        //     let TokenIterator = require("ace/token_iterator").TokenIterator;
+        //     let EditSession = require("ace/edit_session").EditSession;
+        //     let session = new EditSession(sql, this);
+        //     session.bgTokenizer.start(0);// force rehighlight whole document
+        //     let iterator = new TokenIterator(session, token.row, token.col);
+        //     let token = iterator.getCurrentToken();
+        //
+        //
+        //
+        //     return false;
+        //
+        // };
+
         this.fetchTokens = function (sql) {
+            let results={
+                groupby:[],
+                where:[],
+                vars:[],
+                limit:-1
+            };
+
             // получить список VARS_REPLACE = $var_xxx
             // получить список VARS_MARK    = @file
             // получить список GROUP BY последнего
             // кол-во в limit
             // where (ключи)
+
             let TokenIterator = require("ace/token_iterator").TokenIterator;
             let EditSession = require("ace/edit_session").EditSession;
-            let Range = require("ace/range").Range;
-
-            // console.info(sql);
-
             let session = new EditSession(sql, this);
 
             session.bgTokenizer.start(0);// force rehighlight whole document
             let iterator = new TokenIterator(session, 0, 0);
             let token = iterator.getCurrentToken();
-            let matches = [];
-            let startRow = 0, startCol = 0;
-            let trimValue=false;
-            let range1, text;
+            // let matches = [];
+            // let startRow = 0, startCol = 0;
+            // let trimValue=false;
+            // let range1, text;
 
             // token: Object {type: "keyword", value: "GROUP BY", row: 10, col: 0}
             // token: Object {type: "text", value: " ", row: 10, col: 8}
@@ -148,21 +167,25 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
 
             while (token) {
                 let t = token;
-
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
+                // if (t.type=='keyword' && t.value.toLowerCase()=='where')
+                // {
+                //     // ------ WHERE ---------
+                //     results.where=this.fetchTokensParts(sql,t);
+                // }
+                // if (t.type=='keyword' && t.value.toLowerCase()=='group by')
+                // {
+                //     // ------ GROUP BY ---------
+                //     results.groupby=this.fetchTokensParts(sql,t);
+                // }
+                console.log("token:",t);
 
                 token = iterator.stepForward();
-                console.log("token:",t);
-                // if (
-                //     t.type == type &&
-                //     (
-                //         (value !== true && t.value == value )
-                //         ||
-                //         value === true
-                //     )
-                // )
+
             }
+
+            return results;
 
         };
         this.splitByTokens = function (sql, type, value) {

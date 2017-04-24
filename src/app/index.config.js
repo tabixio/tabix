@@ -64,7 +64,7 @@
                 'не найдено': 'not found',
                 'нет данных': 'no data',
                 'Назад': 'Back',
-                'Выход': 'Sing out',
+                'Выход': 'Exit',
                 'Шрифт': 'font',
                 'История запросов пуста': 'Requests\'s history is empty',
                 'Структура': 'Structure',

@@ -60,6 +60,10 @@ class DrawEchartsSunkeys extends DrawEcharts {
         // c - node2
         // d - count 2-3
         // e - node3
+        //
+
+        //
+
 
 
         if (!( patharr.length & 1)) {

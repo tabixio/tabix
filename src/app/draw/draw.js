@@ -97,7 +97,24 @@ class DrawBasicChart {
         }
         return false;
     }
-    
+
+    isStringColumn(col) {
+        let position = this.getColumnPosition(col);
+
+        if (_.isUndefined(position)) {
+            return;
+        }
+        let type = this.meta()[position]['type'];
+        if (!type) return false;
+        type=type.toLowerCase();
+        if (type.includes('string')
+            || type.includes('enum')
+        ) {
+            return true;
+        }
+        return false;
+    }
+
 
     getColumnPosition(col) {
         return parseInt(_.findKey(this.meta(), {'name': col}));
