@@ -139,48 +139,34 @@
                     // type: 'value',
                     show: false,
                     type: 'time',
+
                     splitLine: {
                         show: false
                     },
-                    // min: 0,
-                    // max: 1,
+
                     gridIndex: count
                 });
                 yAxes.push({
-                    type: 'log',
+                    type: 'value',
                     show: false,
                     scale: true,
                     splitLine: {
                         show: false
                     },
                     name:'value',
-                    // boundaryGap: [0, '100%'],
+                    // boundaryGap:true,
+                    boundaryGap: [0, '100%'],
                     min: 'dataMin',
                     max: 'dataMax',
                     gridIndex: count
                 });
-                // yAxes.push(
-                // {
-                //     type: 'value',
-                //     name: 'bars',
-                //     show: false,
-                //     scale: true,
-                //     splitLine: {
-                //         show: false
-                //     },
-                //     inverse: true,
-                //     boundaryGap: [0.2, 0.2],
-                //     // min: 'dataMin',
-                //     // max: 'dataMax',
-                //     gridIndex: count
-                // }
-                // );
+
                 // -------------- TITLE --------------
                 titles.push({
                     textAlign: 'center',
                     text: key,
                     textStyle: {
-                        fontSize: 12,
+                        fontSize: 10,
                         fontWeight: 'normal'
                     }
                 });
@@ -223,8 +209,8 @@
             grids.forEach((grid,idx)=> {
                 grid.left = ((idx % rowNumber) / rowNumber * 100 + 0.5) + '%';
                 grid.top = (Math.floor(idx / rowNumber) / rowNumber * 100 + 0.5) + '%';
-                grid.width = (1 / rowNumber * 100 - 1) + '%';
-                grid.height = (1 / rowNumber * 100 - 1) + '%';
+                grid.width = (1 / rowNumber * 100 - 2) + '%';
+                grid.height = (1 / rowNumber * 100 - 2) + '%';
 
                 titles[idx].left = parseFloat(grid.left) + parseFloat(grid.width) / 2 + '%';
                 titles[idx].top = parseFloat(grid.top) + '%';
