@@ -54,3 +54,23 @@ DRAW_CHART
 ![AutoAxis](/img/draw-chart-stack.png)
 
 ![AutoAxis](/img/draw-chart-stack-bar.png)
+
+
+### Group columns
+
+```sql
+
+SELECT toDate( '2016-01-04') as dt,'CAR' as type,'WHITE' as color,toInt16(2000) as cost,122 as width
+UNION ALL SELECT toDate( '2016-01-04') as dt,'CAR' as type,'BLACK' as color,toInt16(2100) as cost,121 as width
+UNION ALL SELECT toDate( '2016-01-02') as dt,'CAR' as type,'WHITE' as color,toInt16(2200) as cost,100 as width
+UNION ALL SELECT toDate( '2016-01-02') as dt,'CAR' as type,'BLACK' as color,toInt16(2300) as cost,99 as width
+UNION ALL SELECT toDate( '2016-01-03') as dt,'CAR' as type,'WHITE' as color,toInt16(2400) as cost,110 as width
+UNION ALL SELECT toDate( '2016-01-03') as dt,'CAR' as type,'BLACK' as color,toInt16(2500) as cost,112 as width
+UNION ALL SELECT toDate( '2016-01-13') as dt,'BUS' as type,'BLACK' as color,toInt16(2500) as cost,112 as width
+DRAW_CHART 
+{
+   path:'type'
+}
+
+
+```
