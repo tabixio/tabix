@@ -8,8 +8,11 @@
 ### Chart & autoAxis
 
 ```SQL
-SELECT modification_time,bytes,marks,table,  primary_key_bytes_in_memory
-FROM system.parts order by modification_time LIMIT 1000
+
+SELECT toStartOfFiveMinute( modification_time) as modification_time, sum(bytes) as bytes,sum(marks) as marks,table
+FROM system.parts
+group by modification_time,table
+order by modification_time LIMIT 1000
 DRAW_CHART
 {
     autoAxis:true

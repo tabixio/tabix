@@ -70,6 +70,7 @@ class WidgetTable extends Widget {
         if (this.data.countAll == 1) {
             // результат толкьо один был запрос
             this.sizeX = 6;
+            this.sizeY = 4;
         }
 
         // overWrite

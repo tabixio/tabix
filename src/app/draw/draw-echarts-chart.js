@@ -96,22 +96,15 @@ class DrawEchartsChart extends DrawEcharts {
         let xAxis=[];
         let series=[];
         let $series={};
-
-
-        // ---------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------------
         let $data=this.data();
-
-
         if (dtCol) {
             firstCol=dtCol;
         }
-
-
         // Отсортируем данные
         if (sets.sort) {
             $data=_.sortBy($data,firstCol);
         }
-
         // Берем первую колонку
         xAxis=[{
             name : firstCol,
@@ -120,31 +113,20 @@ class DrawEchartsChart extends DrawEcharts {
             // axisLine: {onZero: true},
             data: _.map($data,firstCol)
         }];
-
-
-
+        // ------------------------------------------------------------------------------------------------------------------------------------
         let colsMedianAxis=[]; // содержит mediana для каждой колонки
         let lastColumn=''; // нужно чтобы задать название оси
         let index=0;
-
-
         // если указана группировка по колонкам
         let path=this.getParameterPath();
-
-
         let groupPath=false;
-
         if (path)
         {
             groupPath=true;
             // указан путь данных - т/е группировка
             // разбиваем данные по этим группировочным полям
-
-
         }
-
-
-
+        // ------------------------------------------------------------------------------------------------------------------------------------
         let cntStrAdd=0;
         let colValues=[];
         for ( let colPos in columns) {
@@ -168,7 +150,7 @@ class DrawEchartsChart extends DrawEcharts {
                 }
             }
         }
-        // ---------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------------------
         let len = $data.length;
         for (index = 0; index < len; ++index) {
             let item=$data[index];
@@ -179,10 +161,14 @@ class DrawEchartsChart extends DrawEcharts {
                 let series_path=[firstCol];
                 if (col != firstCol && this.isNumericColumn(col) && _.findIndex(path,col)<0) {
                     if (path) {
-                        series_path=_.merge(series_path,path);
+
+                        for (let pi = 0; pi < path.length; ++pi) {
+                            let cc = path[pi];
+                            series_path.push(item[cc]);
+                        }
                     }
                     series_path.push(col);
-                    series_path=series_path.join(':');
+                    series_path = series_path.join(':___:');
 
                     if (!$series[series_path]) {
 
@@ -190,81 +176,78 @@ class DrawEchartsChart extends DrawEcharts {
                             _.set($series,series_path+'.'+x,null);
                         });
                     }
-                    else {
-                        $series[series_path][item[firstCol]]=item[col];
-                    }
-                    // _.set($series,series_path.join(':'),[item[firstCol],item[col]]);
+                    $series[series_path][item[firstCol]] = item[col];
                 }
-
             }
         } // for $data
 
-
-
         // ---------------------------------------------------------------
-        console.log("firstCol",firstCol);
-        console.log("colValues",colValues);
-        console.log("path",path);
-        console.log("$series",$series);
-        console.log("$data",$data);
+        // console.log("firstCol",firstCol);
+        // console.log("colValues",colValues);
+        // console.log("path",path);
+        // console.log("$series",$series);
         // ---------------------------------------------------------------
+        $data = null;
+        colValues = null;
+        // ------------------------------------------------------------------------------------------------------------------------------------
+        index = 0;
 
-        return;
-
-        for ( let colPos in columns) {
-            // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+        for (let seriaName in $series) {
+            let $seria = $series[seriaName];
+            console.log($seria, seriaName);
             let yAxisIndex=0;
-            let col=columns[colPos];
-            if (col!=firstCol && this.isNumericColumn(col)) {
+            let showSeriaName = '';
 
-                let dataThisColumn=_.map(this.data(),col);
-                let mediana=_.median(dataThisColumn);
+            showSeriaName = seriaName.replace(/:___:/g, ':');
 
-                lastColumn=col;
-                let seria={
-                    name:col,
-                    type:'line',
-                    symbolSize: 8,
-                    hoverAnimation: false,
-                    //yAxisIndex:yAxisIndex
+            let dataThisColumn = _.values($seria);
+            let mediana = _.median(dataThisColumn);
+            let seria = {
+                name: showSeriaName,
+                type: 'line',
+                symbolSize: 8,
+                hoverAnimation: false,
+                //yAxisIndex:yAxisIndex
 
-                    data:dataThisColumn
-                };
+                data: dataThisColumn
+            };
 
 
-                if (this.preference.bar) {
-                    seria.type='bar';
-                    seria.barGap='-100%';
-                    seria.barCategoryGap='40%';
-                }
-                if (sets.markLine){
-                    seria.markLine={data:[
+            // ----- BAR ---------------
+            if (this.preference.bar) {
+                seria.type = 'bar';
+                seria.barGap = '-100%';
+                seria.barCategoryGap = '40%';
+            }
+
+            if (sets.markLine) {
+
+                seria.markLine = {
+                    data: [
                         {
                             name: 'mediana',
                             yAxis: mediana,
                         },
-                    ]};
-                }
+                    ]
+                };
 
-                // добавляем в серию
-                series.push(seria);
 
-                // median for series
-                colsMedianAxis.push({
-                    column:col,
-                    median:mediana,
-                    index:index
-                });
-                // index series
-                index=index+1;
             }
-        }// for columns
+            // median for series
+            colsMedianAxis.push({
+                column: showSeriaName,
+                median: mediana,
+                index: index
+            });
 
+            lastColumn = showSeriaName;
 
-// ------------------------------------------------------------------------------------------------------------------------------------
-
-
-        console.log("colsMedianAxis",colsMedianAxis);
+            // добавляем в серию
+            series.push(seria);
+            // index series
+            index = index + 1;
+        }
+        // ------------------------------------------------------------------------------------------------------------------------------------
         if (sets.autoAxis  && colsMedianAxis.length>1) {
 
             // Разбиваем на группы значение median по делению на 1000
@@ -294,8 +277,7 @@ class DrawEchartsChart extends DrawEcharts {
                 }
             }
         }
-
-
+        // ------------------------------------------------------------------------------------------------------------------------------------
         if (!yAxis.length) {
             // default axis
             yAxis=[{
