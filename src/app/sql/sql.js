@@ -54,6 +54,7 @@ window.global_lang                  = "ru";
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
         const SQL_SAVE_TABS_KEY = 'saveTabs';
+        const SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT = 'DISABLE_HOTKEY_LEFTRIGHT';
         const SQL_SAVE_DISABLE_AUTOHELP_KEY = 'DISABLE_AUTOHELP';
         const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion';
         const SQL_SESSION_KEY = 'sessionData';
@@ -68,6 +69,7 @@ window.global_lang                  = "ru";
             tabs: [],
             enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
             disableAutohelp: localStorageService.get(SQL_SAVE_DISABLE_AUTOHELP_KEY) || false,
+            disableHotKeyCmdLeft: localStorageService.get(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT) || false,
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
@@ -831,12 +833,16 @@ window.global_lang                  = "ru";
                 callback: () => selectTab(i)
             });
         }
+
+
         hotkeys.add({
-            combo: 'ctrl+right',
+            combo: ($scope.vars.disableHotKeyCmdLeft ? 'ctrl+shift+alt+right' : 'ctrl+right'),
             callback: selectNextTab
         });
+
+
         hotkeys.add({
-            combo: 'ctrl+left',
+            combo: ($scope.vars.disableHotKeyCmdLeft ? 'ctrl+shift+alt+left' : 'ctrl+left'),
             callback: selectPrevTab
         });
         hotkeys.add({
@@ -947,16 +953,16 @@ window.global_lang                  = "ru";
             editor.commands.addCommand({
                 name: 'selectnexttab',
                 bindKey: {
-                    win: 'Ctrl-Right',
-                    mac: 'Command-Right'
+                    win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Right' : 'Ctrl-Right'),
+                    mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Right' : 'Command-Right')
                 },
                 exec: selectNextTab
             });
             editor.commands.addCommand({
                 name: 'selectprevtab',
                 bindKey: {
-                    win: 'Ctrl-Left',
-                    mac: 'Command-Left'
+                    win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Left' : 'Ctrl-Left'),
+                    mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Left' : 'Command-Left')
                 },
                 exec: selectPrevTab
             });
@@ -1224,6 +1230,8 @@ ORDER BY event_time desc  ) GROUP BY query`;
             }
 
             };
+
+
         $scope.setDisableAutoHelp = () => {
             let value=$scope.vars.disableAutohelp
             localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
@@ -1237,6 +1245,11 @@ ORDER BY event_time desc  ) GROUP BY query`;
         };
 
 
+        $scope.$watch('vars.disableHotKeyCmdLeft', (value) => {
+            localStorageService.set(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT, value);
+            console.info("SET>window.disableHotKeyCmdLeft=", $scope.vars.disableHotKeyCmdLeft);
+
+        });
         $scope.$watch('vars.enableLiveAutocompletion', (value) => {
             localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
             // loop
