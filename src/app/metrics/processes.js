@@ -25,10 +25,13 @@
 
         $scope.vars = {
             queryesToKill:{},
+            clusterMode: true,
             logMode : true,
             loading: false,
             logData: {},
             cols: [],
+            isClusterLoad: false,
+            clusterList: false,
             isDark: ThemeService.isDark(),
             sort: /^[a-z0-9_]+$/.test(localStorageService.get(LS_SORT_KEY)) ? localStorageService.get(LS_SORT_KEY) : null,
             interval: localStorageService.get(LS_INTERVAL_KEY) || -1,
@@ -83,14 +86,44 @@
 
         let intervalHandle = null;
 
+        // ------------------------------------------------------------------------------
+        $scope.initClusterConfig = () => {
+            //
+
+            let sql = 'SELECT host_address,port FROM system.clusters GROUP BY host_address,port LIMIT 10';
+            $scope.vars.clusterList = [];
+            API.query(sql).then(function (data) {
+                data.data.forEach((cell) => {
+                    $scope.vars.clusterList.push(cell.host_address + ':' + cell.port);
+
+                });
+                $scope.vars.isClusterLoad = true;
+                console.log("Cluster nodes list", $scope.vars.clusterList.join(","))
+            }, function (response) {
+                $scope.vars.isClusterLoad = true;
+                console.error('Ошибка ' + response);
+            });
+        };
+        // ------------------------------------------------------------------------------
         $scope.flush = () => {
             $scope.vars.logData={};
             $scope.table.data=[];
         };
+
+        // ------------------------------------------------------------------------------
         $scope.load = () => {
             let sql = `SELECT  now() as dt, query,  1 as count,  formatReadableSize(read_bytes) as bytes_read, 
                 formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
-                read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName() FROM system.processes `;
+                read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName()`
+
+
+            console.warn($scope.vars.isClusterLoad, $scope.vars.clusterList, $scope.vars.clusterMode);
+            if ($scope.vars.isClusterLoad && $scope.vars.clusterList && $scope.vars.clusterMode) {
+                sql = sql + ` FROM remote('` + $scope.vars.clusterList.join(",") + `',system.processes, '` + API.getLogin() + `','` + API.getPassword() + `') `;
+            }
+            else {
+                sql = sql + ` FROM system.processes `;
+            }
 
             if ($scope.vars.logMode) {
                 // исключить запрос
@@ -152,25 +185,31 @@
             });
         };
 
+        // ------------------------------------------------------------------------------
         $scope.setInterval = () => {
+
             localStorageService.set(LS_INTERVAL_KEY, $scope.vars.interval);
+
             if (intervalHandle) {
                 $interval.cancel(intervalHandle);
                 intervalHandle = null;
             }
-            if ($scope.vars.interval > -1) {
+            if ($scope.vars.interval > -1 && $scope.vars.isClusterLoad) {
                 intervalHandle = $interval($scope.load, $scope.vars.interval * 1000);
             }
         };
 
-
+        // ------------------------------------------------------------------------------
         $scope.$on('$destroy', function() {
             $scope.vars.interval=-1;
             $interval.cancel(intervalHandle);
             $scope.setInterval();
         });
 
+
+        // ------------------------------------------------------------------------------
         // start
+        $scope.initClusterConfig();
         $scope.load();
 
 
@@ -288,7 +327,6 @@
 
         };
 
-
-
     }
+
 })(angular, smi2);

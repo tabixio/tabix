@@ -57,6 +57,15 @@
         };
 
 
+        this.getPassword = () => {
+            return connection.password;
+        };
+
+        this.getLogin = () => {
+            return connection.login;
+        };
+
+
         this.makeQueryId = () => {
                 let text = "";
                 let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

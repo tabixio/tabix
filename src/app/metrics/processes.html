@@ -24,6 +24,12 @@
                 </md-switch>
             </md-input-container>
 
+            <md-input-container class="md-block" flex-gt-sm>
+                <md-switch class="md-primary" name="special" ng-model="vars.clusterMode">
+                    Cluster
+                </md-switch>
+            </md-input-container>
+
 
             <md-input-container class="md-block" flex-gt-sm ng-click="load()">
                 <md-button class="md-raised md-primary">{{'Обновить' | translate}}</md-button>
