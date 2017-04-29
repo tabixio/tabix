@@ -117,7 +117,6 @@
                 read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName()`
 
 
-            console.warn($scope.vars.isClusterLoad, $scope.vars.clusterList, $scope.vars.clusterMode);
             if ($scope.vars.isClusterLoad && $scope.vars.clusterList && $scope.vars.clusterMode) {
                 sql = sql + ` FROM remote('` + $scope.vars.clusterList.join(",") + `',system.processes, '` + API.getLogin() + `','` + API.getPassword() + `') `;
             }
@@ -194,7 +193,7 @@
                 $interval.cancel(intervalHandle);
                 intervalHandle = null;
             }
-            if ($scope.vars.interval > -1 && $scope.vars.isClusterLoad) {
+            if ($scope.vars.interval > -1) {
                 intervalHandle = $interval($scope.load, $scope.vars.interval * 1000);
             }
         };

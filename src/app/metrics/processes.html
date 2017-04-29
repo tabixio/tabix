@@ -2,11 +2,11 @@
     <h1 class="md-title">{{'Список процессов' | translate}}</h1>
     <md-card-content>
         <div layout="row">
-            <md-input-container class="md-block" flex-gt-sm style="z-index: 1231231">
+            <md-input-container class="md-block" flex-gt-sm>
 
                 <label>{{'Частота обновления' | translate}}</label>
                 <md-select ng-model="vars.interval" ng-change="setInterval()" >
-                    <md-option ng-repeat="interval in [-1, 0.5, 1, 5, 10, 20, 30]" ng-value="interval">
+                    <md-option ng-repeat="interval in [-1, 0.2 , 0.5, 1, 5, 10, 20, 30]" ng-value="interval">
                         {{interval == -1 ? ('Обновление отключено'|translate) : interval  +' '+('сек'|translate)}}
                     </md-option>
                 </md-select>
