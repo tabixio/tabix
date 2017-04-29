@@ -8,6 +8,7 @@ class DrawEcharts extends DrawBasicChart {
     constructor(Widget, drawType) {
         super(Widget);
 
+        this.help = "";
         this.type = drawType.toUpperCase();
         this.library = 'echarts';
 

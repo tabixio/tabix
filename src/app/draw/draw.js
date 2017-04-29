@@ -31,6 +31,13 @@ class DrawBasicChart {
 
     setError(msg) {
         this.errorMessage = msg;
+        let help = '';
+        let helpLink = '';
+
+        if (!_.isUndefined(this.help)) help = this.help;
+        if (!_.isUndefined(this.helpLink)) helpLink = this.helpLink;
+
+        this.widget.error = "Draw error message:" + msg + "\n\n" + help + "\n\n" + (helpLink ? '<a target="_blank" href="' + helpLink + '">' + helpLink + '</a>' : "");
     }
 
     isDark() {

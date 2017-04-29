@@ -344,7 +344,6 @@
                                 });
                             }
                         });
-                        console.log('$scope.vars.databases', $scope.vars.databases);
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
                     }, () => {

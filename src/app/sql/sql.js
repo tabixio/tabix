@@ -1249,8 +1249,6 @@ ORDER BY event_time desc  ) GROUP BY query`;
 
         $scope.$watch('vars.disableHotKeyCmdLeft', (value) => {
             localStorageService.set(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT, value);
-            console.info("SET>window.disableHotKeyCmdLeft=", $scope.vars.disableHotKeyCmdLeft);
-
         });
         $scope.$watch('vars.enableLiveAutocompletion', (value) => {
             localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);

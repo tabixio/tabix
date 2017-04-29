@@ -8,6 +8,8 @@ class DrawEchartsSunkeys extends DrawEcharts {
 
     create() {
 
+        this.helpLink = 'https://tabix.io/doc/draw/Draw_Sankeys/';
+        this.help = "Default config : {path:''} or {value:'',source:'',target:''}, if empty path or not set, try auto create path, then find columns [String] : [Integer|Float] : [String] ";
         // Если это код не JS попробуем получить обьект
         let drw = this.getDrawCommandObject();
 
@@ -28,7 +30,7 @@ class DrawEchartsSunkeys extends DrawEcharts {
             this.setError("Not set column value");
             return false;
         }
-        console.log("sets['path']:", sets['path']);
+        // console.log("sets['path']:", sets['path']);
 
 
 
@@ -67,7 +69,7 @@ class DrawEchartsSunkeys extends DrawEcharts {
 
 
         if (!( patharr.length & 1)) {
-            this.setError("Path четно");
+            this.setError("The value of the variable 'path' must be odd");
             return false;
         }
         let links = [];
