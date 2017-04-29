@@ -89,7 +89,10 @@
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
-
+                        <small class="pull-right" ng-if="vars.LastStatistics" style="color: silver;padding-top: 20px">
+                            {{vars.LastStatistics.elapsed| number:2}} sec.| {{vars.LastStatistics.rows_read| number}}
+                            rows.| {{vars.LastStatistics.bytes_read|filesize}}
+                        </small>
 
                         <div ng-if="tab.loading" style="display: table; width: 100%;">
                             <md-progress-linear md-mode="indeterminate" >{{tab.progress.query}} </md-progress-linear>
@@ -209,7 +212,8 @@
     <div>
             <hr>
             <div ng-repeat="sql in vars.sqlLogServer" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">
-                <pre class="p0 m0" style="max-height: 88px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
+                <pre class="p0 m0"
+                     style="font-size:10px;max-height: 88px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
             </div>
     </div>
 

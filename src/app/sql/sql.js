@@ -73,6 +73,7 @@ window.global_lang                  = "ru";
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
+            LastStatistics: false,
             delimiters : [
                 {
                     name: $filter('translate')(';; Двойной'),
@@ -235,6 +236,7 @@ window.global_lang                  = "ru";
                 // st.query_order=query.index;
                 $scope.vars.currentTab.statistics.push(st);
 
+                $scope.vars.LastStatistics = st;
                 // провайдер CH или API
                 let provider='ch';
                 // передаем в
@@ -412,7 +414,7 @@ window.global_lang                  = "ru";
          */
         $scope.execute = (type, tab) => {
             console.groupCollapsed("Execute query");
-
+            $scope.vars.LastStatistics = false;
             let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
             let numquery = 0;
             const editor = tab.editor;
