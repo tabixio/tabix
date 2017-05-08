@@ -14,7 +14,7 @@
     "screenfull": "~3.0.2",
     "angular-sanitize": "1.6.2",
     "angular-messages": "1.6.2",
-    "angular-material": "^1.1.1",
+    "angular-material": "master",
     "mdi": "^1.7.22",
     "ng-scrollbars": "^0.0.11",
     "fun-metis-menu": "*",

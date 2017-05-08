@@ -50,7 +50,7 @@
                 // Dashboard state. Now it's only redir to sql state
                 .state('dashboard', {
                     parent: 'layout',
-                    url: '/',
+                    url: '',
                     controller: ['$state', function ($state) {
                         $state.go('sql');
                     }]

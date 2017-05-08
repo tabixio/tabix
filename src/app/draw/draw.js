@@ -129,11 +129,16 @@ class DrawBasicChart {
 
     haveColumn(col) {
 
+        if (_.isNaN(col) || _.isNull(col) || _.isUndefined(col)) return false;
+
         let position = this.getColumnPosition(col);
-        if (_.isUndefined(position)) {
+
+        if (_.isNaN(position) || _.isNull(position) || _.isUndefined(position)) {
             // not undef
+            // console.log("haveColumn(col)",col,position,false);
             return false;
         }
+        // console.log("haveColumn(col)",col,position,true);
         return true;
 
     }

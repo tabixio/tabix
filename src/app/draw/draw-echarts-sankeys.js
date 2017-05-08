@@ -26,10 +26,6 @@ class DrawEchartsSunkeys extends DrawEcharts {
         // ---------------------------------------------------------------------------
         let path = '';
 
-        if (!this.haveColumn(sets['value'])) {
-            this.setError("Not set column value");
-            return false;
-        }
         // console.log("sets['path']:", sets['path']);
 
 
@@ -45,17 +41,40 @@ class DrawEchartsSunkeys extends DrawEcharts {
                 path = sets['path'];
             } else {
                 // ищем source+target
-                if (!this.haveColumn(sets['source']) || !this.haveColumn(sets['target'])) {
-                    this.setError("Not set column path or source & target");
-                    return false;
+                if (this.haveColumn(sets['source']) && this.haveColumn(sets['value']) && this.haveColumn(sets['target'])) {
+                    path = sets['source'] + '.' + sets['value'] + '.' + sets['target'];
                 }
-                path = sets['source'] + '.' + sets['target'];
+
             }
 
         }
+        let patharr = [];
+
+        if (!path) {
+
+            let setstr = false;
+            let columns = this.getColumns();
+            for (let colPos in columns) {
+                // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+                let col = columns[colPos];
+                if (this.isNumericColumn(col) && setstr) {
+                    patharr.push(col);
+                    setstr = false;
+                }
+                if (this.isStringColumn(col) && !setstr) {
+                    patharr.push(col);
+                    setstr = true;
+                }
+            }
+        }
+        else {
+            patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+        }
 
 
-        let patharr = _.split(path, '.'); //  'a.b.c.d.e'=>[a,b,c,d,e]
+
+
+
 
         // a - node1
         // b - count 1-2
@@ -63,10 +82,12 @@ class DrawEchartsSunkeys extends DrawEcharts {
         // d - count 2-3
         // e - node3
         //
+        console.log("patharr>", patharr);
 
-        //
-
-
+        if (!patharr.length) {
+            this.setError("The value of the variable 'path' - empty");
+            return false;
+        }
 
         if (!( patharr.length & 1)) {
             this.setError("The value of the variable 'path' must be odd");

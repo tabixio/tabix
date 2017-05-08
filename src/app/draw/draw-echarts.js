@@ -73,14 +73,18 @@ class DrawEcharts extends DrawBasicChart {
             this.init = true;
         }
         else {
-            this.init = this.create();
+
+            try {
+                this.init = this.create();
+            }
+            catch (e) {
+                this.setError(this.getError() + "\n\n\n" + e.name + ":" + e.message + "\n" + e.stack);
+            }
+
         }
 
         if (this.getError()) {
             console.error(this.getError());
-
-            this.chart.before("<p>" + this.getError() + "</p>");
-
             return false;
         }
 
