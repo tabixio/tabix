@@ -9,7 +9,13 @@ Open source simple business intelligence application and sql editor tool for Cli
 
 Not need, open in browser http://ui.tabix.io/
 
+### If need install
 
+[Install to you host](https://tabix.io/doc/Install/)
+
+### How to run in Docker
+
+[Use with Docker](https://tabix.io/doc/Install/#variant-5)
 
 ## Documentation
 
@@ -34,12 +40,6 @@ https://tabix.io/doc/
 ## Tabix changelog & news
 
 [Tabix changelog & news in twitter](http://twitter.com/tabix_io)
-
-
-## If need install
-
-[Install to you host](https://tabix.io/doc/Install/)
-
 
 ## License
 
