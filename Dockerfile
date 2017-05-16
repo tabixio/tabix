@@ -1,16 +1,17 @@
-FROM node:6.7.0
+FROM debian:jessie
 
-RUN npm install -g bower && npm update -g bower && \
-    npm install -g gulp && npm update -g gulp
+ENV APP_HOME /usr/src/app
+ENV DEFAULT /etc/nginx/sites-enabled/default
 
-COPY . /app
+RUN apt-get update && apt-get install -y nginx-full nginx libssl-dev
+RUN apt-get install -y openssl
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /app
+WORKDIR $APP_HOME
+ADD ./docker $APP_HOME
+ADD ./build /var/www/html
 
-RUN npm install && \
-    bower install --allow-root && \
-    gulp build
+RUN rm $DEFAULT
+RUN mv default $DEFAULT
 
-EXPOSE 3000
-
-CMD ["gulp", "serve:dist"]
+CMD if [ ! -z "$PASSWORD" ]; then sh -c "echo -n '$USER:$(openssl passwd -crypt $PASSWORD)\n' >> /etc/nginx/.htpasswd" ; else mv -f $APP_HOME/default_no_pass $DEFAULT ; fi && ./start.sh
