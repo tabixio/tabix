@@ -37,7 +37,8 @@ Now you can access `tabix.ui` by the link http://localhost:8080.
 > **More security**: you can limit access to your `tabix.ui` application on the proxy level. 
 > Use `-e USER='myuser' -e PASSWORD='mypass'` parameters to restrict access only for specified user. 
 > For example, `docker run -d -p 8080:80 -e USER='myuser' -e PASSWORD='mypass' spoonest/clickhouse-tabix-web-client`
-[Use with Docker](https://tabix.io/doc/Install/#variant-5)
+
+[Use with Docker](https://tabix.io/doc/Install/#variant-5-from-docker)
 
 ## Documentation
 
