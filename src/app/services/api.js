@@ -39,9 +39,9 @@
             connection = angular.copy(db);
 
             // Check port
-            if (!/.*\:\d+$/.test(connection.host)) {
-                connection.host += ':' + DEFAULT_PORT;
-            }
+            // if (!/.*\:\d+$/.test(connection.host)) {
+            //     connection.host += ':' + DEFAULT_PORT;
+            // }
         };
 
         /**
