@@ -14,6 +14,8 @@ class HandsTable {
         window.isDarkTheme=this.isDarkTheme;
 
         this.meta = WidgetTable.data.meta;
+
+
     }
 
     _handsRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -21,7 +23,21 @@ class HandsTable {
 
         // if (cellProperties.type)
         if (cellProperties.type == 'numeric') {
-            Handsontable.renderers.NumericRenderer.apply(this, arguments);
+            if (value==null) {
+                // SELECT  inf, nan
+                arguments[5] = "NULL";// так работает ;)
+                td.style.color='silver';
+                Handsontable.renderers.TextRenderer.apply(this, arguments);
+            }
+
+            else {
+
+
+                // нормальный рендер числа
+                Handsontable.renderers.NumericRenderer.apply(this, arguments);
+            }
+
+
         }
         else {
             if (cellProperties.type == 'date' || cellProperties.type == 'time') {
