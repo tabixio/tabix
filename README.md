@@ -13,31 +13,6 @@ Not need, open in browser http://ui.tabix.io/
 
 [Install to you host](https://tabix.io/doc/Install/)
 
-### How to run in Docker
-
-#### Build an image and run
-
-1. Build an image
-     
-     docker build -t tabix .
-     
-2. Run container 
-
-    docker run -d -p 8080:80 tabix
- 
-#### Run container from already built image
-
-1. Run container 
-
-    docker run -d -p 8080:80 spoonest/clickhouse-tabix-web-client
-
-
-Now you can access `tabix.ui` by the link http://localhost:8080.
- 
-> **More security**: you can limit access to your `tabix.ui` application on the proxy level. 
-> Use `-e USER='myuser' -e PASSWORD='mypass'` parameters to restrict access only for specified user. 
-> For example, `docker run -d -p 8080:80 -e USER='myuser' -e PASSWORD='mypass' spoonest/clickhouse-tabix-web-client`
-
 [Use with Docker](https://tabix.io/doc/Install/#variant-5-from-docker)
 
 ## Documentation
