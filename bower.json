@@ -23,7 +23,6 @@
     "angular-translate": "^2.12.1",
     "angular-translate-handler-log": "^2.13.1",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
-    "ngHandsontable": "^0.13.0",
     "subtotal": "^1.7.1",
     "d3": "^4.4.1",
     "c3": "^0.4.11",

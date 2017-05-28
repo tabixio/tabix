@@ -706,7 +706,7 @@ class HandsTable {
             // observeChanges:true,
 
             // Highlighting selection подсветка строк
-            currentRowClassName: 'currentRow',
+            currentRowClassName: (this.isDarkTheme?'currentRowDark':'currentRowWhite'),
             currentColClassName: 'currentCol',
 
         };
