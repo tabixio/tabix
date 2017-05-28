@@ -1,3 +1,24 @@
+### 2017-05-29
+
+* Draw Chart by Group
+* ProcessList in cluster, show all process in top 10 servers
+* Render NULL in table 
+* ? autoSunkey
+* Fix metrics = not show zero values
+* Checkbox select : 'Shift-Alt-Ctrl-Left' VS 'Ctrl-Left'
+* Fix Firefox, but not recommended
+
+Minor:
+
+* disable tabs select animation to fix layout destruction bug
+* Render errors on draw + helpText + helpLink
+* fix English translation
+* Use handsontable#0.32.0-beta2
+* Disable DEFAULT_PORT
+* table font Size
+* how to start in Docker
+
+
 ### 2017-04-09
 
 * Fix : Cannot parse input: expected ( before: /TABIX_QUERY_ID_ec0JCHn37U409iQ_()/
