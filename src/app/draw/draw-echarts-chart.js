@@ -39,7 +39,7 @@ class DrawEchartsChart extends DrawEcharts {
 
         this.postCreate(drw);
 
-        console.info(this.options);
+        // console.info(this.options);
 
         return true;
 
@@ -194,7 +194,7 @@ class DrawEchartsChart extends DrawEcharts {
 
         for (let seriaName in $series) {
             let $seria = $series[seriaName];
-            console.log($seria, seriaName);
+            // console.log($seria, seriaName);
             let yAxisIndex=0;
             let showSeriaName = '';
 
