@@ -1,22 +1,21 @@
 ### 2017-05-29
 
-* Draw Chart by Group
+* "Draw Chart by Group" [see Draw_CHART](https://tabix.io/doc/draw/Draw_Chart/#group-columns)
 * ProcessList in cluster, show all process in top 10 servers
 * Render NULL in table 
-* ? autoSunkey
 * Fix metrics = not show zero values
 * Checkbox select : 'Shift-Alt-Ctrl-Left' VS 'Ctrl-Left'
-* Fix Firefox, but not recommended
+* Fix Firefox, but not recommended use ff|opera
 
 Minor:
 
-* disable tabs select animation to fix layout destruction bug
+* Disable tabs select animation to fix layout destruction bug
 * Render errors on draw + helpText + helpLink
-* fix English translation
-* Use handsontable#0.32.0-beta2
+* Fix English translation
+* Update handsontable#0.32.0-beta2
 * Disable DEFAULT_PORT
-* table font Size
-* how to start in Docker
+* Change table font Size
+* Add "how to start in Docker"
 
 
 ### 2017-04-09

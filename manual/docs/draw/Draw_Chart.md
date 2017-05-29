@@ -61,6 +61,14 @@ DRAW_CHART
 
 ### Group columns
 
+Any string value becomes a group for the graph
+
+ 
+
+![draw_chart_group_table](/img/draw_chart_group_table.png)
+
+
+
 ```sql
 
 SELECT toDate( '2016-01-04') as dt,'CAR' as type,'WHITE' as color,toInt16(2000) as cost,122 as width
@@ -77,3 +85,7 @@ DRAW_CHART
 
 
 ```
+
+
+
+![draw_chart_group_chart](/img/draw_chart_group_chart.png)
