@@ -10,7 +10,8 @@
         'localStorageService',
         'API',
         '$mdToast',
-        'ThemeService'
+        'ThemeService',
+        '$mdDialog'
     ];
 
     /**
@@ -18,7 +19,7 @@
      * @name smi2.controller:LoginController
      * @description Login page controller
      */
-    function LoginController($scope, $state, localStorageService, API, $mdToast, ThemeService) {
+    function LoginController($scope, $state, localStorageService, API, $mdToast, ThemeService,$mdDialog) {
 
         const ALL_BASES_KEY = 'basesConfig';
 
@@ -67,8 +68,45 @@
         };
 
         /**
+         * Help )
+         */
+        $scope.help = (ev) => {
+
+            function DialogController($scope, $mdDialog) {
+                $scope.vars = {
+                    version: smi2.app.version,
+                    buildDate: smi2.app.buildDate,
+                };
+
+                $scope.hide = function() {
+                    $mdDialog.hide();
+                };
+
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+
+                $scope.answer = function(answer) {
+                    $mdDialog.hide(answer);
+                };
+            }
+
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'app/base/helpDialogLogin.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true
+            });
+
+        };
+
+        /**
          * Remove connection item
          */
+        $scope.add = () => {
+            $scope.vars.bases.push($scope.vars.db);
+        };
         $scope.remove = () => {
             const index = $scope.vars.bases.findIndex((item) => (item.id == $scope.vars.db.id));
             $scope.vars.bases.splice(index);

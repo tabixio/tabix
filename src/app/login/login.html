@@ -11,15 +11,31 @@
                 </div>
 
                 <div class="pull-right">
+
+                    <md-button aria-label="menu"  ng-click="help()" style="vertical-align:top">
+                        <i class="mdi mdi-24px mdi-help"></i>
+                        Requirements & help
+                    </md-button>
+
                     <md-menu md-position-mode="target-right target">
+
+
+
+
+
+
+
                         <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                             <i class="mdi mdi-24px mdi-theme-light-dark"></i>
                         </md-button>
+
                         <md-menu-content>
                             <md-menu-item ng-repeat="theme in vars.themes">
                                 <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
                             </md-menu-item>
                         </md-menu-content>
+
+
                     </md-menu>
                 </div>
             </div>
@@ -39,6 +55,13 @@
                         </span>
                     </md-button>
                 </div>
+
+                <div flex class="pl">
+                    <md-button class="md-raised md-primary m0 width-80" ng-click="add()">
+                        Add new
+                    </md-button>
+                </div>
+
             </md-card>
         </div>
 
@@ -56,31 +79,31 @@
                                 <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
                                     <form class="p++" name="loginForm">
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Название' | translate}}</label>
                                                 <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Хост:порт' | translate}}</label>
                                                 <input ng-model="vars.db.host" placeholder="http://127.0.0.1:8123" required ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Логин' | translate}}</label>
                                                 <input ng-model="vars.db.login" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Пароль' | translate}}</label>
                                                 <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Параметры' | translate}}</label>
                                                 <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
                                             </md-input-container>
@@ -96,6 +119,8 @@
                                                     {{'Удалить' | translate}}
                                                 </md-button>
                                             </div>
+                                        </div>
+                                        <div layout="row">
                                         </div>
                                     </form>
                                 </md-card>
@@ -113,32 +138,32 @@
                                 <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
                                     <form class="p++" name="loginServerForm">
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Название' | translate}}</label>
                                                 <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
 
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Сервер' | translate}}</label>
                                                 <input ng-model="vars.db.tabix.server" required placeholder="https://tabix.dev/s1" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Config Key' | translate}}</label>
                                                 <input ng-model="vars.db.tabix.confid" placeholder="empty" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Логин' | translate}}</label>
                                                 <input ng-model="vars.db.tabix.login" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-input-container>
+                                            <md-input-container class="md-block" flex-gt-sm>
                                                 <label>{{'Пароль' | translate}}</label>
                                                 <input type="password" ng-model="vars.db.tabix.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                             </md-input-container>
@@ -173,7 +198,7 @@
                             <a href="https://github.com/smi2" target="_blank" style="text-decoration: underline" class="tc-white">{{'СМИ2' | translate}}</a>
                             &copy;
                             {{::vars.year}}, {{'все права защищены' | translate}}.
-                            {{'Сборка' | translate}} {{::vars.version}}
+                            {{'Сборка' | translate}} <b>{{::vars.version}}</b>
 
                         </p>
                     </div>

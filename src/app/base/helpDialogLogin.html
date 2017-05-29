@@ -1,0 +1,52 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Tabix.io {{'Сборка' | translate}} {{::vars.version}} [{{::vars.buildDate}}]</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="max-width:800px;max-height:810px; ">
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="Requirements">
+                    <md-content class="md-padding">
+
+                        <p>* Work only in "Google chrome" version up 55</p>
+                        <p>* Clickhouse server version up v1.1.54164</p>
+                        <p>* Not readonly CH user</p>
+                        <p> <br> </p>
+
+                    </md-content>
+                </md-tab>
+                <md-tab label="Direct connect">
+                    <md-content class="md-padding">
+                        <p></p>
+                        <p> <br> </p>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Tabix.Proxy">
+                    <md-content class="md-padding">
+
+                        <p></p>
+                        <p> <br> </p>
+
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button href="https://tabix.io" target="_blank" md-autofocus>
+                https://tabix.io
+            </md-button>
+            <span flex></span>
+
+            <md-button ng-click="answer('useful')" style="margin-right:20px;" >
+                Ok
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
