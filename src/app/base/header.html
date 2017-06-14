@@ -38,7 +38,8 @@
                 </md-menu>
 
 
-                <md-button  aria-label="{{'Выход' | translate}}" ng-click="logout()" style="vertical-align:top">
+                <md-button ng-if="!vars.disable_exit" aria-label="{{'Выход' | translate}}" ng-click="logout()"
+                           style="vertical-align:top">
                     <i class="mdi mdi-24px mdi-lock"></i>
                     {{'Выход' | translate}}
                 </md-button>

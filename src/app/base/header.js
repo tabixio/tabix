@@ -12,7 +12,9 @@
 	function HeaderController($scope, $state, API, ThemeService,$mdDialog) {
 		$scope.user = API.getConnectionInfo().name;
         $scope.themes = ThemeService.list;
-
+        $scope.vars = {
+            disable_exit: window.global_tabix_disable_exit,
+        };
 
 
 		/**

@@ -16,6 +16,16 @@
                     abstract: true,
                     resolve: {
                         session: ['$q', 'API', ($q, API) => {
+
+                            window.global_tabix_disable_exit = false;
+
+                            if (_.isObject(window.global_tabix_default_settings)) {
+                                if (!_.isUndefined(window.global_tabix_default_settings.host) && !_.isUndefined(window.global_tabix_default_settings.login)) {
+                                    window.global_tabix_disable_exit = true;
+                                    API.setConnection(window.global_tabix_default_settings);
+                                }
+                            }
+
                             var defer = $q.defer();
                             if (angular.isDefined(API.getConnectionInfo().host)) {
                                 defer.resolve();
