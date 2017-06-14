@@ -604,4 +604,37 @@ Handsontable.hooks.add('afterContextMenuShow', function() {
   hotTable.$inject = ['settingFactory', 'autoCompleteFactory', '$rootScope', '$parse'];
 
   angular.module('ngHandsontable.directives').directive('hotTable', hotTable);
+
+
+    angular.module('ngHandsontable.directives').directive('hotAutoDestroy', ["hotRegisterer", function (hotRegisterer) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attr) {
+                element.on("$destroy", function () {
+                    // console.info("$destroy hot-instance",element,attr,attr.hotId);
+
+                    try {
+                        // console.debug("Going to destroy hot instance",attr);
+                        // console.log("hotRegisterer",hotRegisterer);
+
+                        let hotInstance = hotRegisterer.getInstance(attr.hotId);
+
+
+                        if (hotInstance) {
+                            console.info('hotInstance.destroy();');
+                            hotInstance.destroy();
+                        }
+                        else {
+                            // this is when post mortem message is thrown.
+                            console.log("Failed to destroy hot-instance");
+                        }
+                    }
+                    catch (er) {
+                        console.log(er);
+                    }
+                });
+            }
+        };
+    }]);
+
 }());

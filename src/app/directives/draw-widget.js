@@ -100,6 +100,7 @@
                         ng-class="{'handsontable-dark': widget.isDark}"
                         col-headers="widget.table.colHeaders"
                         manual-column-resize="true"
+                        hot-auto-destroy
                     ></hot-table>`);
                 // пробрасываем внутрь widget hotRegisterer + указываем hotId -> изнутри виджета имеем доступ к самому handsontable
                 scope.widget.hotRegisterer=hotRegisterer;

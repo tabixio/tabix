@@ -699,9 +699,9 @@ class HandsTable {
                 }
             },
             // colWidths:handsontable.colWidths;
-            contextMenuCopyPaste: {
-                swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
-            },
+            //contextMenuCopyPaste: {
+            //    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
+            //},
             // observeDOMVisibility:true,
             // observeChanges:true,
 

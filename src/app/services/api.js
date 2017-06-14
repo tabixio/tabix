@@ -124,7 +124,8 @@
                 url: url,
                 transformResponse: (data, header, status) => {
                     try {
-                        return angular.fromJson(data);
+                        return JSON.parse(data);
+                        // return angular.fromJson(data);
                     } catch (err) {
                         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
                     }
@@ -208,7 +209,8 @@
 
                     transformResponse: (data, header, status) => {
                         try {
-                            return angular.fromJson(data);
+                            // return angular.fromJson(data);
+                            return JSON.parse(data);
                         } catch (err) {
                             return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
                         }
