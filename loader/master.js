@@ -1,5 +1,5 @@
 var cssId = 'TabixCss';
-var tabix_build = "201703";
+var tabix_build = "201706";
 
 window.global_tabix_embedded = true;
 
