@@ -167,7 +167,7 @@
                     httpProto = 'http://';
                 }
 
-                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1';//&send_progress_in_http_headers=1&http_headers_progress_interval_ms=50';
+                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=1';//max_block_size=1
 
                 if (connection.login) {
                     url += '&user=' + connection.login;
@@ -188,22 +188,37 @@
 
                  req = {
                     method: 'POST',
+                     // responseType:'text',
                     data :query,
+
+                     //      $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
+                     // $httpProvider.defaults.headers.common.Pragma = "no-cache";
+                     // $httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        // 'Content-Type': 'application/json',
+                        // "Cache-Control": "no-cache",
+                        // "Pragma" : "no-cache",
+                        // "If-Modified-Since":0
                     },
-                    url: url,
+                     url: url,
+                     cache: false,
                     //  eventHandlers:{
                     //      readystatechange: function(event) {
                     //          console.log("readystatechange");
                     //          console.log(event);
                     //      },
-                    //      progress:function(event){
-                    //          console.log("progress",event.lengthComputable);
+                     //      "progress":function(event){
+                     //          console.log("progress");
                     //          console.log(event);
-                    //      },onreadystatechange:function(event){
+                     //      },
+                     //      onreadystatechange:function(event){
                     //          console.log("change");
                     //          console.log(event);
+                     //      },
+                     //      onprogress:function(event){
+                     //          console.log("onprogress");
+                     //          console.log(event);
                     //      }
                     // },
 

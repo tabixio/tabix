@@ -330,43 +330,30 @@ class HandsTable {
 
     static makeCreateTable(ht) {
         // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
-        let selection = HandsTable.getSelected(ht,true,true);
+        let s = HandsTable.getSelected(ht, true);
 
         let outText = [];
-        // let q = "\n" + 'CREATE TABLE x (' + "\n";
-        // let keys = [];
+        let q = "\n" + 'CREATE TABLE x (' + "\n";
+        let keys = [];
         //
-        // return q + keys.join(",\n") + "\n ) ENGINE = Log \n;;\n";
 
 
         let columns = ht.getSettings().columns;
 
         for (let col = s.fromCol; col <= s.toCol; col++) {
-            let rr = [];
-            for (let row = s.fromRow; row <= s.toRow; row++) {
-                rr.push(ht.getDataAtCell(row, col));
-            }
 
-            let unique = rr.filter((v, i, a) => a.indexOf(v) === i);
+            let typeColumn = columns[col].typeOriginal;
 
-            // get Type of column
-
-            let typeColumn = columns[col].type.toLowerCase();
-            if (typeColumn.includes('numeric')) {
-                // Если числовая колонка
-
-                outText.push(ht.colToProp(col) + " IN ( " + unique.join(" , ") + ') ');
-
-            } else {
-                outText.push(ht.colToProp(col) + " IN ( '" + unique.join("' , '") + "') ");
-            }
+            keys.push("\t" + ht.colToProp(col) + " " + typeColumn);
 
 
         }
-        outText = "\n" + outText.join("\n\tAND\n") + "\n\n";
 
-        console.log(outText);
-        HandsTable.pushToClipboardText(outText);
+        q = q + keys.join(",\n") + "\n)\nENGINE = TinyLog\n;;\n";
+
+
+        console.log(q);
+        HandsTable.pushToClipboardText(q);
 
 
     }
@@ -639,6 +626,20 @@ class HandsTable {
                                         HandsTable.makeStyle(this, 'Green');
                                     },
                                     key: "style:green"
+                                },
+                                {
+                                    name: 'Yellow color',
+                                    callback: function (key, options) {
+                                        HandsTable.makeStyle(this, 'Yellow');
+                                    },
+                                    key: "style:green"
+                                },
+                                {
+                                    name: 'Orange color',
+                                    callback: function (key, options) {
+                                        HandsTable.makeStyle(this, 'Orange');
+                                    },
+                                    key: "style:green"
                                 }
                             ]
                         },
@@ -673,6 +674,13 @@ class HandsTable {
                                         HandsTable.makeWhereIn(this);
                                     },
                                     key: "copyTo:3"
+                                },
+                                {
+                                    name: "Create TABLE...",
+                                    callback: function (key, options, pf) {
+                                        HandsTable.makeCreateTable(this);
+                                    },
+                                    key: "copyTo:4"
                                 },
                                 // {
                                 //     name: "make Create Table",

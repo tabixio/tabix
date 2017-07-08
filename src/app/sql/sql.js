@@ -69,7 +69,7 @@ window.global_lang                  = "ru";
             tabs: [],
             enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
             disableAutohelp: localStorageService.get(SQL_SAVE_DISABLE_AUTOHELP_KEY) || false,
-            disableHotKeyCmdLeft: localStorageService.get(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT) || false,
+            disableHotKeyCmdLeft: localStorageService.get(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT) || true,
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
