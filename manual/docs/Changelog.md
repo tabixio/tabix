@@ -1,3 +1,7 @@
+### 2017-07-08
+
+* Create Table from select grid
+
 ### 2017-05-29
 
 * "Draw Chart by Group" [see Draw_CHART](https://tabix.io/doc/draw/Draw_Chart/#group-columns)

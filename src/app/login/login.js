@@ -59,7 +59,7 @@
                     $mdToast.show(
                         $mdToast
                             .simple()
-                            .content('Ошибка доступа')
+                            .content('Login or connect error, check host:port,login & password')
                             .theme(ThemeService.theme)
                             .position('bottom right')
                     );
