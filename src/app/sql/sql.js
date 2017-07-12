@@ -644,7 +644,7 @@ window.global_lang                  = "ru";
 
             API.setDatabase(db);
             // @todo : тут _НУЖНО_ закешить это все )) но сбрасывать при DROP/CREATE запроса
-            API.query("SELECT database,table,name,type,default_type,default_expression FROM system.columns", null)
+            API.query("SELECT * FROM system.columns", null)
                 .then((data) => {
                     $scope.vars.databasesList=[];
                     let fields = [],
@@ -662,6 +662,12 @@ window.global_lang                  = "ru";
                     });
 
                     data.data.forEach((row) => {
+
+                        if (!angular.isUndefined(row.default_kind) && angular.isUndefined(row.default_type)) {
+                            //Renamed column "default_type" to "default_kind" in system.columns tab… · yandex/ClickHouse@8d570e2
+                            row.default_type = row.default_kind;
+                        }
+
                         dbtables[row.database+'.'+row.table]=1;
 
 

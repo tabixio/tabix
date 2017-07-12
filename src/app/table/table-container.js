@@ -217,6 +217,13 @@
                         o.size='-';
                         o.ratio='-';
 
+
+                        if (!angular.isUndefined(o.default_kind) && angular.isUndefined(o.default_type)) {
+                            //Renamed column "default_type" to "default_kind" in system.columns tab… · yandex/ClickHouse@8d570e2
+                            o.default_type = o.default_kind;
+                        }
+
+
                         //появились data_compressed_bytes, data_uncompressed_bytes,
                         if (o.data_compressed_bytes)
                         {

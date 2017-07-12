@@ -1,3 +1,10 @@
+### 2017-07-12
+
+* Support Clickhouse 1.1.54237 - Renamed column "default_type" to "default_kind" in system.columns
+* Fix translations YandexBrowser
+* Update handsontable 0.33.0
+* Build 17.07.1
+
 ### 2017-07-08
 
 * Create Table from select grid

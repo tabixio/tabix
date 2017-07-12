@@ -18,12 +18,14 @@
             '$urlRouterProvider',
             '$mdThemingProvider',
             'ThemeServiceProvider',
+            '$translateProvider',
             function ($locationProvider,
                       $httpProvider,
                       $sceProvider,
                       $urlRouterProvider,
                       $mdThemingProvider,
-                      ThemeService) {
+                      ThemeService,
+                      $translateProvider) {
 
                 // Запуск HTML5 режима HISTORY API, без решетки
                 // $locationProvider.html5Mode(true).hashPrefix('!');
@@ -52,6 +54,7 @@
             }
         ])
         .config(['$translateProvider', function ($translateProvider) {
+
             $translateProvider.translations('en', {
                 'Подключение': 'Connection',
                 'Неверные данные': 'some data is wrong',
@@ -145,9 +148,8 @@
                 'Искать на сервере': 'Search on server',
                 'Обзор': 'Overview'
             })
-            .translations('ru', {
-            }).useMissingTranslationHandlerLog()
-            .registerAvailableLanguageKeys(['en', 'ru'], {
+            .translations('ru', {}).useMissingTranslationHandlerLog()//.useSanitizeValueStrategy('escape')
+                .registerAvailableLanguageKeys(['en'], {
                 // 'ru_*': 'ru',
                 // 'ru-*': 'ru',
                 '*': 'en'
