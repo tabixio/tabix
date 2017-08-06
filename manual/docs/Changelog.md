@@ -1,3 +1,8 @@
+### 2017-08-02
+
+* Update handsontable + echarts 
+* fix header 
+
 ### 2017-07-12
 
 * Support Clickhouse 1.1.54237 - Renamed column "default_type" to "default_kind" in system.columns

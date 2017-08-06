@@ -3,7 +3,7 @@
     <div class="content">
         <div ui-view="sidebar" ng-class="{'show': showSidebar}" class="sidebar-view" resizable r-directions="['right']" r-width="200" r-flex="true"></div>
         <div class="main-content">
-            <div ui-view="main" style="height: 100%"></div>
+            <div ui-view="main" class="viewmain" style=""></div>
             <div class="md-sidenav-fix">
                 <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="tableSiedenav">
                     <md-content ng-if="currentTable" layout-padding>
