@@ -167,7 +167,8 @@
                     httpProto = 'http://';
                 }
 
-                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500';//max_block_size=1
+                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1';
+                //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
 
                 if (connection.login) {
                     url += '&user=' + connection.login;
@@ -186,42 +187,57 @@
                 }
                 // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
 
+// Access-Control-Expose-Headers : X-ClickHouse-Progress
+                // https://stackoverflow.com/questions/15042439/cant-get-custom-http-header-response-from-ajax-getallresponseheaders
+                // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Monitoring_progress
+                //
+                // ClickHouse/dbms/src/IO/WriteBufferFromHTTPServerResponse.cpp
+                //
+
                  req = {
                     method: 'POST',
                      // responseType:'text',
                     data :query,
 
-                     //      $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
+                     // $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
                      // $httpProvider.defaults.headers.common.Pragma = "no-cache";
                      // $httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        // 'Content-Type': 'application/json',
                         // "Cache-Control": "no-cache",
                         // "Pragma" : "no-cache",
                         // "If-Modified-Since":0
                     },
                      url: url,
                      cache: false,
-                    //  eventHandlers:{
-                    //      readystatechange: function(event) {
-                    //          console.log("readystatechange");
-                    //          console.log(event);
-                    //      },
-                     //      "progress":function(event){
-                     //          console.log("progress");
-                    //          console.log(event);
-                     //      },
-                     //      onreadystatechange:function(event){
-                    //          console.log("change");
-                    //          console.log(event);
-                     //      },
-                     //      onprogress:function(event){
-                     //          console.log("onprogress");
-                     //          console.log(event);
-                    //      }
-                    // },
+                     eventHandlers:{
+                         readystatechange: function(event) {
+                             console.log("readystatechange");
+                             console.log(event);
+                         },
+                          "progress":function(event){
+                              console.log("progress");
+                             console.log(event);
+                          },
+                          onreadystatechange:function(event){
+                             console.log("change");
+                             console.log(event);
+                          },
+                          onprogress:function(event){
+                              console.log("onprogress");
+                              console.log(event);
+                         }
 
+                    },
+                     // uploadEventHandlers: {
+                     //     progress: function (e) {
+                     //         console.log('uploadEventHandlers',e);
+                     //         if (e.lengthComputable) {
+                     //             // $scope.progressBar = (e.loaded / e.total) * 100;
+                     //             // $scope.progressCounter = $scope.progressBar;
+                     //         }
+                     //     }
+                     // },
                     transformResponse: (data, header, status) => {
                         try {
                             // return angular.fromJson(data);
@@ -233,6 +249,7 @@
                 };
 
             }
+
 
 
             // console.info("SQL>",query);

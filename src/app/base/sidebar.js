@@ -50,7 +50,7 @@
         $scope.$watch('vars.searchline', curr => {
             if (curr.length < 2) {
                 // reset
-                console.warn("reset, search box");
+                // console.warn("reset, search box");
                 $scope.vars.databases.forEach((dbase,i_db) => {
                     $scope.vars.databases[i_db].active=true;
 
@@ -236,6 +236,9 @@
                        }
                    });
 
+                   if (table.indexOf('.') !== -1) table='"'+table+'"';
+
+
                    let sql="\nSELECT\n\t"+fields.join(",\n\t")+"\nFROM\n\t"+db+'.'+table+"\n";
 
                    if (where.length) {
@@ -261,6 +264,10 @@
             API.query( "SELECT * FROM system.columns" ).then(res => {
                 let data = res.data || [ ];
                 data.forEach((item) => {
+
+
+
+
                     if (!list_all_fields[item.database+'.'+item.table]) list_all_fields[item.database+'.'+item.table]=[];
                     list_all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type,active:true });
                 });
@@ -275,6 +282,7 @@
                         ];
 
                         let classEngine='';
+                        if (item.engine.match(/Dictionary.*/))  classEngine='library';
                         if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
                         if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';
                         if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom';

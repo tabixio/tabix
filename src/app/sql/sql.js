@@ -668,6 +668,10 @@ window.global_lang                  = "ru";
                             row.default_type = row.default_kind;
                         }
 
+
+                        if (row.table.indexOf('.') !== -1) row.table='"'+row.table+'"';
+
+
                         dbtables[row.database+'.'+row.table]=1;
 
 
@@ -704,6 +708,9 @@ window.global_lang                  = "ru";
 
                     window.global_keywords_tables=db;
                     Object.keys(dbtables).forEach((tab) => {
+
+
+
                         window.global_keywords_tables += '|'+tab;
                     });
 

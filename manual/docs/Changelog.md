@@ -1,7 +1,10 @@
 ### 2017-08-02
 
 * Update handsontable + echarts 
-* fix header 
+* Fix ERR_BIG_header
+* Fix table blink & not resize
+* Fix dot table names
+
 
 ### 2017-07-12
 
