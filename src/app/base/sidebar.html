@@ -53,8 +53,8 @@
                                     </a>
                                     <ul class="sub-menu">
                                         <li ng-repeat="field in table.fields" class="text-left no-txt-transform table-fields-sidebar" ng-click="clickInsertField(field)">
-                                            <pre style="margin: 2px 0px 0px 2px"
-                                                 ng-class="field.active?'side_fieldactive':'side_fieldnoactive'">{{field.name}}</pre>
+                                            <pre style="margin: 2px 0px 0px 2px;white-space: nowrap;"
+                                                 ng-class="field.active?'side_fieldactive':'side_fieldnoactive'">{{field.name}}&nbsp;&nbsp;&nbsp;&nbsp;<i style="color: silver">{{field.type}}</i></pre>
                                         </li>
                                     </ul>
                                 </li>

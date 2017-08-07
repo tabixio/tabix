@@ -101,7 +101,7 @@
                 console.log("Cluster nodes list", $scope.vars.clusterList.join(","))
             }, function (response) {
                 $scope.vars.isClusterLoad = true;
-                console.error('Ошибка ' + response);
+                console.error('Error ' + response);
             });
         };
         // ------------------------------------------------------------------------------
@@ -180,7 +180,7 @@
 
             }, function ( response ) {
                 $scope.vars.loading = false;
-                console.error( 'Ошибка ' + response );
+                console.error( 'Error ' + response );
             });
         };
 

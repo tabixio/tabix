@@ -119,6 +119,7 @@ class DrawEchartsChart extends DrawEcharts {
         let index=0;
         // если указана группировка по колонкам
         let path=this.getParameterPath();
+
         let groupPath=false;
         if (path)
         {
@@ -150,6 +151,9 @@ class DrawEchartsChart extends DrawEcharts {
                 }
             }
         }
+
+        console.log('PATH',path);
+        console.log('colValues',colValues);
         // ------------------------------------------------------------------------------------------------------------------------------------
         let len = $data.length;
         for (index = 0; index < len; ++index) {
@@ -182,10 +186,10 @@ class DrawEchartsChart extends DrawEcharts {
         } // for $data
 
         // ---------------------------------------------------------------
-        // console.log("firstCol",firstCol);
-        // console.log("colValues",colValues);
-        // console.log("path",path);
-        // console.log("$series",$series);
+        console.log("firstCol",firstCol);
+        console.log("colValues",colValues);
+        console.log("path",path);
+        console.log("$series",$series);
         // ---------------------------------------------------------------
         $data = null;
         colValues = null;
