@@ -4,7 +4,10 @@
 * Fix ERR_BIG_header
 * Fix table blink & not resize
 * Fix dot table names
-
+* Add sidebar field type 
+* Change size tabs 
+* Fix Export to TSV
+* Fix DrawChart 
 
 ### 2017-07-12
 

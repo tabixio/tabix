@@ -211,22 +211,22 @@
                      url: url,
                      cache: false,
                      eventHandlers:{
-                         readystatechange: function(event) {
-                             console.log("readystatechange");
-                             console.log(event);
-                         },
-                          "progress":function(event){
-                              console.log("progress");
-                             console.log(event);
-                          },
-                          onreadystatechange:function(event){
-                             console.log("change");
-                             console.log(event);
-                          },
-                          onprogress:function(event){
-                              console.log("onprogress");
-                              console.log(event);
-                         }
+                         // readystatechange: function(event) {
+                         //     console.log("readystatechange");
+                         //     console.log(event);
+                         // },
+                         //  "progress":function(event){
+                         //      console.log("progress");
+                         //     console.log(event);
+                         //  },
+                         //  onreadystatechange:function(event){
+                         //     console.log("change");
+                         //     console.log(event);
+                         //  },
+                         //  onprogress:function(event){
+                         //      console.log("onprogress");
+                         //      console.log(event);
+                         // }
 
                     },
                      // uploadEventHandlers: {

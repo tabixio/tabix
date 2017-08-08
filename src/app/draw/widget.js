@@ -52,7 +52,7 @@ class Widget {
         setTimeout(function () {
             th._scheduledResize = false;
             th.onResize();
-        }, 400);
+        }, 900);
     }
 
     toString() {
