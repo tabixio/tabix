@@ -178,12 +178,10 @@ class DrawEchartsChart extends DrawEcharts {
                     series_path = series_path.join(':___:');
 
                     if (!$series[series_path]) {
-                        $series[series_path]={};
+                        $series[series_path] = new Map();
 
                         xAxis[0].data.forEach(function (x) {
-
-                            $series[series_path][x]=null;
-                            // _.set($series,series_path+'.'+x,null);
+                            $series[series_path].set(x,null);
                         });
 
                     }
@@ -192,16 +190,17 @@ class DrawEchartsChart extends DrawEcharts {
                     {
                         __val=parseFloat(__val);
                     }
-                    // console.log('item[firstCol]=',item[firstCol],__val);
-                    $series[series_path][item[firstCol]] = __val;
+
+                    console.log('item[firstCol]=',item[firstCol],__val);
+                    $series[series_path].set(item[firstCol],__val);
                 }
             }// for columns
         } // for $data
 
         // ---------------------------------------------------------------
-        // console.log("firstCol",firstCol);
-        // console.log("colValues",colValues);
-        // console.log("path",path);
+        console.log("firstCol",firstCol);
+        console.log("colValues",colValues);
+        console.log("path",path);
         // console.log("$series",$series);
         // ---------------------------------------------------------------
         $data = null;
@@ -210,30 +209,22 @@ class DrawEchartsChart extends DrawEcharts {
         index = 0;
 
         for (let seriaName in $series) {
-            let $seria = $series[seriaName];
-            // console.log($seria, seriaName);
             let yAxisIndex=0;
             let showSeriaName = '';
-
             showSeriaName = seriaName.replace(/:___:/g, ':');
+            // Fetch data from Map()
+            let dataThisColumn=Array.from( $series[seriaName].values());
 
-            // console.log('$seria',$seria);
-            let dataThisColumn = _.values($seria);
-
-
-            // console.log('dataThisColumn',dataThisColumn);
             let mediana = _.median(dataThisColumn);
+
             let seria = {
                 name: showSeriaName,
                 type: 'line',
                 symbolSize: 8,
                 hoverAnimation: false,
                 //yAxisIndex:yAxisIndex
-
                 data: dataThisColumn
             };
-
-
             // ----- BAR ---------------
             if (this.preference.bar) {
                 seria.type = 'bar';
@@ -242,7 +233,6 @@ class DrawEchartsChart extends DrawEcharts {
             }
 
             if (sets.markLine) {
-
                 seria.markLine = {
                     data: [
                         {
@@ -251,8 +241,6 @@ class DrawEchartsChart extends DrawEcharts {
                         },
                     ]
                 };
-
-
             }
             // median for series
             colsMedianAxis.push({

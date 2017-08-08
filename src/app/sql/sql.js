@@ -284,52 +284,62 @@ window.global_lang                  = "ru";
                 $mdToast.show(
                     $mdToast
                         .simple()
-                        .content($filter('translate')('Ошибка'))
+                        .content('ERROR')
                         .theme(ThemeService.theme)
                         .position('bottom right')
                 );
 
+                $scope.vars.currentTab.loading = false;
+                $scope.vars.currentTab.progress = false;
+
+
                 let result = {
                     meta: null,
                     rows: null,
+                    error:'Some error - N/A',
                     query: query,
                     statistics: null
                 };
                 if (response && response.data) {
                     result.error = angular.toJson(response.data).replace(/^"/, '').replace(/"$/, '');
                 } else {
-                    result.error = response;
+                    result.error = "Status:"+response.status+"\nText:"+response.statusText;
 
 
                 }
 
-                // Поиск ошибки в тексте ответа
-                let moveCol=-1;
-                let moveRow=-1;
-                let match= result.error.match(/position\s(\d+)\s\(line\s(\d+).\s+col\s+(\d+)\)/);
-
-                if (match && match[1] && match[2] && match[3]) {
-
-                    console.log("Error in POS"+match[1]+' in '+match[2]+','+match[3],query.itemRange.start);
-                    if (query.itemRange && query.itemRange.start) {
-                        moveCol=parseInt(match[3])+query.itemRange.start.column;
-                        moveRow=parseInt(match[2])+query.itemRange.start.row;
-                    }
-                }
-                else
-                {
-                    if (query.itemRange && query.itemRange.start) {
-                        moveCol=query.itemRange.start.column;
-                        moveRow=query.itemRange.start.row;
-                    }
-                }
+                // Поиск ошибки в тексте ответа и тут нужна проверка что вообще ошибка содержит текст
+                // let moveCol=-1;
+                // let moveRow=-1;
+                // // if (result.error)
+                // // {
+                // //
+                // // }
+                // let match= result.error.match(/position\s(\d+)\s\(line\s(\d+).\s+col\s+(\d+)\)/);
+                //
+                // if (match && match[1] && match[2] && match[3]) {
+                //
+                //     console.log("Error in POS"+match[1]+' in '+match[2]+','+match[3],query.itemRange.start);
+                //     if (query.itemRange && query.itemRange.start) {
+                //         moveCol=parseInt(match[3])+query.itemRange.start.column;
+                //         moveRow=parseInt(match[2])+query.itemRange.start.row;
+                //     }
+                // }
+                // else
+                // {
+                //     if (query.itemRange && query.itemRange.start) {
+                //         moveCol=query.itemRange.start.column;
+                //         moveRow=query.itemRange.start.row;
+                //     }
+                // }
 
                 // @todo : плохой парсинг ошибки т/к строки тримятся в SQL
                 // $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
-                console.log("move cursor to",moveRow,moveCol);
+                // console.log("move cursor to",moveRow,moveCol);
                 // провайдер CH или API
                 let provider='ch';
                 // передаем в
+                console.warn('ERROR',result);
                 let dp= new DataProvider(result,provider);
                 resultContainer.data.push(query);
                 resultContainer.widgets.tables.push(new WidgetTable(dp));
