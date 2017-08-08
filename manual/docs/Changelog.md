@@ -1,4 +1,4 @@
-### 2017-08-02
+### 2017-08-08
 
 * Update handsontable + echarts 
 * Fix ERR_BIG_header
