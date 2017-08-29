@@ -170,6 +170,9 @@ class DrawEchartsSunkeys extends DrawEcharts {
         }
 
         this.options = Object.assign(option, this.options);
+
+        console.log(option);
+
         return true;
 
     }
