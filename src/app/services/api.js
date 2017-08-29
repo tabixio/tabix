@@ -58,11 +58,11 @@
 
 
         this.getPassword = () => {
-            return connection.password;
+            return  (connection.password);
         };
 
         this.getLogin = () => {
-            return connection.login;
+            return (connection.login);
         };
 
 
@@ -171,13 +171,13 @@
                 //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
 
                 if (connection.login) {
-                    url += '&user=' + connection.login;
+                    url += '&user=' + encodeURIComponent(connection.login);
                 }
                 if (connection.password) {
-                    url += '&password=' + connection.password;
+                    url += '&password=' + encodeURIComponent(connection.password);
                 }
                 if (withDatabase) {
-                    url += '&database=' + database;
+                    url += '&database=' + encodeURIComponent(database);
                 }
                 if (extend_settings) {
                     url += '&' + extend_settings;

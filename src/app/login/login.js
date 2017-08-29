@@ -54,12 +54,19 @@
             API.setConnection($scope.vars.db);
             API.query('SELECT \'login success\'').then(
                 () => $state.go('sql'),
-                () => {
+                (x) => {
                     $scope.vars.loading = false;
+                    let msg='';
+                    if (x && !angular.isUndefined(x.data))
+                    {
+                        if (x.data)
+                        msg=x.data;
+                    }
+                    console.log('Error on login',x);
                     $mdToast.show(
                         $mdToast
                             .simple()
-                            .content('Login or connect error, check host:port,login & password')
+                            .content('Login or connect error, check host:port,login & password '+msg)
                             .theme(ThemeService.theme)
                             .position('bottom right')
                     );
