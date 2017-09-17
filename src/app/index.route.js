@@ -65,7 +65,12 @@
                         $state.go('sql');
                     }]
                 })
-
+                .state('dash', {
+                    // parent: 'layout',
+                    url: '/dash',
+                    templateUrl: 'app/dash/index.html',
+                    controller: 'DashController'
+                })
                 // Login state
                 .state('login', {
                     url: '/login',

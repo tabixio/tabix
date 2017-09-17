@@ -1,31 +1,32 @@
 <div class="row">
     <div class="col-md-12">
-        <div gridster="gridsterOpts">
-            <ul>
-                <li
-                    gridster-item="w"
-                    ng-repeat="w in widgets"  >
-                    <div class="widget-box">
-                        <!--<div class="widget-box-header widget-draggable">-->
-                            <!--<h3>{{ widget.name }}</h3>-->
-                        <!--</div>-->
-                        <div class="widget-box-content widget-draggable">
-                            <draw-widget
-                                    style="display: block;"
-                                    widget="w" ng-if="w.init && !w.error"
-                                    isdark="vars.isDark" class="widget widget-{{w.type}}" events="events">
-                            </draw-widget>
+<div class="WidgetsListResult">
+    <div gridstack class="grid-stack grid1" options="options">
 
 
-                            <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
-                            <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
-                            <span ng-if="w.empty">{{'нет данных' | translate}}</span>
 
-
-                        </div>
-                    </div>
-                </li>
-            </ul>
+        <div gridstack-item ng-repeat="w in widgets"
+             class="grid-stack-item"
+             gs-item-x="w.x" gs-item-y="w.y"
+             gs-item-width="w.sizeY" gs-item-height="w.sizeX" gs-item-autopos="1"
+        >
+            <div class="grid-stack-item-content">
+                <draw-widget
+                widget="w" ng-if="w.init && !w.error"
+                isdark="vars.isDark" class="widget widget-{{w.type}}" events="events">
+                </draw-widget>
+                <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
+                <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
+                <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+            </div>
         </div>
     </div>
+    </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.grid-stack').gridstack();
+    });
+</script>

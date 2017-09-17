@@ -14,7 +14,7 @@
     "screenfull": "~3.0.2",
     "angular-sanitize": "1.6.2",
     "angular-messages": "1.6.2",
-    "angular-material": "master",
+    "angular-material": "^1.1.5",
     "mdi": "^1.7.22",
     "ng-scrollbars": "^0.0.11",
     "fun-metis-menu": "*",
@@ -27,9 +27,9 @@
     "d3": "^4.4.1",
     "c3": "^0.4.11",
     "angular-ui-router": "^0.3.2",
-    "handsontable": "^0.34.0",
+    "handsontable": "^0.34.1",
     "sql-formatter": "^1.1.2",
-    "echarts": "^3.6.2",
+    "echarts": "^3.7.1",
     "ngECharts": "ngecharts#^0.2.0",
     "angular-gridster": "^0.13.15",
     "zeroclipboard": "^2.3.0",
@@ -42,7 +42,8 @@
     "clipboard": "^1.6.0",
     "jquery-ui-touch-punch": "*",
     "mustache.js": "mustache#^2.3.0",
-    "lodash.math": "*"
+    "lodash.math": "*",
+    "gridstack": "^0.3.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"
@@ -121,6 +122,14 @@
         "dist/c3_renderers.js",
         "dist/d3_renderers.js",
         "dist/export_renderers.js"
+      ]
+    },
+    "gridstack": {
+      "main": [
+        "dist/gridstack.all.js",
+        "dist/gridstack.css",
+        "dist/gridstack.jQueryUI.js",
+        "dist/gridstack-extra.css"
       ]
     }
   },

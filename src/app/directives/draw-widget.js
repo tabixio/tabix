@@ -27,6 +27,7 @@
             if (widget.isDark) theme='dark';
             // результат работы сам компонент, а не HTML код
             widget.draw.chart = echarts.init(element[0], theme);
+
             html=false;
         }
 
@@ -74,6 +75,8 @@
     function buildLinkFunc($compile,$timeout,hotRegisterer) {
 
         return function (scope, element, attrs) {
+            console.group("drawWidget.buildLinkFunc");
+            console.time("drawWidget.buildLinkFunc time took");
             // задаем виджету стиль темный / светлый
             scope.widget.isDark=scope.isdark;
 
@@ -155,10 +158,12 @@
                        console.log("scope.events.resize");
                        scope.widget.scheduledResize();
                        // scope.api.update()
-                   },200)
+                   },300)
                }
             };
 
+            console.timeEnd("drawWidget.buildLinkFunc time took");
+            console.groupEnd("drawWidget.buildLinkFunc");
         };
     }
 

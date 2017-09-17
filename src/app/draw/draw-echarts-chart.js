@@ -115,7 +115,7 @@ class DrawEchartsChart extends DrawEcharts {
         }];
 
 
-        console.info('xAxis',xAxis);
+        // console.info('xAxis',xAxis);
         // ------------------------------------------------------------------------------------------------------------------------------------
         let colsMedianAxis=[]; // содержит mediana для каждой колонки
         let lastColumn=''; // нужно чтобы задать название оси
@@ -191,16 +191,16 @@ class DrawEchartsChart extends DrawEcharts {
                         __val=parseFloat(__val);
                     }
 
-                    console.log('item[firstCol]=',item[firstCol],__val);
+                    // console.log('item[firstCol]=',item[firstCol],__val);
                     $series[series_path].set(item[firstCol],__val);
                 }
             }// for columns
         } // for $data
 
         // ---------------------------------------------------------------
-        console.log("firstCol",firstCol);
-        console.log("colValues",colValues);
-        console.log("path",path);
+        // console.log("firstCol",firstCol);
+        // console.log("colValues",colValues);
+        // console.log("path",path);
         // console.log("$series",$series);
         // ---------------------------------------------------------------
         $data = null;
@@ -300,7 +300,7 @@ class DrawEchartsChart extends DrawEcharts {
         options.xAxis=xAxis;
 
 
-        console.info('options',options);
+        console.info('Make Chart Done : Options',options);
 
         return options;
 

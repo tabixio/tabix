@@ -53,12 +53,14 @@ class DrawEcharts extends DrawBasicChart {
         };// opthios
 
 
+
     }
 
     onResize() {
+        console.log("onResize Chart");
         // отправденна комманда resize
         if (this.chart && this.init) {
-            this.chart.setOption(this.options);
+            //
             this.chart.resize();
         }
     }
@@ -98,6 +100,7 @@ class DrawEcharts extends DrawBasicChart {
             this.options.backgroundColor = '#404a59';
             // this.options.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
         }
+        this.chart.setOption(this.options);
         // log
         console.info('preProcessor', this.init, this.options);
     }

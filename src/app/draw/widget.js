@@ -20,8 +20,10 @@ class Widget {
         this.text = this.data.text;
         this.name = "Widget";
 
-        this.sizeX = 3;// ширина
-        this.sizeY = 1;// высота
+        this.x = 1;// pos
+        this.y = 1;// pos
+        // this.sizeY = 1;// высота
+        // this.sizeY = 1;// высота
         //
         this.element = false;
         this.init = false;
@@ -46,6 +48,8 @@ class Widget {
         if (this._scheduledResize) {
             return;
         }
+
+        console.info("Add scheduledResize");
         // отложенный ресайз , если много изменений
         this._scheduledResize = true;
         let th = this;

@@ -92,14 +92,17 @@
                     widget.scheduledResize();
                 }, // optional callback fired when item is resized,
                 stop: function(event, $element, widget) {
-
-                    $timeout(function(){
-                        widget.scheduledResize();
-                    },400);
-                    //
-                    // console.log($element);
                     // if ($element.originalSize.width != $element.size.width
                     //     || $element.originalSize.height != $element.size.height) {
+
+
+                    $timeout(function(){
+                            console.log("gridsterOpts->widget.scheduledResize")
+                            widget.scheduledResize();
+                        },400);
+                    // }
+                    //
+                    // console.log($element);
                     //     var gridsterItemScope = angular.element($element).scope();
                     //     gridsterItemScope.$broadcast('resizestop', arguments);
                     // }
