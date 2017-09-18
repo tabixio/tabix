@@ -34,17 +34,67 @@
             $scope.vars.active.Overview=true;
         };
 
-        $scope.widgets = [{ x:0, y:0, width:1, height:1 }, { x:0, y:0, width:3, height:1 }];
+        $scope.listDashboards =
+                [
+                    {
+                        title:"Dash1",
+                        id : 123,
+                        widgets:[
+                            {x: 0, y: 0, width: 1, height: 1},
+                            { x:0, y:0, width:3, height:1 }
+                        ]
+                    },
+                    {
+                        title:"Dash2",
+                        id : 432,
+                        widgets:[
+                            {x: 0, y: 0, width: 1, height: 1},
+                            { x:0, y:0, width:3, height:1 }
+                        ]
+                    },
+
+                ];
 
         $scope.options = {
             cellHeight: 200,
-            verticalMargin: 10
+            cellWidth: 200,
+            verticalMargin: 2
         };
 
-        $scope.addWidget = function() {
-            var newWidget = { x:0, y:0, width:1, height:1 };
-            $scope.widgets.push(newWidget);
+        $scope.dash={};
+
+
+        $scope.initDash = function(dashid) {
+
+            if ($scope.dash[dashid]) return;
+
+            $scope.dash[dashid]=1;
+
+            console.info("initDash : "+dashid);
         };
+        $scope.isInitDash = function (dashid) {
+
+            return $scope.dash[dashid];
+        };
+        $scope.getWidgets = function(dashid) {
+            console.info("getWidgets : "+dashid);
+
+        };
+        $scope.inits = function() {
+
+
+            // add random dashboars
+            // add random widgets
+
+            // 1) Виджет будет содержать механимз update() по URL
+            //    - widget.requestParams();
+            //    - widget.update();
+            // 2) Глобавльные входные настройки у дашборда
+
+        };
+
+        $scope.inits();
+
 
         $scope.moveWidget = function() {
             $scope.widgets[0].x = 1;

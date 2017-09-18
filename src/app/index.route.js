@@ -68,7 +68,7 @@
                 .state('dash', {
                     // parent: 'layout',
                     url: '/dash',
-                    templateUrl: 'app/dash/index.html',
+                    templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'
                 })
                 // Login state

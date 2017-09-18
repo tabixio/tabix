@@ -55,6 +55,10 @@
 
         };
 
+        $scope.gridstackoptions = {
+            cellHeight: 200,
+            verticalMargin: 0
+        };
 
         // Задаем параметры gridster
 

@@ -81,7 +81,8 @@ class WidgetTable extends Widget {
         if (_.isNumber(sizeY)) {
             this.sizeY = sizeY;
         }
-
+        this.sizeY = this.sizeY*2;
+        this.sizeX = this.sizeX*2;
         this.init = true;
     }
 

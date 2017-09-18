@@ -34,6 +34,9 @@ class WidgetPivot extends Widget {
             this.sizeX = 6;
             this.sizeY = 3;
         }
+
+        this.sizeY = this.sizeY*2;
+        this.sizeX = this.sizeX*2;
     }
 }
 

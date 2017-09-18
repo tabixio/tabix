@@ -50,6 +50,8 @@ class WidgetDraw extends Widget {
             this.sizeX = 6;
             this.sizeY = 2;
         }
+        this.sizeY = this.sizeY*2;
+        this.sizeX = this.sizeX*2;
     }
 
     get draw() {

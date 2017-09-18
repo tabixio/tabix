@@ -1,19 +1,19 @@
 <div class="row">
     <div class="col-md-12">
 <div class="WidgetsListResult">
-    <div gridstack class="grid-stack grid1" options="options">
+    <div gridstack class="grid-stack grid1" options="gridstackoptions">
 
 
 
         <div gridstack-item ng-repeat="w in widgets"
              class="grid-stack-item"
              gs-item-x="w.x" gs-item-y="w.y"
-             gs-item-width="w.sizeY" gs-item-height="w.sizeX" gs-item-autopos="1"
+             gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1"
         >
-            <div class="grid-stack-item-content">
+            <div class="widget-grid-stack grid-stack-item-content ">
                 <draw-widget
                 widget="w" ng-if="w.init && !w.error"
-                isdark="vars.isDark" class="widget widget-{{w.type}}" events="events">
+                isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}}" events="events">
                 </draw-widget>
                 <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
                 <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
@@ -24,9 +24,3 @@
     </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(function () {
-        $('.grid-stack').gridstack();
-    });
-</script>
