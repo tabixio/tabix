@@ -13,6 +13,7 @@ class DataProvider {
      */
     constructor(result, sourceType) {
         this.data = result.data;
+        console.info("DP",this.data);
         this.text = false;
         this.progressQuery = '';
         this.sort = false;

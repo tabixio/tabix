@@ -5,7 +5,7 @@
 * Add: parse error text and move cursor to error 
 * Fix: exec current query, under cursor (new line error)
 * Add settings - max_execution_time
-
+* Force set output_format_json_quote_64bit_integers=0 
 
 ### 2017-08-08
 
