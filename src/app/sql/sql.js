@@ -100,6 +100,7 @@ window.global_lang                  = "ru";
             }
             ],
             db: null,
+            limitTimes: localStorageService.get('editorLimitTimes') || 5,
             limitRows: localStorageService.get('editorLimitRows') || 500,
             fontSize: localStorageService.get('editorFontSize') || 16,
             theme: localStorageService.get('editorTheme') || 'cobalt',
@@ -186,14 +187,16 @@ window.global_lang                  = "ru";
         $scope.executeQuery = (query, queue, resultContainer) => {
 
             // содержит дополнительные GET параметры для выполнения запрос
-            let extendSettings = '';
+            let extendSettings = 'result_overflow_mode=throw';
 
             $scope.vars.currentTab.loading = true;
 
-
             // если указан limitRows
             if ($scope.vars.limitRows) {
-                extendSettings += 'max_result_rows=' + $scope.vars.limitRows + '&result_overflow_mode=throw';
+                extendSettings += '&max_result_rows=' + $scope.vars.limitRows ;
+            }
+            if ($scope.vars.limitTimes) {
+                extendSettings += '&timeout_overflow_mode=throw&max_execution_time=' + $scope.vars.limitTimes;
             }
             let progressQuery=query.sql.replace(/(\r\n|\n|\r)$/gm, "").substr(0,130);
             $scope.vars.currentTab.progress.query=progressQuery;
@@ -1020,6 +1023,8 @@ window.global_lang                  = "ru";
          * Watch and save settings in LocalStorage
          */
         $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
+
+        $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));
 
 
         /**

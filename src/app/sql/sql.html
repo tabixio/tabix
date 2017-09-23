@@ -131,6 +131,10 @@
             <label for="inp2">{{'Максимум строк' | translate}}</label>
             <input type="text" id="inp2" ng-model="vars.limitRows">
         </md-input-container>
+        <md-input-container class="width-100">
+            <label for="inp2">Max execution time (second)</label>
+            <input type="text" id="inp3" ng-model="vars.limitTimes">
+        </md-input-container>
         <md-input-container class="width-100 mt mb++">
             <label>{{'Формат результатов' | translate}}</label>
             <md-select ng-model="vars.format">

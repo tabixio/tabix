@@ -4,7 +4,7 @@
 * Update handsontable to 0.34
 * Add: parse error text and move cursor to error 
 * Fix: exec current query, under cursor (new line error)
-
+* Add settings - max_execution_time
 
 
 ### 2017-08-08
