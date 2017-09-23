@@ -103,7 +103,6 @@ class DrawEchartsChart extends DrawEcharts {
         }
         // Отсортируем данные
         if (sets.sort) {
-            console.log('SORT',$data);
             $data=_.sortBy($data,firstCol);
         }
         // Берем первую колонку
@@ -223,6 +222,7 @@ class DrawEchartsChart extends DrawEcharts {
                 type: 'line',
                 symbolSize: 8,
                 hoverAnimation: false,
+                smooth:true,
                 //yAxisIndex:yAxisIndex
                 data: dataThisColumn
             };
@@ -275,7 +275,6 @@ class DrawEchartsChart extends DrawEcharts {
 
                             if (sets.stack) {
                                 series[c.index]['stack']=axis_name;
-                                series[c.index]['smooth']=true;
                                 series[c.index]['areaStyle']={normal: {}};
                             }
                     });
