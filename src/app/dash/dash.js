@@ -58,29 +58,63 @@
         $scope.options = {
             cellHeight: 200,
             cellWidth: 200,
-            verticalMargin: 2
+            verticalMargin: 1
         };
 
-        $scope.dash={};
+        $scope.dashInits={};
 
 
         $scope.initDash = function(dashid) {
 
-            if ($scope.dash[dashid]) return;
+            if ($scope.dashInits[dashid]) return;
 
-            $scope.dash[dashid]=1;
+            $scope.dashInits[dashid]=1;
 
             console.info("initDash : "+dashid);
         };
         $scope.isInitDash = function (dashid) {
 
-            return $scope.dash[dashid];
+            return $scope.dashInits[dashid];
         };
         $scope.getWidgets = function(dashid) {
             console.info("getWidgets : "+dashid);
-
+            let w= $scope.listDashboards[dashid].widgets;
+            console.log(w);
+            return w
         };
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+
+        $scope.initWidgets = function(dashid) {
+
+            let w={x: 0, y: 0, sizeX: 6, sizeY: 6};
+
+            let dd=[];
+            for (let i = 0; i < getRandomInt(30,4000); i++) {
+                dd.push({'id':i,'sin':Math.sin(i),"cos":Math.cos(i)});
+
+            }
+            let d=DataProvider.convertArrayToDataProvider(dd,"statistics");
+            d.sort="time";
+            d.sortOrder="desc";
+
+            $scope.listDashboards[dashid].widgets.push(new WidgetTable(d, false));
+        };
+
         $scope.inits = function() {
+
+            $scope.listDashboards={};
+            $scope.listDashboards[123]={   title:"Dash 123",   id : 123,  };
+            $scope.listDashboards[22]={   title:"Dash 22",   id : 22,  };
+
+            $scope.listDashboards[123].widgets=[];
+            $scope.listDashboards[22].widgets=[];
+            $scope.initWidgets(123);
+            $scope.initWidgets(22);
+            $scope.initWidgets(22);
+            $scope.initWidgets(22);
 
 
             // add random dashboars
@@ -124,7 +158,17 @@
         };
 
         $scope.onResizeStop = function(event, ui) {
-            console.log("onResizeStop event: "+event+" ui:"+ui);
+            // console.log("onResizeStop ",event);
+            // console.log("onResizeStop ",ui);
+            // let el=ui.element.find( ".widget-selector" );
+            // console.log("onResizeStop > EL  :",el);
+            // console.log("onResizeStop > EL E:",el.events);
+            // console.log("onResizeStop > EL W:",el.widget);
+            // console.log("---------------- ");
+            // console.log("---------------- ");
+            // console.log("onResizeStop ",ui.element.getElementsByClassName("widget-selector")[0]);
+            console.log("onResizeStop ",ui.size);
+
         };
 
         $scope.onItemAdded = function(item) {

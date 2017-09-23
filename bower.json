@@ -27,7 +27,7 @@
     "d3": "^4.4.1",
     "c3": "^0.4.11",
     "angular-ui-router": "^0.3.2",
-    "handsontable": "^0.34.1",
+    "handsontable": "^0.34.4",
     "sql-formatter": "^1.1.2",
     "echarts": "^3.7.1",
     "ngECharts": "ngecharts#^0.2.0",

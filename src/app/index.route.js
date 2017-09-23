@@ -56,7 +56,19 @@
                         }
                     }
                 })
-
+                .state('layoutDash', {
+                    parent: 'base',
+                    abstract: true,
+                    views: {
+                        header: {
+                            templateUrl: 'app/base/header.html',
+                            controller: 'HeaderController'
+                        },
+                        main: {
+                            template: '<ui-view/>'
+                        }
+                    }
+                })
                 // Dashboard state. Now it's only redir to sql state
                 .state('dashboard', {
                     parent: 'layout',
@@ -66,7 +78,7 @@
                     }]
                 })
                 .state('dash', {
-                    // parent: 'layout',
+                    parent: 'layoutDash',
                     url: '/dash',
                     templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'

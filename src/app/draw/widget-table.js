@@ -100,7 +100,7 @@ class WidgetTable extends Widget {
         }
     }
 
-    onResize() {
+    onResize(size) {
         if (!this.table) return;
 
         // console.log("onResize HotTable,this.table.width",this.table.width,this.table.height);
@@ -108,12 +108,18 @@ class WidgetTable extends Widget {
         if (i) {
             // this.table.width='99.9'+Math.floor(100*Math.random())+'%';
             // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
+            console.info("Table onResize pixelSize:",this.pixelSize);
+            if (this.pixelSize && this.pixelSize[0] && this.pixelSize[1])
+            {
 
-            i.updateSettings({
-                // height: this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
-                // width: this.table.width
+                i.updateSettings(
+                    {
+                        height: this.pixelSize[1]-4 ,//this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
+                        width:this.pixelSize[0]-4,//this.table.width
 
-            });
+                    }
+                );
+            }
             i.render();
         }
         // -----------------------------------------------------------------

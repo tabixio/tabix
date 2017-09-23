@@ -6,6 +6,8 @@
 
 class Widget {
     constructor(DataProvider, draw = false) {
+
+        this.pixelSize=[];
         this._scheduledResize = false;
         this.data = DataProvider;
         this.drawCommnads = draw;
@@ -29,7 +31,6 @@ class Widget {
         this.init = false;
 
         this.type = false;
-
         // Адовый костылище, поскольку в конструктор должны передаваться
         // dependency injecton, а не данные для работы класса. Поэтому я не могу
         // передать в конструктор сервис и дергаю его по рабоче - крестьянски.
@@ -44,12 +45,18 @@ class Widget {
         // console.info("On widget Resize",this);
     }
 
-    scheduledResize() {
+    scheduledResize(size) {
+        console.info("scheduledResize(size)",size);
+        if (size)
+        {
+            this.pixelSize=size;
+        }
+
         if (this._scheduledResize) {
             return;
         }
 
-        console.info("Add scheduledResize");
+        console.info("Add scheduledResize :",this.sizeX,this.sizeY);
         // отложенный ресайз , если много изменений
         this._scheduledResize = true;
         let th = this;

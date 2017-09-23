@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
 <div class="WidgetsListResult">
-    <div gridstack class="grid-stack grid1" options="gridstackoptions">
+    <div gridstack class="grid-stack grid1" options="gridstackoptions"  on-resize-stop="onResizeStop(event,ui)">
 
 
 
@@ -11,9 +11,9 @@
              gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1"
         >
             <div class="widget-grid-stack grid-stack-item-content ">
-                <draw-widget
+                <draw-widget pixelSize="0x0"
                 widget="w" ng-if="w.init && !w.error"
-                isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}}" events="events">
+                isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}} widget-selector" events="events">
                 </draw-widget>
                 <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
                 <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>

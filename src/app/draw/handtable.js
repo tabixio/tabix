@@ -458,11 +458,11 @@ class HandsTable {
             columnSorting: true,
             sortIndicator: true,
             manualRowResize: true,
-            // viewportColumnRenderingOffset:'auto',
+            viewportColumnRenderingOffset:'auto',
             wordWrap: false,
             autoColumnSize: {samplingRatio: 23},
             preventOverflow: 'horizontal',
-            visibleRows:120,
+            // visibleRows:120,
             // width:'100%',
             // height:'100%',
 

@@ -1,56 +1,22 @@
-<div layout-gt-xs="row">
-    <div flex-gt-xs>
-        <h4>Standard date-picker</h4>
-        <md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date"></md-datepicker>
-    </div>
+
+<div style="width: 100%;height: 100%">
+    <md-content layout="column">
+        <md-tabs flex md-dynamic-height layout="column" layout-fill class="md-accent"
+        md-selected="tab.selectedDashTab">
+
+            <md-tab flex layout="column" ng-repeat="dashContainer in listDashboards" md-on-select="initDash(dashContainer.id)">
+                <md-tab-label>
+                    {{::dashContainer.title}}
+                    <i class="mdi mdi-18px ml+" ng-class="dashContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="dashContainer.pinned = !dashContainer.pinned; $event.stopPropagation()"></i>
+                    <i class="mdi mdi-close" ng-click="removeResult(tab, dashContainer, $event)"></i>
+                </md-tab-label>
+                <md-tab-body flex layout-fill style="background:cyan">
+                    <div ng-init="widgets = getWidgets(dashContainer.id)"  ng-if="isInitDash(dashContainer.id)" class="tabbodydash">
+                                <div ng-include="'app/render/WidgetsList.html'" class="dashWidgetsList"></div>
+                    </div>
+                </md-tab-body>
+            </md-tab>
+        </md-tabs>
+
+    </md-content>
 </div>
-
-
-
-<md-tabs md-dynamic-height md-border-bottom
-         md-selected="tab.selectedDashTab">
-
-    <md-tab ng-repeat="dashContainer in listDashboards" md-on-select="initDash(dashContainer.id)" layout-fill md-dynamic1-height md-border-bottom class="h100">
-
-    <md-tab-label>
-        {{::dashContainer.title}}
-        <i class="mdi mdi-18px ml+" ng-class="dashContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="dashContainer.pinned = !dashContainer.pinned; $event.stopPropagation()"></i>
-        <i class="mdi mdi-close" ng-click="removeResult(tab, dashContainer, $event)"></i>
-    </md-tab-label>
-
-    <md-tab-body>
-
-        <div style="position: absolute; top: 4px; right: 4px; z-index: 2"  ng-if="isInitDash(dashContainer.id)" ng-init="widgets = getWidgets(dashContainer.id)">
-            {{widgets}}
-            <div  ng-include="'app/render/WidgetsList.html'">
-
-            </div>
-
-        </div>
-    </md-tab-body>
-    </md-tab>
-</md-tabs>
-
-    <!--<section layout="row" flex>-->
-
-    <!--<md-sidenav-->
-            <!--class="md-sidenav-left"-->
-            <!--md-component-id="left"-->
-            <!--md-is-locked-open="$mdMedia('gt-md')"-->
-            <!--md-whiteframe="4">-->
-
-        <!--<md-toolbar class="md-theme-indigo">-->
-            <!--<h1 class="md-toolbar-tools">Sidenav Left</h1>-->
-        <!--</md-toolbar>-->
-        <!--<md-content layout-padding ng-controller="LeftCtrl">-->
-            <!--<md-button ng-click="close()" class="md-primary" hide-gt-md>-->
-                <!--Close Sidenav Left-->
-            <!--</md-button>-->
-            <!--<p hide show-gt-md>-->
-                <!--This sidenav is locked open on your device. To go back to the default behavior,-->
-                <!--narrow your display.-->
-            <!--</p>-->
-        <!--</md-content>-->
-
-    <!--</md-sidenav>-->
-<!--</section>-->
