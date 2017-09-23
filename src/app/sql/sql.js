@@ -307,35 +307,36 @@ window.global_lang                  = "ru";
 
 
                 }
-
+                // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 // Поиск ошибки в тексте ответа и тут нужна проверка что вообще ошибка содержит текст
-                // let moveCol=-1;
-                // let moveRow=-1;
-                // // if (result.error)
-                // // {
-                // //
-                // // }
-                // let match= result.error.match(/position\s(\d+)\s\(line\s(\d+).\s+col\s+(\d+)\)/);
-                //
-                // if (match && match[1] && match[2] && match[3]) {
-                //
-                //     console.log("Error in POS"+match[1]+' in '+match[2]+','+match[3],query.itemRange.start);
-                //     if (query.itemRange && query.itemRange.start) {
-                //         moveCol=parseInt(match[3])+query.itemRange.start.column;
-                //         moveRow=parseInt(match[2])+query.itemRange.start.row;
-                //     }
-                // }
-                // else
-                // {
-                //     if (query.itemRange && query.itemRange.start) {
-                //         moveCol=query.itemRange.start.column;
-                //         moveRow=query.itemRange.start.row;
-                //     }
-                // }
+                let moveCol=-1;
+                let moveRow=-1;
+                if (result && result.error && _.isString(result.error))
+                {
+                    let match= result.error.match(/position\s(\d+)\s\(line\s(\d+).\s+col\s+(\d+)\)/);
+                    if (match && match[1] && match[2] && match[3]) {
 
-                // @todo : плохой парсинг ошибки т/к строки тримятся в SQL
-                // $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
-                // console.log("move cursor to",moveRow,moveCol);
+                        console.log("Error in POS"+match[1]+' in '+match[2]+','+match[3],query.itemRange.start);
+                        if (query.itemRange && query.itemRange.start) {
+                            moveCol=parseInt(match[3])+query.itemRange.start.column;
+                            moveRow=parseInt(match[2])+query.itemRange.start.row;
+                        }
+                    }
+                    else
+                    {
+                        if (query.itemRange && query.itemRange.start) {
+                            moveCol=query.itemRange.start.column;
+                            moveRow=query.itemRange.start.row;
+                        }
+                    }
+
+                    if (moveRow>-1 && moveCol>-1 ){
+                        $scope.vars.currentTab.editor.gotoLine(moveRow, moveCol);
+                    }
+                    console.log("move cursor to",moveRow,moveCol);
+                }
+
+                // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 // провайдер CH или API
                 let provider='ch';
                 // передаем в
@@ -423,7 +424,7 @@ window.global_lang                  = "ru";
          * @param tab
          */
         $scope.execute = (type, tab) => {
-            console.groupCollapsed("Execute query");
+            // console.groupCollapsed("Execute query");
             $scope.vars.LastStatistics = false;
             let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
             let numquery = 0;
@@ -523,7 +524,7 @@ window.global_lang                  = "ru";
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
-                        console.log("---------------");
+                        console.log("--------------------------forEach ITEM-------------------------------------");
                         console.info(item.sql);
                         console.log("Exec current position :",cursor);
                         console.log("Item range :",item.range.start,item.range.end);

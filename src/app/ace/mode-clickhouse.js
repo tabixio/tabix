@@ -74,6 +74,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
         // ------------------------------------------------------------------------------
         this.trim = function (text , value) {
 
+
             // text = text.trim().replace(/^(\r\n|\n|\r)/gm, " ").replace(/(\r\n|\n|\r)$/gm, " ");
             if (value!==true &&  typeof value === 'string' && value.length>0)
             {
@@ -81,8 +82,8 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 text=text.replace(new RegExp("^" + value + "|" + value + '$', 'g'), "  ");
             }
             // text = text.replace(/^(\r\n|\n|\r)/gm, "  ").replace(/(\r\n|\n|\r)$/gm, "  ");
-
-            return text.trim();
+            return text;
+            // return text.trim();
 
             // return text;
         };
@@ -189,29 +190,44 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
 
         };
         this.splitByTokens = function (sql, type, value) {
-            sql = this.trim(sql,';;');
-            sql = this.trim(sql,';');
+            console.warn("splitByTokens,",type,value,sql);
+
+
+            // sql = this.trim(sql,';;');
+            // sql = this.trim(sql,';');
 
             let TokenIterator = require("ace/token_iterator").TokenIterator;
             let EditSession = require("ace/edit_session").EditSession;
             let Range = require("ace/range").Range;
 
-            // console.info(sql);
+            // console.info("SQL:",sql);
 
             let session = new EditSession(sql, this);
 
             session.bgTokenizer.start(0);// force rehighlight whole document
-            // foreach $rules find type=$type and update value
-            // @todo: Ошибка если в начале стоит \n то не происходит парсинг первой строки
-            let iterator = new TokenIterator(session, 0, 0);
 
+            let iterator = new TokenIterator(session, 0, 0); // initialRow + initialColumn
             let token = iterator.getCurrentToken();
+
+            if (_.isUndefined(token))
+            {
+                let line=0;
+                do
+                {
+                    line++;
+                    iterator = new TokenIterator(session, line, 0); // initialRow + initialColumn
+                    token = iterator.getCurrentToken();
+
+                }  while (line < 100 && !token);
+
+            }
+
             let matches = [];
             let startRow = 0, startCol = 0;
             let trimValue=false;
             let range1, text;
 
-            // console.log("splitByTokens",type,value,token);
+            // console.log("splitByTokens [2]",type,value,token);
 
             while (token) {
                 let t = token;
