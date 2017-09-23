@@ -1,3 +1,12 @@
+### 2017-09-23
+
+* Update grid, move to gridstack, fix many error in render table resut  
+* Update handsontable to 0.34
+* Add: parse error text and move cursor to error 
+* Fix: exec current query, under cursor (new line error)
+
+
+
 ### 2017-08-08
 
 * Update handsontable + echarts 

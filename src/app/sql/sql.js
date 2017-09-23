@@ -424,7 +424,7 @@ window.global_lang                  = "ru";
          * @param tab
          */
         $scope.execute = (type, tab) => {
-            // console.groupCollapsed("Execute query");
+            console.groupCollapsed("Execute query");
             $scope.vars.LastStatistics = false;
             let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
             let numquery = 0;
