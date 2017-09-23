@@ -52,7 +52,7 @@ class Widget {
     }
 
     scheduledResize(size) {
-        console.info("scheduledResize(size)",size);
+        // console.info("scheduledResize(size)",size);
         if (size)
         {
             this.pixelSize=size;
@@ -62,7 +62,7 @@ class Widget {
             return;
         }
 
-        console.info("Add scheduledResize :",this.sizeX,this.sizeY);
+        // console.info("Add scheduledResize :",this.sizeX,this.sizeY);
         // отложенный ресайз , если много изменений
         this._scheduledResize = true;
         let th = this;

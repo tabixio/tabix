@@ -56,7 +56,7 @@
                 ];
 
         $scope.dashInits={};
-
+        $scope.staticGrid=true;
 
         $scope.initDash = function(dashid) {
 

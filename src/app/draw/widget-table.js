@@ -71,20 +71,20 @@ class WidgetTable extends Widget {
         this.sizeY = 1;//1...2...3...4...5..
 
         if (this.data.rows > 60) {
-            this.sizeY = 2;
+            this.sizeY = 1;
         }
         if (this.data.rows > 250) {
-            this.sizeY = 3;
+            this.sizeY = 2;
         }
         if (this.data.rows > 500) {
-            this.sizeY = 4;
+            this.sizeY = 3;
         }
 
         if (this.data.countAll == 1) {
 
             // результат толкьо один был запрос
             this.sizeX = 6;
-            this.sizeY = 4;
+            this.sizeY = 3;
         }
 
 
@@ -113,7 +113,7 @@ class WidgetTable extends Widget {
         if (i) {
             // this.table.width='99.9'+Math.floor(100*Math.random())+'%';
             // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
-            console.info("Table onResize pixelSize:",this.pixelSize);
+            // console.info("Table onResize pixelSize:",this.pixelSize);
             if (this.pixelSize && this.pixelSize[0] && this.pixelSize[1])
             {
 

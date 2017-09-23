@@ -54,10 +54,14 @@
             }
 
         };
+        $scope.staticGrid=true;
 
-        $scope.gridstackoptions = {
+        $scope.gridStackOptions = {
             cellHeight: 200,
-            verticalMargin: 0
+            verticalMargin: 0,
+            disableDrag:true,
+            // disableResize:true,
+            // staticGrid:true
         };
 
         // Задаем параметры gridster
@@ -135,8 +139,8 @@
          */
         $scope.switchStaticGrid = function() {
             $scope.vars.staticGrid=!$scope.vars.staticGrid;
-            $scope.gridsterOpts.draggable.enabled = !$scope.vars.staticGrid;
-            $scope.gridsterOpts.resizable.enabled = !$scope.vars.staticGrid;
+            $scope.staticGrid=$scope.vars.staticGrid;
+            console.info("staticGrid",$scope.staticGrid);
 
         };
 
@@ -153,6 +157,9 @@
             $scope.vars.active.draw=true;
         };
 
+        $scope.onResizeStop = () => {
+
+        };
         $scope.initPivotTab = () => {
             $scope.vars.active.pivot=true;
         };

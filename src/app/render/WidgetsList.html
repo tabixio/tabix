@@ -1,24 +1,24 @@
 <div class="row">
     <div class="col-md-12">
-<div class="WidgetsListResult">
-    <div gridstack class="grid-stack grid1" options="gridStackOptions"  on-resize-stop="onResizeStop(event,ui)">
+        <div class="WidgetsListResult">
+            <div gridstack class="grid-stack grid1" options="gridStackOptions" staticGrid="staticGrid"  on-resize-stop="onResizeStop(event,ui)">
 
-        <div gridstack-item ng-repeat="w in widgets"
-             class="grid-stack-item"
-             gs-item-x="w.x" gs-item-y="w.y"
-             gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1"
-        >
-            <div class="widget-grid-stack grid-stack-item-content ">
-                <draw-widget pixelSize="0x0"
-                widget="w" ng-if="w.init && !w.error"
-                isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}} widget-selector" events="events">
-                </draw-widget>
-                <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
-                <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
-                <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+                <div gridstack-item ng-repeat="w in widgets"
+                     class="grid-stack-item"
+                     gs-item-x="w.x" gs-item-y="w.y"
+                     gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1"
+                >
+                    <div class="widget-grid-stack grid-stack-item-content ">
+                        <draw-widget
+                        widget="w" ng-if="w.init && !w.error"
+                        isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}} widget-selector" events="events">
+                        </draw-widget>
+                        <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
+                        <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
+                        <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 </div>
