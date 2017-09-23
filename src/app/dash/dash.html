@@ -1,8 +1,7 @@
 
 <div style="width: 100%;height: 100%">
-    <md-content layout="column">
-        <md-tabs flex md-dynamic-height layout="column" layout-fill class="md-accent"
-        md-selected="tab.selectedDashTab">
+        <md-tabs flex md-dynamic-height layout="column" layout-fill class="md-tabs-fix"
+           md-stretch-tabs="yes"  md-selected="tab.selectedDashTab">
 
             <md-tab flex layout="column" ng-repeat="dashContainer in listDashboards" md-on-select="initDash(dashContainer.id)">
                 <md-tab-label>
@@ -11,12 +10,11 @@
                     <i class="mdi mdi-close" ng-click="removeResult(tab, dashContainer, $event)"></i>
                 </md-tab-label>
                 <md-tab-body flex layout-fill style="background:cyan">
-                    <div ng-init="widgets = getWidgets(dashContainer.id)"  ng-if="isInitDash(dashContainer.id)" class="tabbodydash">
+                    <div ng-init="widgets = getWidgets(dashContainer.id);gridStackOptions= getGridStackOptions(dashContainer.id);"  ng-if="isInitDash(dashContainer.id)" class="tabbodydash">
                                 <div ng-include="'app/render/WidgetsList.html'" class="dashWidgetsList"></div>
                     </div>
                 </md-tab-body>
             </md-tab>
         </md-tabs>
 
-    </md-content>
 </div>

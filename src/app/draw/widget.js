@@ -5,7 +5,9 @@
 'use strict';
 
 class Widget {
-    constructor(DataProvider, draw = false) {
+    constructor(DataProvider, draw = false,sizeX=false,sizeY=false) {
+
+
 
         this.pixelSize=[];
         this._scheduledResize = false;
@@ -22,13 +24,17 @@ class Widget {
         this.text = this.data.text;
         this.name = "Widget";
 
-        this.x = 1;// pos
-        this.y = 1;// pos
-        // this.sizeY = 1;// высота
-        // this.sizeY = 1;// высота
-        //
         this.element = false;
         this.init = false;
+
+
+        if (_.isNumber(sizeX)) {
+            this.sizeX = sizeX;
+        }
+        if (_.isNumber(sizeY)) {
+            this.sizeY = sizeY;
+        }
+
 
         this.type = false;
         // Адовый костылище, поскольку в конструктор должны передаваться

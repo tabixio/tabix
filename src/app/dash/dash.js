@@ -55,12 +55,6 @@
 
                 ];
 
-        $scope.options = {
-            cellHeight: 200,
-            cellWidth: 200,
-            verticalMargin: 1
-        };
-
         $scope.dashInits={};
 
 
@@ -76,11 +70,12 @@
 
             return $scope.dashInits[dashid];
         };
+        $scope.getGridStackOptions = function(dashid) {
+            return $scope.listDashboards[dashid].GridStackOptions;
+        };
         $scope.getWidgets = function(dashid) {
             console.info("getWidgets : "+dashid);
-            let w= $scope.listDashboards[dashid].widgets;
-            console.log(w);
-            return w
+            return $scope.listDashboards[dashid].widgets;
         };
         function getRandomInt(min, max) {
             return Math.floor(Math.random() * (max - min)) + min;
@@ -100,14 +95,16 @@
             d.sort="time";
             d.sortOrder="desc";
 
-            $scope.listDashboards[dashid].widgets.push(new WidgetTable(d, false));
+            $scope.listDashboards[dashid].widgets.push(new WidgetTable(d, false,12,2));
+            let item={drawtype:'BAR'};
+            $scope.listDashboards[dashid].widgets.push(new WidgetDraw(d,item,12,2));
         };
 
         $scope.inits = function() {
 
             $scope.listDashboards={};
-            $scope.listDashboards[123]={   title:"Dash 123",   id : 123,  };
-            $scope.listDashboards[22]={   title:"Dash 22",   id : 22,  };
+            $scope.listDashboards[123]={   title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
+            $scope.listDashboards[22]={   title:"Dash 22",   id : 22,GridStackOptions: {  disableDrag:true, disableResize:true,verticalMargin: 1,  staticGrid:true    }  };
 
             $scope.listDashboards[123].widgets=[];
             $scope.listDashboards[22].widgets=[];

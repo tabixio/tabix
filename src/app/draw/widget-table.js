@@ -4,20 +4,21 @@
 
 class WidgetTable extends Widget {
     constructor(DataProvider, draw,sizeX,sizeY) {
-        super(DataProvider, draw);
+        super(DataProvider, draw,sizeX,sizeY);
         this.type = 'table';
         this.table = {};
         this.sort = false;
         this.hotId = 'hotIdTable' + Math.floor(Math.random() * 10000000);
+
         if (this.error) {
-            this.sizeY = 1;
-            this.sizeX = 6;
+            this.sizeY = 2;
+            this.sizeX = 12;
             this.init = false;
             return;
         }
         if (this.text) {
-            this.sizeY = 2;
-            this.sizeX = 6;
+            this.sizeY = 4;
+            this.sizeX = 12;
             this.init = false;
             return;
         }
@@ -29,7 +30,19 @@ class WidgetTable extends Widget {
         this.table = {
             settings: ht.makeSettings(),
         };
-        let countColumns = ht.countColumns();
+
+
+        if (!this.sizeX && !this.sizeY)
+        {
+            let countColumns = ht.countColumns();
+            this.initTableWSize(countColumns);
+        }
+
+        this.init = true;
+    }
+    initTableWSize(countColumns)
+    {
+
         // ширина
         // init table size тут как бы отрефа
         let x = 1;
@@ -74,18 +87,10 @@ class WidgetTable extends Widget {
             this.sizeY = 4;
         }
 
-        // overWrite
-        if (_.isNumber(sizeX)) {
-            this.sizeX = sizeX;
-        }
-        if (_.isNumber(sizeY)) {
-            this.sizeY = sizeY;
-        }
+
         this.sizeY = this.sizeY*2;
         this.sizeX = this.sizeX*2;
-        this.init = true;
     }
-
     preProcessor() {
 
     }

@@ -4,14 +4,13 @@
 
 class WidgetDraw extends Widget {
     constructor(DataProvider, draw,sizeX,sizeY) {
-        super(DataProvider, draw);
+        super(DataProvider, draw,sizeX,sizeY);
 
         this.type = "draw";
         if (this.error || this.text) {
             return;
         }
         this.library = false;
-        this.sizeY = 2;
 
         this._list = {
             // 'SCATTERMAP': DrawEcharts,
@@ -33,25 +32,27 @@ class WidgetDraw extends Widget {
         // if class exists -> init ok
         this.init = this.getChartClass();
 
-        if (this.drawType=='TEXT') {
-            this.sizeX = 0;
-            this.sizeY = 0;
+
+        if (!this.sizeX && !this.sizeY)
+        {
+
+            this.sizeX = 12;// ширина
+            this.sizeY = 6;// высота
+
+
+            if (this.drawType=='TEXT') {
+                this.sizeX = 0;
+                this.sizeY = 0;
+            }
+
+
+            if (this.data.countAll == 1) {
+                // результат толкьо одна отпра
+                this.sizeX = 12;
+                this.sizeY = 4;
+            }
         }
 
-        if (_.isNumber(sizeX)) {
-            this.sizeX = sizeX;
-        }
-        if (_.isNumber(sizeY)) {
-            this.sizeY = sizeY;
-        }
-
-        if (this.data.countAll == 1) {
-            // результат толкьо одна отпра
-            this.sizeX = 6;
-            this.sizeY = 2;
-        }
-        this.sizeY = this.sizeY*2;
-        this.sizeX = this.sizeX*2;
     }
 
     get draw() {
