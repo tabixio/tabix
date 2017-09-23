@@ -167,7 +167,7 @@
                     httpProto = 'http://';
                 }
 
-                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0';
+                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
                 //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
 
                 if (connection.login) {

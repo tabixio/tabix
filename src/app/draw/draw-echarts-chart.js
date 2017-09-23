@@ -80,11 +80,14 @@ class DrawEchartsChart extends DrawEcharts {
             markLine:true,
             stack:false,
             path:false,
-            sort:true
+            sort:true,
+            xAxis:false,
+            yAxis:false
         };
         if (drw) {
             sets = Object.assign(sets, drw);
         }
+        // @todo : support xAxis + yAxis ( array )
 
 
         let columns=this.getColumns();

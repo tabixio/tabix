@@ -23,10 +23,14 @@ class HandsTable {
 
         // if (cellProperties.type)
         if (cellProperties.type == 'numeric') {
-            if (value==null) {
+            if (value==null || value=='-nan' || value=='inf' || value=='+nan' || value=='+inf'|| value=='-inf' || value=='nan') {
                 // SELECT  inf, nan
-                arguments[5] = "NULL";// так работает ;)
-                td.style.color='silver';
+                if (value==null)
+                {
+                    arguments[5] = "NULL";// так работает ;)
+                }
+                td.style.color='black';
+                td.style.background='red';
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
             }
 
