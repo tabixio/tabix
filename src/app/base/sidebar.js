@@ -8,7 +8,7 @@
         '$state',
         'API',
         'ThemeService',
-        '$mdSidenav', '$mdToast', '$timeout'
+        '$mdSidenav', '$mdToast', '$timeout','localStorageService'
 
     ];
 
@@ -17,7 +17,7 @@
      * @name smi2.controller:SidebarController
      * @description Контроллер бокового меню
      */
-    function SidebarController($scope, $rootScope, $state, API, ThemeService, $mdSidenav, $mdToast, $timeout) {
+    function SidebarController($scope, $rootScope, $state, API, ThemeService, $mdSidenav, $mdToast, $timeout,localStorageService) {
         $scope.vars = {
             searchline:'',
             counter: 0,
@@ -253,6 +253,35 @@
             }
         };
 
+
+
+        $scope.fetchFromCache = () => {
+            let d=localStorageService.get('_cacheDatabase:'+API.getHost()+':'+API.getLogin());
+
+            if (d && d.dbcache && d.dbcache.length>1 )
+            {
+                $scope.vars.databases=d.dbcache;
+                return true;
+            }
+            return false;
+        };
+        $scope.storeToCache = () => {
+            if ($scope.vars.loaded || !$scope.vars.error) {
+                console.info($scope.vars.databases);
+                return  localStorageService.set('_cacheDatabase:'+API.getHost()+':'+API.getLogin(),
+                    {
+                        'dbcache':$scope.vars.databases,
+                        'ttl':Date.now()
+                    });
+            }
+            return false;
+        };
+
+
+        $scope.canCacheDB = () => {
+            return  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false);
+        };
+
         $scope.reLoad = () =>   {
             let list_all_fields=[];
 
@@ -260,6 +289,17 @@
             $scope.vars.error = false;
 
             $scope.vars.databases = [];
+
+            if ($scope.canCacheDB() && $scope.fetchFromCache())
+            {
+                $scope.vars.loaded = true;
+                $scope.vars.error = false;
+
+                $('#sideBarMetismenu').metisMenu();
+                console.info("Database Structure - from cache");
+                return ;
+            }
+            console.info("Load Database Structure");
 
             API.query( "SELECT * FROM system.columns" ).then(res => {
                 let data = res.data || [ ];
@@ -277,8 +317,8 @@
                     $scope.vars.databases = data.reduce(( prev, item ) => {
 
                         let  rightMenuListTable = [
-                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',item:item},
-                            {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',item:item}
+                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},//,item:item},
+                            {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size'}//,item:item}
                         ];
 
                         let classEngine='';
@@ -289,6 +329,8 @@
                         if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
                         if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
                         if (item.engine.match(/$Merge^/))  classEngine='source-fork';
+
+
                         item.active=true;
                         item.classEngine=classEngine;
                         item.rightMenuListTable=rightMenuListTable;
@@ -363,7 +405,11 @@
 
                     $timeout(function () {
                         $('#sideBarMetismenu').metisMenu();
-                    }, 250)
+
+                        $scope.storeToCache();
+
+                    }, 250);
+
 
 
                 }, () => {
@@ -374,7 +420,6 @@
                 $scope.vars.loaded = true;
                 $scope.vars.error = true;
             });
-
 
         };
 

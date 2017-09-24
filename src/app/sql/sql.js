@@ -104,6 +104,8 @@ window.global_lang                  = "ru";
             limitRows: localStorageService.get('editorLimitRows') || 500,
             fontSize: localStorageService.get('editorFontSize') || 16,
             theme: localStorageService.get('editorTheme') || 'cobalt',
+            cacheDatabaseStructure:  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false)
+            ,
 
 
 
@@ -1022,6 +1024,7 @@ window.global_lang                  = "ru";
         /**
          * Watch and save settings in LocalStorage
          */
+        $scope.$watch('vars.cacheDatabaseStructure', (curr) => localStorageService.set('cacheDatabaseStructure', curr));
         $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
 
         $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));

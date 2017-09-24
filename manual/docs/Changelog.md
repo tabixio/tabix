@@ -7,6 +7,19 @@
 * Add settings - max_execution_time
 * Force set output_format_json_quote_64bit_integers=0 & output_format_json_quote_denormals=1 
 * Highlight "inf"+"nan" values in table 
+* cache Database Structure
+> + system.tables
+> + system.databases
+> + system.columns
+
+
+@TODO:
+* Right click - tables 
+* Right click - database 
+* need cache 
+> + system.functions
+> + system.dictionaries
+
 
 
 ### 2017-08-08

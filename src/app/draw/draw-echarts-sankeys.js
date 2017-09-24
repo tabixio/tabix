@@ -169,10 +169,11 @@ class DrawEchartsSunkeys extends DrawEcharts {
             _.set(option.series[0],'label.normal.textStyle.color','white');
         }
 
-        this.options = Object.assign(option, this.options);
+         option = Object.assign(option, this.options);
 
         console.log(option);
 
+        // this.options=option;
         return true;
 
     }
