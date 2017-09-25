@@ -74,7 +74,7 @@
         });
 
         $scope.clickInsertField = field => {
-            $rootScope.$emit('handleBroadcastInsertInActive', {value:" "+field.name+",\n"});
+            $rootScope.$emit('handleBroadcastInsertInActive', {value:field.name});
         };
 
         $scope.clickAndSelect = ( database, event ) => {
@@ -90,6 +90,7 @@
          * Select database
          */
         $scope.selectDatabase = database => {
+            console.time("sidebar.selectDatabase time took");
             $rootScope.currentDatabase = database.name;
 
             $mdToast.show(
@@ -101,6 +102,7 @@
             );
 
             $mdSidenav( 'tableSiedenav' ).close( );
+            console.timeEnd("sidebar.selectDatabase time took");
         };
 
         /**
@@ -121,6 +123,7 @@
                 );
 
 
+
                 $rootScope.currentDatabase = table.database;
 
             }
@@ -130,7 +133,7 @@
         };
 
         $rootScope.$on('handleBroadcastDatabases', function() {
-            $scope.reLoad();
+            $scope.reLoad(true);
         });
 
         $scope.filterCompletions = function( needle) {
@@ -253,173 +256,100 @@
             }
         };
 
-
-
-        $scope.fetchFromCache = () => {
-            let d=localStorageService.get('_cacheDatabase:'+API.getHost()+':'+API.getLogin());
-
-            if (d && d.dbcache && d.dbcache.length>1 )
-            {
-                $scope.vars.databases=d.dbcache;
-                return true;
-            }
-            return false;
-        };
-        $scope.storeToCache = () => {
-            if ($scope.vars.loaded || !$scope.vars.error) {
-                console.info($scope.vars.databases);
-                return  localStorageService.set('_cacheDatabase:'+API.getHost()+':'+API.getLogin(),
-                    {
-                        'dbcache':$scope.vars.databases,
-                        'ttl':Date.now()
-                    });
-            }
-            return false;
-        };
-
-
-        $scope.canCacheDB = () => {
-            return  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false);
-        };
-
-        $scope.reLoad = () =>   {
-            let list_all_fields=[];
-
+        $scope.reLoad = (forceReload) =>   {
             $scope.vars.loaded = false;
             $scope.vars.error = false;
-
             $scope.vars.databases = [];
 
-            if ($scope.canCacheDB() && $scope.fetchFromCache())
-            {
-                $scope.vars.loaded = true;
-                $scope.vars.error = false;
+            API.memory('Init reLoad sidebar');
 
-                $('#sideBarMetismenu').metisMenu();
-                console.info("Database Structure - from cache");
-                return ;
-            }
-            console.info("Load Database Structure");
+            API.databaseStructure(function (ds) {
+                let list_all_fields=ds.getFields();
+                // --------------------- INIT   DATABASES     ------------------------------------------------------
+                $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 
-            API.query( "SELECT * FROM system.columns" ).then(res => {
-                let data = res.data || [ ];
-                data.forEach((item) => {
+                    let  rightMenuListTable = [
+                        {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},//,item:item},
+                        {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size'}//,item:item}
+                    ];
 
-
-
-
-                    if (!list_all_fields[item.database+'.'+item.table]) list_all_fields[item.database+'.'+item.table]=[];
-                    list_all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type,active:true });
-                });
-                //database.table
-                API.query( "SELECT database,name,engine FROM system.tables" ).then(res => {
-                    let data = res.data || [ ];
-                    $scope.vars.databases = data.reduce(( prev, item ) => {
-
-                        let  rightMenuListTable = [
-                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},//,item:item},
-                            {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size'}//,item:item}
-                        ];
-
-                        let classEngine='';
-                        if (item.engine.match(/Dictionary.*/))  classEngine='library';
-                        if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
-                        if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';
-                        if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom';
-                        if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
-                        if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
-                        if (item.engine.match(/$Merge^/))  classEngine='source-fork';
+                    let classEngine='';
+                    if (item.engine.match(/Dictionary.*/))  classEngine='library';
+                    if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
+                    if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';
+                    if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom';
+                    if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
+                    if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
+                    if (item.engine.match(/$Merge^/))  classEngine='source-fork';
 
 
-                        item.active=true;
-                        item.classEngine=classEngine;
-                        item.rightMenuListTable=rightMenuListTable;
+                    item.active=true;
+                    item.classEngine=classEngine;
+                    item.rightMenuListTable=rightMenuListTable;
 
-                        for ( let a of prev ) {
-                            if ( item.name !=='-' && a.name == item.database ) {
-                                a.tables.push(
-                                        {
-                                                active:true,
-                                                database:item.database,
-                                                name: item.name,
-                                                engine : item.engine,
-                                                classEngine:item.classEngine,
-                                                fields:list_all_fields[item.database+'.'+item.name],
-                                                rightMenuList:item.rightMenuListTable
-                                        }
-                                );
-                                return prev;
-                            }
+                    for ( let a of prev ) {
+                        if ( item.name !=='-' && a.name == item.database ) {
+                            a.tables.push(
+                                {
+                                    active:true,
+                                    database:item.database,
+                                    name: item.name,
+                                    engine : item.engine,
+                                    classEngine:item.classEngine,
+                                    fields:list_all_fields[item.database+'.'+item.name],
+                                    rightMenuList:item.rightMenuListTable
+                                }
+                            );
+                            return prev;
+                        }
+                    }
+
+                    return [
+                        ...prev, {
+                            name: item.database,
+                            tables: [
+                                {
+                                    active:true,
+                                    database:item.database,
+                                    name: item.name,
+                                    engine : item.engine,
+                                    classEngine : item.classEngine,
+                                    rightMenuList:item.rightMenuListTable,
+                                    fields:list_all_fields[item.database+'.'+item.name]
+                                }
+                            ]
+                        }
+                    ];
+                }, [ ]);
+                // --------------------- SELECT DATABASE      ------------------------------------------------------
+                $scope.selectDatabase($scope.vars.databases[0]);
+                // --------------------- INIT EMPTY DATABASES ------------------------------------------------------
+                ds.getDatabases().forEach((item) => {
+                    let find=false;
+                    $scope.vars.databases.forEach((dbitem) => {
+                        if (dbitem.name==item.name) {
+                            find=true;
                         }
 
-                        return [
-                            ...prev, {
-                                name: item.database,
-                                tables: [
-                                    {
-                                        active:true,
-                                        database:item.database,
-                                        name: item.name,
-                                        engine : item.engine,
-                                        classEngine : item.classEngine,
-                                        rightMenuList:item.rightMenuListTable,
-                                        fields:list_all_fields[item.database+'.'+item.name]
-                                    }
-                                ]
-                            }
-                        ];
-                    }, [ ]);
-
-
-                    $scope.selectDatabase($scope.vars.databases[0]);
-
-
-                    // отдельно получаем список баз данных - если база пустая
-                    API.query( "SELECT name FROM system.databases" ).then(res => {
-                        let data = res.data || [];
-                        data.forEach((item) => {
-                            let find=false;
-                            $scope.vars.databases.forEach((dbitem) => {
-                                if (dbitem.name==item.name) {
-                                    find=true;
-                                }
-
-                            });
-                            if (!find) {
-                                $scope.vars.databases.push({
-                                    name:item.name,
-                                    // rightMenuList:rightMenuListDatabases,
-                                    tables:[],
-                                    active:true
-                                });
-                            }
-                        });
-                        $scope.vars.loaded = true;
-                        $scope.vars.error = false;
-                    }, () => {
-                        $scope.vars.loaded = true;
-                        $scope.vars.error = true;
                     });
-
-                    // ----- done - reRender metisMenu
-
-                    $timeout(function () {
-                        $('#sideBarMetismenu').metisMenu();
-
-                        $scope.storeToCache();
-
-                    }, 250);
-
-
-
-                }, () => {
-                    $scope.vars.loaded = true;
-                    $scope.vars.error = true;
+                    if (!find) {
+                        $scope.vars.databases.push({
+                            name:item.name,
+                            // rightMenuList:rightMenuListDatabases,
+                            tables:[],
+                            active:true
+                        });
+                    }
                 });
-            }, () => {
+                // --------------------------------------------------------------------------------------------------
                 $scope.vars.loaded = true;
-                $scope.vars.error = true;
-            });
+                $scope.vars.error = false;
+                // --------------------------------------------------------------------------------------------------
+                $timeout(function () {
+                    $('#sideBarMetismenu').metisMenu();
+                }, 250);
+
+            },forceReload);
 
         };
 

@@ -28,7 +28,7 @@
                 });
                 // Требование JSlinter'a (((
                 $rootScope.$on('$destroy', () => stateChangeErrorUnbind);
-
+                window.document.title="Tabix.IO ["+window.TabixBuildDate+"]";
             }
         ]);
 })();

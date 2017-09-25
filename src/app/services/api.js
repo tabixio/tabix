@@ -17,7 +17,7 @@
 
         const CURRENT_BASE_KEY = 'currentBaseConfig';
         const DEFAULT_PORT = 8123;
-
+        let _DatabaseStructure=new DatabaseStructure();
         let database = null;
         let connection = {};
 
@@ -56,6 +56,69 @@
             localStorageService.set(CURRENT_BASE_KEY, {});
         };
 
+
+
+        this.DS_storeCache = (columns,tables,databases,dictionaries,functions) => {
+            let d={
+                columns:columns,
+                tables:tables,
+                databases:databases,
+                dictionaries:dictionaries,
+                functions:functions,
+                ttl:Date.now()
+            };
+            return localStorageService.set('_databaseStructure:'+this.getHost()+':'+this.getLogin(),d);
+        };
+
+        this.DS_fetchFromCache = () => {
+            let d=localStorageService.get('_databaseStructure:'+this.getHost()+':'+this.getLogin());
+            if (d && d.functions && d.functions.length>1 )
+            {
+                _DatabaseStructure.init(d.columns,d.tables,d.databases,d.dictionaries,d.functions);
+                return true;
+            }
+            return false;
+        };
+        this.memory = (title) =>{
+
+            if (window.performance && window.performance.memory)
+            {
+                console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+            }
+        };
+
+        /**
+         *
+         * @returns {DatabaseStructure}
+         * @constructor
+         */
+        this.databaseStructure = (call,forceReload) =>{
+
+            this.memory('Init databaseStructure');
+
+            if (this.DS_fetchFromCache() && _DatabaseStructure.isInit())
+            {
+                console.info("restore from cache : database Structure!");
+                return call(_DatabaseStructure);
+            }
+            console.info("Need load Database Structure!");
+            this.query( "SELECT * FROM system.columns" ).then(columns => {
+                this.query( "SELECT database,name,engine FROM system.tables" ).then(tables => {
+                    this.query( "SELECT name FROM system.databases" ).then(databases => {
+                        this.query("SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((dictionaries) => {
+                            this.query("SELECT name,is_aggregate from system.functions", null).then((functions) => {
+                                this.DS_storeCache(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
+                                _DatabaseStructure.init(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
+                                return call(_DatabaseStructure);
+                            });//functions
+                        });//dictionaries
+                    });//databases
+                });//system.tables
+            });//system.columns
+
+            return ;
+
+        };
 
         this.getHost = () => {
             return  (connection.host);
@@ -258,7 +321,7 @@
 
 
 
-            // console.info("SQL>",query);
+            console.error("SQL>",query);
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)

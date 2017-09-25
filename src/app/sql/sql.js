@@ -12,6 +12,15 @@ window.global_builtinFunctions      = [];
 window.global_delimiter             = ";;";
 window.global_lang                  = "ru";
 
+
+window.aceJSRules = {
+    builtinFunctions:[],
+    lang:'en',
+    dictionaries:[],
+    fieldsList:[],
+    tables:[]
+};
+
 ((angular, smi2) => {
     'use strict';
 
@@ -475,7 +484,7 @@ window.global_lang                  = "ru";
             }
 
             // ------------------------------------------------------------------------------------------------
-            // console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+            //
             // console.info( 'Cache:',$.cache);
 
             // Clear not-pinned tabs
@@ -644,87 +653,65 @@ window.global_lang                  = "ru";
             localStorageService.set('editorTheme', theme);
         };
 
+
+
+        $scope.canCacheDatabaseStructure = () => {
+            return  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false);
+        };
+
+
+
         /**
          * Set database name
          * @param db
          */
         $scope.selectDatabase = (db) => {
-
             if (!db) {
                 return;
             }
+            API.setDatabase(db);
 
+            if ($scope.vars.db==db) {
+                console.log("Double select database ",db);
+                return;
+            }
+            console.time("sql.selectDatabase time took");
             $scope.vars.db = db;
 
-            let dblists={};
-
-            API.setDatabase(db);
-            // @todo : тут _НУЖНО_ закешить это все )) но сбрасывать при DROP/CREATE запроса
-            API.query("SELECT * FROM system.columns", null)
-                .then((data) => {
-                    $scope.vars.databasesList=[];
-                    let fields = [],
-                        ufields = {};
-                    let tables = [], dbtables={},
-                        utables = {};
-                    let keys = [];
-
-                    window.global_keywords_fieldsList = [];
+            let canCacheDS=$scope.canCacheDatabaseStructure();
 
 
+            // reset global object
+            window.aceJSRules.tables=[];
+            window.aceJSRules.fieldsList=[];
 
-                    data.meta.forEach((cell) => {
-                        keys.push(cell.name);
+
+            // //= {
+            //     builtinFunctions:[],
+            //     lang:'en',
+            //     dictionaries:[],
+            //     fieldsList:[],
+            //     tables:[]
+            // };
+
+
+            console.info("selectDatabase > ",db);
+            API.databaseStructure(
+                function (ds) {
+                    API.memory('Init selectDatabase');
+
+                    // ------------------------------------------------------------------------------------
+                    $scope.vars.databasesList=ds.getDatabases();
+                    // ------------------------------- tables -----------------------------------
+                    Object.keys(ds.getUniqueDatabaseTables()).forEach((tab) => {
+                        window.aceJSRules.tables.push(tab);
                     });
-
-                    data.data.forEach((row) => {
-
-                        if (!angular.isUndefined(row.default_kind) && angular.isUndefined(row.default_type)) {
-                            //Renamed column "default_type" to "default_kind" in system.columns tab… · yandex/ClickHouse@8d570e2
-                            row.default_type = row.default_kind;
-                        }
-
-                        dbtables[row.database+'.'+row.table]=1;
+                    // ------------------------------- fieldsList -----------------------------------
+                    window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
 
 
-                        if (!_.isString(dblists[row.database]))
-                        {
-                            $scope.vars.databasesList.push(row.database);
-                            dblists[row.database]="y";
-                        }
-                        if (row.database==db)
-                        {
-                            window.global_keywords_fieldsList.push(row);
-                            keys.forEach((key) => {
-
-                                if (key == 'table') {
-                                    if (!utables.hasOwnProperty(row[key])) {
-                                        utables[row[key]] = 1;
-                                        tables.push(row[key]);
-                                    }
-                                }
-                                if (key == 'name') {
-                                    if (!ufields.hasOwnProperty(row[key])) {
-                                        ufields[row[key]] = 1;
-                                        fields.push(row[key]);
-                                    }
-                                }
-                            });
-
-                        }
-
-                    }); // data.data.forEach
-
-                    window.global_keywords_fields = fields;//.join('|') + '|';
-                    // window.global_keywords_tables = tables.join('|') + '|' + db;
-
-                    window.global_keywords_tables=db;
-                    Object.keys(dbtables).forEach((tab) => {
-                        window.global_keywords_tables += '|'+tab;
-                    });
-
+                    // ------------------------------------------------------------------------------------
                     // reload highlights
-
                     $scope.vars.tabs.forEach((tab) => {
                         if (tab.editor) {
                             tab.editor.session.setMode({
@@ -732,15 +719,23 @@ window.global_lang                  = "ru";
                                 v: Date.now()
                             });
                             tab.editor.session.bgTokenizer.start(0);
+                            API.memory('session.bgTokenizer');
                         }
                     });
-                });
+                    console.timeEnd("sql.selectDatabase time took");
+                    return;
+
+
+                }
+            );
+
+            return;
         };
 
         /**
-         * Add word from dict to SQL etitor
+         * Add word from dict to SQL etitor вставка текста в активное окно редактора там где курсор
          */
-        $scope.addDictionariesWord = (word) => {
+        $scope.insertWordInEditor = (word) => {
             const editor = $scope.vars.currentTab.editor;
             const position = editor.getCursorPosition();
             position.column += word.length;
@@ -753,60 +748,91 @@ window.global_lang                  = "ru";
             });
         };
 
+
         /**
          * Load dicts for ACE autocomplete
          */
         $scope.loadDictionaries = () => {
-
             if ($scope.vars.isDictionariesLoad) {
                 return;
             }
-            console.log("loadDictionaries");
-
-            window.global_lang =$translate.use(); // проброс языка в ACE
-
-
-
+            window.aceJSRules.dictionaries=[];
             $scope.vars.dictionaries = [];
-            window.global_keywords_dictList=[];
-            API.query("select name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((data) => {
-                data.data.forEach((item) => {
-                    // dictGetUInt64('ads.x', 'site_id', toUInt64(xxxx)) AS site_id,
-
-                    let id_field=item.name;
-
-                    // Определяем id_field из item.name
-                    // Если id_field содержит точку вырезать все что до точки
-                    // Если в конце `s` вырезать
-                    // подставить _id и все в нижний регистр
-
-                    id_field = id_field.replace(/^.*\./gm, "");
-
-                    if (id_field!='news') {
-                        id_field = id_field.replace(/s$/gm, "");
-                    }
-
-                    if (!id_field) {
-                        id_field='ID';
-                    }else {
-                        id_field=id_field.toLowerCase()+'_id';
-                    }
-
-
-                    let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( '+id_field+' ) ) AS ' + item["attribute.names"] + ',';
-
-
-                    window.global_keywords_dictList.push({
-                        dic:dic,
-                        title: 'dic_'+item.name + '.' + item["attribute.names"]
-                    });
-                    $scope.vars.dictionaries.push({
-                        dic: dic,
-                        title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"]
-                    });
-                });
-            });
+            window.aceJSRules.builtinFunctions=[];
+            console.log("loadDictionaries");
             $scope.vars.isDictionariesLoad=true;
+            API.databaseStructure(
+                function (ds) {
+                   // ------------------------------- builtinFunctions -----------------------------------
+                    ds.getFunctions().forEach((item) => {
+                        window.aceJSRules.builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
+                        if (item.is_aggregate)
+                        {
+                            // Комбинатор -If. Условные агрегатные функции
+                            let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If',origin:item.name};
+                            window.aceJSRules.builtinFunctions.push(p);
+
+                            // Комбинатор -Array. Агрегатные функции для аргументов-массивов
+                            p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array',origin:item.name};
+                            window.aceJSRules.builtinFunctions.push(p);
+
+                            // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
+                            p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State',origin:item.name};
+                            window.aceJSRules.builtinFunctions.push(p);
+
+                        }
+
+                    });
+                    // -------------------------------- dictionaries ---------------------------------------------------
+                    // dictionaries
+                    ds.getDictionaries().forEach((item) => {
+
+                        let id_field=item.name;
+
+                        // Определяем id_field из item.name
+                        // Если id_field содержит точку вырезать все что до точки
+                        // Если в конце `s` вырезать
+                        // подставить _id и все в нижний регистр
+
+                        id_field = id_field.replace(/^.*\./gm, "");
+
+                        if (id_field!='news') {
+                            id_field = id_field.replace(/s$/gm, "");
+                        }
+
+                        if (!id_field) {
+                            id_field='ID';
+                        }else {
+                            id_field=id_field.toLowerCase()+'_id';
+                        }
+
+
+                        let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( '+id_field+' ) ) AS ' + item["attribute.names"] + ',';
+                        window.aceJSRules.dictionaries.push({
+                            dic:dic,
+                            title: 'dic_'+item.name + '.' + item["attribute.names"]
+                        });
+                        $scope.vars.dictionaries.push({
+                            dic: dic,
+                            title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"]
+                        });
+                    });
+                    // ------------------------------------------------------------------------------------
+                    // reload highlights
+                    $scope.vars.tabs.forEach((tab) => {
+                        if (tab.editor) {
+                            tab.editor.session.setMode({
+                                path: "ace/mode/clickhouse",
+                                v: Date.now()
+                            });
+                            tab.editor.session.bgTokenizer.start(0);
+                        }
+                    });
+                    return;
+
+
+                });
+
         };
 
         const selectTab = index => {
@@ -1194,7 +1220,7 @@ window.global_lang                  = "ru";
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {
-                $scope.addDictionariesWord(args.value);
+                $scope.insertWordInEditor(args.value);
             }
         });
 
@@ -1344,27 +1370,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
             $scope.selectDatabase($rootScope.currentDatabase);
         }
 
-        API.query("select name,is_aggregate from system.functions", null).then((data) => {
-            data.data.forEach((item) => {
-                window.global_builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
-                if (item.is_aggregate)
-                {
-                    // Комбинатор -If. Условные агрегатные функции
-                    let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If',origin:item.name};
-                    window.global_builtinFunctions.push(p);
 
-                    // Комбинатор -Array. Агрегатные функции для аргументов-массивов
-                    p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array',origin:item.name};
-                    window.global_builtinFunctions.push(p);
-
-                    // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
-                    p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State',origin:item.name};
-                    window.global_builtinFunctions.push(p);
-
-                }
-
-            });
-        });
 
 
 

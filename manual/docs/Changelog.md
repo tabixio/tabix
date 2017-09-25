@@ -10,15 +10,23 @@
 * cache Database Structure
 > + system.tables
 > + system.databases
-> + system.columns
 
+> + system.functions
+> + system.dictionaries
 
 @TODO:
 * Right click - tables 
 * Right click - database 
 * need cache 
-> + system.functions
-> + system.dictionaries
+> + system.columns
+
+* $var :var 
+* Parse limits
+* Add right click - tables : make sql drop , make sql create 
+* Parse cursor position - then click on field  
+
+* Refactor code : need class DatabaseStructure, API.Structure.getDatabase()
+* Refactor code : DatabaseStructure in $root to drop window.global_
 
 
 

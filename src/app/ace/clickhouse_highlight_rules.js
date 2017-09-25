@@ -28,16 +28,30 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "array|tuple|string"
         );
 
+        let drawCommand = "DRAW_GMAPS|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
 
-        if (window.global_builtinFunctions) {
+        let listOfTables="";
+
+        // ------------------------------------------ Init builtin functions ---------------------------------------------
+        if (window.aceJSRules && window.aceJSRules.builtinFunctions)
+        {
+            console.log("apply aceJSRules");
 
             // автодополнение builtin Functions
-            let builtin=[];
-            window.global_builtinFunctions.forEach(function (v) {
-                builtin.push(v.name);
-            });
-            builtinFunctions=builtin.join('|');
-        };
+            if (window.aceJSRules.builtinFunctions) {
+
+                let builtin=[];
+                window.aceJSRules.builtinFunctions.forEach(function (v) {
+                    builtin.push(v.name);
+                });
+                builtinFunctions=builtin.join('|');
+            }
+            // список всех доступных "баз.табли"
+            if (_.isArray(window.aceJSRules.tables)){
+                listOfTables=window.aceJSRules.tables.join('|');
+            }
+        }
+
         //
         let delit='';
         if (window.global_delimiter)
@@ -47,13 +61,12 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         else{
             delit=new RegExp(';;');
         }
-        let drawCommand = "DRAW_GMAPS|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
-
 
         let $_fields = [];
         let _keywords = keywords.toLowerCase();
-        if (_.isArray(window.global_keywords_fieldsList)) {
-            window.global_keywords_fieldsList.forEach(function (v) {
+
+        if (window.aceJSRules && _.isArray(window.aceJSRules.fieldsList)) {
+            window.aceJSRules.fieldsList.forEach(function (v) {
                 let p = v['name'].toLowerCase() + '|';
                 if (_keywords.indexOf(p) > -1) {
                     // skip fields if == keyword ( like from )
@@ -62,13 +75,16 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 $_fields.push(v['name']);
             });
         }
-        // ------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
             "keyword": keywords,
             "constant.language": builtinConstants,
             "storage.type": dataTypes,
-            "markup.bold": window.global_keywords_tables,
+            "markup.bold": listOfTables,
             "markup.heading": $_fields.join('|')
         }, "identifier", true);
 
@@ -105,7 +121,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 end: "\\*/"
             },
             {
-                token: "string", // " string
+                token: "constant", // " string
                 regex: '".*?"'
             },
             {
@@ -216,25 +232,23 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                     value: v,
                     score: 0,
                     meta: meta,
-                    docHTML: makeCompletionsdocHTML(v, meta),
+                    // docHTML: makeCompletionsdocHTML(v, meta),
                     iconClass: icon
                 });
 
             });
 
         };
-
+        // ------------------------------------------------------------------------------
         addCompletions(keywords.split('|'), 'keyword','keyword');
         addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
         addCompletions(drawCommand.split('|'), 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
-        addCompletions(window.global_keywords_tables.split('|'), '[table]','table');
-
+        addCompletions(window.aceJSRules.tables, '[table]','table');
         // ------------------------------------------------------------------------------
-        if (window.global_builtinFunctions) {
-
+        if (window.aceJSRules && window.aceJSRules.builtinFunctions) {
             // автодополнение builtin Functions
-            window.global_builtinFunctions.forEach(function (v) {
+            window.aceJSRules.builtinFunctions.forEach(function (v) {
 
                 completions.push({
                     name: v['name'],
@@ -246,12 +260,11 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                     docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
                 });
             });
-
         }
         // ------------------------------------------------------------------------------
-        if (window.global_keywords_dictList) {
+        if (window.aceJSRules && window.aceJSRules.dictionaries) {
             // автодополнение dic таблицы
-            window.global_keywords_dictList.forEach(function (v) {
+            window.aceJSRules.dictionaries.forEach(function (v) {
                     completions.push({
                         name: v['dic'],
                         value: v['dic'],
@@ -261,18 +274,13 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                         iconClass:'dict',
                         docHTML: makeCompletionsdocHTML(v['title'], v['dic'])
                     });
-
-
                 }
             );
         }
         // ------------------------------------------------------------------------------
-        if (window.global_keywords_fieldsList) {
-
-
-
+        if (window.aceJSRules && window.aceJSRules.fieldsList) {
             // автодополнение полей таблицы
-            window.global_keywords_fieldsList.forEach(function (v) {
+            window.aceJSRules.fieldsList.forEach(function (v) {
 
                 let name = v['table'] + '.' + v['name'];
                 let value = v['name'];
@@ -280,7 +288,6 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
 
                 completions.push({
                     name: name,
-                    // caption: name,
                     value: value,
                     score: 20,
                     meta: v['table'],
