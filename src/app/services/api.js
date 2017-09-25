@@ -86,7 +86,6 @@
                 console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
             }
         };
-
         /**
          *
          * @returns {DatabaseStructure}
