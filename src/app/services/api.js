@@ -170,12 +170,21 @@
                 url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1';
                 //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
 
-                if (connection.login) {
-                    url += '&user=' + encodeURIComponent(connection.login);
+                let basicAuth = "";
+                // Use Basic-Auth instead of query parameters to avoid sending
+                // cleartext passwords to web-server logs.
+                if (connection.login && connection.password) {
+                  basicAuth = "Basic " + btoa(connection.login + ":" + connection.password);
                 }
-                if (connection.password) {
-                    url += '&password=' + encodeURIComponent(connection.password);
+
+                // Only fall back to query params in the case where a username
+                // (only) w/ no password is provided.
+                if (basicAuth === "") {
+                  if (connection.login) {
+                    url += "&user=" + encodeURIComponent(connection.login);
+                  }
                 }
+
                 if (withDatabase) {
                     url += '&database=' + encodeURIComponent(database);
                 }
@@ -248,9 +257,11 @@
                     }
                 };
 
+                if (basicAuth !== "") {
+                  req.headers["Authorization"] = basicAuth;
+                }
+
             }
-
-
 
             // console.info("SQL>",query);
             $http(req).then(
