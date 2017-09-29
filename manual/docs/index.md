@@ -1,95 +1,83 @@
 ![Tabix Logo](http://ui.tabix.io/assets/images/logotabix.png)
 
 
-Tabix - это развитие проекта [clickhouse-frontend](https://github.com/smi2/clickhouse-frontend), дополненное большим количеством новых возможностей, в первую очередь по визуализации данных.
+Tabix - SQL Editor & Open source simple business intelligence for Clickhouse. 
 
-Для нового проекта я решил использовать [новый репозиторий](https://github.com/smi2/tabix.ui), поэтому, *пожалуйста*, если вы использовали ранее проект "clickhouse-frontend" и поставили звездочку в GitHub,
-снимите её и переставьте на репозиторий Tabix. По количеству звёздочек я оцениваю значимость проекта для сообщества.
+# Advantages
 
-Используйте [Kanban](https://tree.taiga.io/project/isublimity-chg/kanban), чтобы голосовать за появление новых фичь. Уже запланировано много функций и пожеланий. Но, возможно, ваше предложение получит высокий приоритет.
+* No need to install, works from the browser
+* Supports SQL syntax ClickHouse
+* Draws charts, charts or maps of the world
 
-Чем вы можете помочь проекту:
+# Capabilities
 
-* Сейчас потребляется огромное количество памяти JS-кодом. Если у вас есть желание и возможность разобраться с этим - буду очень признателен.
-* Справочник по функциям CH в настоящий момент не полный и содержит "пробелы" или наоборот очень длинный текст: https://github.com/smi2/tabix.ui/blob/master/src/app/ace/ch_completions_help.js.
-* [Дополнить документацию](https://github.com/smi2/tabix.ui/tree/master/manual) по проекту.
-* Просто сказать "спасибо / огонь" - мне будет приятно )))
+### Working with Queries - Editor
+* Auto-completion of fields, dictionaries and functions
+* Tips on fields and functions in Russian and English
+* Reformatting queries / autoformat
+* Minimizes brackets and subqueries
+* Setting the autocompletion / enableLiveAutocompletion
+* Backlight brackets
+* The list of functions is loaded based on the capabilities of the server
+* Displays which query is running
 
-
-# Достоинства
-
-* Не нужно устанавливать, работает из браузера
-* Поддерживает SQL-синтаксис ClickHouse
-* Рисует графики, схемы или карты мира
-
-# Возможности
-
-### Работа с запросами - Редактор
-* Автодополнение полей, словарей и функций 
-* Подсказки по полям и функциям на русском и английском языках
-* Переформатирование запросов/автоформат 
-* Сворачивает скобки и подзапросы
-* Настройка автодополнения / enableLiveAutocompletion
-* Подсветка скобок
-* Список функций загружается, исходя из возможностей сервера
-* Отображение, какой запрос выполняется
 
 ![SQL_Editor](https://tabix.io/anime/SQL_Editor.gif)
 
 
-### Работа с запросами - Вкладки
-* Переименование
-* Прикрепление
+### Working with Queries - Tabs
+* Renaming
+* Attachment
 
 
-### Дерево баз и таблиц
+### Database tree and tables
 
-* Отображение числа таблиц у базы
-* Иконка таблицы зависит от её движка
-* Список полей в таблице и вставка поля при клике в редактор
-* Выбор DB через двойной клик в дереве, всплывающее окно о выборе
-* Поиск в дереве объектов, фильтрация дерева 
-* Перестроение списка баз/таблиц после выполнения запроса DROP/CREATE
+* Display the number of tables at the database
+* The icon of the table depends on its engine
+* List of fields in the table and inserting the field when clicking in the editor
+* DB selection via double click in the tree, pop-up window about selection
+* Search in the tree of objects, filtering the tree
+* Rebuilding the list of databases / tables after the query is executed DROP / CREATE
 
 ![DBView](https://tabix.io/anime/DB_Left_View.gif)
 
 
 ### HotKeys
-* [Command | Ctrl ] + [ Right | Left ] переключает вкладки
-* Shift-Ctrl-[1...0] переключает вкладки
-* [Command|Ctrl+Shift+Plus | Command|Ctrl+Shift+Minus ] - свернуть все/развернуть
-* [Command|Ctrl+Shift+F ] - Format code
+* [Command | Ctrl] + [Right | Left] toggles the tabs
+* Shift-Ctrl- [1 ... 0] switches tabs
+* [Command | Ctrl + Shift + Plus | Command | Ctrl + Shift + Minus] - collapse all / expand
+* [Command | Ctrl + Shift + F] - Format code
 
 
-### Просмотр процессов 
-* Логирование 
+### Viewing processes
+* Logging
 * KILL QUERY
 
 
-### Просмотр таблицы 
-* Запрос создания таблицы, через SHOW CREATE TABLE - в "информации"
+### Viewing a table
+* Request to create a table, via SHOW CREATE TABLE - in the "information"
 
 
-### Работа с результатом запроса
-* Виджеты через отрисовка gridster, резайз move, фиксация
-* handsontable Таблица результата с сортировкой
-* Автоподбор ширины таблицы результата
+### Working with the result of the query
+* Widgets through gridster rendering, resize move, commit
+* handsontable Result table with sorting
+* Auto-fit the width of the result table
 * HotTable CopyPaste menu
-* Таблица с информацией о выполненых запросах в конце списка / Запросы во вкладке логируются для сравнения производительности
-* HotTable colors / format/heatmaps 
-* HotTable + Numbro - отображать колонку если цифры как human
-* HotTable menu : Указывать формат колонки, текст/число , возможность форматирования числа
-* HotTable menu : CopyPaste to ReadMine markup
-* HotTable menu : Highlight Negative/Positive
-* HotTable menu : insert WHERE column=valuse to Clipboard
+* Table with information about completed requests at the end of the list / Requests in the tab are logged for performance comparison
+* HotTable colors / format / heatmaps
+* HotTable + Numbro - display the column if the numbers are as human
+* HotTable menu: Specify the column format, text / number, the ability to format the number
+* HotTable menu: CopyPaste to ReadMine markup
+* HotTable menu: Highlight Negative / Positive
+* HotTable menu: insert WHERE column = valuse to Clipboard
 
 
-### Метрики
-* Метрики RealTime charts из system.metrics
+### Metrics
+* Metrics RealTime charts from system.metrics
 * system.events + async_metrics
 
 ![Metrics](https://tabix.io/anime/Metrics.gif)
 
 ### Draw
-* Команда DRAW подсветка
+* DRAW backlight command
 * draw as js function result

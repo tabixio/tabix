@@ -93,6 +93,12 @@
          */
         this.databaseStructure = (call,forceReload) =>{
 
+            console.log('Call databaseStructure');
+
+            if (_DatabaseStructure.isInit()) {
+                return call(_DatabaseStructure);
+            }
+
             this.memory('Init databaseStructure');
 
             if (this.DS_fetchFromCache() && _DatabaseStructure.isInit())
@@ -235,15 +241,37 @@
 
 
 
-                url = httpProto + connection.host + '/?add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
-                //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
+                url = httpProto + connection.host ;
 
-                if (connection.login) {
-                    url += '&user=' + encodeURIComponent(connection.login);
+                url = url + '/?';
+
+                if (!connection.rouser)
+                {
+                    url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
                 }
-                if (connection.password) {
-                    url += '&password=' + encodeURIComponent(connection.password);
+
+
+                //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
+                let BasicAuthorization=false;
+
+                if (connection.baseauth)
+                {
+                    BasicAuthorization = window.btoa(connection.login+":"+connection.password);
                 }
+                else {
+
+                    if (connection.password)
+                    {
+                        url += '&user='+encodeURIComponent(connection.login)+'&password='+encodeURIComponent(connection.password);
+                    }
+                    else
+                    {
+                        url += '&user='+encodeURIComponent(connection.login);
+                    }
+                }
+
+
+
                 if (withDatabase) {
                     url += '&database=' + encodeURIComponent(database);
                 }
@@ -253,23 +281,20 @@
                 if (connection.params){
                     url += '&'+connection.params;
                 }
-                // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
 
-// Access-Control-Expose-Headers : X-ClickHouse-Progress
+                // --------------------------------------------------------------------------------------------------------
+                // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
+                // Access-Control-Expose-Headers : X-ClickHouse-Progress
                 // https://stackoverflow.com/questions/15042439/cant-get-custom-http-header-response-from-ajax-getallresponseheaders
                 // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Monitoring_progress
                 //
                 // ClickHouse/dbms/src/IO/WriteBufferFromHTTPServerResponse.cpp
-                //
+                // --------------------------------------------------------------------------------------------------------
 
                  req = {
                     method: 'POST',
                      // responseType:'text',
                     data :query,
-
-                     // $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
-                     // $httpProvider.defaults.headers.common.Pragma = "no-cache";
-                     // $httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         // "Cache-Control": "no-cache",
@@ -316,11 +341,16 @@
                     }
                 };
 
+                if (BasicAuthorization)
+                {
+                    req.headers['Authorization']='Basic ' + BasicAuthorization;
+                }
+
             }
 
 
 
-            console.error("SQL>",query);
+            console.warn("SQL>",url,query,req);
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)

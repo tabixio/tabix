@@ -666,6 +666,7 @@ window.aceJSRules = {
          * @param db
          */
         $scope.selectDatabase = (db) => {
+            console.warn("selectDatabase:",db);
             if (!db) {
                 return;
             }

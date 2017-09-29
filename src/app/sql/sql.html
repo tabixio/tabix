@@ -85,7 +85,7 @@
                         <md-input-container>
                             <md-select ng-model="vars.db" placeholder="Select database">
                                 <md-optgroup label="Database">
-                                    <md-option ng-value="dbb" ng-repeat="dbb in vars.databasesList track by $index" ng-click="selectDatabase(dbb)">USE {{dbb}}</md-option>
+                                    <md-option ng-value="dbb.name" ng-repeat="dbb in vars.databasesList track by $index" ng-click="selectDatabase(dbb.name)">USE {{dbb.name}}</md-option>
                                 </md-optgroup>
                             </md-select>
                         </md-input-container>
@@ -124,7 +124,7 @@
             {{'Настройки редактора' | translate}}
         </h4>
         <md-input-container class="width-100">
-            <label for="inp1">{{'Размер шрифта' | translate}}</label>
+            <label for="inp1">Font size</label>
             <input type="text" id="inp1" ng-model="vars.fontSize">
         </md-input-container>
         <md-input-container class="width-100">

@@ -1,3 +1,16 @@
+
+
+
+#### TODO:
+* Right click - tables 
+* Right click - database 
+* $var :var 
+* Parse limits
+* Add right click - tables : make sql drop , make sql create 
+* Parse cursor position - then click on field  
+
+
+
 ### 2017-09-23
 
 * Update grid, move to gridstack, fix many error in render table resut  
@@ -6,27 +19,26 @@
 * Fix: exec current query, under cursor (new line error)
 * Add settings - max_execution_time
 * Force set output_format_json_quote_64bit_integers=0 & output_format_json_quote_denormals=1 
-* Highlight "inf"+"nan" values in table 
+* Highlight "inf"+"nan" values in table
 * cache Database Structure
+* Refactor code : DatabaseStructure in $root to drop window.global_
+* Refactor code : need class DatabaseStructure, API.Structure.getDatabase()
 > + system.tables
 > + system.databases
-
 > + system.functions
 > + system.dictionaries
-
-@TODO:
-* Right click - tables 
-* Right click - database 
-* need cache 
 > + system.columns
 
-* $var :var 
-* Parse limits
-* Add right click - tables : make sql drop , make sql create 
-* Parse cursor position - then click on field  
-
-* Refactor code : need class DatabaseStructure, API.Structure.getDatabase()
-* Refactor code : DatabaseStructure in $root to drop window.global_
+#### 2017-09-23-RU
+* изменен компонент сетка - поправлены ошибки отображения резульата в виде таблиц
+* Рендер таблиц обновлен до handsontable to 0.34
+* Парсинг ошибок от CH - перемещение курсора в место ошибки
+* Поправлено определение позиции курсора - при выполнении текущего запроса
+* Добавлена настройка/ параметра - max_execution_time
+* Отрисовка JSON Int64 поправлена 
+* В результате - подсвечены элементы  "inf"+"nan"
+* Добавлено кэширование стутуры базы 
+* Обновлен код - DatabaseStructure для более быстрого отображение струкутры бази 
 
 
 

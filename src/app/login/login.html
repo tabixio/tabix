@@ -108,6 +108,17 @@
                                                 <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
+                                        <div>
+                                            <md-checkbox md-no-ink ng-model="vars.db.baseauth" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
+                                                HTTP Base auth
+                                            </md-checkbox>
+
+                                            <md-checkbox md-no-ink ng-model="vars.db.rouser" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
+                                                RO user ClickHouse
+                                            </md-checkbox>
+
+
+                                        </div>
                                         <div layout="row">
                                             <div flex>
                                                 <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">

@@ -13,12 +13,15 @@ class DatabaseStructure {
     }
 
     init(columns,tables,databases,dictionaries,functions) {
+
+        console.log("Try init DS....");
+        if (this._init) return;
+
         this.columns=columns;
         this.tables=tables;
         this.databases=databases;
         this.functions=functions;
         this.dictionaries=dictionaries;
-
 
         this.columns.forEach((item) => {
 
@@ -60,7 +63,7 @@ class DatabaseStructure {
     }
 
     isInit() {
-        return (this.functions && this.functions.length>1);
+        return (this._init && this.functions && this.functions.length>1);
     }
     getTables() {
         return this.tables;
