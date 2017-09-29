@@ -411,9 +411,9 @@ window.aceJSRules = {
                     ) != -1
                 ))) {
 
-                $scope.selectDatabase($scope.vars.db);
+                // $scope.selectDatabase($scope.vars.db);
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
-                $rootScope.$emit('handleBroadcastDatabases',{});
+                // $rootScope.$emit('handleBroadcastDatabases',{});
             }
             // -------------------------------------------------------
             if ($scope.vars.currentTab.statistics[0]) {
@@ -1217,7 +1217,7 @@ window.aceJSRules = {
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {
-                $scope.insertWordInEditor(args.value);
+                $scope.insertWordInEditor(" "+args.value+" ");
             }
         });
 

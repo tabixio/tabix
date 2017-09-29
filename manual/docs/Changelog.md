@@ -2,14 +2,11 @@
 
 
 #### TODO:
-* Right click - tables 
+
 * Right click - database 
 * $var :var 
 * Parse limits
-* Add right click - tables : make sql drop , make sql create 
 * Parse cursor position - then click on field  
-
-
 
 ### 2017-09-23
 
@@ -29,6 +26,12 @@
 > + system.dictionaries
 > + system.columns
 
+
+* Button - "Reload database structure"
+* Login form : add checkbox - "HTTP Base auth" and "RO user ClickHouse"
+* Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
+
+
 #### 2017-09-23-RU
 * изменен компонент сетка - поправлены ошибки отображения резульата в виде таблиц
 * Рендер таблиц обновлен до handsontable to 0.34
@@ -38,7 +41,7 @@
 * Отрисовка JSON Int64 поправлена 
 * В результате - подсвечены элементы  "inf"+"nan"
 * Добавлено кэширование стутуры базы 
-* Обновлен код - DatabaseStructure для более быстрого отображение струкутры бази 
+* Обновлен код - DatabaseStructure для более быстрого отображение струкутры базы 
 
 
 

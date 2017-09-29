@@ -220,13 +220,32 @@
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcessTable = function(obj){
 
-            let table=obj.item.name;
-            let db=obj.item.database;
+            console.log('obj right',obj);
+            let table=obj.table;
+            let db=obj.db;
+            if(obj.key == "InsertSQLDrop"){
+                if (table.indexOf('.') !== -1) table='"'+table+'"';
+                $rootScope.$emit('handleBroadcastInsertInActive', {value:"DROP TABLE IF EXISTS "+db+"."+table});
+            }
+            if(obj.key == "InsertName"){
+                $rootScope.$emit('handleBroadcastInsertInActive', {value:db+"."+table});
+            }
+
+            if(obj.key == "InsertSQLDescribe"){
+                API.query( 'SHOW CREATE TABLE ' + db + '."' + table+'"' ).then( data => {
+
+                    let sql=window.sqlFormatter.format(data.data[0].statement);
+                    $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
+                });
+            }
+
             if(obj.key == "OpenTables"){
                 // тут можно что то  получше чем location
                 window.location = '/#/database/' + db + '/table/' + table;
 
-            } else if(obj.key == "InsertDescribe"){
+            }
+
+            if(obj.key == "InsertDescribe"){
                API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
 
                    let fields=[];
@@ -270,8 +289,11 @@
                 $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 
                     let  rightMenuListTable = [
-                        {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand'},//,item:item},
-                        {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size'}//,item:item}
+                        {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',         db:item.database,table: item.name},//,item:item},
+                        {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',db:item.database,table: item.name},
+                        {active: true, value: 'Insert table name',key:'InsertName',icon:'bing'  ,db:item.database,table: item.name},
+                        {active: true, value: 'Make SQL Describe',key:'InsertSQLDescribe',icon:'border-vertical'    ,db:item.database,table: item.name},
+                        {active: true, value: 'Make SQL Drop',key:'InsertSQLDrop',icon:'delete'    ,db:item.database,table: item.name}
                     ];
 
                     let classEngine='';
