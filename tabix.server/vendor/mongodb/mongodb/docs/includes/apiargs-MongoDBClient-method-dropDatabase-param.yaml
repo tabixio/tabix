@@ -1,0 +1,10 @@
+source:
+  file: apiargs-common-param.yaml
+  ref: $databaseName
+replacement:
+  action: " to drop"
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

@@ -1,0 +1,37 @@
+=====================
+MongoDB\\Client Class
+=====================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpclass:: MongoDB\\Client
+
+   This class serves as an entry point for the |php-library|. It is the
+   preferred class for connecting to a MongoDB server or cluster of servers and
+   acts as a gateway for accessing individual databases and collections.
+   :phpclass:`MongoDB\\Client` is analogous to the driver's
+   :php:`MongoDB\\Driver\\Manager <mongodb-driver-manager>` class, which it
+   `composes <https://en.wikipedia.org/wiki/Object_composition>`_.
+
+Methods
+-------
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBClient__construct
+   /reference/method/MongoDBClient__get
+   /reference/method/MongoDBClient-dropDatabase
+   /reference/method/MongoDBClient-getManager
+   /reference/method/MongoDBClient-listDatabases
+   /reference/method/MongoDBClient-selectCollection
+   /reference/method/MongoDBClient-selectDatabase

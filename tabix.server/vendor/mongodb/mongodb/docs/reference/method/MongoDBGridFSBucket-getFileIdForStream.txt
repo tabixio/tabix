@@ -1,0 +1,46 @@
+=============================================
+MongoDB\\GridFS\\Bucket::getFileIdForStream()
+=============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::getFileIdForStream()
+
+   Gets the file document's ID of the GridFS file associated with a stream.
+
+   .. code-block:: php
+
+      function getFileIdForStream($stream): mixed
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-getFileIdForStream-param.rst
+
+Return Values
+-------------
+
+The ``_id`` field of the metadata document associated with the GridFS stream.
+The return type will depend on the bucket's ``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-gridfs-corruptfileexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+.. todo: add examples
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\GridFS\\Bucket::getFileDocumentForStream()`

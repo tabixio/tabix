@@ -1,0 +1,35 @@
+=========================================
+MongoDB\\InsertOneResult::getInsertedId()
+=========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\InsertOneResult::getInsertedId()
+
+   Return the ID (i.e. ``_id`` field value) for the inserted document.
+
+   .. code-block:: php
+
+      function getInsertedId(): mixed
+
+   Since IDs are created by the driver, this method may be called irrespective
+   of whether the write was acknowledged.
+
+Return Values
+-------------
+
+The ID (i.e. ``_id`` field value) of the inserted document.
+
+If the document had an ID prior to inserting (i.e. the driver did not need to
+generate an ID), this will contain its ``_id`` field value. Any driver-generated
+ID will be a :php:`MongoDB\\BSON\\ObjectID <class.mongodb-bson-objectid>`
+instance.

@@ -1,0 +1,50 @@
+arg_name: option
+name: _id
+type: mixed
+description: |
+  Value to use as the file document identifier. Defaults to a new
+  :php:`MongoDB\\BSON\\ObjectID <class.mongodb-bson-objectid>` object.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: chunkSizeBytes
+type: integer
+description: |
+  The chunk size in bytes. Defaults to the bucket's ``chunkSizeBytes`` option.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: metadata
+type: array|object
+description: |
+  User data for the ``metadata`` field of the file document. If not specified,
+  the ``metadata`` field will not be set on the file document.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: revision
+type: integer
+description: |
+  The revision of the file to retrieve. Files with the name ``filename`` will be
+  differentiated by their ``uploadDate`` field.
+
+  Revision numbers are defined as follows:
+
+  - 0 = the original stored file
+  - 1 = the first revision
+  - 2 = the second revision
+  - etc...
+  - -2 = the second most recent revision
+  - -1 = the most recent revision
+
+   Defaults to -1 (i.e. the most recent revision).
+interface: phpmethod
+operation: ~
+optional: true
+...

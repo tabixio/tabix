@@ -1,0 +1,133 @@
+=======
+Indexes
+=======
+
+.. default-domain:: mongodb
+
+Indexes support the efficient execution of queries in MongoDB. Without indexes,
+MongoDB must perform a *collection scan*, i.e. scan every document in a
+collection, to select those documents that match the query statement. If an
+appropriate index exists for a query, MongoDB can use the index to limit the
+number of documents it must inspect.
+
+The PHP driver supports managing indexes through the
+:phpclass:`MongoDB\\Collection` class, which implements MongoDB's
+cross-driver `Index Management
+<https://github.com/mongodb/specifications/blob/master/source/index-management.rst>`_
+and `Enumerating Indexes
+<https://github.com/mongodb/specifications/blob/master/source/enumerate-indexes.rst>`_
+specifications.
+
+This document provides an introduction to creating, listing, and dropping
+indexes using the |php-library|. The MongoDB Manual's :manual:`Indexes
+</indexes>` reference provides more thorough information about indexing in
+MongoDB.
+
+Create Indexes
+--------------
+
+Create indexes with the :phpmethod:`MongoDB\\Collection::createIndex()` or
+:phpmethod:`MongoDB\\Collection::createIndexes()` methods. Refer to the method
+reference for more details about each method.
+
+The following example creates an ascending index on the ``state`` field using
+the :phpmethod:`createIndex() <MongoDB\\Collection::createIndex>` method:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $result = $collection->createIndex(['state' => 1]);
+
+   var_dump($result);
+
+When you create an index, the method returns its name, which is automatically
+generated from its specification. The above example would output something
+similar to::
+
+   string(7) "state_1"
+
+List Indexes
+------------
+
+The :phpmethod:`MongoDB\\Collection::listIndexes()` method provides information
+about the indexes in a collection. The
+:phpmethod:`MongoDB\\Collection::listIndexes()` method returns an iterator of
+:phpclass:`MongoDB\\Model\\IndexInfo` objects, which you can use to view
+information about each index. Refer to the method reference for more details.
+
+The following example lists all indexes in the ``zips`` collection in the
+``demo`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   foreach ($collection->listIndexes() as $indexInfo) {
+       var_dump($indexInfo);
+   }
+
+The output would resemble::
+
+   object(MongoDB\Model\IndexInfo)#10 (4) {
+     ["v"]=>
+     int(1)
+     ["key"]=>
+     array(1) {
+       ["_id"]=>
+       int(1)
+     }
+     ["name"]=>
+     string(4) "_id_"
+     ["ns"]=>
+     string(9) "demo.zips"
+   }
+   object(MongoDB\Model\IndexInfo)#13 (4) {
+     ["v"]=>
+     int(1)
+     ["key"]=>
+     array(1) {
+       ["state"]=>
+       int(1)
+     }
+     ["name"]=>
+     string(7) "state_1"
+     ["ns"]=>
+     string(9) "demo.zips"
+   }
+
+Drop Indexes
+------------
+
+The :phpmethod:`MongoDB\\Collection::dropIndex()` method lets you drop a single
+index while :phpmethod:`MongoDB\\Collection::dropIndexes()` drops all of the
+indexes on a collection. Refer to the method reference for more details about
+each method.
+
+The following example drops a single index by its name, ``state_1``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $result = $collection->dropIndex('state_1');
+
+   var_dump($result);
+
+The operation's output would resemble::
+
+   object(MongoDB\Model\BSONDocument)#11 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(2) {
+       ["nIndexesWas"]=>
+       int(2)
+       ["ok"]=>
+       float(1)
+     }
+   }

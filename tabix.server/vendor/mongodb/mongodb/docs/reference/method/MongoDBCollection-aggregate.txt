@@ -1,0 +1,69 @@
+================================
+MongoDB\\Collection::aggregate()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::aggregate()
+
+   Executes an :manual:`aggregation framework pipeline
+   </core/aggregation-pipeline>` operation on the collection.
+
+   .. code-block:: php
+
+      function aggregate(array $pipeline, array $options = []): Traversable
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-aggregate-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-aggregate-option.rst
+
+Return Values
+-------------
+
+A :php:`MongoDB\\Driver\\Cursor <class.mongodb-driver-cursor>` or
+:php:`ArrayIterator <arrayiterator>` object. In both cases, the return value
+will be :php:`Traversable <traversable>`.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unexpectedvalueexception.rst
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+.. _php-agg-method-behavior:
+
+Behavior
+--------
+
+:phpmethod:`MongoDB\\Collection::aggregate()`'s return value depends on the
+MongoDB server version and whether the ``useCursor`` option is specified. If
+``useCursor`` is ``true``, a :php:`MongoDB\\Driver\\Cursor
+<class.mongodb-driver-cursor>` object is returned. If ``useCursor`` is
+``false``, an :php:`ArrayIterator <arrayiterator>` is returned that wraps the
+``result`` array from the command response document. In both cases, the return
+value will be :php:`Traversable <traversable>`.
+
+.. todo: add examples
+
+See Also
+--------
+
+- :manual:`aggregate </reference/command/aggregate>` command reference in the
+  MongoDB manual
+- :manual:`Aggregation Pipeline </core/aggregation-pipeline>` documentation in
+  the MongoDB Manual

@@ -1,0 +1,69 @@
+========================
+MongoDB\\Client::__get()
+========================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Client::__get()
+
+   Selects a database on the server. This :php:`magic method <oop5.magic>` is
+   an alias for the :phpmethod:`selectDatabase()
+   <MongoDB\\Client::selectDatabase>` method.
+
+   .. code-block:: php
+
+      function __get($databaseName): MongoDB\Database
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-get-param.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Database` object.
+
+Behavior
+--------
+
+The selected database inherits options such as read preference and type mapping
+from the :phpclass:`Client <MongoDB\\Client>` object. If you wish to override
+any options, use the :phpmethod:`MongoDB\\Client::selectDatabase` method.
+
+.. note::
+
+   To select databases whose names contain special characters, such as
+   ``-``, use complex syntax, as in ``$client->{'that-database'}``.
+
+   Alternatively, :phpmethod:`MongoDB\\Client::selectDatabase()` supports
+   selecting databases whose names contain special characters.
+
+Examples
+--------
+
+The following example selects the ``demo`` and ``another-app`` databases:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $demo = $client->demo;
+   $anotherApp = $client->{'another-app'};
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Client::selectDatabase()`
+- :phpmethod:`MongoDB\\Database::__construct()`
+- :php:`Property Overloading <oop5.overloading>` in the PHP Manual

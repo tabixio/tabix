@@ -1,0 +1,61 @@
+================================
+MongoDB\\Database::withOptions()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::withOptions()
+
+   Returns a clone of the Database object, but with different options.
+
+   .. code-block:: php
+
+      function withOptions(array $options = []): MongoDB\Database
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-withOptions-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-withOptions-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Database` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Example
+-------
+
+The following example clones an existing Database object with a new read
+preference:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   $newDb = $db->withOptions([
+       'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
+   ]);
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::__construct()`

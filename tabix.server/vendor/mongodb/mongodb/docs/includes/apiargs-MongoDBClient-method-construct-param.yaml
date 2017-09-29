@@ -1,0 +1,51 @@
+arg_name: param
+name: $uri
+type: string
+description: |
+  The URI of the standalone, replica set, or sharded cluster to which to
+  connect. Refer to :manual:`Connection String URI Format
+  </reference/connection-string>` in the MongoDB manual for more information.
+
+  Defaults to ``"mongodb://127.0.0.1:27017"`` if unspecified.
+
+  Any special characters in the URI components need to be encoded according to
+  `RFC 3986 <http://www.faqs.org/rfcs/rfc3986.html>`_. This is particularly
+  relevant to the username and password, which can often include special
+  characters such as ``@``, ``:``, or ``%``. When connecting via a Unix domain
+  socket, the socket path may contain special characters such as slashes and
+  must be encoded. The :php:`rawurlencode() <rawurlencode>` function may be used
+  to encode constituent parts of the URI.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: param
+name: $uriOptions
+type: array
+description: |
+  Specifies additional URI options, such as authentication credentials or query
+  string parameters. The options specified in ``$uriOptions`` take precedence
+  over any analogous options present in the ``$uri`` string and do not need to
+  be encoded according to `RFC 3986 <http://www.faqs.org/rfcs/rfc3986.html>`_.
+
+  Refer to the :php:`MongoDB\\Driver\\Manager::__construct()
+  <mongodb-driver-manager.construct>` extension reference and :manual:`MongoDB
+  connection string </reference/connection-string>` documentation for accepted
+  options.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: param
+name: $driverOptions
+type: array
+description: |
+  Specify driver-specific options, such as SSL options. In addition to any
+  options supported by the :php:`extension <mongodb-driver-manager>`, the
+  |php-library| allows you to specify a default :php:`type map
+  <manual/en/mongodb.persistence.deserialization.php#mongodb.persistence.typemaps>`
+  to apply to the cursors it creates.
+interface: phpmethod
+operation: ~
+optional: true
+...

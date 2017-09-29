@@ -1,0 +1,91 @@
+================================
+MongoDB\\Collection::insertOne()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::insertOne()
+
+   Insert one document.
+
+   .. code-block:: php
+
+      function insertOne($document, array $options = []): MongoDB\InsertOneResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-insertOne-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-insertOne-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\InsertOneResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+
+Example
+-------
+
+.. start-crud-include
+
+The following operation inserts a document into the ``users`` collection in the
+``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->users;
+
+   $insertOneResult = $collection->insertOne([
+       'username' => 'admin',
+       'email' => 'admin@example.com',
+       'name' => 'Admin User',
+   ]);
+
+   printf("Inserted %d document(s)\n", $insertOneResult->getInsertedCount());
+
+   var_dump($insertOneResult->getInsertedId());
+
+The output would then resemble::
+
+   Inserted 1 document(s)
+   object(MongoDB\BSON\ObjectID)#11 (1) {
+     ["oid"]=>
+     string(24) "579a25921f417dd1e5518141"
+   }
+
+.. end-crud-include
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::insertMany()`
+- :phpmethod:`MongoDB\\Collection::bulkWrite()`
+- :doc:`/tutorial/crud`
+- :manual:`insert </reference/command/insert>` command reference in the MongoDB
+  manual

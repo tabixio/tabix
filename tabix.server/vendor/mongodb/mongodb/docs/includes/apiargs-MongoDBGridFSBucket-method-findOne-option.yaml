@@ -1,0 +1,42 @@
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: projection
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: sort
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: skip
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: collation
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: comment
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: maxTimeMS
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: readConcern
+---
+source:
+  file: apiargs-MongoDBGridFSBucket-method-find-option.yaml
+  ref: readPreference
+---
+source:
+  file: apiargs-MongoDBGridFSBucket-method-find-option.yaml
+  ref: typeMap
+post: |
+  This will be used for the returned result document.
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: modifiers
+...

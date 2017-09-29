@@ -1,0 +1,36 @@
+===================================
+MongoDB\\Model\\IndexInfo::getKey()
+===================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\IndexInfo::getKey()
+
+   Return the index specification (i.e. indexed field(s) and order). This
+   correlates with the ``$key`` parameter for
+   :phpmethod:`MongoDB\\Collection::createIndex()`.
+
+   .. code-block:: php
+
+      function getKey(): array
+
+Return Values
+-------------
+
+The index specification as an associative array.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::createIndex()`
+- :manual:`listIndexes </reference/command/listIndexes>` command reference in
+  the MongoDB manual

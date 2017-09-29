@@ -1,0 +1,16 @@
+source:
+  file: apiargs-common-param.yaml
+  ref: $manager
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $databaseName
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $collectionName
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

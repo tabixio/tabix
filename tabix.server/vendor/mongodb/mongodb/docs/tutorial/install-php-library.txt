@@ -1,0 +1,58 @@
+=========================
+Install the |php-library|
+=========================
+
+.. default-domain:: mongodb
+
+Prerequisites
+-------------
+
+The |php-library| is a high-level abstraction for the MongoDB PHP driver. As
+such, you must install the `mongodb` extension to use the library.
+
+:php:`Installing the MongoDB PHP Driver <manual/en/mongodb.installation.php>`
+describes how to install the `mongodb` extension for PHP. Instructions for
+installing the driver for HHVM may be found in the :php:`Installation with HHVM
+<manual/en/mongodb.installation.hhvm>` article.
+
+Procedure
+---------
+
+Install the Library
+~~~~~~~~~~~~~~~~~~~
+
+The preferred method of installing |php-library| is with `Composer
+<https://getcomposer.org/>`_ by running the following from your project
+root:
+
+.. code-block:: sh
+
+   composer require mongodb/mongodb
+
+While not recommended, you may also manually install the package via
+the source tarballs attached to the `GitHub releases
+<https://github.com/mongodb/mongo-php-library/releases>`_.
+
+Configure Autoloading
+~~~~~~~~~~~~~~~~~~~~~
+
+Once you have installed the library, ensure that your application
+includes Composer's autoloader. The ``require_once``
+statement should point to Composer's autoloader, as in the following example:
+
+.. code-block:: php
+
+   require_once __DIR__ . "/vendor/autoload.php";
+
+Refer to Composer's `autoloading documentation
+<https://getcomposer.org/doc/01-basic-usage.md#autoloading>`_ for more
+information about setting up autoloading.
+
+If you installed the library manually from a source tarball, you
+will also need to manually configure autoloading:
+
+#. Map the top-level ``MongoDB\`` namespace to the ``src/`` directory
+   using your preferred autoloader implementation.
+
+#. Manually require the ``src/functions.php`` file, since PHP does not
+   yet support function autoloading.

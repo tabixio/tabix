@@ -1,0 +1,84 @@
+================================
+MongoDB\\Collection::deleteOne()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::deleteOne()
+
+   Deletes at most one document that matches the filter criteria. If multiple
+   documents match the filter criteria, only the :term:`first <natural order>`
+   matching document will be deleted.
+
+   .. code-block:: php
+
+      function deleteOne($filter, array $options = []): MongoDB\DeleteResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-deleteOne-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-deleteOne-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\DeleteResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+
+Example
+-------
+
+The following example deletes one document in the ``users`` collection that has
+has ``"ny"`` as the value for the ``state`` field:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $collection->insertOne(['name' => 'Alice', 'state' => 'ny']);
+   $deleteResult = $collection->deleteOne(['state' => 'ny']);
+
+   printf("Deleted %d document(s)\n", $deleteResult->getDeletedCount());
+
+The output would then resemble::
+
+   Deleted 1 document(s)
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::deleteMany()`
+- :phpmethod:`MongoDB\\Collection::bulkWrite()`
+- :doc:`/tutorial/crud`
+- :manual:`delete </reference/command/delete` command reference  in the MongoDB
+  manual

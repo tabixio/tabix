@@ -1,0 +1,155 @@
+============================
+MongoDB\\Database::command()
+============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::command()
+
+   Execute a :manual:`command </reference/command>` on the database.
+
+   .. code-block:: php
+
+      function command($command, array $options = []): MongoDB\Driver\Cursor
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-command-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-command-option.rst
+
+Return Values
+-------------
+
+A :php:`MongoDB\\Driver\\Cursor <class.mongodb-driver-cursor>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following example executes an :manual:`isMaster
+</reference/command/isMaster>` command, which returns a cursor with a single
+result document:
+
+.. code-block:: php
+
+   <?php
+
+   $database = (new MongoDB\Client)->example;
+
+   $cursor = $database->command(['isMaster' => 1]);
+
+   var_dump($c->toArray()[0]);
+
+The output would resemble::
+
+   object(MongoDB\Model\BSONDocument)#11 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(8) {
+       ["ismaster"]=>
+       bool(true)
+       ["maxBsonObjectSize"]=>
+       int(16777216)
+       ["maxMessageSizeBytes"]=>
+       int(48000000)
+       ["maxWriteBatchSize"]=>
+       int(1000)
+       ["localTime"]=>
+       object(MongoDB\BSON\UTCDateTime)#3 (1) {
+         ["milliseconds"]=>
+         string(13) "1477608046464"
+       }
+       ["maxWireVersion"]=>
+       int(4)
+       ["minWireVersion"]=>
+       int(0)
+       ["ok"]=>
+       float(1)
+     }
+   }
+
+The following example executes a :manual:`listCollections
+</reference/command/listCollections>` command, which returns a cursor with
+multiple result documents:
+
+.. code-block:: php
+
+   <?php
+
+   $database = (new MongoDB\Client)->example;
+
+   $cursor = $database->command(['isMaster' => 1]);
+
+   var_dump($c->toArray());
+
+The output would resemble::
+
+   array(3) {
+     [0]=>
+     object(MongoDB\Model\BSONDocument)#11 (1) {
+       ["storage":"ArrayObject":private]=>
+       array(2) {
+         ["name"]=>
+         string(11) "restaurants"
+         ["options"]=>
+         object(MongoDB\Model\BSONDocument)#3 (1) {
+           ["storage":"ArrayObject":private]=>
+           array(0) {
+           }
+         }
+       }
+     }
+     [1]=>
+     object(MongoDB\Model\BSONDocument)#13 (1) {
+       ["storage":"ArrayObject":private]=>
+       array(2) {
+         ["name"]=>
+         string(5) "users"
+         ["options"]=>
+         object(MongoDB\Model\BSONDocument)#12 (1) {
+           ["storage":"ArrayObject":private]=>
+           array(0) {
+           }
+         }
+       }
+     }
+     [2]=>
+     object(MongoDB\Model\BSONDocument)#15 (1) {
+       ["storage":"ArrayObject":private]=>
+       array(2) {
+         ["name"]=>
+         string(6) "restos"
+         ["options"]=>
+         object(MongoDB\Model\BSONDocument)#14 (1) {
+           ["storage":"ArrayObject":private]=>
+           array(0) {
+           }
+         }
+       }
+     }
+   }
+
+See Also
+--------
+
+- :doc:`/tutorial/commands`
+- :manual:`Database Commands </reference/command>` in the MongoDB manual
+- :php:`MongoDB\\Driver\\Cursor <class.mongodb-driver-cursor>`
+- :php:`MongoDB\\Driver\\Manager::executeCommand()
+  <manual/en/mongodb-driver-manager.executecommand.php>`

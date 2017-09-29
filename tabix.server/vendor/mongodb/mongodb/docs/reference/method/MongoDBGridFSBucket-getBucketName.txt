@@ -1,0 +1,29 @@
+===========================================
+MongoDB\\GridFS\\Bucket::downloadToStream()
+===========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::getBucketName()
+
+   Returns the name of this bucket.
+
+   .. code-block:: php
+
+      function getBucketName(): string
+
+Return Values
+-------------
+
+The name of this bucket as a string.
+
+.. todo: add examples

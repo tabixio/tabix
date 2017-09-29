@@ -1,0 +1,99 @@
+=====================================
+MongoDB\\Database::createCollection()
+=====================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::createCollection()
+
+   Explicitly creates a collection.
+
+   .. code-block:: php
+
+      function createCollection($collectionName, array $options = []): array|object
+
+   MongoDB creates collections implicitly when you first reference the
+   collection in a command, such as when inserting a document into a new
+   collection. You may also explicitly create a collection with specific options
+   using the :phpmethod:`MongoDB\\Database::createCollection()` method, or using
+   :manual:`db.createCollection() </reference/method/db.createCollection>` in
+   the :program:`mongo` shell.
+
+   Explicitly creating collections enables you to create
+   :manual:`capped collections </core/capped-collections>`, specify
+   :manual:`document validation criteria </core/document-validation>`,
+   or configure your storage engine or indexing options.
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-createCollection-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-createCollection-option.rst
+
+   Note that not all options are available on all versions of MongoDB. Document
+   validation, for example, was added in MongoDB 3.2; similarly, the WiredTiger
+   storage engine is available only for MongoDB 3.0 and later. Refer to the
+   :manual:`create </reference/command/create>` command reference in the MongoDB
+   manual for compatibility considerations.
+
+Return Values
+-------------
+
+An array or object with the result document of the :manual:`create
+</reference/command/create>` command.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following example creates a ``users`` collection in the ``demo``
+database with document validation criteria:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   $result = $db->createCollection('users', [
+       'validator' => [
+           'username' => ['$type' => 'string'],
+           'email' => ['$regex' => '@mongodb\.com$'],
+       ],
+   ]);
+
+   var_dump($result);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#11 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(1) {
+       ["ok"]=>
+       float(1)
+     }
+   }
+
+See Also
+--------
+
+- :manual:`create </reference/command/create>` command reference in the MongoDB
+  manual
+- :manual:`db.createCollection() </reference/method/db.createCollection>`

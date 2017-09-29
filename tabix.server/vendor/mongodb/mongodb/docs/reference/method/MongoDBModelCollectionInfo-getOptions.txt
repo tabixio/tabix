@@ -1,0 +1,36 @@
+============================================
+MongoDB\\Model\\CollectionInfo::getOptions()
+============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\CollectionInfo::getOptions()
+
+   Return the collection options. This correlates with the options for
+   :phpmethod:`MongoDB\\Database::createCollection()`, but may include
+   additional fields set by the server.
+
+   .. code-block:: php
+
+      function getOptions(): array
+
+Return Values
+-------------
+
+The collection options.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::createCollection()`
+- :manual:`listCollections </reference/command/listCollections>` command
+  reference in the MongoDB manual

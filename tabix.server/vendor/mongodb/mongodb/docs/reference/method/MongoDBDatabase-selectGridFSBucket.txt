@@ -1,0 +1,80 @@
+=======================================
+MongoDB\\Database::selectGridFSBucket()
+=======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::selectGridFSBucket()
+
+   Selects a GridFS bucket within the database.
+
+   .. code-block:: php
+
+      function selectGridFSBucket(array $options = []): MongoDB\GridFS\Bucket
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-selectGridFSBucket-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-selectGridFSBucket-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\GridFS\\Bucket` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+The selected bucket inherits options such as read preference and type
+mapping from the :phpclass:`Database <MongoDB\\Database>` object. Options may be
+overridden via the ``$options`` parameter.
+
+Example
+-------
+
+The following example selects the default ``fs.files`` bucket in the ``demo``
+database:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   $bucket = $db->selectGridFSBucket();
+
+The following example selects the custom ``images.files`` bucket in the ``demo``
+database with a custom read preference:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   $imagesBucket = $db->selectGridFSBucket([
+       'bucketName' => 'images',
+       'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
+   ]);
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\GridFS\\Bucket::__construct()`

@@ -1,0 +1,13 @@
+arg_name: param
+name: $document
+type: array|object
+description: |
+  The document to insert into the collection.
+interface: phpmethod
+operation: ~
+optional: false
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

@@ -1,0 +1,4 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-option.yaml
+  ref: revision
+...

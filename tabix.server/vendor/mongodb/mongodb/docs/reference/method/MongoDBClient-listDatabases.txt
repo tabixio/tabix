@@ -1,0 +1,84 @@
+================================
+MongoDB\\Client::listDatabases()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Client::listDatabases()
+
+   Returns information for all databases on the server.
+
+   .. code-block:: php
+
+      function listDatabases(array $options = []): MongoDB\Model\DatabaseInfoIterator
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-listDatabases-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-listDatabases-option.rst
+
+Return Values
+-------------
+
+A traversable :phpclass:`MongoDB\\Model\\DatabaseInfoIterator`, which contains
+a :phpclass:`MongoDB\\Model\\DatabaseInfo` object for each database on the
+server.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unexpectedvalueexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following example lists all databases on the server:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   foreach ($client->listDatabases() as $databaseInfo) {
+       var_dump($databaseInfo);
+   }
+
+The output would then resemble::
+
+   object(MongoDB\Model\DatabaseInfo)#4 (3) {
+     ["name"]=>
+     string(5) "local"
+     ["sizeOnDisk"]=>
+     float(65536)
+     ["empty"]=>
+     bool(false)
+   }
+   object(MongoDB\Model\DatabaseInfo)#7 (3) {
+     ["name"]=>
+     string(4) "test"
+     ["sizeOnDisk"]=>
+     float(32768)
+     ["empty"]=>
+     bool(false)
+   }
+
+See Also
+--------
+
+- :manual:`listDatabases </reference/command/listDatabases>` command reference
+  in the MongoDB manual

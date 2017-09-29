@@ -1,0 +1,55 @@
+===============================
+MongoDB\\GridFS\\Bucket::find()
+===============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::find()
+
+   Finds documents from the GridFS bucket's files collection matching the query.
+
+   .. code-block:: php
+
+      function find($filter = [], array $options = []): MongoDB\Driver\Cursor
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-find-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-find-option.rst
+
+Return Values
+-------------
+
+A :php:`MongoDB\\Driver\\Cursor <class.mongodb-driver-cursor>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+.. todo: add examples
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::find()`
+- :phpmethod:`MongoDB\\GridFS\\Bucket::findOne()`

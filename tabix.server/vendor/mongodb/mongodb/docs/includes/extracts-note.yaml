@@ -1,0 +1,12 @@
+ref: note-bson-comparison
+content: |
+  When evaluating query criteria, MongoDB compares types and values according to
+  its own :manual:`comparison rules for BSON types
+  </reference/bson-type-comparison-order>`, which differs from PHP's
+  :php:`comparison <manual/en/types.comparisons.php>` and :php:`type juggling
+  <manual/en/language.types.type-juggling.php>` rules. When matching a special
+  BSON type the query criteria should use the respective :php:`BSON class
+  <manual/en/book.bson.php>` in the driver (e.g. use
+  :php:`MongoDB\\BSON\\ObjectID <class.mongodb-bson-objectid>` to match an
+  :manual:`ObjectId </reference/object-id/>`).
+...

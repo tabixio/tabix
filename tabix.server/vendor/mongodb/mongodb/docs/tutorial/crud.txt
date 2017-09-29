@@ -1,0 +1,727 @@
+===============
+CRUD Operations
+===============
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 2
+   :class: singlecol
+
+
+CRUD operations *create*, *read*, *update*, and *delete* documents. The
+|php-library|'s :phpclass:`MongoDB\\Collection` class implements MongoDB's
+cross-driver `CRUD specification
+<https://github.com/mongodb/specifications/blob/master/source/crud/crud.rst>`_,
+providing access to methods for inserting, finding, updating, and deleting
+documents in MongoDB.
+
+This document provides a general introduction to inserting, querying, updating,
+and deleting documents using the |php-library|. The MongoDB Manual's
+:manual:`CRUD Section </crud>` provides a more thorough introduction to CRUD
+operations with MongoDB.
+
+Insert Documents
+----------------
+
+Insert One Document
+~~~~~~~~~~~~~~~~~~~
+
+The :phpmethod:`MongoDB\\Collection::insertOne()` method inserts a single
+document into MongoDB and returns an instance of
+:phpclass:`MongoDB\\InsertOneResult`, which you can use to access the ID of the
+inserted document.
+
+.. this uses the insertOne example from the method reference:
+
+.. include:: /reference/method/MongoDBCollection-insertOne.txt
+   :start-after: start-crud-include
+   :end-before: end-crud-include
+
+The output includes the ID of the inserted document.
+
+If you include an ``_id`` value when inserting a document, MongoDB checks to
+ensure that the ``_id`` value is unique for the collection. If the ``_id`` value
+is not unique, the insert operation fails due to a duplicate key error.
+
+The following example inserts a document while specifying the value for the
+``_id``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+
+   $insertOneResult = $collection->insertOne(['_id' => 1, 'name' => 'Alice']);
+
+   printf("Inserted %d document(s)\n", $insertOneResult->getInsertedCount());
+
+   var_dump($insertOneResult->getInsertedId());
+
+The output would then resemble::
+
+   Inserted 1 document(s)
+   int(1)
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::insertOne()`
+
+Insert Many Documents
+~~~~~~~~~~~~~~~~~~~~~
+
+The :phpmethod:`MongoDB\\Collection::insertMany()` method allows you to insert
+multiple documents in one write operation and returns an instance of
+:phpclass:`MongoDB\\InsertManyResult`, which you can use to access the IDs of
+the inserted documents.
+
+.. this uses the insertMany example from the method reference:
+
+.. include:: /reference/method/MongoDBCollection-insertMany.txt
+   :start-after: start-crud-include
+   :end-before: end-crud-include
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::insertMany()`
+
+Query Documents
+---------------
+
+The |php-library| provides the :phpmethod:`MongoDB\\Collection::findOne()` and
+:phpmethod:`MongoDB\\Collection::find()` methods for querying documents and the
+:phpmethod:`MongoDB\\Collection::aggregate()` method for performing
+:manual:`aggregation operations </core/aggregation-pipeline>`.
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+Find One Document
+~~~~~~~~~~~~~~~~~
+
+:phpmethod:`MongoDB\\Collection::findOne()` returns the :term:`first document
+<natural order>` that matches the query or ``null`` if no document matches the
+query.
+
+The following example searches for the document with ``_id`` of ``"94301"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $document = $collection->findOne(['_id' => '94301']);
+
+   var_dump($document);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#13 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(5) {
+       ["_id"]=>
+       string(5) "94301"
+       ["city"]=>
+       string(9) "PALO ALTO"
+       ["loc"]=>
+       object(MongoDB\Model\BSONArray)#12 (1) {
+         ["storage":"ArrayObject":private]=>
+         array(2) {
+           [0]=>
+           float(-122.149685)
+           [1]=>
+           float(37.444324)
+         }
+       }
+       ["pop"]=>
+       int(15965)
+       ["state"]=>
+       string(2) "CA"
+     }
+   }
+
+.. note::
+
+   The criteria in this example matched an ``_id`` with a string value of
+   ``"94301"``. The same criteria would not have matched a document with an
+   integer value of ``94301`` due to MongoDB's :manual:`comparison rules for
+   BSON types </reference/bson-type-comparison-order>`. Similarly, users should
+   use a :php:`MongoDB\\BSON\\ObjectID <class.mongodb-bson-objectid>` object
+   when matching an ``_id`` with an :manual:`ObjectId </reference/object-id/>`
+   value, as strings and ObjectIds are not directly comparable.
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::findOne()`
+
+Find Many Documents
+~~~~~~~~~~~~~~~~~~~
+
+:phpmethod:`MongoDB\\Collection::find()` returns a
+:php:`MongoDB\\Driver\\Cursor <mongodb-driver-cursor>` object, which you can
+iterate upon to access all matched documents.
+
+The following example lists the documents in the ``zips`` collection with the
+specified city and state values:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $cursor = $collection->find(['city' => 'JERSEY CITY', 'state' => 'NJ']);
+
+   foreach ($cursor as $document) {
+       echo $document['_id'], "\n";
+   }
+
+The output would resemble::
+
+   07302
+   07304
+   07305
+   07306
+   07307
+   07310
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::find()`
+
+.. _php-query-projection:
+
+Query Projection
+~~~~~~~~~~~~~~~~
+
+By default, queries in MongoDB return all fields in matching documents. To limit
+the amount of data that MongoDB sends to applications, you can include a
+:manual:`projection document </tutorial/project-fields-from-query-results>` in
+the query operation.
+
+.. note::
+
+   MongoDB includes the ``_id`` field by default unless you explicitly exclude
+   it in a projection document.
+
+The following example finds restaurants based on the ``cuisine`` and ``borough``
+fields and uses a :manual:`projection
+</tutorial/project-fields-from-query-results>` to limit the fields that are
+returned. It also limits the results to 5 documents.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $cursor = $collection->find(
+       [
+           'cuisine' => 'Italian',
+           'borough' => 'Manhattan',
+       ],
+       [
+           'projection' => [
+               'name' => 1,
+               'borough' => 1,
+               'cuisine' => 1,
+           ],
+           'limit' => 4,
+       ]
+   );
+
+   foreach($cursor as $restaurant) {
+      var_dump($restaurant);
+   };
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#10 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#8 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f983"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(23) "Isle Of Capri Resturant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#13 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#12 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f98d"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(18) "Marchis Restaurant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#8 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#10 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f99b"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(19) "Forlinis Restaurant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#12 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#13 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f9a8"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(22) "Angelo Of Mulberry St."
+     }
+   }
+
+Limit, Sort, and Skip Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In addition to :ref:`projection criteria <php-query-projection>`, you can
+specify options to limit, sort, and skip documents during queries.
+
+The following example uses the ``limit`` and ``sort`` options to query for the
+five most populous zip codes in the United States:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $cursor = $collection->find(
+       [],
+       [
+           'limit' => 5,
+           'sort' => ['pop' => -1],
+       ]
+   );
+
+   foreach ($cursor as $document) {
+       printf("%s: %s, %s\n", $document['_id'], $document['city'], $document['state']);
+   }
+
+The output would then resemble::
+
+   60623: CHICAGO, IL
+   11226: BROOKLYN, NY
+   10021: NEW YORK, NY
+   10025: NEW YORK, NY
+   90201: BELL GARDENS, CA
+
+Regular Expressions
+~~~~~~~~~~~~~~~~~~~
+
+Filter criteria may include regular expressions, either by using the
+:php:`MongoDB\\BSON\\Regex <mongodb-bson-regex>` class directory or the
+:query:`$regex` operator.
+
+The following example lists documents in the ``zips`` collection where the city
+name starts with "garden" and the state is Texas:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $cursor = $collection->find([
+       'city' => new MongoDB\BSON\Regex('^garden', 'i'),
+       'state' => 'TX',
+   ]);
+
+   foreach ($cursor as $document) {
+      printf("%s: %s, %s\n", $document['_id'], $document['city'], $document['state']);
+   }
+
+The output would then resemble::
+
+   78266: GARDEN RIDGE, TX
+   79739: GARDEN CITY, TX
+   79758: GARDENDALE, TX
+
+An equivalent filter could be constructed using the :query:`$regex` operator:
+
+.. code-block:: php
+
+   [
+       'city' => ['$regex' => '^garden', '$options' => 'i'],
+       'state' => 'TX',
+   ]
+
+.. seealso:: :manual:`$regex </reference/operator/query/regex>` in the MongoDB manual
+
+Complex Queries with Aggregation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MongoDB's :manual:`Aggregation Framework </core/aggregation-pipeline>` allows
+you to issue complex queries that filter, transform, and group collection data.
+The |php-library|\'s :phpmethod:`MongoDB\\Collection::aggregate()` method
+returns a :php:`Traversable <traversable>` object, which you can iterate upon to
+access the results of the aggregation operation. Refer to the
+:phpmethod:`MongoDB\\Collection::aggregate()` method's :ref:`behavior
+reference <php-agg-method-behavior>` for more about the method's output.
+
+The following example lists the 5 US states with the most zip codes associated
+with them:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   $cursor = $collection->aggregate([
+       ['$group' => ['_id' => '$state', 'count' => ['$sum' => 1]]],
+       ['$sort' => ['count' => -1]],
+       ['$limit' => 5],
+   ]);
+
+   foreach ($cursor as $state) {
+       printf("%s has %d zip codes\n", $state['_id'], $state['count']);
+   }
+
+The output would then resemble::
+
+   TX has 1671 zip codes
+   NY has 1595 zip codes
+   CA has 1516 zip codes
+   PA has 1458 zip codes
+   IL has 1237 zip codes
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::aggregate()`
+
+Update Documents
+----------------
+
+Update One Document
+~~~~~~~~~~~~~~~~~~~
+
+Use the :phpmethod:`MongoDB\\Collection::updateOne()` method to update a single
+document matching a filter. :phpmethod:`MongoDB\\Collection::updateOne()`
+returns a :phpclass:`MongoDB\\UpdateResult` object, which you can use to access
+statistics about the update operation.
+
+Update methods have two required parameters: the query filter that identifies
+the document or documents to update, and an update document that specifies what
+updates to perform. The :phpmethod:`MongoDB\\Collection::updateOne()` reference
+describes each parameter in detail.
+
+The following example inserts two documents into an empty ``users`` collection
+in the ``demo`` database using the :phpmethod:`MongoDB\\Collection::insertOne()`
+method, and then updates the documents where the value for the ``state`` field
+is ``"ny"`` to include a ``country`` field set to ``"us"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $collection->insertOne(['name' => 'Alice', 'state' => 'ny']);
+   $updateResult = $collection->updateOne(
+       ['state' => 'ny'],
+       ['$set' => ['country' => 'us']]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+Since the update operation uses the
+:phpmethod:`MongoDB\\Collection::updateOne()` method, which updates the first
+document to match the filter criteria, the results would then resemble::
+
+   Matched 1 document(s)
+   Modified 1 document(s)
+
+It is possible for a document to match the filter but *not be modified* by an
+update, as is the case where the update sets a field's value to its existing
+value, as in this example:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $updateResult = $collection->updateOne(
+       ['name' => 'Bob'],
+       ['$set' => ['state' => 'ny']]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+The number of matched documents and the number of *modified* documents would
+therefore not be equal, and the output from the operation would resemble::
+
+   Matched 1 document(s)
+   Modified 0 document(s)
+
+.. seealso::
+
+   - :phpmethod:`MongoDB\\Collection::updateOne()`
+   - :phpmethod:`MongoDB\\Collection::findOneAndUpdate()`
+
+Update Many Documents
+~~~~~~~~~~~~~~~~~~~~~
+
+:phpmethod:`MongoDB\\Collection::updateMany()` updates one or more documents
+matching the filter criteria and returns a :phpclass:`MongoDB\\UpdateResult`
+object, which you can use to access statistics about the update operation.
+
+Update methods have two required parameters: the query filter that identifies
+the document or documents to update, and an update document that specifies what
+updates to perform. The :phpmethod:`MongoDB\\Collection::updateMany()` reference
+describes each parameter in detail.
+
+The following example inserts three documents into an empty ``users`` collection
+in the ``demo`` database and then uses the :query:`$set` operator to update the
+documents matching the filter criteria to include the ``country`` field with
+value ``"us"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny', 'country' => 'us']);
+   $collection->insertOne(['name' => 'Alice', 'state' => 'ny']);
+   $collection->insertOne(['name' => 'Sam', 'state' => 'ny']);
+   $updateResult = $collection->updateMany(
+       ['state' => 'ny'],
+       ['$set' => ['country' => 'us']]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+If an update operation results in no change to a document, such as setting the
+value of the field to its current value, the number of modified documents can be
+less than the number of *matched* documents. Since the update document with
+``name`` of ``"Bob"`` results in no changes to the document, the output of the
+operation therefore resembles::
+
+   Matched 3 document(s)
+   Modified 2 document(s)
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::updateMany()`
+
+Replace Documents
+~~~~~~~~~~~~~~~~~
+
+Replacement operations are similar to update operations, but instead of updating
+a document to include new fields or new field values, a replacement operation
+replaces the entire document with a new document, but retains the original
+document's ``_id`` value.
+
+The :phpmethod:`MongoDB\\Collection::replaceOne()` method replaces a single
+document that matches the filter criteria and returns an instance of
+:phpclass:`MongoDB\\UpdateResult`, which you can use to access statistics about
+the replacement operation.
+
+:phpmethod:`MongoDB\\Collection::replaceOne()` has two required parameters: the
+query filter that identifies the document or documents to replace, and a
+replacement document that will replace the original document in MongoDB. The
+:phpmethod:`MongoDB\\Collection::replaceOne()` reference describes each
+parameter in detail.
+
+.. important:: 
+
+   Replacement operations replace all of the fields in a document except the
+   ``_id`` value. To avoid accidentally overwriting or deleting desired fields,
+   use the :phpmethod:`MongoDB\\Collection::updateOne()` or
+   :phpmethod:`MongoDB\\Collection::updateMany()` methods to update individual
+   fields in a document rather than replacing the entire document.
+
+The following example inserts one document into an empty ``users`` collection in
+the ``demo`` database, and then replaces that document with a new one:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $updateResult = $collection->replaceOne(
+       ['name' => 'Bob'],
+       ['name' => 'Robert', 'state' => 'ca']
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+The output would then resemble::
+
+   Matched 1 document(s)
+   Modified 1 document(s)
+
+.. seealso:: 
+
+   - :phpmethod:`MongoDB\\Collection::replaceOne()`
+   - :phpmethod:`MongoDB\\Collection::findOneAndReplace()`
+
+Upsert
+~~~~~~
+
+Update and replace operations support an :manual:`upsert
+</tutorial/update-documents/#upsert-option>` option. When ``upsert`` is ``true``
+*and* no documents match the specified filter, the operation creates a new
+document and inserts it. If there *are* matching documents, then the operation
+modifies or replaces the matching document or documents.
+
+When a document is upserted, the ID is accessible via
+:phpmethod:`MongoDB\\UpdateResult::getUpsertedId()`.
+
+The following example uses :phpmethod:`MongoDB\\Collection::updateOne()` with
+the ``upsert`` option set to ``true`` and an empty ``users`` collection in the
+``demo`` database, therefore inserting the document into the database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $updateResult = $collection->updateOne(
+       ['name' => 'Bob'],
+       ['$set' => ['state' => 'ny']],
+       ['upsert' => true]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+   printf("Upserted %d document(s)\n", $updateResult->getUpsertedCount());
+
+   $upsertedDocument = $collection->findOne([
+       '_id' => $updateResult->getUpsertedId(),
+   ]);
+
+   var_dump($upsertedDocument);
+
+The output would then resemble::
+
+   Matched 0 document(s)
+   Modified 0 document(s)
+   Upserted 1 document(s)
+   object(MongoDB\Model\BSONDocument)#16 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(3) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#15 (1) {
+         ["oid"]=>
+         string(24) "57509c4406d7241dad86e7c3"
+       }
+       ["name"]=>
+       string(3) "Bob"
+       ["state"]=>
+       string(2) "ny"
+     }
+   }
+
+Delete Documents
+----------------
+
+Delete One Document
+~~~~~~~~~~~~~~~~~~~
+
+The :phpmethod:`MongoDB\\Collection::deleteOne()` method deletes a single
+document that matches the filter criteria and returns a
+:phpclass:`MongoDB\\DeleteResult`, which you can use to access statistics about
+the delete operation.
+
+If multiple documents match the filter criteria,
+:phpmethod:`MongoDB\\Collection::deleteOne()` deletes the :term:`first
+<natural order>` matching document.
+
+:phpmethod:`MongoDB\\Collection::deleteOne()` has one required parameter: a
+query filter that specifies the document to delete. Refer to the
+:phpmethod:`MongoDB\\Collection::deleteOne()` reference for full method
+documentation.
+
+The following operation deletes the first document where the ``state`` field's
+value is ``"ny"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $collection->insertOne(['name' => 'Alice', 'state' => 'ny']);
+   $deleteResult = $collection->deleteOne(['state' => 'ny']);
+
+   printf("Deleted %d document(s)\n", $deleteResult->getDeletedCount());
+
+The output would then resemble::
+
+   Deleted 1 document(s)
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::deleteOne()`
+
+Delete Many Documents
+~~~~~~~~~~~~~~~~~~~~~
+
+:phpmethod:`MongoDB\\Collection::deleteMany()` deletes all of the documents that
+match the filter criteria and returns a :phpclass:`MongoDB\\DeleteResult`, which
+you can use to access statistics about the delete operation.
+
+:phpmethod:`MongoDB\\Collection::deleteMany()` has one required parameter: a
+query filter that specifies the document to delete. Refer to the
+:phpmethod:`MongoDB\\Collection::deleteMany()` reference for full method
+documentation.
+
+The following operation deletes all of the documents where the ``state`` field's
+value is ``"ny"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->users;
+   $collection->drop();
+
+   $collection->insertOne(['name' => 'Bob', 'state' => 'ny']);
+   $collection->insertOne(['name' => 'Alice', 'state' => 'ny']);
+   $deleteResult = $collection->deleteMany(['state' => 'ny']);
+
+   printf("Deleted %d document(s)\n", $deleteResult->getDeletedCount());
+
+The output would then resemble::
+
+   Deleted 2 document(s)
+
+.. seealso:: :phpmethod:`MongoDB\\Collection::deleteMany()`

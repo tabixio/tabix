@@ -1,0 +1,11 @@
+source:
+  file: apiargs-common-option.yaml
+  ref: readPreference
+description: |
+   :manual:`Read preference </reference/read-preference>` to use for the
+   operation. Defaults to the database's read preference.
+---
+source:
+  file: apiargs-MongoDBDatabase-common-option.yaml
+  ref: typeMap
+...

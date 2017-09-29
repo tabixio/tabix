@@ -1,0 +1,111 @@
+==================================
+MongoDB\\Collection::listIndexes()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::listIndexes()
+
+   Returns information for all indexes for this collection.
+
+   .. code-block:: php
+
+      function listIndexes(array $options = []): MongoDB\Model\IndexInfoIterator
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-listIndexes-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-listIndexes-option.rst
+
+Return Values
+-------------
+
+A traversable :phpclass:`MongoDB\\Model\\IndexInfoIterator`, which contains a
+:phpclass:`MongoDB\\Model\\IndexInfo` object for each index for the collection.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following example lists all of the indexes for the ``restaurants``
+collection in the ``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   foreach ($collection->listIndexes() as $index) {
+      var_dump($index);
+   }
+
+The output would then resemble::
+
+   object(MongoDB\Model\IndexInfo)#8 (4) {
+     ["v"]=>
+     int(1)
+     ["key"]=>
+     array(1) {
+       ["_id"]=>
+       int(1)
+     }
+     ["name"]=>
+     string(4) "_id_"
+     ["ns"]=>
+     string(19) "example.restaurants"
+   }
+   object(MongoDB\Model\IndexInfo)#12 (4) {
+     ["v"]=>
+     int(1)
+     ["key"]=>
+     array(1) {
+       ["cuisine"]=>
+       float(-1)
+     }
+     ["name"]=>
+     string(10) "cuisine_-1"
+     ["ns"]=>
+     string(19) "example.restaurants"
+   }
+   object(MongoDB\Model\IndexInfo)#8 (4) {
+     ["v"]=>
+     int(1)
+     ["key"]=>
+     array(1) {
+       ["borough"]=>
+       float(1)
+     }
+     ["name"]=>
+     string(9) "borough_1"
+     ["ns"]=>
+     string(19) "example.restaurants"
+   }
+
+See Also
+--------
+
+- :doc:`/tutorial/indexes`
+- :manual:`listIndexes </reference/command/listIndexes>` command reference in
+  the MongoDB manual
+- :manual:`Index documentation </core/indexes>` in the MongoDB manual
+- `Enumerating Collections
+  <https://github.com/mongodb/specifications/blob/master/source/enumerate-indexes.rst>`_
+  specification

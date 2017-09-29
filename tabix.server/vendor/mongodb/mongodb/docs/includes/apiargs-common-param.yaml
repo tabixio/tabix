@@ -1,0 +1,41 @@
+arg_name: param
+name: $manager
+type: :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>`
+description: |
+  The :php:`Manager <mongodb-driver-manager>` instance from the driver. The
+  manager maintains connections between the driver and your MongoDB instances.
+interface: phpmethod
+operation: ~
+optional: false
+---
+arg_name: param
+name: $databaseName
+type: string
+description: |
+  The name of the database{{action}}.
+interface: phpmethod
+operation: ~
+optional: false
+replacement:
+  action: ""
+---
+arg_name: param
+name: $collectionName
+type: string
+description: |
+  The name of the collection{{action}}.
+interface: phpmethod
+operation: ~
+optional: false
+replacement:
+  action: ""
+---
+arg_name: param
+name: $options
+type: array
+description: |
+  An array specifying the desired options.
+interface: phpmethod
+operation: ~
+optional: true
+...

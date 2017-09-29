@@ -1,0 +1,44 @@
+====================================
+MongoDB\\Database::getDatabaseName()
+====================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::getDatabaseName()
+
+   Returns the name of this database.
+
+   .. code-block:: php
+
+      function getDatabaseName(): string
+
+Return Values
+-------------
+
+The name of this database as a string.
+
+Example
+-------
+
+The following example prints the name of a database object:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   echo $db->getDatabaseName();
+
+The output would then resemble::
+
+   demo

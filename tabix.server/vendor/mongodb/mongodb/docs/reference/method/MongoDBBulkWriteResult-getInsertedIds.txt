@@ -1,0 +1,38 @@
+==========================================
+MongoDB\\BulkWriteResult::getInsertedIds()
+==========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\BulkWriteResult::getInsertedIds()
+
+   Return a map of IDs (i.e. ``_id`` field values) for documents that were
+   inserted by all insert operations in the bulk write.
+
+   .. code-block:: php
+
+      function getInsertedIds(): array
+
+   Since IDs are created by the driver, this method may be called irrespective
+   of whether the write was acknowledged.
+
+Return Values
+-------------
+
+A map of IDs (i.e. ``_id`` field values) for documents that were inserted by all
+insert operations in the bulk write.
+
+The index of each ID in the map corresponds to each document's position in the
+bulk operation. If a document had an ID prior to inserting (i.e. the driver did
+not generate an ID), the index will contain its ``_id`` field value. Any
+driver-generated ID will be a :php:`MongoDB\\BSON\\ObjectID
+<class.mongodb-bson-objectid>` instance.

@@ -1,0 +1,46 @@
+arg_name: option
+name: bucketName
+type: string
+description: |
+  The bucket name, which will be used as a prefix for the files and chunks
+  collections. Defaults to ``"fs"``.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: chunkSizeBytes
+type: integer
+description: |
+  The chunk size in bytes. Defaults to ``261120`` (i.e. 255 KiB).
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: readConcern
+replacement:
+  resource: "bucket"
+  parent: "database"
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: readPreference
+replacement:
+  resource: "bucket"
+  parent: "database"
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: typeMap
+replacement:
+  parent: "database"
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: writeConcern
+replacement:
+  resource: "bucket"
+  parent: "database"
+...

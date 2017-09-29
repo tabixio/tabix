@@ -1,0 +1,4 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-param.yaml
+  ref: $stream
+...

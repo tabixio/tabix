@@ -1,0 +1,29 @@
+==========================================
+MongoDB\\GridFS\\Bucket::getDatabaseName()
+==========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::getDatabaseName()
+
+   Returns the name of the database containing this bucket.
+
+   .. code-block:: php
+
+      function getDatabaseName(): string
+
+Return Values
+-------------
+
+The name of the database containing this bucket as a string.
+
+.. todo: add examples

@@ -1,0 +1,46 @@
+==========================================
+MongoDB\\BulkWriteResult::getUpsertedIds()
+==========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\BulkWriteResult::getUpsertedIds()
+
+   Return a map of IDs (i.e. ``_id`` field values) for documents that were
+   upserted by all update and replace operations in the bulk write.
+
+   .. code-block:: php
+
+      function getUpsertedIds(): array
+
+Return Values
+-------------
+
+A map of IDs (i.e. ``_id`` field values) for documents that were upserted by all
+update and replace operations in the bulk write.
+
+The index of each ID in the map corresponds to each document's position in the
+bulk operation. If a document had an ID prior to upserting (i.e. the server did
+not generate an ID), the index will contain its ``_id`` field value. Any
+server-generated ID will be a :php:`MongoDB\\BSON\\ObjectID
+<class.mongodb-bson-objectid>` instance.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :php:`MongoDB\\Driver\\WriteResult::getUpsertedIds()
+  <manual/en/mongodb-driver-writeresult.getupsertedids.php>`

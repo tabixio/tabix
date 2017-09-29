@@ -1,0 +1,33 @@
+=============================================
+MongoDB\\Model\\DatabaseInfo::getSizeOnDisk()
+=============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\DatabaseInfo::getSizeOnDisk()
+
+   Return the total size of the database file on disk in bytes.
+
+   .. code-block:: php
+
+      function getSizeOnDisk(): integer
+
+Return Values
+-------------
+
+The total size of the database file on disk in bytes.
+
+See Also
+--------
+
+- :manual:`listDatabases </reference/command/listDatabases>` command reference
+  in the MongoDB manual

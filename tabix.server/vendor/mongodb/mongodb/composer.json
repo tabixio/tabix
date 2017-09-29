@@ -1,0 +1,26 @@
+{
+    "name": "mongodb/mongodb",
+    "description": "MongoDB driver library",
+    "keywords": ["database", "driver", "mongodb", "persistence"],
+    "homepage": "https://jira.mongodb.org/browse/PHPLIB",
+    "license": "Apache-2.0",
+    "authors": [
+        { "name": "Hannes Magnusson", "email": "bjori@mongodb.com" },
+        { "name": "Jeremy Mikola", "email": "jmikola@gmail.com" },
+        { "name": "Derick Rethans", "email": "github@derickrethans.nl" }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "ext-mongodb": "^1.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-4": { "MongoDB\\": "src/" },
+        "files": [ "src/functions.php" ]
+    },
+    "autoload-dev": {
+        "psr-4": { "MongoDB\\Tests\\": "tests/" }
+    }
+}

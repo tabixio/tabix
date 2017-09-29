@@ -1,0 +1,7 @@
+class_name: ApiTester
+modules:
+    enabled:
+      - REST:
+            url: http://tabix.dev7
+            depends: PhpBrowser
+            part: Json

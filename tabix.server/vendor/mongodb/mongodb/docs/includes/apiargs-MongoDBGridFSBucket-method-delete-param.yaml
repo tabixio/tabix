@@ -1,0 +1,6 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-param.yaml
+  ref: $id
+replacement:
+  resource: " to delete"
+...

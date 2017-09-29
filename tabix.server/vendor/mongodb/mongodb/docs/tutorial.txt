@@ -1,0 +1,14 @@
+Tutorials
+=========
+
+.. default-domain:: mongodb
+
+.. toctree::
+
+   /tutorial/crud
+   /tutorial/collation
+   /tutorial/commands
+   /tutorial/decimal128
+   /tutorial/gridfs
+   /tutorial/indexes
+   /tutorial/example-data

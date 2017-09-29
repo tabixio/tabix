@@ -1,0 +1,24 @@
+{
+	"name": "analog/analog",
+	"type": "library",
+	"description": "PHP 5.3+ micro logging class that can be extended via closures. Includes several pre-built handlers including file, mail, syslog, HTTP post, and MongoDB.",
+	"keywords": ["log", "logging", "logger", "syslog", "error", "debug", "debugging", "alerts"],
+	"homepage": "https://github.com/jbroadway/analog",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Johnny Broadway",
+			"email": "johnny@johnnybroadway.com",
+			"homepage": "http://www.johnnybroadway.com/"
+		}
+	],
+	"require": {
+        "psr/log": "1.*",
+		"php": ">=5.3.2"
+	},
+	"autoload": {
+		"psr-0": {
+			"Analog": "lib/"
+		}
+	}
+}

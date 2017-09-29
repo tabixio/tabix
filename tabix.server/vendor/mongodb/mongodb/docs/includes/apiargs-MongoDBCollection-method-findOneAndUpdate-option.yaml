@@ -1,0 +1,50 @@
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: projection
+---
+source:
+  file: apiargs-MongoDBCollection-method-find-option.yaml
+  ref: sort
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: collation
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: maxTimeMS
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: bypassDocumentValidation
+---
+arg_name: option
+name: returnDocument
+type: integer
+description: |
+  Specifies whether to return the document before the update is applied, or
+  after. ``returnDocument`` supports the following values:
+
+  - ``MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_BEFORE`` (*default*)
+  - ``MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER``
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: typeMap
+post: |
+  This will be used for the returned result document.
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: upsert
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+post: |
+  This is not supported for server versions prior to 3.2 and will result in an
+  exception at execution time if used.
+...

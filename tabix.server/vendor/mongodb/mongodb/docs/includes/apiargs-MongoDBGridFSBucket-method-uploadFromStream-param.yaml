@@ -1,0 +1,19 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-param.yaml
+  ref: $filename
+replacement:
+  resource: " to create"
+---
+arg_name: param
+name: $source
+type: resource
+description: |
+  Readable stream, from which the new GridFS file's contents will be read.
+interface: phpmethod
+operation: ~
+optional: false
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

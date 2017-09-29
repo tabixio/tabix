@@ -1,0 +1,82 @@
+=================================
+MongoDB\\Client::selectDatabase()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Client::selectDatabase()
+
+   Selects a database on the server.
+
+   .. code-block:: php
+
+      function selectDatabase($databaseName, array $options = []): MongoDB\Database
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-selectDatabase-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-selectDatabase-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Database` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+The selected database inherits options such as read preference and type mapping
+from the :phpclass:`Client <MongoDB\\Client>` object. Options may be overridden
+via the ``$options`` parameter.
+
+Example
+-------
+
+The following example selects the ``demo`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $db = $client->selectDatabase('demo');
+
+The following examples selects the ``demo`` database with a custom read
+preference:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $db = $client->selectDatabase(
+       'demo',
+       [
+           'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
+       ]
+   );
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Client::__get()`
+- :phpmethod:`MongoDB\\Database::__construct()`

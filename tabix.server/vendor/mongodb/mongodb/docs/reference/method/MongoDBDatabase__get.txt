@@ -1,0 +1,69 @@
+==========================
+MongoDB\\Database::__get()
+==========================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::__get()
+
+   Select a collection within the database.
+
+   .. code-block:: php
+
+      function __get($collectionName): MongoDB\Collection
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-get-param.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Collection` object.
+
+Behavior
+--------
+
+The selected collection inherits options such as read preference and type
+mapping from the :phpclass:`Database <MongoDB\\Database>` object. If you wish to
+override any options, use the :phpmethod:`MongoDB\\Database::selectCollection`
+method.
+
+.. note::
+
+   To select collections whose names contain special characters, such as
+   ``.``, use complex syntax, as in ``$database->{'that.database'}``.
+
+   Alternatively, :phpmethod:`MongoDB\\Database::selectCollection` supports
+   selecting collections whose names contain special characters.
+
+Examples
+--------
+
+The following example selects the ``users`` and ``system.profile``
+collections from the ``demo`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $db = (new MongoDB\Client)->demo;
+
+   $users = $db->users;
+   $systemProfile = $db->{'system.profile'};
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::selectCollection()`
+- :phpmethod:`MongoDB\\Client::selectCollection()`
+- :php:`Property Overloading <oop5.overloading>` in the PHP Manual

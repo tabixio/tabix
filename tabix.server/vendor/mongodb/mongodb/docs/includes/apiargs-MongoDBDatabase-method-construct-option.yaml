@@ -1,0 +1,25 @@
+source:
+  file: apiargs-common-option.yaml
+  ref: readConcern
+replacement:
+  resource: "database"
+  parent: "manager"
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: readPreference
+replacement:
+  resource: "database"
+  parent: "manager"
+---
+source:
+  file: apiargs-MongoDBClient-method-construct-driverOptions.yaml
+  ref: typeMap
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: writeConcern
+replacement:
+  resource: "database"
+  parent: "manager"
+...

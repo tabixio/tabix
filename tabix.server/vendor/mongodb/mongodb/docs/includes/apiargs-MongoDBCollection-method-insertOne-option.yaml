@@ -1,0 +1,8 @@
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: bypassDocumentValidation
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+...

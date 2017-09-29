@@ -1,0 +1,6 @@
+source:
+  file: apiargs-common-param.yaml
+  ref: $databaseName
+replacement:
+  action: " to select"
+...

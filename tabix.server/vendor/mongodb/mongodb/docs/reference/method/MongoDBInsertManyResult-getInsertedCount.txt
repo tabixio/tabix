@@ -1,0 +1,40 @@
+=============================================
+MongoDB\\InsertManyResult::getInsertedCount()
+=============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\InsertManyResult::getInsertedCount()
+
+   Return the number of documents that were inserted.
+
+   .. code-block:: php
+
+      function getInsertedCount(): integer
+
+   This method should only be called if the write was acknowledged.
+
+Return Values
+-------------
+
+The number of documents that were inserted.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :php:`MongoDB\\Driver\\WriteResult::getInsertedCount()
+  <manual/en/mongodb-driver-writeresult.getinsertedcount.php>`

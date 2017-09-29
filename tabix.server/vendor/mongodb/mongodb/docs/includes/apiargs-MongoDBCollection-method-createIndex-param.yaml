@@ -1,0 +1,20 @@
+arg_name: param
+name: $key
+type: array|object
+description: |
+  Specifies the field or fields to index and the index order.
+
+  For example, the following specifies a descending index on the ``username``
+  field:
+
+  .. code-block:: php
+
+     [ 'username' => -1 ]
+interface: phpmethod
+operation: ~
+optional: false
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

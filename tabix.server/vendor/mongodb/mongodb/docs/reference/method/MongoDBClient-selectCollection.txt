@@ -1,0 +1,83 @@
+===================================
+MongoDB\\Client::selectCollection()
+===================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Client::selectCollection()
+
+   Selects a collection on the server.
+
+   .. code-block:: php
+
+      function selectCollection($databaseName, $collectionName, array $options = []): MongoDB\Collection
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-selectCollection-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-selectCollection-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Collection` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+The selected collection inherits options such as read preference and type
+mapping from the :phpclass:`Client <MongoDB\\Client>` object. Options may be
+overridden via the ``$options`` parameter.
+
+Example
+-------
+
+The following example selects the ``users`` collection in the ``demo`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $collection = $client->selectCollection('demo', 'users');
+
+The following example selects the ``users`` collection in the ``demo`` database
+with a custom read preference:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $collection = $client->selectCollection(
+       'demo',
+       'users',
+       [
+           'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
+       ]
+   );
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::__construct()`
+- :phpmethod:`MongoDB\\Database::selectCollection()`

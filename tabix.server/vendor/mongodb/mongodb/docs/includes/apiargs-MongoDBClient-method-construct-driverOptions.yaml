@@ -1,0 +1,115 @@
+arg_name: option
+name: typeMap
+type: array
+description: |
+  Default :php:`type map
+  <manual/en/mongodb.persistence.deserialization.php#mongodb.persistence.typemaps>`
+  to apply to cursors, which determines how BSON documents are converted to PHP
+  values. The |php-library| uses the following type map by default:
+
+  .. code-block:: php
+
+     [
+         'array' => 'MongoDB\Model\BSONArray',
+         'document' => 'MongoDB\Model\BSONDocument',
+         'root' => 'MongoDB\Model\BSONDocument',
+     ]
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: allow_invalid_hostname
+type: boolean
+description: |
+  Disables hostname validation if ``true``. Defaults to ``false``.
+
+  Allowing invalid hostnames may expose the driver to a `man-in-the-middle
+  attack <https://en.wikipedia.org/wiki/Man-in-the-middle_attack>`_.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: ca_dir
+type: string
+description: |
+  Path to a correctly hashed certificate directory. The system certificate store
+  will be used by default.
+
+  Falls back to the deprecated ``capath`` SSL context option if not specified.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: ca_file
+type: string
+description: |
+  Path to a certificate authority file. The system certificate store will be
+  used by default.
+
+  Falls back to the deprecated ``cafile`` SSL context option if not specified.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: crl_file
+type: string
+description: |
+  Path to a certificate revocation list file.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: pem_file
+type: string
+description: |
+  Path to a PEM encoded certificate to use for client authentication.
+
+  Falls back to the deprecated ``local_cert`` SSL context option if not
+  specified.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: pem_pwd
+type: string
+description: |
+  Passphrase for the PEM encoded certificate (if applicable).
+
+  Falls back to the deprecated ``passphrase`` SSL context option if not
+  specified.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: weak_cert_validation
+type: boolean
+description: |
+  Disables certificate validation ``true``. Defaults to ``false``.
+
+  Falls back to the deprecated ``allow_self_signed`` SSL context option if not
+  specified.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: context
+type: resource
+description: |
+  :php:`SSL context options <manual/en/context.ssl.php>` to be used as fallbacks
+  for other driver options (as specified). Note that the driver does not consult
+  the default stream context.
+
+  This option is supported for backwards compatibility, but should be considered
+  deprecated.
+interface: phpmethod
+operation: ~
+optional: true
+...

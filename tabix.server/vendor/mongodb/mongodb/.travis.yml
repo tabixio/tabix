@@ -1,0 +1,63 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+
+env:
+  global:
+    - KEY_SERVER="hkp://keyserver.ubuntu.com:80"
+    - MONGO_REPO_URI="http://repo.mongodb.com/apt/ubuntu"
+    - MONGO_REPO_TYPE="precise/mongodb-enterprise/"
+    - SOURCES_LOC="/etc/apt/sources.list.d/mongodb.list"
+  matrix:
+    - DRIVER_VERSION=1.2.0 SERVER_VERSION=2.6
+    - DRIVER_VERSION=1.2.0 SERVER_VERSION=3.0
+    - DRIVER_VERSION=1.2.0 SERVER_VERSION=3.2
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.0
+      env: DRIVER_VERSION=1.2.0 SERVER_VERSION=2.4
+    - php: 7.0
+      env: DRIVER_VERSION=devel SERVER_VERSION=3.2
+  exclude:
+    - php: 5.4
+      env: DRIVER_VERSION=stable SERVER_VERSION=2.6
+    - php: 5.4
+      env: DRIVER_VERSION=stable SERVER_VERSION=3.0
+    - php: 5.5
+      env: DRIVER_VERSION=stable SERVER_VERSION=2.6
+    - php: 5.5
+      env: DRIVER_VERSION=stable SERVER_VERSION=3.0
+
+before_install:
+  - sudo apt-key adv --keyserver ${KEY_SERVER} --recv 7F0CEB10
+  - sudo apt-key adv --keyserver ${KEY_SERVER} --recv EA312927
+  - echo "deb ${MONGO_REPO_URI} ${MONGO_REPO_TYPE}${SERVER_VERSION} multiverse" | sudo tee ${SOURCES_LOC}
+  - sudo apt-get update -qq
+
+install:
+  - if dpkg --compare-versions ${SERVER_VERSION} le "2.4"; then export SERVER_PACKAGE=mongodb-10gen-enterprise; else export SERVER_PACKAGE=mongodb-enterprise; fi
+  - sudo apt-get install ${SERVER_PACKAGE}
+  - sudo apt-get -y install gdb
+
+before_script:
+  - phpenv config-rm xdebug.ini
+  - if dpkg --compare-versions ${SERVER_VERSION} le "2.4"; then export SERVER_SERVICE=mongodb; else export SERVER_SERVICE=mongod; fi
+  - if ! nc -z localhost 27017; then sudo service ${SERVER_SERVICE} start; fi
+  - mongod --version
+  - pecl install -f mongodb-${DRIVER_VERSION}
+  - if [ "$(php -v | grep 'PHP 5.4')" ]; then echo 'extension = mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+  - php --ri mongodb
+  - composer install --dev --no-interaction --prefer-source
+  - ulimit -c
+  - ulimit -c unlimited -S
+
+script:
+  - ./vendor/bin/phpunit --debug || RESULT=$?
+  - for i in $(find ./ -maxdepth 1 -name 'core*' -print); do gdb `php -r 'echo PHP_BINARY;'` core* -ex "thread apply all bt" -ex "set pagination 0" -batch; done;
+  - if [[ ${RESULT} != 0 ]]; then exit $RESULT ; fi;

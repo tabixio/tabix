@@ -1,0 +1,54 @@
+==================================
+MongoDB\\Collection::__construct()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::__construct()
+
+   Constructs a new :phpclass:`Collection <MongoDB\\Collection>` instance.
+
+   .. code-block:: php
+
+      function __construct(MongoDB\Driver\Manager $manager, $databaseName, $collectionName, array $options = [])
+
+   This constructor has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-construct-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-construct-option.rst
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+If you construct a Collection explicitly, the Collection inherits any options
+from the :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` object.
+If you select the Collection from a :phpclass:`Client <MongoDB\\Client>` or
+:phpclass:`Database <MongoDB\\Database>` object, the Collection inherits its
+options from that object.
+
+.. todo: add an example
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::withOptions()`
+- :phpmethod:`MongoDB\\Client::selectCollection()`
+- :phpmethod:`MongoDB\\Database::selectCollection()`
+- :phpmethod:`MongoDB\\Database::__get()`

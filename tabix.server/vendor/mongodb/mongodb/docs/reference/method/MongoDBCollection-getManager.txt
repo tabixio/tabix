@@ -1,0 +1,35 @@
+=================================
+MongoDB\\Collection::getManager()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::getManager()
+
+   Accessor for the
+   :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` used by this
+   :phpclass:`Collection <MongoDB\\Collection>`.
+
+   .. code-block:: php
+
+      function getManager(): MongoDB\Manager
+
+Return Values
+-------------
+
+A :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` object.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Client::getManager()`
+- :phpmethod:`MongoDB\\Database::getManager()`

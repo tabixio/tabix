@@ -1,0 +1,168 @@
+===========================
+MongoDB\\Collection::find()
+===========================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::find()
+
+   Finds documents matching the query.
+
+   .. code-block:: php
+
+      function find($filter = [], array $options = []): MongoDB\Driver\Cursor
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-find-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-find-option.rst
+
+Return Values
+-------------
+
+A :php:`MongoDB\\Driver\\Cursor <class.mongodb-driver-cursor>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+Examples
+--------
+
+The following example finds restaurants based on the ``cuisine`` and ``borough``
+fields and uses a :manual:`projection
+</tutorial/project-fields-from-query-results>` to limit the fields that are
+returned. It also limits the results to 5 documents.
+
+.. code-block:: php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $cursor = $collection->find(
+       [
+           'cuisine' => 'Italian',
+           'borough' => 'Manhattan',
+       ],
+       [
+           'limit' => 5,
+           'projection' => [
+               'name' => 1,
+               'borough' => 1,
+               'cuisine' => 1,
+           ],
+       ]
+   );
+
+   foreach ($cursor as $restaurant) {
+      var_dump($restaurant);
+   };
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#10 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#8 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f983"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(23) "Isle Of Capri Resturant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#13 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#12 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f98d"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(18) "Marchis Restaurant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#8 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#10 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f99b"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(19) "Forlinis Restaurant"
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#12 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#13 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f9a8"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(22) "Angelo Of Mulberry St."
+     }
+   }
+   object(MongoDB\Model\BSONDocument)#10 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#8 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f9b4"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(16) "V & T Restaurant"
+     }
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::findOne()`
+- :manual:`find </reference/command/find>` command reference in the MongoDB
+  manual

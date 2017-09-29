@@ -1,0 +1,50 @@
+======================================
+MongoDB\\GridFS\\Bucket::__construct()
+======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::__construct()
+
+   Constructs a new :phpclass:`Bucket <MongoDB\\GridFS\\Bucket>` instance.
+
+   .. code-block:: php
+
+      function __construct(MongoDB\Driver\Manager $manager, $databaseName, $collectionName, array $options = [])
+
+   This constructor has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-construct-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-construct-option.rst
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+If you construct a Bucket explicitly, the Bucket inherits any options
+from the :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` object.
+If you select the Bucket from a :phpclass:`Database <MongoDB\\Database>` object,
+the Bucket inherits its options from that object.
+
+.. todo: add an example
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::selectGridFSBucket()`
