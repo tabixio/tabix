@@ -288,6 +288,10 @@
                 // --------------------- INIT   DATABASES     ------------------------------------------------------
                 $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 
+                    let  rightMenuListDatabases = [
+                        {active: true, value: 'Select',key:'OpenTables',icon:'arrow-expand',         db:item.database},//,item:item},
+
+                    ];
                     let  rightMenuListTable = [
                         {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',         db:item.database,table: item.name},//,item:item},
                         {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',db:item.database,table: item.name},
@@ -330,6 +334,7 @@
                     return [
                         ...prev, {
                             name: item.database,
+                            rightMenuList:rightMenuListDatabases,
                             tables: [
                                 {
                                     active:true,

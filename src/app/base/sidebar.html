@@ -20,7 +20,7 @@
                         <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
 
                             <a ng-mouseenter >
-                                <md-button class="text-left no-txt-transform w100" ng-dblclick="clickAndSelect(database, $event)" >
+                                <md-button class="text-left no-txt-transform w100" ng-class="currentDatabase==database.name?'activeDatabase':''" ng-dblclick="clickAndSelect(database, $event)" >
                                     <i class="mdi mdi-database"></i>
                                     {{database.name}}
                                     <span class="db__table-count">{{database.tables.length}}</span>
