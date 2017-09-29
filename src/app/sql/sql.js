@@ -3,14 +3,8 @@
  */
 
 
-// @todo : костылик , не получилось сделать http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
-window.global_keywords_fields       = "";
-window.global_keywords_tables       = "";
-window.global_keywords_fieldsList   = "";
-window.global_keywords_dictList     = "";
-window.global_builtinFunctions      = [];
+// @todo : Hack -  http://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
 window.global_delimiter             = ";;";
-window.global_lang                  = "ru";
 
 
 window.aceJSRules = {
@@ -63,9 +57,9 @@ window.aceJSRules = {
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
         const SQL_SAVE_TABS_KEY = 'saveTabs';
-        const SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT = 'DISABLE_HOTKEY_LEFTRIGHT';
-        const SQL_SAVE_DISABLE_AUTOHELP_KEY = 'DISABLE_AUTOHELP';
-        const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion';
+        const SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT = 'DISABLE_HOTKEY_LEFTRIGHT_v1';
+        const SQL_SAVE_DISABLE_AUTOHELP_KEY = 'DISABLE_AUTOHELP_v1';
+        const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion_v1';
         const SQL_SESSION_KEY = 'sessionData';
         const SQL_LOG_LENGTH = 30;
 
@@ -76,10 +70,10 @@ window.aceJSRules = {
             dictionaries: [],
             isDictionariesLoad:false,
             tabs: [],
-            enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || false,
+            enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || true,
             disableAutohelp: localStorageService.get(SQL_SAVE_DISABLE_AUTOHELP_KEY) || false,
             disableHotKeyCmdLeft: localStorageService.get(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT) || true,
-            saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || false,
+            saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || true,
             uiTheme: ThemeService.themeObject,
             uiThemes: ThemeService.list,
             LastStatistics: false,
@@ -110,11 +104,9 @@ window.aceJSRules = {
             ],
             db: null,
             limitTimes: localStorageService.get('editorLimitTimes') || 5,
-            limitRows: localStorageService.get('editorLimitRows') || 500,
-            fontSize: localStorageService.get('editorFontSize') || 16,
+            limitRows: localStorageService.get('editorLimitRows') || 3500,
+            fontSize: localStorageService.get('editorFontSize') || 14,
             theme: localStorageService.get('editorTheme') || 'cobalt',
-            cacheDatabaseStructure:  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false)
-            ,
 
 
 
@@ -655,11 +647,18 @@ window.aceJSRules = {
 
 
 
-        $scope.canCacheDatabaseStructure = () => {
-            return  (localStorageService.get('cacheDatabaseStructure')!==false ? true : false);
+
+        $scope.reloadCache = () => {
+            console.log("reloadCache");
+            API.resetDatabaseStructure();
+            $mdToast.show(
+                $mdToast
+                    .simple()
+                    .content('Reload page - for reset cache')
+                    .theme(ThemeService.theme)
+                    .position('bottom right')
+            );
         };
-
-
 
         /**
          * Set database name
@@ -678,9 +677,6 @@ window.aceJSRules = {
             }
             console.time("sql.selectDatabase time took");
             $scope.vars.db = db;
-
-            let canCacheDS=$scope.canCacheDatabaseStructure();
-
 
             // reset global object
             window.aceJSRules.tables=[];

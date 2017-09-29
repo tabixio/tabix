@@ -86,6 +86,11 @@
                 console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
             }
         };
+
+        this.resetDatabaseStructure = () => {
+            console.log('reset databaseStructure');
+            localStorageService.set('_databaseStructure:'+this.getHost()+':'+this.getLogin(),[]);
+        };
         /**
          *
          * @returns {DatabaseStructure}
