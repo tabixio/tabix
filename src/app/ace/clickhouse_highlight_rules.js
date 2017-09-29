@@ -105,7 +105,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 },
             {
                 token: "keyword",
-                regex: "GROUP\\W+BY|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"
+                regex: "GROUP\\W+BY|ON\\W+CLUSTER|ORDER\\W+BY|LIMIT\\W+\\d+\\W+BY\\W+"
             },
             {
                 token: "variable.language",
@@ -191,8 +191,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
 
             if (typeof window.global_chFunctionsHelp['functions'][use] != 'undefined')
             {
-                let lang=window.global_lang;
-                if (!lang) lang='ru';
+                let lang='en';
                 let help=window.global_chFunctionsHelp['functions'][use];
                 let brackets='';
                 let desc='';
@@ -209,8 +208,12 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 }
 
 
-                if (desc) desc=desc.replace(/\.\s*/gm, ".<br>");
+                if (desc)
+                {
+                    desc=desc.replace(/\.\s*/gm, ".<br>");
+                }
                 body='<span class="ace_doc-header"><b>' + fn + brackets+'</b></span><br><span class="ace_doc-description">' + desc +' </span>';
+
             }
             else {
                 body='<span class="ace_doc-header"><b>' + fn + '( ) </b></span><br>' + origin;

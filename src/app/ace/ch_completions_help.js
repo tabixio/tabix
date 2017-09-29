@@ -1734,7 +1734,6 @@ window.global_chFunctionsHelp = {
         "roundToExp2": {
             "bracket": "(num)",
             "desc": {
-                "ru": "Принимает число. Если число меньше единицы - возвращает 0. Иначе округляет число вниз до ближайшей (целой неотрицательной) степени двух.",
                 "en": "Accepts a number. If the number is less than one, it returns 0. Otherwise, it rounds the number down to the nearest (whole non-negative) degree of two."
             }
         },
@@ -1753,21 +1752,18 @@ window.global_chFunctionsHelp = {
         "roundDuration": {
             "bracket": "(num)",
             "desc": {
-                "ru": "Принимает число. Если число меньше единицы - возвращает 0. Иначе округляет число вниз до чисел из набора: 1, 10, 30, 60, 120, 180, 240, 300, 600, 1200, 1800, 3600, 7200, 18000, 36000. Эта функция специфична для Яндекс.Метрики и предназначена для реализации отчёта по длительности визита.",
                 "en": "Accepts a number. If the number is less than one, it returns 0. Otherwise, it rounds the number down to numbers from the set: 1, 10, 30, 60, 120, 180, 240, 300, 600, 1200, 1800, 3600, 7200, 18000, 36000. This function is specific to Yandex.Metrica and used for implementing the report on session length."
             }
         },
         "roundAge": {
             "bracket": "(num)",
             "desc": {
-                "ru": "Принимает число. Если число меньше 18 - возвращает 0. Иначе округляет число вниз до чисел из набора: 18, 25, 35, 45. Эта функция специфична для Яндекс.Метрики и предназначена для реализации отчёта по возрасту посетителей.",
                 "en": "Accepts a number. If the number is less than 18, it returns 0. Otherwise, it rounds the number down to numbers from the set: 18, 25, 35, 45. This function is specific to Yandex.Metrica and used for implementing the report on user age."
             }
         },
         "round": {
             "bracket": "(num)",
             "desc": {
-                "ru": "Принимает число. Если число меньше 18 - возвращает 0. Иначе округляет число вниз до чисел из набора: 18, 25, 35, 45. Эта функция специфична для Яндекс.Метрики и предназначена для реализации отчёта по возрасту посетителей.",
                 "en": "Accepts a number. If the number is less than 18, it returns 0. Otherwise, it rounds the number down to numbers from the set: 18, 25, 35, 45. This function is specific to Yandex.Metrica and used for implementing the report on user age."
             }
         },
@@ -1804,7 +1800,6 @@ window.global_chFunctionsHelp = {
         "reverse": {
             "bracket": "(v)",
             "desc": {
-                "ru": "Разворачивает последовательность кодовых точек Unicode, при допущении, что строка содержит набор байт, представляющий текст в кодировке UTF-8. Иначе - что-то делает (не кидает исключение).",
                 "en": "Reverses a sequence of Unicode code points, assuming that the string contains a set of bytes representing a UTF-8 text. Otherwise, it does something else (it doesn&#39;t throw an exception)."
             }
         },
