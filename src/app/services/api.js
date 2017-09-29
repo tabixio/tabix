@@ -257,9 +257,12 @@
 
 
                 //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
-                let BasicAuthorization=false;
 
-                if (connection.baseauth)
+                let BasicAuthorization = '';
+
+                // Default to HTTP Basic Authentication to avoid sending
+                // credentials in the URL (often logged by servers/proxies).
+                if (!connection.urlauth)
                 {
                     BasicAuthorization = window.btoa(connection.login+":"+connection.password);
                 }

@@ -109,12 +109,13 @@
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-checkbox md-no-ink ng-model="vars.db.baseauth" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
-                                                HTTP Base auth
+                                            <md-checkbox md-no-ink
+                                            ng-model="vars.db.urlauth" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
+                                                Auth via URL Params (insecure)
                                             </md-checkbox>
 
                                             <md-checkbox md-no-ink ng-model="vars.db.rouser" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
-                                                RO user ClickHouse
+                                                ClickHouse read-only user.
                                             </md-checkbox>
 
 
