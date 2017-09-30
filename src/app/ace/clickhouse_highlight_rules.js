@@ -105,7 +105,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 },
             {
                 token: "keyword",
-                regex: "GROUP\\W+BY|ON\\W+CLUSTER|ORDER\\W+BY|LIMIT\\W+\\d+|LIMIT\\W+\\d+,\\d|LIMIT\\W+\\d+\\W+BY\\W+"
+                regex: "GROUP\\W+BY|ON\\W+CLUSTER|ORDER\\W+BY|LIMIT\\W+\\d+\\W*\,\\W*\\d+|LIMIT\\W+\\d+\\W+BY\\W+|LIMIT\\W+\\d+"
             },
             {
                 token: "variable.language",

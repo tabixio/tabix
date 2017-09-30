@@ -166,11 +166,28 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             // token: Object {type: "text", value: " ", row: 10, col: 8}
             // token: Object {type: "markup.heading", value: "click_status_old", row: 10, col: 9}
 
+
+
+            // token: {type: "keyword", value: "limit 4,3"
+            //     token: {type: "keyword", value: "limit 4",
+            //         token: {type: "keyword", value: "limit 4 , 31", row: 1, col: 0}
             while (token) {
                 let t = token;
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
+                if (t.type=='keyword' && (t.value.toLowerCase().includes('limit')!==false))
+                {
+                    let r = t.value.toLowerCase().match(/LIMIT\W+(\d+)\W*\,\W*(\d+)/i);
+                    if (!r) r = t.value.toLowerCase().match(/LIMIT\W+(\d+)/i);
+                    if (r[0] && r[1] && r[2])
+                    {
+                        results.limit={from:r[1],to:r[2]};
+                    } else if (r[0] && r[1])
+                    {
+                        results.limit={from:r[1],to:false};
+                    }
 
+                }
                 // if (t.type=='keyword' && t.value.toLowerCase()=='where')
                 // {
                 //     // ------ WHERE ---------
@@ -181,12 +198,10 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 //     // ------ GROUP BY ---------
                 //     results.groupby=this.fetchTokensParts(sql,t);
                 // }
-                console.log("token:",t);
-
+                // console.log("token:",t);
                 token = iterator.stepForward();
-
             }
-
+            console.info("Parse & Find tokens result",results);
             return results;
 
         };
