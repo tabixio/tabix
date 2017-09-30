@@ -170,6 +170,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 let t = token;
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
+
                 // if (t.type=='keyword' && t.value.toLowerCase()=='where')
                 // {
                 //     // ------ WHERE ---------
@@ -180,7 +181,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 //     // ------ GROUP BY ---------
                 //     results.groupby=this.fetchTokensParts(sql,t);
                 // }
-                // console.log("token:",t);
+                console.log("token:",t);
 
                 token = iterator.stepForward();
 

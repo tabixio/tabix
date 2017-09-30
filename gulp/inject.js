@@ -8,6 +8,7 @@ var packageJson = require('../package.json');
 var orderBowerComponents = require('./bower.js');
 
 var $ = require('gulp-load-plugins')();
+require('gulp-stats')(gulp);
 
 var wiredep = require('wiredep').stream;
 var _ = require('lodash');
