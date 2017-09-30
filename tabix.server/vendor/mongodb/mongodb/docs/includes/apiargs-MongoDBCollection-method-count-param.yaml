@@ -1,0 +1,11 @@
+source:
+  file: apiargs-MongoDBCollection-common-param.yaml
+  ref: $filter
+optional: true
+replacement:
+  action: " to count"
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

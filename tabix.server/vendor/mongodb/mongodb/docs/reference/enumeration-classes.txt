@@ -1,0 +1,161 @@
+===================
+Enumeration Classes
+===================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+MongoDB\\Model\\CollectionInfo
+------------------------------
+
+Definition
+~~~~~~~~~~
+
+.. phpclass:: MongoDB\\Model\\CollectionInfo
+
+   This class models information about a collection. Instances of this class are
+   returned by traversing a :phpclass:`MongoDB\\Model\\CollectionInfoIterator`,
+   which is returned by :phpmethod:`MongoDB\\Database::listCollections()`.
+
+Methods
+~~~~~~~
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBModelCollectionInfo-getCappedMax
+   /reference/method/MongoDBModelCollectionInfo-getCappedSize
+   /reference/method/MongoDBModelCollectionInfo-getName
+   /reference/method/MongoDBModelCollectionInfo-getOptions
+   /reference/method/MongoDBModelCollectionInfo-isCapped
+
+----
+
+MongoDB\\Model\\CollectionInfoIterator
+--------------------------------------
+
+Definition
+~~~~~~~~~~
+
+.. phpclass:: MongoDB\\Model\\CollectionInfoIterator
+
+   This interface extends PHP's :php:`Iterator <manual/en/class.iterator.php>`
+   interface. An instance of this interface is returned by
+   :phpmethod:`MongoDB\\Database::listCollections()`.
+
+Methods
+~~~~~~~
+
+This interface adds no new methods to :php:`Iterator
+<manual/en/class.iterator.php>`, but specifies that :php:`current()
+<manual/en/iterator.current.php>` will return an instance of
+:phpclass:`MongoDB\\Model\\CollectionInfo`.
+
+----
+
+MongoDB\\Model\\DatabaseInfo
+----------------------------
+
+Definition
+~~~~~~~~~~
+
+.. phpclass:: MongoDB\\Model\\DatabaseInfo
+
+   This class models information about a database. Instances of this class are
+   returned by traversing a :phpclass:`MongoDB\\Model\\DatabaseInfoIterator`,
+   which is returned by :phpmethod:`MongoDB\\Client::listDatabases()`.
+
+Methods
+~~~~~~~
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBModelDatabaseInfo-getName
+   /reference/method/MongoDBModelDatabaseInfo-getSizeOnDisk
+   /reference/method/MongoDBModelDatabaseInfo-isEmpty
+
+----
+
+MongoDB\\Model\\DatabaseInfoIterator
+------------------------------------
+
+Definition
+~~~~~~~~~~
+
+.. phpclass:: MongoDB\\Model\\DatabaseInfoIterator
+
+   This interface extends PHP's :php:`Iterator <manual/en/class.iterator.php>`
+   interface. An instance of this interface is returned by
+   :phpmethod:`MongoDB\\Client::listDatabases()`.
+
+Methods
+~~~~~~~
+
+This interface adds no new methods to :php:`Iterator
+<manual/en/class.iterator.php>`, but specifies that :php:`current()
+<manual/en/iterator.current.php>` will return an instance of
+:phpclass:`MongoDB\\Model\\DatabaseInfo`.
+
+----
+
+MongoDB\\Model\\IndexInfo
+-------------------------
+
+.. phpclass:: MongoDB\\Model\\IndexInfo
+
+   This class models information about an index. Instances of this class are
+   returned by traversing a :phpclass:`MongoDB\\Model\\IndexInfoIterator`,
+   which is returned by :phpmethod:`MongoDB\\Collection::listIndexes()`.
+
+   This class implements PHP's :php:`ArrayAccess <arrayaccess>` interface. This
+   provides a mechanism for accessing index fields for which there exists no
+   helper method. :php`isset() <isset>` may be used to check for the existence
+   of a field before accessing it with ``[]``.
+
+   .. note::
+
+      The :phpclass:`MongoDB\\Model\\IndexInfo` class is immutable. Attempting
+      to modify it via the :php:`ArrayAccess <arrayaccess>` interface will
+      result in a :phpclass:`MongoDB\\Exception\\BadMethodCallException`.
+
+Methods
+~~~~~~~
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBModelIndexInfo-getKey
+   /reference/method/MongoDBModelIndexInfo-getName
+   /reference/method/MongoDBModelIndexInfo-getNamespace
+   /reference/method/MongoDBModelIndexInfo-getVersion
+   /reference/method/MongoDBModelIndexInfo-isSparse
+   /reference/method/MongoDBModelIndexInfo-isTtl
+   /reference/method/MongoDBModelIndexInfo-isUnique
+
+----
+
+MongoDB\\Model\\IndexInfoIterator
+---------------------------------
+
+Definition
+~~~~~~~~~~
+
+.. phpclass:: MongoDB\\Model\\IndexInfoIterator
+
+   This interface extends PHP's :php:`Iterator <manual/en/class.iterator.php>`
+   interface. An instance of this interface is returned by
+   :phpmethod:`MongoDB\\Collection::listIndexes()`.
+
+Methods
+~~~~~~~
+
+This interface adds no new methods to :php:`Iterator
+<manual/en/class.iterator.php>`, but specifies that :php:`current()
+<manual/en/iterator.current.php>` will return an instance of
+:phpclass:`MongoDB\\Model\\IndexInfo`.

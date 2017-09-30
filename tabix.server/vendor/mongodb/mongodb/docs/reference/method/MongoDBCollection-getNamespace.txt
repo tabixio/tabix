@@ -1,0 +1,52 @@
+===================================
+MongoDB\\Collection::getNamespace()
+===================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::getNamespace()
+
+   Returns the :term:`namespace` of the collection. A namespace is the canonical
+   name of an index or collection in MongoDB.
+
+   .. code-block:: php
+
+      function getNamespace(): string
+
+Return Values
+-------------
+
+The namespace of this collection as a string.
+
+Example
+-------
+
+The following returns the namespace of the ``zips`` collection in the ``demo``
+database.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   echo $collection->getNamespace();
+
+The output would then resemble::
+
+   demo.zips
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::getCollectionName()`
+- :phpmethod:`MongoDB\\Collection::getDatabaseName()`

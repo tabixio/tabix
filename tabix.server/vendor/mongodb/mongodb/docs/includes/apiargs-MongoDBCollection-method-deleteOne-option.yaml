@@ -1,0 +1,8 @@
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: collation
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+...

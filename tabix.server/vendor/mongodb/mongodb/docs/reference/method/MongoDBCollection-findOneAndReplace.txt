@@ -1,0 +1,145 @@
+========================================
+MongoDB\\Collection::findOneAndReplace()
+========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::findOneAndReplace()
+
+   Finds a single document matching the query and replaces it.
+
+   .. code-block:: php
+
+      function findOneAndReplace($filter, $replacement, array $options = []): object|null
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOneAndReplace-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOneAndReplace-option.rst
+
+Return Values
+-------------
+
+An array object for either the original or the replaced document, depending on
+the specified value of the ``returnDocument`` option. By default, the original
+document is returned. If no document matched the query, ``null`` is returned.
+The return type will depend on the ``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unexpectedvalueexception.rst
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+Examples
+--------
+
+Consider the following document in the ``restaurants`` collection in the
+``example`` database:
+
+.. code-block:: javascript
+
+   {
+     "_id" : ObjectId("576023c7b02fa9281da4139e"),
+     "address" : {
+       "building" : "977",
+       "coord" : [
+         -74.06940569999999,
+         40.6188443
+       ],
+       "street" : "Bay Street",
+       "zipcode" : "10305"
+     },
+     "borough" : "Staten Island",
+     "cuisine" : "French",
+     "grades" : [
+       {
+         "date" : ISODate("2014-08-15T00:00:00Z"),
+         "grade" : "A",
+         "score" : 7
+       },
+       {
+         "date" : ISODate("2014-02-13T00:00:00Z"),
+         "grade" : "A",
+         "score" : 5
+       },
+       {
+         "date" : ISODate("2013-06-07T00:00:00Z"),
+         "grade" : "A",
+         "score" : 11
+       }
+     ],
+     "name" : "Zest",
+     "restaurant_id" : "41220906"
+   }
+
+The following operation replaces the document with ``restaurant_id`` of
+``"41220906"`` with a new document:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $replacedRestaurant = $collection->findOneAndReplace(
+       [ 'restaurant_id' => '41220906' ],
+       [
+           'Borough' => 'Staten Island',
+           'cuisine' => 'Italian',
+           'grades' => [],
+           'name' => 'Staten Island Pastaria',
+           'restaurant_id' => '999999999',
+       ],
+       [ 'returnDocument' => MongoDB\Operation\FindOneAndReplace::RETURN_DOCUMENT_AFTER ]
+   );
+
+   var_dump($replacedRestaurant)
+
+The output would then resemble::
+
+   object(stdClass)#14 (6) {
+     ["_id"]=>
+     object(MongoDB\BSON\ObjectID)#11 (1) {
+       ["oid"]=>
+       string(24) "576023c7b02fa9281da4139e"
+     }
+     ["borough"]=>
+     string(13) "Staten Island"
+     ["cuisine"]=>
+     string(7) "Italian"
+     ["grades"]=>
+     array(0) {
+     }
+     ["name"]=>
+     string(22) "Staten Island Pastaria"
+     ["restaurant_id"]=>
+     string(9) "999999999"
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::findOneAndDelete()`
+- :phpmethod:`MongoDB\\Collection::findOneAndUpdate()`
+- :manual:`findAndModify </reference/command/findAndModify>` command reference
+  in the MongoDB manual

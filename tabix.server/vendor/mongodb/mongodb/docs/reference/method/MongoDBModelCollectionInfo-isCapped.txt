@@ -1,0 +1,37 @@
+==========================================
+MongoDB\\Model\\CollectionInfo::isCapped()
+==========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\CollectionInfo::isCapped()
+
+   Return whether the collection is a :manual:`capped collection
+   </core/capped-collections>`.
+
+   .. code-block:: php
+
+      function isCapped(): boolean
+
+Return Values
+-------------
+
+A boolean indicating whether the collection is a capped collection.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Model\\CollectionInfo::getCappedMax()`
+- :phpmethod:`MongoDB\\Model\\CollectionInfo::getCappedSize()`
+- :manual:`Capped Collections </core/capped-collections>` in the MongoDB manual
+- :manual:`listCollections </reference/command/listCollections>` command
+  reference in the MongoDB manual

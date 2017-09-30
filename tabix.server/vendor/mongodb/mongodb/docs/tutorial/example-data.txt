@@ -1,0 +1,42 @@
+============
+Example Data
+============
+
+.. default-domain:: mongodb
+
+Some examples in this documentation use example data fixtures from
+`zips.json <http://media.mongodb.org/zips.json>`_. This is a dataset comprised
+of United States postal codes, populations, and geographic locations.
+
+Importing the dataset into MongoDB can be done in several ways. The following
+example uses the :php:`driver <mongodb>` directly:
+
+.. code-block:: php
+
+   <?php
+
+   $file = 'http://media.mongodb.org/zips.json';
+   $zips = file($file, FILE_IGNORE_NEW_LINES);
+
+   $bulk = new MongoDB\Driver\BulkWrite;
+
+   foreach ($zips as $string) {
+       $document = json_decode($string);
+       $bulk->insert($document);
+   }
+
+   $manager = new MongoDB\Driver\Manager('mongodb://127.0.0.1/');
+
+   $result = $manager->executeBulkWrite('demo.zips', $bulk);
+   printf("Inserted %d documents\n", $result->getInsertedCount());
+
+The output would then resemble::
+
+   Inserted 29353 documents
+
+You may also import the dataset using :manual:`mongoimport
+</reference/program/mongoimport>`, which is included with MongoDB:
+
+.. code-block:: none
+
+   $ mongoimport --db demo --collection zips --file zips.json --drop

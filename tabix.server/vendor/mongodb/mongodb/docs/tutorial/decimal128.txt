@@ -1,0 +1,124 @@
+==========
+Decimal128
+==========
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 2
+   :class: singlecol
+
+Overview
+--------
+
+MongoDB 3.4 introduced support for a :manual:`Decimal128 BSON type
+</manual/release-notes/3.4/#decimal-type>`, which is a 128-bit decimal-based
+floating-point value capable of emulating decimal rounding with exact precision.
+This functionality is intended for applications that handle :manual:`monetary
+data </tutorial/model-monetary-data>`, such as financial and tax computations.
+
+The :php:`MongoDB\BSON\Decimal128 <mongodb-bson-decimal128>` class, which was
+introduced in :php:`PHP driver <mongodb>` 1.2.0, may be used to work with this
+type in PHP.
+
+Working with Decimal128 Values
+------------------------------
+
+Inserting a Decimal128
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following example inserts a value of type ``Decimal128`` into the ``price``
+field of a collection named ``inventory``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->inventory;
+
+   $collection->insertOne([
+       '_id' => 1,
+       'item' => '26-inch monitor',
+       'price' => new MongoDB\BSON\Decimal128('428.79'),
+   ]);
+
+   $item = $collection->findOne(['_id' => 1]);
+
+   var_dump($item);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#9 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(3) {
+       ["_id"]=>
+       int(1)
+       ["item"]=>
+       string(15) "26-inch monitor"
+       ["price"]=>
+       object(MongoDB\BSON\Decimal128)#13 (1) {
+         ["dec"]=>
+         string(6) "428.79"
+       }
+     }
+   }
+
+Mathematical Operations with BCMath
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :php:`PHP driver <mongodb>` does not provide any functionality for working
+with ``Decimal128`` values; however, the string representation of a
+:php:`MongoDB\BSON\Decimal128 <mongodb-bson-decimal128>` object may be used
+with PHP's :php:`BCMath <bcmath>` extension.
+
+The following example adds two ``Decimal128`` values and creates a new
+``Decimal128`` value with the result from :php:`bcadd() <bcadd>`:
+
+.. code-block:: php
+
+   <?php
+
+   $lhs = new MongoDB\BSON\Decimal128('1.234');
+   $rhs = new MongoDB\BSON\Decimal128('5.678');
+   $sum = new MongoDB\BSON\Decimal128(bcadd($lhs, $rhs));
+
+   var_dump($sum);
+
+The output would then resemble::
+
+   object(MongoDB\BSON\Decimal128)#4 (1) {
+     ["dec"]=>
+     string(1) "6"
+   }
+
+This does not match the expected result of "6.912". Each operation in the BCMath
+API uses a scale to determine the number of decimal digits in the result. The
+default scale is zero, which is why the above example produces a result with no
+decimal precision.
+
+In the following example, we use a scale of three for :php:`bcadd() <bcadd>` to
+obtain the expected result:
+
+.. code-block:: php
+
+   <?php
+
+   $lhs = new MongoDB\BSON\Decimal128('1.234');
+   $rhs = new MongoDB\BSON\Decimal128('5.678');
+   $sum = new MongoDB\BSON\Decimal128(bcadd($lhs, $rhs, 3));
+
+   var_dump($sum);
+
+The output would then resemble::
+
+   object(MongoDB\BSON\Decimal128)#4 (1) {
+     ["dec"]=>
+     string(5) "6.912"
+   }
+
+In lieu of specifying a scale for each operation, a default scale may be set via
+:php:`bcscale() <bcscale>` or the :php:`bcmath.scale INI setting
+<manual/en/bc.configuration.php#ini.bcmath.scale>`. The ``Decimal128`` type
+supports up to 34 decimal digits (i.e. significant digits).

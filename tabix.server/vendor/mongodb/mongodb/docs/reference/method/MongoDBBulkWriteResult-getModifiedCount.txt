@@ -1,0 +1,54 @@
+============================================
+MongoDB\\BulkWriteResult::getModifiedCount()
+============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\BulkWriteResult::getModifiedCount()
+
+   Return the total number of documents that were modified by all update and
+   replace operations in the bulk write.
+
+   .. code-block:: php
+
+      function getModifiedCount(): integer|null
+
+   This method should only be called if the write was acknowledged.
+
+   .. note::
+
+      If an update/replace operation results in no change to the document
+      (e.g. setting the value of a field to its current value), the modified
+      count may be less than the value returned by :phpmethod:`getMatchedCount()
+      <MongoDB\\BulkWriteResult::getMatchedCount()>`.
+
+Return Values
+-------------
+
+The total number of documents that were modified by all update and replace
+operations in the bulk write.
+
+The modified count is not available on versions of MongoDB before 2.6, which
+used the legacy wire protocol version (i.e. ``OP_UPDATE``). If this is the case,
+the modified count will be ``null``.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\BulkWriteResult::getMatchedCount()`
+- :php:`MongoDB\\Driver\\WriteResult::getModifiedCount()
+  <manual/en/mongodb-driver-writeresult.getmodifiedcount.php>`

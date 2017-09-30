@@ -1,0 +1,93 @@
+=================================
+MongoDB\\Collection::replaceOne()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::replaceOne()
+
+   Replace at most one document that matches the filter criteria. If multiple
+   documents match the filter criteria, only the :term:`first <natural order>`
+   matching document will be replaced.
+
+   .. code-block:: php
+
+      function replaceOne($filter, $replacement, array $options = []): MongoDB\UpdateResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-replaceOne-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-replaceOne-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\UpdateResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+
+Example
+-------
+
+The following example replaces the document with ``restaurant_id`` of
+``"40356068"`` in the ``restaurants`` collection in the ``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $updateResult = $collection->replaceOne(
+       [ 'restaurant_id' => '40356068' ],
+       [
+           'name' => 'New Restaurant',
+           'restaurant_id' => '99988877',
+           'borough' => 'Queens',
+           'cuisine' => 'Cafe',
+           'grades' => [],
+       ]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+The output would then resemble::
+
+   Matched 1 document(s)
+   Modified 1 document(s)
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::updateMany()`
+- :phpmethod:`MongoDB\\Collection::updateOne()`
+- :phpmethod:`MongoDB\\Collection::bulkWrite()`
+- :doc:`/tutorial/crud`
+- :manual:`update </reference/command/update>` command reference in the MongoDB
+  manual

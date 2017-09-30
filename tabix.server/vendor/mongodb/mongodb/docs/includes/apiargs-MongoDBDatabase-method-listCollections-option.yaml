@@ -1,0 +1,15 @@
+arg_name: option
+name: filter
+type: array|object
+description: |
+  A query expression to filter the list of collections.
+
+  You can specify a query expression on the collection ``name`` and ``options``.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: maxTimeMS
+...

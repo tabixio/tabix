@@ -1,0 +1,77 @@
+arg_name: option
+name: allowDiskUse
+type: boolean
+description: |
+  Enables writing to temporary files. When set to ``true``, aggregation stages
+  can write data to the ``_tmp`` sub-directory in the ``dbPath`` directory. The
+  default is ``false``.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: batchSize
+type: integer
+description: |
+  Specifies the initial batch size for the cursor. A batchSize of ``0`` means an
+  empty first batch and is useful for quickly returning a cursor or failure
+  message without doing significant server-side work.
+
+  .. note::
+
+     This is not supported for inline aggregation results (i.e. ``useCursor``
+     option is ``false`` or the server version is < 2.6).
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: bypassDocumentValidation
+post: |
+  This only applies when using the :ref:`$out <agg-out>` stage.
+
+  Document validation requires MongoDB 3.2 or later: if you are using an earlier
+  version of MongoDB, this option will be ignored.
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: maxTimeMS
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: readConcern
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: readPreference
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: typeMap
+---
+arg_name: option
+name: useCursor
+type: boolean
+description: |
+  Indicates whether the command will request that the server provide results
+  using a cursor. The default is ``true``.
+
+  For MongoDB version 2.6 or later, ``useCursor`` allows users to turn off
+  cursors if necessary to aid in replica set or shard cluster upgrades.
+
+  ``useCursor`` is ignored for MongoDB versions prior to 2.6 as aggregation
+  cursors are not available.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+post: |
+  This only applies when the :ref:`$out <agg-out>` stage is specified.
+
+  This is not supported for server versions prior to 3.4 and will result in an
+  exception at execution time if used.
+...

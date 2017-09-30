@@ -1,0 +1,36 @@
+=========================================
+MongoDB\\Model\\IndexInfo::getNamespace()
+=========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\IndexInfo::getNamespace()
+
+   Return the index namespace, which is the namespace of the collection
+   containing the index.
+
+   .. code-block:: php
+
+      function getNamespace(): string
+
+Return Values
+-------------
+
+The index namespace.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::createIndex()`
+- :phpmethod:`MongoDB\\Collection::getNamespace()`
+- :manual:`listIndexes </reference/command/listIndexes>` command reference in
+  the MongoDB manual

@@ -1,0 +1,82 @@
+arg_name: option
+name: bypassDocumentValidation
+type: boolean
+description: |
+   If ``true``, allows the write operation to circumvent document level
+   validation. Defaults to ``false``.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: collation
+type: array|object
+description: |
+   :manual:`Collation </reference/collation>` allows users to specify
+   language-specific rules for string comparison, such as rules for lettercase
+   and accent marks. When specifying collation, the ``locale`` field is
+   mandatory; all other collation fields are optional. For descriptions of the
+   fields, see :manual:`Collation Document
+   </reference/collation/#collation-document>`.
+
+   If the collation is unspecified but the collection has a default collation,
+   the operation uses the collation specified for the collection. If no
+   collation is specified for the collection or for the operation, MongoDB uses
+   the simple binary comparison used in prior versions for string comparisons.
+
+   This option is available in MongoDB 3.4+ and will result in an exception at
+   execution time if specified for an older server version.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: readConcern
+type: :php:`MongoDB\\Driver\\ReadConcern <class.mongodb-driver-readconcern>`
+description: |
+   :manual:`Read concern </reference/read-concern>` to use for the operation.
+   Defaults to the collection's read concern.
+
+   This is not supported for server versions prior to 3.2 and will result in an
+   exception at execution time if used.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: readPreference
+type: :php:`MongoDB\\Driver\\ReadPreference <class.mongodb-driver-readpreference>`
+description: |
+   :manual:`Read preference </reference/read-preference>` to use for the
+   operation. Defaults to the collection's read preference.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: typeMap
+replacement:
+  parent: "collection"
+---
+arg_name: option
+name: writeConcern
+type: :php:`MongoDB\\Driver\\WriteConcern <class.mongodb-driver-writeconcern>`
+description: |
+   :manual:`Write concern </reference/write-concern>` to use for the operation.
+   Defaults to the collection's write concern.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: upsert
+type: boolean
+description: |
+   If set to ``true``, creates a new document when no document matches the query
+   criteria. The default value is ``false``, which does not insert a new
+   document when no match is found.
+interface: phpmethod
+operation: ~
+optional: true
+...

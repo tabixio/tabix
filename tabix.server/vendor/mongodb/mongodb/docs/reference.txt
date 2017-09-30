@@ -1,0 +1,17 @@
+=========
+Reference
+=========
+
+.. default-domain:: mongodb
+
+.. toctree::
+   :titlesonly:
+
+   /reference/bson
+   /reference/class/MongoDBClient
+   /reference/class/MongoDBDatabase
+   /reference/class/MongoDBCollection
+   /reference/class/MongoDBGridFSBucket
+   /reference/write-result-classes
+   /reference/enumeration-classes
+   /reference/exception-classes

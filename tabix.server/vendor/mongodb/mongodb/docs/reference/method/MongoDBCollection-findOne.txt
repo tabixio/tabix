@@ -1,0 +1,103 @@
+==============================
+MongoDB\\Collection::findOne()
+==============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::findOne()
+
+   Finds a single document matching the query.
+
+   .. code-block:: php
+
+      function findOne($filter = [], array $options = []): array|object|null
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOne-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOne-option.rst
+
+Return Values
+-------------
+
+An array or object for the :term:`first document <natural order>` that matched
+the query, or ``null`` if no document matched the query. The return type will
+depend on the ``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+Examples
+--------
+
+The following example finds a restaurant based on the ``cuisine`` and
+``borough`` fields and uses a :manual:`projection
+</tutorial/project-fields-from-query-results>` to limit the fields that are
+returned.
+
+.. code-block:: php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $restaurant = $collection->findOne(
+       [
+           'cuisine' => 'Italian',
+           'borough' => 'Manhattan',
+       ],
+       [
+           'projection' => [
+               'name' => 1,
+               'borough' => 1,
+               'cuisine' => 1,
+           ],
+       ]
+   );
+
+   var_dump($restaurant);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#10 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(4) {
+       ["_id"]=>
+       object(MongoDB\BSON\ObjectID)#8 (1) {
+         ["oid"]=>
+         string(24) "576023c6b02fa9281da3f983"
+       }
+       ["borough"]=>
+       string(9) "Manhattan"
+       ["cuisine"]=>
+       string(7) "Italian"
+       ["name"]=>
+       string(23) "Isle Of Capri Resturant"
+     }
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::find()`
+- :manual:`find </reference/command/find>` command reference in the MongoDB
+  manual

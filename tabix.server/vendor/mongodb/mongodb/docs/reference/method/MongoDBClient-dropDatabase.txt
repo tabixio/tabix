@@ -1,0 +1,78 @@
+===============================
+MongoDB\\Client::dropDatabase()
+===============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Client::dropDatabase()
+
+   Drop a database on the server.
+
+   .. code-block:: php
+
+      function dropDatabase($databaseName, array $options []): array|object
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-dropDatabase-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBClient-method-dropDatabase-option.rst
+
+Return Values
+-------------
+
+An array or object with the result document of the :manual:`dropDatabase
+</reference/command/dropDatabase>` command. The return type will depend on the
+``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following example drops the ``demo`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $client = new MongoDB\Client;
+
+   $result = $client->dropDatabase('demo');
+
+   var_dump($result);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#8 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(2) {
+       ["dropped"]=>
+       string(4) "demo"
+       ["ok"]=>
+       float(1)
+     }
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::drop()`
+- :manual:`dropDatabase </reference/command/dropDatabase>` command reference in
+  the MongoDB manual

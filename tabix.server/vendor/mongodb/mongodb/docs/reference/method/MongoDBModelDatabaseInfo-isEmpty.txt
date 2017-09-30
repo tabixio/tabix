@@ -1,0 +1,33 @@
+=======================================
+MongoDB\\Model\\DatabaseInfo::isEmpty()
+=======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\DatabaseInfo::isEmpty()
+
+   Return whether the database has any data.
+
+   .. code-block:: php
+
+      function isEmpty(): boolean
+
+Return Values
+-------------
+
+A boolean indicating whether the database has any data.
+
+See Also
+--------
+
+- :manual:`listDatabases </reference/command/listDatabases>` command reference
+  in the MongoDB manual

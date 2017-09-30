@@ -1,0 +1,50 @@
+================================
+MongoDB\\Database::__construct()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::__construct()
+
+   Constructs a new :phpclass:`Database <MongoDB\\Database>` instance.
+
+   .. code-block:: php
+
+      function __construct(MongoDB\Driver\Manager $manager, $databaseName, array $options = [])
+
+   This constructor has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-construct-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-construct-option.rst
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Behavior
+--------
+
+If you construct a Database explicitly, the Database inherits any options from
+the :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` object. If
+you select the Database from a :phpclass:`Client <MongoDB\\Client>` object, the
+Database inherits its options from that object.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::withOptions()`
+- :phpmethod:`MongoDB\\Client::selectDatabase()`
+- :phpmethod:`MongoDB\\Client::__get()`

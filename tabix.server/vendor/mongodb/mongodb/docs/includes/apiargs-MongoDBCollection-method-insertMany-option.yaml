@@ -1,0 +1,12 @@
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: bypassDocumentValidation
+---
+source:
+  file: apiargs-MongoDBCollection-method-bulkWrite-option.yaml
+  ref: ordered
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+...

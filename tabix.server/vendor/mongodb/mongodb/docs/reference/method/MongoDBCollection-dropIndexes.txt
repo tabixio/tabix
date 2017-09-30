@@ -1,0 +1,84 @@
+==================================
+MongoDB\\Collection::dropIndexes()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::dropIndexes()
+
+   Drop all indexes in the collection, except for the required index on the
+   ``_id`` field.
+
+   .. code-block:: php
+
+      function dropIndexes(array $options = []): array|object
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-dropIndex-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-dropIndex-option.rst
+
+Return Values
+-------------
+
+An array or object with the result document of the :manual:`dropIndexes
+</reference/command/dropIndexes>` command. The return type will depend on the
+``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Example
+-------
+
+The following drops all indexes from the ``restaurants`` collection in the
+``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $result = $collection->dropIndexes();
+
+   var_dump($result);
+
+The output would then resemble::
+
+   object(MongoDB\Model\BSONDocument)#9 (1) {
+     ["storage":"ArrayObject":private]=>
+     array(3) {
+       ["nIndexesWas"]=>
+       int(3)
+       ["msg"]=>
+       string(38) "non-_id indexes dropped for collection"
+       ["ok"]=>
+       float(1)
+     }
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::dropIndex()`
+- :doc:`/tutorial/indexes`
+- :manual:`dropIndexes </reference/command/dropIndexes>` command reference in
+  the MongoDB manual
+- :manual:`Index documentation </indexes>` in the MongoDB manual

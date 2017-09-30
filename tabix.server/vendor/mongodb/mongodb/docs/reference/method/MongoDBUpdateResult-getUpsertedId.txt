@@ -1,0 +1,44 @@
+======================================
+MongoDB\\UpdateResult::getUpsertedId()
+======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\UpdateResult::getUpsertedId()
+
+   Return the ID (i.e. ``_id`` field value) of the upserted document.
+
+   .. code-block:: php
+
+      function getUpsertedId(): mixed|null
+
+Return Values
+-------------
+
+The ID (i.e. ``_id`` field value) of the upserted document. If no document was
+upserted, ``null`` will be returned.
+
+If the document had an ID prior to upserting (i.e. the server did not need to
+generate an ID), this will contain its ``_id`` field value. Any server-generated
+ID will be a :php:`MongoDB\\BSON\\ObjectID <class.mongodb-bson-objectid>`
+instance.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :php:`MongoDB\\Driver\\WriteResult::getUpsertedIds()
+  <manual/en/mongodb-driver-writeresult.getupsertedids.php>`

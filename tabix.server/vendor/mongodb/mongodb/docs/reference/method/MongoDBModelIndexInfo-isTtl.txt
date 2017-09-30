@@ -1,0 +1,37 @@
+==================================
+MongoDB\\Model\\IndexInfo::isTtl()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\IndexInfo::isTtl()
+
+   Return whether the index is a :manual:`TTL index </core/index-ttl>`. This
+   correlates with the ``expireAfterSeconds`` option for
+   :phpmethod:`MongoDB\\Collection::createIndex()`.
+
+   .. code-block:: php
+
+      function isTtl(): boolean
+
+Return Values
+-------------
+
+A boolean indicating whether the index is a TTL index.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::createIndex()`
+- :manual:`listIndexes </reference/command/listIndexes>` command reference in
+  the MongoDB manual
+- :manual:`TTL Indexes </core/index-ttl>` in the MongoDB manual

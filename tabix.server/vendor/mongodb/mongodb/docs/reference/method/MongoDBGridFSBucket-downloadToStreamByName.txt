@@ -1,0 +1,47 @@
+===========================================
+MongoDB\\GridFS\\Bucket::downloadToStream()
+===========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::downloadToStreamByName()
+
+   Selects a GridFS file by its ``filename`` and copies its contents to a
+   writable stream.
+
+   .. code-block:: php
+
+      function downloadToStreamByName($filename, $destination, array $options = []): void
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-downloadToStreamByName-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-downloadToStreamByName-option.rst
+
+.. todo: add examples
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-gridfs-filenotfoundexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\GridFS\\Bucket::downloadToStream()`
+- :phpmethod:`MongoDB\\GridFS\\Bucket::openDownloadStream()`
+- :phpmethod:`MongoDB\\GridFS\\Bucket::openDownloadStreamByName()`

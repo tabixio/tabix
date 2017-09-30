@@ -1,0 +1,64 @@
+================================
+MongoDB\\Collection::bulkWrite()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::bulkWrite()
+
+   Executes multiple write operations.
+
+   .. code-block:: php
+
+      function bulkWrite(array $operations, array $options = []): MongoDB\BulkWriteResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-bulkWrite-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-bulkWrite-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\BulkWriteResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+.. include:: /includes/extracts/bulkwriteexception-ordered.rst
+
+.. todo: add output and examples
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::deleteMany()`
+- :phpmethod:`MongoDB\\Collection::deleteOne()`
+- :phpmethod:`MongoDB\\Collection::insertMany()`
+- :phpmethod:`MongoDB\\Collection::insertOne()`
+- :phpmethod:`MongoDB\\Collection::replaceOne()`
+- :phpmethod:`MongoDB\\Collection::updateMany()`
+- :phpmethod:`MongoDB\\Collection::updateOne()`
+- :doc:`/tutorial/crud`

@@ -1,0 +1,214 @@
+======
+GridFS
+======
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+:manual:`GridFS </core/gridfs>` is a specification for storing and retrieving
+files in MongoDB. GridFS uses two collections to store files. One collection
+stores the file chunks (e.g. ``fs.chunks``), and the other stores file metadata
+(e.g. ``fs.files``). The :phpclass:`MongoDB\\GridFS\\Bucket` class provides an
+interface around these collections for working with the files as PHP
+:php:`Streams <stream>`.
+
+Creating a GridFS Bucket
+------------------------
+
+You can construct a GridFS bucket using the PHP extension's
+:php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` class, or select
+a bucket from the |php-library|'s :phpclass:`MongoDB\\Database` class via the
+:phpmethod:`selectGridFSBucket() <MongoDB\\Database::selectGridFSBucket>`
+method.
+
+The bucket can be constructed with various options:
+
+ - ``bucketName`` determines the prefix for the buckey's metadata and chunk
+   collections. The default value is ``"fs"``.
+ - ``chunkSizeBytes`` determines the size of each chunk. GridFS divides the
+   file into chunks of this length, except for the last, which is only as large
+   as needed. The default size is ``261120`` (i.e. 255 KiB).
+ - ``readConcern``, ``readPreference`` and ``writeConcern`` options can be used
+   to specify defaults for read and write operations, much like the
+   :phpclass:`MongoDB\\GridFS\\Collection` options.
+
+Uploading Files with Writable Streams
+-------------------------------------
+
+To upload a file to GridFS using a writable stream, you can either open a stream
+and write to it directly or write the entire contents of another readable stream
+to GridFS all at once.
+
+To open an upload stream and write to it:
+
+.. code-block:: php
+
+   <?php
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $stream = $bucket->openUploadStream('my-file.txt');
+
+   $contents = file_get_contents('/path/to/my-file.txt');
+   fwrite($stream, $contents);
+   fclose($stream);
+
+To upload the entire contents of a readable stream in one call:
+
+.. code-block:: php
+
+   <?php
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $file = fopen('/path/to/my-file.txt', 'rb');
+   $bucket->uploadFromStream('my-file.txt', $file);
+
+Downloading Files with Readable Streams
+---------------------------------------
+
+To download a file from GridFS using a readable stream, you can either open a
+stream and read from it directly or download the entire file all at once.
+
+To open a download stream and read from it:
+
+.. code-block:: php
+
+   <?php
+
+   // In practice, $fileId denotes the _id of an existing file in GridFS
+   $fileId = new MongoDB\BSON\ObjectId;
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $stream = $bucket->openDownloadStream($fileId);
+   $contents = stream_get_contents($stream);
+
+To download the file all at once and write it to a writable stream:
+
+.. code-block:: php
+
+   <?php
+
+   // In practice, $fileId denotes the _id of an existing file in GridFS
+   $fileId = new MongoDB\BSON\ObjectId;
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $file = fopen('/path/to/my-output-file.txt', 'wb');
+
+   $bucket->downloadToStream($fileId, $file);
+
+Selecting Files by Filename and Revision
+----------------------------------------
+
+You can also download a file specified by filename and (optionally) revision
+number. Revision numbers are used to distinguish between files sharing the same
+``filename`` metadata field, ordered by date of upload (i.e. the ``uploadDate``
+metadata field). The ``revision`` option accepted by
+:phpmethod:`openDownloadStreamByName()
+<MongoDB\\GridFS\\Bucket::openDownloadStreamByName>` and
+:phpmethod:`downloadToStreamByName()
+<MongoDB\\GridFS\\Bucket::downloadToStreamByName>` can be positive or negative.
+
+A positive ``revision`` number may be used to select files in order of the
+oldest upload date. A revision of ``0`` would denote the file with the oldest
+upload date, a revision of ``1`` would denote the second oldest upload, and so
+on.
+
+A negative revision may be used to select files in order of the most recent
+upload date. A revision of ``-1`` would denote a file with the most recent
+upload date, a revision of ``-2`` would denote the second most recent upload,
+and so on. The ``revision`` option defaults to ``-1`` if not specified.
+
+The following example downloads the contents of the oldest version of a
+particular file:
+
+.. code-block:: php
+
+   <?php
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $stream = $bucket->openDownloadStreamByName('my-file.txt', ['revision' => 0]);
+   $contents = stream_get_contents($stream);
+
+Deleting Files
+--------------
+
+You can delete a GridFS file by its ``_id``.
+
+.. code-block:: php
+
+   <?php
+
+   // In practice, $fileId denotes the _id of an existing file in GridFS
+   $fileId = new MongoDB\BSON\ObjectId;
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $bucket->delete($fileId);
+
+Finding File Metadata
+---------------------
+
+The :phpmethod:`find() <MongoDB\\GridFS\\Bucket::find>` method allows you to
+retrieve documents from the GridFS files collection, which contain metadata
+about the GridFS files.
+
+.. code-block:: php
+
+   <?php
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $cursor = $bucket->find(['filename' => 'my-file.txt']);
+
+Accessing File Metadata for an Existing Stream
+----------------------------------------------
+
+The :phpmethod:`getFileDocumentForStream()
+<MongoDB\\GridFS\\Bucket::getFileDocumentForStream>` method may be used to get
+the file document for an existing readable or writable GridFS stream.
+
+.. code-block:: php
+
+   <?php
+
+   // In practice, $fileId denotes the _id of an existing file in GridFS
+   $fileId = new MongoDB\BSON\ObjectId;
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $stream = $bucket->openDownloadStream($fileId);
+   $metadata = $bucket->getFileDocumentForStream($stream);
+
+.. note::
+
+   Since the file document for a writable stream is not committed to MongoDB
+   until the stream is closed,
+   :phpmethod:`getFileDocumentForStream()
+   <MongoDB\\GridFS\\Bucket::getFileDocumentForStream>` can only return an
+   in-memory document, which will be missing some fields (e.g. ``length``,
+   ``md5``).
+
+The :phpmethod:`getFileIdForStream()
+<MongoDB\\GridFS\\Bucket::getFileIdForStream>` method may be used to get the
+``_id`` for an existing readable or writable GridFS stream. This is a
+convenience for accessing the ``_id`` property of the object returned by
+:phpmethod:`getFileDocumentForStream()
+<MongoDB\\GridFS\\Bucket::getFileDocumentForStream>`.
+
+.. code-block:: php
+
+   <?php
+
+   $bucket = (new MongoDB\Client)->example->selectGridFSBucket();
+
+   $stream = $bucket->openDownloadStreamByName('my-file.txt');
+   $fileId = $bucket->getFileIdForStream($stream);

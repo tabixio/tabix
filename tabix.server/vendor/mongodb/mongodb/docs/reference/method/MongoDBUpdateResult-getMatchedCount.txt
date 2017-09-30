@@ -1,0 +1,49 @@
+========================================
+MongoDB\\UpdateResult::getMatchedCount()
+========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\UpdateResult::getMatchedCount()
+
+   Return the number of documents that were matched.
+
+   .. code-block:: php
+
+      function getMatchedCount(): integer
+
+   This method should only be called if the write was acknowledged.
+
+   .. note::
+
+      If an update/replace operation results in no change to the document
+      (e.g. setting the value of a field to its current value), the matched
+      count may be greater than the value returned by
+      :phpmethod:`getModifiedCount()
+      <MongoDB\\UpdateResult::getModifiedCount()>`.
+
+Return Values
+-------------
+
+The number of documents that were matched.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\UpdateResult::getModifiedCount()`
+- :php:`MongoDB\\Driver\\WriteResult::getMatchedCount()
+  <manual/en/mongodb-driver-writeresult.getmatchedcount.php>`

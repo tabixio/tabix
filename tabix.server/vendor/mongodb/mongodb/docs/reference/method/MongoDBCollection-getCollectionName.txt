@@ -1,0 +1,51 @@
+========================================
+MongoDB\\Collection::getCollectionName()
+========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::getCollectionName()
+
+   Returns the name of this collection.
+
+   .. code-block:: php
+
+      function getCollectionName(): string
+
+Return Values
+-------------
+
+The name of this collection as a string.
+
+Example
+-------
+
+The following returns the collection name for the ``zips`` collection in the
+``demo`` database.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   echo $collection->getCollectionName();
+
+The output would then resemble::
+
+   zips
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::getDatabaseName()`
+- :phpmethod:`MongoDB\\Collection::getNamespace()`

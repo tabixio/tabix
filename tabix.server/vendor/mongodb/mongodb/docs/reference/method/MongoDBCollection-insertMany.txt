@@ -1,0 +1,107 @@
+=================================
+MongoDB\\Collection::insertMany()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::insertMany()
+
+   Insert multiple documents.
+
+   .. code-block:: php
+
+      function insertMany(array $documents, array $options = []): MongoDB\InsertManyResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-insertMany-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-insertMany-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\InsertManyResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+.. include:: /includes/extracts/bulkwriteexception-ordered.rst
+
+Example
+-------
+
+.. start-crud-include
+
+The following operation inserts two documents into the ``users`` collection
+in the ``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->users;
+
+   $insertManyResult = $collection->insertMany([
+       [
+           'username' => 'admin',
+           'email' => 'admin@example.com',
+           'name' => 'Admin User',
+       ],
+       [
+           'username' => 'test',
+           'email' => 'test@example.com',
+           'name' => 'Test User',
+       ],
+   ]);
+
+   printf("Inserted %d document(s)\n", $insertManyResult->getInsertedCount());
+
+   var_dump($insertManyResult->getInsertedIds());
+
+The output would then resemble::
+
+   Inserted 2 document(s)
+   array(2) {
+     [0]=>
+     object(MongoDB\BSON\ObjectID)#11 (1) {
+       ["oid"]=>
+       string(24) "579a25921f417dd1e5518141"
+     }
+     [1]=>
+     object(MongoDB\BSON\ObjectID)#12 (1) {
+       ["oid"]=>
+       string(24) "579a25921f417dd1e5518142"
+     }
+   }
+
+.. end-crud-include
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::insertOne()`
+- :phpmethod:`MongoDB\\Collection::bulkWrite()`
+- :doc:`/tutorial/crud`
+- :manual:`insert </reference/command/insert>` command reference in the MongoDB
+  manual

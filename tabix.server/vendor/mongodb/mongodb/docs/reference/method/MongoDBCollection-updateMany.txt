@@ -1,0 +1,83 @@
+=================================
+MongoDB\\Collection::updateMany()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::updateMany()
+
+   Update all documents that match the filter criteria.
+
+   .. code-block:: php
+
+      function updateMany($filter, $update, array $options = []): MongoDB\UpdateResult
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-updateMany-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-updateMany-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\UpdateResult` object, which encapsulates a
+:php:`MongoDB\\Driver\\WriteResult <class.mongodb-driver-writeresult>` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-bulkwriteexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+.. include:: /includes/extracts/bulkwriteexception-result.rst
+
+Examples
+--------
+
+The following example updates all of the documents with the ``borough`` of
+``"Queens"`` by setting the ``active`` field to ``true``:
+
+.. code-block:: php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $updateResult = $collection->updateMany(
+       [ 'borough' => 'Queens' ],
+       [ '$set' => [ 'active' => 'True' ]]
+   );
+
+   printf("Matched %d document(s)\n", $updateResult->getMatchedCount());
+   printf("Modified %d document(s)\n", $updateResult->getModifiedCount());
+
+The output would then resemble::
+
+   Matched 5656 document(s)
+   Modified 5656 document(s)
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::replaceOne()`
+- :phpmethod:`MongoDB\\Collection::updateOne()`
+- :phpmethod:`MongoDB\\Collection::bulkWrite()`
+- :doc:`/tutorial/crud`
+- :manual:`update </reference/command/update>` command reference in the MongoDB
+  manual

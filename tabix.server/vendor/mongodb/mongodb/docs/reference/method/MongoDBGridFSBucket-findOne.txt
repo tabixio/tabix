@@ -1,0 +1,58 @@
+==================================
+MongoDB\\GridFS\\Bucket::findOne()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::findOne()
+
+   Finds a single document from the GridFS bucket's files collection matching
+   the query.
+
+   .. code-block:: php
+
+      function findOne($filter = [], array $options = []): array|object|null
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOne-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-findOne-option.rst
+
+Return Values
+-------------
+
+An array or object for the :term:`first document <natural order>` that matched
+the query, or ``null`` if no document matched the query. The return type will
+depend on the ``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+.. todo: add examples
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::findOne()`
+- :phpmethod:`MongoDB\\GridFS\\Bucket::find()`

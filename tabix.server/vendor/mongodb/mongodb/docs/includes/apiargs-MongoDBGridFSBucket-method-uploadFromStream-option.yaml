@@ -1,0 +1,12 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-option.yaml
+  ref: _id
+---
+source:
+  file: apiargs-MongoDBGridFSBucket-common-option.yaml
+  ref: chunkSizeBytes
+---
+source:
+  file: apiargs-MongoDBGridFSBucket-common-option.yaml
+  ref: metadata
+...

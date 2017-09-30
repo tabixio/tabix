@@ -1,0 +1,40 @@
+=================================
+MongoDB\\GridFS\\Bucket::delete()
+=================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\GridFS\\Bucket::delete()
+
+   Delete a file and its chunks from the GridFS bucket.
+
+   .. code-block:: php
+
+      function delete($id): void
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBGridFSBucket-method-delete-param.rst
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-gridfs-filenotfoundexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+If the files collection document is not found, this method will still attempt to
+delete orphaned chunks.
+
+.. todo: add examples

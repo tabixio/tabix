@@ -1,0 +1,11 @@
+source:
+  file: apiargs-MongoDBCollection-common-param.yaml
+  ref: $filter
+optional: false
+replacement:
+  action: " to delete"
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

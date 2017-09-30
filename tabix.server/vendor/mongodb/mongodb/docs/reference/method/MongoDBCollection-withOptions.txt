@@ -1,0 +1,61 @@
+==================================
+MongoDB\\Collection::withOptions()
+==================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::withOptions()
+
+   Returns a clone of the Collection object, but with different options.
+
+   .. code-block:: php
+
+      function withOptions(array $options = []): MongoDB\Collection
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-withOptions-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-withOptions-option.rst
+
+Return Values
+-------------
+
+A :phpclass:`MongoDB\\Collection` object.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+
+Example
+-------
+
+The following example clones an existing Collection object with a new read
+preference:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->selectCollect('demo', 'restaurants');
+
+   $newCollection = $sourceCollection->withOptions([
+       'readPreference' => new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_SECONDARY),
+   ]);
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::__construct()`

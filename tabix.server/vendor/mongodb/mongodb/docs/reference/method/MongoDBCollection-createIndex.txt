@@ -1,0 +1,109 @@
+================================
+MongoDBCollection::createIndex()
+================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::createIndex()
+
+   Create an index for the collection.
+
+   .. code-block:: php
+
+      function createIndex($key, array $options = []): string
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-createIndex-param.rst
+
+   The ``$options`` parameter accepts all index options that your MongoDB
+   version supports. MongoDB includes the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-createIndex-option.rst
+
+   For a full list of the supported index creation options, refer to the
+   :manual:`createIndexes </reference/command/createIndexes>` command reference
+   in the MongoDB manual.
+
+Return Values
+-------------
+
+The name of the created index as a string.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Examples
+--------
+
+Create a Compound Index
+~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example creates a :manual:`compound index </core/index-compound>`
+on the ``borough`` and ``cuisine`` fields in the ``restaurants`` collection in
+the ``example`` database.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->selectCollection('example', 'restaurants');
+
+   $indexName = $collection->createIndex(['borough' => 1, 'cuisine' => 1]);
+
+   var_dump($indexName);
+
+The output would then resemble::
+
+   string(19) "borough_1_cuisine_1"
+
+Create a Partial Index
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following example adds a :manual:`partial index </core/index-parital>` on
+the ``borough`` field in the ``restaurants`` collection in the ``example``
+database. The partial index indexes only documents where the ``borough`` field
+exists.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->selectCollection('example, 'restaurants');
+
+   $indexName = $collection->createIndex(
+      ['borough' => 1],
+      [
+          'partialFilterExpression' => [
+              'borough' => ['$exists' => true],
+          ],
+      ]
+   );
+
+   var_dump($indexName);
+
+The output would then resemble::
+
+   string(9) "borough_1"
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::createIndexes()`
+- :doc:`/tutorial/indexes`
+- :manual:`createIndexes </reference/command/createIndexes>` command reference
+  in the MongoDB manual
+- :manual:`Index </indexes>` documentation in the MongoDB Manual

@@ -1,0 +1,64 @@
+arg_name: option
+name: maxTimeMS
+type: integer
+description: |
+   The cumulative time limit in milliseconds for processing operations on the
+   cursor. MongoDB aborts the operation at the earliest following
+   :term:`interrupt point`.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: readConcern
+type: :php:`MongoDB\\Driver\\ReadConcern <class.mongodb-driver-readconcern>`
+description: |
+  The default read concern to use for {{resource}} operations. Defaults to the
+  {{parent}}'s read concern.
+interface: phpmethod
+operation: selectCollection
+optional: true
+replacement:
+  resource: "collection"
+  parent: "client"
+---
+arg_name: option
+name: readPreference
+type: :php:`MongoDB\\Driver\\ReadPreference <class.mongodb-driver-readpreference>`
+description: |
+  The default read preference to use for {{resource}} operations. Defaults to
+  the {{parent}}'s read preference.
+interface: phpmethod
+operation: ~
+optional: true
+replacement:
+  resource: "collection"
+  parent: "client"
+---
+arg_name: option
+name: typeMap
+type: array
+description: |
+  The :php:`type map
+  <manual/en/mongodb.persistence.deserialization.php#mongodb.persistence.typemaps>`
+  to apply to cursors, which determines how BSON documents are converted to PHP
+  values. Defaults to the {{parent}}'s type map.
+interface: phpmethod
+operation: ~
+optional: true
+replacement:
+  parent: "client"
+---
+arg_name: option
+name: writeConcern
+type: :php:`MongoDB\\Driver\\WriteConcern <class.mongodb-driver-writeconcern>`
+description: |
+  The default write concern to use for {{resource}} operations. Defaults
+  to the {{parent}}'s write concern.
+interface: phpmethod
+operation: ~
+optional: true
+replacement:
+  resource: "collection"
+  parent: "client"
+...

@@ -1,0 +1,230 @@
+arg_name: option
+name: autoIndexId
+type: boolean
+description: |
+  Specify ``false`` to disable the automatic creation of an index on the ``_id``
+  field.
+
+  .. important::
+
+     For replica sets, do not set ``autoIndexId`` to ``false``.
+
+  .. deprecated:: 3.2. The ``autoIndexId`` option will be removed in MongoDB 3.4.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: capped
+type: boolean
+description: |
+  To create a capped collection, specify ``true``. If you specify ``true``, you
+  must also set a maximum size in the ``size`` option.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: collation
+pre: |
+  Specifies the :manual:`collation
+  </reference/bson-type-comparison-order/#collation>` for the collection.
+---
+arg_name: option
+name: flags
+type: integer
+description: |
+  Available for the MMAPv1 storage engine only to set the ``usePowerOf2Sizes``
+  and ``noPadding`` flags.
+
+  The |php-library| provides constants that you can combine with a :php:`bitwise
+  OR operator <language.operators.bitwise>` to set the flag values:
+
+  - ``MongoDB\Operation\CreateCollection::USE_POWER_OF_2_SIZES``: ``1``
+  - ``MongoDB\Operation\CreateCollection::NO_PADDING``: ``2``
+
+  Defaults to ``1``.
+
+  .. note::
+
+     MongoDB 3.0 and later ignores the ``usePowerOf2Sizes`` flag. See
+     :manual:`collMod </reference/command/collMod>` and
+     :manual:`db.createCollection()
+     </reference/method/db.createCollection>` for more information.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: indexOptionDefaults
+type: array|object
+description: |
+  Allows users to specify a default configuration for indexes when creating a
+  collection.
+
+  The ``indexOptionDefaults`` option accepts a ``storageEngine`` document,
+  which should take the following form::
+
+     { <storage-engine-name>: <options> }
+
+  Storage engine configurations specified when creating indexes are validated
+  and logged to the :term:`oplog` during replication to support replica sets
+  with members that use different storage engines.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: max
+type: integer
+description: |
+  The maximum number of documents allowed in the capped collection. The ``size``
+  option takes precedence over this limit. If a capped collection reaches the
+  ``size`` limit before it reaches the maximum number of documents, MongoDB
+  removes old documents. If you prefer to use the ``max`` limit, ensure that the
+  ``size`` limit, which is required for a capped collection, is sufficient to
+  contain the maximum number of documents.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-common-option.yaml
+  ref: maxTimeMS
+---
+arg_name: option
+name: size
+type: integer
+description: |
+  Specify a maximum size in bytes for a capped collection. Once a capped
+  collection reaches its maximum size, MongoDB removes the older documents to
+  make space for the new documents. The ``size`` option is required for capped
+  collections and ignored for other collections.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: storageEngine
+type: array|object
+description: |
+  Available for the WiredTiger storage engine only.
+
+  Allows users to specify configuration to the storage engine on a
+  per-collection basis when creating a collection. The value of the
+  ``storageEngine`` option should take the following form::
+
+     { <storage-engine-name>: <options> }
+
+  Storage engine configurations specified when creating collections are
+  validated and logged to the :term:`oplog` during replication to support
+  replica sets with members that use different storage engines.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBDatabase-common-option.yaml
+  ref: typeMap
+post: |
+  This will be used for the returned command result document.
+---
+arg_name: option
+name: validator
+type: array
+description: |
+  Allows users to specify :manual:`validation rules or expressions
+  </core/document-validation>` for the collection. For more information, see
+  :manual:`Document Validation </core/document-validation>` in the MongoDB
+  manual.
+
+  The ``validator`` option takes an array that specifies the validation rules or
+  expressions. You can specify the expressions using the same operators as
+  MongoDB's :manual:`query operators </reference/operator/query>` with the
+  exception of :query:`$geoNear`, :query:`$near`, :query:`$nearSphere`,
+  :query:`$text`, and :query:`$where`.
+
+  .. note::
+
+     - Validation occurs during updates and inserts. Existing documents do not
+       undergo validation checks until modification.
+
+     - You cannot specify a validator for collections in the ``admin``,
+       ``local``, and ``config`` databases.
+
+     - You cannot specify a validator for ``system.*`` collections.
+operation: ~
+interface: phpmethod
+optional: true
+---
+arg_name: option
+name: validationAction
+type: string
+description: |
+   Determines whether to ``error`` on invalid documents or just ``warn`` about
+   the violations but allow invalid documents to be inserted.
+
+   .. important::
+
+      Validation of documents only applies to those documents as determined by
+      the ``validationLevel``.
+
+   .. list-table::
+      :header-rows: 1
+
+      * - ``validationAction``
+
+        - Description
+
+      * - ``"error"``
+
+        - **Default**. Documents must pass validation before the write occurs.
+          Otherwise, the write operation fails.
+
+      * - ``"warn"``
+
+        - Documents do not have to pass validation. If the document fails
+          validation, the write operation logs the validation failure.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: validationLevel
+type: string
+description: |
+   Determines how strictly MongoDB applies the validation rules to existing
+   documents during an update.
+
+   .. list-table::
+      :header-rows: 1
+
+      * - ``validationLevel``
+
+        - Description
+
+      * - ``"off"``
+
+        - No validation for inserts or updates.
+
+      * - ``"strict"``
+
+        - **Default**. Apply validation rules to all inserts and all updates.
+
+      * - ``"moderate"``
+
+        - Apply validation rules to inserts and to updates on existing *valid*
+          documents. Do not apply rules to updates on existing *invalid*
+          documents.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBDatabase-common-option.yaml
+  ref: writeConcern
+post: |
+  This is not supported for server versions prior to 3.4 and will result in an
+  exception at execution time if used.
+...

@@ -1,0 +1,23 @@
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: bypassDocumentValidation
+---
+arg_name: option
+name: ordered
+type: boolean
+description: |
+  If ``true``: when a single write fails, the operation will stop without
+  performing the remaining writes and throw an exception.
+
+  If ``false``: when a single write fails, the operation will continue with the
+  remaining writes, if any, and throw an exception.
+
+  The default is ``true``.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+...

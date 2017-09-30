@@ -1,0 +1,52 @@
+============================
+MongoDB\\GridFS\Bucket Class
+============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpclass:: MongoDB\\GridFS\\Bucket
+
+   :manual:`GridFS </core/gridfs>` is a specification for storing and retrieving
+   files in MongoDB. GridFS uses two collections to store files. One collection
+   stores the file chunks (e.g. ``fs.chunks``), and the other stores file
+   metadata (e.g. ``fs.files``). The :phpclass:`MongoDB\\GridFS\\Bucket` class
+   provides an interface around these collections for working with the files as
+   PHP :php:`Streams <stream>`.
+
+   You can construct a GridFS bucket using the driver's
+   :php:`Manager <class.mongodb-driver-manager>` class, or select a bucket from
+   the library's :phpclass:`MongoDB\\Database` class via the
+   :phpmethod:`selectGridFSBucket() <MongoDB\\Database::selectGridFSBucket>`
+   method.
+
+Methods
+-------
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBGridFSBucket__construct
+   /reference/method/MongoDBGridFSBucket-delete
+   /reference/method/MongoDBGridFSBucket-downloadToStream
+   /reference/method/MongoDBGridFSBucket-downloadToStreamByName
+   /reference/method/MongoDBGridFSBucket-drop
+   /reference/method/MongoDBGridFSBucket-find
+   /reference/method/MongoDBGridFSBucket-findOne
+   /reference/method/MongoDBGridFSBucket-getBucketName
+   /reference/method/MongoDBGridFSBucket-getDatabaseName
+   /reference/method/MongoDBGridFSBucket-getFileDocumentForStream
+   /reference/method/MongoDBGridFSBucket-getFileIdForStream
+   /reference/method/MongoDBGridFSBucket-openDownloadStream
+   /reference/method/MongoDBGridFSBucket-openDownloadStreamByName
+   /reference/method/MongoDBGridFSBucket-openUploadStream
+   /reference/method/MongoDBGridFSBucket-rename
+   /reference/method/MongoDBGridFSBucket-uploadFromStream

@@ -1,0 +1,109 @@
+=======================================
+MongoDB\\Collection::findOneAndUpdate()
+=======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::findOneAndUpdate()
+
+   Finds a single document matching the query and updates it.
+
+   .. code-block:: php
+
+      function findOneAndUpdate($filter, $update, array $options = []): object|null
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOneAndUpdate-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-findOneAndUpdate-option.rst
+
+Return Values
+-------------
+
+An array or object for either the original or the updated document, depending on
+the specified value of the ``returnDocument`` option. By default, the original
+document is returned. If no document matched the query, ``null`` is returned.
+The return type will depend on the ``typeMap`` option.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unexpectedvalueexception.rst
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+Examples
+--------
+
+The following operation updates the restaurant with ``restaurant_id`` of
+``"40361708"`` in the ``restaurants`` collection in the ``example`` database by
+setting its building number to ``"761"``:
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->example->restaurants;
+
+   $updatedRestaurant = $collection->findOneAndUpdate(
+       [ 'restaurant_id' => '40361708' ],
+       [ '$set' => [ 'address.building' => '761' ]],
+       [
+           'projection' => [ 'address' => 1 ],
+           'returnDocument' => MongoDB\Operation\FindOneAndUpdate::RETURN_DOCUMENT_AFTER,
+       ]
+   );
+
+   var_dump($updatedRestaurant)
+
+The output would then resemble::
+
+   object(stdClass)#16 (2) {
+     ["_id"]=>
+     object(MongoDB\BSON\ObjectID)#10 (1) {
+       ["oid"]=>
+       string(24) "5813a08d29032c6e72d566a7"
+     }
+     ["address"]=>
+     object(stdClass)#15 (4) {
+       ["building"]=>
+       string(3) "761"
+       ["coord"]=>
+       array(2) {
+         [0]=>
+         float(-73.9925306)
+         [1]=>
+         float(40.7309346)
+       }
+       ["street"]=>
+       string(8) "Broadway"
+       ["zipcode"]=>
+       string(5) "10003"
+     }
+   }
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::findOneAndDelete()`
+- :phpmethod:`MongoDB\\Collection::findOneAndReplace()`
+- :manual:`findAndModify </reference/command/findAndModify>` command reference
+  in the MongoDB manual

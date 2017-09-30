@@ -1,0 +1,84 @@
+arg_name: option
+name: unique
+type: boolean
+description: |
+  Creates a :manual:`unique </core/index-unique>` index.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: collation
+pre: |
+  Specifies the :manual:`collation
+  </reference/bson-type-comparison-order/#collation>` for the index.
+---
+arg_name: option
+name: partialFilterExpression
+type: array|object
+description: |
+  Creates a :manual:`partial </core/index-partial>` index.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: sparse
+type: boolean
+description: |
+  Creates a :manual:`sparse </core/index-sparse>` index.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: expireAfterSeconds
+type: integer
+description: |
+  Creates a :manual:`TTL </core/index-ttl>` index.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: name
+type: string
+description: |
+  A name that uniquely identifies the index. By default, MongoDB creates index
+  names based on the key.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: background
+type: string
+description: |
+  Instructs MongoDB to build the index :manual:`as a background
+  </core/index-creation>` process.
+interface: phpmethod
+operation: ~
+optional: true
+---
+arg_name: option
+name: 2dsphereIndexVersion
+type: integer
+description: |
+  Specifies the :manual:`version of a 2dsphere </core/2dsphere>` index to
+  create.
+
+  MongoDB 2.6 introduced version 2 of 2dsphere indexes. Version 2 is the default
+  version of 2dsphere indexes created in MongoDB 2.6 and later versions.
+  ``2dsphereIndexVersion`` enables you to override the default version 2.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-MongoDBCollection-common-option.yaml
+  ref: writeConcern
+post: |
+  This is not supported for server versions prior to 3.4 and will result in an
+  exception at execution time if used.
+...

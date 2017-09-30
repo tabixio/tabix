@@ -1,0 +1,89 @@
+=========================
+MongoDB\\Collection Class
+=========================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpclass:: MongoDB\\Collection
+
+   Provides methods for common operations on collections and documents,
+   including CRUD operations and index management.
+
+   You can construct collections directly using the driver's
+   :php:`MongoDB\\Driver\\Manager <class.mongodb-driver-manager>` class or
+   select a collection from the library's :phpclass:`MongoDB\\Client` or
+   :phpclass:`MongoDB\\Database` classes. A collection may also be cloned from
+   an existing :phpclass:`MongoDB\\Collection` object via the
+   :phpmethod:`withOptions() <MongoDB\\Collection::withOptions>` method.
+
+   :phpclass:`MongoDB\\Collection` supports the :php:`readConcern
+   <mongodb-driver-readconcern>`, :php:`readPreference
+   <mongodb-driver-readpreference>`, :php:`typeMap
+   <manual/en/mongodb.persistence.deserialization.php#mongodb.persistence.typemaps>`,
+   and :php:`writeConcern <mongodb-driver-writeconcern>` options. If you omit an
+   option, the collection inherits the value from the :php:`Manager
+   <mongodb-driver-manager>` constructor argument or the :phpclass:`Client
+   <MongoDB\\Client>` or :phpclass:`Database <MongoDB\\Database>` object used to
+   select the collection.
+
+   Operations within the :phpclass:`MongoDB\\Collection` class inherit the
+   collection's options.
+
+Type Map Limitations
+--------------------
+
+   The :manual:`aggregate </reference/command/aggregate>` (when not using a
+   cursor), :manual:`distinct </reference/command/distinct>`, and
+   :manual:`findAndModify </reference/command/findAndModify>` helpers do not
+   support a ``typeMap`` option due to a driver limitation. The
+   :phpmethod:`aggregate() <MongoDB\\Collection::aggregate>`,
+   :phpmethod:`distinct() <MongoDB\\Collection::distinct>`,
+   :phpmethod:`findOneAndReplace() <MongoDB\\Collection::findOneAndReplace>`,
+   :phpmethod:`findOneAndUpdate() <MongoDB\\Collection::findOneAndUpdate>`, and
+   :phpmethod:`findOneAndDelete() <MongoDB\\Collection::findOneAndDelete>`
+   methods return BSON documents as `stdClass` objects and BSON arrays as
+   arrays.
+
+Methods
+-------
+
+.. toctree::
+   :titlesonly:
+
+   /reference/method/MongoDBCollection__construct
+   /reference/method/MongoDBCollection-aggregate
+   /reference/method/MongoDBCollection-bulkWrite
+   /reference/method/MongoDBCollection-count
+   /reference/method/MongoDBCollection-createIndex
+   /reference/method/MongoDBCollection-createIndexes
+   /reference/method/MongoDBCollection-deleteMany
+   /reference/method/MongoDBCollection-deleteOne
+   /reference/method/MongoDBCollection-distinct
+   /reference/method/MongoDBCollection-drop
+   /reference/method/MongoDBCollection-dropIndex
+   /reference/method/MongoDBCollection-dropIndexes
+   /reference/method/MongoDBCollection-find
+   /reference/method/MongoDBCollection-findOne
+   /reference/method/MongoDBCollection-findOneAndDelete
+   /reference/method/MongoDBCollection-findOneAndReplace
+   /reference/method/MongoDBCollection-findOneAndUpdate
+   /reference/method/MongoDBCollection-getCollectionName
+   /reference/method/MongoDBCollection-getDatabaseName
+   /reference/method/MongoDBCollection-getManager
+   /reference/method/MongoDBCollection-getNamespace
+   /reference/method/MongoDBCollection-insertMany
+   /reference/method/MongoDBCollection-insertOne
+   /reference/method/MongoDBCollection-listIndexes
+   /reference/method/MongoDBCollection-replaceOne
+   /reference/method/MongoDBCollection-updateMany
+   /reference/method/MongoDBCollection-updateOne
+   /reference/method/MongoDBCollection-withOptions

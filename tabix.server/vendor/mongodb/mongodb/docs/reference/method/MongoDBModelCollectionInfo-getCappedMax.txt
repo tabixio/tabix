@@ -1,0 +1,39 @@
+==============================================
+MongoDB\\Model\\CollectionInfo::getCappedMax()
+==============================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\CollectionInfo::getCappedMax()
+
+   Return the document limit for the capped collection. This correlates with the
+   ``max`` option for :phpmethod:`MongoDB\\Database::createCollection()`.
+
+   .. code-block:: php
+
+      function getCappedMax(): integer|null
+
+Return Values
+-------------
+
+The document limit for the capped collection. If the collection is not capped,
+``null`` will be returned.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Model\\CollectionInfo::getCappedSize()`
+- :phpmethod:`MongoDB\\Model\\CollectionInfo::isCapped()`
+- :phpmethod:`MongoDB\\Database::createCollection()`
+- :manual:`Capped Collections </core/capped-collections>` in the MongoDB manual
+- :manual:`listCollections </reference/command/listCollections>` command
+  reference in the MongoDB manual

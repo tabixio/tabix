@@ -1,0 +1,10 @@
+source:
+  file: apiargs-MongoDBGridFSBucket-common-param.yaml
+  ref: $filename
+replacement:
+  resource: " to create"
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

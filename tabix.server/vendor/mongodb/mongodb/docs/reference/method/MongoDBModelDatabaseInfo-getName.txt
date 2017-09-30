@@ -1,0 +1,34 @@
+=======================================
+MongoDB\\Model\\DatabaseInfo::getName()
+=======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Model\\DatabaseInfo::getName()
+
+   Return the database name.
+
+   .. code-block:: php
+
+      function getName(): string
+
+Return Values
+-------------
+
+The database name.
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Database::getDatabaseName()`
+- :manual:`listDatabases </reference/command/listDatabases>` command reference
+  in the MongoDB manual

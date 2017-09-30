@@ -1,0 +1,42 @@
+===========================================
+MongoDB\\BulkWriteResult::getDeletedCount()
+===========================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\BulkWriteResult::getDeletedCount()
+
+   Return the total number of documents that were deleted by all delete
+   operations in the bulk write.
+
+   .. code-block:: php
+
+      function getDeletedCount(): integer
+
+   This method should only be called if the write was acknowledged.
+
+Return Values
+-------------
+
+The total number of documents that were deleted by all delete operations in the
+bulk write.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-badmethodcallexception-write-result.rst
+
+See Also
+--------
+
+- :php:`MongoDB\\Driver\\WriteResult::getDeletedCount()
+  <manual/en/mongodb-driver-writeresult.getdeletedcount.php>`

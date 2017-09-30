@@ -1,0 +1,14 @@
+arg_name: param
+name: $pipeline
+type: array
+description: |
+  Specifies an :manual:`aggregation pipeline </core/aggregation-pipeline>`
+  operation.
+interface: phpmethod
+operation: ~
+optional: false
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

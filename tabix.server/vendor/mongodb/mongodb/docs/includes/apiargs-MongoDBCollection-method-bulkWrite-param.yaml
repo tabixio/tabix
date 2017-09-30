@@ -1,0 +1,37 @@
+arg_name: param
+name: $operations
+type: array
+description: |
+  An array containing the write operations to perform.
+  :phpmethod:`MongoDB\\Collection::bulkWrite()` supports
+  :phpmethod:`deleteMany() <MongoDB\\Collection::deleteMany>`,
+  :phpmethod:`deleteOne() <MongoDB\\Collection::deleteOne>`,
+  :phpmethod:`insertOne() <MongoDB\\Collection::insertOne>`,
+  :phpmethod:`replaceOne() <MongoDB\\Collection::replaceOne>`,
+  :phpmethod:`updateMany() <MongoDB\\Collection::updateMany>`, and
+  :phpmethod:`updateOne() <MongoDB\\Collection::updateOne>` operations in the
+  following array structure:
+
+  .. code-block:: php
+
+     [
+         [ 'deleteMany' => [ $filter ] ],
+         [ 'deleteOne'  => [ $filter ] ],
+         [ 'insertOne'  => [ $document ] ],
+         [ 'replaceOne' => [ $filter, $replacement, $options ] ],
+         [ 'updateMany' => [ $filter, $update, $options ] ],
+         [ 'updateOne'  => [ $filter, $update, $options ] ],
+     ]
+
+  Arguments correspond to the respective operation methods. However, the
+  ``writeConcern`` option is specified as a top-level option to
+  :phpmethod:`MongoDB\\Collection::bulkWrite()` instead of each individual
+  operation.
+interface: phpmethod
+operation: ~
+optional: true
+---
+source:
+  file: apiargs-common-param.yaml
+  ref: $options
+...

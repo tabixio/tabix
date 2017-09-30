@@ -1,0 +1,52 @@
+======================================
+MongoDB\\Collection::getDatabaseName()
+======================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::getDatabaseName()
+
+   Returns the name of the database containing this collection.
+
+   .. code-block:: php
+
+      function getDatabaseName(): string
+
+Return Values
+-------------
+
+The name of the database containing this collection as a string.
+
+Example
+-------
+
+The following returns the database name for the ``zips`` collection in the
+``demo`` database.
+
+.. code-block:: php
+
+   <?php
+
+   $collection = (new MongoDB\Client)->demo->zips;
+
+   echo $collection->getDatabaseName();
+
+The output would then resemble::
+
+   demo
+
+See Also
+--------
+
+- :phpmethod:`MongoDB\\Collection::getCollectionName()`
+- :phpmethod:`MongoDB\\Collection::getNamespace()`
+

@@ -1,0 +1,56 @@
+============================
+MongoDB\\Collection::count()
+============================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Collection::count()
+
+   Count the number of documents that match the filter criteria.
+
+   .. code-block:: php
+
+      function count($filter = [], array $options = []): integer
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-count-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBCollection-method-count-option.rst
+
+Return Values
+-------------
+
+The number of documents matching the filter criteria.
+
+Errors/Exceptions
+-----------------
+
+.. include:: /includes/extracts/error-unexpectedvalueexception.rst
+.. include:: /includes/extracts/error-unsupportedexception.rst
+.. include:: /includes/extracts/error-invalidargumentexception.rst
+.. include:: /includes/extracts/error-driver-runtimeexception.rst
+
+Behavior
+--------
+
+.. include:: /includes/extracts/note-bson-comparison.rst
+
+.. todo: add output and examples
+
+See Also
+--------
+
+- :manual:`count </reference/command/count>` command reference in the MongoDB
+  manual

@@ -1,0 +1,121 @@
+====================================
+MongoDB\\Database::listCollections()
+====================================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Definition
+----------
+
+.. phpmethod:: MongoDB\\Database::listCollections()
+
+   Returns information for all collections in this database.
+
+   .. code-block:: php
+
+      function listCollections(array $options = []): MongoDB\Model\CollectionInfoIterator
+
+   This method has the following parameters:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-listCollections-param.rst
+
+   The ``$options`` parameter supports the following options:
+
+   .. include:: /includes/apiargs/MongoDBDatabase-method-listCollections-option.rst
+
+Return Values
+-------------
+
+A traversable :phpclass:`MongoDB\\Model\\CollectionInfoIterator`, which contains
+a :phpclass:`MongoDB\\Model\\CollectionInfo` object for each collection in the
+database.
+
+Example
+-------
+
+The following example lists all of the collections in the ``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $database = (new MongoDB\Client)->example;
+
+   foreach ($database->listCollections() as $collectionInfo) {
+       var_dump($collectionInfo);
+   }
+
+The output would then resemble::
+
+   object(MongoDB\Model\CollectionInfo)#3 (2) {
+     ["name"]=>
+     string(11) "restaurants"
+     ["options"]=>
+     array(0) {
+     }
+   }
+   object(MongoDB\Model\CollectionInfo)#3 (2) {
+     ["name"]=>
+     string(5) "users"
+     ["options"]=>
+     array(0) {
+     }
+   }
+   object(MongoDB\Model\CollectionInfo)#3 (2) {
+     ["name"]=>
+     string(6) "restos"
+     ["options"]=>
+     array(0) {
+     }
+   }
+
+The following example lists all collections whose name starts with ``"rest"``
+in the ``example`` database:
+
+.. code-block:: php
+
+   <?php
+
+   $database = (new MongoDB\Client)->example;
+
+   $collections = $database->listCollections([
+       'filter' => [
+           'name' => new MongoDB\BSON\Regex('^rest.*'),
+       ],
+   ]);
+
+   foreach ($collections as $collectionInfo) {
+       var_dump($collectionInfo);
+   }
+
+The output would then resemble::
+
+   object(MongoDB\Model\CollectionInfo)#3 (2) {
+     ["name"]=>
+     string(11) "restaurants"
+     ["options"]=>
+     array(0) {
+     }
+   }
+   object(MongoDB\Model\CollectionInfo)#3 (2) {
+     ["name"]=>
+     string(6) "restos"
+     ["options"]=>
+     array(0) {
+     }
+   }
+
+See Also
+--------
+
+- :manual:`listCollections </reference/command/listCollections` command
+  reference in the MongoDB manual
+- `Enumerating Collections
+  <https://github.com/mongodb/specifications/blob/master/source/enumerate-collections.rst>`_
+  specification

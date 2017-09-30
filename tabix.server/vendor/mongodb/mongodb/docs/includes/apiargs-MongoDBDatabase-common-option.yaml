@@ -1,0 +1,16 @@
+source:
+  file: apiargs-common-option.yaml
+  ref: typeMap
+replacement:
+  parent: "database"
+---
+arg_name: option
+name: writeConcern
+type: :php:`MongoDB\\Driver\\WriteConcern <class.mongodb-driver-writeconcern>`
+description: |
+   :manual:`Write concern </reference/write-concern>` to use for the operation.
+   Defaults to the database's write concern.
+interface: phpmethod
+operation: ~
+optional: true
+...
