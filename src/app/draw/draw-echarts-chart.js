@@ -74,7 +74,6 @@ class DrawEchartsChart extends DrawEcharts {
 
     createChart(drw) {
 
-
         let sets = {
             autoAxis: false,
             markLine:true,
@@ -89,9 +88,10 @@ class DrawEchartsChart extends DrawEcharts {
         }
         // @todo : support xAxis + yAxis ( array )
 
-
+        let enableColumns={};
         let columns=this.getColumns();
         let firstCol=this.getFirstColumn();
+        let xAxisCol=firstCol;
         let dtCol=this.findDateTimeAxis();
 
         let options={};
@@ -101,28 +101,73 @@ class DrawEchartsChart extends DrawEcharts {
         let $series={};
         // ------------------------------------------------------------------------------------------------------------------------------------
         let $data=this.data();
+
         if (dtCol) {
             firstCol=dtCol;
         }
-        // Отсортируем данные
-        if (sets.sort) {
-            $data=_.sortBy($data,firstCol);
+        // Если указана ось X
+        if (sets.xAxis)
+        {
+            if (!this.haveColumn(sets.xAxis))
+            {
+                throw "xAxis column not exists";
+            }
+            xAxisCol=sets.xAxis;
         }
-        // Берем первую колонку
+        else {
+            // Отсортируем данные
+            if (sets.sort ) {
+                $data=_.sortBy($data,firstCol);
+            }
+            // Берем первую колонку
+            xAxisCol=firstCol;
+
+        }
+        // Добавляем ось X
         xAxis=[{
-            name : firstCol,
+            name : xAxisCol,
             type : 'category',
             // boundaryGap : false,
             // axisLine: {onZero: true},
-            data: _.map($data,firstCol)
+            data: []
         }];
+        // ------------------------------------------------------------------------------------------------------------------------------------
 
+        // Если указана ось Y может быть строка или массив
+        if (sets.yAxis) {
+            if (_.isString(sets.yAxis))
+            {
 
-        // console.info('xAxis',xAxis);
+                if (!this.haveColumn(sets.yAxis))
+                {
+                    throw "yAxis column not exists";
+                }
+                enableColumns[sets.yAxis]=1;
+            } else if (_.isArray(sets.yAxis))
+            {
+                let index;
+                for (index = 0; index < sets.yAxis.length; ++index) {
+                    let x=sets.yAxis[index];
+                    if (!this.haveColumn(x))
+                    {
+                        throw "yAxis column not exists:"+x;
+                    }
+                    enableColumns[x]=1;
+                }
+            } else {
+                throw "yAxis column must string or array";
+            }
+
+        }
+
+        console.log("enableColumns,",enableColumns);
+
         // ------------------------------------------------------------------------------------------------------------------------------------
         let colsMedianAxis=[]; // содержит mediana для каждой колонки
+
         let lastColumn=''; // нужно чтобы задать название оси
         let index=0;
+
         // если указана группировка по колонкам
         let path=this.getParameterPath();
 
@@ -139,7 +184,15 @@ class DrawEchartsChart extends DrawEcharts {
         for ( let colPos in columns) {
             // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
             let col=columns[colPos];
-            if (col!=firstCol)
+
+            let skip=false;
+
+            if (_.size(enableColumns)) {
+                skip=_.isUndefined(enableColumns[col]);
+            }
+
+
+            if (col!=xAxisCol && !skip)
             {
                 if (this.isStringColumn(col) && cntStrAdd<2 && !groupPath) {
                     // Автопуть - автоматические создание групп если вторая и/или третья колонка строки
@@ -158,18 +211,24 @@ class DrawEchartsChart extends DrawEcharts {
             }
         }
 
-        console.log('PATH',path);
-        console.log('colValues',colValues);
         // ------------------------------------------------------------------------------------------------------------------------------------
         let len = $data.length;
         for (index = 0; index < len; ++index) {
             let item=$data[index];
+            xAxis[0].data.push(item[xAxis[0].name]);
 
             for ( let colPos in columns) {
                 // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
                 let col = columns[colPos];
-                let series_path=[firstCol];
-                if (col !== firstCol && this.isNumericColumn(col) && _.findIndex(path,col)<0) {
+                let series_path=[xAxisCol];
+                let skip=false;
+
+                if (_.size(enableColumns)) {
+                    skip=_.isUndefined(enableColumns[col]);
+                }
+
+
+                if (col !== xAxisCol && !skip && this.isNumericColumn(col) && _.findIndex(path,col)<0) {
                     if (path) {
 
                         for (let pi = 0; pi < path.length; ++pi) {
@@ -195,11 +254,15 @@ class DrawEchartsChart extends DrawEcharts {
                     }
 
                     // console.log('item[firstCol]=',item[firstCol],__val);
-                    $series[series_path].set(item[firstCol],__val);
+                    $series[series_path].set(item[xAxisCol],__val);
                 }
             }// for columns
         } // for $data
 
+        console.log('xAxisCol',xAxisCol);
+        console.log('xAxis',xAxis);
+        console.log('PATH',path);
+        console.log('colValues',colValues);
         // ---------------------------------------------------------------
         // console.log("firstCol",firstCol);
         // console.log("colValues",colValues);

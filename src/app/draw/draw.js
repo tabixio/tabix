@@ -124,6 +124,7 @@ class DrawBasicChart {
 
 
     getColumnPosition(col) {
+        // Returns the key of the matched element, else undefined.
         return parseInt(_.findKey(this.meta(), {'name': col}));
     }
 

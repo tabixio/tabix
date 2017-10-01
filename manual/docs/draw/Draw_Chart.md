@@ -6,6 +6,29 @@
 ![AutoAxis](/img/draw-chart-datetime.png)
 
 ### Chart & autoAxis
+```SQL
+SELECT sin(number) as s,cos(number) as c,number
+FROM system.numbers where number<12 LIMIT 12
+DRAW_CHART
+{
+    xAxis:'number',
+    yAxis:['s','c']
+}
+```
+
+```SQL
+SELECT sin(number) as s,cos(number) as c,number
+FROM system.numbers where number<12 LIMIT 12
+DRAW_CHART
+{
+    xAxis:'number',
+    yAxis:'s'
+}
+```
+
+
+
+
 
 ```SQL
 
