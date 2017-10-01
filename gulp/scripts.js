@@ -3,6 +3,7 @@
 var path = require('path');
 var gulp = require('gulp');
 var conf = require('./conf');
+var sizereport = require('gulp-sizereport');
 
 var browserSync = require('browser-sync');
 
@@ -22,5 +23,6 @@ gulp.task('scripts', function() {
             plugins: ["transform-es2015-modules-commonjs"]
         }))
         .on('error', conf.errorHandler('babel'))
-        .pipe($.size());
+        .pipe($.size())
+        .pipe(sizereport());
 });

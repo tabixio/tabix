@@ -6,6 +6,7 @@ var tap = require('gulp-tap');
 var conf = require('./conf');
 //var loader = require('./loader');
 var packageJson = require('../package.json');
+var sizereport = require('gulp-sizereport');
 
 var $ = require('gulp-load-plugins')({
     pattern: ['gulp-*', 'main-bower-files', 'uglify-save-license', 'del']
@@ -117,7 +118,8 @@ gulp.task('html', ['inject', 'partials'], function () {
         .pipe($.size({
             title: path.join(conf.paths.dist, '/'),
             showFiles: true
-        }));
+        }))
+        .pipe(sizereport());
 });
 
 // Only applies for fonts from bower dependencies
