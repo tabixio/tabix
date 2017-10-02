@@ -80,11 +80,12 @@
             return false;
         };
         this.memory = (title) =>{
-
-            if (window.performance && window.performance.memory)
-            {
-                console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
-            }
+            return;
+            // if (window.performance && window.performance.memory)
+            // {
+            //     console.info(window.performance.memory);
+            //     console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+            // }
         };
 
         this.resetDatabaseStructure = () => {
@@ -203,6 +204,7 @@
                         return JSON.parse(data);
                         // return angular.fromJson(data);
                     } catch (err) {
+
                         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
                     }
                 }
@@ -302,6 +304,7 @@
                     data :query,
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        // 'Content-Type': 'application/json',
                         // "Cache-Control": "no-cache",
                         // "Pragma" : "no-cache",
                         // "If-Modified-Since":0
@@ -336,14 +339,15 @@
                      //         }
                      //     }
                      // },
-                    transformResponse: (data, header, status) => {
-                        try {
-                            // return angular.fromJson(data);
-                            return JSON.parse(data);
-                        } catch (err) {
-                            return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
-                        }
-                    }
+                    // transformResponse: (data, header, status) => {
+                    //     try {
+                    //         return angular.fromJson(data);
+                    //         // return JSON.parse(data);
+                    //     } catch (err) {
+                    //         console.error(err);
+                    //         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
+                    //     }
+                    // }
                 };
 
                 if (BasicAuthorization)
@@ -356,6 +360,9 @@
 
 
             console.warn("SQL>",url,query,req);
+            this.memory();
+
+
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)

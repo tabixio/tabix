@@ -153,29 +153,29 @@
             // We want to manually handle `window.resize` event in each directive.
             // So that we emulate `resize` event using $broadcast method and internally subscribe to this event in each directive
             // Define event handler
-            angular.element(window).on('resize', function(e)
-                { scope.$broadcast('resize'); });
+            // angular.element(window).on('resize', function(e)
+            //     { scope.$broadcast('resize'); });
+            //
+            // scope.$watch(
+            //     function () {
+            //         return [element[0].offsetWidth, element[0].offsetHeight].join('x');
+            //     },
+            //     function (value) {
+            //         // console.log('directive got resized:',value.split('x') );
+            //         scope.widget.scheduledResize(value.split('x'));
+            //     }
+            // );
 
-            scope.$watch(
-                function () {
-                    return [element[0].offsetWidth, element[0].offsetHeight].join('x');
-                },
-                function (value) {
-                    // console.log('directive got resized:',value.split('x') );
-                    scope.widget.scheduledResize(value.split('x'));
-                }
-            );
 
-
-            scope.events = {
-               resize: function(e, scope){
-                   $timeout(function(){
-                       // console.log("scope.events.resize");
-                       scope.widget.scheduledResize();
-                       // scope.api.update()
-                   },300)
-               }
-            };
+            // scope.events = {
+            //    resize: function(e, scope){
+            //        $timeout(function(){
+            //            // console.log("scope.events.resize");
+            //            scope.widget.scheduledResize();
+            //            // scope.api.update()
+            //        },300)
+            //    }
+            // };
             console.timeEnd("drawWidget.buildLinkFunc time took");
             console.groupEnd("drawWidget.buildLinkFunc");
         };

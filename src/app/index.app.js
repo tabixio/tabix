@@ -14,27 +14,30 @@
 
     // External libs connection
     angular.module(smi2.app.name, [
-        'ngAnimate',
+
         'ui.router',
         'LocalStorageModule',
         'angularScreenfull',
         'ui.ace',
+
         // 'ui.grid',
         // 'ui.grid.autoResize',
         // 'ui.grid.resizeColumns',
         // 'ui.grid.moveColumns',
         // 'ui.grid.exporter',
         // 'ui.grid.selection',
+        // 'ngAnimate',
+        // 'ngScrollbars',
+        // 'gridster',
+
         'angularResizable',
         'ngSanitize',
         'ngMaterial',
         'funMetisMenu',
-        //'ngScrollbars',
         'ngCsv',
         'pascalprecht.translate',
         'cfp.hotkeys',
         'ngHandsontable',
-        // 'gridster',
         'ngCsvImport',
         'gridstack-angular'
     ]);
