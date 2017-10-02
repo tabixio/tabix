@@ -38,12 +38,15 @@ php -m|grep mongodb
 
 git clone https://github.com/smi2/tabix.ui 
 
-php composer.phar install
+cd tabix.ui/tabix.server/
 
 git submodule init
 git submodule update --init --recursive
 git submodule update --remote
 
+
+cd tabix.ui/tabix.server/
+php composer.phar install
 ```
 
 ### Config 

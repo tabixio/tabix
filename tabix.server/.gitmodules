@@ -1,3 +1,0 @@
-[submodule "phpClickHouse"]
-	path = phpClickHouse
-	url = https://github.com/smi2/phpClickHouse.git
