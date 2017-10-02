@@ -1,6 +1,6 @@
 {
   "name": "Tabix",
-  "version": "2.0.0",
+  "version": "17.10.0",
   "dependencies": {
     "angular-animate": "1.5.9",
     "angular-aria": "1.5.9",
@@ -30,9 +30,6 @@
     "handsontable": "^0.34.4",
     "sql-formatter": "^1.1.2",
     "echarts": "^3.7.1",
-    "ngECharts": "ngecharts#^0.2.0",
-    "angular-gridster": "^0.13.15",
-    "zeroclipboard": "^2.3.0",
     "ace": "https://github.com/smi2/ace.git#1.2.6.1",
     "gulp": "^3.9.1",
     "angular-pivottable": "^1.2.1",

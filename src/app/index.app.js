@@ -31,7 +31,7 @@
         'pascalprecht.translate',
         'cfp.hotkeys',
         'ngHandsontable',
-        'gridster',
+        // 'gridster',
         'ngCsvImport',
         'gridstack-angular'
     ]);

@@ -25,12 +25,11 @@
 > + system.functions
 > + system.dictionaries
 > + system.columns
-
-
+* JS:Gulp|Bower|JQuery ... update
 * Button - "Reload database structure"
 * Login form : add checkbox - "HTTP Base auth" and "RO user ClickHouse"
 * Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
-
+* Draw_Chart { xAxis:'number',yAxis:['s','c'] }
 
 #### 2017-09-23-RU
 * изменен компонент сетка - поправлены ошибки отображения резульата в виде таблиц
@@ -42,7 +41,7 @@
 * В результате - подсвечены элементы  "inf"+"nan"
 * Добавлено кэширование стутуры базы 
 * Обновлен код - DatabaseStructure для более быстрого отображение струкутры базы 
-
+* В комманде Draw_Chart можно задать точно колонки которые использовать { xAxis:'number',yAxis:['s','c'] }
 
 
 ### 2017-08-08

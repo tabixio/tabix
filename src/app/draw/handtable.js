@@ -362,6 +362,68 @@ class HandsTable {
 
     }
 
+    static Transpose(ht,command) {
+
+        let dd=ht.getSourceData();
+        console.log("getDATA",dd);
+        // console.log("translateRowsToColumns",Handsontable.helper.translateRowsToColumns(dd));
+        console.log("translateRowsToColumns",HandsTable.transposeDatax(dd));
+
+
+        // _.keys
+
+        // Создаем колонки
+        // Создаем строки
+        // let d=HandsTable.transposeData(dd);
+
+        // console.log(ht,d,dd);
+        // ht.updateSettings({
+        //     data: d
+        // })
+
+    }
+
+    static transposeDatax(oTreeAll) {
+
+        var keys = [];
+        var i = 0;
+        for ( var key in oTreeAll[i]) {
+            keys.push(key);
+        }
+
+        console.log(keys);
+
+        var newObj = {
+            d : []
+        };
+
+        newObj['length'] = oTreeAll.length;
+        for (var k = 0; k < oTreeAll.length; k++) {
+            var obj = {};
+            for ( var cnt in keys) {
+                obj[keys[cnt]] = "";
+            }
+            newObj.d.push(obj);
+        }
+
+        for (var k = 0; k < oTreeAll.length; k++) {
+            for (var j = 0; j < oTreeAll.length; j++) {
+                newObj.d[k][keys[j]] = oTreeAll[j][keys[k]];
+            }
+        }
+
+        console.log(newObj);
+        return newObj;
+    }
+    static transposeData(a) {
+        return a[0].map(function(_, c) {
+            return a.map(function(r) {
+                return r[c];
+            });
+        });
+    }
+
+
     static makeWhereIn(ht) {
 
         let s = HandsTable.getSelected(ht,true);
@@ -439,6 +501,262 @@ class HandsTable {
         ht.render();
     }
 
+
+
+    fecthContextMenu()
+    {
+        return {
+            items: {
+                "columnformat": {
+                    name: 'Column format',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Reset", key: "columnformat:1", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Reset');
+                            },
+                            },
+                            {
+                                name: "Money", key: "columnformat:2", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Money');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Human", key: "columnformat:3", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Human');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Bytes", key: "columnformat:4", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Bytes');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Percentages", key: "columnformat:5", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Percentages');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Time only", key: "columnformat:6",
+                                callback: function (key, options, pf) {
+                                    HandsTable.makeFormat(this, 'Time');
+                                },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'Time');
+                                }
+                            },
+                            {
+                                name: "Date only", key: "columnformat:7", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Date');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'Date');
+                                }
+                            },
+                            {
+                                name: "Date loc.", key: "columnformat:8", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'DateLoc');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'Date');
+                                }
+                            },
+                            {
+                                name: "Float", key: "columnformat:9", callback: function (key, options, pf) {
+                                HandsTable.makeFormat(this, 'Float');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Heatmaps", key: "columnformat:10", callback: function (key, options, pf) {
+                                HandsTable.makeHeatmaps(this, 'Heatmaps');
+                            },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Negative & Positive",
+                                key: "columnformat:11",
+                                callback: function (key, options, pf) {
+                                    HandsTable.makeHeatmaps(this, 'NegaPosi');
+                                },
+                                disabled: function () {
+                                    return !HandsTable.isFormatColl(this, 'numeric');
+                                }
+                            },
+
+
+                        ]//items
+                    }//submenu
+                },
+
+                // -------------------- column Show Hide --------------------------------------------------------------------
+                //
+                // "columnshowhide": {
+                //     name: 'ShowHide Columns',
+                //     submenu: {
+                //         items: [
+                //             {
+                //                 name: "Hide this column",
+                //                 callback: function (key, options,pf) {
+                //                     // HandsTable.makeStyle(this,'Normal');;
+                //                     console.log("Hide this column");
+                //                 },
+                //                 key:"columnshowhide:1"
+                //             }//Money
+                //         ]//items
+                //     },//submenu
+                // },
+                //
+
+
+                // -------------------- Style CELL --------------------------------------------------------------------
+                "style": {
+                    name: 'Style',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Normal",
+                                callback: function (key, options, pf) {
+                                    HandsTable.makeStyle(this, 'Normal');
+                                },
+                                key: "style:normal"
+                            },
+                            {
+                                name: 'Bold',
+                                callback: function (key, options) {
+                                    HandsTable.makeStyle(this, 'Bold');
+                                },
+                                key: "style:makebold"
+
+                            },
+                            {
+                                name: 'Red color',
+                                callback: function (key, options) {
+                                    HandsTable.makeStyle(this, 'Red');
+                                },
+                                key: "style:red"
+                            },
+                            {
+                                name: 'Green color',
+                                callback: function (key, options) {
+                                    HandsTable.makeStyle(this, 'Green');
+                                },
+                                key: "style:green"
+                            },
+                            {
+                                name: 'Yellow color',
+                                callback: function (key, options) {
+                                    HandsTable.makeStyle(this, 'Yellow');
+                                },
+                                key: "style:green"
+                            },
+                            {
+                                name: 'Orange color',
+                                callback: function (key, options) {
+                                    HandsTable.makeStyle(this, 'Orange');
+                                },
+                                key: "style:green"
+                            }
+                        ]
+                    },
+                },//style
+                "hsep1": "---------",
+
+                // -------------------- Copy to  --------------------------------------------------------------------
+                "copyTo": {
+                    name: 'To Clipboard',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Redmine Markdown",
+                                callback: function (key, options, pf) {
+                                    console.info("copyToClipboard");
+                                    HandsTable.copyToClipboard(this, 'Redmine');
+                                },
+                                key: "copyTo:1"
+                            },//
+                            {
+                                name: "Redmine Markdown (full)",
+                                callback: function (key, options, pf) {
+                                    console.info("copyToClipboard");
+                                    HandsTable.copyToClipboard(this, 'Redmine',true);
+                                },
+                                key: "copyTo:2"
+                            },//
+                            {
+                                name: "WHERE col1 IN (val,val),col2 IN ...",
+                                callback: function (key, options, pf) {
+                                    console.info("makeWhereIn");
+                                    HandsTable.makeWhereIn(this);
+                                },
+                                key: "copyTo:3"
+                            },
+                            {
+                                name: "Create TABLE...",
+                                callback: function (key, options, pf) {
+                                    HandsTable.makeCreateTable(this);
+                                },
+                                key: "copyTo:4"
+                            },
+                            // {
+                            //     name: "make Create Table",
+                            //     callback: function (key, options, pf) {
+                            //         HandsTable.makeCreateTable(this);
+                            //     },
+                            //     key: "copyTo:4"
+                            // }
+                        ]//items
+                    },//submenu
+                },
+
+                // "remove_row":{},
+                // "col_left":{},
+                // "col_right":{},
+                // "remove_col":{},
+                "hsep3": "---------",
+                // -------------------- Copy to  --------------------------------------------------------------------
+                "Transpose": {
+                    name: 'Transpose',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Transpose full table",
+                                callback: function (key, options, pf) {
+                                    console.info("Transpose");
+                                    HandsTable.Transpose(this, 'Transpose');
+                                },
+                                key: "Transpose:1"
+                            },
+                        ]//items
+                    },//submenu
+                },
+                "undo": {},
+                "make_read_only": {},
+                "alignment": {},
+                "hsep4": "---------",
+
+
+            }
+        };
+    }
+
+
     makeSettings() {
         // make columns
         let makeColumns = this.makeColumns();
@@ -451,7 +769,6 @@ class HandsTable {
             colWidths: 100,
             fillHandle: false,
             stretchH: 'all',
-            // persistentState:true,
             customBorders: true,
             isDark: this.isDarkTheme,
             // fixedRowsTop: 1,
@@ -473,243 +790,7 @@ class HandsTable {
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders,
 
-
-
-
-
-            contextMenu: {
-                items: {
-                    "columnformat": {
-                        name: 'Column format',
-                        submenu: {
-                            items: [
-                                {
-                                    name: "Reset", key: "columnformat:1", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Reset');
-                                },
-                                },
-                                {
-                                    name: "Money", key: "columnformat:2", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Money');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Human", key: "columnformat:3", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Human');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Bytes", key: "columnformat:4", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Bytes');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Percentages", key: "columnformat:5", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Percentages');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Time only", key: "columnformat:6",
-                                    callback: function (key, options, pf) {
-                                        HandsTable.makeFormat(this, 'Time');
-                                    },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'Time');
-                                    }
-                                },
-                                {
-                                    name: "Date only", key: "columnformat:7", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Date');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'Date');
-                                    }
-                                },
-                                {
-                                    name: "Date loc.", key: "columnformat:8", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'DateLoc');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'Date');
-                                    }
-                                },
-                                {
-                                    name: "Float", key: "columnformat:9", callback: function (key, options, pf) {
-                                    HandsTable.makeFormat(this, 'Float');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Heatmaps", key: "columnformat:10", callback: function (key, options, pf) {
-                                    HandsTable.makeHeatmaps(this, 'Heatmaps');
-                                },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-                                {
-                                    name: "Negative & Positive",
-                                    key: "columnformat:11",
-                                    callback: function (key, options, pf) {
-                                        HandsTable.makeHeatmaps(this, 'NegaPosi');
-                                    },
-                                    disabled: function () {
-                                        return !HandsTable.isFormatColl(this, 'numeric');
-                                    }
-                                },
-
-
-                            ]//items
-                        }//submenu
-                    },
-
-                    // -------------------- column Show Hide --------------------------------------------------------------------
-                    //
-                    // "columnshowhide": {
-                    //     name: 'ShowHide Columns',
-                    //     submenu: {
-                    //         items: [
-                    //             {
-                    //                 name: "Hide this column",
-                    //                 callback: function (key, options,pf) {
-                    //                     // HandsTable.makeStyle(this,'Normal');;
-                    //                     console.log("Hide this column");
-                    //                 },
-                    //                 key:"columnshowhide:1"
-                    //             }//Money
-                    //         ]//items
-                    //     },//submenu
-                    // },
-                    //
-
-
-                    // -------------------- Style CELL --------------------------------------------------------------------
-                    "style": {
-                        name: 'Style',
-                        submenu: {
-                            items: [
-                                {
-                                    name: "Normal",
-                                    callback: function (key, options, pf) {
-                                        HandsTable.makeStyle(this, 'Normal');
-                                    },
-                                    key: "style:normal"
-                                },
-                                {
-                                    name: 'Bold',
-                                    callback: function (key, options) {
-                                        HandsTable.makeStyle(this, 'Bold');
-                                    },
-                                    key: "style:makebold"
-
-                                },
-                                {
-                                    name: 'Red color',
-                                    callback: function (key, options) {
-                                        HandsTable.makeStyle(this, 'Red');
-                                    },
-                                    key: "style:red"
-                                },
-                                {
-                                    name: 'Green color',
-                                    callback: function (key, options) {
-                                        HandsTable.makeStyle(this, 'Green');
-                                    },
-                                    key: "style:green"
-                                },
-                                {
-                                    name: 'Yellow color',
-                                    callback: function (key, options) {
-                                        HandsTable.makeStyle(this, 'Yellow');
-                                    },
-                                    key: "style:green"
-                                },
-                                {
-                                    name: 'Orange color',
-                                    callback: function (key, options) {
-                                        HandsTable.makeStyle(this, 'Orange');
-                                    },
-                                    key: "style:green"
-                                }
-                            ]
-                        },
-                    },//style
-                    "hsep1": "---------",
-
-                    // -------------------- Copy to  --------------------------------------------------------------------
-                    "copyTo": {
-                        name: 'To Clipboard',
-                        submenu: {
-                            items: [
-                                {
-                                    name: "Redmine Markdown",
-                                    callback: function (key, options, pf) {
-                                        console.info("copyToClipboard");
-                                        HandsTable.copyToClipboard(this, 'Redmine');
-                                    },
-                                    key: "copyTo:1"
-                                },//
-                                {
-                                    name: "Redmine Markdown (full)",
-                                    callback: function (key, options, pf) {
-                                        console.info("copyToClipboard");
-                                        HandsTable.copyToClipboard(this, 'Redmine',true);
-                                    },
-                                    key: "copyTo:2"
-                                },//
-                                {
-                                    name: "WHERE col1 IN (val,val),col2 IN ...",
-                                    callback: function (key, options, pf) {
-                                        console.info("makeWhereIn");
-                                        HandsTable.makeWhereIn(this);
-                                    },
-                                    key: "copyTo:3"
-                                },
-                                {
-                                    name: "Create TABLE...",
-                                    callback: function (key, options, pf) {
-                                        HandsTable.makeCreateTable(this);
-                                    },
-                                    key: "copyTo:4"
-                                },
-                                // {
-                                //     name: "make Create Table",
-                                //     callback: function (key, options, pf) {
-                                //         HandsTable.makeCreateTable(this);
-                                //     },
-                                //     key: "copyTo:4"
-                                // }
-                            ]//items
-                        },//submenu
-                    },
-
-                    // "remove_row":{},
-                    // "col_left":{},
-                    // "col_right":{},
-                    // "remove_col":{},
-                    "hsep2": "---------",
-                    "undo": {},
-                    "make_read_only": {},
-                    "alignment": {},
-                    "hsep3": "---------",
-
-
-                }
-            },
+            contextMenu: this.fecthContextMenu(),
             // colWidths:handsontable.colWidths;
             //contextMenuCopyPaste: {
             //    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
@@ -720,7 +801,6 @@ class HandsTable {
             // Highlighting selection подсветка строк
             currentRowClassName: (this.isDarkTheme?'currentRowDark':'currentRowWhite'),
             currentColClassName: 'currentCol',
-
         };
 
 
