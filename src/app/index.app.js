@@ -33,7 +33,7 @@
         'angularResizable',
         'ngSanitize',
         'ngMaterial',
-        'funMetisMenu',
+        // 'funMetisMenu',
         'ngCsv',
         'pascalprecht.translate',
         'cfp.hotkeys',

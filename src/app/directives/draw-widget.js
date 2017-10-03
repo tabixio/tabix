@@ -21,6 +21,7 @@
 
     function buildDrawChart(widget,element,$timeout) {
         let html='';
+
         // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='echarts') {
             let theme='macarons';
@@ -73,8 +74,9 @@
 
 
     function buildLinkFunc($compile,$timeout,hotRegisterer) {
-
+        console.log("buildDrawChart");
         return function (scope, element, attrs) {
+
             console.group("drawWidget.buildLinkFunc");
             console.time("drawWidget.buildLinkFunc time took");
             // задаем виджету стиль темный / светлый
@@ -135,17 +137,17 @@
                 $compile(scope.widget.element)(scope);
             }
             // после того как виджет подготовлен и отрисован, запланируем widget ресайз
-            scope.widget.scheduledResize();
+            // scope.widget.scheduledResize();
             // подписываемся на изменение размера, и запланируем widget ресайз
             scope.$watch('widget.sizeY', function(){
                 // изменился размер
-                scope.widget.scheduledResize();
+                // scope.widget.scheduledResize();
             }, true);
 
             scope.$watch('widget.sizeX', function(){
                 // изменился размер
 
-                scope.widget.scheduledResize();
+                // scope.widget.scheduledResize();
             }, true);
 
             // ------------------------------------------------------------------------------------------------------------------
@@ -156,26 +158,29 @@
             // angular.element(window).on('resize', function(e)
             //     { scope.$broadcast('resize'); });
             //
-            scope.$watch(
-                function () {
-                    return [element[0].offsetWidth, element[0].offsetHeight].join('x');
-                },
-                function (value) {
-                    // console.log('directive got resized:',value.split('x') );
-                    scope.widget.scheduledResize(value.split('x'));
-                }
-            );
 
 
-            scope.events = {
-               resize: function(e, scope){
-                   $timeout(function(){
-                       // console.log("scope.events.resize");
-                       scope.widget.scheduledResize();
-                       // scope.api.update()
-                   },300)
-               }
-            };
+
+            // scope.$watch(
+            //     function () {
+            //         return [element[0].offsetWidth, element[0].offsetHeight].join('x');
+            //     },
+            //     function (value) {
+            //         // console.log('directive got resized:',value.split('x') );
+            //         scope.widget.scheduledResize(value.split('x'));
+            //     }
+            // );
+            //
+            //
+            // scope.events = {
+            //    resize: function(e, scope){
+            //        $timeout(function(){
+            //            // console.log("scope.events.resize");
+            //            scope.widget.scheduledResize();
+            //            // scope.api.update()
+            //        },300)
+            //    }
+            // };
             console.timeEnd("drawWidget.buildLinkFunc time took");
             console.groupEnd("drawWidget.buildLinkFunc");
         };

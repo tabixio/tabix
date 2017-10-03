@@ -1,6 +1,6 @@
 /**
  * ng-handsontable 0.13.0
- * 
+ *
  * Copyright 2012-2015 Marcin Warpechowski
  * Copyright 2015 Handsoncode sp. z o.o. <hello@handsontable.com>
  * Licensed under the MIT license.
@@ -579,24 +579,24 @@ Handsontable.hooks.add('afterContextMenuShow', function() {
            * Check for reference equality changes for datarows
            * TODO: must the remaining bindingsKeys need to be added also if their reference changes
            */
-          scope.$watch('datarows', function(newValue) {
-            if (newValue === void 0) {
-              return;
-            }
-            if (scope.hotInstance.getSettings().data !== newValue) {
-              scope.hotInstance.loadData(newValue);
-            }
-          });
+          // scope.$watch('datarows', function(newValue) {
+          //   if (newValue === void 0) {
+          //     return;
+          //   }
+          //   if (scope.hotInstance.getSettings().data !== newValue) {
+          //     scope.hotInstance.loadData(newValue);
+          //   }
+          // });
 
           /**
            * Check if data length has been changed
            */
-          scope.$watchCollection('datarows', function(newValue, oldValue) {
-            if (oldValue && oldValue.length === scope.htSettings.minSpareRows && newValue.length !== scope.htSettings.minSpareRows) {
-              scope.htSettings.data = scope.datarows;
-              settingFactory.updateHandsontableSettings(scope.hotInstance, scope.htSettings);
-            }
-          });
+          // scope.$watchCollection('datarows', function(newValue, oldValue) {
+          //   if (oldValue && oldValue.length === scope.htSettings.minSpareRows && newValue.length !== scope.htSettings.minSpareRows) {
+          //     scope.htSettings.data = scope.datarows;
+          //     settingFactory.updateHandsontableSettings(scope.hotInstance, scope.htSettings);
+          //   }
+          // });
         };
       }
     };

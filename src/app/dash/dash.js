@@ -59,7 +59,7 @@
                     },
 
                 ];
-        $scope.size=10000;
+        $scope.size=1;
         $scope.dashInits={};
         $scope.staticGrid=true;
 
@@ -112,11 +112,9 @@
             }
             $scope.hotTable=null;
         };
-        $scope.hotTable = new Handsontable(document.getElementById('hotTable12341234'));
         $scope.loads = function() {
             API.fetchQuery("SELECT now(),number,sin(number),sin(number),SHA1(toString(number)),SHA1(toString(number)) as xx from system.numbers limit "+$scope.size)
                 .then(data => {
-                    console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
                     let dashID=Date.now();
                     $scope.listDashboards[dashID]={  widgets:[], title:"Dash "+dashID,   id : dashID ,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
                     // // провайдер CH или API
@@ -126,9 +124,9 @@
                     dp.progressQuery = "SQL";
                     let table=new WidgetTable(dp);
 
+
                     //
                     // // let ht = new HandsTable(this);
-                    // // $scope.listDashboards[dashID].widgets.push();
 
                     // let hotInstance = hotRegisterer.getInstance( 'hotTable12341234');
                     // settings.data=data.data;
@@ -140,24 +138,42 @@
                     // }
                     // // console.log($scope.vars.table);
                     // $scope.hotTable.updateSettings(table.table.settings);
-                    $scope.hotTable.loadData(dp.data);
-                    console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+                    // $scope.hotTable.loadData(dp.data);
+                    // console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
                     //
                     // // console.info("Done",$scope.listDashboards);
                     // // hotInstance.htSettings.data
                     //
-                    // $scope.hotTable.updateSettings(settings);
 
+                    // $scope.vars.table.settings=table.table.settings;
+                    // $scope.vars.table.data=table.data.data;
+                    // $scope.hotTable.updateSettings(settings);
+                    // $scope.listDashboards[dashID].widgets=[];
+                    // $scope.listDashboards[dashID].widgets.push(table);
+                    $scope._widgetsx=[];
+                    $scope._widgetsx=table;
                     console.info("Load done");
                 });
 
         };
+        $scope._widgetsx=[];
         $scope.removeResult = (tab, dashid, event) => {
             event.stopPropagation();
 
             delete $scope.listDashboards[dashid];
         };
+        $scope.isWidgetsX = function () {
+            return $scope._widgetsx && $scope._widgetsx.init;
+        };
+        $scope.getWidgetsX = function () {
+        console.log($scope._widgetsx);
+          return $scope._widgetsx;
+        };
+        $scope.getGridStackOptionsX = function () {
+            return { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }
+        };
         $scope.loads();
+
         $scope.inits = function() {
             $scope.listDashboards={};
             $scope.listDashboards[123]={  widgets:[], title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
