@@ -3,10 +3,16 @@
 
 #### TODO:
 
-* Right click - database 
-* $var :var 
+* Right click - database - overview db?
+* `var` editor
+* `$var` | `:var` | `{var}` 
 * Parse limits
-* Parse cursor position - then click on field  
+* Parse cursor position - then click on fields  
+* Fix old grid in "metrix" 
+* Chart editor
+* Fix draw_sankeys 
+* Transform table
+
 
 ### 2017-09-23
 
