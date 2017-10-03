@@ -29,6 +29,7 @@ class DataProvider {
             // XSS
             this.text=this.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
+        // --------------------------------------------------
         if (!sourceType) sourceType='ch';
         this.sourceType = sourceType;
         this.meta = result.meta;

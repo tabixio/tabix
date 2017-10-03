@@ -1,20 +1,15 @@
+'use strict';
 /*
  * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
  */
 
-
-'use strict';
-
 class HandsTable {
 
-    constructor(WidgetTable) {
-        this.WidgetTable = WidgetTable;
-
-        this.isDarkTheme = WidgetTable.isDark;
-        window.isDarkTheme=this.isDarkTheme;
-
-        this.meta = WidgetTable.data.meta;
-
+    constructor(isDark,metaData,Preset) {
+        this.isDarkTheme = isDark;
+        window.isDarkTheme=isDark;
+        this.meta = metaData;
+        this.Preset=Preset;
 
     }
 
@@ -771,10 +766,6 @@ class HandsTable {
             stretchH: 'all',
             customBorders: true,
             isDark: this.isDarkTheme,
-            // fixedRowsTop: 1,
-            // fixedColumnsLeft: 1,
-            // maxRows: 10,
-            // visibleRows:20000,
             filters: true,
             columnSorting: true,
             sortIndicator: true,
@@ -783,34 +774,40 @@ class HandsTable {
             wordWrap: false,
             autoColumnSize: {samplingRatio: 23},
             preventOverflow: 'horizontal',
-            // visibleRows:120,
-            // width:'100%',
-            // height:'100%',
 
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders,
 
             contextMenu: this.fecthContextMenu(),
+
+            // Highlighting selection подсветка строк
+            currentRowClassName: (this.isDarkTheme?'currentRowDark':'currentRowWhite'),
+            currentColClassName: 'currentCol',
+
+
+            //----------------------------------------------------------------------------------------------------
             // colWidths:handsontable.colWidths;
             //contextMenuCopyPaste: {
             //    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
             //},
             // observeDOMVisibility:true,
             // observeChanges:true,
-
-            // Highlighting selection подсветка строк
-            currentRowClassName: (this.isDarkTheme?'currentRowDark':'currentRowWhite'),
-            currentColClassName: 'currentCol',
+            // visibleRows:120,
+            // width:'100%',
+            // height:'100%',
+            // fixedRowsTop: 1,
+            // fixedColumnsLeft: 1,
+            // maxRows: 10,
+            // visibleRows:20000,
         };
 
 
-        if (this.WidgetTable.data.sort && this.WidgetTable.data.sortOrder) {
+        if (this.Preset.sort && this.Preset.sortOrder) {
             o.columnSorting = {
-                column: makeColumns.colPositions[this.WidgetTable.data.sort],
-                sortOrder: (this.WidgetTable.data.sortOrder.toLowerCase() == 'desc' ? false : true)
+                column: makeColumns.colPositions[this.Preset.sort],
+                sortOrder: (this.Preset.sortOrder.toLowerCase() == 'desc' ? false : true)
             };
         }
-
         return o;
 
 

@@ -210,6 +210,153 @@
                 }
             };
         };
+
+        this.makeSqlQuery = (sql,format) => {
+            let query = '';
+
+
+            if (format !== false) {
+                format = (format || ' FoRmAt JSON');
+                if (format == 'null') {
+                    format = '';
+                }
+                query = sql + "\n\n" + format;
+            } else {
+                query = sql;
+            }
+            return query;
+        };
+
+        this.makeUrlRequest = (withDatabase,extend_settings) => {
+            let url = "";
+            let httpProto = '';
+            if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
+                httpProto = 'http://';
+            }
+            // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
+
+
+
+            url = httpProto + connection.host ;
+
+            url = url + '/?';
+
+            if (!connection.rouser)
+            {
+                url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
+            }
+
+
+            //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
+            let BasicAuthorization=false;
+
+            if (connection.baseauth)
+            {
+                // skip add user + password
+            }
+            else {
+
+                if (connection.password)
+                {
+                    url += '&user='+encodeURIComponent(connection.login)+'&password='+encodeURIComponent(connection.password);
+                }
+                else
+                {
+                    url += '&user='+encodeURIComponent(connection.login);
+                }
+            }
+
+
+
+            if (withDatabase) {
+                url += '&database=' + encodeURIComponent(database);
+            }
+            if (extend_settings) {
+                url += '&' + extend_settings;
+            }
+            if (connection.params){
+                url += '&'+connection.params;
+            }
+            return url;
+
+        };
+        this.fetchQuery = (sql,withDatabase,format,extend_settings) =>
+        {
+
+            let query=this.makeSqlQuery(sql,format);
+            let url=this.makeUrlRequest(withDatabase,extend_settings);
+            let myInit={
+                mode: 'cors',
+                method: 'post',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                },
+                body : query
+            };
+
+            let myRequest = new Request(url, myInit);
+
+
+            return fetch(myRequest) .then(function(response) {
+                let contentType = response.headers.get("content-type");
+                console.log("contentType",contentType);
+                if(contentType && contentType.includes("application/json")) {
+                    return response.json();
+                }
+                throw new TypeError("Oops, we haven't got JSON!");
+            })
+                // .then(function(json) {
+                //     /* process your JSON further */
+                //     console.log(json.meta);
+                // })
+                // .catch(function(error) { console.log(error); });
+        };
+
+
+        // ------------------------------------------------------------------------------------------------------------------------------------------------
+        // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
+        // Access-Control-Expose-Headers : X-ClickHouse-Progress
+        // https://stackoverflow.com/questions/15042439/cant-get-custom-http-header-response-from-ajax-getallresponseheaders
+        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Monitoring_progress
+        // ClickHouse/dbms/src/IO/WriteBufferFromHTTPServerResponse.cpp
+        // readystatechange: function(event) {
+        //     console.log("readystatechange");
+        //     console.log(event);
+        // },
+        //  "progress":function(event){
+        //      console.log("progress");
+        //     console.log(event);
+        //  },
+        //  onreadystatechange:function(event){
+        //     console.log("change");
+        //     console.log(event);
+        //  },
+        //  onprogress:function(event){
+        //      console.log("onprogress");
+        //      console.log(event);
+        // }
+        // uploadEventHandlers: {
+        //     progress: function (e) {
+        //         console.log('uploadEventHandlers',e);
+        //         if (e.lengthComputable) {
+        //             // $scope.progressBar = (e.loaded / e.total) * 100;
+        //             // $scope.progressCounter = $scope.progressBar;
+        //         }
+        //     }
+        // },
+        // transformResponse: (data, header, status) => {
+        //     try {
+        //         return angular.fromJson(data);
+        //         // return JSON.parse(data);
+        //     } catch (err) {
+        //         console.error(err);
+        //         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
+        //     }
+        // }
+        // ------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
         /**
          * @ngdoc method
          * @methodOf smi2.service:API
@@ -220,154 +367,39 @@
          */
         this.query = (sql, format, withDatabase, extend_settings) => {
             let defer = $q.defer();
-            let query = '';
-            let url = "http://localhost/";
-            let req = false;
-            if (format !== false) {
-                format = (format || ' FoRmAt JSON');
-                if (format == 'null') {
-                    format = '';
-                }
-                query = sql + "\n\n" + format;
-            } else {
-                query = sql;
-            }
+
+            let query=this.makeSqlQuery(sql,format);
+            let url=this.makeUrlRequest(withDatabase,extend_settings);
+            let req=false;
+
+            console.info("Query",query);
+            console.info("URL",url);
+
 
             if (this.isTabixServer()) {
                 // tabix server
                  req = this._tabixRequest({query:query},'query');
-
             } else {
-                //direct connect
-
-                let httpProto = '';
-                if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
-                    httpProto = 'http://';
-                }
-                // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
-
-
-
-                url = httpProto + connection.host ;
-
-                url = url + '/?';
-
-                if (!connection.rouser)
-                {
-                    url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
-                }
-
-
-                //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
-                let BasicAuthorization=false;
+                 req = {
+                    method: 'POST',
+                    data :query,
+                    headers: {  'Content-Type': 'application/x-www-form-urlencoded'},
+                    url: url,
+                    cache: false,
+                };
 
                 if (connection.baseauth)
                 {
-                    BasicAuthorization = window.btoa(connection.login+":"+connection.password);
-                }
-                else {
-
-                    if (connection.password)
-                    {
-                        url += '&user='+encodeURIComponent(connection.login)+'&password='+encodeURIComponent(connection.password);
-                    }
-                    else
-                    {
-                        url += '&user='+encodeURIComponent(connection.login);
-                    }
-                }
-
-
-
-                if (withDatabase) {
-                    url += '&database=' + encodeURIComponent(database);
-                }
-                if (extend_settings) {
-                    url += '&' + extend_settings;
-                }
-                if (connection.params){
-                    url += '&'+connection.params;
-                }
-
-                // --------------------------------------------------------------------------------------------------------
-                // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
-                // Access-Control-Expose-Headers : X-ClickHouse-Progress
-                // https://stackoverflow.com/questions/15042439/cant-get-custom-http-header-response-from-ajax-getallresponseheaders
-                // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Monitoring_progress
-                //
-                // ClickHouse/dbms/src/IO/WriteBufferFromHTTPServerResponse.cpp
-                // --------------------------------------------------------------------------------------------------------
-
-                 req = {
-                    method: 'POST',
-                     // responseType:'text',
-                    data :query,
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        // 'Content-Type': 'application/json',
-                        // "Cache-Control": "no-cache",
-                        // "Pragma" : "no-cache",
-                        // "If-Modified-Since":0
-                    },
-                     url: url,
-                     cache: false,
-                     eventHandlers:{
-                         // readystatechange: function(event) {
-                         //     console.log("readystatechange");
-                         //     console.log(event);
-                         // },
-                         //  "progress":function(event){
-                         //      console.log("progress");
-                         //     console.log(event);
-                         //  },
-                         //  onreadystatechange:function(event){
-                         //     console.log("change");
-                         //     console.log(event);
-                         //  },
-                         //  onprogress:function(event){
-                         //      console.log("onprogress");
-                         //      console.log(event);
-                         // }
-
-                    },
-                     // uploadEventHandlers: {
-                     //     progress: function (e) {
-                     //         console.log('uploadEventHandlers',e);
-                     //         if (e.lengthComputable) {
-                     //             // $scope.progressBar = (e.loaded / e.total) * 100;
-                     //             // $scope.progressCounter = $scope.progressBar;
-                     //         }
-                     //     }
-                     // },
-                    // transformResponse: (data, header, status) => {
-                    //     try {
-                    //         return angular.fromJson(data);
-                    //         // return JSON.parse(data);
-                    //     } catch (err) {
-                    //         console.error(err);
-                    //         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
-                    //     }
-                    // }
-                };
-
-                if (BasicAuthorization)
-                {
-                    req.headers['Authorization']='Basic ' + BasicAuthorization;
+                    req.headers['Authorization']='Basic ' + window.btoa(connection.login+":"+connection.password);
                 }
 
             }
-
-
-
             console.warn("SQL>",url,query,req);
             this.memory();
-
-
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)
             );
-
             return defer.promise;
         };
 

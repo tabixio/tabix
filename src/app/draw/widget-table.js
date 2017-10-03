@@ -1,3 +1,4 @@
+'use strict';
 /*
  * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
  */
@@ -24,7 +25,12 @@ class WidgetTable extends Widget {
         }
         this.hotRegisterer = false;
 
-        let ht = new HandsTable(this);
+        let ht = new HandsTable(this.isDark,this.data.meta,
+            {
+                sort:false,
+                sortOrder:false
+            }
+        );
 
         // основной рендер конфиг таблицы
         this.table = {

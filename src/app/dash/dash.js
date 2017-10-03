@@ -9,17 +9,22 @@
         '$interval',
         'localStorageService',
         '$mdDialog',
-        '$window'
+        '$window',
+        'hotRegisterer'
     ];
 
 
-    function DashController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,$window) {
+    function DashController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,$window,hotRegisterer) {
 
 
         //
         $scope.vars = {
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),
+            table:{
+                settings:{},
+                data:[]
+            }
         };
 
         $scope.initProcessesTab = (d) => {
@@ -54,7 +59,7 @@
                     },
 
                 ];
-
+        $scope.size=10000;
         $scope.dashInits={};
         $scope.staticGrid=true;
 
@@ -100,19 +105,73 @@
             $scope.listDashboards[dashid].widgets.push(new WidgetDraw(d,item,12,2));
         };
 
+        $scope.killht = function() {
+            if ($scope.hotTable)
+            {
+                $scope.hotTable.destroy();
+            }
+            $scope.hotTable=null;
+        };
+        $scope.hotTable = new Handsontable(document.getElementById('hotTable12341234'));
+        $scope.loads = function() {
+            API.fetchQuery("SELECT now(),number,sin(number),sin(number),SHA1(toString(number)),SHA1(toString(number)) as xx from system.numbers limit "+$scope.size)
+                .then(data => {
+                    console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+                    let dashID=Date.now();
+                    $scope.listDashboards[dashID]={  widgets:[], title:"Dash "+dashID,   id : dashID ,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
+                    // // провайдер CH или API
+                    let provider='ch';
+                    // передаем в
+                    let dp= new DataProvider(data,provider);
+                    dp.progressQuery = "SQL";
+                    let table=new WidgetTable(dp);
+
+                    //
+                    // // let ht = new HandsTable(this);
+                    // // $scope.listDashboards[dashID].widgets.push();
+
+                    // let hotInstance = hotRegisterer.getInstance( 'hotTable12341234');
+                    // settings.data=data.data;
+                    //
+                    // if ($scope.hotTable)
+                    // {
+                    //     $scope.hotTable.destroy();
+                    //     $scope.hotTable=null;
+                    // }
+                    // // console.log($scope.vars.table);
+                    // $scope.hotTable.updateSettings(table.table.settings);
+                    $scope.hotTable.loadData(dp.data);
+                    console.info( 'MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
+                    //
+                    // // console.info("Done",$scope.listDashboards);
+                    // // hotInstance.htSettings.data
+                    //
+                    // $scope.hotTable.updateSettings(settings);
+
+                    console.info("Load done");
+                });
+
+        };
+        $scope.removeResult = (tab, dashid, event) => {
+            event.stopPropagation();
+
+            delete $scope.listDashboards[dashid];
+        };
+        $scope.loads();
         $scope.inits = function() {
-
             $scope.listDashboards={};
-            $scope.listDashboards[123]={   title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
-            $scope.listDashboards[22]={   title:"Dash 22",   id : 22,GridStackOptions: {  disableDrag:true, disableResize:true,verticalMargin: 1,  staticGrid:true    }  };
+            $scope.listDashboards[123]={  widgets:[], title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
 
-            $scope.listDashboards[123].widgets=[];
-            $scope.listDashboards[22].widgets=[];
-            $scope.initWidgets(123);
-            $scope.initWidgets(22);
-            $scope.initWidgets(22);
-            $scope.initWidgets(22);
+            //
+            // $scope.listDashboards[22]={   title:"Dash 22",   id : 22,GridStackOptions: {  disableDrag:true, disableResize:true,verticalMargin: 1,  staticGrid:true    }  };
 
+            // $scope.listDashboards[123].widgets=[];
+            // $scope.listDashboards[22].widgets=[];
+            // $scope.initWidgets(123);
+            // $scope.initWidgets(22);
+            // $scope.initWidgets(22);
+            // $scope.initWidgets(22);
+            //
 
             // add random dashboars
             // add random widgets

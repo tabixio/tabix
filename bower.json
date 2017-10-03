@@ -15,7 +15,6 @@
     "angular-messages": "1.6.2",
     "angular-material": "^1.1.5",
     "mdi": "^1.7.22",
-    "fun-metis-menu": "*",
     "angular-resizable": "^1.2.0",
     "ng-csv": "^0.3.6",
     "angular-translate": "^2.12.1",
@@ -34,7 +33,8 @@
     "chroma-js": "^1.1.1",
     "clipboard": "^1.6.0",
     "lodash.math": "*",
-    "gridstack": "^0.3.0"
+    "gridstack": "^0.3.0",
+    "fun-metis-menu": "*"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

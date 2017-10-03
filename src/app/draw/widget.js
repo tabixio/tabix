@@ -1,18 +1,14 @@
+'use strict';
 /*
  * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
  */
-
-'use strict';
-
 class Widget {
     constructor(DataProvider, draw = false,sizeX=false,sizeY=false) {
-
-
-
         this.pixelSize=[];
         this._scheduledResize = false;
         this.data = DataProvider;
         this.drawCommnads = draw;
+
         this._draw = false;
         if (draw && this.drawCommnads.drawtype) {
             this.drawType = this.drawCommnads.drawtype.toUpperCase();
@@ -52,7 +48,7 @@ class Widget {
     }
 
     scheduledResize(size) {
-        // console.info("scheduledResize(size)",size);
+        console.info("scheduledResize(size)",size);
         if (size)
         {
             this.pixelSize=size;
