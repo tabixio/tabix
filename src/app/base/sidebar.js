@@ -284,7 +284,6 @@
 
             API.databaseStructure(function (ds) {
                 let list_all_fields=ds.getFields();
-                console.log('list_all_fields',list_all_fields);
                 // --------------------- INIT   DATABASES     ------------------------------------------------------
                 $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 

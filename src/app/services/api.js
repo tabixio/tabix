@@ -56,8 +56,12 @@
             localStorageService.set(CURRENT_BASE_KEY, {});
         };
 
-
-
+        this.hashCode = function(s){
+            return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+        }
+        this.DS_CacheKey = () => {
+            return this.hashCode('_databaseStructure:'+JSON.stringify(connection));
+        };
         this.DS_storeCache = (columns,tables,databases,dictionaries,functions) => {
             let d={
                 columns:columns,
@@ -67,11 +71,17 @@
                 functions:functions,
                 ttl:Date.now()
             };
-            return localStorageService.set('_databaseStructure:'+this.getHost()+':'+this.getLogin(),d);
+            return localStorageService.set(this.DS_CacheKey(),d);
         };
 
         this.DS_fetchFromCache = () => {
-            let d=localStorageService.get('_databaseStructure:'+this.getHost()+':'+this.getLogin());
+            let d=localStorageService.get(this.DS_CacheKey());
+            if (!d || !d.ttl) return false;
+            // Cache old ?
+            let diff=((Date.now() -d.ttl)/(1000*3600));
+
+            // Cache TTL DatabaseStructure
+            if (diff>1.5) return false;
             if (d && d.functions && d.functions.length>1 )
             {
                 _DatabaseStructure.init(d.columns,d.tables,d.databases,d.dictionaries,d.functions);
@@ -372,8 +382,8 @@
             let url=this.makeUrlRequest(withDatabase,extend_settings);
             let req=false;
 
-            console.info("Query",query);
-            console.info("URL",url);
+            // console.info("Query",query);
+            // console.info("URL",url);
 
 
             if (this.isTabixServer()) {
@@ -394,7 +404,7 @@
                 }
 
             }
-            console.warn("SQL>",url,query,req);
+            // console.warn("SQL>",url,query,req);
             this.memory();
             $http(req).then(
                 response => defer.resolve(response.data),

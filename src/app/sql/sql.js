@@ -64,7 +64,7 @@ window.aceJSRules = {
         const SQL_LOG_LENGTH = 30;
 
 
-
+        $scope.AceEditorInLoad=false;
         $scope.vars = {
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
@@ -664,65 +664,24 @@ window.aceJSRules = {
          * Set database name
          * @param db
          */
-        $scope.selectDatabase = (db) => {
-            console.warn("selectDatabase:",db);
+        $scope.selectDatabase = (db,type) => {
+
             if (!db) {
                 return;
             }
             API.setDatabase(db);
-
             if ($scope.vars.db==db) {
-                console.log("Double select database ",db);
                 return;
             }
-            console.time("sql.selectDatabase time took");
+            console.warn("selectDatabase type:["+type+"] ; current="+$scope.vars.db+' => '+db);
             $scope.vars.db = db;
-
-            // reset global object
-            window.aceJSRules.tables=[];
-            window.aceJSRules.fieldsList=[];
-
-
-            // //= {
-            //     builtinFunctions:[],
-            //     lang:'en',
-            //     dictionaries:[],
-            //     fieldsList:[],
-            //     tables:[]
-            // };
-
-
             console.info("selectDatabase > ",db);
-            API.databaseStructure(
-                function (ds) {
 
-                    // ------------------------------------------------------------------------------------
-                    $scope.vars.databasesList=ds.getDatabases();
-                    // ------------------------------- tables -----------------------------------
-                    Object.keys(ds.getUniqueDatabaseTables()).forEach((tab) => {
-                        window.aceJSRules.tables.push(tab);
-                    });
-                    // ------------------------------- fieldsList -----------------------------------
-                    window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
-
-
-                    // ------------------------------------------------------------------------------------
-                    // reload highlights
-                    $scope.vars.tabs.forEach((tab) => {
-                        if (tab.editor) {
-                            tab.editor.session.setMode({
-                                path: "ace/mode/clickhouse",
-                                v: Date.now()
-                            });
-                            tab.editor.session.bgTokenizer.start(0);
-                        }
-                    });
-                    console.timeEnd("sql.selectDatabase time took");
-                    return;
-
-
-                }
-            );
+            if (!$scope.AceEditorInLoad) {
+                console.info("selectDatabase reApply ACE");
+                $scope.aceLoadDatabaseFields();
+                $scope.aceApply();
+            }
 
             return;
         };
@@ -743,14 +702,90 @@ window.aceJSRules = {
             });
         };
 
+        $scope.aceLoadDatabaseFields = () => {
+            let db=$scope.vars.db;
+            console.info("aceLoadDatabase 'Fields' > ",db);
+            window.aceJSRules.fieldsList=[];
 
+            API.databaseStructure(
+                function (ds) {
+                    window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
+                    console.info("aceLoadDatabaseFields - done");
+                    return;
+
+
+                }
+            );
+
+        };
+
+        $scope.aceLoadDatabaseStructure = () => {
+            let db=$scope.vars.db;
+            console.info("aceLoadDatabase 'Structure' > ",db);
+
+            // reset global object
+            window.aceJSRules.tables=[];
+
+            API.databaseStructure(
+                function (ds) {
+
+                    // ------------------------------------------------------------------------------------
+                    $scope.vars.databasesList=ds.getDatabases();
+                    // ------------------------------- tables -----------------------------------
+                    Object.keys(ds.getUniqueDatabaseTables()).forEach((tab) => {
+                        window.aceJSRules.tables.push(tab);
+                    });
+                    // ------------------------------- fieldsList -----------------------------------
+                    window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
+
+                    console.info("aceLoadDatabaseStructure - done");
+                    return;
+
+
+                }
+            );
+        };
+        $scope.aceApply= () =>
+        {
+            // ------------------------------------------------------------------------------------
+            // reload highlights
+
+            $scope.vars.tabs.forEach((tab) => {
+                if (tab.editor) {
+                    console.log("<!aceApply in TAB!>");
+                    tab.editor.session.setMode({
+                        path: "ace/mode/clickhouse",
+                        v: Date.now()
+                    });
+                    tab.editor.session.bgTokenizer.start(0);
+                }
+            });
+
+
+            /**
+             * Watch for menu database changes
+             */
+            $rootScope.$watch('currentDatabase', $scope.selectDatabase);
+
+
+        };
+        $scope.changeRootSelectDatabase = (db) =>
+        {
+            if ($rootScope.currentDatabase!=db)
+            {
+                $rootScope.currentDatabase=db;
+            }
+        };
         /**
          * Load dicts for ACE autocomplete
          */
-        $scope.loadDictionaries = () => {
+        $scope.aceLoadDictionaries = () => {
             if ($scope.vars.isDictionariesLoad) {
                 return;
             }
+
+            console.time("sql.loadDictionaries");
+
             window.aceJSRules.dictionaries=[];
             $scope.vars.dictionaries = [];
             window.aceJSRules.builtinFunctions=[];
@@ -813,16 +848,7 @@ window.aceJSRules = {
                         });
                     });
                     // ------------------------------------------------------------------------------------
-                    // reload highlights
-                    $scope.vars.tabs.forEach((tab) => {
-                        if (tab.editor) {
-                            tab.editor.session.setMode({
-                                path: "ace/mode/clickhouse",
-                                v: Date.now()
-                            });
-                            tab.editor.session.bgTokenizer.start(0);
-                        }
-                    });
+                    console.timeEnd("sql.loadDictionaries");
                     return;
 
 
@@ -900,7 +926,22 @@ window.aceJSRules = {
          * @param editor
          */
         $scope.aceLoaded = (editor) => {
+            console.log("aceLoaded : ACE editor init on creation");
+            $scope.AceEditorInLoad=true;
+
+
+            if ($rootScope.currentDatabase) {
+                $scope.selectDatabase($rootScope.currentDatabase);
+            }
+
+
+
+            $scope.aceLoadDictionaries();
+            $scope.aceLoadDatabaseStructure();
+            $scope.aceLoadDatabaseFields();
+
             let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
+
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
 
@@ -922,11 +963,11 @@ window.aceJSRules = {
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
             // reload keywords & highlights
-            editor.session.setMode({
-                path: "ace/mode/clickhouse",
-                v: Date.now()
-            });
-            editor.session.bgTokenizer.start(0);
+            // editor.session.setMode({
+            //     path: "ace/mode/clickhouse",
+            //     v: Date.now()
+            // });
+            // editor.session.bgTokenizer.start(0);
 
             // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
             editor.commands.addCommand({
@@ -1033,21 +1074,16 @@ window.aceJSRules = {
                     }
                 });
             });
+            $scope.AceEditorInLoad=false;
+            $scope.aceApply();
 
-            $scope.loadDictionaries();
         };
-
-        /**
-         * Watch for menu database changes
-         */
-        $rootScope.$watch('currentDatabase', $scope.selectDatabase);
 
         /**
          * Watch and save settings in LocalStorage
          */
         $scope.$watch('vars.cacheDatabaseStructure', (curr) => localStorageService.set('cacheDatabaseStructure', curr));
         $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
-
         $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));
 
 
@@ -1071,7 +1107,7 @@ window.aceJSRules = {
             {
                 if (tab.editor)
                 {
-
+                    console.log(">>>vars.delimiter->ACE");
                     tab.editor.session.setMode({
                         path: "ace/mode/clickhouse",
                         v: Date.now()
@@ -1361,10 +1397,6 @@ ORDER BY event_time desc  ) GROUP BY query`;
             localStorageService.set(SQL_SESSION_KEY, []);
             $scope.addTab();
         }
-        if ($rootScope.currentDatabase) {
-            $scope.selectDatabase($rootScope.currentDatabase);
-        }
-
 
 
 

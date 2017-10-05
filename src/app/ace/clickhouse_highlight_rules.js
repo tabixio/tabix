@@ -9,24 +9,24 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         let keywords = (
             "SELECT|CASE|THEN|DISTINCT|INSERT|UPDATE|DELETE|WHERE|AND|OR|OFFSET|HAVING|AS|FROM|" +
             "WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|" +
-            "FOREIGN|NOT|REFERENCES|DEFAULT|NULL|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
+            "FOREIGN|NOT|REFERENCES|DEFAULT|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
             "ANY|BETWEEN|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
         );
         // let identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
         let keywordsDouble = "IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS|FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated";
 
         let builtinConstants = (
-            "true|false"
+            "true|false|NULL"
         );
 
         let builtinFunctions = ("sum|sumIf|avg|avgIf");
 
         let dataTypes = (
-            // @todo : fix dataTypes
-            "int|numeric|decimal|date|varchar|char|bigint|float|double|bit|binary|text|set|timestamp|" +
-            "money|real|number|integer|" +
+            "date|" +
+            "integer|" +
             "uint8|uint16|uint32|uint64|int8|int16|int32|int64|float32|float64|datetime|enum8|enum16|" +
-            "array|tuple|string"
+            "fixedstring|array|tuple|string"+
+            "MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree"
         );
 
         let drawCommand = "DRAW_GMAPS|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
@@ -36,7 +36,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         // ------------------------------------------ Init builtin functions ---------------------------------------------
         if (window.aceJSRules && window.aceJSRules.builtinFunctions)
         {
-            console.log("apply aceJSRules");
+            console.warn(">>> apply aceJSRules");
 
             // автодополнение builtin Functions
             if (window.aceJSRules.builtinFunctions) {

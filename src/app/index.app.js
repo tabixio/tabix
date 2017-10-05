@@ -27,7 +27,7 @@
         // 'ui.grid.exporter',
         // 'ui.grid.selection',
         // 'ngAnimate',
-        // 'ngScrollbars',
+        'ngScrollbars',
         // 'gridster',
 
         'angularResizable',

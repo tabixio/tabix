@@ -1,6 +1,6 @@
 {
   "name": "Tabix",
-  "version": "17.10.0",
+  "version": "17.10.1",
   "dependencies": {
     "angular-animate": "1.5.9",
     "angular-aria": "1.5.9",
@@ -35,7 +35,8 @@
     "lodash.math": "*",
     "gridstack": "^0.3.0",
     "handsontable": "^0.34.4",
-    "fun-metis-menu": "*"
+    "fun-metis-menu": "*",
+    "ng-scrollbars": "^0.0.11"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"
