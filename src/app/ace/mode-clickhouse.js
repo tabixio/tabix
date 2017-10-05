@@ -41,26 +41,6 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             this.$outdent.autoOutdent(doc, row);
         };
         // ---------------------------------------------------------------------------
-        this.AddBuiltinFunctionss = function (funcs) {
-            console.info("AddBuiltinFunctionss",funcs)
-        };
-        this.AddTableFields = function (fields) {
-            console.info("AddTableFields",fields);
-        };
-        this.AddTables = function (tables) {
-            console.info("AddTables",tables);
-        };
-        this.AddVariables = function (vars) {
-            console.info("AddVariables",vars);
-        };
-        this.AddDictionaries = function (dic) {
-            console.info("AddDictionaries",dic);
-        };
-        this.RebuildRules = function () {
-            console.info("RebuildRules");
-            this.HighlightRules.normalizeRules();
-        };
-        // ---------------------------------------------------------------------------
         this.findTokens = function (sql, type, needfirst) {
             sql = sql.replace(/^(\r\n|\n|\r)/gm, "").replace(/(\r\n|\n|\r)$/gm, "");
 

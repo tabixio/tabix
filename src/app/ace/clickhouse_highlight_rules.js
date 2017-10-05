@@ -34,24 +34,24 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         let listOfTables="";
 
         // ------------------------------------------ Init builtin functions ---------------------------------------------
-        // if (window.aceJSRules && window.aceJSRules.builtinFunctions)
-        // {
-            // console.log("apply aceJSRules");
-        // @todo : window.aceJSRules
-        //     // автодополнение builtin Functions
-        //     if (window.aceJSRules.builtinFunctions) {
-        //
-        //         let builtin=[];
-        //         window.aceJSRules.builtinFunctions.forEach(function (v) {
-        //             builtin.push(v.name);
-        //         });
-        //         builtinFunctions=builtin.join('|');
-        //     }
-        //     // список всех доступных "баз.табли"
-        //     if (_.isArray(window.aceJSRules.tables)){
-        //         listOfTables=window.aceJSRules.tables.join('|');
-        //     }
-        // }
+        if (window.aceJSRules && window.aceJSRules.builtinFunctions)
+        {
+            console.log("apply aceJSRules");
+
+            // автодополнение builtin Functions
+            if (window.aceJSRules.builtinFunctions) {
+
+                let builtin=[];
+                window.aceJSRules.builtinFunctions.forEach(function (v) {
+                    builtin.push(v.name);
+                });
+                builtinFunctions=builtin.join('|');
+            }
+            // список всех доступных "баз.табли"
+            if (_.isArray(window.aceJSRules.tables)){
+                listOfTables=window.aceJSRules.tables.join('|');
+            }
+        }
 
         //
         let delit='';
@@ -64,24 +64,22 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         }
 
         let $_fields = [];
+        let _keywords = keywords.toLowerCase();
 
-        // @todo : window.aceJSRules
-        // let _keywords = keywords.toLowerCase();
-        // if (window.aceJSRules && _.isArray(window.aceJSRules.fieldsList)) {
-        //     window.aceJSRules.fieldsList.forEach(function (v) {
-        //         let p = v['name'].toLowerCase() + '|';
-        //         if (_keywords.indexOf(p) > -1) {
-        //             // skip fields if == keyword ( like from )
-        //             return;
-        //         }
-        //         $_fields.push(v['name']);
-        //     });
-        // }
+        if (window.aceJSRules && _.isArray(window.aceJSRules.fieldsList)) {
+            window.aceJSRules.fieldsList.forEach(function (v) {
+                let p = v['name'].toLowerCase() + '|';
+                if (_keywords.indexOf(p) > -1) {
+                    // skip fields if == keyword ( like from )
+                    return;
+                }
+                $_fields.push(v['name']);
+            });
+        }
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------
-        // @todo : window.aceJSRules  keywordMapper[]
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
             "keyword": keywords,
@@ -250,63 +248,61 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
         addCompletions(drawCommand.split('|'), 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
+        addCompletions(window.aceJSRules.tables, '[table]','table');
+        // ------------------------------------------------------------------------------
+        if (window.aceJSRules && window.aceJSRules.builtinFunctions) {
+            // автодополнение builtin Functions
+            window.aceJSRules.builtinFunctions.forEach(function (v) {
 
+                completions.push({
+                    name: v['name'],
+                    value: v['name']+'( )',
+                    caption: v['name'],
+                    score: v['score'],
+                    meta: 'function',
+                    iconClass:'function',
+                    docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
+                });
+            });
+        }
         // ------------------------------------------------------------------------------
-        // @todo : aceJSRules
-        // addCompletions(window.aceJSRules.tables, '[table]','table');
-        // if (window.aceJSRules && window.aceJSRules.builtinFunctions) {
-        //     // автодополнение builtin Functions
-        //     window.aceJSRules.builtinFunctions.forEach(function (v) {
-        //
-        //         completions.push({
-        //             name: v['name'],
-        //             value: v['name']+'( )',
-        //             caption: v['name'],
-        //             score: v['score'],
-        //             meta: 'function',
-        //             iconClass:'function',
-        //             docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
-        //         });
-        //     });
-        // }
+        if (window.aceJSRules && window.aceJSRules.dictionaries) {
+            // автодополнение dic таблицы
+            window.aceJSRules.dictionaries.forEach(function (v) {
+                    completions.push({
+                        name: v['dic'],
+                        value: v['dic'],
+                        caption: v['title'],
+                        score: 0,
+                        meta: 'dic',
+                        iconClass:'dict',
+                        docHTML: makeCompletionsdocHTML(v['title'], v['dic'])
+                    });
+                }
+            );
+        }
         // ------------------------------------------------------------------------------
-        // if (window.aceJSRules && window.aceJSRules.dictionaries) {
-        //     // автодополнение dic таблицы
-        //     window.aceJSRules.dictionaries.forEach(function (v) {
-        //             completions.push({
-        //                 name: v['dic'],
-        //                 value: v['dic'],
-        //                 caption: v['title'],
-        //                 score: 0,
-        //                 meta: 'dic',
-        //                 iconClass:'dict',
-        //                 docHTML: makeCompletionsdocHTML(v['title'], v['dic'])
-        //             });
-        //         }
-        //     );
-        // }
-        // ------------------------------------------------------------------------------
-        // if (window.aceJSRules && window.aceJSRules.fieldsList) {
-        //     // автодополнение полей таблицы
-        //     window.aceJSRules.fieldsList.forEach(function (v) {
-        //
-        //         let name = v['table'] + '.' + v['name'];
-        //         let value = v['name'];
-        //         let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
-        //
-        //         completions.push({
-        //             name: name,
-        //             value: value,
-        //             score: 20,
-        //             meta: v['table'],
-        //             iconClass: 'field',
-        //             docHTML: makeCompletionsdocHTML(name, meta)
-        //         });
-        //
-        //
-        //         }
-        //     );
-        // }
+        if (window.aceJSRules && window.aceJSRules.fieldsList) {
+            // автодополнение полей таблицы
+            window.aceJSRules.fieldsList.forEach(function (v) {
+
+                let name = v['table'] + '.' + v['name'];
+                let value = v['name'];
+                let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
+
+                completions.push({
+                    name: name,
+                    value: value,
+                    score: 20,
+                    meta: v['table'],
+                    iconClass: 'field',
+                    docHTML: makeCompletionsdocHTML(name, meta)
+                });
+
+
+                }
+            );
+        }
 
         //this allows for custom 'meta' and proper case of completions
         this.completions = completions;
