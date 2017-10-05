@@ -22,6 +22,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         let builtinFunctions = ("sum|sumIf|avg|avgIf");
 
         let dataTypes = (
+            // @todo : fix dataTypes
             "int|numeric|decimal|date|varchar|char|bigint|float|double|bit|binary|text|set|timestamp|" +
             "money|real|number|integer|" +
             "uint8|uint16|uint32|uint64|int8|int16|int32|int64|float32|float64|datetime|enum8|enum16|" +
