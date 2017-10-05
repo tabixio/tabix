@@ -1,22 +1,7 @@
+## 2017-10-04
 
-
-
-#### TODO:
-
-* Right click - database - overview db?
-* `var` editor
-* `$var` | `:var` | `{var}` 
-* Parse limits
-* Parse cursor position - then click on fields  
-* Fix old grid in "metrix" 
-* Chart editor
-* Fix draw_sankeys 
-* Transform table
-
-
-### 2017-09-23
-
-* Update grid, move to gridstack, fix many error in render table resut  
+* Fix Memory Leak in handsontable, and refactor code in widget 
+* Update grid, move to gridstack, fix many error in render table result  
 * Update handsontable to 0.34
 * Add: parse error text and move cursor to error 
 * Fix: exec current query, under cursor (new line error)
@@ -37,9 +22,12 @@
 * Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
 * Draw_Chart { xAxis:'number',yAxis:['s','c'] }
 * Drop many code + custom build handsontable.full.min.js => Size code from 4,3M=>3,3M in vendor , app 507K=>240K
+* HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 
 
-#### 2017-09-23-RU
+#### 2017-10-04-RU
+
+
 * изменен компонент сетка - поправлены ошибки отображения резульата в виде таблиц
 * Рендер таблиц обновлен до handsontable to 0.34
 * Парсинг ошибок от CH - перемещение курсора в место ошибки

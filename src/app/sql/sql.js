@@ -695,7 +695,6 @@ window.aceJSRules = {
             console.info("selectDatabase > ",db);
             API.databaseStructure(
                 function (ds) {
-                    API.memory('Init selectDatabase');
 
                     // ------------------------------------------------------------------------------------
                     $scope.vars.databasesList=ds.getDatabases();
@@ -706,7 +705,7 @@ window.aceJSRules = {
                     // ------------------------------- fieldsList -----------------------------------
                     window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
 
-
+                    // session.$mode.
                     // ------------------------------------------------------------------------------------
                     // reload highlights
                     $scope.vars.tabs.forEach((tab) => {
@@ -716,7 +715,6 @@ window.aceJSRules = {
                                 v: Date.now()
                             });
                             tab.editor.session.bgTokenizer.start(0);
-                            API.memory('session.bgTokenizer');
                         }
                     });
                     console.timeEnd("sql.selectDatabase time took");
@@ -761,21 +759,22 @@ window.aceJSRules = {
             API.databaseStructure(
                 function (ds) {
                    // ------------------------------- builtinFunctions -----------------------------------
+                    let $builtinFunctions=[];
                     ds.getFunctions().forEach((item) => {
-                        window.aceJSRules.builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
+                        $builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
                         if (item.is_aggregate)
                         {
                             // Комбинатор -If. Условные агрегатные функции
                             let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If',origin:item.name};
-                            window.aceJSRules.builtinFunctions.push(p);
+                            $builtinFunctions.push(p);
 
                             // Комбинатор -Array. Агрегатные функции для аргументов-массивов
                             p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array',origin:item.name};
-                            window.aceJSRules.builtinFunctions.push(p);
+                            $builtinFunctions.push(p);
 
                             // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
                             p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State',origin:item.name};
-                            window.aceJSRules.builtinFunctions.push(p);
+                            $builtinFunctions.push(p);
 
                         }
 
@@ -805,13 +804,11 @@ window.aceJSRules = {
 
 
                         let dic = 'dictGet' + item["attribute.types"] + '(\'' + item.name + '\',\'' + item["attribute.names"] + '\',to' + item.key + '( '+id_field+' ) ) AS ' + item["attribute.names"] + ',';
-                        window.aceJSRules.dictionaries.push({
-                            dic:dic,
-                            title: 'dic_'+item.name + '.' + item["attribute.names"]
-                        });
+
                         $scope.vars.dictionaries.push({
                             dic: dic,
-                            title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"]
+                            title: item.name + '.' + item["attribute.names"] + ' as ' + item["attribute.types"],
+                            acetitle: 'dic_'+item.name + '.' + item["attribute.names"]
                         });
                     });
                     // ------------------------------------------------------------------------------------
@@ -822,6 +819,13 @@ window.aceJSRules = {
                                 path: "ace/mode/clickhouse",
                                 v: Date.now()
                             });
+
+                            tab.editor.session.$mode.AddDictionaries($scope.vars.dictionaries);
+                            tab.editor.session.$mode.AddBuiltinFunctionss($builtinFunctions);
+                            tab.editor.session.$mode.RebuildRules();
+
+
+                            console.log("getMode",);
                             tab.editor.session.bgTokenizer.start(0);
                         }
                     });
