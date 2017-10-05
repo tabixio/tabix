@@ -1,10 +1,9 @@
 'use strict';
 /*
- * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,SMI2 LLC and other contributors
  */
 class Widget {
     constructor(DataProvider, draw = false,sizeX=false,sizeY=false) {
-        this.pixelSize=[];
         this._scheduledResize = false;
         this.data = DataProvider;
         this.drawCommnads = draw;
@@ -30,17 +29,23 @@ class Widget {
         if (_.isNumber(sizeY)) {
             this.sizeY = sizeY;
         }
-
-
         this.type = false;
+
         // Адовый костылище, поскольку в конструктор должны передаваться
         // dependency injecton, а не данные для работы класса. Поэтому я не могу
         // передать в конструктор сервис и дергаю его по рабоче - крестьянски.
-        this.isDark = angular.element('*[ng-app]').injector().get("ThemeService").isDark();
+        let isDark=angular.element('*[ng-app]').injector().get("ThemeService").isDark();
+        this.isDark = isDark;
+        window.isDarkTheme=isDark;
     }
 
     onDrag() {
         // console.info("On widget Draw",this);
+    }
+
+    destroy(widget) {
+        console.info("Destroy widget is empty");
+        return false;
     }
 
     onResize() {
@@ -49,10 +54,6 @@ class Widget {
 
     scheduledResize(size) {
         console.info("scheduledResize(size)",size);
-        if (size)
-        {
-            this.pixelSize=size;
-        }
 
         if (this._scheduledResize) {
             return;
@@ -64,8 +65,8 @@ class Widget {
         let th = this;
         setTimeout(function () {
             th._scheduledResize = false;
-            th.onResize();
-        }, 900);
+            th.onResize(size);
+        }, 400);
     }
 
     toString() {

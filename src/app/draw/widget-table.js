@@ -1,6 +1,6 @@
 'use strict';
 /*
- * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar, SMI2 LLC and other contributors
  */
 
 class WidgetTable extends Widget {
@@ -9,8 +9,13 @@ class WidgetTable extends Widget {
         this.type = 'table';
         this.table = {};
         this.sort = false;
-        this.hotId = 'hotIdTable' + Math.floor(Math.random() * 10000000);
 
+        this.hotId = 'hotIdTable' + Math.floor(Math.random() * 10000000); // some ID for Table
+
+        // Object init in `postProcessor`
+        this.handsonTable={};
+
+        // if Error or Text box -> use static size
         if (this.error) {
             this.sizeY = 2;
             this.sizeX = 12;
@@ -23,27 +28,30 @@ class WidgetTable extends Widget {
             this.init = false;
             return;
         }
-        this.hotRegisterer = false;
 
+        // init HandsTable helper
         let ht = new HandsTable(this.isDark,this.data.meta,
             {
+                // @todo : use for statistic table
                 sort:false,
                 sortOrder:false
             }
         );
 
-        // основной рендер конфиг таблицы
+        // store settings table
         this.table = {
             settings: ht.makeSettings(),
+
         };
+        // apply hotId
+        this.table.settings.hotId=this.hotId;
 
-
+        // if not set size
         if (!this.sizeX && !this.sizeY)
         {
             let countColumns = ht.countColumns();
             this.initTableWSize(countColumns);
         }
-
         this.init = true;
     }
     initTableWSize(countColumns)
@@ -97,56 +105,55 @@ class WidgetTable extends Widget {
         this.sizeY = this.sizeY*2;
         this.sizeX = this.sizeX*2;
     }
-    preProcessor() {
 
+    destroy(widget) {
+
+        // destroy
+        return function() {
+        console.log("WidgetTable.destroy()");
+           widget.handsonTable.destroy();
+           widget.handsonTable = null;
+           widget.data.data = null;
+           widget.settings = null;
+           widget.table = null;
+           widget.init = false;
+           widget.element.html();
+           console.log("WidgetTable.destroy() done");
+        }
     }
+
+
+
+    preProcessor() {
+        // console.log("WidgetTable.preProcessor()");
+    }
+
+    postProcessor() {
+        console.log("WidgetTable.postProcessor()");
+        // init settings Handsontable
+        let ll=this.table.settings;
+        ll.data=this.data.data;
+        // create Handsontable
+        this.handsonTable = new Handsontable(this.element[0], ll);
+        // this.handsonTable.updateSettings(l);
+        // this.handsonTable.loadData(this.data.data);
+        // this.handsonTable.render();
+        console.log("WidgetTable.postProcessor.handsonTable - done");
+    }
+
 
     onDrag() {
         this.onResize();
     }
 
-    getInstanceHandsontable() {
-        if (this.hotRegisterer && this.init && this.element && this.hotId) {
-            return this.hotRegisterer.getInstance(this.hotId);
-        }
-    }
-
     onResize(size) {
-        if (!this.table) return;
+        if (!this.init) return;
+        if (!this.handsonTable) return;
+        // if handsonTable exists - call handsonTable.render()
+        console.log("Call this.handsonTable.render()",size);
+        this.handsonTable.render();
 
-        // console.log("onResize HotTable,this.table.width",this.table.width,this.table.height);
-        let i = this.getInstanceHandsontable();
-        if (i) {
-            // this.table.width='99.9'+Math.floor(100*Math.random())+'%';
-            // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
-            // console.info("Table onResize pixelSize:",this.pixelSize);
-            if (this.pixelSize && this.pixelSize[0] && this.pixelSize[1])
-            {
-
-                i.updateSettings(
-                    {
-                        height: this.pixelSize[1]-4 ,//this.table.height, // тут нужно получить размер контейнера gridster и передать его в HotTable
-                        width:this.pixelSize[0]-4,//this.table.width
-
-                    }
-                );
-            }
-            i.render();
-        }
-        // -----------------------------------------------------------------
-        // Для hot-table изменим парамер ширины, финт/костыль - хз
-        // this.table.width='99.9'+Math.floor(100*Math.random())+'%';
-        // this.table.height='99.9'+Math.floor(100*Math.random())+'%';
-        // ngHandsontable содержит Watch на поля width + height который вызывает updateSettings()
-        // hotInstance.updateSettings({
-        //     width: $('hotWrapperDiv').width()
-        // });
-        // Или попробовать вариант hotInstance.redraw()
-        // -----------------------------------------------------------------
-        // Или таймер на X00 мс который отложет ресайз
-        // ----------------------------------------------------------------
-        // Или передавать точный размер width области после ресайза
-        // ----------------------------------------------------------------
+        return true;
     }
 }
 

@@ -7,7 +7,6 @@ class HandsTable {
 
     constructor(isDark,metaData,Preset) {
         this.isDarkTheme = isDark;
-        window.isDarkTheme=isDark;
         this.meta = metaData;
         this.Preset=Preset;
 
@@ -143,10 +142,6 @@ class HandsTable {
 
         // format = Heatmaps | NegaPosi
         // Heatmap для выбранных колонок,
-        // @todo Подобрать цвета для Dark темы , как передать это дарк ?
-        console.info('isDark', window.isDarkTheme);
-
-        console.warn(ht.getCellMeta(0, 0, 'isDark'));
 
         let selection = ht.getSelectedRange();
         let fromCol = Math.min(selection.from.col, selection.to.col);
@@ -757,6 +752,8 @@ class HandsTable {
         let makeColumns = this.makeColumns();
 
         let o = {
+            observeChanges:false, // WARN! Memory leak
+            observeDOMVisibility: true,
             dropdownMenu: true,
             manualColumnMove: true,
             manualColumnResize: true,
@@ -772,18 +769,16 @@ class HandsTable {
             manualRowResize: true,
             viewportColumnRenderingOffset:'auto',
             wordWrap: false,
+
             autoColumnSize: {samplingRatio: 23},
             preventOverflow: 'horizontal',
-
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders,
-
             contextMenu: this.fecthContextMenu(),
 
             // Highlighting selection подсветка строк
             currentRowClassName: (this.isDarkTheme?'currentRowDark':'currentRowWhite'),
             currentColClassName: 'currentCol',
-
 
             //----------------------------------------------------------------------------------------------------
             // colWidths:handsontable.colWidths;
@@ -797,8 +792,9 @@ class HandsTable {
             // height:'100%',
             // fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
-            // maxRows: 10,
-            // visibleRows:20000,
+            // maxRows: 1000,
+            renderAllRows:false,
+            visibleRows:500
         };
 
 

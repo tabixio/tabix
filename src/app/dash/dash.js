@@ -19,49 +19,23 @@
 
         //
         $scope.vars = {
+            loading:false,
+            show:false,
+            counter:0,
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),
             table:{
                 settings:{},
                 data:[]
-            }
+            },
+            dashInits:{},
+
         };
+        $scope.size=100;
+        $scope.w=false;
+        $scope.preDashId=0;
 
-        $scope.initProcessesTab = (d) => {
-            $scope.vars.active.Processes=true;
-        };
 
-        $scope.initChartTab = (d) => {
-            $scope.vars.active.Chart=true;
-        };
-
-        $scope.initOverviewTab = (d) => {
-            $scope.vars.active.Overview=true;
-        };
-
-        $scope.listDashboards =
-                [
-                    {
-                        title:"Dash1",
-                        id : 123,
-                        widgets:[
-                            {x: 0, y: 0, width: 1, height: 1},
-                            { x:0, y:0, width:3, height:1 }
-                        ]
-                    },
-                    {
-                        title:"Dash2",
-                        id : 432,
-                        widgets:[
-                            {x: 0, y: 0, width: 1, height: 1},
-                            { x:0, y:0, width:3, height:1 }
-                        ]
-                    },
-
-                ];
-        $scope.size=1;
-        $scope.dashInits={};
-        $scope.staticGrid=true;
 
         $scope.initDash = function(dashid) {
 
@@ -106,17 +80,33 @@
         };
 
         $scope.killht = function() {
-            if ($scope.hotTable)
+
+            if ($scope.preDashId)
             {
-                $scope.hotTable.destroy();
+                delete $scope.listDashboards[$scope.preDashId];
+                $scope.preDashId=0;
             }
-            $scope.hotTable=null;
         };
         $scope.loads = function() {
-            API.fetchQuery("SELECT now(),number,sin(number),sin(number),SHA1(toString(number)),SHA1(toString(number)) as xx from system.numbers limit "+$scope.size)
+            $scope.vars.show=false;
+
+            let dashID=Date.now();
+            // $scope.listDashboards[dashID]={  widgets:[], title:"Dash "+dashID,   id : dashID ,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
+            // $scope.listDashboards[dashID].widgets=[];
+            // $scope.dashInits[dashID]=false;
+
+            //
+            // if ($scope.preDashId)
+            // {
+            //     delete $scope.listDashboards[$scope.preDashId]
+            //     $scope.preDashId=0;
+            // }
+
+            console.info("Before done",$scope.vars.counter,$scope.vars.show);
+            let lx=$scope.size;
+            if (lx>30000) lx=30000;
+            API.fetchQuery("SELECT now(),number,sin(number),sin(number),SHA1(toString(number)),SHA1(toString(number)) as xx from system.numbers limit "+lx)
                 .then(data => {
-                    let dashID=Date.now();
-                    $scope.listDashboards[dashID]={  widgets:[], title:"Dash "+dashID,   id : dashID ,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
                     // // провайдер CH или API
                     let provider='ch';
                     // передаем в
@@ -148,11 +138,20 @@
                     // $scope.vars.table.settings=table.table.settings;
                     // $scope.vars.table.data=table.data.data;
                     // $scope.hotTable.updateSettings(settings);
-                    // $scope.listDashboards[dashID].widgets=[];
+                    // $scope.w=table;
+                    // $scope.wx=1;
+
+                    $scope.w=table;
+                    $scope.vars.show=true;
+                    $scope.vars.counter++;
+                    //
                     // $scope.listDashboards[dashID].widgets.push(table);
-                    $scope._widgetsx=[];
-                    $scope._widgetsx=table;
-                    console.info("Load done");
+                    // $scope.preDashId=dashID;
+                    // $scope.dashInits[dashID]=true;
+                    // $scope.initDash(123);
+                    // $scope.listDashboards[123].widgets=[];
+                    // $scope.listDashboards[123].widgets.push(table);
+                    console.info("Load done",$scope.vars.counter,$scope.vars.show);
                 });
 
         };
@@ -162,21 +161,12 @@
 
             delete $scope.listDashboards[dashid];
         };
-        $scope.isWidgetsX = function () {
-            return $scope._widgetsx && $scope._widgetsx.init;
-        };
-        $scope.getWidgetsX = function () {
-        console.log($scope._widgetsx);
-          return $scope._widgetsx;
-        };
-        $scope.getGridStackOptionsX = function () {
-            return { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }
-        };
-        $scope.loads();
+
 
         $scope.inits = function() {
             $scope.listDashboards={};
-            $scope.listDashboards[123]={  widgets:[], title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };
+            // $scope.listDashboards.push({  widgets:[], title:"Dash 123",   id : 123,GridStackOptions: { disableDrag:true, disableResize:true, verticalMargin: 1,  staticGrid:true    }  };);
+
 
             //
             // $scope.listDashboards[22]={   title:"Dash 22",   id : 22,GridStackOptions: {  disableDrag:true, disableResize:true,verticalMargin: 1,  staticGrid:true    }  };

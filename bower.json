@@ -33,7 +33,9 @@
     "chroma-js": "^1.1.1",
     "clipboard": "^1.6.0",
     "lodash.math": "*",
-    "gridstack": "^0.3.0"
+    "gridstack": "^0.3.0",
+    "handsontable": "^0.34.4",
+    "fun-metis-menu": "*"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

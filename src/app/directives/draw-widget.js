@@ -74,11 +74,11 @@
 
 
     function buildLinkFunc($compile,$timeout,hotRegisterer) {
-        console.log("buildDrawChart");
+        console.log("buildLinkFunc");
         return function (scope, element, attrs) {
 
             console.group("drawWidget.buildLinkFunc");
-            console.time("drawWidget.buildLinkFunc time took");
+            console.time("drawWidget.buildLinkFunc");
             // задаем виджету стиль темный / светлый
             scope.widget.isDark=scope.isdark;
 
@@ -96,25 +96,16 @@
             }
             // ------------------------------------ TABLE ---------------------------------------------------------
             // TABLE RENDER
-            if (scope.widget.type=='table' && !scope.widget.error)
+            if (scope.widget.type=='table')
             {
-                scope.widget.element = angular.element(`<hot-table
-                        hot-id="`+scope.widget.hotId+`"
-                        settings="widget.table.settings"
-                        datarows="widget.data.data"
-                        ng-class="{'handsontable-dark': widget.isDark}"
-                        col-headers="widget.table.colHeaders"
-                        manual-column-resize="true"
-                        hot-auto-destroy
-                    ></hot-table>`);
-                // пробрасываем внутрь widget hotRegisterer + указываем hotId -> изнутри виджета имеем доступ к самому handsontable
-                scope.widget.hotRegisterer=hotRegisterer;
+                // создаем пустой div
+                scope.widget.element = angular.element('<DIV class="'+(scope.widget.isDark?'handsontable-dark':'')+'"></DIV>');
+                // Далее postProcessor в классе WidgetTable управляет таблицой - создает new Handsontable
             }
             // ------------------------------------- DRAW --------------------------------------------------------
-            //
             // Если тип виджета DRAW ( график ) получаем html, котороый рисует другую дерективу
             // Или можем получить уже готовый scope.widget.element, тогда в HTML будет FALSE
-            if (scope.widget.type=='draw' && !scope.widget.error )
+            if (scope.widget.type=='draw' )
             {
                 scope.widget.element = false;
                 let html=buildDrawChart(scope.widget,element,$timeout);
@@ -124,31 +115,37 @@
                 }
             }
             // --------------------------------------- PIVOT ------------------------------------------------------
-            //
             // Если нужно отрисовать PivotJS
-            if (scope.widget.type=='pivot' && !scope.widget.error)
+            if (scope.widget.type=='pivot')
             {
                 scope.widget.element = angular.element(`<pivot style=" transition: none !important;" data="widget.data.data" config="widget.pivot.config" edit-mode="true"></pivot>`);
             }
+
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------
             // Отрисуем элемент
             if (scope.widget.element)
             {
                 element.append(scope.widget.element);
                 $compile(scope.widget.element)(scope);
             }
+
+            // Запускаем пре процессоры, преобразуют данные для виджета
+            if (scope.widget.postProcessor instanceof Function) {
+                scope.widget.postProcessor();
+            }
+
             // после того как виджет подготовлен и отрисован, запланируем widget ресайз
             // scope.widget.scheduledResize();
             // подписываемся на изменение размера, и запланируем widget ресайз
-            scope.$watch('widget.sizeY', function(){
-                // изменился размер
-                // scope.widget.scheduledResize();
-            }, true);
-
-            scope.$watch('widget.sizeX', function(){
-                // изменился размер
-
-                // scope.widget.scheduledResize();
-            }, true);
+            // scope.$watch('widget.sizeY', function(){
+            //     // изменился размер
+            //     scope.widget.scheduledResize();
+            // }, true);
+            //
+            // scope.$watch('widget.sizeX', function(){
+            //     // изменился размер
+            //     scope.widget.scheduledResize();
+            // }, true);
 
             // ------------------------------------------------------------------------------------------------------------------
             // Доп ресайзеры
@@ -157,20 +154,20 @@
             // Define event handler
             // angular.element(window).on('resize', function(e)
             //     { scope.$broadcast('resize'); });
+
+
+
+            scope.widget.element.on("$destroy", scope.widget.destroy(scope.widget));
             //
+            scope.$watch(
+                function () {
+                    return [element[0].offsetWidth, element[0].offsetHeight].join('x');
+                },
+                function (value) {
+                    scope.widget.scheduledResize(value.split('x'));
+                }
+            );
 
-
-
-            // scope.$watch(
-            //     function () {
-            //         return [element[0].offsetWidth, element[0].offsetHeight].join('x');
-            //     },
-            //     function (value) {
-            //         // console.log('directive got resized:',value.split('x') );
-            //         scope.widget.scheduledResize(value.split('x'));
-            //     }
-            // );
-            //
             //
             // scope.events = {
             //    resize: function(e, scope){
@@ -181,7 +178,7 @@
             //        },300)
             //    }
             // };
-            console.timeEnd("drawWidget.buildLinkFunc time took");
+            console.timeEnd("drawWidget.buildLinkFunc");
             console.groupEnd("drawWidget.buildLinkFunc");
         };
     }
