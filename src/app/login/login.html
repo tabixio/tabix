@@ -80,31 +80,31 @@
                                     <form class="p++" name="loginForm">
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Название' | translate}}</label>
+                                                <label>Name</label>
                                                 <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Хост:порт' | translate}}</label>
+                                                <label>http://host:port</label>
                                                 <input ng-model="vars.db.host" placeholder="http://127.0.0.1:8123" required ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Логин' | translate}}</label>
+                                                <label>Login</label>
                                                 <input ng-model="vars.db.login" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Пароль' | translate}}</label>
+                                                <label>Password</label>
                                                 <input type="password" ng-model="vars.db.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Параметры' | translate}}</label>
+                                                <label>Extend params query</label>
                                                 <input ng-model="vars.db.params" placeholder="key1=value&key2=value" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
@@ -122,12 +122,12 @@
                                         <div layout="row">
                                             <div flex>
                                                 <md-button class="md-primary md-raised m0 width-100" ng-disabled="loginForm.$invalid || vars.loading" ng-click="login()">
-                                                    {{'Войти' | translate}}
+                                                    Sign in
                                                 </md-button>
                                             </div>
                                             <div flex ng-if="vars.db.id" class="pl">
                                                 <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
-                                                    {{'Удалить' | translate}}
+                                                    Delete
                                                 </md-button>
                                             </div>
                                         </div>
@@ -150,44 +150,44 @@
                                     <form class="p++" name="loginServerForm">
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Название' | translate}}</label>
+                                                <label>Name</label>
                                                 <input ng-model="vars.db.name" required placeholder="dev" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
 
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Сервер' | translate}}</label>
+                                                <label>URL</label>
                                                 <input ng-model="vars.db.tabix.server" required placeholder="https://tabix.dev/s1" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Config Key' | translate}}</label>
+                                                <label>Config Key</label>
                                                 <input ng-model="vars.db.tabix.confid" placeholder="empty" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Логин' | translate}}</label>
+                                                <label>Login</label>
                                                 <input ng-model="vars.db.tabix.login" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
-                                                <label>{{'Пароль' | translate}}</label>
+                                                <label>Password</label>
                                                 <input type="password" ng-model="vars.db.tabix.password" ng-click="onKeypress($event)" ng-disabled="vars.loading">
                                             </md-input-container>
                                         </div>
                                         <div layout="row">
                                             <div flex>
                                                 <md-button class="md-primary md-raised m0 width-100" ng-disabled="vars.loading" ng-click="login()">
-                                                    {{'Войти' | translate}}
+                                                    Sign in
                                                 </md-button>
                                             </div>
                                             <div flex ng-if="vars.db.id" class="pl">
                                                 <md-button class="md-raised md-warn m0 width-100" ng-disabled="vars.loading" ng-click="remove()">
-                                                    {{'Удалить' | translate}}
+                                                    Delete
                                                 </md-button>
                                             </div>
                                         </div>
@@ -206,10 +206,10 @@
                         </a>
                         <p class="copyright text-center" style="line-height: 24px">
                             <a href="https://tabix.io/" target="_blank" class="tc-white" style="text-decoration: underline">Tabix.IO</a> from
-                            <a href="https://github.com/smi2" target="_blank" style="text-decoration: underline" class="tc-white">{{'СМИ2' | translate}}</a>
+                            <a href="https://github.com/smi2" target="_blank" style="text-decoration: underline" class="tc-white">SMI2</a>
                             &copy;
-                            {{::vars.year}}, {{'все права защищены' | translate}}.
-                            {{'Сборка' | translate}} <b>{{::vars.version}}</b>
+                            {{::vars.year}}, all rights reserved.
+                            Build <b>{{::vars.version}}</b>
 
                         </p>
                     </div>

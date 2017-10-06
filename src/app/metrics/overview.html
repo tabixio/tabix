@@ -1,4 +1,4 @@
-<h1 class="md-title">{{'Обзор' | translate}}</h1>
+<h1 class="md-title">Overview</h1>
 
 <div ng-controller="OverviewController as render">
     <div class="row">
@@ -15,7 +15,7 @@
                                 </draw-widget>
                                 <div ng-bind-html="w.error" class="font-monospace" ng-if="w.error"></div>
                                 <div ng-bind-html="w.text"  class="font-monospace" ng-if="w.text"></div>
-                                <span ng-if="w.empty">{{'нет данных' | translate}}</span>
+                                <span ng-if="w.empty">No data</span>
                             </div>
                         </div>
                     </li>

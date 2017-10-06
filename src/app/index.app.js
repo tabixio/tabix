@@ -41,7 +41,6 @@
         'ngMaterial',
         'funMetisMenu',
         'ngCsv',
-        'pascalprecht.translate',
         'cfp.hotkeys',
         'ngHandsontable',
         'ngCsvImport',

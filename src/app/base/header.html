@@ -15,20 +15,20 @@
 
                 <md-button aria-label="menu"  ui-sref="metrics">
                     <i class="mdi mdi-24px mdi-playlist-play"></i>
-                    {{'Метрики и список процессов' | translate}}
+                    Metrics & Processes
                 </md-button>
 
 
                 <md-button aria-label="menu"  ng-click="help()" style="vertical-align:top">
                     <i class="mdi mdi-24px mdi-help"></i>
-                    {{'Справка' | translate}}
+                    Help
                 </md-button>
 
 
                 <md-menu md-position-mode="target-right target">
                     <md-button aria-label="menu" ng-click="$mdOpenMenu($event)">
                         <i class="mdi mdi-24px mdi-theme-light-dark"  style="vertical-align:top"></i>
-                        {{'Тема' | translate}}
+                        Theme
                     </md-button>
                     <md-menu-content>
                         <md-menu-item ng-repeat="theme in themes">
@@ -38,10 +38,10 @@
                 </md-menu>
 
 
-                <md-button ng-if="!vars.disable_exit" aria-label="{{'Выход' | translate}}" ng-click="logout()"
+                <md-button ng-if="!vars.disable_exit" aria-label="Sign out" ng-click="logout()"
                            style="vertical-align:top">
                     <i class="mdi mdi-24px mdi-lock"></i>
-                    {{'Выход' | translate}}
+                    Sign out
                 </md-button>
 
                 <span class="header-user-name hide-sm p+">{{user}}</span>

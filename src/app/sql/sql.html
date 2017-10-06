@@ -1,7 +1,13 @@
+<div ng-if="!vars.EditorIsInit">
+
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+
+</div>
+<div ng-if="vars.EditorIsInit">
 <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
     <md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">
         <i class="mdi mdi-settings"></i>
-        <md-tooltip>{{'Настройки редактора' | translate}}</md-tooltip>
+        <md-tooltip>Editor settings</md-tooltip>
     </md-button>
 </div>
 
@@ -52,13 +58,13 @@
 
                         <md-button class="md-icon-button " ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
                             <i class="mdi mdi-fullscreen"></i>
-                            <md-tooltip>{{'На весь экран' | translate}}</md-tooltip>
+                            <md-tooltip>Full screen</md-tooltip>
                         </md-button>
 
 
                         <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
                             <i class="mdi mdi-content-save"></i>
-                            <md-tooltip>{{'Сохранить' | translate}}</md-tooltip>
+                            <md-tooltip>Save</md-tooltip>
                         </md-button>
                         <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
                             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
@@ -68,7 +74,7 @@
                                 <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
                                     <md-button>
                                         {{item.name}}
-                                        <md-tooltip>{{'История зарпросов' | translate}}</md-tooltip>
+                                        <md-tooltip>Query log</md-tooltip>
                                         <div class="pull-right">
                                             <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
                                         </div>
@@ -79,7 +85,7 @@
 
                         <md-button class="md-icon-button" ng-click="toggleSidenav('log')" show-if-fullscreen="false" aria-label="log">
                             <i class="mdi mdi-view-headline"></i>
-                            <md-tooltip>{{'Лог запросов' | translate}}</md-tooltip>
+                            <md-tooltip>Request's log</md-tooltip>
                         </md-button>
 
                         <md-input-container>
@@ -121,14 +127,14 @@
 <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
     <div class="p+">
         <h4 class="mt0 mb+++">
-            {{'Настройки редактора' | translate}}
+            Editor settings
         </h4>
         <md-input-container class="width-100">
             <label for="inp1">Font size</label>
             <input type="text" id="inp1" ng-model="vars.fontSize">
         </md-input-container>
         <md-input-container class="width-100">
-            <label for="inp2">{{'Максимум строк' | translate}}</label>
+            <label for="inp2">Max result rows</label>
             <input type="text" id="inp2" ng-model="vars.limitRows">
         </md-input-container>
         <md-input-container class="width-100">
@@ -136,7 +142,7 @@
             <input type="text" id="inp3" ng-model="vars.limitTimes">
         </md-input-container>
         <md-input-container class="width-100 mt mb++">
-            <label>{{'Формат результатов' | translate}}</label>
+            <label>Result`s format</label>
             <md-select ng-model="vars.format">
                 <md-option ng-repeat="format in vars.formats" ng-value="format" ng-click="vars.format = format">
                     {{format.name}}
@@ -144,7 +150,7 @@
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mb++">
-            <label>{{'Тема редактора' | translate}}</label>
+            <label>Editor theme</label>
             <md-select ng-model="vars.theme">
                 <md-option ng-repeat="theme in vars.themes" ng-value="theme" ng-click="setTheme(theme)">
                     {{theme}}
@@ -152,14 +158,14 @@
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mt mb+">
-            <label>{{'Тема интерфейса' | translate}}</label>
+            <label>Theme</label>
             <md-select ng-model="vars.uiTheme">
                 <md-option ng-repeat="theme in vars.uiThemes" ng-value="theme" ng-click="setUiTheme(theme)">{{theme.title}}</md-option>
             </md-select>
         </md-input-container>
         <md-input-container class="width-100 mt">
             <md-checkbox ng-model="vars.saveTabs" aria-label="saveTabs">
-                {{'Сохранять сессию' | translate}}
+                Save session
             </md-checkbox>
         </md-input-container>
 
@@ -189,7 +195,7 @@
 
 
         <md-input-container class="width-100 mt mb+">
-            <label>{{'Разделитель запросов' | translate }}</label>
+            <label>Query delimiter</label>
             <md-select ng-model="vars.delimiter">
                 <md-option ng-repeat="delimiter in vars.delimiters" ng-value="delimiter.delimiter" ng-click="vars.delimiter = delimiter">
                     {{delimiter.name}}
@@ -198,7 +204,7 @@
         </md-input-container>
 
         <md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">
-            {{'Закрыть' | translate}}
+            Close
         </md-button>
     </div>
 </md-sidenav>
@@ -208,14 +214,14 @@
         <h4 class="mt0">
             <md-button class="md-icon-button pull-right" ng-click="toggleSidenav('log')" aria-label="close" style="margin-top: -10px; margin-right: -10px">
                 <i class="mdi mdi-close"></i>
-                <md-tooltip>{{'Сохранить' | translate}}</md-tooltip>
+                <md-tooltip>Save</md-tooltip>
             </md-button>
-            {{'Лог запросов' | translate}}
+            Request's log
         </h4>
     </div>
     <div>
     <md-input-container>
-        <label>{{'Искать на сервере' | translate}}</label>
+        <label>Search on server</label>
         <input ng-model="vars.searchQueryOnServer"/>
     </md-input-container>
     <md-button md-no-ink class="md-primary" ng-click="searchSqlLogServer()">Search</md-button>
@@ -233,6 +239,7 @@
         <pre class="p0 m0" style="max-height: 48px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>
     </div>
     <small class="p+" ng-if="vars.sqlLog.length === 0">
-        {{'История запросов пуста' | translate}}
+        Request history is empty
     </small>
 </md-sidenav>
+</div>

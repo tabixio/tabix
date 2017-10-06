@@ -29,6 +29,25 @@
                 // Требование JSlinter'a (((
                 $rootScope.$on('$destroy', () => stateChangeErrorUnbind);
                 window.document.title="Tabix.IO ["+window.TabixBuildDate+"]";
+
+
+                $rootScope.isInitDatabaseStructure = false;
+
+                $rootScope.sidebar={
+
+                    letf_resizable_width:200,
+                    clickLetfResizable:function () {
+                        if ($rootScope.sidebar.letf_resizable_width<10)
+                        {
+                            $rootScope.sidebar.letf_resizable_width=200;
+                        }
+                        else {
+                            $rootScope.sidebar.letf_resizable_width=0;
+                        }
+                    }
+                };
+
+
             }
         ]);
 })();

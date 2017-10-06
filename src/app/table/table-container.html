@@ -8,18 +8,18 @@
         <!-- колонки -->
         <md-tab >
             <md-tab-label>
-                <i class="mdi mdi-table-column-plus-after mr-"></i>{{'Структура' | translate}}
+                <i class="mdi mdi-table-column-plus-after mr-"></i>Structure
             </md-tab-label>
             <md-tab-body>
                 <table class="data-table" style="font-size: 80%">
                     <thead>
                         <tr class="text-left">
                             <th style="width: 40px"></th>
-                            <th style="width: 40%">{{'Название' | translate}}</th>
-                            <th style="width: 10%">{{'Тип' | translate}}</th>
-                            <th style="width: 10%">{{'Default тип' | translate}}</th>
-                            <th style="width: 10%">{{'Значение' | translate}}</th>
-                            <th style="width: 10%">{{'Размер' | translate}}</th>
+                            <th style="width: 40%">Name</th>
+                            <th style="width: 10%">Type</th>
+                            <th style="width: 10%">Default type</th>
+                            <th style="width: 10%">Value</th>
+                            <th style="width: 10%">Size</th>
                             <th style="width: 10%">Compress</th>
                         </tr>
                     </thead>
@@ -39,44 +39,44 @@
         <!-- информация -->
         <md-tab>
             <md-tab-label>
-                <i class="mdi mdi-information mr-"></i>{{'Информация' | translate}}</md-tab-label>
+                <i class="mdi mdi-information mr-"></i>Information</md-tab-label>
             <md-tab-body>
                 <div class="data-table-container" style="overflow:hidden;">
                     <table class="data-table">
                         <tbody>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400" style="width: 40px">1</td>
-                                <td style="width: 200px">{{'Размер' | translate}}</td>
+                                <td style="width: 200px">Size</td>
                                 <td>
                                     {{vars.statistics.size}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">2</td>
-                                <td>{{'Размер, байт' | translate}}</td>
+                                <td>Size,bytes</td>
                                 <td>
                                     {{vars.statistics.sizeBytes}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">3</td>
-                                <td>{{'Первая запись' | translate}}</td>
+                                <td>First row</td>
                                 <td>
                                     {{vars.statistics.minDate}}
                                 </td>
                             </tr>
                             <tr class="data-table-row">
                                 <td class="tc-grey-400">4</td>
-                                <td>{{'Последняя запись' | translate}}</td>
+                                <td>Last row</td>
                                 <td>
                                     {{vars.statistics.maxDate}}
                                 </td>
                             </tr>
                             <!--<tr class="data-table-row">-->
                                 <!--<td class="tc-grey-400">4</td>-->
-                                <!--<td>{{'Примерный размер несжатых данных' | translate}}</td>-->
+                                <!--<td>Uncompression size</td>-->
                                 <!--<td ng-if="!vars.isRawStatistics" >-->
-                                    <!--<md-button class="md-primary" ng-click="calcRawSize()">{{'Расчитать' | translate}}-->
+                                    <!--<md-button class="md-primary" ng-click="calcRawSize()">Calc-->
                                     <!--</md-button>-->
                                 <!--</td>-->
                                 <!--<td ng-if="vars.isRawStatistics">-->
@@ -98,7 +98,7 @@
         <!-- данные -->
         <md-tab md-active="true">
             <md-tab-label>
-                <i class="mdi mdi-table-large mr-"></i>{{'Данные' | translate}}
+                <i class="mdi mdi-table-large mr-"></i>Data
             </md-tab-label>
             <md-tab-body>
                 <div style="display:table">
@@ -114,14 +114,14 @@
                             <i class="mdi mdi-arrow-right"></i>
                         </md-button>
                     </div>
-                    {{'Данные' | translate}}
-                    <span class="tc-grey-400">{{'с' | translate}}
+                    Data
+                    <span class="tc-grey-400">From
                         {{vars.offset}}
-                        {{'по' | translate}}
+                        To
                         {{vars.offset + vars.limit}}</span>
                 </div>
                 <div class="card__actions p+" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden; ">
-                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">{{'нет данных' | translate}}</span>
+                    <span ng-if="vars.data === null&&!vars.loading" class="fs-caption">No data</span>
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
 
                     <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->

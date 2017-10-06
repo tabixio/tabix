@@ -109,25 +109,25 @@
          */
         this.databaseStructure = (call,forceReload) =>{
 
-            console.log('Call databaseStructure');
+            console.warn('Call databaseStructure');
 
             if (_DatabaseStructure.isInit()) {
                 return call(_DatabaseStructure);
             }
 
-            this.memory('Init databaseStructure');
 
             if (this.DS_fetchFromCache() && _DatabaseStructure.isInit())
             {
                 console.info("restore from cache : database Structure!");
                 return call(_DatabaseStructure);
             }
-            console.info("Need load Database Structure!");
-            this.query( "SELECT * FROM system.columns" ).then(columns => {
-                this.query( "SELECT database,name,engine FROM system.tables" ).then(tables => {
-                    this.query( "SELECT name FROM system.databases" ).then(databases => {
-                        this.query("SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((dictionaries) => {
-                            this.query("SELECT name,is_aggregate from system.functions", null).then((functions) => {
+            console.time("Load Database Structure!");
+            this.fetchQuery( "SELECT * FROM system.columns" ).then(columns => {
+                this.fetchQuery( "SELECT database,name,engine FROM system.tables" ).then(tables => {
+                    this.fetchQuery( "SELECT name FROM system.databases" ).then(databases => {
+                        this.fetchQuery("SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null).then((dictionaries) => {
+                            this.fetchQuery("SELECT name,is_aggregate from system.functions", null).then((functions) => {
+                                console.timeEnd("Load Database Structure!");
                                 this.DS_storeCache(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
                                 _DatabaseStructure.init(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
                                 return call(_DatabaseStructure);

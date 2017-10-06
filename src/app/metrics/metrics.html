@@ -5,7 +5,7 @@
     <!-- !Show Processes! -->
     <md-tab md-on-select="initProcessesTab()" layout-fill>
         <md-tab-label>
-            {{'Список процессов' | translate}} <i class="mdi mdi-18px mdi-palette-advanced"></i>
+            Processes <i class="mdi mdi-18px mdi-palette-advanced"></i>
         </md-tab-label>
         <md-tab-body>
             <div flex layout-fill ng-include="'app/metrics/processes.html'" ng-if="vars.active.Processes"></div>
@@ -16,7 +16,7 @@
     <!-- !Overview! -->
         <md-tab md-on-select="initOverviewTab()" ng-click="initOverviewTab()" layout-fill>
             <md-tab-label>
-                {{'Обзор' | translate}} <i class="mdi mdi-18px mdi-table-large"></i>
+                Overview <i class="mdi mdi-18px mdi-table-large"></i>
             </md-tab-label>
             <md-tab-body>
                 <div ng-include="'app/metrics/overview.html'" ng-if="vars.active.Overview"></div>
@@ -27,7 +27,7 @@
 <!-- !Chart metrics! -->
         <md-tab md-on-select="initChartTab()" layout-fill>
             <md-tab-label>
-                {{'Метрики' | translate}} <i class="mdi mdi-18px mdi-chart-bar"></i>
+                Metrics <i class="mdi mdi-18px mdi-chart-bar"></i>
             </md-tab-label>
             <md-tab-body>
                 <div flex layout-fill ng-include="'app/metrics/metricschart.html'" ng-if="vars.active.Chart"></div>

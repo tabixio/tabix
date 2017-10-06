@@ -24,7 +24,7 @@
                             filename="{{tab.name}}-{{result.time}}.csv"
                             csv-header="getExportHeaders(tableData)"
                     >
-                        {{'CSV с заголовком' | translate}}
+                        CSV with headers
                     </md-button>
                 </md-menu-item>
                 <md-menu-item>
@@ -33,7 +33,7 @@
                             quote-strings='"'
                             filename="{{tab.name}}-{{result.time}}.csv"
                     >
-                        {{'CSV без заголовка' | translate}}
+                        CSV without headers
                     </md-button>
                 </md-menu-item>
                 <md-menu-item>
@@ -44,7 +44,7 @@
                             field-separator="\t"
                             csv-header="getExportHeaders(tableData)"
                     >
-                        {{'Табулированный текст с заголовками' | translate}}
+                        TSV with headers
                     </md-button>
                 </md-menu-item>
                 <md-menu-item>
@@ -55,7 +55,7 @@
                             field-separator="\t"
                             csv-header="getExportHeaders(tableData)"
                     >
-                        {{'Табулированный текст без заголовков' | translate}}
+                        TSV without headers
                     </md-button>
                 </md-menu-item>
             </md-menu-content>
@@ -66,7 +66,7 @@
         </md-button>
         <md-button aria-label="menu" class="md-icon-button">
             <i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
-            <md-tooltip>{{'Привязка' | translate}}</md-tooltip>
+            <md-tooltip>Pinned</md-tooltip>
         </md-button>
     </div>
     <!-- ------------------------------------  -->

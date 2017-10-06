@@ -31,8 +31,7 @@ window.aceJSRules = {
         'ThemeService',
         '$timeout',
         '$filter',
-        'hotkeys',
-        '$translate'
+        'hotkeys'
     ];
 
     /**
@@ -51,8 +50,7 @@ window.aceJSRules = {
                            ThemeService,
                            $timeout,
                            $filter,
-                           hotkeys,
-                           $translate) {
+                           hotkeys) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -66,6 +64,7 @@ window.aceJSRules = {
 
         $scope.AceEditorInLoad=false;
         $scope.vars = {
+            EditorIsInit:false,
             sqlHistory: localStorageService.get(SQL_HISTORY_KEY) || [],
             dictionaries: [],
             isDictionariesLoad:false,
@@ -79,11 +78,11 @@ window.aceJSRules = {
             LastStatistics: false,
             delimiters : [
                 {
-                    name: $filter('translate')(';; Двойной'),
+                    name: ';; Double',
                     delimiter : ';;'
                 },
                 {
-                    name: $filter('translate')('; Одинарный'),
+                    name: '; Single',
                     delimiter : ';'
                 }
             ],
@@ -94,7 +93,7 @@ window.aceJSRules = {
             sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
             sqlLogServer: [],
             formats: [{
-                name: $filter('translate')('Таблица'),
+                name: 'Table',
                 sql: ' format JSON',
                 render: 'html'
             }, {
@@ -137,7 +136,7 @@ window.aceJSRules = {
          */
         $window.onbeforeunload = (event) => {
             if ($scope.vars.currentTab.sql !== '' && location.hostname != 'localhost') {
-                let message = $filter('translate')('Хотите покинуть страницу?');
+                let message = 'Do you want to leave this page?';
                 if (typeof event == 'undefined') {
                     event = window.event;
                 }
@@ -152,7 +151,7 @@ window.aceJSRules = {
          * Prevent data loss on state change
          */
         const clearRouterListener = $scope.$on('$stateChangeStart', (event) => {
-            let message = $filter('translate')('Хотите покинуть страницу?');
+            let message = 'Do you want to leave this page?';
             if (!event.defaultPrevented && $scope.vars.currentTab !== '' && !confirm(message)) {
                 event.preventDefault();
             }
@@ -178,6 +177,18 @@ window.aceJSRules = {
                 localStorageService.set(SQL_SESSION_KEY, tabs);
             }
         };
+
+        $scope.$watch('$root.isInitDatabaseStructure', function() {
+            $scope.vars.EditorIsInit=$rootScope.isInitDatabaseStructure
+        });
+
+
+        $scope.InitDatabaseStructure = () =>
+        {
+            console.warn(">>>>>>>>>>>>>>>InitDatabaseStructure<<<<<<<",$rootScope.isInitDatabaseStructure);
+
+        };
+
 
 
         /**
@@ -482,7 +493,7 @@ window.aceJSRules = {
                 $mdToast.show(
                     $mdToast
                         .simple()
-                        .content($filter('translate')('Не введен SQL'))
+                        .content('SQL query is empty')
                         .theme(ThemeService.theme)
                         .position('bottom right')
                 );
@@ -784,6 +795,8 @@ window.aceJSRules = {
 
 
         };
+
+
         $scope.changeRootSelectDatabase = (db) =>
         {
             if ($rootScope.currentDatabase!=db)
@@ -1083,7 +1096,7 @@ window.aceJSRules = {
             // Повесить эвент и переиминовывать кнопку -"Выполнить"
             editor.on('changeSelection', () => {
                 $timeout(() => {
-                    tab.buttonTitle = editor.getSelectedText() !== '' ? $filter('translate')('Выполнить выделенное ⌘ + ⏎') : $filter('translate')('Выполнить все ⇧ + ⌘ + ⏎');
+                    tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
                     if (tab.originalSql) {
                         tab.changed = (tab.originalSql != tab.sql);
                     }
@@ -1151,12 +1164,12 @@ window.aceJSRules = {
          */
         $scope.save = (tab, ev) => $mdDialog.show(
             $mdDialog.prompt()
-                .title($filter('translate')('Сохранить SQL как'))
-                .placeholder($filter('translate')('название'))
+                .title('Save SQL as?')
+                .placeholder('Title')
                 .initialValue(tab.name)
                 .targetEvent(ev)
-                .ok($filter('translate')('Сохранить'))
-                .cancel($filter('translate')('Отмена'))
+                .ok('Save')
+                .cancel('')
         ).then((name)=> {
             const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
             if (index != -1) {
@@ -1206,7 +1219,7 @@ window.aceJSRules = {
             $scope.vars.currentTab = {
                 name: 'new SQL',
                 sql: '',
-                buttonTitle: $filter('translate')('Выполнить ⌘ + ⏎'),
+                buttonTitle: 'Run ⌘ + ⏎',
                 format: {},
                 editor: null,
                 results: [],
@@ -1234,10 +1247,10 @@ window.aceJSRules = {
             if (tab.changed) {
                 $mdDialog.show(
                     $mdDialog.confirm()
-                        .title($filter('translate')('SQL изменен. Сохранить перед закрытием?'))
+                        .title('SQL was changed. Save it before exit?')
                         .targetEvent(event)
-                        .ok($filter('translate')('Да'))
-                        .cancel($filter('translate')('Нет'))
+                        .ok('Yes')
+                        .cancel('No')
                 ).then(()=> {
                     const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
                     if (index != -1) {
@@ -1289,10 +1302,10 @@ window.aceJSRules = {
             if (index != -1) {
                 $mdDialog.show(
                     $mdDialog.confirm()
-                        .title(`Удалить ${item.name}?`)
+                        .title(`Delete ${item.name}?`)
                         .targetEvent(event)
-                        .ok('Да')
-                        .cancel('Нет')
+                        .ok('Yes')
+                        .cancel('No')
                 ).then(()=> {
                     $scope.vars.sqlHistory.splice(index, 1);
                     localStorageService.set(SQL_HISTORY_KEY, $scope.vars.sqlHistory);
@@ -1380,12 +1393,12 @@ ORDER BY event_time desc  ) GROUP BY query`;
             event.stopPropagation();
             $mdDialog.show(
                 $mdDialog.prompt()
-                    .title($filter('translate')('Название вкладки'))
-                    .placeholder($filter('translate')('название'))
+                    .title('Title tab')
+                    .placeholder('title')
                     .initialValue(tab.name)
                     .targetEvent(event)
-                    .ok($filter('translate')('Применить'))
-                    .cancel($filter('translate')('Отмена'))
+                    .ok('Apply')
+                    .cancel('Cancel')
             ).then((name)=> {
                 const index = $scope.vars.sqlHistory.findIndex((item) => (item.name == tab.name));
                 if (index != -1) {

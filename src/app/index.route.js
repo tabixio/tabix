@@ -106,16 +106,11 @@
                     controller: 'TableController'
                 })
 
-                // Processes list
-                .state('processes', {
-                    parent: 'layout',
-                    url: '/processes',
-                    templateUrl: 'app/processes/processes.html',
-                    controller: 'ProcessesController'
-                })
+
+
                 // Processes list
                 .state('metrics', {
-                    parent: 'layout',
+                    parent: 'layoutDash',
                     url: '/metrics',
                     templateUrl: 'app/metrics/metrics.html',
                     controller: 'MetricsController'

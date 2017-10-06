@@ -280,10 +280,11 @@
             $scope.vars.loaded = false;
             $scope.vars.error = false;
             $scope.vars.databases = [];
-
-            API.memory('Init reLoad sidebar');
-
+            $rootScope.isInitDatabaseStructure = false;
             API.databaseStructure(function (ds) {
+                console.log("isInitDatabaseStructure-true");
+                $rootScope.isInitDatabaseStructure = Date.now();
+                console.log("databaseStructure - done");
                 let list_all_fields=ds.getFields();
                 // --------------------- INIT   DATABASES     ------------------------------------------------------
                 $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
@@ -350,6 +351,7 @@
                     ];
                 }, [ ]);
                 // --------------------- SELECT DATABASE      ------------------------------------------------------
+                // @todo - тут можно запоминать базу из соединения
                 $scope.selectDatabase($scope.vars.databases[0]);
                 // --------------------- INIT EMPTY DATABASES ------------------------------------------------------
                 ds.getDatabases().forEach((item) => {
@@ -370,18 +372,14 @@
                     }
                 });
                 // --------------------------------------------------------------------------------------------------
-                $scope.vars.loaded = true;
-                $scope.vars.error = false;
-                // --------------------------------------------------------------------------------------------------
                 $timeout(function () {
-                    console.info("metisMenu - apply");
+                    console.info("SideBar - loaded,run metisMenu - apply");
+                    $scope.vars.loaded = true;
+                    $scope.vars.error = false;
                     $('#sideBarMetismenu').metisMenu();
+                }, 200);
 
-
-
-                }, 850);
-
-            },forceReload);
+            });
 
         };
 

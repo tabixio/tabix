@@ -15,11 +15,11 @@
         const list = [{
             isDark: false,
             name: 'default',
-            title: $filter('translate')('Светлая тема')
+            title: 'Light theme'
         }, {
             isDark: true,
             name: 'dark',
-            title: $filter('translate')('Темная тема')
+            title: 'Dark theme'
         }];
         let theme = list.find((item) => (item.name == themeName)) || list[0];
         if (theme.isDark) {

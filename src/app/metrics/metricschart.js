@@ -373,7 +373,7 @@
 
             }, function ( response ) {
                 $scope.vars.loading = false;
-                console.error( 'Ошибка ' + response );
+                console.error( 'Error ' + response );
             });
         };
 
