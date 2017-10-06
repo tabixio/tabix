@@ -121,15 +121,15 @@
 
 
             //
-            API.query(`SELECT * FROM system.build_options`).then(function ( queryResult ) {
+            API.fetchQuery(`SELECT * FROM system.build_options`).then(function ( queryResult ) {
                 // let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
-                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),1,3));
+                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),2,6));
                 // $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
 
             });
 
 
-            API.query(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
+            API.fetchQuery(`SELECT database,table,name, data_compressed_bytes, data_uncompressed_bytes FROM system.columns`).then(function ( queryResult ) {
 
                 let obj={
                     path:'database.table.name.data_compressed_bytes' ,
@@ -139,10 +139,10 @@
                 };
 
                 let drawCommand={drawtype:'TREEMAP',code:obj};
-                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,6,6));
 
             });
-            API.query(`select toStartOfFiveMinute(modification_time) as dt,
+            API.fetchQuery(`select toStartOfFiveMinute(modification_time) as dt,
             sum(bytes) as bytes from system.parts group by dt order by dt LIMIT 30000`).then(function ( queryResult ) {
                 let obj={
                     autoAxis:true,
@@ -152,9 +152,9 @@
                 };
 
                 let drawCommand={drawtype:'CHART',code:obj};
-                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,3));
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,6,6));
             });
-            API.query(`select concat(database,'.',table) as table,sum(bytes) as bytes from system.parts
+            API.fetchQuery(`select concat(database,'.',table) as table,sum(bytes) as bytes from system.parts
             group by table order by bytes desc LIMIT 3000`).then(function ( queryResult ) {
                 let obj={
                     // autoAxis:false,//true,
@@ -165,13 +165,13 @@
 
                 let drawCommand={drawtype:'BAR',code:obj};
                 // let drawCommand={drawtype:'GRIDCHART',code:obj};
-                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,3,1));
+                $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,6,2));
             });
 
 
-            API.query(`SELECT * FROM system.clusters`).then(function ( queryResult ) {
+            API.fetchQuery(`SELECT * FROM system.clusters`).then(function ( queryResult ) {
                 // let drawCommand={drawtype:'TEXT',code:'<p>Version:{{data.0.v}}</p>'};
-                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),1,3));
+                $scope.widgets.push(new WidgetTable(new DataProvider(queryResult),2,6));
                 // $scope.widgets.push(new WidgetDraw(new DataProvider(queryResult),drawCommand,2,2));
 
             });

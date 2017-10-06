@@ -2,24 +2,19 @@
 
 <div ng-controller="OverviewController as render">
     <div class="row">
-        <div class="col-md-12">
-            <div gridster="gridsterOpts">
-                <ul>
-                    <li gridster-item="w" ng-repeat="w in widgets"  >
-                        <div class="widget-box">
-                            <div class="widget-box-content widget-draggable">
-                                <draw-widget
-                                        style="display: block;"
-                                        widget="w" ng-if="w.init && !w.error"
-                                        isdark="vars.isDark" class="widget widget-{{w.type}}" events="events">
-                                </draw-widget>
-                                <div ng-bind-html="w.error" class="font-monospace" ng-if="w.error"></div>
-                                <div ng-bind-html="w.text"  class="font-monospace" ng-if="w.text"></div>
-                                <span ng-if="w.empty">No data</span>
-                            </div>
+        <div class="col-md-12 WidgetsListResult">
+            <div gridstack class="grid-stack grid1" options="gridStackOptions" staticGrid="staticGrid">
+                    <div gridstack-item ng-repeat="w in widgets" class="grid-stack-item"
+                        gs-item-x="w.x" gs-item-y="w.y"
+                        gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1" >
+
+                        <div class="widget-grid-stack grid-stack-item-content ">
+                            <draw-widget
+                                    widget="w" ng-if="w.init && !w.error"
+                                    isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}} widget-selector" events="events">
+                            </draw-widget>
                         </div>
-                    </li>
-                </ul>
+                    </div>
             </div>
         </div>
     </div>

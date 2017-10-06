@@ -325,7 +325,7 @@
                     function (responseBody) {
                         return Promise.reject(responseBody);
                     }
-                )
+                );
                 // ).catch(function(error)
                 //     {
                 //             console.error("fetchQuery",error);

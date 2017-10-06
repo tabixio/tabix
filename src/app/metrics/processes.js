@@ -62,6 +62,7 @@
 
             },
             settings : {
+                observeChanges:false, // WARN! Memory leak
                 manualColumnMove: true,
                 manualColumnResize: true,
                 autoWrapRow: true,
@@ -92,7 +93,7 @@
 
             let sql = 'SELECT host_address,port FROM system.clusters GROUP BY host_address,port LIMIT 10';
             $scope.vars.clusterList = [];
-            API.query(sql).then(function (data) {
+            API.fetchQuery(sql).then(function (data) {
                 data.data.forEach((cell) => {
                     $scope.vars.clusterList.push(cell.host_address + ':' + cell.port);
 
@@ -129,11 +130,11 @@
                 sql=sql+" /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'";
             }
 
-            API.query(sql).then(function ( data ) {
+            API.fetchQuery(sql).then(function ( data ) {
 
                 let handsontable = API.dataToHandsontable( data );
                 $scope.table.colHeaders=handsontable.colHeaders;
-                // $scope.table.settings.columns=handsontable.columns;
+                $scope.table.settings.columns=handsontable.columns;
                 $scope.table.settings.manualColumnResize=handsontable.columns;
                 $scope.table.settings.colWidths=handsontable.colWidths;
 
