@@ -296,6 +296,9 @@ window.aceJSRules = {
 
                 resultContainer.data.push(query);
 
+                //
+                $scope.$applyAsync();
+
                 // Рекурсивный вызов executeQuery если в очереди
                 // еще остались элементы
                 if ((query.index + 1) < queue.length) {
@@ -441,6 +444,7 @@ window.aceJSRules = {
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 // $rootScope.$emit('handleBroadcastDatabases',{});
             }
+            $scope.$applyAsync();
             // -------------------------------------------------------
             if ($scope.vars.currentTab.statistics[0]) {
                 let d=DataProvider.convertArrayToDataProvider($scope.vars.currentTab.statistics,"statistics");

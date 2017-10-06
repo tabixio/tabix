@@ -53,7 +53,6 @@ class Widget {
     }
 
     scheduledResize(size) {
-        console.info("scheduledResize(size)",size);
 
         if (this._scheduledResize) {
             return;
@@ -64,9 +63,11 @@ class Widget {
         this._scheduledResize = true;
         let th = this;
         setTimeout(function () {
+            console.info("scheduledResize(size)",size);
+
             th._scheduledResize = false;
             th.onResize(size);
-        }, 400);
+        }, 800);
     }
 
     toString() {

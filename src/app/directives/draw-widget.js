@@ -102,6 +102,7 @@
                 scope.widget.element = angular.element('<DIV class="'+(scope.widget.isDark?'handsontable-dark':'')+'"></DIV>');
                 // Далее postProcessor в классе WidgetTable управляет таблицой - создает new Handsontable
             }
+
             // ------------------------------------- DRAW --------------------------------------------------------
             // Если тип виджета DRAW ( график ) получаем html, котороый рисует другую дерективу
             // Или можем получить уже готовый scope.widget.element, тогда в HTML будет FALSE
@@ -127,6 +128,11 @@
             {
                 element.append(scope.widget.element);
                 $compile(scope.widget.element)(scope);
+
+                scope.widget.element.on("$destroy", scope.widget.destroy(scope.widget));
+            }
+            else {
+                element.on("$destroy", scope.widget.destroy(scope.widget));
             }
 
             // Запускаем пре процессоры, преобразуют данные для виджета
@@ -157,7 +163,7 @@
 
 
 
-            scope.widget.element.on("$destroy", scope.widget.destroy(scope.widget));
+
             //
             scope.$watch(
                 function () {
