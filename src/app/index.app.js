@@ -15,6 +15,11 @@
     // External libs connection
     angular.module(smi2.app.name, [
 
+        // bower install ng-scrollbars --save
+        // bower install fun-metis-menu --save
+        // bower uninstall ngAnimate --save
+
+
         'ui.router',
         'LocalStorageModule',
         'angularScreenfull',
@@ -27,13 +32,14 @@
         // 'ui.grid.exporter',
         // 'ui.grid.selection',
         // 'ngAnimate',
-        'ngScrollbars',
         // 'gridster',
+
+        'ngScrollbars',
 
         'angularResizable',
         'ngSanitize',
         'ngMaterial',
-        // 'funMetisMenu',
+        'funMetisMenu',
         'ngCsv',
         'pascalprecht.translate',
         'cfp.hotkeys',

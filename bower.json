@@ -35,8 +35,8 @@
     "lodash.math": "*",
     "gridstack": "^0.3.0",
     "handsontable": "^0.34.4",
-    "fun-metis-menu": "*",
-    "ng-scrollbars": "^0.0.11"
+    "ng-scrollbars": "^0.0.11",
+    "fun-metis-menu": "*"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.0"

@@ -307,19 +307,29 @@
             let myRequest = new Request(url, myInit);
 
 
-            return fetch(myRequest) .then(function(response) {
-                let contentType = response.headers.get("content-type");
-                console.log("contentType",contentType);
-                if(contentType && contentType.includes("application/json")) {
-                    return response.json();
-                }
-                throw new TypeError("Oops, we haven't got JSON!");
-            })
-                // .then(function(json) {
-                //     /* process your JSON further */
-                //     console.log(json.meta);
-                // })
-                // .catch(function(error) { console.log(error); });
+            return fetch(myRequest)
+
+                .then(function(response) {
+
+                    let contentType = response.headers.get("content-type");
+
+                    if (contentType && contentType.includes("application/json") && response.status >= 200 && response.status < 300) {
+                        return Promise.resolve(response)
+                    } else {
+                        return response.text().then(Promise.reject.bind(Promise));
+                    }
+                })
+                .then(function(response) {
+                        return response.json();
+                    },
+                    function (responseBody) {
+                        return Promise.reject(responseBody);
+                    }
+                )
+                // ).catch(function(error)
+                //     {
+                //             console.error("fetchQuery",error);
+                //     });
         };
 
 
@@ -404,8 +414,8 @@
                 }
 
             }
-            // console.warn("SQL>",url,query,req);
-            this.memory();
+            console.info("SQL>",url,query,req);
+
             $http(req).then(
                 response => defer.resolve(response.data),
                 reason => defer.reject(reason)

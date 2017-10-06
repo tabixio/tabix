@@ -101,7 +101,6 @@
                     .position('bottom right')
             );
 
-            $mdSidenav( 'tableSiedenav' ).close( );
             console.timeEnd("sidebar.selectDatabase time took");
         };
 
@@ -109,6 +108,8 @@
         * Open table in right sidebar
         */
         $scope.openTable = ( table ) => {
+
+            console.log("openTable!!!!!!!!!!!!!!!!!!!!!!!");
             $mdSidenav( 'tableSiedenav' ).close( );
 
             if ($rootScope.currentDatabase != table.database)
@@ -373,8 +374,12 @@
                 $scope.vars.error = false;
                 // --------------------------------------------------------------------------------------------------
                 $timeout(function () {
+                    console.info("metisMenu - apply");
                     $('#sideBarMetismenu').metisMenu();
-                }, 250);
+
+
+
+                }, 850);
 
             },forceReload);
 

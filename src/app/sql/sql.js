@@ -212,7 +212,18 @@ window.aceJSRules = {
                 Q_ID = ' /*TABIX_QUERY_ID_' + query.qid + '*/ ';
             }
 
-            API.query(Q_ID + query.sql, query.format, true, extendSettings).then((data) => {
+            // API.query(Q_ID + query.sql, query.format, true, extendSettings).then((data) => {
+            API.fetchQuery(Q_ID + query.sql, true,query.format,  extendSettings).then((data) => {
+                console.log("fetchQuery>DONE!");
+
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('OK')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                );
+
 
                 let r = data;
 
@@ -286,11 +297,12 @@ window.aceJSRules = {
 
             }, (response) => {
 
+                console.log("ERROR : response :",response);
                 // Ошибка
                 $mdToast.show(
                     $mdToast
                         .simple()
-                        .content('ERROR')
+                        .content('ERROR:'+response.substr(0,90))
                         .theme(ThemeService.theme)
                         .position('bottom right')
                 );
@@ -306,13 +318,16 @@ window.aceJSRules = {
                     query: query,
                     statistics: null
                 };
-                if (response && response.data) {
-                    result.error = angular.toJson(response.data).replace(/^"/, '').replace(/"$/, '');
-                } else {
-                    result.error = "Status:"+response.status+"\nText:"+response.statusText;
+                result.error=response;
 
-
-                }
+                // if (response && response.data) {
+                //     result.error = angular.toJson(response.data).replace(/^"/, '').replace(/"$/, '');
+                // } else {
+                //     result.error = "Status:"+response.status+"\nText:"+response.statusText;
+                //
+                //
+                // }
+                console.log("ERROR:",result.error);
                 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 // Поиск ошибки в тексте ответа и тут нужна проверка что вообще ошибка содержит текст
                 let moveCol=-1;
