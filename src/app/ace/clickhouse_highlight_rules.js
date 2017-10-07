@@ -29,8 +29,22 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree"
         );
 
-        let drawCommand = "DRAW_GMAPS|DRAW_PLOTLY|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
-
+        let drawCommand = [
+            'DRAW_GMAPS',
+            'DRAW_PLOTLY',
+            'DRAW_CALENDAR',
+            'DRAW_TEXT',
+            'DRAW_HEATMAP',
+            'DRAW_CHART',
+            'DRAW_BAR',
+            'DRAW_GRIDCHART',
+            'DRAW_RIVER',
+            'DRAW_RAW',
+            'DRAW_SANKEYS',
+            'DRAW_TREEMAP',
+            'DRAW_C3',
+            'DRAW_MAP'
+        ];
         let listOfTables="";
         // ------------------------------------------ Init builtin functions ---------------------------------------------
         if (window.aceJSRules && window.aceJSRules.builtinFunctions)
@@ -134,7 +148,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             },
             {
                 token: "invalid.illegal",
-                regex: drawCommand
+                regex: drawCommand.join('|')
             },
             {
                 token: "string", // ' string
@@ -249,7 +263,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         // ------------------------------------------------------------------------------
         addCompletions(keywords.split('|'), 'keyword','keyword');
         addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
-        addCompletions(drawCommand.split('|'), 'draw','draw');
+        addCompletions(drawCommand, 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
         addCompletions(window.aceJSRules.tables, '[table]','table');
         // ------------------------------------------------------------------------------
