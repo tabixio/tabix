@@ -785,8 +785,6 @@ class HandsTable {
             //contextMenuCopyPaste: {
             //    swfPath: '/bower_components/zeroclipboard/dist/ZeroClipboard.swf'
             //},
-            // observeDOMVisibility:true,
-            // observeChanges:true,
             // visibleRows:120,
             // width:'100%',
             // height:'100%',
@@ -794,7 +792,7 @@ class HandsTable {
             // fixedColumnsLeft: 1,
             // maxRows: 1000,
             renderAllRows:false,
-            visibleRows:500
+            visibleRows:1500
         };
 
 

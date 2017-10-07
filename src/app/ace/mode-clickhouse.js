@@ -166,7 +166,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
             // token: Object {type: "text", value: " ", row: 10, col: 8}
             // token: Object {type: "markup.heading", value: "click_status_old", row: 10, col: 9}
 
-
+            // {type: "variable.language", value: "$prp", row: 1, col: 6}
 
             // token: {type: "keyword", value: "limit 4,3"
             //     token: {type: "keyword", value: "limit 4",
@@ -175,6 +175,10 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 let t = token;
                 t['row'] = iterator.getCurrentTokenRow();
                 t['col'] = iterator.getCurrentTokenColumn();
+                if (t.type=='variable.language' && (t.value))
+                {
+                    results.vars.push(t.value);
+                }
                 if (t.type=='keyword' && (t.value.toLowerCase().includes('limit')!==false))
                 {
                     let r = t.value.toLowerCase().match(/LIMIT\W+(\d+)\W*\,\W*(\d+)/i);
@@ -198,7 +202,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 //     // ------ GROUP BY ---------
                 //     results.groupby=this.fetchTokensParts(sql,t);
                 // }
-                // console.log("token:",t);
+                console.log("token:",t);
                 token = iterator.stepForward();
             }
             console.info("Parse & Find tokens result",results);

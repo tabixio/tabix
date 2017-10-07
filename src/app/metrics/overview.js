@@ -18,9 +18,14 @@
 
         $scope.widgets=[];
 
-        $scope.GridStackOptions={ disableDrag:true, disableResize:false, verticalMargin: 1,  staticGrid:true};
-
-
+        $scope.staticGrid=true;
+        $scope.gridStackOptions = {
+            cellHeight: 200,
+            verticalMargin: 0,
+            disableDrag:true,
+            // disableResize:true,
+            // staticGrid:true
+        };
         $scope.vars = {
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),

@@ -225,16 +225,6 @@ window.aceJSRules = {
 
             // API.query(Q_ID + query.sql, query.format, true, extendSettings).then((data) => {
             API.fetchQuery(Q_ID + query.sql, true,query.format,  extendSettings).then((data) => {
-                console.log("fetchQuery>DONE!");
-
-                $mdToast.show(
-                    $mdToast
-                        .simple()
-                        .content('OK')
-                        .theme(ThemeService.theme)
-                        .position('bottom right')
-                );
-
 
                 let r = data;
 

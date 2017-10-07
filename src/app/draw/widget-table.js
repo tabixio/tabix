@@ -150,7 +150,17 @@ class WidgetTable extends Widget {
         if (!this.init) return;
         if (!this.handsonTable) return;
         // if handsonTable exists - call handsonTable.render()
-        console.log("Call this.handsonTable.render()",size);
+        if (size && size[0]>0 && size[1]>0)
+        {
+            console.log("Call this.handsonTable.render()",size);
+            this.handsonTable.updateSettings(
+                {
+                    width:size[0]-10,
+                    height:size[1]-10
+                }
+            );
+        }
+
         this.handsonTable.render();
 
         return true;

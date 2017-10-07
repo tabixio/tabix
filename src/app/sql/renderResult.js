@@ -58,7 +58,7 @@
 
         $scope.gridStackOptions = {
             cellHeight: 200,
-            verticalMargin: 0,
+            verticalMargin: 3,
             disableDrag:true,
             // disableResize:true,
             // staticGrid:true

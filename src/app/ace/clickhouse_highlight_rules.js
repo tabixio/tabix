@@ -112,9 +112,13 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 token: "variable.language",
                 regex : /\$[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
             },
+            {
+                token: "variable.language",
+                regex: /@[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
+            },
                 {
-                    token: "variable.other",
-                    regex: /@[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
+                token: "variable.language",
+                regex: /\:[\w]+(?:\[[\w\]+]|[=\-]>\w+)?/
             },
             {
                 token: "comment",

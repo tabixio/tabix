@@ -22,20 +22,34 @@ md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
   //border: 2px dotted silver;
 }
 .widget-grid-stack {
-  top:0;
-  left:0;
+  //top:0;
+  //left:0;
   //overflow-x: auto;
   //overflow-y: auto;
+}
+//
+.grid-stack {
+  .grid-stack-item {
+    > .grid-stack-item-content {
+      //background: saddlebrown;
+      left: 4px;
+      right: 4px;
+    }
+  }
 }
 .widget-grid-stack-item {
-  top:0;
-  left:0;
+  //top:0;
+  //left:0px;
+  //right: 0px;
+  //padding-left: 0px;
+  //border: 2px sienna dotted;
   //overflow-x: auto;
   //overflow-y: auto;
 }
-
+.widget {
+}
 .grid-monospace {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-left: 10px;
   white-space:pre;
   overflow-x: auto;
@@ -95,10 +109,11 @@ md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
   width: 100%;
   height: 100%;
 
+
 }
 
 .widget {
-  //border: 1px sienna dotted;
+  //border: 3px sienna dotted;
 }
 .widget-draggable {
   //
