@@ -262,7 +262,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         };
         // ------------------------------------------------------------------------------
         addCompletions(keywords.split('|'), 'keyword','keyword');
-        addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSKV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
+        addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
         addCompletions(drawCommand, 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
         addCompletions(window.aceJSRules.tables, '[table]','table');
