@@ -29,6 +29,24 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree"
         );
 
+        let CompletionsKeyWords=[
+            'IF NOT EXISTS',
+            'IF EXISTS',
+            'GROUP BY',
+            'ORDER BY',
+            'FORMAT JSON',
+            'FORMAT JSONCompact',
+            'FORMAT JSONEachRow',
+            'FORMAT TSV',
+            'FORMAT TabSeparated',
+            'FORMAT TabSeparatedWithNames',
+            'FORMAT TabSeparatedWithNamesAndTypes',
+            'FORMAT TabSeparatedRaw',
+            'FORMAT BlockTabSeparated',
+            'FORMAT CSV',
+            'FORMAT CSVWithNames'
+        ];
+
         let drawCommand = [
             'DRAW_GMAPS',
             'DRAW_PLOTLY',
@@ -262,7 +280,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         };
         // ------------------------------------------------------------------------------
         addCompletions(keywords.split('|'), 'keyword','keyword');
-        addCompletions("GROUP BY|ORDER BY|FORMAT JSON|FORMAT JSONCompact|FORMAT JSONEachRow|FORMAT TSV|FORMAT TabSeparated|FORMAT TabSeparatedWithNames|FORMAT TabSeparatedWithNamesAndTypes|FORMAT TabSeparatedRaw|FORMAT BlockTabSeparated|FORMAT CSV|FORMAT CSVWithNames".split('|'), 'keyword','keyword');
+        addCompletions(CompletionsKeyWords, 'keyword','keyword');
         addCompletions(drawCommand, 'draw','draw');
         addCompletions(dataTypes.split('|'), 'type','type');
         addCompletions(window.aceJSRules.tables, '[table]','table');
