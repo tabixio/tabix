@@ -29,10 +29,9 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree"
         );
 
-        let drawCommand = "DRAW_GMAPS|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
+        let drawCommand = "DRAW_GMAPS|DRAW_PLOTLY|DRAW_CALENDAR|DRAW_TEXT|DRAW_HEATMAP|DRAW_CHART|DRAW_BAR|DRAW_GRIDCHART|DRAW_RIVER|DRAW_RAW|DRAW_SANKEYS|DRAW_TREEMAP|DRAW_C3|DRAW_MAP";
 
         let listOfTables="";
-
         // ------------------------------------------ Init builtin functions ---------------------------------------------
         if (window.aceJSRules && window.aceJSRules.builtinFunctions)
         {

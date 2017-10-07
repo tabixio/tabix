@@ -33,6 +33,12 @@
         }
 
         // ------------------------------------------------------------------------------------------------------------------
+        if (widget.draw.library=='plotly') {
+
+            widget.element = angular.element(`<div style="width: 100%;height: 100%">&nbsp;</div>`);
+            html=false;
+
+        }
         if (widget.draw.library=='c3') {
 
             let elemDiv= document.createElement('div');
