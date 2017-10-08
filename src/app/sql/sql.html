@@ -24,21 +24,17 @@
                     <div style="min-height: 100px; position: relative; display: table-cell;">
                         <div resizable r-directions="['bottom']" r-height="300" style="">
                             <md-menu mousepoint-menu>
+                                <!--ng-model="tab.sql"-->
+                                <!--mode: 'clickhouse',-->
                                 <div
-                                    ng-model="tab.sql"
                                     ng-right-click="$mdOpenMousepointMenu($event)"
                                     ui-ace="{
                                         useWrapMode : true,
-                                        mode: 'clickhouse',
-                                        onLoad: aceLoaded,
-                                        advanced: {
-                                            enableBasicAutocompletion: true
-                                        }
+                                        onLoad: aceLoaded
                                     }"
                                     style=" width: 100%; height: 100%;"
                                     ng-mouseenter
-                                >
-                                </div>
+                                ></div>
                                 <md-menu-content id="menu" width="4">
                                     <md-menu-item ng-repeat="menu in rightAceMenuList | filter: {active: true}">
                                         <md-button ng-click="rightMenuProcess(menu, $event)"> <i class="mdi mdi-{{menu.icon}}"></i>

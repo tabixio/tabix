@@ -5,7 +5,7 @@
 ((angular, smi2) => {
     'use strict';
 
-    angular.module(smi2.app.name).directive('drawWidget', ['$compile','$timeout','hotRegisterer', function ($compile,$timeout,hotRegisterer) {
+    angular.module(smi2.app.name).directive('drawWidget', ['$compile','$timeout', function ($compile,$timeout) {
         return {
             restrict: 'EA',
             template: '<div style="width: 100%;height: 100%"></div>',
@@ -14,7 +14,7 @@
                 isdark: '=isdark'
             },
             replace:true,
-            link: buildLinkFunc($compile,$timeout,hotRegisterer)
+            link: buildLinkFunc($compile,$timeout)
         };
     }]);
 
@@ -79,7 +79,7 @@
 
 
 
-    function buildLinkFunc($compile,$timeout,hotRegisterer) {
+    function buildLinkFunc($compile,$timeout) {
         console.log("buildLinkFunc");
         return function (scope, element, attrs) {
 

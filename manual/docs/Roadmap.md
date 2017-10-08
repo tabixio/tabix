@@ -1,3 +1,9 @@
+* GET http://localhost:3000/bower_components/ace/ext-searchbox.js net::ERR_ABORTED
+* Сохранять tab.sql при переключении вкладок 
+
+* Rewrite menu bar - minimal watchers
+* Rewrite angular-aceJS components - minimal watchers
+
 
 
 #### TODO UI:

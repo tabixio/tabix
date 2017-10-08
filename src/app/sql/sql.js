@@ -452,7 +452,10 @@ window.aceJSRules = {
         $scope.execute = (type, tab) => {
             console.groupCollapsed("Execute query");
             $scope.vars.LastStatistics = false;
-            let sql = tab.sql === '' ? tab.editor.getValue() : tab.sql;
+            tab.sql=tab.editor.getValue();
+
+            let sql = tab.sql;
+
             let numquery = 0;
             const editor = tab.editor;
             let queue = [];
@@ -966,8 +969,10 @@ window.aceJSRules = {
 
             tab.editor = editor;
             editor.$blockScrolling = Infinity;
-
-
+            //
+            // useWrapMode : true,=> session.setUseWrapMode(true/false)
+            //     mode: 'clickhouse',
+            //     onLoad: aceLoaded,
 
             // Load settings from LocalStorage
             editor.setOptions({
@@ -978,6 +983,7 @@ window.aceJSRules = {
                 highlightSelectedWord:true ,
                 //showInvisibles:true ,
                 showGutter:true ,
+                useWrapMode : true,
                 enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
                 liveAutocompletionDelay: 500,
                 liveAutocompletionThreshold: 1
@@ -1083,6 +1089,7 @@ window.aceJSRules = {
                 exec: formatCode
             });
 
+            editor.setValue(tab.sql);
             editor.clearSelection();
             editor.focus();
             editor.selection.moveTo(0, 0);
@@ -1375,6 +1382,8 @@ ORDER BY event_time desc  ) GROUP BY query`;
         $scope.setSql = (sql) => {
             $scope.vars.currentTab.sql = sql;
             $scope.toggleSidenav('log');
+            $scope.vars.currentTab.editor.setValue(sql);
+
             $timeout(() => $scope.vars.currentTab.editor.focus(), 500);
         };
 

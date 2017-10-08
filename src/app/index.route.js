@@ -83,6 +83,12 @@
                     templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'
                 })
+                .state('edit', {
+                    parent: 'layoutDash',
+                    url: '/edit',
+                    templateUrl: 'app/dash/edit.html',
+                    controller: 'EditController'
+                })
                 // Login state
                 .state('login', {
                     url: '/login',
