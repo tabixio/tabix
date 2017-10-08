@@ -17,17 +17,17 @@
                         </md-button>
                     </a>
                     <ul class="sub-menu">
-                        <li ng-repeat="database in vars.databases" ng-class="currentDatabase==database.name?'active':''">
+                        <li ng-repeat="database in ::vars.databases" ng-class="currentDatabase==database.name?'active':''">
 
                             <a ng-mouseenter >
                                 <md-button class="text-left no-txt-transform w100" ng-class="currentDatabase==database.name?'activeDatabase':''" ng-dblclick="clickAndSelect(database, $event)" >
                                     <i class="mdi mdi-database"></i>
-                                    {{database.name}}
-                                    <span class="db__table-count">{{database.tables.length}}</span>
+                                    {{::database.name}}
+                                    <span class="db__table-count">{{::database.tables.length}}</span>
                                 </md-button>
                             </a>
 
-                            <ul class="sub-menu" ng-if="database.tables.length">
+                            <ul class="sub-menu">
                                 <li ng-repeat="table in database.tables" >
 
                                     <a class="has-arrow"
@@ -36,15 +36,14 @@
 
                                             <md-button ng-mouseenter class="text-left no-txt-transform" ng-dblclick="openTable(table)"
                                                        ng-right-click="$mdOpenMousepointMenu($event)">
-                                                <i ng-if="table.classEngine" class="mdi mdi-{{table.classEngine}}"></i>
-                                                <i ng-if="!table.classEngine" class="mdi mdi-table"></i>
-                                                {{table.name}}
+                                                <i class="mdi mdi-{{::table.classEngine}}"></i>
+                                                {{::table.name}}
                                             </md-button>
 
                                             <md-menu-content width="4">
-                                                <md-menu-item ng-repeat="menu in table.rightMenuList | filter: {active: true}">
+                                                <md-menu-item ng-repeat="menu in ::table.rightMenuList | filter: {active: true}">
                                                     <md-button ng-click="rightMenuProcessTable(menu, $event)"> <i class="mdi mdi-{{menu.icon}}"></i>
-                                                        {{menu.value}}
+                                                        {{::menu.value}}
                                                     </md-button>
                                                 </md-menu-item>
                                             </md-menu-content>
@@ -52,9 +51,9 @@
                                         </md-menu>
                                     </a>
                                     <ul class="sub-menu">
-                                        <li ng-repeat="field in table.fields" class="text-left no-txt-transform table-fields-sidebar" ng-click="clickInsertField(field)">
+                                        <li ng-repeat="field in ::table.fields" class="text-left no-txt-transform table-fields-sidebar" ng-click="clickInsertField(field)">
                                             <pre style="margin: 2px 0px 0px 2px;white-space: nowrap;"
-                                                 ng-class="field.active?'side_fieldactive':'side_fieldnoactive'">{{field.name}}&nbsp;&nbsp;&nbsp;&nbsp;<i style="color: silver">{{field.type}}</i></pre>
+                                                 class="side_fieldactive">{{::field.name}}&nbsp;&nbsp;&nbsp;&nbsp;<i style="color: silver">{{::field.type}}</i></pre>
                                         </li>
                                     </ul>
                                 </li>
