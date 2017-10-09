@@ -94,10 +94,19 @@
                 scope.widget.preProcessor();
             }
 
+
+            // <div ng-bind-html="w.error" class="" ng-if="w.error"></div>
+            //     <div ng-bind-html="w.text"  ng-if="w.text"></div>
+            //     <span ng-if="w.empty">No data</span>
             // -------------------------------- Text & Error RENDER ----------------------------------------------
             // Если widget содержит ошибку или в поле textformat не false => результат это текс, отрисует сам WidgetsList.html
-            if (scope.widget.error || scope.widget.textformat)
+            if (scope.widget.error || scope.widget.textformat || scope.widget.text || scope.widget.empty )
             {
+                console.log("widget Have Error",scope.widget.error);
+                if (scope.widget.error) element.html(scope.widget.error);
+                if (scope.widget.text ) element.html(scope.widget.text);
+                if (scope.widget.empty ) element.html("NO DATA");
+                element.addClass("grid-monospace");
                 return ;
             }
             // ------------------------------------ TABLE ---------------------------------------------------------

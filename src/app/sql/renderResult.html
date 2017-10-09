@@ -1,9 +1,8 @@
-<div ng-controller="RenderCtrl as render" ng-init="resultContainer=tab.results[0]">
-
+<!--<div ng-if="!tab.loading" ng-controller="RenderCtrl as render" ng-init="resultContainer=tab.results[0]">-->
+<div ng-repeat="resultContainer in tab.results">
 <!--<md-tab ng-repeat="resultContainer in tab.results" md-dynamic1-height md-border-bottom class="h100">-->
 
 <!--<md-tab-label>-->
-        <!--{{::resultContainer.time}}-->
         <!--<i class="mdi mdi-18px ml+" ng-class="resultContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="resultContainer.pinned = !resultContainer.pinned; $event.stopPropagation()"></i>-->
         <!--<i class="mdi mdi-close" ng-click="removeResult(tab, resultContainer, $event)"></i>-->
 <!--</md-tab-label>-->
@@ -81,10 +80,11 @@
     <!--</div>-->
 
     <!-- ------------------------------------  -->
-    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
+    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex" ng-init="initTableTab()">
+
 
         <!-- !TABLES! -->
-        <md-tab md-on-select="initTableTab()" ng-click="vars.active.table=true">
+        <md-tab md-on-select="vars.active.table=true" ng-click="">
             <md-tab-label>
                 Table <i class="mdi mdi-18px mdi-table-large"></i>
             </md-tab-label>
@@ -133,6 +133,7 @@
     </md-tabs>
 <!--</md-tab-body>-->
 <!--</md-tab>-->
+</div>
 </div>
 
 

@@ -3,21 +3,17 @@
         <div class="WidgetsListResult">
             <div gridstack class="grid-stack grid1" options="gridStackOptions" staticGrid="staticGrid"  on-resize-stop="onResizeStop(event,ui)">
 
+                <!--   ----------------- -->
+
                 <div gridstack-item ng-repeat="w in widgets"
-                     class="grid-stack-item"
-                     gs-item-x="w.x" gs-item-y="w.y"
-                     gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1"
-                >
+                     class="grid-stack-item" gs-item-x="w.x" gs-item-y="w.y" gs-item-width="w.sizeX" gs-item-height="w.sizeY" gs-item-autopos="1">
                     <div class="grid-stack-item-content widget-grid-stack">
-                        <draw-widget
-                        widget="w" ng-if="w.init && !w.error"
-                        isdark="vars.isDark" class="widget widget-{{w.type}} widget-selector widget-grid-stack-item" events="events">
-                        </draw-widget>
-                        <div ng-bind-html="w.error" class="grid-monospace" ng-if="w.error"></div>
-                        <div ng-bind-html="w.text" class="grid-monospace" ng-if="w.text"></div>
-                        <span ng-if="w.empty">No data</span>
+                        <draw-widget  widget="w" isdark="w.isDark" class="widget widget-{{::w.type}} widget-selector widget-grid-stack-item" events="events"></draw-widget>
                     </div>
                 </div>
+
+                <!--   ----------------- -->
+
             </div>
         </div>
     </div>

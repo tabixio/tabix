@@ -450,6 +450,7 @@ window.aceJSRules = {
          * @param tab
          */
         $scope.execute = (type, tab) => {
+            $scope.$applyAsync();
             console.groupCollapsed("Execute query");
             $scope.vars.LastStatistics = false;
             tab.sql=tab.editor.getValue();
@@ -511,6 +512,8 @@ window.aceJSRules = {
             }, []);
 
             tab.results.unshift(result);
+
+            tab.results=[result];
 
             // ------------------------------------------------------------------------------------------------
             // Save to SQL log

@@ -123,8 +123,7 @@
 
 
                 <!--<md-tabs md-dynamic-height md-border-bottom  md-selected="tab.selectedResultTab">-->
-<div>{{tab.results.length}}</div>
-                    <span ng-if="tab.results.length" style="width: 100%;height: 100%" ng-include="'app/sql/renderResult.html'"></span>
+                    <span ng-if="!tab.loading" style="width: 100%;height: 100%" ng-include="'app/sql/renderResult.html'"></span>
 
                 <!--&lt;!&ndash;</md-tabs>&ndash;&gt;-->
 
