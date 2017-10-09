@@ -25,20 +25,20 @@
                 </md-button>
 
 
-                <md-menu md-position-mode="target-right target">
-                    <md-button aria-label="menu" ng-click="$mdOpenMenu($event)">
-                        <i class="mdi mdi-24px mdi-theme-light-dark"  style="vertical-align:top"></i>
-                        Theme
-                    </md-button>
-                    <md-menu-content>
-                        <md-menu-item ng-repeat="theme in themes">
-                            <md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
+                <!--<md-menu md-position-mode="target-right target">-->
+                    <!--<md-button aria-label="menu" ng-click="$mdOpenMenu($event)">-->
+                        <!--<i class="mdi mdi-24px mdi-theme-light-dark"  style="vertical-align:top"></i>-->
+                        <!--Theme-->
+                    <!--</md-button>-->
+                    <!--<md-menu-content>-->
+                        <!--<md-menu-item ng-repeat="theme in themes">-->
+                            <!--<md-button ng-click="setUiTheme(theme)">{{theme.title}}</md-button>-->
+                        <!--</md-menu-item>-->
+                    <!--</md-menu-content>-->
+                <!--</md-menu>-->
 
 
-                <md-button ng-if="!vars.disable_exit" aria-label="Sign out" ng-click="logout()"
+                <md-button ng-if="::vars.hideExitButton" aria-label="Sign out" ng-click="logout()"
                            style="vertical-align:top">
                     <i class="mdi mdi-24px mdi-lock"></i>
                     Sign out

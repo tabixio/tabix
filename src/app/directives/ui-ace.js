@@ -35,7 +35,7 @@ angular.module('ui.ace', [])
           acee.session.$stopWorker();
           acee.destroy();
         });
-
+        // low speed watch
         scope.$watch(function() {
           return [elm[0].offsetWidth, elm[0].offsetHeight];
         }, function() {

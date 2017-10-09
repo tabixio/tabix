@@ -1,19 +1,20 @@
-<div ng-controller="RenderCtrl as render">
+<div ng-controller="RenderCtrl as render" ng-init="resultContainer=tab.results[0]">
 
-<md-tab ng-repeat="resultContainer in tab.results" md-dynamic1-height md-border-bottom class="h100">
+<!--<md-tab ng-repeat="resultContainer in tab.results" md-dynamic1-height md-border-bottom class="h100">-->
 
-<md-tab-label>
-        {{::resultContainer.time}}
-        <i class="mdi mdi-18px ml+" ng-class="resultContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="resultContainer.pinned = !resultContainer.pinned; $event.stopPropagation()"></i>
-        <i class="mdi mdi-close" ng-click="removeResult(tab, resultContainer, $event)"></i>
-</md-tab-label>
-<md-tab-body>
+<!--<md-tab-label>-->
+        <!--{{::resultContainer.time}}-->
+        <!--<i class="mdi mdi-18px ml+" ng-class="resultContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="resultContainer.pinned = !resultContainer.pinned; $event.stopPropagation()"></i>-->
+        <!--<i class="mdi mdi-close" ng-click="removeResult(tab, resultContainer, $event)"></i>-->
+<!--</md-tab-label>-->
+<!--<md-tab-body>-->
+
     <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
         <!-- ------------------------------------ -->
-        <md-menu md-position-mode="target" ng-repeat="tableData in resultContainer.widgets.tables"
-                 ng-if="tableData.data.progressQuery">
+        <md-menu md-position-mode="target" ng-repeat="tableData in ::resultContainer.widgets.tables"
+                 ng-if="::tableData.data.progressQuery">
             <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                <md-tooltip>{{tableData.data.progressQuery}}</md-tooltip>
+                <md-tooltip>{{::tableData.data.progressQuery}}</md-tooltip>
                 <i class="mdi mdi-file-excel"></i>
             </md-button>
             <md-menu-content>
@@ -21,7 +22,7 @@
                     <md-button
                             ng-csv="getExportData(tableData)"
                             quote-strings='"'
-                            filename="{{tab.name}}-{{result.time}}.csv"
+                            filename="{{::tab.name}}-{{::result.time}}.csv"
                             csv-header="getExportHeaders(tableData)"
                     >
                         CSV with headers
@@ -31,7 +32,7 @@
                     <md-button
                             ng-csv="getExportData(tableData)"
                             quote-strings='"'
-                            filename="{{tab.name}}-{{result.time}}.csv"
+                            filename="{{::tab.name}}-{{::result.time}}.csv"
                     >
                         CSV without headers
                     </md-button>
@@ -40,7 +41,7 @@
                     <md-button
                             ng-csv="getExportData(tableData)"
                             quote-strings=''
-                            filename="{{tab.name}}-{{result.time}}.txt"
+                            filename="{{::tab.name}}-{{::result.time}}.txt"
                             field-separator="\t"
                             csv-header="getExportHeaders(tableData)"
                     >
@@ -51,7 +52,7 @@
                     <md-button
                             ng-csv="getExportData(tableData)"
                             quote-strings=" "
-                            filename="{{tab.name}}-{{result.time}}.txt"
+                            filename="{{::tab.name}}-{{::result.time}}.txt"
                             field-separator="\t"
                             csv-header="getExportHeaders(tableData)"
                     >
@@ -60,23 +61,27 @@
                 </md-menu-item>
             </md-menu-content>
         </md-menu>
-        <md-button aria-label="menu" class="md-icon-button">
-            <i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>
-            <md-tooltip>Upload CSV</md-tooltip>
-        </md-button>
+
+
+
+        <!--<md-button aria-label="menu" class="md-icon-button">-->
+            <!--<i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>-->
+            <!--<md-tooltip>Upload CSV</md-tooltip>-->
+        <!--</md-button>-->
+        <!---->
         <md-button aria-label="menu" class="md-icon-button">
             <i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
             <md-tooltip>Pinned</md-tooltip>
         </md-button>
     </div>
     <!-- ------------------------------------  -->
-    <div ng-if="!tabsRender"  ng-init="initNoTabs()">
-        <div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>
-        <div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>
-    </div>
+    <!--<div ng-if="!tabsRender"  ng-init="initNoTabs()">-->
+        <!--<div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>-->
+        <!--<div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>-->
+    <!--</div>-->
 
     <!-- ------------------------------------  -->
-    <md-tabs ng-if="tabsRender" md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
+    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex">
 
         <!-- !TABLES! -->
         <md-tab md-on-select="initTableTab()" ng-click="vars.active.table=true">
@@ -102,32 +107,32 @@
         </md-tab>
 
 
-        <!-- !PIVOTJS! -->
-        <md-tab md-on-select="vars.active.pivot=true">
-            <md-tab-label>
-                Pivot  <i class="mdi mdi-18px mdi-palette-advanced"></i>
-            </md-tab-label>
-            <md-tab-body >
-                <div ng-init="widgets = resultContainer.widgets.pivot" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.pivot"></div>
-            </md-tab-body>
-        </md-tab>
+        <!--&lt;!&ndash; !PIVOTJS! &ndash;&gt;-->
+        <!--<md-tab md-on-select="vars.active.pivot=true">-->
+            <!--<md-tab-label>-->
+                <!--Pivot  <i class="mdi mdi-18px mdi-palette-advanced"></i>-->
+            <!--</md-tab-label>-->
+            <!--<md-tab-body >-->
+                <!--<div ng-init="widgets = resultContainer.widgets.pivot" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.pivot"></div>-->
+            <!--</md-tab-body>-->
+        <!--</md-tab>-->
 
-        <!-- !STATS! -->
-        <md-tab md-on-select="vars.active.stats=true">
-            <md-tab-label>
-                Stats <i class="mdi mdi-18px mdi-school"></i>
-            </md-tab-label>
-            <md-tab-body>
-                <div ng-init="widgets = resultContainer.widgets.stats" ng-include="'app/render/WidgetsList.html'"
-                     ng-if="vars.active.stats"></div>
-            </md-tab-body>
-        </md-tab>
+        <!--&lt;!&ndash; !STATS! &ndash;&gt;-->
+        <!--<md-tab md-on-select="vars.active.stats=true">-->
+            <!--<md-tab-label>-->
+                <!--Stats <i class="mdi mdi-18px mdi-school"></i>-->
+            <!--</md-tab-label>-->
+            <!--<md-tab-body>-->
+                <!--<div ng-init="widgets = resultContainer.widgets.stats" ng-include="'app/render/WidgetsList.html'"-->
+                     <!--ng-if="vars.active.stats"></div>-->
+            <!--</md-tab-body>-->
+        <!--</md-tab>-->
 
 
 
     </md-tabs>
-</md-tab-body>
-</md-tab>
+<!--</md-tab-body>-->
+<!--</md-tab>-->
 </div>
 
 

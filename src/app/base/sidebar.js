@@ -219,20 +219,21 @@
         };
 
         //gets triggered when an item in the context menu is selected
-        $scope.rightMenuProcessTable = function(obj){
+        // ('InsertSQLDrop',database.name,table.name, $event)
+        $scope.rightMenuProcessTable = function(key,db,table,$events){
 
-            console.log('obj right',obj);
-            let table=obj.table;
-            let db=obj.db;
-            if(obj.key == "InsertSQLDrop"){
+            console.log('rightMenuProcessTable',key,db,table);
+            // let table=obj.table;
+            // let db=obj.db;
+            if(key == "InsertSQLDrop"){
                 if (table.indexOf('.') !== -1) table='"'+table+'"';
                 $rootScope.$emit('handleBroadcastInsertInActive', {value:"DROP TABLE IF EXISTS "+db+"."+table});
             }
-            if(obj.key == "InsertName"){
+            if(key == "InsertName"){
                 $rootScope.$emit('handleBroadcastInsertInActive', {value:db+"."+table});
             }
 
-            if(obj.key == "InsertSQLDescribe"){
+            if(key == "InsertSQLDescribe"){
                 API.query( 'SHOW CREATE TABLE ' + db + '."' + table+'"' ).then( data => {
 
                     let sql=window.sqlFormatter.format(data.data[0].statement);
@@ -240,13 +241,13 @@
                 });
             }
 
-            if(obj.key == "OpenTables"){
+            if(key == "OpenTables"){
                 // тут можно что то  получше чем location
                 window.location = '/#/database/' + db + '/table/' + table;
 
             }
 
-            if(obj.key == "InsertDescribe"){
+            if(key == "InsertDescribe"){
                API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
 
                    let fields=[];
@@ -301,7 +302,7 @@
                         {active: true, value: 'Make SQL Drop',key:'InsertSQLDrop',icon:'delete'    ,db:item.database,table: item.name}
                     ];
 
-                    let classEngine='';
+                    let classEngine='table';
                     if (item.engine.match(/Dictionary.*/))  classEngine='library';
                     if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
                     if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';

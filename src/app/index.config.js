@@ -16,32 +16,33 @@
             '$httpProvider',
             '$sceProvider',
             '$urlRouterProvider',
-            '$mdThemingProvider',
-            'ThemeServiceProvider',
+            'ThemeServiceProvider','$mdThemingProvider',
             function ($locationProvider,
                       $httpProvider,
                       $sceProvider,
                       $urlRouterProvider,
-                      $mdThemingProvider,
-                      ThemeService,
+                      ThemeService,$mdThemingProvider
                       ) {
 
                 // Запуск HTML5 режима HISTORY API, без решетки
                 // $locationProvider.html5Mode(true).hashPrefix('!');
-
+                // $compileProvider.debugInfoEnabled(true);
                 // Проверка авторизации в httpInterceptor
                 $httpProvider.interceptors.push('HttpInterceptor');
 
                 // Разрешаю ng-bind-html
                 $sceProvider.enabled(false);
+                let isDark=false;
+                if (_.isFunction(ThemeService.$get[0]))
+                {
+                   isDark=ThemeService.$get[0]().isDark();
+                }
+                else {
+                    isDark=ThemeService.$get().isDark();
+                }
+                console.log("isDark",isDark);
 
-                // Если state не найден - шлю 404
-                $urlRouterProvider.otherwise(function ($injector) {
-                    var $state = $injector.get("$state");
-                    $state.transitionTo('404');
-                });
-
-                if (ThemeService.$get().isDark()) {
+                if (isDark) {
                     $mdThemingProvider
                         .theme('default')
                         .dark()
@@ -50,6 +51,13 @@
                             'default': '500'
                         });
                 }
+
+                window.disableNgInspectWatchers=false;
+                // Если state не найден - шлю 404
+                $urlRouterProvider.otherwise(function ($injector) {
+                    var $state = $injector.get("$state");
+                    $state.transitionTo('404');
+                });
 
             }
         ])

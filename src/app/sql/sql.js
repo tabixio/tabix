@@ -1107,56 +1107,56 @@ window.aceJSRules = {
             $scope.aceApply();
 
         };
-
-        /**
-         * Watch and save settings in LocalStorage
-         */
-        $scope.$watch('vars.cacheDatabaseStructure', (curr) => localStorageService.set('cacheDatabaseStructure', curr));
-        $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
-        $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));
+        //
+        // /**
+        //  * Watch and save settings in LocalStorage
+        //  */
+        // $scope.$watch('vars.cacheDatabaseStructure', (curr) => localStorageService.set('cacheDatabaseStructure', curr));
+        // $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
+        // $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));
 
 
         /**
          * Watch and save delimiter in LocalStorage
          */
-
-        $scope.$watch('vars.delimiter', (d) => {
-
-            if (d.name && d.delimiter)
-            {
-                d=d.delimiter;
-            }
-
-
-            localStorageService.set('delimiter', d);
-            window.global_delimiter=d;
-
-
-            $scope.vars.tabs.forEach((tab) =>
-            {
-                if (tab.editor)
-                {
-                    console.log(">>>vars.delimiter->ACE");
-                    tab.editor.session.setMode({
-                        path: "ace/mode/clickhouse",
-                        v: Date.now()
-                    });
-                    tab.editor.session.bgTokenizer.start(0);
-                }
-            });
-        });
-
-        /**
-         * Watch and save settings in LocalStorage
-         */
-        $scope.$watch('vars.fontSize', (fontSize) => {
-            if (fontSize) {
-                $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
-                    fontSize: fontSize + 'px'
-                }));
-                localStorageService.set('editorFontSize', fontSize);
-            }
-        });
+        //
+        // $scope.$watch('vars.delimiter', (d) => {
+        //
+        //     if (d.name && d.delimiter)
+        //     {
+        //         d=d.delimiter;
+        //     }
+        //
+        //
+        //     localStorageService.set('delimiter', d);
+        //     window.global_delimiter=d;
+        //
+        //
+        //     $scope.vars.tabs.forEach((tab) =>
+        //     {
+        //         if (tab.editor)
+        //         {
+        //             console.log(">>>vars.delimiter->ACE");
+        //             tab.editor.session.setMode({
+        //                 path: "ace/mode/clickhouse",
+        //                 v: Date.now()
+        //             });
+        //             tab.editor.session.bgTokenizer.start(0);
+        //         }
+        //     });
+        // });
+        //
+        // /**
+        //  * Watch and save settings in LocalStorage
+        //  */
+        // $scope.$watch('vars.fontSize', (fontSize) => {
+        //     if (fontSize) {
+        //         $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
+        //             fontSize: fontSize + 'px'
+        //         }));
+        //         localStorageService.set('editorFontSize', fontSize);
+        //     }
+        // });
 
         /**
          * Save SQL to history
@@ -1356,18 +1356,18 @@ ORDER BY event_time desc  ) GROUP BY query`;
 
             }
         };
-
-
-        $scope.$watch('vars.disableHotKeyCmdLeft', (value) => {
-            localStorageService.set(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT, value);
-        });
-        $scope.$watch('vars.enableLiveAutocompletion', (value) => {
-            localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
-            // loop
-            $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
-                enableLiveAutocompletion: value
-            }));
-        });
+        //
+        //
+        // $scope.$watch('vars.disableHotKeyCmdLeft', (value) => {
+        //     localStorageService.set(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT, value);
+        // });
+        // $scope.$watch('vars.enableLiveAutocompletion', (value) => {
+        //     localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
+        //     // loop
+        //     $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
+        //         enableLiveAutocompletion: value
+        //     }));
+        // });
 
         /**
          * Change UI themetam_tam641
@@ -1445,10 +1445,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
 
         //context menu array
         $scope.rightAceMenuList = [
-            {active: true, value: 'AutoFormat',icon:'format-size'},
-            {active: true, value: 'Expand',icon:'arrow-expand'},
-            {active: true, value: 'Collapse',icon:'arrow-compress'},
-            {active: true, value: 'Collapse All',icon:'arrow-compress'},
+
         ];
 
 

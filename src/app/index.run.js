@@ -15,7 +15,9 @@
         .run([
             '$rootScope',
             '$state',
-            ($rootScope, $state) => {
+            '$mdTheming',
+            'ThemeService',
+            ($rootScope, $state,$mdTheming,ThemeService) => {
 
                 $rootScope.breadcrumbs = [];
                 $rootScope.currentDatabase = null;
@@ -29,6 +31,7 @@
                 // Требование JSlinter'a (((
                 $rootScope.$on('$destroy', () => stateChangeErrorUnbind);
                 window.document.title="Tabix.IO ["+window.TabixBuildDate+"]";
+
 
 
                 $rootScope.isInitDatabaseStructure = false;

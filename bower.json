@@ -16,8 +16,6 @@
     "mdi": "^1.7.22",
     "angular-resizable": "^1.2.0",
     "ng-csv": "^0.3.6",
-    "angular-translate": "^2.12.1",
-    "angular-translate-handler-log": "^2.13.1",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
     "subtotal": "^1.7.1",
     "d3": "^4.4.1",
@@ -42,16 +40,6 @@
     "angular-mocks": "~1.5.0"
   },
   "overrides": {
-    "amcharts": {
-      "main": []
-    },
-    "amcharts3": {
-      "main": [
-        "amcharts/amcharts.js",
-        "amcharts/serial.js",
-        "amcharts/pie.js"
-      ]
-    },
     "screenfull": {
       "main": [
         "dist/screenfull.min.js"

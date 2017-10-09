@@ -14,6 +14,7 @@
         $scope.themes = ThemeService.list;
         $scope.vars = {
             disable_exit: window.global_tabix_disable_exit,
+            hideExitButton:!window.global_tabix_disable_exit
         };
 
 

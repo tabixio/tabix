@@ -2,14 +2,14 @@
     'use strict';
 
     angular.module(smi2.app.name).service('ThemeService', ThemeService);
-    ThemeService.$inject = ['localStorageService', '$filter'];
+    ThemeService.$inject = ['localStorageService'];
 
     /**
      * @ngdoc service
      * @name smi2.service:ThemeService
      * @description Theme service
      */
-    function ThemeService(localStorageService, $filter) {
+    function ThemeService(localStorageService) {
 
         const themeName = localStorageService.get('themeName') || 'dark';
         const list = [{
@@ -25,18 +25,27 @@
         if (theme.isDark) {
             angular.element('body').addClass('dark');
         }
-
+        this.isDark = () => {
+            return theme.isDark;
+        };
+        this.get = () => {
+            return theme;
+        };
         return {
             isDark: () => theme.isDark,
-            theme: theme.name,
-            themeObject: theme,
-            set: (name) => {
-                if (name != themeName) {
-                    localStorageService.set('themeName', name);
-                    location.href = location.href;
-                }
-            },
-            list
-        };
+        }
+        //     theme: theme.name,
+        //     themeObject: theme,
+        //     set: (name) => {
+        //         if (name != themeName) {
+        //             localStorageService.set('themeName', name);
+        //             location.href = location.href;
+        //         }
+        //     },
+        //     get : () => {
+        //
+        //     },
+        //     list
+        // };
     }
 })(angular, smi2);
