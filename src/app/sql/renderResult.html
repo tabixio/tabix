@@ -1,5 +1,5 @@
-<!--<div ng-if="!tab.loading" ng-controller="RenderCtrl as render" ng-init="resultContainer=tab.results[0]">-->
-<div ng-repeat="resultContainer in tab.results">
+<!--<div ng-if="!tab.loading" ng-init="resultContainer=tab.results[0]">-->
+<div  ng-controller="RenderCtrl as render" ng-repeat="resultContainer in tab.results">
 <!--<md-tab ng-repeat="resultContainer in tab.results" md-dynamic1-height md-border-bottom class="h100">-->
 
 <!--<md-tab-label>-->
@@ -8,12 +8,29 @@
 <!--</md-tab-label>-->
 <!--<md-tab-body>-->
 
-    <div style="position: absolute; top: 4px; right: 4px; z-index: 2">
         <!-- ------------------------------------ -->
+
+
+
+    <!-- ------------------------------------  -->
+
+<div>
+
+
+    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex" ng-init="initTableTab()">
+
+        <!-- !TOOLBAR! -->
+
+
+
+
+        <!-- ---------- RESULT MENU -------------  -->
+
+
         <md-menu md-position-mode="target" ng-repeat="tableData in ::resultContainer.widgets.tables"
                  ng-if="::tableData.data.progressQuery">
-            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                <md-tooltip>{{::tableData.data.progressQuery}}</md-tooltip>
+            <md-button aria-label="menu" class="md-icon-button mdi-settings" ng-click="$mdOpenMenu($event)">
+                <md-tooltip>Settings</md-tooltip>
                 <i class="mdi mdi-file-excel"></i>
             </md-button>
             <md-menu-content>
@@ -61,26 +78,20 @@
             </md-menu-content>
         </md-menu>
 
-
-
-        <!--<md-button aria-label="menu" class="md-icon-button">-->
-            <!--<i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>-->
-            <!--<md-tooltip>Upload CSV</md-tooltip>-->
-        <!--</md-button>-->
+            <md-button aria-label="menu" class="md-icon-button tabs-buttons">
+                <i class="mdi mdi-18px mdi-settings" ng-click="switchStaticGrid()"></i>
+                <md-tooltip>Settings</md-tooltip>
+            </md-button>
         <!---->
-        <md-button aria-label="menu" class="md-icon-button">
-            <i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
-            <md-tooltip>Pinned</md-tooltip>
-        </md-button>
-    </div>
-    <!-- ------------------------------------  -->
-    <!--<div ng-if="!tabsRender"  ng-init="initNoTabs()">-->
-        <!--<div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>-->
-        <!--<div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>-->
-    <!--</div>-->
+            <!--<md-button aria-label="menu" class="md-icon-button tabs-buttons">-->
+                <!--<i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>-->
+                <!--<md-tooltip>Pinned</md-tooltip>-->
+            <!--</md-button>-->
 
-    <!-- ------------------------------------  -->
-    <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex" ng-init="initTableTab()">
+            <!--<md-button aria-label="menu" class="md-icon-button tabs-buttons">-->
+                    <!--<i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>-->
+                    <!--<md-tooltip>Upload CSV</md-tooltip>-->
+            <!--</md-button>-->
 
 
         <!-- !TABLES! -->
@@ -91,7 +102,6 @@
 
             <md-tab-body>
                 <div ng-init="widgets = resultContainer.widgets.tables" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.table"></div>
-
             </md-tab-body>
         </md-tab>
 
@@ -131,6 +141,7 @@
 
 
     </md-tabs>
+</div>
 <!--</md-tab-body>-->
 <!--</md-tab>-->
 </div>

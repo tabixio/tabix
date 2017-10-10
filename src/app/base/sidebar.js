@@ -46,32 +46,32 @@
                 preventDefault: false
             }
         };
-
-        $scope.$watch('vars.searchline', curr => {
-            if (curr.length < 2) {
-                // reset
-                // console.warn("reset, search box");
-                $scope.vars.databases.forEach((dbase,i_db) => {
-                    $scope.vars.databases[i_db].active=true;
-
-                    dbase.tables.forEach((table, i_tab) => {
-                        $scope.vars.databases[i_db].tables[i_tab].active=true;
-
-                        table.fields.forEach((field, i_fld) => {
-                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
-                        });
-                    });
-                });
-            } else {
-                $scope.filterCompletions(curr);
-            }
-
-
-            $timeout(function () {
-                $('#sideBarMetismenu').metisMenu();
-            }, 250)
-
-        });
+        //
+        // $scope.$watch('vars.searchline', curr => {
+        //     // if (curr.length < 2) {
+        //     //     // reset
+        //     //     // console.warn("reset, search box");
+        //     //     $scope.vars.databases.forEach((dbase,i_db) => {
+        //     //         $scope.vars.databases[i_db].active=true;
+        //     //
+        //     //         dbase.tables.forEach((table, i_tab) => {
+        //     //             $scope.vars.databases[i_db].tables[i_tab].active=true;
+        //     //
+        //     //             table.fields.forEach((field, i_fld) => {
+        //     //                 $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
+        //     //             });
+        //     //         });
+        //     //     });
+        //     // } else {
+        //     //     $scope.filterCompletions(curr);
+        //     // }
+        //     //
+        //
+        //     $timeout(function () {
+        //         $('#sideBarMetismenu').metisMenu();
+        //     }, 250)
+        //
+        // });
 
         $scope.clickInsertField = field => {
             $rootScope.$emit('handleBroadcastInsertInActive', {value:field.name});
@@ -135,88 +135,89 @@
 
         $rootScope.$on('handleBroadcastDatabases', function() {
             $scope.reLoad(true);
+            $scope.$applyAsync(); // angular reload
         });
 
-        $scope.filterCompletions = function( needle) {
-            console.log(">>>filterCompletions",needle);
-
-            // Базовый алгоритм поиска в дереве обьектов
-            let results = {};
-            let upper = needle.toUpperCase();
-            let lower = needle.toLowerCase();
-
-            loop: $scope.vars.databases.forEach((dbase,i_db) => {
-                dbase.tables.forEach((table,i_tab) =>{
-                    table.fields.forEach((field,i_fld) =>{
-
-                        let item={};
-                        let caption=table.name+'.'+field.name;
-
-                        if (!caption) return;
-                        let lastIndex = -1;
-                        let matchMask = 0;
-                        let penalty = 0;
-                        let index, distance;
-
-
-                        // caption char iteration is faster in Chrome but slower in Firefox, so lets use indexOf
-                        for (let j = 0; j < needle.length; j++) {
-                            // TODO add penalty on case mismatch
-                            let i1 = caption.indexOf(lower[j], lastIndex + 1);
-                            let i2 = caption.indexOf(upper[j], lastIndex + 1);
-                            index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
-                            if (index < 0) {
-                                return;
-                            }
-                            distance = index - lastIndex - 1;
-                            if (distance > 0) {
-                                // first char mismatch should be more sensitive
-                                if (lastIndex === -1)
-                                    penalty += 10;
-                                penalty += distance;
-                            }
-                            matchMask = matchMask | (1 << index);
-                            lastIndex = index;
-                        }
-                        item.matchMask = matchMask;
-                        item.exactMatch = penalty ? 0 : 1;
-                        item.score = (item.score || 0) - penalty;
-                        item.dbase=dbase.name;
-                        item.table=table.name;
-                        item.field=field.name;
-
-                        if (!results[i_db]) results[i_db]={};
-                        if (!results[i_db][i_tab]) results[i_db][i_tab]={};
-                        results[i_db][i_tab][i_fld]=item;
-                    });
-                });
-            });//forEach
-
-            $scope.vars.databases.forEach((dbase,i_db) => {
-                if (results[i_db]) {
-                    $scope.vars.databases[i_db].active=true;
-                } else {
-                    $scope.vars.databases[i_db].active=false;
-                }
-
-                dbase.tables.forEach((table, i_tab) => {
-
-                    if (results[i_db] && results[i_db][i_tab]) {
-                        $scope.vars.databases[i_db].tables[i_tab].active=true;
-                    } else {
-                        $scope.vars.databases[i_db].tables[i_tab].active=false;
-                    }
-
-                    table.fields.forEach((field, i_fld) => {
-                        if (results[i_db] && results[i_db][i_tab] && results[i_db][i_tab][i_fld]) {
-                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
-                        } else {
-                            $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=false;
-                        }
-                    });
-                });
-            });
-        };
+        // $scope.filterCompletions = function( needle) {
+        //     console.log(">>>filterCompletions",needle);
+        //
+        //     // Базовый алгоритм поиска в дереве обьектов
+        //     let results = {};
+        //     let upper = needle.toUpperCase();
+        //     let lower = needle.toLowerCase();
+        //
+        //     loop: $scope.vars.databases.forEach((dbase,i_db) => {
+        //         dbase.tables.forEach((table,i_tab) =>{
+        //             table.fields.forEach((field,i_fld) =>{
+        //
+        //                 let item={};
+        //                 let caption=table.name+'.'+field.name;
+        //
+        //                 if (!caption) return;
+        //                 let lastIndex = -1;
+        //                 let matchMask = 0;
+        //                 let penalty = 0;
+        //                 let index, distance;
+        //
+        //
+        //                 // caption char iteration is faster in Chrome but slower in Firefox, so lets use indexOf
+        //                 for (let j = 0; j < needle.length; j++) {
+        //                     // TODO add penalty on case mismatch
+        //                     let i1 = caption.indexOf(lower[j], lastIndex + 1);
+        //                     let i2 = caption.indexOf(upper[j], lastIndex + 1);
+        //                     index = (i1 >= 0) ? ((i2 < 0 || i1 < i2) ? i1 : i2) : i2;
+        //                     if (index < 0) {
+        //                         return;
+        //                     }
+        //                     distance = index - lastIndex - 1;
+        //                     if (distance > 0) {
+        //                         // first char mismatch should be more sensitive
+        //                         if (lastIndex === -1)
+        //                             penalty += 10;
+        //                         penalty += distance;
+        //                     }
+        //                     matchMask = matchMask | (1 << index);
+        //                     lastIndex = index;
+        //                 }
+        //                 item.matchMask = matchMask;
+        //                 item.exactMatch = penalty ? 0 : 1;
+        //                 item.score = (item.score || 0) - penalty;
+        //                 item.dbase=dbase.name;
+        //                 item.table=table.name;
+        //                 item.field=field.name;
+        //
+        //                 if (!results[i_db]) results[i_db]={};
+        //                 if (!results[i_db][i_tab]) results[i_db][i_tab]={};
+        //                 results[i_db][i_tab][i_fld]=item;
+        //             });
+        //         });
+        //     });//forEach
+        //
+        //     $scope.vars.databases.forEach((dbase,i_db) => {
+        //         if (results[i_db]) {
+        //             $scope.vars.databases[i_db].active=true;
+        //         } else {
+        //             $scope.vars.databases[i_db].active=false;
+        //         }
+        //
+        //         dbase.tables.forEach((table, i_tab) => {
+        //
+        //             if (results[i_db] && results[i_db][i_tab]) {
+        //                 $scope.vars.databases[i_db].tables[i_tab].active=true;
+        //             } else {
+        //                 $scope.vars.databases[i_db].tables[i_tab].active=false;
+        //             }
+        //
+        //             table.fields.forEach((field, i_fld) => {
+        //                 if (results[i_db] && results[i_db][i_tab] && results[i_db][i_tab][i_fld]) {
+        //                     $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=true;
+        //                 } else {
+        //                     $scope.vars.databases[i_db].tables[i_tab].fields[i_fld].active=false;
+        //                 }
+        //             });
+        //         });
+        //     });
+        // };
 
         //gets triggered when an item in the context menu is selected
         // ('InsertSQLDrop',database.name,table.name, $event)
@@ -282,9 +283,11 @@
             $scope.vars.error = false;
             $scope.vars.databases = [];
             $rootScope.isInitDatabaseStructure = false;
+            $scope.$applyAsync(); // angular reload
             API.databaseStructure(function (ds) {
                 console.log("isInitDatabaseStructure-true");
                 $rootScope.isInitDatabaseStructure = Date.now();
+                $scope.$applyAsync(); // angular reload
                 console.log("databaseStructure - done");
                 let list_all_fields=ds.getFields();
                 // --------------------- INIT   DATABASES     ------------------------------------------------------
@@ -377,8 +380,10 @@
                     console.info("SideBar - loaded,run metisMenu - apply");
                     $scope.vars.loaded = true;
                     $scope.vars.error = false;
+                    console.time("metisMenu");
                     $('#sideBarMetismenu').metisMenu();
-                }, 200);
+                    console.timeEnd("metisMenu");
+                }, 100);
 
             });
 

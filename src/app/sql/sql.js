@@ -504,15 +504,15 @@ window.aceJSRules = {
             // console.info( 'Cache:',$.cache);
 
             // Clear not-pinned tabs
-            tab.results = tab.results.reduce((arr, item) => {
-                if (item.pinned) {
-                    arr.push(item);
-                }
-                return arr;
-            }, []);
-
-            tab.results.unshift(result);
-
+            // tab.results = tab.results.reduce((arr, item) => {
+            //     if (item.pinned) {
+            //         arr.push(item);
+            //     }
+            //     return arr;
+            // }, []);
+            //
+            // tab.results.unshift(result);
+            event.stopPropagation();
             tab.results=[result];
 
             // ------------------------------------------------------------------------------------------------
@@ -695,19 +695,34 @@ window.aceJSRules = {
             if (!db) {
                 return;
             }
+
+
             API.setDatabase(db);
             if ($scope.vars.db==db) {
                 return;
             }
+
+            console.groupCollapsed("selectDatabase");
             console.warn("selectDatabase type:["+type+"] ; current="+$scope.vars.db+' => '+db);
+
+
+
+
+
+
+
+
             $scope.vars.db = db;
             console.info("selectDatabase > ",db);
 
             if (!$scope.AceEditorInLoad) {
                 console.info("selectDatabase reApply ACE");
                 $scope.aceLoadDatabaseFields();
-                $scope.aceApply();
+                $scope.aceApply(false);
             }
+            console.groupEnd("selectDatabase");
+
+
 
             return;
         };
@@ -771,26 +786,41 @@ window.aceJSRules = {
                 }
             );
         };
-        $scope.aceApply= () =>
+        $scope.aceApply= (editor) =>
         {
             // ------------------------------------------------------------------------------------
             // reload highlights
 
-            $scope.vars.tabs.forEach((tab) => {
-                if (tab.editor) {
-                    console.log("<!aceApply in TAB!>");
-                    tab.editor.session.setMode({
-                        path: "ace/mode/clickhouse",
-                        v: Date.now()
-                    });
-                    tab.editor.session.bgTokenizer.start(0);
-                }
-            });
+            if (!editor)
+            {
+
+                $scope.vars.tabs.forEach((tab) => {
+                    if (tab.editor) {
+                        console.log("<!aceApply in TAB!>");
+                        tab.editor.session.setMode({
+                            path: "ace/mode/clickhouse",
+                            v: Date.now()
+                        });
+                        tab.editor.session.bgTokenizer.start(0);
+                    }
+                });
+
+                /**
+                 * Watch for menu database changes
+                 */
+            }
+            else {
+                console.log("<!aceApply in current TAB!>");
+                editor.session.setMode({
+                    path: "ace/mode/clickhouse",
+                    v: Date.now()
+                });
+                editor.session.bgTokenizer.start(0);
+            }
 
 
-            /**
-             * Watch for menu database changes
-             */
+
+
             $rootScope.$watch('currentDatabase', $scope.selectDatabase);
 
 
@@ -1107,7 +1137,7 @@ window.aceJSRules = {
                 });
             });
             $scope.AceEditorInLoad=false;
-            $scope.aceApply();
+            $scope.aceApply(editor);
 
         };
         //
@@ -1276,8 +1306,8 @@ window.aceJSRules = {
          * @param $event
          */
         $scope.removeResult = (tab, result, event) => {
-            event.stopPropagation();
-            tab.results.splice(tab.results.indexOf(result), 1);
+
+            // tab.results.splice(tab.results.indexOf(result), 1);
         };
 
         // вставка текста в активное окно редактора там где курсор
