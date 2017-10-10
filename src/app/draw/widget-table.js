@@ -110,7 +110,7 @@ class WidgetTable extends Widget {
 
         // destroy
         return function() {
-        console.log("WidgetTable.destroy()");
+        // console.log("WidgetTable.destroy()");
            widget.handsonTable.destroy();
            widget.handsonTable = null;
            widget.data.data = null;
@@ -118,7 +118,7 @@ class WidgetTable extends Widget {
            widget.table = null;
            widget.init = false;
            widget.element.html();
-           console.log("WidgetTable.destroy() done");
+           // console.log("WidgetTable.destroy() done");
         }
     }
 
@@ -129,18 +129,21 @@ class WidgetTable extends Widget {
     }
 
     postProcessor() {
-        console.log("WidgetTable.postProcessor()");
+        // console.log("WidgetTable.postProcessor()");
         // init settings Handsontable
         let ll=this.table.settings;
+
+        ll.width=this.getSizeElementWidth();
+        ll.height=this.getSizeElementHeight();
+
         ll.data=this.data.data;
         // create Handsontable
         this.handsonTable = new Handsontable(this.element[0], ll);
         // this.handsonTable.updateSettings(l);
         // this.handsonTable.loadData(this.data.data);
         // this.handsonTable.render();
-        console.log("WidgetTable.postProcessor.handsonTable - done");
+        // console.log("WidgetTable.postProcessor.handsonTable - done");
     }
-
 
     onDrag() {
         this.onResize();
@@ -149,17 +152,29 @@ class WidgetTable extends Widget {
     onResize(size) {
         if (!this.init) return;
         if (!this.handsonTable) return;
+
         // if handsonTable exists - call handsonTable.render()
-        if (size && size[0]>0 && size[1]>0)
-        {
-            console.log("Call this.handsonTable.render()",size);
-            this.handsonTable.updateSettings(
-                {
-                    width:size[0]-10,
-                    height:size[1]-10
-                }
-            );
+        let new_W=this.getSizeElementWidth();
+        let new_H=this.getSizeElementHeight();
+
+        if (
+                this.handsonTable.getSettings().width==new_W &&
+                this.handsonTable.getSettings().height==new_H
+        ){
+
+            // console.log("Skip resize handsonTable, no resize");
+            return;
         }
+
+        // console.log("Resize handsonTable NEW : ",new_W,new_H);
+        // console.log("Resize handsonTable NEW : ",this.handsonTable.getSettings().width,this.handsonTable.getSettings().height);
+
+        this.handsonTable.updateSettings(
+            {
+                width:new_W,
+                height:new_H
+            }
+        );
 
         this.handsonTable.render();
 

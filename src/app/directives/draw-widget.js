@@ -114,7 +114,7 @@
             if (scope.widget.type=='table')
             {
                 // создаем пустой div
-                scope.widget.element = angular.element('<DIV class="'+(scope.widget.isDark?'handsontable-dark':'')+'"></DIV>');
+                scope.widget.element = angular.element('<DIV class="widget-handsontable '+(scope.widget.isDark?'handsontable-dark':'')+'"></DIV>');
                 // Далее postProcessor в классе WidgetTable управляет таблицой - создает new Handsontable
             }
 
@@ -185,20 +185,25 @@
                     return [element[0].offsetWidth, element[0].offsetHeight].join('x');
                 },
                 function (value) {
-                    scope.widget.scheduledResize(value.split('x'));
+                    scope.widget.scheduledResize();
                 }
             );
 
             //
-            // scope.events = {
-            //    resize: function(e, scope){
-            //        $timeout(function(){
-            //            // console.log("scope.events.resize");
-            //            scope.widget.scheduledResize();
-            //            // scope.api.update()
-            //        },300)
-            //    }
-            // };
+            scope.events = {
+               resize: function(e, scope){
+                   $timeout(function(){
+                       // console.log("scope.events.resize");
+                       scope.widget.scheduledResize();
+                       // scope.api.update()
+                   },300)
+               }
+            };
+            $timeout(function(){
+                scope.widget.scheduledResize();
+            },300);
+
+
             console.timeEnd("drawWidget.buildLinkFunc");
             console.groupEnd("drawWidget.buildLinkFunc");
         };

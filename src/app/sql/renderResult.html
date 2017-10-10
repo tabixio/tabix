@@ -1,37 +1,18 @@
 <!--<div ng-if="!tab.loading" ng-init="resultContainer=tab.results[0]">-->
 <div  ng-controller="RenderCtrl as render" ng-repeat="resultContainer in tab.results">
 <!--<md-tab ng-repeat="resultContainer in tab.results" md-dynamic1-height md-border-bottom class="h100">-->
-
-<!--<md-tab-label>-->
-        <!--<i class="mdi mdi-18px ml+" ng-class="resultContainer.pinned ? 'mdi-pin' : 'mdi-pin-off'" ng-click="resultContainer.pinned = !resultContainer.pinned; $event.stopPropagation()"></i>-->
-        <!--<i class="mdi mdi-close" ng-click="removeResult(tab, resultContainer, $event)"></i>-->
-<!--</md-tab-label>-->
-<!--<md-tab-body>-->
-
-        <!-- ------------------------------------ -->
-
-
-
     <!-- ------------------------------------  -->
-
-<div>
-
 
     <md-tabs md-dynamic-height  md-border-bottom md-autoselect md-selected="tab.selectedTabResultIndex" ng-init="initTableTab()">
 
-        <!-- !TOOLBAR! -->
-
-
-
-
-        <!-- ---------- RESULT MENU -------------  -->
+        <!-- ---------- ! TOOLBAR + RESULT MENU ! -------------  -->
 
 
         <md-menu md-position-mode="target" ng-repeat="tableData in ::resultContainer.widgets.tables"
                  ng-if="::tableData.data.progressQuery">
-            <md-button aria-label="menu" class="md-icon-button mdi-settings" ng-click="$mdOpenMenu($event)">
-                <md-tooltip>Settings</md-tooltip>
-                <i class="mdi mdi-file-excel"></i>
+            <md-button aria-label="menu" class="md-icon-button tabs-buttons" ng-click="$mdOpenMenu($event)">
+                <md-tooltip>{{::tableData.data.progressQuery}}</md-tooltip>
+                <i class="mdi mdi-18px mdi-file-excel"></i>
             </md-button>
             <md-menu-content>
                 <md-menu-item>
@@ -78,22 +59,24 @@
             </md-menu-content>
         </md-menu>
 
+
+            <md-button aria-label="menu" class="md-icon-button tabs-buttons">
+                <i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
+                <md-tooltip>Pinned</md-tooltip>
+            </md-button>
+
+
             <md-button aria-label="menu" class="md-icon-button tabs-buttons">
                 <i class="mdi mdi-18px mdi-settings" ng-click="switchStaticGrid()"></i>
                 <md-tooltip>Settings</md-tooltip>
             </md-button>
-        <!---->
-            <!--<md-button aria-label="menu" class="md-icon-button tabs-buttons">-->
-                <!--<i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>-->
-                <!--<md-tooltip>Pinned</md-tooltip>-->
-            <!--</md-button>-->
 
             <!--<md-button aria-label="menu" class="md-icon-button tabs-buttons">-->
                     <!--<i class="mdi mdi-18px mdi-upload" ng-click="showDialogUpload(resultContainer.widgets)"></i>-->
                     <!--<md-tooltip>Upload CSV</md-tooltip>-->
             <!--</md-button>-->
 
-
+        <!-- ------------------------------------  -->
         <!-- !TABLES! -->
         <md-tab md-on-select="vars.active.table=true" ng-click="">
             <md-tab-label>
@@ -105,18 +88,18 @@
             </md-tab-body>
         </md-tab>
 
-
+        <!-- ------------------------------------  -->
         <!-- !CHART! -->
         <md-tab md-on-select="vars.active.draw=true" >
             <md-tab-label>
                 Draw <i class="mdi mdi-18px mdi-chart-bar"></i>
             </md-tab-label>
             <md-tab-body>
-                <div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>
+                <!--<div ng-init="widgets = resultContainer.widgets.draw" ng-include="'app/render/WidgetsList.html'" ng-if="vars.active.draw"></div>-->
             </md-tab-body>
         </md-tab>
 
-
+        <!-- ------------------------------------  -->
         <!--&lt;!&ndash; !PIVOTJS! &ndash;&gt;-->
         <!--<md-tab md-on-select="vars.active.pivot=true">-->
             <!--<md-tab-label>-->
@@ -127,6 +110,8 @@
             <!--</md-tab-body>-->
         <!--</md-tab>-->
 
+
+        <!-- ------------------------------------  -->
         <!--&lt;!&ndash; !STATS! &ndash;&gt;-->
         <!--<md-tab md-on-select="vars.active.stats=true">-->
             <!--<md-tab-label>-->
@@ -137,14 +122,7 @@
                      <!--ng-if="vars.active.stats"></div>-->
             <!--</md-tab-body>-->
         <!--</md-tab>-->
-
-
-
     </md-tabs>
-</div>
-<!--</md-tab-body>-->
-<!--</md-tab>-->
-</div>
 </div>
 
 

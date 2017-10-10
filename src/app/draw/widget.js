@@ -43,6 +43,22 @@ class Widget {
         // console.info("On widget Draw",this);
     }
 
+
+
+    getSizeElementHeight()
+    {
+        // console.log("Height : element:",this.element[0].Height);
+        // console.log("offsetHeight : element:",this.element[0].offsetHeight);
+        return this.element[0].offsetHeight;
+    }
+    getSizeElementWidth()
+    {
+        // console.log("Width : element:",this.element[0].Width);
+        // console.log("offsetWidth : element:",this.element[0].offsetWidth);
+        return this.element[0].offsetWidth;
+    }
+
+
     destroy(widget) {
         console.info("Destroy widget is empty");
         return false;
@@ -52,22 +68,17 @@ class Widget {
         // console.info("On widget Resize",this);
     }
 
-    scheduledResize(size) {
-
+    scheduledResize() {
         if (this._scheduledResize) {
             return;
         }
-
-        // console.info("Add scheduledResize :",this.sizeX,this.sizeY);
         // отложенный ресайз , если много изменений
         this._scheduledResize = true;
         let th = this;
         setTimeout(function () {
-            console.info("scheduledResize(size)",size);
-
             th._scheduledResize = false;
-            th.onResize(size);
-        }, 800);
+            th.onResize();
+        }, 200);
     }
 
     toString() {

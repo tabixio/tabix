@@ -771,7 +771,7 @@ class HandsTable {
             wordWrap: false,
 
             autoColumnSize: {samplingRatio: 23},
-            preventOverflow: 'horizontal',
+            // preventOverflow: 'horizontal',
             columns: makeColumns.columns,
             colHeaders: makeColumns.colHeaders,
             contextMenu: this.fecthContextMenu(),
