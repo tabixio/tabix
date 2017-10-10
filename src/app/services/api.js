@@ -54,13 +54,17 @@
             database = null;
             connection = {};
             localStorageService.set(CURRENT_BASE_KEY, {});
+            _DatabaseStructure=new DatabaseStructure();
         };
 
         this.hashCode = function(s){
             return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-        }
+        };
+
         this.DS_CacheKey = () => {
-            return this.hashCode('_databaseStructure:'+JSON.stringify(connection));
+            let k='_databaseStructure:'+JSON.stringify(connection);
+            k=this.hashCode(k);
+            return k;
         };
         this.DS_storeCache = (columns,tables,databases,dictionaries,functions) => {
             let d={
@@ -109,18 +113,21 @@
          */
         this.databaseStructure = (call,forceReload) =>{
 
-            console.warn('Call databaseStructure');
+            console.warn('Call databaseStructure:',forceReload);
 
             if (_DatabaseStructure.isInit()) {
                 return call(_DatabaseStructure);
             }
 
 
-            if (this.DS_fetchFromCache() && _DatabaseStructure.isInit())
+            if (!forceReload && this.DS_fetchFromCache() && _DatabaseStructure.isInit())
             {
                 console.info("restore from cache : database Structure!");
                 return call(_DatabaseStructure);
             }
+            // @todo - need rewrite
+            // тут нужно или остановить другие потоки, и повесить ожидание пока не завершиться инициализация
+            // Глобавльно без и
             console.time("Load Database Structure!");
             this.fetchQuery( "SELECT * FROM system.columns" ).then(columns => {
                 this.fetchQuery( "SELECT database,name,engine FROM system.tables" ).then(tables => {

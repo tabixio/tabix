@@ -82,8 +82,8 @@
     function buildLinkFunc($compile,$timeout) {
         console.log("buildLinkFunc");
         return function (scope, element, attrs) {
-
-            console.group("drawWidget.buildLinkFunc");
+            let type=scope.widget.type;
+            console.group("drawWidget.buildLinkFunc:"+type);
             console.time("drawWidget.buildLinkFunc");
             // задаем виджету стиль темный / светлый
             scope.widget.isDark=scope.isdark;
@@ -204,8 +204,9 @@
             },300);
 
 
+
+            console.groupEnd("drawWidget.buildLinkFunc:"+type);
             console.timeEnd("drawWidget.buildLinkFunc");
-            console.groupEnd("drawWidget.buildLinkFunc");
         };
     }
 

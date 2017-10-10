@@ -52,8 +52,22 @@
             localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
 
             API.setConnection($scope.vars.db);
-            API.query('SELECT \'login success\'').then(
-                () => $state.go('sql'),
+
+            API.fetchQuery('SELECT \'login success\'').then(
+
+
+                // $mdToast.show(
+                //     $mdToast
+                //         .simple()
+                //         .content('Init database structure')
+                //         .theme(ThemeService.theme)
+                //         .position('bottom right')
+                // );
+
+
+                API.databaseStructure(
+
+                (ds) => $state.go('sql'),
                 (x) => {
                     $scope.vars.loading = false;
                     let msg='';
@@ -71,7 +85,9 @@
                             .position('bottom right')
                     );
                 }
-            );
+                ,true)
+                //ds
+            );//Login
         };
 
         /**
