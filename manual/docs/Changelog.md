@@ -1,4 +1,4 @@
-## 2017-10-12 Beta
+## 2017-10-13 Beta
 
 * Update beta build 
 * Add PlotLy 3D charts [[https://github.com/smi2/tabix.ui/blob/beta/manual/docs/draw/Draw_Plotly.md]]
