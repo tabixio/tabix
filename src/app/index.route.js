@@ -89,6 +89,12 @@
                     templateUrl: 'app/dash/edit.html',
                     controller: 'EditController'
                 })
+                .state('preference', {
+                    parent: 'layoutDash',
+                    url: '/Preference',
+                    templateUrl: 'app/preference/preference.html',
+                    controller: 'PreferenceController'
+                })
                 // Login state
                 .state('login', {
                     url: '/login',

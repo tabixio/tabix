@@ -126,11 +126,6 @@ window.aceJSRules = {
             'dawn', 'merbivore', 'textmate',
             'dreamweaver', 'merbivore_soft', 'tomorrow'
         ];
-        $rootScope.breadcrumbs = [{
-            text: 'SQL',
-            link: 'sql'
-        }];
-
         /**
          * Prevent data loss on close page
          */
@@ -268,7 +263,7 @@ window.aceJSRules = {
 
                 // resultContainer - Стек отправленных запросов и результатов - доступен в view через tab.results
                 resultContainer.widgets.tables.push(new WidgetTable(dp));
-                resultContainer.widgets.pivot.push(new WidgetPivot(dp));
+                // resultContainer.widgets.pivot.push(new WidgetPivot(dp));
 
 
                 if ('drawCommand' in query && query.drawCommand.length)

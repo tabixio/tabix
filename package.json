@@ -1,6 +1,6 @@
 {
   "name": "Tabix",
-  "version": "17.10.1",
+  "version": "17.10.3",
   "license": "Apache-2.0",
   "homepage": "https://tabix.io",
   "repository": {
@@ -8,7 +8,45 @@
     "url": "https://github.com/smi2/tabix.ui.git"
   },
   "dependencies": {
+    "@bower_components/ace": "smi2/ace#1.2.6.1",
+    "@bower_components/ace-builds": "ajaxorg/ace-builds#^1.2.8",
+    "@bower_components/angular": "angular/bower-angular#1.5.11",
+    "@bower_components/angular-animate": "angular/bower-angular-animate#^1.4.8",
+    "@bower_components/angular-aria": "angular/bower-angular-aria#1.5.9",
+    "@bower_components/angular-dragdrop": "codef0rmer/angular-dragdrop#^1.0.13",
+    "@bower_components/angular-hotkeys": "chieffancypants/angular-hotkeys#^1.7.0",
+    "@bower_components/angular-local-storage": "grevory/angular-local-storage#~0.2.7",
+    "@bower_components/angular-material": "angular/bower-material#^1.1.5",
+    "@bower_components/angular-messages": "angular/bower-angular-messages#1.6.2",
+    "@bower_components/angular-mocks": "angular/bower-angular-mocks#~1.5.0",
+    "@bower_components/angular-resizable": "Reklino/angular-resizable#^1.2.0",
+    "@bower_components/angular-sanitize": "angular/bower-angular-sanitize#1.6.2",
+    "@bower_components/angular-screenfull": "hrajchert/angular-screenfull#^0.1.1",
+    "@bower_components/angular-ui-router": "angular-ui/angular-ui-router-bower#^0.3.2",
+    "@bower_components/chroma-js": "gka/chroma.js#^1.3.3",
+    "@bower_components/clipboard": "zenorocha/clipboard.js#^1.6.0",
+    "@bower_components/echarts": "ecomfe/echarts#^3.7.1",
+    "@bower_components/fun-metis-menu": "funtom48/fun-metis-menu#*",
+    "@bower_components/gridstack": "troolee/gridstack.js#^0.3.0",
+    "@bower_components/gulp": "gulpjs/gulp#^3.9.1",
+    "@bower_components/handsontable": "handsontable/handsontable#^0.34.4",
+    "@bower_components/jquery": "jquery/jquery-dist#^3.2.1",
+    "@bower_components/jquery-mousewheel": "jquery/jquery-mousewheel#>=3.0.6",
+    "@bower_components/jquery-ui": "components/jqueryui#^1.12.1",
+    "@bower_components/lodash": "lodash/lodash#>= 4.14.2",
+    "@bower_components/lodash.math": "Delapouite/lodash.math#*",
+    "@bower_components/malihu-custom-scrollbar-plugin": "malihu/malihu-custom-scrollbar-plugin#>=3.0.7",
+    "@bower_components/mdi": "Templarian/MaterialDesign-Webfont#^1.7.22",
+    "@bower_components/metisMenu": "onokumus/metisMenu#>=2.0",
+    "@bower_components/moment": "moment/moment#^2.13.0",
+    "@bower_components/ng-csv": "asafdav/ng-csv#^0.3.6",
+    "@bower_components/ng-scrollbars": "iominh/ng-scrollbars#^0.0.11",
+    "@bower_components/numbro": "foretagsplatsen/numbro#^1.8.0",
+    "@bower_components/pikaday": "dbushell/Pikaday#^1.4.0",
+    "@bower_components/screenfull": "sindresorhus/screenfull.js#~3.0.2",
+    "@bower_components/sql-formatter": "atomlipetsk/sql-formatter#^1.1.2",
     "babel": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
     "flat-to-nested": "^1.0.2",
     "glob": "^7.1.2",
     "gulp-concat": "^2.6.1",
@@ -65,7 +103,8 @@
     "wiredep": "~2.2.2"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=0.10.0",
+    "yarn": ">= 1.0.0"
   },
   "babel": {
     "presets": [

@@ -1,14 +1,8 @@
-<!--<div ng-if="!vars.EditorIsInit">-->
-    <!--<md-progress-linear md-mode="indeterminate"></md-progress-linear>-->
-<!--</div>-->
-<!--<div ng-if="vars.EditorIsInit">-->
+<div ng-if="!vars.EditorIsInit">
+    <md-progress-linear md-mode="indeterminate"></md-progress-linear>
+</div>
+<div ng-if="vars.EditorIsInit">
 
-<!--<div style="position: absolute; top: 4px; right: 4px; z-index: 2">-->
-    <!--&lt;!&ndash;<md-button aria-label="menu" class="md-icon-button" ng-click="toggleSidenav('right')">&ndash;&gt;-->
-        <!--&lt;!&ndash;<i class="mdi mdi-settings"></i>&ndash;&gt;-->
-        <!--&lt;!&ndash;<md-tooltip>Editor settings</md-tooltip>&ndash;&gt;-->
-    <!--&lt;!&ndash;</md-button>&ndash;&gt;-->
-<!--</div>-->
 
 <div ngsf-fullscreen="fullscreenCtrl" class="fullscreen md-tabs-fix" ng-class="::vars.uiTheme.name">
     <md-tabs md-dynamic-height md-border-bottom md-selected="vars.selectedTab" class="sql-tabs">
@@ -120,14 +114,9 @@
 
 
                 <!-- ---------------------------------------- BASE RENDER RESULT -------------------- -->
-
-
-                <!--<md-tabs md-dynamic-height md-border-bottom  md-selected="tab.selectedResultTab">-->
                     <span ng-if="!tab.loading" style="width: 100%;height: 100%" ng-include="'app/sql/renderResult.html'"></span>
 
-                <!--&lt;!&ndash;</md-tabs>&ndash;&gt;-->
-
-
+                <!-- ------------------ -->
 
 
             </md-tab-body>
@@ -143,89 +132,13 @@
     </md-tabs>
 </div>
 
-<!--<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">-->
-    <!--<div class="p+">-->
-        <!--<h4 class="mt0 mb+++">-->
-            <!--Editor settings-->
-        <!--</h4>-->
-        <!--<md-input-container class="width-100">-->
-            <!--<label for="inp1">Font size</label>-->
-            <!--<input type="text" id="inp1" ng-model="vars.fontSize">-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100">-->
-            <!--<label for="inp2">Max result rows</label>-->
-            <!--<input type="text" id="inp2" ng-model="vars.limitRows">-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100">-->
-            <!--<label for="inp2">Max execution time (second)</label>-->
-            <!--<input type="text" id="inp3" ng-model="vars.limitTimes">-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100 mt mb++">-->
-            <!--<label>Result`s format</label>-->
-            <!--<md-select ng-model="vars.format">-->
-                <!--<md-option ng-repeat="format in vars.formats" ng-value="format" ng-click="vars.format = format">-->
-                    <!--{{format.name}}-->
-                <!--</md-option>-->
-            <!--</md-select>-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100 mb++">-->
-            <!--<label>Editor theme</label>-->
-            <!--<md-select ng-model="vars.theme">-->
-                <!--<md-option ng-repeat="theme in vars.themes" ng-value="theme" ng-click="setTheme(theme)">-->
-                    <!--{{theme}}-->
-                <!--</md-option>-->
-            <!--</md-select>-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100 mt mb+">-->
-            <!--<label>Theme</label>-->
-            <!--<md-select ng-model="vars.uiTheme">-->
-                <!--<md-option ng-repeat="theme in vars.uiThemes" ng-value="theme" ng-click="setUiTheme(theme)">{{theme.title}}</md-option>-->
-            <!--</md-select>-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100 mt">-->
-            <!--<md-checkbox ng-model="vars.saveTabs" aria-label="saveTabs">-->
-                <!--Save session-->
-            <!--</md-checkbox>-->
-        <!--</md-input-container>-->
 
-        <!--<md-input-container class="width-100 mt">-->
-            <!--<md-checkbox ng-model="vars.enableLiveAutocompletion" aria-label="LiveAutocompletion">-->
-                <!--Live Autocompletion-->
-            <!--</md-checkbox>-->
-        <!--</md-input-container>-->
-
-        <!--<md-input-container class="width-100 mt">-->
-            <!--<md-checkbox ng-click="setDisableAutoHelp()" ng-model="vars.disableAutohelp" aria-label="LiveAutocompletion">-->
-                <!--Disable auto-help-->
-            <!--</md-checkbox>-->
-        <!--</md-input-container>-->
-        <!--<md-input-container class="width-100 mt">-->
-            <!--<md-checkbox ng-model="vars.disableHotKeyCmdLeft" aria-label="Disable hotKey left+right">-->
-                <!--Disable hotKey left+right-->
-            <!--</md-checkbox>-->
-        <!--</md-input-container>-->
+</div>
 
 
-        <!--<md-input-container class="width-100 mt">-->
-            <!--<md-button aria-label="Reload database structure" class="md-primary" ng-click="reloadCache()" >-->
-                <!--Reload database structure-->
-            <!--</md-button>-->
-        <!--</md-input-container>-->
 
+                <!--<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">-->
 
-        <!--<md-input-container class="width-100 mt mb+">-->
-            <!--<label>Query delimiter</label>-->
-            <!--<md-select ng-model="vars.delimiter">-->
-                <!--<md-option ng-repeat="delimiter in vars.delimiters" ng-value="delimiter.delimiter" ng-click="vars.delimiter = delimiter">-->
-                    <!--{{delimiter.name}}-->
-                <!--</md-option>-->
-            <!--</md-select>-->
-        <!--</md-input-container>-->
-
-        <!--<md-button ng-click="toggleSidenav('right')" class="md-primary ml0 mt+++" style="line-height: inherit;">-->
-            <!--Close-->
-        <!--</md-button>-->
-    <!--</div>-->
 <!--</md-sidenav>-->
 
 <!--<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="log">-->

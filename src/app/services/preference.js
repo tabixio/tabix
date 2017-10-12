@@ -35,8 +35,16 @@
         const Themes=['ligth','dark'];
 
         const EditorTheme=[
-            'cobalt',
-            ''
+            'ambiance',
+            'eclipse', 'mono_industrial', 'tomorrow_night_blue',
+            'chaos', 'github', 'monokai', 'tomorrow_night_bright',
+            'chrome', 'idle_fingers', 'pastel_on_dark', 'tomorrow_night_eighties',
+            'clouds', 'iplastic', 'solarized_dark', 'tomorrow_night',
+            'clouds_midnight', 'katzenmilch', 'solarized_light', 'twilight',
+            'cobalt', 'kr_theme', 'sqlserver', 'vibrant_ink',
+            'crimson_editor', 'kuroir', 'terminal', 'xcode',
+            'dawn', 'merbivore', 'textmate',
+            'dreamweaver', 'merbivore_soft', 'tomorrow'
         ];
 
         this.current={};
@@ -54,6 +62,19 @@
         };
 
         this.constructor();
+
+
+
+        this.getThemes = () =>
+        {
+          return Themes;
+        };
+
+        this.getEditorThemes = () =>
+        {
+          return EditorTheme;
+        };
+
 
         this.save = () =>{
             localStorageService.set('UserPreference', this.current);
