@@ -2,7 +2,7 @@
     <md-card class="m0 pl0">
         <div>
             <div class="pull-left" style="width: 210px">
-                <a ui-sref="dashboard"><img src="assets/images/logotabix.png" class="mr logo"/></a>
+                <a ui-sref="dashboard"><img src="assets/images/logo2.png" class="mr logo"/></a>
             </div>
 
             <div class="pull-right top-menu">
@@ -19,7 +19,12 @@
                 </md-button>
 
 
-                <md-button aria-label="menu"  ng-click="help()" style="vertical-align:top">
+                <md-button aria-label="menu" ui-sref="preference">
+                    <i class="mdi mdi-18px mdi-settings"></i>
+                    Settings
+                </md-button>
+
+                <md-button aria-label="menu"  ng-click="help()">
                     <i class="mdi mdi-18px mdi-help"></i>
                     Help
                 </md-button>
@@ -38,13 +43,12 @@
                 <!--</md-menu>-->
 
 
-                <md-button ng-if="::vars.hideExitButton" aria-label="Sign out" ng-click="logout()"
-                           style="vertical-align:top">
+                <md-button ng-if="::vars.hideExitButton" aria-label="Sign out" ng-click="logout()">
+
                     <i class="mdi mdi-18px mdi-lock"></i>
-                    Sign out
+                    Sign out     [{{user}}]
                 </md-button>
 
-                <span class="header-user-name hide-sm p+">{{user}}</span>
             </div>
         </div>
     </md-card>

@@ -31,7 +31,8 @@ window.aceJSRules = {
         'ThemeService',
         '$timeout',
         '$filter',
-        'hotkeys'
+        'hotkeys',
+        'Preference'
     ];
 
     /**
@@ -50,7 +51,8 @@ window.aceJSRules = {
                            ThemeService,
                            $timeout,
                            $filter,
-                           hotkeys) {
+                           hotkeys,
+                           Preference) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -69,12 +71,13 @@ window.aceJSRules = {
             dictionaries: [],
             isDictionariesLoad:false,
             tabs: [],
-            enableLiveAutocompletion: localStorageService.get(SQL_SAVE_LIVEAUTO_KEY) || true,
-            disableAutohelp: localStorageService.get(SQL_SAVE_DISABLE_AUTOHELP_KEY) || false,
-            disableHotKeyCmdLeft: localStorageService.get(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT) || true,
+
+            enableLiveAutocompletion: Preference.get('liveAutocompletion'),
+            disableAutohelp: Preference.get('disableAutohelp'),
+            disableHotKeyCmdLeft: Preference.get('disableHotKeyCmdLeft'),
+
+
             saveTabs: localStorageService.get(SQL_SAVE_TABS_KEY) || true,
-            uiTheme: ThemeService.themeObject,
-            uiThemes: ThemeService.list,
             LastStatistics: false,
             delimiters : [
                 {
@@ -102,10 +105,10 @@ window.aceJSRules = {
             }
             ],
             db: null,
-            limitTimes: localStorageService.get('editorLimitTimes') || 5,
-            limitRows: localStorageService.get('editorLimitRows') || 3500,
-            fontSize: localStorageService.get('editorFontSize') || 14,
-            theme: localStorageService.get('editorTheme') || 'cobalt',
+            limitTimes: Preference.get('limitTimes'),
+            limitRows: Preference.get('limitRows'),
+            fontSize: Preference.get('fontSize'),
+            theme: Preference.get('editorTheme'),
 
 
 
@@ -1396,12 +1399,6 @@ ORDER BY event_time desc  ) GROUP BY query`;
         //         enableLiveAutocompletion: value
         //     }));
         // });
-
-        /**
-         * Change UI themetam_tam641
-         * @param theme
-         */
-        $scope.setUiTheme = (theme) => ThemeService.set(theme.name);
 
         /**
          * Set SQL in editor

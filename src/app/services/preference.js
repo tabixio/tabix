@@ -52,9 +52,10 @@
 
         this.constructor = () =>
         {
-            this.current=DEFAULT;
             let ls=localStorageService.get('UserPreference');
 
+            this.current=_.merge(DEFAULT,ls);
+            console.log(ls,this.current);
             // merge current + ls
 
 
@@ -76,7 +77,15 @@
         };
 
 
+        this.apply = (state) =>{
+            _.forEach(state,(item,key) => {
+                console.log("Apply ",key,item);
+                this.set(key,item);
+            });
+            this.save();
+        };
         this.save = () =>{
+            console.log("localStorageService,set",this.current);
             localStorageService.set('UserPreference', this.current);
         };
 
@@ -99,8 +108,18 @@
             {
                 // check
             }
+            if (
+                    key=='limitRows' ||
+                    key=='limitTimes' ||
+                    key=='fontSize' ||
+                    key=='liveAutocompletionDelay' ||
+                    key=='liveAutocompletionThreshold'
+            )
+            {
+                value=parseInt(value);
+            }
             this.current[key]=value;
-            this.save();
+
 
         };
 
