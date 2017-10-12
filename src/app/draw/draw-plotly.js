@@ -32,10 +32,9 @@ class DrawPlotly extends DrawBasicChart {
     afterLoadLibProcessor() {
         // <script src=""></script>
         if (this.initChartByJsCode()) {
-            this.init = true;
         }
         else {
-            this.init = this.create();
+
         }
 
         if (this.getError()) {
@@ -46,23 +45,19 @@ class DrawPlotly extends DrawBasicChart {
             return false;
         }
 
-        let drw = this.getDrawCommandObject();
-        if (drw.raw) {
-            this.options = _.merge(this.options, drw.raw);
-        }
-
 
         if (this.isDark()) {
             // this.options.backgroundColor = '#404a59';
-            // this.options.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
+            // drw.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
         }
         // log
-        console.info('preProcessor', this.init, this.options);
+        this.init = this.create();
+
+        console.info('preProcessor', this.init);
     }
 
     loadPlotlyLibJS(callback) {
         // https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/load-docpage/
-
 
         if (window._sendPlotlyLoad) {
             // уже отправили запрос на загрузку карты
@@ -76,7 +71,7 @@ class DrawPlotly extends DrawBasicChart {
         }
         window._sendPlotlyLoad = true;
         window._isPlotlyLoaded = false;
-        console.info("YA_MAP>Start load map : api-maps.yandex.ru");
+        console.info("loadPlotlyLibJS....");
         let sc = document.createElement('script');
         sc.type = 'text/javascript';
         sc.async = true; // SYNCHRONOUSLY
@@ -97,11 +92,41 @@ class DrawPlotly extends DrawBasicChart {
         s.parentNode.insertBefore(sc, s);
     }
 
-    
-    create() {
-        console.warn("CREATE DrawPlotly");
-        this.plotly = Plotly.plot(this.widget.element[0],this.options);
 
+    create() {
+        let drw = this.getDrawCommandObject();
+
+        console.warn("CREATE DrawPlotly",drw);
+
+        let ll={
+            data:[],
+            layout:{}
+        };
+        if (_.isObject(drw))
+        {
+
+            if( _.isObject(drw.trace))  { ll.data.push(drw.trace);}
+            if( _.isObject(drw.trace1)) { ll.data.push(drw.trace1);}
+            if( _.isObject(drw.trace2)) { ll.data.push(drw.trace2);}
+            if( _.isObject(drw.trace3)) { ll.data.push(drw.trace3);}
+            if( _.isObject(drw.trace4)) { ll.data.push(drw.trace4);}
+            if( _.isObject(drw.layout)) { ll.layout=drw.layout;}
+
+        }
+        console.info(ll);
+
+
+        let xll=[
+            {
+                x:[1,2],
+                y:[1,2],
+                type:'bar'
+            }
+        ];
+        console.log("CONS:",xll);
+        console.log("llll:",ll);
+        this.plotly = Plotly.plot(this.widget.element[0],ll.data,ll.layout);
+        return true;
     }
 
 }

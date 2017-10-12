@@ -59,9 +59,8 @@ class DrawBasicChart {
         if (this.isExecutableCode()) {
             console.log(this.drawCodeObject.code);
             ret = this.drawCodeObject.code.call(window, this.widget.data);
-
         }
-        console.warn("ResultFunction", ret);
+        console.warn("executableCode:ResultFunction", ret);
         return ret;
     }
 
@@ -216,7 +215,6 @@ class DrawBasicChart {
             return draw;
         }
 
-
         if (drawCommand.drawtype.toLowerCase()=='text') {
             let obj=codeDrawText.trim();
             draw = {
@@ -228,12 +226,33 @@ class DrawBasicChart {
             return draw;
         }
 
+        // @todo : optimize
+
+        let data={};
+
+        let columns=this.getColumns();
+        let len = this.data().length;
+        for (let index = 0; index < len; ++index) {
+            let item=this.data()[index];
+            for ( let colPos in columns) {
+                let col = columns[colPos];
+
+                if (!data[col]) data[col]=[];
+                data[col].push(item[col]);
+            }
+        }
+
+
+        // console.log("DATA::::",data);
 
         try {
+
+
+
             let code = '(' + codeDrawText + ')';
-
+            console.log("CODE>>>",code);
             let obj = eval(code);
-
+            // console.log("Result>>>",obj);
             let type = typeof obj;
 
             draw = {
