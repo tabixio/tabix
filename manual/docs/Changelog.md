@@ -1,10 +1,14 @@
+## 2017-10-12 Beta
+
+* Update beta build 
+
 ## 2017-10-06 Beta
 
 * Fix Memory Leak in handsontable, and refactor code in widget 
 * Add: parse error text and move cursor to error 
 * Fix: exec current query, under cursor (new line error)
 * Add settings - max_execution_time
-* Force set output_format_json_quote_64bit_integers=0 & output_format_json_quote_denormals=1 
+* Force set `output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1` 
 * Highlight "inf"+"nan" values in table
 * cache Database Structure
 * Refactor code : DatabaseStructure in $root to drop window.global_
@@ -18,10 +22,12 @@
 * Button - "Reload database structure"
 * Login form : add checkbox - "HTTP Base auth" and "RO user ClickHouse"
 * Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
-* Draw_Chart { xAxis:'number',yAxis:['s','c'] }
+* `Draw_Chart { xAxis:'number',yAxis:['s','c'] }`
 * Drop many code => Size code from 4,3M=>3,3M in vendor , app 507K=>240K
 * Update grid, move to gridstack, fix many error in render table result  
 * Update handsontable to 0.34
+* Drop Settings page in editor, move to `TAB:Preference` 
+
 
 #### 2017-10-06 Beta
 

@@ -66,8 +66,7 @@
     "wiredep": "~2.2.2"
   },
   "engines": {
-    "node": ">=0.10.0",
-    "yarn": ">= 1.0.0"
+    "node": ">=0.10.0"
   },
   "babel": {
     "presets": [
