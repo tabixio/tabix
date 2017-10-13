@@ -1,3 +1,31 @@
+## Plot.ly 
+
+
+Tabix render plot.ly chart if exists command `DRAW_PLOTLY`
+
+Code after command :
+
+```js
+{
+    trace :{ },
+    trace1:{ },
+    trace2:{ },
+    trace3:{ },
+    trace4:{ },
+    layout:{ }
+}
+```
+transform to plot.ly object 
+
+
+### Plot.Ly Docs  
+
+* JS lib https://plot.ly/javascript/
+
+
+
+
+
 ### Scatter
 
 ```sql
@@ -87,3 +115,27 @@ DRAW_PLOTLY {
 ```
 
 ![DRAW_PLOTLY scatter3d](/img/plotly_scatter3d_markers.png)
+
+
+
+### layout 
+
+```js 
+
+layout = {
+  autosize: false,
+  width: 500,
+  height: 500,
+  margin: {
+    l: 50,
+    r: 50,
+    b: 100,
+    t: 100,
+    pad: 4
+  },
+  paper_bgcolor: '#7f7f7f',
+  plot_bgcolor: '#c7c7c7'
+};
+
+
+```
