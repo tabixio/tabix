@@ -1,9 +1,10 @@
 ## 2017-10-13 Beta
 
 * Update beta build 
-* Add PlotLy 3D charts [[https://github.com/smi2/tabix.ui/blob/beta/manual/docs/draw/Draw_Plotly.md]]
-
-
+* beta.doc hosted  [[https://tabix.io/beta.doc/]]
+* Add PlotLy 3D charts [[https://tabix.io/beta.doc/draw/Draw_Plotly/]]
+* Fix - for new user not show editor 
+* Fix - DRAW not show all data on timestamp
 
 
 ## 2017-10-06 Beta
