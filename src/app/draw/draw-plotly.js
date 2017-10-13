@@ -13,6 +13,7 @@ class DrawPlotly extends DrawBasicChart {
         this.chart=null;
         this.liburl='https://cdn.plot.ly/plotly-1.2.0.min.js';
 
+        this.setWidgetSize(6,3);
 
     }
 

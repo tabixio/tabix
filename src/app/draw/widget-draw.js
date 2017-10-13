@@ -37,20 +37,20 @@ class WidgetDraw extends Widget {
         if (!this.sizeX && !this.sizeY)
         {
 
-            this.sizeX = 12;// ширина
-            this.sizeY = 6;// высота
+            this.sizeX = 6;// ширина
+            this.sizeY = 3;// высота
 
 
             if (this.drawType=='TEXT') {
-                this.sizeX = 0;
-                this.sizeY = 0;
+                this.sizeX = 1;
+                this.sizeY = 2;
             }
 
 
             if (this.data.countAll == 1) {
                 // результат толкьо одна отпра
                 this.sizeX = 12;
-                this.sizeY = 4;
+                this.sizeY = 3;
             }
         }
 

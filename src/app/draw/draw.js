@@ -29,6 +29,11 @@ class DrawBasicChart {
 
     }
 
+    setWidgetSize(x,y) {
+        console.log("setWidgetSize",x,y,this.widget.sizeX,this.widget.sizeY);
+        this.widget.sizeX=x;
+        this.widget.sizeY=y;
+    }
     setError(msg) {
         this.errorMessage = msg;
         let help = '';
