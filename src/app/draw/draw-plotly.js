@@ -21,6 +21,15 @@ class DrawPlotly extends DrawBasicChart {
         // if (this.chart && this.init) {
         //     this.chart.resize();
         // }
+        if (this.plotly)
+        {
+            let h=this.widget.getSizeElementHeight();
+            let w=this.widget.getSizeElementWidth();
+            this.layout.height=h;
+            this.layout.width=w;
+
+            this.relayout();
+        }
     }
 
 
@@ -92,7 +101,13 @@ class DrawPlotly extends DrawBasicChart {
         s.parentNode.insertBefore(sc, s);
     }
 
+    getElement(){
+        return this.widget.element[0];
+    }
+    relayout() {
 
+        Plotly.relayout(this.getElement(),this.layout);
+    }
     create() {
         let drw = this.getDrawCommandObject();
 
@@ -125,7 +140,20 @@ class DrawPlotly extends DrawBasicChart {
         ];
         console.log("CONS:",xll);
         console.log("llll:",ll);
-        this.plotly = Plotly.plot(this.widget.element[0],ll.data,ll.layout);
+
+        let settings={
+            editable:false,
+        };
+
+        this.layout=ll.layout;
+
+        let h=this.widget.getSizeElementHeight();
+        let w=this.widget.getSizeElementWidth();
+        this.layout.height=h;
+        this.layout.width=w;
+
+
+        this.plotly = Plotly.plot(this.getElement(),ll.data,this.layout,settings);
         return true;
     }
 

@@ -1444,6 +1444,8 @@ ORDER BY event_time desc  ) GROUP BY query`;
          */
         if ($scope.vars.saveTabs) {
             $scope.vars.tabs = localStorageService.get(SQL_SESSION_KEY);
+
+            if (!_.isArray($scope.vars.tabs)) $scope.vars.tabs=[];
             if ($scope.vars.tabs.length > 0) {
                 $timeout(() => ($scope.vars.currentTab = $scope.vars.tabs[0]), 500);
             } else {
