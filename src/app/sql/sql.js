@@ -250,28 +250,35 @@ window.aceJSRules = {
 
                 st.query=progressQuery;
                 // st.query_order=query.index;
-                $scope.vars.currentTab.statistics.push(st);
+                if (_.isArray($scope.vars.currentTab.statistics))
+                {
+                    $scope.vars.currentTab.statistics.push(st);
+                }
 
                 $scope.vars.LastStatistics = st;
-                // провайдер CH или API
-                let provider='ch';
-                // передаем в
-                let dp= new DataProvider(data,provider);
+
+
+                // make DataProvider
+                let dp= new DataProvider(data,'ch');
                 dp.progressQuery = progressQuery;
 
 
                 // Получаем список виджетов в каждый передаем DP
                 // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
-                // Запрос может содержать несколько draw комманд, тогда в разделе Draw должно быть указанное кол-во комманд
+                // Запрос может содержать несколько DRAW комманд, тогда в разделе Draw должно быть указанное кол-во комманд
 
                 // resultContainer - Стек отправленных запросов и результатов - доступен в view через tab.results
+
                 resultContainer.widgets.tables.push(new WidgetTable(dp));
+
                 // resultContainer.widgets.pivot.push(new WidgetPivot(dp));
 
 
                 if ('drawCommand' in query && query.drawCommand.length)
                 {
-                    dp.countAll=query.drawCommand.length;
+                    dp.countAll=(query.drawCommand.length>data.countAllQuery ? query.drawCommand.length : data.countAllQuery);
+
+                    console.info("query.drawCommand",query.drawCommand);
                     // У запроса есть список DRAW комманд каждая идет в стек
                     query.drawCommand.forEach((item) => {
                         resultContainer.widgets.draw.push(new WidgetDraw(dp,item));
@@ -1345,15 +1352,6 @@ window.aceJSRules = {
             }
         };
 
-        /**
-         * Save session checkbox state in LS
-         */
-        $scope.$watch('vars.saveTabs', (value, old) => {
-            localStorageService.set(SQL_SAVE_TABS_KEY, value);
-            if (old === false && value === true) {
-                saveSession();
-            }
-        });
         $scope.searchSqlLogServer = () => {
             $scope.vars.sqlLogServer=[];
             let like=$scope.vars.searchQueryOnServer;
@@ -1387,18 +1385,7 @@ ORDER BY event_time desc  ) GROUP BY query`;
 
             }
         };
-        //
-        //
-        // $scope.$watch('vars.disableHotKeyCmdLeft', (value) => {
-        //     localStorageService.set(SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT, value);
-        // });
-        // $scope.$watch('vars.enableLiveAutocompletion', (value) => {
-        //     localStorageService.set(SQL_SAVE_LIVEAUTO_KEY, value);
-        //     // loop
-        //     $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
-        //         enableLiveAutocompletion: value
-        //     }));
-        // });
+
 
         /**
          * Set SQL in editor
@@ -1538,13 +1525,13 @@ ORDER BY event_time desc  ) GROUP BY query`;
             let session=$scope.vars.currentTab.editor.session;
 
             $scope.vars.currentTab.editor.resize();
-            if(item.value == "AutoFormat"){
+            if(item == "AutoFormat"){
                 formatCode();
-            } else if(item.value == "Expand"){
+            } else if(item == "Expand"){
                 session.unfold();
-            } else if(item.value == "Collapse All"){
+            } else if(item == "Collapse All"){
                 session.$mode.collapseAll(session);
-            } else if(item.value == "Collapse"){
+            } else if(item == "Collapse"){
                 session.foldAll();
             } else {
 

@@ -11,35 +11,26 @@ class DrawPlotly extends DrawBasicChart {
         this.type = drawType.toUpperCase();
         this.library = 'plotly';
         this.chart=null;
-        this.liburl='https://cdn.plot.ly/plotly-1.2.0.min.js';
-
         this.setWidgetSize(6,3);
-
     }
 
     onResize() {
-        // отправденна комманда resize
-        // if (this.chart && this.init) {
-        //     this.chart.resize();
-        // }
         if (this.plotly)
         {
             let h=this.widget.getSizeElementHeight();
             let w=this.widget.getSizeElementWidth();
-            this.layout.height=h;
-            this.layout.width=w;
-
-            this.relayout();
+            if (this.layout.height!=h || this.layout.width!=w)
+            {
+                this.layout.height=h;
+                this.layout.width=w;
+                this.relayout();
+            }
         }
     }
 
 
     preProcessor() {
-        // загрузка карты
-        this.loadPlotlyLibJS(this);
-    }
 
-    afterLoadLibProcessor() {
         // <script src=""></script>
         if (this.initChartByJsCode()) {
         }
@@ -66,41 +57,6 @@ class DrawPlotly extends DrawBasicChart {
         console.info('preProcessor', this.init);
     }
 
-    loadPlotlyLibJS(callback) {
-        // https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/load-docpage/
-
-        if (window._sendPlotlyLoad) {
-            // уже отправили запрос на загрузку карты
-            // @todo : rewrite &&& тут нужно дождаться когда _isPlotlyLoaded=true
-
-            this.afterLoadLibProcessor();
-
-            //window.setTimeout(, 5000);
-
-            return;
-        }
-        window._sendPlotlyLoad = true;
-        window._isPlotlyLoaded = false;
-        console.info("loadPlotlyLibJS....");
-        let sc = document.createElement('script');
-        sc.type = 'text/javascript';
-        sc.async = true; // SYNCHRONOUSLY
-        sc.src = this.liburl;
-        sc.charset = 'utf-8';
-        sc.onload = sc.onreadystatechange = function () {
-            if (sc.readyState && sc.readyState !== "complete" &&
-                sc.readyState !== "loaded") {
-                return;
-            }
-            // если все загрузилось, то снимаем обработчик и выбрасываем callback
-            sc.onload = sc.onreadystatechange = null;
-            // ready & callback
-            callback.afterLoadLibProcessor();
-            window._isPlotlyLoaded = true;
-        };
-        let s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(sc, s);
-    }
 
     getElement(){
         return this.widget.element[0];
