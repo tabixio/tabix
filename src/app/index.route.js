@@ -90,7 +90,7 @@
                     controller: 'EditController'
                 })
                 .state('preference', {
-                    parent: 'layoutDash',
+                    parent: 'layout',
                     url: '/Preference',
                     templateUrl: 'app/preference/preference.html',
                     controller: 'PreferenceController'

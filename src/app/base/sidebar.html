@@ -1,4 +1,5 @@
-<div class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="::vars.scrollConfig">
+<div resizable r-directions="['bottom']" r-height="700">
+    <div class="sidebar" ng-app="sidebar" ng-scrollbars ng-scrollbars-config="::vars.scrollConfig">
     <!--<md-input-container md-no-float class="md-block">-->
         <!--<input ng-model="vars.searchline" type="text" placeholder="Search" >-->
         <!--<md-icon class="mdi mdi-filter-remove" ng-click="vars.searchline=''" style="display:inline-block;"></md-icon>-->
@@ -79,8 +80,50 @@
             </ul>
         </nav>
     </fun-metis-menu>
-    <div ng-if="vars.loaded && vars.error" class="mt+">
-        No connect, or Error or Loadind!
-        See console log
+
+
+            <div ng-if="vars.loaded && vars.error" class="mt+">
+            No connect, or Error or Loadind! See console log
+            </div>
+    </div>
+</div>
+
+
+
+<div ng-controller="SidebarHelperCtrl as render">|
+    <div>
+        <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+
+                <md-tab md-on-select="vars.active.chart=true" >
+                    <md-tab-label>
+                        <i class="mdi mdi-18px mdi-chart-line"></i>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <h3 class="md-display-2">chart helper</h3>
+
+                    </md-tab-body>
+                </md-tab>
+
+                <md-tab md-on-select="vars.active.history=true" >
+                    <md-tab-label>
+                        <i class="mdi mdi-18px mdi-history"></i>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <h1 class="md-display-2">history sql</h1>
+                    </md-tab-body>
+                </md-tab>
+
+                <md-tab md-on-select="vars.active.vars=true" >
+                    <md-tab-label>
+                        <i class="mdi mdi-18px mdi-sigma"></i>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <h1 class="md-display-2">variables</h1>
+                    </md-tab-body>
+                </md-tab>
+
+            </md-tabs>
+        </md-content>
     </div>
 </div>

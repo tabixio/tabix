@@ -22,7 +22,7 @@ transform to plot.ly object
 
 * JS lib https://plot.ly/javascript/
 
-
+https://help.plot.ly/tutorials/
 
 
 
