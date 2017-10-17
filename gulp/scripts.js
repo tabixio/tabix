@@ -16,8 +16,8 @@ gulp.task('scripts-reload', ['scripts'], function() {
 
 gulp.task('scripts', function() {
     return gulp.src(path.join(conf.paths.src, '/app/**/*.js'))
-        .pipe($.eslint())
-        .pipe($.eslint.format())
+        // .pipe($.eslint())
+        // .pipe($.eslint.format())
         .pipe($.babel({
             presets: ['es2015', 'stage-0'],
             plugins: ["transform-es2015-modules-commonjs"]
