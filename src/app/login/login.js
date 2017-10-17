@@ -31,6 +31,11 @@
             themes: ThemeService.list
         };
 
+
+        $scope.loginCheckDone= ()=> {
+            API.databaseStructure(   (ds) => $state.go('sql') , true);
+        };
+
         /**
          * Login with saving connection settings
          */
@@ -53,28 +58,22 @@
 
             API.setConnection($scope.vars.db);
 
-            API.fetchQuery('SELECT \'login success\'').then(
-
-
-                // $mdToast.show(
-                //     $mdToast
-                //         .simple()
-                //         .content('Init database structure')
-                //         .theme(ThemeService.theme)
-                //         .position('bottom right')
-                // );
-
-
-                API.databaseStructure(
-
-                (ds) => $state.go('sql'),
-                (x) => {
+            API.fetchQuery('SELECT \'login success\'').then( data => {
+                    $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Login OK! Loading ...')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                    );
+                    $scope.loginCheckDone();
+                },(x) => {
                     $scope.vars.loading = false;
                     let msg='';
                     if (x && !angular.isUndefined(x.data))
                     {
                         if (x.data)
-                        msg=x.data;
+                            msg=x.data;
                     }
                     console.log('Error on login',x);
                     $mdToast.show(
@@ -84,10 +83,7 @@
                             .theme(ThemeService.theme)
                             .position('bottom right')
                     );
-                }
-                ,true)
-                //ds
-            );//Login
+                });//Login
         };
 
         /**

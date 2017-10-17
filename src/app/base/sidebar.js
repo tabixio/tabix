@@ -8,7 +8,7 @@
         '$state',
         'API',
         'ThemeService',
-        '$mdSidenav', '$mdToast', '$timeout','localStorageService'
+        '$mdSidenav', '$mdToast','$mdDialog', '$timeout','localStorageService'
 
     ];
 
@@ -17,7 +17,7 @@
      * @name smi2.controller:SidebarController
      * @description Контроллер бокового меню
      */
-    function SidebarController($scope, $rootScope, $state, API, ThemeService, $mdSidenav, $mdToast, $timeout,localStorageService) {
+    function SidebarController($scope, $rootScope, $state, API, ThemeService, $mdSidenav, $mdToast,$mdDialog, $timeout,localStorageService) {
         $scope.vars = {
             searchline:'',
             counter: 0,
@@ -277,115 +277,143 @@
                 });
             }
         };
+        $scope.showAlertDatabaseStructure = function(respond) {
+            // Appending dialog to document.body to cover sidenav in docs app
+            // Modal dialogs should fully cover application
+            // to prevent interaction outside of dialog
+            $mdDialog.show(
+                $mdDialog.alert()
+                    // .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Error on load database structure')
+                    .textContent(respond)
+                    .ariaLabel('Error on load database structure')
+                    .ok('OK')
+            ).then(function(answer) {
+                API.clear();
+                $state.go('login');
+            });
+        };
+
 
         $scope.reLoad = (forceReload) =>   {
             $scope.vars.loaded = false;
             $scope.vars.error = false;
             $scope.vars.databases = [];
             $rootScope.isInitDatabaseStructure = false;
-            $scope.$applyAsync(); // angular reload
-            API.databaseStructure(function (ds) {
-                console.log("isInitDatabaseStructure-true");
-                $rootScope.isInitDatabaseStructure = Date.now();
+
+            API.fetchQuery("SELECT 1").then((data) =>{
                 $scope.$applyAsync(); // angular reload
-                console.log("databaseStructure - done");
-                let list_all_fields=ds.getFields();
-                // --------------------- INIT   DATABASES     ------------------------------------------------------
-                $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 
-                    let  rightMenuListDatabases = [
-                        {active: true, value: 'Select',key:'OpenTables',icon:'arrow-expand',         db:item.database},//,item:item},
+                API.databaseStructure(function (ds) {
+                    console.log("isInitDatabaseStructure-true");
+                    $rootScope.isInitDatabaseStructure = Date.now();
+                    $scope.$applyAsync(); // angular reload
+                    console.log("databaseStructure - done");
+                    let list_all_fields=ds.getFields();
+                    // --------------------- INIT   DATABASES     ------------------------------------------------------
+                    $scope.vars.databases = ds.getTables().reduce(( prev, item ) => {
 
-                    ];
-                    let  rightMenuListTable = [
-                        {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',         db:item.database,table: item.name},//,item:item},
-                        {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',db:item.database,table: item.name},
-                        {active: true, value: 'Insert table name',key:'InsertName',icon:'bing'  ,db:item.database,table: item.name},
-                        {active: true, value: 'Make SQL Describe',key:'InsertSQLDescribe',icon:'border-vertical'    ,db:item.database,table: item.name},
-                        {active: true, value: 'Make SQL Drop',key:'InsertSQLDrop',icon:'delete'    ,db:item.database,table: item.name}
-                    ];
+                        let  rightMenuListDatabases = [
+                            {active: true, value: 'Select',key:'OpenTables',icon:'arrow-expand',         db:item.database},//,item:item},
 
-                    let classEngine='table';
-                    if (item.engine.match(/Dictionary.*/))  classEngine='library';
-                    if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
-                    if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';
-                    if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom';
-                    if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
-                    if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
-                    if (item.engine.match(/$Merge^/))  classEngine='source-fork';
+                        ];
+                        let  rightMenuListTable = [
+                            {active: true, value: 'Open table',key:'OpenTables',icon:'arrow-expand',         db:item.database,table: item.name},//,item:item},
+                            {active: true, value: 'Code Select from',key:'InsertDescribe',icon:'format-size',db:item.database,table: item.name},
+                            {active: true, value: 'Insert table name',key:'InsertName',icon:'bing'  ,db:item.database,table: item.name},
+                            {active: true, value: 'Make SQL Describe',key:'InsertSQLDescribe',icon:'border-vertical'    ,db:item.database,table: item.name},
+                            {active: true, value: 'Make SQL Drop',key:'InsertSQLDrop',icon:'delete'    ,db:item.database,table: item.name}
+                        ];
+
+                        let classEngine='table';
+                        if (item.engine.match(/Dictionary.*/))  classEngine='library';
+                        if (item.engine.match(/Distributed.*/))  classEngine='soundcloud';
+                        if (item.engine.match(/AggregatingMergeTree.*/))  classEngine='cube';
+                        if (item.engine.match(/MaterializedView.*/))  classEngine='border-bottom';
+                        if (item.engine.match(/SummingMergeTree.*/))  classEngine='table-row-plus-after';
+                        if (item.engine.match(/CollapsingMergeTree.*/))  classEngine='table-row-height';
+                        if (item.engine.match(/$Merge^/))  classEngine='source-fork';
 
 
-                    item.active=true;
-                    item.classEngine=classEngine;
-                    item.rightMenuListTable=rightMenuListTable;
+                        item.active=true;
+                        item.classEngine=classEngine;
+                        item.rightMenuListTable=rightMenuListTable;
 
-                    for ( let a of prev ) {
-                        if ( item.name !=='-' && a.name == item.database ) {
-                            a.tables.push(
-                                {
-                                    active:true,
-                                    database:item.database,
-                                    name: item.name,
-                                    engine : item.engine,
-                                    classEngine:item.classEngine,
-                                    fields:list_all_fields[item.database+'.'+item.name],
-                                    rightMenuList:item.rightMenuListTable
-                                }
-                            );
-                            return prev;
-                        }
-                    }
-
-                    return [
-                        ...prev, {
-                            name: item.database,
-                            rightMenuList:rightMenuListDatabases,
-                            tables: [
-                                {
-                                    active:true,
-                                    database:item.database,
-                                    name: item.name,
-                                    engine : item.engine,
-                                    classEngine : item.classEngine,
-                                    rightMenuList:item.rightMenuListTable,
-                                    fields:list_all_fields[item.database+'.'+item.name]
-                                }
-                            ]
-                        }
-                    ];
-                }, [ ]);
-                // --------------------- SELECT DATABASE      ------------------------------------------------------
-                // @todo - тут можно запоминать базу из соединения
-                $scope.selectDatabase($scope.vars.databases[0]);
-                // --------------------- INIT EMPTY DATABASES ------------------------------------------------------
-                ds.getDatabases().forEach((item) => {
-                    let find=false;
-                    $scope.vars.databases.forEach((dbitem) => {
-                        if (dbitem.name==item.name) {
-                            find=true;
+                        for ( let a of prev ) {
+                            if ( item.name !=='-' && a.name == item.database ) {
+                                a.tables.push(
+                                    {
+                                        active:true,
+                                        database:item.database,
+                                        name: item.name,
+                                        engine : item.engine,
+                                        classEngine:item.classEngine,
+                                        fields:list_all_fields[item.database+'.'+item.name],
+                                        rightMenuList:item.rightMenuListTable
+                                    }
+                                );
+                                return prev;
+                            }
                         }
 
-                    });
-                    if (!find) {
-                        $scope.vars.databases.push({
-                            name:item.name,
-                            // rightMenuList:rightMenuListDatabases,
-                            tables:[],
-                            active:true
+                        return [
+                            ...prev, {
+                                name: item.database,
+                                rightMenuList:rightMenuListDatabases,
+                                tables: [
+                                    {
+                                        active:true,
+                                        database:item.database,
+                                        name: item.name,
+                                        engine : item.engine,
+                                        classEngine : item.classEngine,
+                                        rightMenuList:item.rightMenuListTable,
+                                        fields:list_all_fields[item.database+'.'+item.name]
+                                    }
+                                ]
+                            }
+                        ];
+                    }, [ ]);
+                    // --------------------- SELECT DATABASE      ------------------------------------------------------
+                    // @todo - тут можно запоминать базу из соединения
+                    $scope.selectDatabase($scope.vars.databases[0]);
+                    // --------------------- INIT EMPTY DATABASES ------------------------------------------------------
+                    ds.getDatabases().forEach((item) => {
+                        let find=false;
+                        $scope.vars.databases.forEach((dbitem) => {
+                            if (dbitem.name==item.name) {
+                                find=true;
+                            }
+
                         });
-                    }
-                });
-                // --------------------------------------------------------------------------------------------------
-                $timeout(function () {
-                    console.info("SideBar - loaded,run metisMenu - apply");
-                    $scope.vars.loaded = true;
-                    $scope.vars.error = false;
-                    console.time("metisMenu");
-                    $('#sideBarMetismenu').metisMenu();
-                    console.timeEnd("metisMenu");
-                }, 100);
+                        if (!find) {
+                            $scope.vars.databases.push({
+                                name:item.name,
+                                // rightMenuList:rightMenuListDatabases,
+                                tables:[],
+                                active:true
+                            });
+                        }
+                    });
+                    // --------------------------------------------------------------------------------------------------
+                    $timeout(function () {
+                        console.info("SideBar - loaded,run metisMenu - apply");
+                        $scope.vars.loaded = true;
+                        $scope.vars.error = false;
+                        console.time("metisMenu");
+                        $('#sideBarMetismenu').metisMenu();
+                        console.timeEnd("metisMenu");
+                    }, 100);
 
+                });
+
+
+            },(respond)=>{
+                $scope.showAlertDatabaseStructure(respond);
             });
+
+
 
         };
 
