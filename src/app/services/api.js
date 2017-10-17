@@ -125,7 +125,18 @@
                 console.info("restore from cache : database Structure!");
                 return call(_DatabaseStructure);
             }
-            // @todo - need rewrite
+
+            //
+            // const columns = await this.fetchQuery( "SELECT * FROM system.columns" );
+            // const tables = await this.fetchQuery( "SELECT database,name,engine FROM system.tables" );
+            // const databases = await this.fetchQuery( "SELECT name FROM system.databases" );
+            // const dictionaries = this.fetchQuery("SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null);
+            // const functions = this.fetchQuery("SELECT name,is_aggregate from system.functions", null)
+
+
+            //
+
+            // @todo - need rewrite async / await
             // тут нужно или остановить другие потоки, и повесить ожидание пока не завершиться инициализация
             // Глобавльно без и
             console.time("Load Database Structure!");
@@ -138,11 +149,12 @@
                                 this.DS_storeCache(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
                                 _DatabaseStructure.init(columns.data,tables.data,databases.data,dictionaries.data,functions.data);
                                 return call(_DatabaseStructure);
-                            });//functions
-                        });//dictionaries
-                    });//databases
-                });//system.tables
-            });//system.columns
+                            } , (response) => {throw response } );//functions
+                        } , (response) => {throw response } );//dictionaries
+                    } , (response) => {throw response } );//databases
+                } , (response) => {throw response } );//system.tables
+
+            } , (response) => {throw response } );//system.columns
 
             return ;
 
@@ -260,7 +272,7 @@
 
             if (!connection.rouser)
             {
-                url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1';
+                url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1&output_format_json_quote_denormals=1';
             }
 
 
