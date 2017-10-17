@@ -132,6 +132,7 @@
                 'Разделитель запросов': 'Query delimiter',
                 'Сборка': 'Build',
                 'СМИ2': 'Smi2',
+		'Название вкладки': 'Tab Name',
                 'Сервер': 'Server',
                 'Config': 'Config',
                 'Config Key': 'Config Key',
