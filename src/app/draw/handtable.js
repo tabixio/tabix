@@ -14,7 +14,6 @@ class HandsTable {
 
     _handsRenderer(instance, td, row, col, prop, value, cellProperties) {
 
-
         // if (cellProperties.type)
         if (cellProperties.type == 'numeric') {
             if (value==null || value=='-nan' || value=='inf' || value=='+nan' || value=='+inf'|| value=='-inf' || value=='nan') {
@@ -96,7 +95,12 @@ class HandsTable {
             c.isDark = this.isDarkTheme;
 
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
-            if (cell.type.includes('Int')) {
+            if (cell.type.includes('Int64')) {
+              //
+              c.type = 'text';
+              c.width = 100;
+
+            } else  if (cell.type.includes('Int')) {
                 c.width = 80;
                 c.type = 'numeric';
             }
