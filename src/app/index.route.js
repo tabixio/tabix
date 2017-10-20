@@ -78,7 +78,7 @@
                     }]
                 })
                 .state('dash', {
-                    parent: 'layoutDash',
+                    parent: 'layout',
                     url: '/dash',
                     templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'

@@ -89,41 +89,6 @@
 </div>
 
 
-
-<div ng-controller="SidebarHelperCtrl as render">|
-    <div>
-        <md-content>
-            <md-tabs md-dynamic-height md-border-bottom>
-
-                <md-tab md-on-select="vars.active.chart=true" >
-                    <md-tab-label>
-                        <i class="mdi mdi-18px mdi-chart-line"></i>
-                    </md-tab-label>
-                    <md-tab-body>
-                        <h3 class="md-display-2">chart helper</h3>
-
-                    </md-tab-body>
-                </md-tab>
-
-                <md-tab md-on-select="vars.active.history=true" >
-                    <md-tab-label>
-                        <i class="mdi mdi-18px mdi-history"></i>
-                    </md-tab-label>
-                    <md-tab-body>
-                        <h1 class="md-display-2">history sql</h1>
-                    </md-tab-body>
-                </md-tab>
-
-                <md-tab md-on-select="vars.active.vars=true" >
-                    <md-tab-label>
-                        <i class="mdi mdi-18px mdi-sigma"></i>
-                    </md-tab-label>
-                    <md-tab-body>
-                        <h1 class="md-display-2">variables</h1>
-                    </md-tab-body>
-                </md-tab>
-
-            </md-tabs>
-        </md-content>
-    </div>
+<div >
+<div ng-if="vars.loaded && !vars.error"  ng-controller="SidebarHelperCtrl as ctrl" ng-include="'app/base/sidebarhelper.html'"></div>
 </div>

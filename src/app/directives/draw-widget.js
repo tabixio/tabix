@@ -103,8 +103,8 @@
             if (scope.widget.error || scope.widget.textformat || scope.widget.text || scope.widget.empty )
             {
                 console.log("widget Have Error",scope.widget.error);
-                if (scope.widget.error) element.html(scope.widget.error);
-                if (scope.widget.text ) element.html(scope.widget.text);
+                if (scope.widget.error) element.html("<pre>"+scope.widget.error+"</pre>");
+                if (scope.widget.text ) element.html("<pre>"+scope.widget.text+"</pre>");
                 if (scope.widget.empty ) element.html("NO DATA");
                 element.addClass("grid-monospace");
                 return ;
