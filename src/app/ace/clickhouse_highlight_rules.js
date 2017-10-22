@@ -10,7 +10,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             "SELECT|CASE|THEN|DISTINCT|INSERT|UPDATE|DELETE|WHERE|AND|OR|OFFSET|HAVING|AS|FROM|" +
             "WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|" +
             "FOREIGN|NOT|REFERENCES|DEFAULT|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|" +
-            "ANY|BETWEEN|ATTACH|DETACH|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
+            "ANY|BETWEEN|ATTACH|DETACH|CAST|WITH|BIT_AND|BIT_OR|BIT_XOR|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF"
         );
         // let identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
         let keywordsDouble = "IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS|FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated";
@@ -34,6 +34,8 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             'IF EXISTS',
             'GROUP BY',
             'ORDER BY',
+            'UNION ALL',
+            // FORM
             'FORMAT JSON',
             'FORMAT JSONCompact',
             'FORMAT JSONEachRow',
@@ -43,8 +45,16 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             'FORMAT TabSeparatedWithNamesAndTypes',
             'FORMAT TabSeparatedRaw',
             'FORMAT BlockTabSeparated',
+            'FORMAT TSKV',
             'FORMAT CSV',
-            'FORMAT CSVWithNames'
+            'FORMAT CSVWithNames',
+            // SYS
+            'SYSTEM RELOAD DICTIONARY',
+            'SYSTEM RELOAD DICTIONARIES',
+            'SYSTEM DROP DNS CACHE',
+            'SYSTEM SHUTDOWN',
+            'SYSTEM KILL',
+            'CLEAR COLUMN IN PARTITION'
         ];
 
         let drawCommand = [

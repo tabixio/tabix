@@ -1,16 +1,13 @@
 * GET http://localhost:3000/bower_components/ace/ext-searchbox.js net::ERR_ABORTED
-* Сохранять tab.sql при переключении вкладок 
+* ?Сохранять tab.sql при переключении вкладок
 
-* Rewrite menu bar - minimal watchers
-* Rewrite angular-aceJS components - minimal watchers
 
 
 
 #### TODO UI:
 
 * Review database  + Right click - database - overview db?
-* `var` editor
-* `$var` | `:var` | `{var}` 
+* `var` edito + `$var` | `:var` | `{var}`
 * Parse "LIMIT" and button `loadMore` 
 * Parse cursor position - then click on fields  
 * Fix old grid in "metrix" 
@@ -26,6 +23,7 @@
 * Теряются стили в таблице , color then heatmap, reset 
 * HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 * DoubleClick на ресайзерах - свернуть область или вернуть область
+* "Снипеты" - Code Snippet
 
 #### TODO Server:
 * T.Server : Class "ReportTools"

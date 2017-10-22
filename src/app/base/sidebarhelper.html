@@ -68,6 +68,26 @@
                 </md-tab-body>
             </md-tab>
 
+            <md-tab md-on-select="vars.active.snippet=true" >
+                <md-tab-label>
+                    <i class="mdi mdi-18px mdi-fish"></i>
+                </md-tab-label>
+                <md-tab-body>
+
+
+
+                    <md-input-container class="md-icon-float md-icon-right md-block" ng-repeat="(id,snippet) in vars.snippets  track by $index">
+                        <label>{{snippet.title}}</label>
+                        <input readonly value="{{snippet.code}}" type="text">
+                        <md-icon ng-click="dropSnippet(id)" class="mdi mdi-18px mdi-delete"></md-icon>
+                    </md-input-container>
+
+
+
+
+                </md-tab-body>
+            </md-tab>
+
         </md-tabs>
     </md-content>
 </div>

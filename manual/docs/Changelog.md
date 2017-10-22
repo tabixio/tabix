@@ -5,6 +5,8 @@
 * Add PlotLy 3D charts [[https://tabix.io/beta.doc/draw/Draw_Plotly/]]
 * Fix - for new user not show editor 
 * Fix - DRAW not show all data on timestamp
+* Rewrite menu bar - minimal watchers
+* Rewrite angular-aceJS components - minimal watchers
 
 
 ## 2017-10-06 Beta

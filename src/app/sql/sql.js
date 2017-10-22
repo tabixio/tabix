@@ -32,7 +32,9 @@ window.aceJSRules = {
         '$timeout',
         '$filter',
         'hotkeys',
-        'Preference'
+        'Preference',
+        'Snippets',
+        'Variables'
     ];
 
     /**
@@ -52,7 +54,9 @@ window.aceJSRules = {
                            $timeout,
                            $filter,
                            hotkeys,
-                           Preference) {
+                           Preference,
+                           Snippets,
+                           Variables  ) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
         const SQL_LOG_KEY = 'sqlLog';
@@ -1315,6 +1319,16 @@ window.aceJSRules = {
             // tab.results.splice(tab.results.indexOf(result), 1);
         };
 
+
+        // обновлеяем VARS + Snippets
+        // Динамически удаляем все VARS+SNIPS во всех AceJS -> добавляем новые
+        $rootScope.$on('handleBroadcastUpdateVarsAndSnippets', function(event,args) {
+
+            //if (args.value) {
+                //$scope.insertWordInEditor(" "+args.value+" ");
+            //}
+        });
+
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {
@@ -1525,7 +1539,14 @@ ORDER BY event_time desc  ) GROUP BY query`;
             let session=$scope.vars.currentTab.editor.session;
 
             $scope.vars.currentTab.editor.resize();
-            if(item == "AutoFormat"){
+            if(item == "Snippet"){
+                // Editor get selected
+                let selectSql =  $scope.vars.currentTab.editor.getSelectedText();
+                if (selectSql) {
+                    Snippets.add(selectSql);
+                }
+
+            } else if(item == "AutoFormat"){
                 formatCode();
             } else if(item == "Expand"){
                 session.unfold();

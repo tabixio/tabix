@@ -9,6 +9,7 @@
         'ThemeService',
         'localStorageService',
         'Variables',
+        'Snippets',
         '$mdDialog'
     ];
 
@@ -17,7 +18,7 @@
      * @name smi2.controller:SidebarController
      * @description Контроллер бокового меню
      */
-    function SidebarHelperCtrl($scope, $rootScope, API, ThemeService,localStorageService,Variables,$mdDialog) {
+    function SidebarHelperCtrl($scope, $rootScope, API, ThemeService,localStorageService,Variables,Snippets,$mdDialog) {
         $scope.vars = {
             isDark: ThemeService.isDark(),
             historysql:[],
@@ -25,9 +26,11 @@
             active:{
                 chart:true,
                 history:true,
+                snippet:true,
                 vars:true
             },
 
+            snippets:Snippets.snippets,
             variables:Variables.vars
         };
 
@@ -73,6 +76,9 @@
         };
         $scope.addVar=() =>{
             Variables.addVar("int",'limit',1000);
+        };
+        $scope.dropSnippet=(sid)=>{
+            Snippets.drop(sid);
         };
         $scope.dropVar=(varid)=>{
             Variables.drop(varid);
