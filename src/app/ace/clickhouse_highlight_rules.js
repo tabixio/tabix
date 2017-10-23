@@ -56,7 +56,6 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             'SYSTEM KILL',
             'CLEAR COLUMN IN PARTITION'
         ];
-
         let drawCommand = [
             'DRAW_GMAPS',
             'DRAW_PLOTLY',
@@ -77,8 +76,6 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         // ------------------------------------------ Init builtin functions ---------------------------------------------
         if (window.aceJSRules && window.aceJSRules.builtinFunctions)
         {
-            console.warn(">>> apply aceJSRules");
-
             // автодополнение builtin Functions
             if (window.aceJSRules.builtinFunctions) {
 
@@ -106,7 +103,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
 
         let $_fields = [];
         let _keywords = keywords.toLowerCase();
-
+        //
         if (window.aceJSRules && _.isArray(window.aceJSRules.fieldsList)) {
             window.aceJSRules.fieldsList.forEach(function (v) {
                 let p = v['name'].toLowerCase() + '|';
@@ -117,9 +114,6 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
                 $_fields.push(v['name']);
             });
         }
-        // ----------------------------------------------------------------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         let keywordMapper = this.createKeywordMapper({
             "support.function": builtinFunctions,
@@ -216,9 +210,77 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         // ------------------------------------------------------------------------------
 
         this.normalizeRules();
+        //
+        // // ------------------------------------------------------------------------------
+        this.completions=[];
+        // // ----------------------------------------------------------------------------------------------------------------------------------------------
+        this.getCompletions = () =>{
+            return this.completions;
+        };
+        this.addCompletions = function(name,value,caption,score,meta,iconClass,docHTML) {
 
+            this.completions.push({
+                name: name,
+                value: value,
+                caption: caption,
+                score: score,
+                meta: meta,
+                iconClass:iconClass,
+                docHTML:docHTML
+            });
+        };
+        this.addCompletionsDictionaries = function(dic) {
+            this.addCompletions(
+                dic['dic'],
+                dic['dic'],
+                dic['title'],
+                0,
+                'dic',
+                'dict',
+                this.makeCompletionsDocFunctions(dic['title'], dic['dic'])
+            );
+        };
+        this.addCompletionsFunctions = function(func) {
+            this.addCompletions(
+                func['name'],
+                func['name']+'( )',
+                func['name']+'( )',
+                func['score'],
+                'function',
+                'function',
+                this.makeCompletionsDocFunctions(func['name'], func['origin'],func['comb'])
+            );
+        };
+
+        this.addCompletionsTableFiled = function(v) {
+
+            let name = v['table'] + '.' + v['name'];
+            let value = v['name'];
+            let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
+
+            this.addCompletions(
+                name,
+                value,
+                value,
+                100,
+                v['type'],
+                'field',
+                this.makeCompletionsdocHTML(name, meta)
+            );
+        };
+        this.addArrayCompletions = function (arr,meta,icon) {
+            let self=this;
+            arr.forEach(function (v) {
+                self.addCompletions(v,v,v,0,meta,icon,false);
+            });
+        };
+        // ---------------------------------------------------------------------------------------------------------
+        this.setKeywords = function(kwMap) {
+            console.log("setKeywords > ",kwMap);
+            this.keywordRule.onMatch = this.createKeywordMapper(kwMap, "identifier")
+        };
         // ------------------------------------------------------------------------------
-        let makeCompletionsDocFunctions = function (fn, origin,comb) {
+        this.makeCompletionsDocFunctions = function (fn, origin,comb) {
 
 
             if (!window.global_chFunctionsHelp) return false;
@@ -266,91 +328,17 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             }
             return body+ '<a title="close" class="ace_doc-tooltip-boxclose"></a></span></div>';
         };
-        // ------------------------------------------------------------------------------
-        let makeCompletionsdocHTML = function (name, meta) {
+        // // ------------------------------------------------------------------------------
+        this.makeCompletionsdocHTML = function (name, meta) {
             return '<div style="padding: 15px 5px 5px 15px"><b>' + name + '</b><br>' + meta + '</div>';
         };
         // ------------------------------------------------------------------------------
-        let completions = [];
-        let addCompletions = function (arr, meta,icon) {
-            arr.forEach(function (v) {
+        this.addArrayCompletions(keywords.split('|'), 'keyword','keyword');
+        this.addArrayCompletions(CompletionsKeyWords, 'keyword','keyword');
+        this.addArrayCompletions(drawCommand, 'draw','draw');
+        this.addArrayCompletions(dataTypes.split('|'), 'type','type');
 
-
-                completions.push({
-                    name: v,
-                    value: v,
-                    score: 0,
-                    meta: meta,
-                    // docHTML: makeCompletionsdocHTML(v, meta),
-                    iconClass: icon
-                });
-
-            });
-
-        };
-        // ------------------------------------------------------------------------------
-        addCompletions(keywords.split('|'), 'keyword','keyword');
-        addCompletions(CompletionsKeyWords, 'keyword','keyword');
-        addCompletions(drawCommand, 'draw','draw');
-        addCompletions(dataTypes.split('|'), 'type','type');
-        addCompletions(window.aceJSRules.tables, '[table]','table');
-        // ------------------------------------------------------------------------------
-        if (window.aceJSRules && window.aceJSRules.builtinFunctions) {
-            // автодополнение builtin Functions
-            window.aceJSRules.builtinFunctions.forEach(function (v) {
-
-                completions.push({
-                    name: v['name'],
-                    value: v['name']+'( )',
-                    caption: v['name'],
-                    score: v['score'],
-                    meta: 'function',
-                    iconClass:'function',
-                    docHTML: makeCompletionsDocFunctions(v['name'], v['origin'],v['comb'])
-                });
-            });
-        }
-        // ------------------------------------------------------------------------------
-        if (window.aceJSRules && window.aceJSRules.dictionaries) {
-            // автодополнение dic таблицы
-            window.aceJSRules.dictionaries.forEach(function (v) {
-                    completions.push({
-                        name: v['dic'],
-                        value: v['dic'],
-                        caption: v['title'],
-                        score: 0,
-                        meta: 'dic',
-                        iconClass:'dict',
-                        docHTML: makeCompletionsdocHTML(v['title'], v['dic'])
-                    });
-                }
-            );
-        }
-        // ------------------------------------------------------------------------------
-        if (window.aceJSRules && window.aceJSRules.fieldsList) {
-            // автодополнение полей таблицы
-            window.aceJSRules.fieldsList.forEach(function (v) {
-
-                let name = v['table'] + '.' + v['name'];
-                let value = v['name'];
-                let meta = "type:" + v['type'] + '<br><br>default_type:' + v['default_type'] + '<br>' + v['default_expression'];
-
-                completions.push({
-                    name: name,
-                    value: value,
-                    score: 20,
-                    meta: v['table'],
-                    iconClass: 'field',
-                    docHTML: makeCompletionsdocHTML(name, meta)
-                });
-
-
-                }
-            );
-        }
-
-        //this allows for custom 'meta' and proper case of completions
-        this.completions = completions;
+        console.info(">>> apply aceJSRules");
 
     };
 

@@ -31,10 +31,10 @@ angular.module('ui.ace', [])
         var acee = window.ace.edit(elm[0]);
 
         console.time("Ace Load");
-        console.groupCollapsed("Ace Load");
+        // console.groupCollapsed("Ace Load");
 
         opts.onLoad(acee);
-        console.groupEnd("Ace Load");
+        // console.groupEnd("Ace Load");
         console.timeEnd("Ace Load");
 
         elm.on('$destroy', function () {

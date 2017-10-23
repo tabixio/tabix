@@ -795,6 +795,49 @@ window.aceJSRules = {
                 }
             );
         };
+        $scope.loadInAce = (editor) => {
+            // динамическая загрузка в ACE
+            editor.session.setMode({
+                path: "ace/mode/clickhouse",
+            });
+
+            // @todo : 1 - переписать и отказаться полностью от Window!!
+            // @todo : 2 - Может вкладки будут переключать сессии - а не полностью редакотор
+            // @todo : 3 - вынести этот код в ui-ace-directive
+            // грузим
+            for (let func in window.aceJSRules.builtinFunctions)
+            {
+                let f=window.aceJSRules.builtinFunctions[func];
+                editor.session.$mode.$highlightRules.addCompletionsFunctions(f);
+            }
+            // ---------- LOAD TABLES ----------
+            editor.session.$mode.$highlightRules.addArrayCompletions(window.aceJSRules.tables, '[table]','table');
+
+            // ---------- LOAD dictionaries ----------
+            for (let dic in window.aceJSRules.dictionaries )
+            {
+                let d=window.aceJSRules.dictionaries[dic];
+                editor.session.$mode.$highlightRules.addCompletionsDictionaries(d);
+            }
+            // ---------- LOAD fieldsList ----------
+            for (let field in window.aceJSRules.fieldsList )
+            {
+                let v=window.aceJSRules.fieldsList[field];
+                editor.session.$mode.$highlightRules.addCompletionsTableFiled(v);
+            }
+
+            // ---------- LOAD vars ----------
+            let vars=Variables.getCompletions();
+
+
+            console.error("vars",vars);
+            editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');
+
+
+            editor.session.bgTokenizer.start(0);
+        };
+
+
         $scope.aceApply= (editor) =>
         {
             // ------------------------------------------------------------------------------------
@@ -806,29 +849,14 @@ window.aceJSRules = {
                 $scope.vars.tabs.forEach((tab) => {
                     if (tab.editor) {
                         console.log("<!aceApply in TAB!>");
-                        tab.editor.session.setMode({
-                            path: "ace/mode/clickhouse",
-                            v: Date.now()
-                        });
-                        tab.editor.session.bgTokenizer.start(0);
+                        $scope.loadInAce(tab.editor);
                     }
                 });
-
-                /**
-                 * Watch for menu database changes
-                 */
             }
             else {
                 console.log("<!aceApply in current TAB!>");
-                editor.session.setMode({
-                    path: "ace/mode/clickhouse",
-                    v: Date.now()
-                });
-                editor.session.bgTokenizer.start(0);
+                $scope.loadInAce(editor);
             }
-
-
-
 
             $rootScope.$watch('currentDatabase', $scope.selectDatabase);
 

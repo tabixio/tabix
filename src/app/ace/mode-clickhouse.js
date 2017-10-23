@@ -10,6 +10,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
 
     let oop = require("../lib/oop");
     let TextMode = require("./text").Mode;
+
     let ClickhouseHighlightRules = require("./clickhouse_highlight_rules").ClickhouseHighlightRules;
     let ClickhouseFoldMode = require("./clickhouse_FoldMode").FoldMode;
     let MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
@@ -20,16 +21,21 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
         this.foldingRules = new ClickhouseFoldMode();
         this.$outdent = new MatchingBraceOutdent();
         this.$behaviour = new CstyleBehaviour();
-
-        // this.foldingRules = new CStyleFoldMode();
         this.HighlightRules = ClickhouseHighlightRules;
     };
     oop.inherits(Mode, TextMode);
 
     (function () {
         this.lineCommentStart = "--";
+
+        this.getHighlightRule = () => {
+            return this.session.$mode.$highlightRules;
+
+        };
+
         this.getCompletions = function (state, session,pos, prefix) {
             // return this.$completer.getCompletions(state, session, pos, prefix);
+            // editor.session.$mode.$highlightRules.setKeywords({"keyword": "foo|bar|baz"})
             return session.$mode.$highlightRules.completions;
         };
         this.$id = "ace/mode/clickhouse";
