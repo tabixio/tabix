@@ -65,12 +65,16 @@
             for (let id in this.vars)
             {
                 let c=this.vars[id];
-                console.log(c);
                 result.push('$'+c.name);
             }
             return result;
 
         };
+        this.get = () =>
+        {
+          return this.vars;
+        };
+
         this.getIcon = (type) =>
         {
             return typeIcons[type];

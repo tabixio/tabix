@@ -124,7 +124,49 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
         };
 
         this.replaceVars = function (sql,vars) {
-            return sql;
+
+            let replaced_vars={};
+
+
+            let tokens=this.fetchTokens(sql);
+            console.warn("Find tokens",tokens,vars);
+
+            if (tokens.vars.length>0) {
+                // find $vars
+
+
+                for (let i in tokens.vars)
+                {
+
+                    let v=tokens.vars[i];
+                    let origin=v;
+                    // replace { }
+                    // replace $ | @ | :
+
+                    if (v.indexOf("{")>-1) {
+                        v=v.replace('{','').replace('}','');
+                    } else {
+                        v=v.replace('$','').replace('@','').replace(':','');
+                    }
+                    for (let x in vars)
+                    {
+                        let vv=vars[x];
+                        if (vv.name.toLowerCase()==v.toLowerCase()) {
+                            // @todo : need use type
+                            console.info(vv.name.toLowerCase(),'==',v.toLowerCase());
+                            sql=sql.replace(origin,vv.value);
+                        }
+
+                    }
+                }
+            }
+
+            return {
+                sql:sql,
+                tokens:tokens,
+                vars:replaced_vars,
+
+            };
 
         };
 
@@ -208,7 +250,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
                 //     // ------ GROUP BY ---------
                 //     results.groupby=this.fetchTokensParts(sql,t);
                 // }
-                console.log("token:",t);
+                // console.log("token:",t);
                 token = iterator.stepForward();
             }
             console.info("Parse & Find tokens result",results);
@@ -216,8 +258,7 @@ ace.define("ace/mode/clickhouse", ["require", "exports", "module", "ace/lib/oop"
 
         };
         this.splitByTokens = function (sql, type, value) {
-            console.warn("splitByTokens,",type,value,sql);
-
+            // console.warn("splitByTokens,",type,value,sql);
 
             // sql = this.trim(sql,';;');
             // sql = this.trim(sql,';');

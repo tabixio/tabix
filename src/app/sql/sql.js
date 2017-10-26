@@ -557,6 +557,9 @@ window.aceJSRules = {
 
                     let drawCommand=[];
                     let subSql = item.sql;
+                    //
+
+
                     // Ignore short queries
                     if (subSql.length < 5) {
                         return;
@@ -565,22 +568,31 @@ window.aceJSRules = {
                     if (type == 'current' && !selectSql) {
                         let cursor = editor.selection.getCursor();
 
-                        console.log("--------------------------forEach ITEM-------------------------------------");
-                        console.info(item.sql);
-                        console.log("Exec current position :",cursor);
-                        console.log("Item range :",item.range.start,item.range.end);
-                        console.log("Item  :",item);
+                        // console.log("--------------------------forEach ITEM-------------------------------------");
+                        // console.info(item.sql);
+                        // console.log("Exec current position :",cursor);
+                        // console.log("Item range :",item.range.start,item.range.end);
+                        // console.log("Item  :",item);
                         if (!cursor || angular.isUndefined(cursor)) {
                             return;
                         }
                         else
                         {
                             let rg=item.range.compare(cursor.row, cursor.column);
-                            console.log("Range compare = ",rg);
-
+                            // console.log("Range compare = ",rg);
                             if (rg !== 0) return ;
                         }
                     }
+
+
+                    let rV = editor.session.$mode.replaceVars(subSql,Variables.get());
+
+                    subSql=rV.sql;
+
+                    let replacedVars=rV.vars;
+
+                    console.log("replacedVars",rV);
+
 
                     // определяем есть ли комманда DRAW .* - все что после нее есть JavaScript
                     // вырезаем если комманда есть
@@ -589,7 +601,7 @@ window.aceJSRules = {
                     {
 
                         let draw=editor.session.$mode.splitByTokens(subSql,'invalid.illegal',true);
-                        console.log("Find DRAW COMMAND", draw);
+                        // console.log("Find DRAW COMMAND", draw);
                         subSql=draw[0]['sql'];
                         draw.forEach((i)=>{
 
@@ -621,7 +633,6 @@ window.aceJSRules = {
                     let storage = false;
                     let _keyword = null;
                     let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
-                    let fetchTokens = editor.session.$mode.fetchTokens(subSql);
                     let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
 
                     if (set_format.hasOwnProperty('value')) {
@@ -829,8 +840,6 @@ window.aceJSRules = {
             // ---------- LOAD vars ----------
             let vars=Variables.getCompletions();
             let snip=Snippets.getCompletions();
-console.log("snip",snip);
-
             editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');
             editor.session.$mode.$highlightRules.addArrayCompletions(snip, '[snippet]','snippet');
 
@@ -1178,13 +1187,7 @@ console.log("snip",snip);
             $scope.aceApply(editor);
 
         };
-        //
-        // /**
-        //  * Watch and save settings in LocalStorage
-        //  */
-        // $scope.$watch('vars.cacheDatabaseStructure', (curr) => localStorageService.set('cacheDatabaseStructure', curr));
-        // $scope.$watch('vars.limitRows', (curr) => localStorageService.set('editorLimitRows', curr));
-        // $scope.$watch('vars.limitTimes', (curr) => localStorageService.set('editorLimitTimes', curr));
+
 
 
         /**
@@ -1216,18 +1219,7 @@ console.log("snip",snip);
         //         }
         //     });
         // });
-        //
-        // /**
-        //  * Watch and save settings in LocalStorage
-        //  */
-        // $scope.$watch('vars.fontSize', (fontSize) => {
-        //     if (fontSize) {
-        //         $scope.vars.tabs.forEach((tab) => tab.editor && tab.editor.setOptions({
-        //             fontSize: fontSize + 'px'
-        //         }));
-        //         localStorageService.set('editorFontSize', fontSize);
-        //     }
-        // });
+
 
         /**
          * Save SQL to history
@@ -1352,10 +1344,7 @@ console.log("snip",snip);
         // обновлеяем VARS + Snippets
         // Динамически удаляем все VARS+SNIPS во всех AceJS -> добавляем новые
         $rootScope.$on('handleBroadcastUpdateVarsAndSnippets', function(event,args) {
-
-            //if (args.value) {
-                //$scope.insertWordInEditor(" "+args.value+" ");
-            //}
+                $scope.aceApply();
         });
 
         // вставка текста в активное окно редактора там где курсор
@@ -1417,17 +1406,17 @@ ORDER BY event_time desc  ) GROUP BY query`;
             };
 
 
-        $scope.setDisableAutoHelp = () => {
-            let value=$scope.vars.disableAutohelp
-            localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
-            console.info("SET>window.global_chFunctionsHelp = {};",value);
-            if (value) {
-                // window.global_chFunctionsHelp = {};
-            }
-            else {
-
-            }
-        };
+        // $scope.setDisableAutoHelp = () => {
+        //     let value=$scope.vars.disableAutohelp
+        //     localStorageService.set(SQL_SAVE_DISABLE_AUTOHELP_KEY, value);
+        //     console.info("SET>window.global_chFunctionsHelp = {};",value);
+        //     if (value) {
+        //         // window.global_chFunctionsHelp = {};
+        //     }
+        //     else {
+        //
+        //     }
+        // };
 
 
         /**
