@@ -828,10 +828,11 @@ window.aceJSRules = {
 
             // ---------- LOAD vars ----------
             let vars=Variables.getCompletions();
+            let snip=Snippets.getCompletions();
+console.log("snip",snip);
 
-
-            console.error("vars",vars);
             editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');
+            editor.session.$mode.$highlightRules.addArrayCompletions(snip, '[snippet]','snippet');
 
 
             editor.session.bgTokenizer.start(0);
@@ -1053,11 +1054,11 @@ window.aceJSRules = {
                 highlightSelectedWord:true ,
                 //showInvisibles:true ,
                 showGutter:true ,
-                useWrapMode : true,
                 enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
                 liveAutocompletionDelay: 500,
                 liveAutocompletionThreshold: 1
             });
+
             editor.setTheme('ace/theme/' + $scope.vars.theme);
 
             // reload keywords & highlights
@@ -1065,7 +1066,7 @@ window.aceJSRules = {
             //     path: "ace/mode/clickhouse",
             //     v: Date.now()
             // });
-            // editor.session.bgTokenizer.start(0);
+            editor.session.setUseWrapMode(    Preference.get('useWrapMode'));
 
             // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
             editor.commands.addCommand({

@@ -41,6 +41,16 @@
         this.constructor();
 
 
+        this.getCompletions = () => {
+
+            let result=[];
+            for (let id in this.snippets)
+            {
+                let s=this.snippets[id];
+                result.push(s.code);
+            }
+            return result;
+        };
         this.getSnippets = () => {
             return this.snippets;
         };
