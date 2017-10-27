@@ -7,7 +7,7 @@
 #### TODO UI:
 
 * Review database  + Right click - database - overview db?
-* `var` edito + `$var` | `:var` | `{var}`
+
 * Parse "LIMIT" and button `loadMore` 
 * Parse cursor position - then click on fields  
 * Fix old grid in "metrix" 
@@ -25,6 +25,12 @@
 * DoubleClick на ресайзерах - свернуть область или вернуть область
 * "Снипеты" - Code Snippet
 * При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
+
+
+
+
+
+
 #### TODO Server:
 * T.Server : Class "ReportTools"
 * T.Server : Разбор результата для советов в "WHERE" - Подсказки по полям, и фичам сервера хранит backend

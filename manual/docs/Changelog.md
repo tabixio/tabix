@@ -1,3 +1,10 @@
+## 2017-10-27 Beta
+
+* `with totals` render in table result
+* Add variables editor, and parser in sql : `$var` | `:var` | `{var}` , vars in autocomplite
+* Add snippets editor, snippets in  autocomplite
+
+
 ## 2017-10-13 Beta
 
 * Update beta build 
