@@ -165,6 +165,7 @@ window.aceJSRules = {
         const saveSession = () => {
             if ($scope.vars.saveTabs) {
                 const tabs = $scope.vars.tabs.map((tab) => {
+                    tab.sql=tab.editor.getValue();
                     return {
                         name: tab.name,
                         sql: tab.sql,
@@ -177,6 +178,7 @@ window.aceJSRules = {
                     };
                 });
                 localStorageService.set(SQL_SESSION_KEY, tabs);
+                console.info("Save session , localStorageService.set(SQL_SESSION_KEY)");
             }
         };
 
@@ -722,8 +724,8 @@ window.aceJSRules = {
                 return;
             }
 
-            console.groupCollapsed("selectDatabase");
-            console.warn("selectDatabase type:["+type+"] ; current="+$scope.vars.db+' => '+db);
+            // console.groupCollapsed("selectDatabase");
+            // console.warn("selectDatabase type:["+type+"] ; current="+$scope.vars.db+' => '+db);
 
 
 
@@ -733,14 +735,14 @@ window.aceJSRules = {
 
 
             $scope.vars.db = db;
-            console.info("selectDatabase > ",db);
+            // console.info("selectDatabase > ",db);
 
             if (!$scope.AceEditorInLoad) {
-                console.info("selectDatabase reApply ACE");
+                // console.info("selectDatabase reApply ACE");
                 $scope.aceLoadDatabaseFields();
                 $scope.aceApply(false);
             }
-            console.groupEnd("selectDatabase");
+            // console.groupEnd("selectDatabase");
 
 
 
@@ -765,13 +767,13 @@ window.aceJSRules = {
 
         $scope.aceLoadDatabaseFields = () => {
             let db=$scope.vars.db;
-            console.info("aceLoadDatabase 'Fields' > ",db);
+            // console.info("aceLoadDatabase 'Fields' > ",db);
             window.aceJSRules.fieldsList=[];
 
             API.databaseStructure(
                 function (ds) {
                     window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
-                    console.info("aceLoadDatabaseFields - done");
+                    // console.info("aceLoadDatabaseFields - done");
                     return;
 
 
@@ -782,7 +784,7 @@ window.aceJSRules = {
 
         $scope.aceLoadDatabaseStructure = () => {
             let db=$scope.vars.db;
-            console.info("aceLoadDatabase 'Structure' > ",db);
+            // console.info("aceLoadDatabase 'Structure' > ",db);
 
             // reset global object
             window.aceJSRules.tables=[];
@@ -799,7 +801,7 @@ window.aceJSRules = {
                     // ------------------------------- fieldsList -----------------------------------
                     window.aceJSRules.fieldsList=ds.getAllFieldsInDatabase(db);
 
-                    console.info("aceLoadDatabaseStructure - done");
+                    // console.info("aceLoadDatabaseStructure - done");
                     return;
 
 
@@ -889,12 +891,12 @@ window.aceJSRules = {
                 return;
             }
 
-            console.time("sql.loadDictionaries");
+            // console.time("sql.loadDictionaries");
 
             window.aceJSRules.dictionaries=[];
             $scope.vars.dictionaries = [];
             window.aceJSRules.builtinFunctions=[];
-            console.log("loadDictionaries");
+            // console.log("loadDictionaries");
             $scope.vars.isDictionariesLoad=true;
             API.databaseStructure(
                 function (ds) {
@@ -953,7 +955,7 @@ window.aceJSRules = {
                         });
                     });
                     // ------------------------------------------------------------------------------------
-                    console.timeEnd("sql.loadDictionaries");
+                    // console.timeEnd("sql.loadDictionaries");
                     return;
 
 
@@ -1031,7 +1033,7 @@ window.aceJSRules = {
          * @param editor
          */
         $scope.aceLoaded = (editor) => {
-            console.log("aceLoaded : ACE editor init on creation");
+            // console.log("aceLoaded : ACE editor init on creation");
             $scope.AceEditorInLoad=true;
 
 
@@ -1298,6 +1300,14 @@ window.aceJSRules = {
          * @param tab
          * @param event
          */
+
+        $scope.changeTab = (newTab) => {
+
+            console.log("changeTab");
+            saveSession();
+            $scope.vars.currentTab = newTab;
+
+        };
         $scope.removeTab = (tab, event) => {
             event.stopPropagation();
 

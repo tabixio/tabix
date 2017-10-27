@@ -8,25 +8,31 @@
 
 * Review database  + Right click - database - overview db?
 
-* Parse "LIMIT" and button `loadMore` 
+* Parse "LIMIT" and button `loadMore`
+
 * Parse cursor position - then click on fields  
-* Fix old grid in "metrix" 
+
+* Fix old grid in "metrix"
+
 * Chart editor
-* Fix draw_sankeys 
-* Transform table - поворот таблицы + MergeTables 
+
+* Fix draw_sankeys
+
+* Transform table - поворот таблицы + MergeTables
+
 * aceJSRules - apply on all with window : 1) Disable window , 2) Apply only active tab
-* Long open "SQL" tab - add async 
+
 * Show+Hide columns in handtable
-* TTL Cache, кэш должен протухать, подгрузка ? в фоне ?
+
 * Авто позиционирование на таблицу
+
 * Виджет список предустановленных графиков
-* Теряются стили в таблице , color then heatmap, reset 
+
+* Теряются стили в таблице , color then heatmap, reset
+
 * HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
-* DoubleClick на ресайзерах - свернуть область или вернуть область
-* "Снипеты" - Code Snippet
-* При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
 
-
+* При редакировании [CRUD]  переменной|снипитов - обновлять подсказки
 
 
 

@@ -398,12 +398,12 @@
                     });
                     // --------------------------------------------------------------------------------------------------
                     $timeout(function () {
-                        console.info("SideBar - loaded,run metisMenu - apply");
+                        // console.info("SideBar - loaded,run metisMenu - apply");
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
-                        console.time("metisMenu");
+                        // console.time("metisMenu");
                         $('#sideBarMetismenu').metisMenu();
-                        console.timeEnd("metisMenu");
+                        // console.timeEnd("metisMenu");
                     }, 100);
 
                 });

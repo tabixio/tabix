@@ -6,7 +6,7 @@
 
 <div ngsf-fullscreen="fullscreenCtrl" class="fullscreen md-tabs-fix" ng-class="::vars.uiTheme.name">
     <md-tabs md-dynamic-height md-border-bottom md-selected="vars.selectedTab" class="sql-tabs">
-        <md-tab ng-repeat="tab in vars.tabs track by $index" ng-click="vars.currentTab = tab">
+        <md-tab ng-repeat="tab in vars.tabs track by $index" ng-click="changeTab(tab);">
 
             <md-tab-label>
                 {{tab.name + (tab.changed ? ' *' : '')}}

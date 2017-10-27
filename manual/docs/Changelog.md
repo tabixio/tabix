@@ -3,6 +3,16 @@
 * `with totals` render in table result
 * Add variables editor, and parser in sql : `$var` | `:var` | `{var}` , vars in autocomplite
 * Add snippets editor, snippets in  autocomplite
+* Resizable double click
+* Fix Int64 render
+* Change tab in editor - save current session
+
+RU :
+
+* DoubleClick на ресайзерах - свернуть область или вернуть область
+* "Снипеты" - Code Snippet
+* Database structure TTL Cache, кэш должен протухать
+* При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
 
 
 ## 2017-10-13 Beta
@@ -41,11 +51,9 @@
 * Update grid, move to gridstack, fix many error in render table result  
 * Update handsontable to 0.34
 * Drop Settings page in editor, move to `TAB:Preference` 
+* Long open "SQL" tab - add async
 
-
-#### 2017-10-06 Beta
-
- 
+RU:
  
 * Устранена большая утечка памяти, при отрисовки результата 
 * изменен компонент сетка - поправлены ошибки отображения результата в виде таблиц
