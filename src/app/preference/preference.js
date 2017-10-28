@@ -23,8 +23,6 @@
 
         // ------- functions -------
         $scope.apply=()=>{
-
-            console.log($scope.state);
             Preference.apply($scope.state);
             $scope.state=Preference.getCurrentState();
         };

@@ -17,7 +17,8 @@
             '$state',
             '$mdTheming',
             'ThemeService',
-            ($rootScope, $state,$mdTheming,ThemeService) => {
+            'localStorageService',
+            ($rootScope, $state,$mdTheming,ThemeService,localStorageService) => {
 
                 $rootScope.breadcrumbs = [];
                 $rootScope.currentDatabase = null;
@@ -34,6 +35,10 @@
 
 
 
+                $rootScope.sqlLog = localStorageService.get('sqlLog') || [];
+                $rootScope.$watch('sqlLog',(d) => {
+                    localStorageService.set('sqlLog',d);
+                });
                 $rootScope.isInitDatabaseStructure = false;
 
                 $rootScope.sidebar={

@@ -21,7 +21,7 @@
     function SidebarHelperCtrl($scope, $rootScope, API, ThemeService,localStorageService,Variables,Snippets,$mdDialog) {
         $scope.vars = {
             isDark: ThemeService.isDark(),
-            historysql:[],
+            historysql:$rootScope.sqlLog,
             charthelp:[],
             active:{
                 chart:true,

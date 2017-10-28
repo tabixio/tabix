@@ -59,13 +59,12 @@ window.aceJSRules = {
                            Variables  ) {
 
         const SQL_HISTORY_KEY = 'sqlHistory2';
-        const SQL_LOG_KEY = 'sqlLog';
         const SQL_SAVE_TABS_KEY = 'saveTabs';
         const SQL_SAVE_DISABLE_HOTKEY_LEFTRIGHT = 'DISABLE_HOTKEY_LEFTRIGHT_v1';
         const SQL_SAVE_DISABLE_AUTOHELP_KEY = 'DISABLE_AUTOHELP_v1';
         const SQL_SAVE_LIVEAUTO_KEY = 'liveAutocompletion_v1';
         const SQL_SESSION_KEY = 'sessionData';
-        const SQL_LOG_LENGTH = 30;
+        const SQL_LOG_LENGTH = 255;
 
 
         $scope.AceEditorInLoad=false;
@@ -97,8 +96,6 @@ window.aceJSRules = {
             searchQueryOnServer:'',
             currentTab: {},
             selectedTab: 0,
-            sqlLog: localStorageService.get(SQL_LOG_KEY) || [],
-            sqlLogServer: [],
             formats: [{
                 name: 'Table',
                 sql: ' format JSON',
@@ -535,12 +532,11 @@ window.aceJSRules = {
 
             // ------------------------------------------------------------------------------------------------
             // Save to SQL log
-            if ($scope.vars.sqlLog.indexOf(sql) == -1) {
-                $scope.vars.sqlLog.unshift(sql);
-                if ($scope.vars.sqlLog.length > SQL_LOG_LENGTH) {
-                    $scope.vars.sqlLog.splice(0, SQL_LOG_LENGTH);
+            if ($rootScope.sqlLog.indexOf(sql) == -1) {
+                $rootScope.sqlLog.unshift(sql);
+                if ($rootScope.sqlLog.length > SQL_LOG_LENGTH) {
+                    $rootScope.sqlLog.splice(0, SQL_LOG_LENGTH);
                 }
-                localStorageService.set(SQL_LOG_KEY, $scope.vars.sqlLog);
             }
 
             // Save tabs session
@@ -1399,27 +1395,27 @@ window.aceJSRules = {
                 });
             }
         };
-
-        $scope.searchSqlLogServer = () => {
-            $scope.vars.sqlLogServer=[];
-            let like=$scope.vars.searchQueryOnServer;
-
-
-            let sql=`
-            SELECT query FROM ( SELECT query FROM system.query_log 
-WHERE query like '%TABIX_QUERY_ID%' AND query not like '%system.query_log%' and exception=''  AND query LIKE '%` + like + `%'
-ORDER BY event_time desc  ) GROUP BY query`;
-
-            if (like){
-
-                console.info("Search on server query like : "+sql);
-                API.query(sql).then(function ( queryResult ) {
-                    $scope.vars.sqlLogServer=_.map(queryResult.data,'query');
-                });
-
-            }
-
-            };
+//
+//         $scope.searchSqlLogServer = () => {
+//             $scope.vars.sqlLogServer=[];
+//             let like=$scope.vars.searchQueryOnServer;
+//
+//
+//             let sql=`
+//             SELECT query FROM ( SELECT query FROM system.query_log
+// WHERE query like '%TABIX_QUERY_ID%' AND query not like '%system.query_log%' and exception=''  AND query LIKE '%` + like + `%'
+// ORDER BY event_time desc  ) GROUP BY query`;
+//
+//             if (like){
+//
+//                 console.info("Search on server query like : "+sql);
+//                 API.query(sql).then(function ( queryResult ) {
+//                     $scope.vars.sqlLogServer=_.map(queryResult.data,'query');
+//                 });
+//
+//             }
+//
+//             };
 
 
         // $scope.setDisableAutoHelp = () => {

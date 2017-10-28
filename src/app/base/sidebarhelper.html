@@ -32,14 +32,8 @@
                 </md-tab-body>
             </md-tab>
 
-            <md-tab md-on-select="vars.active.history=true" >
-                <md-tab-label>
-                    <i class="mdi mdi-18px mdi-history"></i>
-                </md-tab-label>
-                <md-tab-body>
-                    <b class="md-display-2">history sql</b>
-                </md-tab-body>
-            </md-tab>
+
+
 
             <md-tab md-on-select="vars.active.vars=true" >
                 <md-tab-label>
@@ -68,6 +62,10 @@
                 </md-tab-body>
             </md-tab>
 
+
+
+
+
             <md-tab md-on-select="vars.active.snippet=true" >
                 <md-tab-label>
                     <i class="mdi mdi-18px mdi-fish"></i>
@@ -87,6 +85,30 @@
 
                 </md-tab-body>
             </md-tab>
+
+
+
+
+            <md-tab md-on-select="vars.active.history=true" >
+                <md-tab-label>
+                    <i class="mdi mdi-18px mdi-history"></i>
+                </md-tab-label>
+                <md-tab-body ng-scrollbars>
+
+
+                    <md-list  ng-cloak>
+                        <md-subheader class="md-no-sticky">Tabix SQL log </md-subheader>
+                        <md-list-item class="secondary-button-padding" ng-click="doPrimaryAction(hist)" ng-repeat="hist in vars.historysql  track by $index">
+                            <p> {{ hist }} </p>
+                            <!--<md-checkbox class="md-secondary" ng-model="topping.wanted"></md-checkbox>-->
+                        </md-list-item>
+
+
+                    </md-list>
+
+                </md-tab-body>
+            </md-tab>
+
 
         </md-tabs>
     </md-content>

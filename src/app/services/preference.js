@@ -79,7 +79,7 @@
 
         this.apply = (state) =>{
             _.forEach(state,(item,key) => {
-                console.log("Apply ",key,item);
+                // console.log("Apply ",key,item);
                 this.set(key,item);
             });
             this.save();

@@ -80,7 +80,6 @@
 
 
     function buildLinkFunc($compile,$timeout) {
-        console.log("buildLinkFunc");
         return function (scope, element, attrs) {
             let type=scope.widget.type;
             console.group("drawWidget.buildLinkFunc:"+type);

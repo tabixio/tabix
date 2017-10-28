@@ -13,14 +13,11 @@ class DataProvider {
      */
     constructor(result, sourceType) {
 
-        console.info("totals",result.totals);
-
         if (result.totals && result.data)
         {
             result.data.push(result.totals);
         }
         this.data = result.data;
-        // console.info("DP",this.data);
         this.text = false;
         this.progressQuery = '';
         this.sort = false;
