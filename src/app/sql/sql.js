@@ -165,7 +165,14 @@ window.aceJSRules = {
         const saveSession = () => {
             if ($scope.vars.saveTabs) {
                 const tabs = $scope.vars.tabs.map((tab) => {
-                    tab.sql=tab.editor.getValue();
+                    if (!tab.editor)
+                    {
+                        tab.sql="";
+                    }
+                    else
+                    {
+                        tab.sql=tab.editor.getValue();
+                    }
                     return {
                         name: tab.name,
                         sql: tab.sql,
@@ -1303,7 +1310,6 @@ window.aceJSRules = {
 
         $scope.changeTab = (newTab) => {
 
-            console.log("changeTab");
             saveSession();
             $scope.vars.currentTab = newTab;
 
@@ -1520,7 +1526,6 @@ ORDER BY event_time desc  ) GROUP BY query`;
                         encodingVisible: true,
                         uploadButtonLabel:'Upload',
                         callback:function (c) {
-                            console.log("callback");
                             $mdDialog.hide();
                         }
                     }

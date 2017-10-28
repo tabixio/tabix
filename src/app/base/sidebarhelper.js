@@ -61,27 +61,37 @@
                     if (answer.name && answer.value && answer.type)
                     {
                         Variables.addVar(answer.type,answer.name,answer.value);
+                        $scope.broadcast();
                     }
 
                 }, function() {
 
                 });
         };
+        $scope.broadcast = () => {
+
+            $rootScope.$emit('handleBroadcastUpdateVarsAndSnippets', {value:true});
+        };
 
         $scope.changed=(varid) =>{
             Variables.update(varid);
+            $scope.broadcast();
+
         };
         $scope.showState=() =>{
             console.warn($scope.vars.variables);
         };
         $scope.addVar=() =>{
             Variables.addVar("int",'limit',1000);
+            $scope.broadcast();
         };
         $scope.dropSnippet=(sid)=>{
             Snippets.drop(sid);
+            $scope.broadcast();
         };
         $scope.dropVar=(varid)=>{
             Variables.drop(varid);
+            $scope.broadcast();
         };
 
         $scope.init=()=>{

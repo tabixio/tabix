@@ -341,9 +341,6 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         this.addArrayCompletions(CompletionsKeyWords, 'keyword','keyword');
         this.addArrayCompletions(drawCommand, 'draw','draw');
         this.addArrayCompletions(dataTypes.split('|'), 'type','type');
-
-        console.info(">>> apply aceJSRules");
-
     };
 
     oop.inherits(ClickhouseHighlightRules, TextHighlightRules);
