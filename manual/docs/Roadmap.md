@@ -18,7 +18,7 @@
 
 * Fix draw_sankeys
 
-* Transform table - поворот таблицы -> MergeTables results
+* Transform таблицы -> MergeTables results
 
 * aceJSRules - apply on all with window : 1) Disable window , 2) Apply only active tab
 

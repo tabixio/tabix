@@ -436,38 +436,7 @@ class HandsTable {
     }
     return ret;
 }
-    static transposeDatax(oTreeAll) {
 
-        var keys = [];
-        var i = 0;
-        for ( var key in oTreeAll[i]) {
-            keys.push(key);
-        }
-
-        console.log(keys);
-
-        var newObj = {
-            d : []
-        };
-
-        newObj['length'] = oTreeAll.length;
-        for (var k = 0; k < oTreeAll.length; k++) {
-            var obj = {};
-            for ( var cnt in keys) {
-                obj[keys[cnt]] = "";
-            }
-            newObj.d.push(obj);
-        }
-
-        for (var k = 0; k < oTreeAll.length; k++) {
-            for (var j = 0; j < oTreeAll.length; j++) {
-                newObj.d[k][keys[j]] = oTreeAll[j][keys[k]];
-            }
-        }
-
-        console.log(newObj);
-        return newObj;
-    }
     static transposeData(a) {
         return a && a.length && a[0].map && a[0].map(function (_, c) { return a.map(function (r) { return r[c]; }); }) || [];
     }
@@ -530,6 +499,32 @@ class HandsTable {
         HandsTable.pushToClipboardText(outText);
 
 
+    }
+
+    static HideColumn(ht) {
+        let s = HandsTable.getSelected(ht,true);
+        let columns = ht.getSettings().columns;
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            //width
+            columns[col]['width']=0;
+        }
+
+
+        ht.updateSettings({
+            columns: columns
+        });
+
+    }
+    static ShowAllColumns(ht) {
+        let columns = ht.getSettings().columns;
+        console.info("SHOWALL",columns);
+        for (let col of columns) {
+              console.info("COL",columns[col]);
+        };
+
+        ht.updateSettings({
+            columns: columns
+        });
     }
 
     static makeStyle(ht, style) {
@@ -794,6 +789,27 @@ class HandsTable {
                         ]//items
                     },//submenu
                 },
+                // "HideShow": {
+                //     name: 'Hide & Show',
+                //     submenu: {
+                //         items: [
+                //             {
+                //                 name: "Hide current column",
+                //                 callback: function (key, options, pf) {
+                //                     HandsTable.HideColumn(this);
+                //                 },
+                //                 key: "HideShow:1"
+                //             },
+                //             {
+                //                 name: "Show all columns",
+                //                 callback: function (key, options, pf) {
+                //                     HandsTable.ShowAllColumns(this);
+                //                 },
+                //                 key: "HideShow:2"
+                //             },
+                //         ]//items
+                //     },//submenu
+                // },
                 "undo": {},
                 "make_read_only": {},
                 "alignment": {},
