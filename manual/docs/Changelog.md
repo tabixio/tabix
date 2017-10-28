@@ -6,6 +6,7 @@
 * Resizable double click
 * Fix Int64 render
 * Change tab in editor - save current session
+* Transform table : Transpose
 
 RU :
 
@@ -13,7 +14,7 @@ RU :
 * "Снипеты" - Code Snippet
 * Database structure TTL Cache, кэш должен протухать
 * При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
-
+* Transform table : Transpose, поворот таблицы
 
 ## 2017-10-13 Beta
 

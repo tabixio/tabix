@@ -18,7 +18,7 @@
 
 * Fix draw_sankeys
 
-* Transform table - поворот таблицы + MergeTables
+* Transform table - поворот таблицы -> MergeTables results
 
 * aceJSRules - apply on all with window : 1) Disable window , 2) Apply only active tab
 
@@ -34,6 +34,7 @@
 
 * При редакировании [CRUD]  переменной|снипитов - обновлять подсказки
 
+* Pivot table by column http://techbrij.com/convert-column-to-row-javascript-array-pivot
 
 
 

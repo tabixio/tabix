@@ -357,26 +357,85 @@ class HandsTable {
     }
 
     static Transpose(ht,command) {
+        let d=HandsTable.transpose(ht.getSourceData());
+        let colHeaders=[];
+        let columns=[];
+        for (let col of d.columns) {
+            let c={};
+            c.renderer = this._handsRenderer;
+            c.data = col;
+            c.type = 'text';
+            c.width = 100;
+            columns.push(c);
+            colHeaders.push(col);
 
-        let dd=ht.getSourceData();
-        console.log("getDATA",dd);
-        // console.log("translateRowsToColumns",Handsontable.helper.translateRowsToColumns(dd));
-        console.log("translateRowsToColumns",HandsTable.transposeDatax(dd));
-
-
-        // _.keys
-
-        // Создаем колонки
-        // Создаем строки
-        // let d=HandsTable.transposeData(dd);
-
-        // console.log(ht,d,dd);
-        // ht.updateSettings({
-        //     data: d
-        // })
+        }
+        ht.updateSettings({
+            columns: columns,
+            colHeaders: colHeaders,
+            data: d.data
+        });
 
     }
+    static transpose(matrix)  {
 
+        let cols=[];
+        let rownum=1;
+        let o=[];
+        cols.push(0);
+        for (let row of matrix) {
+            let colnum=0;
+            for (let [key, value] of Object.entries(row)) {
+                if (!o[colnum]) o[colnum]={};
+                if (rownum==1) {
+                    o[colnum][0]=key;
+
+                }
+                o[colnum][rownum]=value;// Создаем строки
+                colnum++;
+            }
+            cols.push(rownum);        // Создаем колонки
+            rownum++;
+        }
+        return {data:o,columns:cols};
+    }
+
+    static getPivotArray(dataArray, rowIndex, colIndex, dataIndex) {
+    //Code from http://techbrij.com
+    var result = {}, ret = [];
+    var newCols = [];
+    for (var i = 0; i < dataArray.length; i++) {
+
+        if (!result[dataArray[i][rowIndex]]) {
+            result[dataArray[i][rowIndex]] = {};
+        }
+        result[dataArray[i][rowIndex]][dataArray[i][colIndex]] = dataArray[i][dataIndex];
+
+        //To get column names
+        if (newCols.indexOf(dataArray[i][colIndex]) == -1) {
+            newCols.push(dataArray[i][colIndex]);
+        }
+    }
+
+    newCols.sort();
+    var item = [];
+
+    //Add Header Row
+    item.push('Item');
+    item.push.apply(item, newCols);
+    ret.push(item);
+
+    //Add content
+    for (var key in result) {
+        item = [];
+        item.push(key);
+        for (var i = 0; i < newCols.length; i++) {
+            item.push(result[key][newCols[i]] || "-");
+        }
+        ret.push(item);
+    }
+    return ret;
+}
     static transposeDatax(oTreeAll) {
 
         var keys = [];
@@ -410,11 +469,7 @@ class HandsTable {
         return newObj;
     }
     static transposeData(a) {
-        return a[0].map(function(_, c) {
-            return a.map(function(r) {
-                return r[c];
-            });
-        });
+        return a && a.length && a[0].map && a[0].map(function (_, c) { return a.map(function (r) { return r[c]; }); }) || [];
     }
 
 
@@ -725,17 +780,16 @@ class HandsTable {
                 // "remove_col":{},
                 "hsep3": "---------",
                 // -------------------- Copy to  --------------------------------------------------------------------
-                "Transpose": {
-                    name: 'Transpose',
+                "Transform": {
+                    name: 'Transform',
                     submenu: {
                         items: [
                             {
                                 name: "Transpose full table",
                                 callback: function (key, options, pf) {
-                                    console.info("Transpose");
                                     HandsTable.Transpose(this, 'Transpose');
                                 },
-                                key: "Transpose:1"
+                                key: "Transform:1"
                             },
                         ]//items
                     },//submenu

@@ -670,7 +670,7 @@ window.aceJSRules = {
                     numquery++;
                 });
 
-            console.groupEnd();
+            console.groupEnd("Execute query");
 
             if (queue.length) {
                 $scope.vars.currentTab.progress = {};
