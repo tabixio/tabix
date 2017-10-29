@@ -104,6 +104,15 @@ class Router
         return $default;
     }
 
+    /**
+     * @param Tabix\Query\Result $q
+     * @return Tabix\Query\Result
+     */
+    private function storeToMongo(\Tabix\Query\Result $q)
+    {
+        return $q;
+    }
+
     public function kill($params=[])
     {
 

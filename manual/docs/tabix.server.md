@@ -10,6 +10,11 @@ mongoDB 3.7 server
 php MongoDB Driver 2.2
 ```
 
+@Todo Use docker
+
+ * https://github.com/valetanddama/docker-nginx-mongo-php7/blob/master/Dockerfile
+ * https://github.com/notegame/docker-php7-nginx-oci8-mongo
+
 
 ### Install 
 ```
@@ -17,10 +22,17 @@ php MongoDB Driver 2.2
 # Need nginx|Apache install 
 
 # Need php7 install 
+# apt-get -y install php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-mcrypt php7.0-cli php7.0-dev php-pear libsasl2-dev
+#
+
 
 # Need mongodb 3.4 install
 # https://docs.mongodb.com/v3.2/tutorial/install-mongodb-on-ubuntu/
 # aptitude install mongodb-org
+
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 &&  sudo   echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list &&  sudo   apt-get update
+# sudo apt-get install -y mongodb-org
+# sudo service mongod start
 
 # --------------------------------------------
 # Php Driver for MongoDB
@@ -29,6 +41,11 @@ php MongoDB Driver 2.2
 sudo apt-get install php-pear phpize
 sudo pecl install mongodb 
 php -m|grep mongodb
+
+
+#   echo "extension=mongodb.so" > /etc/php/7.0/fpm/conf.d/20-mongodb.ini && \
+#  	echo "extension=mongodb.so" > /etc/php/7.0/cli/conf.d/20-mongodb.ini && \
+#  	echo "extension=mongodb.so" > /etc/php/7.0/mods-available/mongodb.ini
 
 ```
 
