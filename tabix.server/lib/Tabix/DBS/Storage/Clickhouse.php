@@ -16,7 +16,7 @@ class Clickhouse
     /**
      * @param \Tabix\SQLQuery $sql
      * @param $params
-     * @return \Tabix\Query\Result
+     * @return array
      * @throws \Exception
      */
     public function query(\Tabix\SQLQuery $sql,$params)
@@ -29,6 +29,14 @@ class Clickhouse
             throw new \Exception('Error from DB:',$E->getMessage(),$E->getCode());
         }
         return $st->rawData();
+    }
+    public function databaseStructure()
+    {
+        $sql['columns']="SELECT * FROM system.columns";
+        $sql['tables']="SELECT database,name,engine FROM system.tables" ;
+        $sql['databases']= "SELECT name FROM system.databases" ;
+        $sql['dictionaries']="SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names";
+        $sql['functions']="SELECT name,is_aggregate from system.functions";
     }
 
     public function processlist($where)

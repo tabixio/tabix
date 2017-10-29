@@ -43,6 +43,12 @@ class ConfigProvider
 
     }
 
+    public function getQuerySignkey()
+    {
+        $h=$this->config->get('query.hash');
+        if (!$h) $h='TabixHASH';
+        return sha1($h);
+    }
     public function hash()
     {
         if (!$this->hash)

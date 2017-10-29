@@ -12,7 +12,10 @@ class Mongo
      */
     private $_user;
 
-    private $__connect=[];
+    /**
+     * @var \MongoDB\Client
+     */
+    private $__connect;
     public function __construct(ConfigProvider $configProvider,User $user)
     {
         $this->_config=$configProvider;
@@ -31,6 +34,37 @@ class Mongo
 
     }
 
+    /**
+     * @return \MongoDB\Client
+     */
+    public function client()
+    {
+        return $this->connect();
+    }
+
+    public function query(\Tabix\Query\Result $q)
+    {
+
+        $signKey=$this->_config->getQuerySignkey();
+        $collention=$this->client()->queryes;
+
+
+        $insert=$q->toArray();
+
+        // sizeOf insert[data]
+
+        $insert['dt']=time();
+        $insert['dtm']=microtime(true);
+        $insert['sing']=substr(sha1($signKey.microtime(true).$q->sql().$signKey),0,10);
+
+
+        $collention->insertOne(
+          $insert
+        );
+
+
+        return $q;
+    }
     public function listDashboards()
     {
 

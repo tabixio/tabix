@@ -20,7 +20,7 @@ return [
     ]
 ],
 
-'query_id_settings'=>
+'query'=>
     [
         'hash'=>'MY_CRYPTO_KEY',
     ],

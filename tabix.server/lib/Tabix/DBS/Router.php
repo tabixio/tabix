@@ -42,6 +42,13 @@ class Router
     }
 
     /**
+     * @return Tabix\Mongo
+     */
+    public function mongo()
+    {
+        return $this->_mongo;
+    }
+    /**
      * @param $sid
      * @return \Tabix\DBS\Storage\Clickhouse
      * @throws \Exception
@@ -110,7 +117,7 @@ class Router
      */
     private function storeToMongo(\Tabix\Query\Result $q)
     {
-        return $q;
+        return $this->mongo()->query($q);
     }
 
     public function kill($params=[])
