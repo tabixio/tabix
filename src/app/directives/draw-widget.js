@@ -35,7 +35,7 @@
         // ------------------------------------------------------------------------------------------------------------------
         if (widget.draw.library=='plotly') {
 
-            widget.element = angular.element(`<div style="width: 100%;height: 100%">&nbsp;</div>`);
+            widget.element = angular.element(`<div style="width: 100%;height: 100%" class="plotlyDark">&nbsp;</div>`);
             html=false;
 
         }

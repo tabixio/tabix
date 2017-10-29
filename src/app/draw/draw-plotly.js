@@ -113,5 +113,71 @@ class DrawPlotly extends DrawBasicChart {
         this.plotly = Plotly.plot(this.getElement(),ll.data,this.layout,settings);
         return true;
     }
+    applyDarkTheme() {
 
+    // # Dark Quantmod theme
+    //         colors = dict(
+    //             increasing = '#00FF00',
+    //             decreasing = '#FF9900',
+    //             border_increasing = DARK_PALETTE['grey95'],
+    //             border_decreasing = DARK_PALETTE['grey95'],
+    //             primary = '#11AAEE',
+    //             secondary = '#0084FF',
+    //             tertiary = '#FC0D1B',
+    //             quaternary = '#00FF00',
+    //             grey = DARK_PALETTE['grey75'],
+    //             grey_light = DARK_PALETTE['grey85'],
+    //             grey_strong = DARK_PALETTE['grey60'],
+    //             fill = DARK_PALETTE['grey90'],
+    //             fill_light = DARK_PALETTE['grey95'],
+    //             fill_strong = DARK_PALETTE['grey85'],
+    //         ),
+    //
+    //         traces = dict(
+    //             line_thin = dict(width = 1,),
+    //             line_thick = dict(width = 4,),
+    //             line_dashed = dict(dash = 5,),
+    //             line_dashed_thin = dict(dash = 5, width = 1,),
+    //             line_dashed_thick = dict(dash = 5, width = 4,),
+    //             area_dashed = dict(dash = 5,),
+    //             area_dashed_thin = dict(dash = 5, width = 1,),
+    //             area_dashed_thick = dict(dash = 5, width = 4,),
+    //         ),
+    //
+    //         additions = dict(
+    //             xaxis = dict(
+    //                 color = '#999999',
+    //                 tickfont = dict(color = '#CCCCCC',),
+    //                 rangeslider = dict(
+    //                     bordercolor = '#444444',
+    //                     bgcolor = '#444444',
+    //                     thickness = 0.1,
+    //                 ),
+    //                 rangeselector = dict(
+    //                     bordercolor = '#444444',
+    //                     bgcolor = '#444444',
+    //                     activecolor = '#666666',
+    //                 ),
+    //             ),
+    //             yaxis = dict(
+    //                 color = '#999999',
+    //                 tickfont = dict(color = '#CCCCCC',),
+    //                 side = 'left',
+    //             ),
+    //         ),
+    //
+    //         layout = dict(
+    //             font = dict(
+    //                 family = 'droid sans mono',
+    //                 size = 12,
+    //                 color = '#CCCCCC',
+    //             ),
+    //             plot_bgcolor = '#252525',
+    //             paper_bgcolor = '#202020',
+    //             legend = dict(
+    //                 bgcolor = DARK_PALETTE['transparent'],
+    //             ),
+    //         ),
+
+    }
 }

@@ -28,7 +28,7 @@
 
         this.getIcon = (type) =>
         {
-            console.info("TYPE",type,typeIcons[type]);
+            // console.info("TYPE",type,typeIcons[type]);
             return typeIcons[type];
         };
 
