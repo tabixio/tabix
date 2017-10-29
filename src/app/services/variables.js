@@ -86,6 +86,7 @@
             let id=name;
             this.vars[id]={
                 id:id,
+                name:name,
                 title:name,
                 value:val,
                 typeEdit:'text',
