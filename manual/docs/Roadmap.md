@@ -36,6 +36,7 @@
 
 * Pivot table by column http://techbrij.com/convert-column-to-row-javascript-array-pivot
 
+* Pivot table by https://github.com/pat310/quick-pivot
 
 
 #### TODO Server:
