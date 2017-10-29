@@ -18,11 +18,18 @@
         const typeIcons={
             date:'calendar',
             text:'message-text-outline',
-            int:'numeric'
+            int:'numeric',
+            code:'cow'
         };
 
         this.vars={
 
+        };
+
+        this.getIcon = (type) =>
+        {
+            console.info("TYPE",type,typeIcons[type]);
+            return typeIcons[type];
         };
 
 
@@ -42,7 +49,7 @@
                     value:item.value,
                     typeEdit:'text',
                     type:item.type,
-                    icon:'numeric'
+                    icon:this.getIcon(item.type)
                 };
             }
             console.log('UserVariables',this.vars);
@@ -75,11 +82,6 @@
           return this.vars;
         };
 
-        this.getIcon = (type) =>
-        {
-            return typeIcons[type];
-        };
-
 
         this.addVar = (type,name,val) => {
 
@@ -91,7 +93,7 @@
                 value:val,
                 typeEdit:'text',
                 type:type,
-                icon:'numeric'
+                icon:this.getIcon(type)
 
             };
             this.apply();
