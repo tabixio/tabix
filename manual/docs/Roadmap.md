@@ -6,6 +6,11 @@
 
 #### TODO UI:
 
+* !BETA! - Error on send Create TABLE
+* !BETA! - RightClick on server - reload DS
+
+
+
 * Review database  + Right click - database - overview db?
 
 * Parse "LIMIT" and button `loadMore`

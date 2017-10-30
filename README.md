@@ -27,17 +27,21 @@ https://tabix.io/doc/
 
 ## Requirements
 
-* Google chrome version up 55
+* Google Chrome version up 55 (chromium engine), not support FireFox & IE
 * Clickhouse server version up v1.1.54164
 * Not readonly CH user [note](https://tabix.io/doc/Requirements/#note)
 
-## Roadmap
 
-[Tabix roadmap board](https://github.com/smi2/tabix.ui/issues/12)
 
 ## Tabix changelog & news
 
 [Tabix changelog & news in twitter](http://twitter.com/tabix_io)
+
+[Tabix changelog in Docs](https://tabix.io/doc/Changelog/)
+
+## Roadmap
+
+[Tabix roadmap](https://tabix.io/doc/Roadmap/)
 
 ## License
 

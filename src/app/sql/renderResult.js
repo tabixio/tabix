@@ -1,5 +1,5 @@
 /*
- * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,SMI2 LLC and other contributors
  */
 
 
@@ -95,8 +95,26 @@
         $scope.onResizeStop = () => {
 
         };
+
+        $scope.openEditor = (w) =>{
+            $mdDialog.show({
+                // controller: PlotlyEditorController,
+                templateUrl: 'app/sql/PlotlyEditor.tmpl.html',
+                parent: angular.element(document.body)
+            })
+                .then(function(answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                }, function() {
+                    $scope.status = 'You cancelled the dialog.';
+                });
+
+
+        };
+
         $scope.openEditorPlotLy = (w) => {
             console.log('openEditorPlotLy',w);
+            $scope.openEditor(w);
+
         };
         $scope.initPivotTab = () => {
             $scope.vars.active.pivot=true;
