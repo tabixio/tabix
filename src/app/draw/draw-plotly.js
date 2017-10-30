@@ -65,6 +65,9 @@ class DrawPlotly extends DrawBasicChart {
 
         Plotly.relayout(this.getElement(),this.layout);
     }
+    editor() {
+        console.info("editoreditoreditor");
+    }
     create() {
         let drw = this.getDrawCommandObject();
 
@@ -100,6 +103,13 @@ class DrawPlotly extends DrawBasicChart {
 
         let settings={
             editable:false,
+            // modeBarButtonsToAdd: [{
+            //     name: 'custom button',
+            //     icon: Plotly.Icons['coffee'],
+            //     click: function() {
+            //         this.editor()
+            //     }
+            // }]
         };
 
         this.layout=ll.layout;
@@ -179,5 +189,28 @@ class DrawPlotly extends DrawBasicChart {
     //             ),
     //         ),
 
+
+
+
+
+
+        // select number as nu,
+        // sin(number) as s,
+        // cos(number) as c
+        // from system.numbers limit 40
+        // DRAW_PLOTLY {
+        //     trace:{x:data.nu,y:data.s,type:'scatter',name:'sin()'},
+        //     trace1:{x:data.nu,y:data.c,type:'scatter',name:'cos()'},
+        //     additions:{
+        //         xaxis:{color:'#333'}
+        //     },
+        //     layout:{
+        //         font:{'color':'eee','family':'Menlo'},
+        //         plot_bgcolor:'#333',
+        //             paper_bgcolor:'#333',
+        //             legend:{bgcolor:'#333'}
+        //
+        //     }
+        // }
     }
 }

@@ -95,6 +95,9 @@
         $scope.onResizeStop = () => {
 
         };
+        $scope.openEditorPlotLy = (w) => {
+            console.log('openEditorPlotLy',w);
+        };
         $scope.initPivotTab = () => {
             $scope.vars.active.pivot=true;
         };
