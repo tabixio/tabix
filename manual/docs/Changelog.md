@@ -1,3 +1,11 @@
+## 2017-11-01
+
+* Sidebar : add SQL history, add scrollbars
+* Add button - run current query under cursor
+* Add button in tree - reload DataBase Structure
+* Fix not show "OK" on `Create table`
+
+
 ## 2017-10-27 Beta
 
 * `with totals` render in table result
