@@ -39,7 +39,6 @@
                 updateOnContentResize: true
             }
         };
-
         $scope.vars.metis = {
             config: {
                 toggle: false,
@@ -221,6 +220,14 @@
 
         //gets triggered when an item in the context menu is selected
         // ('InsertSQLDrop',database.name,table.name, $event)
+
+        $scope.updateDS = () => {
+
+            API.databaseStructure(function (ds) {
+                $state.reload();
+            },true);
+        };
+
         $scope.rightMenuProcessTable = function(key,db,table,$events){
 
             console.log('rightMenuProcessTable',key,db,table);
@@ -397,16 +404,19 @@
                         }
                     });
                     // --------------------------------------------------------------------------------------------------
+
+
                     $timeout(function () {
                         // console.info("SideBar - loaded,run metisMenu - apply");
                         $scope.vars.loaded = true;
                         $scope.vars.error = false;
                         // console.time("metisMenu");
                         $('#sideBarMetismenu').metisMenu();
+
                         // console.timeEnd("metisMenu");
                     }, 100);
 
-                });
+                },forceReload);
 
 
             },(respond)=>{

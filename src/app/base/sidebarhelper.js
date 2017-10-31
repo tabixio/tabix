@@ -34,6 +34,22 @@
             variables:Variables.vars
         };
 
+        $scope.vars.scrollConfig2 = {
+            autoHideScrollbar: false,
+            theme: ThemeService.isDark( )
+                ? 'light'
+                : 'dark',
+            scrollButtons: {
+                enable: false
+            },
+            scrollInertia: 400,
+            setHeight: 200,
+
+            advanced: {
+                updateOnContentResize: true
+            }
+        };
+
 
         $scope.showAddVarsDialog = function(ev) {
             $mdDialog.show({
@@ -84,6 +100,10 @@
         $scope.addVar=() =>{
             Variables.addVar("int",'limit',1000);
             $scope.broadcast();
+        };
+        $scope.actionHistory=(sql)=>{
+            $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
+
         };
         $scope.dropSnippet=(sid)=>{
             Snippets.drop(sid);

@@ -530,14 +530,7 @@ window.aceJSRules = {
             event.stopPropagation();
             tab.results=[result];
 
-            // ------------------------------------------------------------------------------------------------
-            // Save to SQL log
-            if ($rootScope.sqlLog.indexOf(sql) == -1) {
-                $rootScope.sqlLog.unshift(sql);
-                if ($rootScope.sqlLog.length > SQL_LOG_LENGTH) {
-                    $rootScope.sqlLog.splice(0, SQL_LOG_LENGTH);
-                }
-            }
+
 
             // Save tabs session
             saveSession();
@@ -588,7 +581,18 @@ window.aceJSRules = {
                             if (rg !== 0) return ;
                         }
                     }
+                    // ------------------------------------------------------------------------------------------------
+                    // Save to SQL log
+                    let SaveSql=subSql.trim();
 
+                    if ($rootScope.sqlLog.indexOf(SaveSql) == -1) {
+                        $rootScope.sqlLog.unshift(SaveSql);
+                        if ($rootScope.sqlLog.length > SQL_LOG_LENGTH) {
+                            $rootScope.sqlLog.splice(0, SQL_LOG_LENGTH);
+                        }
+
+                        localStorageService.set('sqlLog',$rootScope.sqlLog);
+                    }
 
                     let rV = editor.session.$mode.replaceVars(subSql,Variables.get());
 

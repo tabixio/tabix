@@ -113,9 +113,9 @@
          */
         this.databaseStructure = (call,forceReload) =>{
 
-            // console.warn('Call databaseStructure:',forceReload);
+            console.warn('Call databaseStructure:',forceReload);
 
-            if (_DatabaseStructure.isInit()) {
+            if (!forceReload && _DatabaseStructure.isInit()) {
                 return call(_DatabaseStructure);
             }
 
@@ -124,6 +124,9 @@
             {
                 console.info("restore from cache : database Structure!");
                 return call(_DatabaseStructure);
+            }
+            if (forceReload) {
+                _DatabaseStructure=new DatabaseStructure();
             }
 
             //
@@ -327,11 +330,14 @@
 
 
             return fetch(myRequest)
-
                 .then(function(response) {
-
                     let contentType = response.headers.get("content-type");
+                    if (contentType.includes('text/plain') && response.status == 200 &&  response.statusText.toLowerCase() == 'ok' )
+                    {
+                        // create table && drop table
+                        return 'OK';
 
+                    }
                     if (contentType && contentType.includes("application/json") && response.status >= 200 && response.status < 300) {
                         return Promise.resolve(response)
                     } else {
@@ -339,6 +345,9 @@
                     }
                 })
                 .then(function(response) {
+                        if (response==='OK') {
+                            return 'OK';
+                        }
                         return response.json();
                     },
                     function (responseBody) {
