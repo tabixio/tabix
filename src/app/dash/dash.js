@@ -31,11 +31,84 @@
             dashInits:{},
 
         };
+        $scope.code='{code:1}';
         $scope.size=100;
         $scope.w=false;
         $scope.preDashId=0;
 
+        function PlotlyEditorController($scope, $mdDialog)
+        {
+            $scope.code='{zzZ:2}';
+            $scope.editor=false;
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
 
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+
+            $scope.applyCode=()=>{
+
+                console.log('applyCODE');
+
+            };
+            $scope.aceLoadedEditor=(editor)=>{
+                $scope.editor=editor;
+                console.warn('aceLoadedEditor');
+                editor.$blockScrolling = Infinity;
+                editor.session.setUseWrapMode(true);
+                editor.setOptions({
+                    fontSize: '14px',
+                    enableBasicAutocompletion : true,
+                    behavioursEnabled:true ,
+                    wrapBehavioursEnabled:true ,
+                    highlightSelectedWord:true ,
+                    showGutter:true ,
+                    enableLiveAutocompletion:true,
+                    liveAutocompletionDelay: 500,
+                    liveAutocompletionThreshold: 1
+                });
+                editor.commands.addCommand({
+                    name: 'runCurrentCommand',
+                    bindKey: {
+                        win: 'Ctrl-Enter',
+                        mac: 'Command-Enter'
+                    },
+                    exec: () => {
+                        $scope.applyCode();
+                    }
+                });
+
+                editor.setTheme('ace/theme/cobalt');
+                editor.setValue('{}');
+                editor.clearSelection();
+                editor.focus();
+                editor.selection.moveTo(0, 0);
+                editor.session.setMode({
+                    path: "ace/mode/javascript",
+                });
+            };
+        }
+
+        $scope.openEditor = (w) =>{
+            $mdDialog.show({
+                controller: PlotlyEditorController,
+                templateUrl: 'app/sql/PlotlyEditor.tmpl.html',
+                parent: angular.element(document.body),
+                locals: {w:w}
+            })
+                .then(function(answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                }, function() {
+                    $scope.status = 'You cancelled the dialog.';
+                });
+
+
+        };
+
+        $scope.openEditor({});
 
         $scope.initDash = function(dashid) {
 
