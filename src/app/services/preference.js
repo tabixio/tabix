@@ -44,7 +44,7 @@
             'cobalt', 'kr_theme', 'sqlserver', 'vibrant_ink',
             'crimson_editor', 'kuroir', 'terminal', 'xcode',
             'dawn', 'merbivore', 'textmate',
-            'dreamweaver', 'merbivore_soft', 'tomorrow'
+            'dreamweaver', 'merbivore_soft', 'tomorrow','dracula'
         ];
 
         this.current={};

@@ -8,10 +8,10 @@
     angular.module(smi2.app.name).controller('PreferenceController', PreferenceController);
     PreferenceController.$inject = [
         '$scope',
-        'Preference'
+        'Preference', '$state'
     ];
 
-    function PreferenceController($scope, Preference) {
+    function PreferenceController($scope, Preference,$state) {
 
         $scope.vars={
             AceThemes:Preference.getEditorThemes(),
@@ -25,6 +25,7 @@
         $scope.apply=()=>{
             Preference.apply($scope.state);
             $scope.state=Preference.getCurrentState();
+            $state.go('sql');
         };
         $scope.reloadCache=()=>{
 
