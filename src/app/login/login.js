@@ -22,6 +22,7 @@
     function LoginController($scope, $state, localStorageService, API, $mdToast, ThemeService,$mdDialog) {
 
         const ALL_BASES_KEY = 'basesConfig';
+        $scope.isChrome = /Chrome/.test(navigator.userAgent);
 
         $scope.vars = {
             bases: localStorageService.get(ALL_BASES_KEY) || [],

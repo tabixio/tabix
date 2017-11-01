@@ -12,6 +12,14 @@
 
                 <div class="pull-right">
 
+
+                    <md-button class="md-warn" aria-label="menu"  ng-click="help()" ng-if="!isChrome">
+                        <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                        Requirements Chrome or Chromium engine Browser!
+                        <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                    </md-button>
+
+
                     <md-button aria-label="menu"  ng-click="help()">
                         <i class="mdi mdi-24px mdi-help"></i>
                         Requirements & help
@@ -26,7 +34,7 @@
 
 
                         <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                            <i class="mdi mdi-24px mdi-theme-light-dark"></i>
+                            <i class="mdi mdi-24px mdi-theme-light-dark"></i>Ui Theme
                         </md-button>
 
                         <md-menu-content>
@@ -78,6 +86,16 @@
                             <md-tab-body>
                                 <md-card md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
                                     <form class="p++" name="loginForm">
+
+                                        <div ng-if="!isChrome">
+                                            <md-button class="md-warn" aria-label="menu"  ng-click="help()" >
+                                                <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                                                Requirements Chrome or Chromium engine Browser!
+                                                <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                                            </md-button>
+
+
+                                        </div>
                                         <div>
                                             <md-input-container class="md-block" flex-gt-sm>
                                                 <label>Name</label>
