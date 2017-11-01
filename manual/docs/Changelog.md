@@ -1,48 +1,39 @@
-## 2017-11-01
+## 2017-11-02 Master [17.11.1]
 
-* Sidebar : add SQL history, add scrollbars
-* Add button - run current query under cursor
-* Add button in tree - reload DataBase Structure
-* Fix not show "OK" on `Create table`
-
-
-## 2017-10-27 Beta
-
+Main:
+* Fix Memory Leak in handsonTable, and refactor many many code : => Size code from 4,3M=>3,3M in vendor , app 507K=>240K
+* Transform table : Transpose
+* Add: parse error text and move cursor to error
 * `with totals` render in table result
+* Sidebar : add SQL history with scrollbars
 * Add variables editor, and parser in sql : `$var` | `:var` | `{var}` , vars in autocomplite
 * Add snippets editor, snippets in  autocomplite
-* Resizable double click
+* Add PlotLy 3D charts [[https://tabix.io/doc/draw/Draw_Plotly/]]
+* Login form : add checkbox - "HTTP Base auth" and "RO user ClickHouse"
+* Highlight "inf"+"nan" values in table
+* `Draw_Chart { xAxis:'number',yAxis:['s','c'] }`
+* Resizable double click - change size
+
+
+Other :
+* Drop Settings page in editor, move to `TAB:Preference`
+* Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
+* Add button - run current query under cursor
+* Add button in tree - reload DataBase Structure
+* Add settings - max_execution_time
+* Force set `output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1`
+* Button - "Reload database structure"
+
+
+Fix:
+* Fix not show "OK" on `Create table`
 * Fix Int64 render
 * Change tab in editor - save current session
-* Transform table : Transpose
-
-RU :
-
-* DoubleClick на ресайзерах - свернуть область или вернуть область
-* "Снипеты" - Code Snippet
-* Database structure TTL Cache, кэш должен протухать
-* При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
-* Transform table : Transpose, поворот таблицы
-
-## 2017-10-13 Beta
-
-* Update beta build 
-* beta.doc hosted  [[https://tabix.io/beta.doc/]]
-* Add PlotLy 3D charts [[https://tabix.io/beta.doc/draw/Draw_Plotly/]]
-* Fix - for new user not show editor 
+* Fix - for new user not show editor
 * Fix - DRAW not show all data on timestamp
 * Rewrite menu bar - minimal watchers
 * Rewrite angular-aceJS components - minimal watchers
-
-
-## 2017-10-06 Beta
-
-* Fix Memory Leak in handsontable, and refactor code in widget 
-* Add: parse error text and move cursor to error 
 * Fix: exec current query, under cursor (new line error)
-* Add settings - max_execution_time
-* Force set `output_format_json_quote_64bit_integers=0&output_format_json_quote_denormals=1` 
-* Highlight "inf"+"nan" values in table
 * cache Database Structure
 * Refactor code : DatabaseStructure in $root to drop window.global_
 * Refactor code : need class DatabaseStructure, API.Structure.getDatabase()
@@ -52,19 +43,14 @@ RU :
 > + system.dictionaries
 > + system.columns
 * JS:Gulp|Bower|JQuery ... update
-* Button - "Reload database structure"
-* Login form : add checkbox - "HTTP Base auth" and "RO user ClickHouse"
-* Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
-* `Draw_Chart { xAxis:'number',yAxis:['s','c'] }`
-* Drop many code => Size code from 4,3M=>3,3M in vendor , app 507K=>240K
-* Update grid, move to gridstack, fix many error in render table result  
+* Long open "SQL" tab - add async + add perfomance & speed
+* Update grid, move to gridstack, fix many error in render table result
 * Update handsontable to 0.34
-* Drop Settings page in editor, move to `TAB:Preference` 
-* Long open "SQL" tab - add async
 
-RU:
- 
-* Устранена большая утечка памяти, при отрисовки результата 
+
+RU :
+
+* Устранена большая утечка памяти, при отрисовки результата
 * изменен компонент сетка - поправлены ошибки отображения результата в виде таблиц
 * Рендер таблиц обновлен до handsontable to 0.34
 * Парсинг ошибок от CH - перемещение курсора в место ошибки
@@ -72,11 +58,18 @@ RU:
 * Добавлена настройка/ параметра - max_execution_time
 * Отрисовка JSON Int64 поправлена (output_format_json_quote_64bit_integers=0 & output_format_json_quote_denormals=1)
 * В результате - подсвечены элементы  "inf"+"nan"
-* Обновлен код - DatabaseStructure для более быстрого отображение струкутры базы 
-* Добавлено кэширование структуры базы, кэш на 1.5 часа, кнопка сборсить кэш  
+* Обновлен код - DatabaseStructure для более быстрого отображение струкутры базы
+* Добавлено кэширование структуры базы, кэш на 1.5 часа, кнопка сборсить кэш
 * В команде Draw_Chart можно задать точно колонки которые использовать { xAxis:'number',yAxis:['s','c'] }
-* Удален лишний код 
+* Удален лишний код
 * Экспериментально - "HTTP Base auth" + "RO user ClickHouse"
+* При редакировании  переменной или снипитов - автоматически обновлять подсказки
+* Если браузер не Chrome показывать предупреждение
+* DoubleClick на ресайзерах - свернуть область или вернуть область
+* "Снипеты" - Code Snippet
+* Database structure TTL Cache, кэш должен протухать
+* При переключении закладок в sql.js - сохранять результат сессии ( сейчас сохранение только при выполнении запроса )
+* Transform table : Transpose, поворот таблицы
 
 
 ### 2017-08-08

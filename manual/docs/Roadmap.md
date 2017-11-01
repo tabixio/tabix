@@ -6,9 +6,6 @@
 
 #### TODO UI:
 
-* !BETA! - Error on send Create TABLE
-* !BETA! - RightClick on server - reload DS
-
 
 
 * Review database  + Right click - database - overview db?
@@ -37,7 +34,7 @@
 
 * HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 
-* При редакировании [CRUD]  переменной|снипитов - обновлять подсказки
+
 
 * Pivot table by column http://techbrij.com/convert-column-to-row-javascript-array-pivot
 
