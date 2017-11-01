@@ -125,17 +125,7 @@
                     <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
 
                     <!--<div ui-grid="ugrid" ui-grid-resize-columns ui-grid-auto-resize ui-grid-exporter ui-grid-selection class="grid" style="width: 99%"></div>-->
-                    <hot-table
-                        ng-class="{'handsontable-dark': vars.isDark}"
-                        hot-id="hotTableContain"
-                        settings="table.settings"
-                        datarows="table.data"
-                        style="width: 99%;height: 99%"
-                        col-headers="table.colHeaders"
-                        manual-column-resize="true"
-                    >
-                    </hot-table>
-
+                        <draw-widget ng-if="!vars.loading" widget="tablewidget" isdark="tablewidget.isDark" class="widget widget-{{::tablewidget.type}} widget-selector widget-grid-stack-item" events="events"></draw-widget>
 
                 </div>
             </md-tab-body>

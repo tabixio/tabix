@@ -22,7 +22,7 @@
 
 
 
-
+        $scope.tablewidget={};
         $scope.vars = {
             columns: {},
             ugrid:{},
@@ -78,46 +78,13 @@
 
             }
         };
-        $scope.initTableSettings = () => {
 
-            $scope.table = {
-                //
-                //
-                //
-                colHeaders:{
-
-                },
-                data:{
-
-                },
-                settings : {
-                    manualColumnMove: true,
-                    manualColumnResize: true,
-                    autoWrapRow: false,
-                    wordWrap:false,
-                    colWidths: 70,
-
-                    stretchH: 'all',
-                    preventOverflow: 'horizontal',
-                    persistentState:true,
-                    columnSorting: true,
-                    sortIndicator: true,
-                    manualRowResize: true,
-                    viewportColumnRenderingOffset:'auto',
-                    autoColumnSize: {
-                        samplingRatio: 23
-                    }
-                }
-            };
-
-
-        };
         /**
         * Загрузка данных
         */
         $scope.load = ( ) => {
 
-            // console.log($scope.vars.columns);
+            console.warn("LOAD DATA! IN TABLES");
 
             $scope.vars.data = -1;
             API.query( `
@@ -126,26 +93,25 @@
 
 
                 // провайдер CH или API
-                // let provider='ch';
+                let provider='ch';
                 // передаем в
-                // let dp= new DataProvider(data,provider);
-                // new WidgetTable(dp)
+                $scope.tablewidget=new WidgetTable(new DataProvider(data,provider));
 
 
                 // $scope.vars.odata = data.data;
-                let handsontable = API.dataToHandsontable( data );
-                $scope.table.colHeaders=handsontable.colHeaders;
-                $scope.table.settings.columns=handsontable.columns;
-                $scope.table.settings.manualColumnResize=handsontable.columns;
-                $scope.table.data=handsontable.data;
-
-
-                $scope.table.settings.width = '99.9' + Math.floor(100 * Math.random()) + '%';
-                $scope.table.settings.height = '99.9' + Math.floor(100 * Math.random()) + '%';
-
-                // console.info($scope.table);
-
-                $scope.updateHandTable();
+                // let handsontable = API.dataToHandsontable( data );
+                // $scope.table.colHeaders=handsontable.colHeaders;
+                // $scope.table.settings.columns=handsontable.columns;
+                // $scope.table.settings.manualColumnResize=handsontable.columns;
+                // $scope.table.data=handsontable.data;
+                //
+                // //
+                // $scope.table.settings.width = '99.9' + Math.floor(100 * Math.random()) + '%';
+                // $scope.table.settings.height = '99.9' + Math.floor(100 * Math.random()) + '%';
+                //
+                // // console.info($scope.table);
+                //
+                // $scope.updateHandTable();
 
 
                 $scope.vars.loading = false;
@@ -178,7 +144,6 @@
         };
         $scope.init = ( ) => {
             $scope.vars.loading = true;
-            $scope.initTableSettings();
             $scope.vars.createtable = "N/A";
             API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
                 $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
@@ -265,6 +230,7 @@
             * Шаг вперед по данным
             */
         $scope.loadNext = ( ) => {
+            $scope.vars.loading = true;
             $scope.vars.offset += $scope.vars.limit;
             $scope.load( );
         };
@@ -273,7 +239,9 @@
             * Шаг назад по данным
             */
         $scope.loadPrev = ( ) => {
+
             if ( $scope.vars.offset > 0 ) {
+                $scope.vars.loading = true;
                 $scope.vars.offset -= $scope.vars.limit;
                 $scope.load( );
             }
