@@ -45,23 +45,34 @@ $var_name
 
 ## Снипеты 
 
-Часто используемый код, в качестве примера : `event_date=today()` можно сохранить в сниппет и он появляется в автокомплите 
-
-
+Часто используемый код, в качестве примера : `event_date=today()` можно сохранить в сниппет и он появляется в автокомплите
 
 ![Tabix Snippets](https://tabix.io/anime/Snippets.gif)
 
 
 ## Transpose, поворот таблицы
 
+Бывает очень удобно повернуть таблицу у которой очень большое кол-во колонок и мало строк
+
+![Tabix Transpose](https://tabix.io/anime/Transpose.gif)
+
+
 
 ## SQL + With totals
 
+Если в запросе указано `WITH TOTALS` последняя строка в результирующей таблице содержит TOTALS
 
-## Right click в дереве 
+
+![Tabix Transpose](https://tabix.io/anime/withtotals.gif)
+
 
 
 ## Right click в таблице 
+
+Правый клик - открывает меню
+
+![Tabix Right Click Table](https://tabix.io/anime/RightClickTable.gif)
+
 
 
 
@@ -69,8 +80,16 @@ $var_name
 
 Можно указать колонки которые используются для осей
 
+По умолчанию для построения графиков берется за ось X - первая колонка, или колонка формата DateTime
+
+На оси Y откладываются отдельно другие колонки, если встречается колонка типа String, она становится группировочной
+
+Но бывает необходимо построить график только по заданным колонкам:
 
 
+
+
+![Tabix Right Click Table](https://tabix.io/anime/draw_y_x_axis.gif)
  
 
 
