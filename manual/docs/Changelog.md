@@ -1,6 +1,7 @@
 ## 2017-11-02 Master [17.11.1]
 
 Main:
+
 * Fix Memory Leak in handsonTable, and refactor many many code : => Size code from 4,3M=>3,3M in vendor , app 507K=>240K
 * Transform table : Transpose
 * Add: parse error text and move cursor to error
@@ -16,6 +17,7 @@ Main:
 
 
 Other :
+
 * Drop Settings page in editor, move to `TAB:Preference`
 * Right click - tables : add "Insert table name" , "Make sql create :SHOW CREATE TABLE"
 * Add button - run current query under cursor
@@ -26,6 +28,7 @@ Other :
 
 
 Fix:
+
 * Fix not show "OK" on `Create table`
 * Fix Int64 render
 * Change tab in editor - save current session
