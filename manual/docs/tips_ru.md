@@ -98,4 +98,4 @@ $var_name
 
 Экспериментальная разработка - поддержка Plotly для построения 3D
 
-![Tabix 3D ](https://tabix.io/docs/img/plotly_scatter3d_markers.png)
+![Tabix 3D ](https://tabix.io/doc/img/plotly_mesh3d.png)
