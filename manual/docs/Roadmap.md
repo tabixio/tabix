@@ -1,9 +1,3 @@
-* GET http://localhost:3000/bower_components/ace/ext-searchbox.js net::ERR_ABORTED
-* ?Сохранять tab.sql при переключении вкладок
-
-
-
-
 #### TODO UI:
 
 
@@ -42,6 +36,7 @@
 
 
 #### TODO Server:
+* T.Server : Public !
 * T.Server : Class "ReportTools"
 * T.Server : Разбор результата для советов в "WHERE" - Подсказки по полям, и фичам сервера хранит backend
 * T.Server : Задает структуру таблиц ( хотябы названия и типы )  
