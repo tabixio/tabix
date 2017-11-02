@@ -52,7 +52,7 @@
                     icon:this.getIcon(item.type)
                 };
             }
-            console.log('UserVariables',this.vars);
+            // console.log('UserVariables',this.vars);
         };
 
         this.constructor();

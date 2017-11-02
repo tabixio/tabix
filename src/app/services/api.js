@@ -113,7 +113,7 @@
          */
         this.databaseStructure = (call,forceReload) =>{
 
-            console.warn('Call databaseStructure:',forceReload);
+            // console.warn('Call databaseStructure:',forceReload);
 
             if (!forceReload && _DatabaseStructure.isInit()) {
                 return call(_DatabaseStructure);

@@ -21,14 +21,14 @@ SELECT 12345
 
 Можно ввести это все в поле и выполнить разом 
 
+![Tabix multi query](https://tabix.io/anime/MultiQuery.gif)
 
-[[GIF]]
 
 ## Double click
 
 Двойной клик сворачивает панель 
 
-[[GIF]]
+![Tabix multi query](https://tabix.io/anime/DoubleClicks.gif)
 
 ## Переменные 
 

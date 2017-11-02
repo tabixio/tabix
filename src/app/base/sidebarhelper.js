@@ -67,7 +67,7 @@
                         $mdDialog.hide(answer);
                     };
                 },
-                templateUrl: '/app/base/addVarsDialog.html',
+                templateUrl: 'app/base/addVarsDialog.html',
                 parent: angular.element(document.body),
                 targetEvent: ev,
                 clickOutsideToClose:true

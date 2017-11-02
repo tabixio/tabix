@@ -55,7 +55,7 @@
             let ls=localStorageService.get('UserPreference');
 
             this.current=_.merge(DEFAULT,ls);
-            console.log(ls,this.current);
+            // console.log(ls,this.current);
             // merge current + ls
 
 
