@@ -117,25 +117,3 @@ DRAW_PLOTLY {
 ![DRAW_PLOTLY scatter3d](/img/plotly_scatter3d_markers.png)
 
 
-
-### layout 
-
-```js 
-
-layout = {
-  autosize: false,
-  width: 500,
-  height: 500,
-  margin: {
-    l: 50,
-    r: 50,
-    b: 100,
-    t: 100,
-    pad: 4
-  },
-  paper_bgcolor: '#7f7f7f',
-  plot_bgcolor: '#c7c7c7'
-};
-
-
-```
