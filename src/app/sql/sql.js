@@ -1577,6 +1577,7 @@ window.aceJSRules = {
                 let selectSql =  $scope.vars.currentTab.editor.getSelectedText();
                 if (selectSql) {
                     Snippets.add(selectSql);
+                    $scope.aceApply();
                 }
 
             } else if(item == "AutoFormat"){

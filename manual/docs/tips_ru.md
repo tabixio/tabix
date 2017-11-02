@@ -41,7 +41,7 @@ $var_name
 
 ```
 
-[[GIF]]
+![Tabix variables](https://tabix.io/anime/Vars.gif)
 
 ## Снипеты 
 
@@ -49,7 +49,7 @@ $var_name
 
 
 
-[[GIF]]
+![Tabix Snippets](https://tabix.io/anime/Snippets.gif)
 
 
 ## Transpose, поворот таблицы
