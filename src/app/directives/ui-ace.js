@@ -10,57 +10,31 @@ angular.module('ui.ace', [])
     }
     return {
       restrict: 'EA',
-        bindCode: '@?',
+      scope:{
+            onChange:'=?',
+            load:'=?'
+      },
       link: function (scope, elm, attrs) {
-
-        console.log(scope, elm, attrs);
-        /**
-         * Corresponds the uiAceConfig ACE configuration.
-         * @type object
-         */
-        var options = uiAceConfig.ace || {};
-
-        /**
-         * uiAceConfig merged with user options via json in attribute or data binding
-         * @type object
-         */
-        var opts = angular.extend({}, options, scope.$eval(attrs.uiAce));
 
         /**
          * ACE editor
          * @type object
          */
-        var acee = window.ace.edit(elm[0]);
-        var listenerFactory = {
-            onChange: function (callback) {
-                return function (e) {
-                    var newValue = session.getValue();
-
-                    if (ngModel && newValue !== ngModel.$viewValue &&
-                        // HACK make sure to only trigger the apply outside of the
-                        // digest loop 'cause ACE is actually using this callback
-                        // for any text transformation !
-                        !scope.$$phase && !scope.$root.$$phase) {
-                        scope.$evalAsync(function () {
-                            ngModel.$setViewValue(newValue);
-                        });
-                    }
-
-                    // executeUserCallback(callback, e, acee);
-                };
-            }
-
-        };
-
+        let acee = window.ace.edit(elm[0]);
 
         console.time("Ace Load");
-        // console.groupCollapsed("Ace Load");
 
-        opts.onLoad(acee);
-        // if (ngModel) {
-        //     console.warn("Ace+NG_Model");
-        //     acee.session.on('change', onChangeListener);
-        // }
+
+        scope.load(acee);
+
+
+
+        if (scope.onChange) {
+            console.warn("Ace+bind:scope.onChange");
+            acee.session.on('change', function (e) {
+                scope.onChange(acee.session);
+            });
+        }
 
         // console.groupEnd("Ace Load");
         console.timeEnd("Ace Load");

@@ -54,6 +54,9 @@
                 console.log('applyCODE');
 
             };
+            $scope.aceChange=(session)=>{
+                //
+            };
             $scope.aceLoadedEditor=(editor)=>{
                 $scope.editor=editor;
                 console.warn('aceLoadedEditor');
