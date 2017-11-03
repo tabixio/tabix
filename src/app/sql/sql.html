@@ -54,32 +54,27 @@
                         </md-button>
 
 
-                        <!--&lt;!&ndash;<md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<i class="mdi mdi-content-save"></i>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<md-tooltip>Save</md-tooltip>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</md-button>&ndash;&gt;-->
+                        <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
+                            <i class="mdi mdi-content-save"></i>
+                            <md-tooltip>Save</md-tooltip>
+                        </md-button>
 
-                        <!--&lt;!&ndash;<md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<i class="mdi mdi-history"></i>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</md-button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<md-menu-content width="4">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<md-button>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;{{item.name}}&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<md-tooltip>Query log</md-tooltip>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<div class="pull-right">&ndash;&gt;-->
-                                            <!--&lt;!&ndash;<i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>&ndash;&gt;-->
-                                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</md-button>&ndash;&gt;-->
-                                <!--&lt;!&ndash;</md-menu-item>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</md-menu-content>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</md-menu>&ndash;&gt;-->
-
-                        <!--&lt;!&ndash;<md-button class="md-icon-button" ng-click="toggleSidenav('log')" show-if-fullscreen="false" aria-label="log">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<i class="mdi mdi-view-headline"></i>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<md-tooltip>Request's log</md-tooltip>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</md-button>&ndash;&gt;-->
+                        <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
+                            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <i class="mdi mdi-history"></i>
+                            </md-button>
+                            <md-menu-content width="4">
+                                <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
+                                    <md-button>
+                                        {{item.name}}
+                                        <md-tooltip>Query log</md-tooltip>
+                                        <div class="pull-right">
+                                            <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
+                                        </div>
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
 
                         <md-input-container>
                             <md-select ng-model="vars.db" placeholder="Select database">

@@ -1268,6 +1268,8 @@ window.aceJSRules = {
             $scope.vars.currentTab.sql = history.sql;
             $scope.vars.currentTab.originalSql = history.sql;
             $scope.vars.currentTab.name = history.name;
+            $scope.vars.currentTab.editor.setValue(history.sql);
+            $scope.aceApply($scope.vars.currentTab.editor);
         };
 
         /**
