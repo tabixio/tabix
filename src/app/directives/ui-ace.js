@@ -10,8 +10,10 @@ angular.module('ui.ace', [])
     }
     return {
       restrict: 'EA',
+        bindCode: '@?',
       link: function (scope, elm, attrs) {
 
+        console.log(scope, elm, attrs);
         /**
          * Corresponds the uiAceConfig ACE configuration.
          * @type object
@@ -29,11 +31,37 @@ angular.module('ui.ace', [])
          * @type object
          */
         var acee = window.ace.edit(elm[0]);
+        var listenerFactory = {
+            onChange: function (callback) {
+                return function (e) {
+                    var newValue = session.getValue();
+
+                    if (ngModel && newValue !== ngModel.$viewValue &&
+                        // HACK make sure to only trigger the apply outside of the
+                        // digest loop 'cause ACE is actually using this callback
+                        // for any text transformation !
+                        !scope.$$phase && !scope.$root.$$phase) {
+                        scope.$evalAsync(function () {
+                            ngModel.$setViewValue(newValue);
+                        });
+                    }
+
+                    // executeUserCallback(callback, e, acee);
+                };
+            }
+
+        };
+
 
         console.time("Ace Load");
         // console.groupCollapsed("Ace Load");
 
         opts.onLoad(acee);
+        // if (ngModel) {
+        //     console.warn("Ace+NG_Model");
+        //     acee.session.on('change', onChangeListener);
+        // }
+
         // console.groupEnd("Ace Load");
         console.timeEnd("Ace Load");
 
