@@ -35,10 +35,19 @@
         $scope.size=100;
         $scope.w=false;
         $scope.preDashId=0;
+        $scope.codeupdate=(code) => {
+            console.log(code);
+            $scope.code=code;
+            $scope.$applyAsync();
+        };
 
-        function PlotlyEditorController($scope, $mdDialog)
+        function PlotlyEditorController($scope, $mdDialog,$codeupdate)
         {
-            $scope.code='{zzZ:2}';
+
+            // $scope.widget=widget;
+
+
+
             $scope.editor=false;
             $scope.hide = function() {
                 $mdDialog.hide();
@@ -55,7 +64,10 @@
 
             };
             $scope.aceChange=(session)=>{
-                //
+
+
+                $codeupdate(session.getValue());
+
             };
             $scope.aceLoadedEditor=(editor)=>{
                 $scope.editor=editor;
@@ -85,7 +97,7 @@
                 });
 
                 editor.setTheme('ace/theme/cobalt');
-                editor.setValue('{}');
+                // editor.setValue($scope.code);
                 editor.clearSelection();
                 editor.focus();
                 editor.selection.moveTo(0, 0);
@@ -96,11 +108,15 @@
         }
 
         $scope.openEditor = (w) =>{
+            $scope.code='{code:2}';
+
             $mdDialog.show({
                 controller: PlotlyEditorController,
                 templateUrl: 'app/sql/PlotlyEditor.tmpl.html',
                 parent: angular.element(document.body),
-                locals: {w:w}
+                locals:{
+                    '$codeupdate':$scope.codeupdate},
+                // scope: {code: $scope.code,widget:w},
             })
                 .then(function(answer) {
                     $scope.status = 'You said the information was "' + answer + '".';
