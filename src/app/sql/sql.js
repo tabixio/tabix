@@ -527,7 +527,9 @@ window.aceJSRules = {
             // }, []);
             //
             // tab.results.unshift(result);
-            event.stopPropagation();
+            // if (_.isUndefined(event) && _.isObject(event)) {
+            //     event.stopPropagation();
+            // }
             tab.results=[result];
 
 

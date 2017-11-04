@@ -7,6 +7,14 @@
 
             <div class="pull-right top-menu">
 
+                <md-button class="md-warn" aria-label="menu"  ng-click="help()" ng-if="!isChrome">
+                    <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                    Requirements Chrome!
+                    <i class="mdi md-warn mdi-24px mdi-block-helper"></i>
+                </md-button>
+
+
+
                 <md-button aria-label="menu"  ui-sref="sql">
                     <i class="mdi mdi-18px mdi-console" ></i>
                     SQL
