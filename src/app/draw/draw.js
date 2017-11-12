@@ -189,6 +189,24 @@ class DrawBasicChart {
         return this.drawCodeObject.code;
     }
 
+
+    updateCode(codejs) {
+        let drawCommand = this.widget.drawCommnads;
+        if (drawCommand && drawCommand.code) {
+             drawCommand.code=codejs;
+        }
+        console.info("updateCode()",codejs);
+    }
+
+    getCode() {
+        let codeDrawText = false;
+        let drawCommand = this.widget.drawCommnads;
+        if (drawCommand && drawCommand.code) {
+            codeDrawText = drawCommand.code;
+        }
+        return codeDrawText;
+    }
+
     initDrawCodeObject() {
         let drawCommand = this.widget.drawCommnads;
         if (!drawCommand) {

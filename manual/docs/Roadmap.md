@@ -1,6 +1,6 @@
 #### TODO UI:
 
-
+* Int64 problem, детекирование максимального размера и размера таблицы, если OK - делаем преобразование в parseInt()
 
 * Review database  + Right click - database - overview db?
 

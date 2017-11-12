@@ -46,7 +46,7 @@ class WidgetDraw extends Widget {
                 this.sizeY = 2;
             }
 
-console.info("this.data.countAll",this.data.countAll);
+// console.info("this.data.countAll",this.data.countAll);
             if (this.data.countAll == 1) {
                 // результат толкьо одна отпра
                 this.sizeX = 12;
