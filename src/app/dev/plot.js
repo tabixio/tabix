@@ -30,7 +30,11 @@
             dashInits:{},
 
         };
-        $scope.code='{   }';
+        $scope.code=`{
+trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
+trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
+}
+`;
         //
         //
         // $scope.codeupdate=(code) => {
