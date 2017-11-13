@@ -1,3 +1,7 @@
+## 2017-11-13 Master [17.11.1]
+
+* Fix echarts error if empty "median"
+
 ## 2017-11-02 Master [17.11.1]
 
 Main:
