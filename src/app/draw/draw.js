@@ -190,12 +190,30 @@ class DrawBasicChart {
     }
 
 
-    updateCode(codejs) {
+    updateCode(codejs,showErrors) {
         let drawCommand = this.widget.drawCommnads;
         if (drawCommand && drawCommand.code) {
-             drawCommand.code=codejs;
+
+            try{
+                let data={};
+                let code = '(' + codejs + ')';
+                let obj = eval(code);
+                if (_.isObject(obj))
+                {
+                    console.info("Apply code",codejs);
+                    drawCommand.code=codejs;
+                    this.applyCode();
+
+                }
+            } catch (E) {
+                if (showErrors) console.error('error eval ',codejs, E);
+            }
+
+
         }
-        console.info("updateCode()",codejs);
+
+
+
     }
 
     getCode() {
@@ -249,21 +267,6 @@ class DrawBasicChart {
             return draw;
         }
 
-        // @todo : optimize
-
-        let data={};
-
-        let columns=this.getColumns();
-        let len = this.data().length;
-        for (let index = 0; index < len; ++index) {
-            let item=this.data()[index];
-            for ( let colPos in columns) {
-                let col = columns[colPos];
-
-                if (!data[col]) data[col]=[];
-                data[col].push(item[col]);
-            }
-        }
 
 
         // console.log("DATA::::",data);

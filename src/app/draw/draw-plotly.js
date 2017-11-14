@@ -12,6 +12,7 @@ class DrawPlotly extends DrawBasicChart {
         this.library = 'plotly';
         this.chart=null;
         this.setWidgetSize(6,3);
+        this._datajs=false;
     }
 
     onResize() {
@@ -68,15 +69,53 @@ class DrawPlotly extends DrawBasicChart {
     editor() {
         console.info("editoreditoreditor");
     }
-    create() {
-        let drw = this.getDrawCommandObject();
 
-        console.warn("CREATE DrawPlotly",drw);
+    getDataForCodeJS() {
+        // @todo : optimize
+
+        if (this._datajs) return this._datajs;
+        let data={};
+        let columns=this.getColumns();
+        let len = this.data().length;
+        for (let index = 0; index < len; ++index) {
+            let item=this.data()[index];
+            for ( let colPos in columns) {
+                let col = columns[colPos];
+
+                if (!data[col]) data[col]=[];
+                data[col].push(item[col]);
+            }
+        }
+        this._datajs=data;
+    }
+    applyCode() {
+
+
+        try {
+
+            let codeJS = this.getCode();
+            let data = this.getDataForCodeJS();
+
+            codeJS = '(' + codeJS + ')';
+            let obj = eval(codeJS);
+
+            if (_.isObject(obj)) {
+                this.applyObject(obj);
+            }
+
+        } catch (E) {
+
+        }
+
+    }
+
+    applyObject(drw) {
 
         let ll={
             data:[],
             layout:{}
         };
+
         if (_.isObject(drw))
         {
 
@@ -89,7 +128,6 @@ class DrawPlotly extends DrawBasicChart {
 
         }
         console.info(ll);
-
 
         let xll=[
             {
@@ -120,74 +158,78 @@ class DrawPlotly extends DrawBasicChart {
         this.layout.width=w;
 
 
-        this.plotly = Plotly.plot(this.getElement(),ll.data,this.layout,settings);
+        this.layout=Object.assign(this.layout,this.getDarkThemeLayout());
+
+
+        if (this.plotly)
+        {
+            console.info("UPDATE!");
+            this.plotly=Plotly.newPlot(this.getElement(),ll.data,this.layout,settings);
+        }
+        else {
+            //
+            this.plotly=Plotly.newPlot(this.getElement(),ll.data,this.layout,settings);
+
+        }
+
+    }
+
+
+    create() {
+        this.applyObject(
+            this.getDrawCommandObject()
+        );
+
         return true;
     }
-    applyDarkTheme() {
+    getDarkThemeLayout() {
 
-    // # Dark Quantmod theme
-    //         colors = dict(
-    //             increasing = '#00FF00',
-    //             decreasing = '#FF9900',
-    //             border_increasing = DARK_PALETTE['grey95'],
-    //             border_decreasing = DARK_PALETTE['grey95'],
-    //             primary = '#11AAEE',
-    //             secondary = '#0084FF',
-    //             tertiary = '#FC0D1B',
-    //             quaternary = '#00FF00',
-    //             grey = DARK_PALETTE['grey75'],
-    //             grey_light = DARK_PALETTE['grey85'],
-    //             grey_strong = DARK_PALETTE['grey60'],
-    //             fill = DARK_PALETTE['grey90'],
-    //             fill_light = DARK_PALETTE['grey95'],
-    //             fill_strong = DARK_PALETTE['grey85'],
-    //         ),
-    //
-    //         traces = dict(
-    //             line_thin = dict(width = 1,),
-    //             line_thick = dict(width = 4,),
-    //             line_dashed = dict(dash = 5,),
-    //             line_dashed_thin = dict(dash = 5, width = 1,),
-    //             line_dashed_thick = dict(dash = 5, width = 4,),
-    //             area_dashed = dict(dash = 5,),
-    //             area_dashed_thin = dict(dash = 5, width = 1,),
-    //             area_dashed_thick = dict(dash = 5, width = 4,),
-    //         ),
-    //
-    //         additions = dict(
-    //             xaxis = dict(
-    //                 color = '#999999',
-    //                 tickfont = dict(color = '#CCCCCC',),
-    //                 rangeslider = dict(
-    //                     bordercolor = '#444444',
-    //                     bgcolor = '#444444',
-    //                     thickness = 0.1,
-    //                 ),
-    //                 rangeselector = dict(
-    //                     bordercolor = '#444444',
-    //                     bgcolor = '#444444',
-    //                     activecolor = '#666666',
-    //                 ),
-    //             ),
-    //             yaxis = dict(
-    //                 color = '#999999',
-    //                 tickfont = dict(color = '#CCCCCC',),
-    //                 side = 'left',
-    //             ),
-    //         ),
-    //
-    //         layout = dict(
-    //             font = dict(
-    //                 family = 'droid sans mono',
-    //                 size = 12,
-    //                 color = '#CCCCCC',
-    //             ),
-    //             plot_bgcolor = '#252525',
-    //             paper_bgcolor = '#202020',
-    //             legend = dict(
-    //                 bgcolor = DARK_PALETTE['transparent'],
-    //             ),
-    //         ),
+        if (!this.isDark()) return {};
+        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/themes.py
+        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/palettes.py
+
+        return {
+           layout:{
+               // autosize:true,
+               font:{'color':'eee','family':'Menlo'},
+               plot_bgcolor:'#333',
+               paper_bgcolor:'#333',
+               legend:{bgcolor:'#333'},
+           },
+           colors:{
+               increasing:'#00FF00',
+               decreasing:'#FF9900',
+               border_increasing:'rgba(255, 255, 255, 0.05)',
+               border_decreasing:'rgba(255, 255, 255, 0.05)',
+               primary :'#11AAEE',
+               secondary : '#0084FF',
+               tertiary : '#FC0D1B',
+               quaternary : '#00FF00',
+               grey:'rgba(255, 255, 255, 0.25)',
+               grey_light:'rgba(255, 255, 255, 0.15)',
+               grey_strong:'rgba(255, 255, 255, 0.40)',
+               fill:'rgba(255, 255, 255, 0.10)',
+               fill_light:'rgba(255, 255, 255, 0.05)',
+               fill_strong:'rgba(255, 255, 255, 0.15)'
+           },
+
+           additions:{
+                xaxis:{
+                    color:'#333',
+                    tickfont:'#CCC',
+                    //                 rangeslider = dict(
+                    //                     bordercolor = '#444444',
+                    //                     bgcolor = '#444444',
+                    //                     thickness = 0.1,
+                    //                 ),
+                    //                 rangeselector = dict(
+                    //                     bordercolor = '#444444',
+                    //                     bgcolor = '#444444',
+                    //                     activecolor = '#666666',
+                    //                 ),
+                }
+           },
+       };// o
 
 
 
