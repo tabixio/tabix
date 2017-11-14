@@ -302,12 +302,12 @@ class DrawEchartsChart extends DrawEcharts {
                 seria.barCategoryGap = '40%';
             }
 
-            if (sets.markLine) {
+            if (sets.markLine && parseFloat(mediana)) {
                 seria.markLine = {
                     data: [
                         {
                             name: 'mediana',
-                            yAxis: mediana,
+                            yAxis: parseFloat(mediana),
                         },
                     ]
                 };
