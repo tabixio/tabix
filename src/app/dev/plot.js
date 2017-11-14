@@ -30,27 +30,14 @@
             dashInits:{},
 
         };
+
         $scope.code=`{
 trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
 trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
 }
 `;
-        //
-        //
-        // $scope.codeupdate=(code) => {
-        //     console.log(code);
-        //     $scope.code=code;
-        //     $scope.$applyAsync();
-        // };
 
-        function PlotlyEditorController($scope, $mdDialog,$widget)
-        {
-            $scope.code='';
 
-            $scope.editor=false;
-            $scope.hide = function() {
-                $mdDialog.hide();
-            };
 
 
         function PlotlyEditorController(mdPanelRef,$widget)
@@ -113,10 +100,6 @@ trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
                 });
             };
         }
-
-        $scope.odsx=()=>{
-            console.info("odsx");
-        };
 
         $scope.openEditor = (w) =>{
             let position = $mdPanel.newPanelPosition() .absolute() .right()  .top();
