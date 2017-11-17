@@ -30,22 +30,22 @@
             dashInits:{},
 
         };
-
-        $scope.code=`{
-trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
-trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
-}
-`;
-
-
-
-
+//
+//         $scope.code=`{
+// trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
+// trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
+// }
+// `;
+//
+//
+//
+//
+        $scope.code=' {  } ';
         function PlotlyEditorController(mdPanelRef,$widget)
         {
 
 
             this.close=function() {
-                console.warn("Click close",$widget);
                 if (mdPanelRef) mdPanelRef.close();
             };
             this.getInitCode=()=>{
