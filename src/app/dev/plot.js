@@ -8,13 +8,13 @@
         'ThemeService',
         '$interval',
         'localStorageService',
-        '$mdDialog',
+        '$mdPanel',
         '$window',
         'hotRegisterer'
     ];
 
 
-    function devplotController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,$window,hotRegisterer) {
+    function devplotController($scope, API, ThemeService, $interval, localStorageService,$mdPanel,$window,hotRegisterer) {
 
         $scope.w=false;
         $scope.vars = {
@@ -30,51 +30,38 @@
             dashInits:{},
 
         };
-        $scope.code=`{
-trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
-trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
-}
-`;
-        //
-        //
-        // $scope.codeupdate=(code) => {
-        //     console.log(code);
-        //     $scope.code=code;
-        //     $scope.$applyAsync();
-        // };
-
-        function PlotlyEditorController($scope, $mdDialog,$widget)
+//
+//         $scope.code=`{
+// trace:{x:data.number,y:data.s,type:'scatter',name:'sin()'},
+// trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
+// }
+// `;
+//
+//
+//
+//
+        $scope.code=' {  } ';
+        function PlotlyEditorController(mdPanelRef,$widget)
         {
-            $scope.code='';
 
-            $scope.editor=false;
-            $scope.hide = function() {
-                $mdDialog.hide();
+
+            this.close=function() {
+                if (mdPanelRef) mdPanelRef.close();
             };
-
-            $scope.cancel = function() {
-                $mdDialog.cancel();
-            };
-
-
-
-            $scope.getInitCode=()=>{
+            this.getInitCode=()=>{
                 return $widget.getCode();
             };
-            $scope.applyCode=()=>{
-                $widget.updateCode($scope.code);
+            this.applyCode=(code)=>{
+                $widget.updateCode(code);
             };
-
-
-            $scope.aceChange=(session)=>{
-                $scope.code=session.getValue();
-                $scope.applyCode();
-                // $codeupdate();
+            this.aceChange=(session)=>{
+                this.code=session.getValue();
+                this.applyCode(this.code);
             };
-
-
-            $scope.aceLoadedEditor=(editor)=>{
-                $scope.editor=editor;
+            this.code='';
+            this.editor=false;
+            this.aceLoadedEditor=(editor)=>{
+                this.editor=editor;
                 console.warn('aceLoadedEditor');
                 editor.$blockScrolling = Infinity;
                 editor.session.setUseWrapMode(true);
@@ -102,9 +89,9 @@ trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
 
                 editor.setTheme('ace/theme/cobalt');
 
-                $scope.code=$scope.getInitCode();
+                this.code=this.getInitCode();
 
-                editor.setValue($scope.code);
+                editor.setValue(this.code);
                 editor.clearSelection();
                 editor.focus();
                 editor.selection.moveTo(0, 0);
@@ -115,23 +102,23 @@ trace1:{x:data.number,y:data.c,type:'scatter',name:'cos()'}
         }
 
         $scope.openEditor = (w) =>{
-
-            $mdDialog.show({
+            let position = $mdPanel.newPanelPosition() .absolute() .right()  .top();
+            $mdPanel.open({
                 controller: PlotlyEditorController,
                 templateUrl: 'app/sql/PlotlyEditor.tmpl.html',
-                parent: angular.element(document.body),
+                attachTo: angular.element(document.body),
+                position:position,
+                panelClass: 'demo-dialog-example',
+                trapFocus: true,
+                zIndex: 150,
+                clickOutsideToClose: true,
+                clickEscapeToClose: true,
+                hasBackdrop: true,
+                controllerAs: 'ctrl',
                 locals:{
                     '$widget':w
-                    // ,
-                    // '$codeupdate':$scope.codeupdate
                 },
-            })
-                .then(function(answer) {
-                    $scope.status = 'You said the information was "' + answer + '".';
-                }, function() {
-                    $scope.status = 'You cancelled the dialog.';
-                });
-
+            });
 
         };
 

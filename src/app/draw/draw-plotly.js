@@ -32,32 +32,20 @@ class DrawPlotly extends DrawBasicChart {
 
     preProcessor() {
 
-        // <script src=""></script>
-        if (this.initChartByJsCode()) {
-        }
-        else {
-
-        }
+        this.init = this.create();
 
         if (this.getError()) {
             console.error(this.getError());
-
             this.chart.before("<p>" + this.getError() + "</p>");
-
+            this.init=false;
             return false;
         }
-
-
-        if (this.isDark()) {
-            // this.options.backgroundColor = '#404a59';
-            // drw.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
-        }
-        // log
-        this.init = this.create();
-
         console.info('preProcessor', this.init);
     }
-
+    initDrawCodeObject()
+    {
+        return false;
+    }
 
     getElement(){
         return this.widget.element[0];
@@ -94,8 +82,11 @@ class DrawPlotly extends DrawBasicChart {
         try {
 
             let codeJS = this.getCode();
-            let data = this.getDataForCodeJS();
 
+            console.info("applyCode",codeJS);
+
+            let data = this.getDataForCodeJS();
+            console.log(data);
             codeJS = '(' + codeJS + ')';
             let obj = eval(codeJS);
 
@@ -104,9 +95,21 @@ class DrawPlotly extends DrawBasicChart {
             }
 
         } catch (E) {
+            console.log(E);
 
         }
 
+    }
+    applyLayout(layout)
+    {
+        this.layout=layout;
+        let h=this.widget.getSizeElementHeight();
+        let w=this.widget.getSizeElementWidth();
+        this.layout.height=h;
+        this.layout.width=w;
+
+
+        this.layout=Object.assign(this.layout,this.getDarkThemeLayout());
     }
 
     applyObject(drw) {
@@ -150,16 +153,8 @@ class DrawPlotly extends DrawBasicChart {
             // }]
         };
 
-        this.layout=ll.layout;
 
-        let h=this.widget.getSizeElementHeight();
-        let w=this.widget.getSizeElementWidth();
-        this.layout.height=h;
-        this.layout.width=w;
-
-
-        this.layout=Object.assign(this.layout,this.getDarkThemeLayout());
-
+        this.applyLayout(ll.layout);
 
         if (this.plotly)
         {
@@ -173,12 +168,23 @@ class DrawPlotly extends DrawBasicChart {
         }
 
     }
-
+    makeAutoDraw()
+    {
+        console.info("<<<<<<< makeAutoDraw >>>>>>>>>>");
+    }
 
     create() {
-        this.applyObject(
-            this.getDrawCommandObject()
-        );
+        if (this.getCode())
+        {
+            // draw_command have JS code
+            this.applyCode();
+        } else
+        {
+            // auto-create, is empty code
+            // make auto draw
+            this.makeAutoDraw();
+        }
+
 
         return true;
     }

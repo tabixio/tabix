@@ -222,6 +222,7 @@ class DrawBasicChart {
         if (drawCommand && drawCommand.code) {
             codeDrawText = drawCommand.code;
         }
+        if ( codeDrawText.length<5 ) return false;
         return codeDrawText;
     }
 
