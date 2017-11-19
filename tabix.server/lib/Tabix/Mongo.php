@@ -34,6 +34,12 @@ class Mongo
 
     }
 
+    public function initCreateMongoDataBase()
+    {
+        \Tabix\Initialization::createMongo($this->__connect,$this->_config);
+    }
+
+
     /**
      * @return \MongoDB\Client
      */
@@ -46,7 +52,7 @@ class Mongo
     {
 
         $signKey=$this->_config->getQuerySignkey();
-        $collention=$this->client()->queryes;
+        $collection=$this->client()->queryes;
 
 
         $insert=$q->toArray();
