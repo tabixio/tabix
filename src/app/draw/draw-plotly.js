@@ -102,6 +102,7 @@ class DrawPlotly extends DrawBasicChart {
     }
     applyLayout(layout)
     {
+        console.info("<<<<<<< applyLayout >>>>>>>>>>");
         this.layout=layout;
         let h=this.widget.getSizeElementHeight();
         let w=this.widget.getSizeElementWidth();

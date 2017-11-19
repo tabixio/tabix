@@ -9,7 +9,7 @@ function flog($obj,$message='')
 function dump($obj)
 {
     header('Content-Type: application/json');
-    die("DUMP:".json_encode($obj));
+    die("DUMP:".json_encode($obj,JSON_PRETTY_PRINT));
 }
 
 include_once '../lib/inc.php';

@@ -16,6 +16,11 @@ class Mongo
      * @var \MongoDB\Client
      */
     private $__connect;
+
+    /**
+     * @var \MongoDB\Database
+     */
+    private $__db;
     public function __construct(ConfigProvider $configProvider,User $user)
     {
         $this->_config=$configProvider;
@@ -29,17 +34,27 @@ class Mongo
     {
 
         if (!$this->__connect)
-        $this->__connect=new \MongoDB\Client( $this->_config->getMongoDB('client'));
+        {
+            $this->__connect=new \MongoDB\Client( $this->_config->getMongoDB('client'));
+            $this->__db=$this->__connect->selectDatabase($this->_config->getMongoDB('database'));
+        }
         return $this->__connect;
 
     }
-
     public function initCreateMongoDataBase()
     {
-        \Tabix\Initialization::createMongo($this->__connect,$this->_config);
+//        \Tabix\Initialization::createMongo($this->__connect,$this->_config);
     }
 
 
+    /**
+     * @return \MongoDB\Database
+     */
+    public function db()
+    {
+        if (!$this->__db) $this->connect();
+        return $this->__db;
+    }
     /**
      * @return \MongoDB\Client
      */
@@ -51,25 +66,24 @@ class Mongo
     public function query(\Tabix\Query\Result $q)
     {
 
-        $signKey=$this->_config->getQuerySignkey();
-        $collection=$this->client()->queryes;
 
-
-        $insert=$q->toArray();
-
-        // sizeOf insert[data]
-
+        $insert=[];
+        $insert['db']=$q->toArray();
+        // @todo  sizeOf insert[data]
         $insert['dt']=time();
         $insert['dtm']=microtime(true);
-        $insert['sing']=substr(sha1($signKey.microtime(true).$q->sql().$signKey),0,10);
+        $insert['sign']=$q->getSign();
 
-
-        $collention->insertOne(
-          $insert
-        );
-
-
+        $x=$this->db()->query->insertOne($insert);
+        $q->setQuid($x->getInsertedId());
         return $q;
+    }
+    public function fetch($quid,$sing)
+    {
+        //$quid,$sing
+        return iterator_to_array($this->db()->query->findOne(['_id'=>new \MongoDB\BSON\ObjectId($quid),'sign'=>$sing]));
+
+
     }
     public function listDashboards()
     {

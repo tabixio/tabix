@@ -204,6 +204,16 @@
 
 
 
+            console.info('Size widget',
+                "[ "+
+                scope.widget.x+','+
+                scope.widget.y+' => '+
+                scope.widget.sizeX + ' , '+
+                scope.widget.sizeY+']'
+            );
+
+
+
             // console.groupEnd("drawWidget.buildLinkFunc:"+type);
             console.timeEnd("drawWidget.buildLinkFunc");
         };

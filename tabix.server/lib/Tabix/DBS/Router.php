@@ -140,6 +140,7 @@ class Router
 
         return [];
     }
+
     public function query(Tabix\SQLQuery $SQL,\dotArray $params=null)
     {
         $sid=$this->findRouteServer($SQL,$params);
@@ -151,9 +152,10 @@ class Router
         // ------------------------------------------------------------------------------------------------
         $resultStore=$this->storeToMongo($q);
         // ------------------------------------------------------------------------------------------------
-        $result=$q->data();
+        $result['db']=$q->data();
         $result['tabix']=[];
         $result['tabix']=[
+                'sign'=>$resultStore->getSign(),
                 'qid'=>$resultStore->quid(),
                 'storeResult'=>$resultStore->isStoreResult()
         ];

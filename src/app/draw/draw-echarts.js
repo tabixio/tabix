@@ -102,7 +102,7 @@ class DrawEcharts extends DrawBasicChart {
         }
         this.chart.setOption(this.options);
         // log
-        console.info('preProcessor', this.init, this.options);
+        console.info('preProcessor', this.init, this.options );
     }
 
 

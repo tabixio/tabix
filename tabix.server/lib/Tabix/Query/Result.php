@@ -19,12 +19,16 @@ class Result
     private $server_id;
 
     private $_quid;
+    private $_sing;
     public function __construct($array,\Tabix\SQLQuery $query,\dotArray $params,$server_id)
     {
+//        $signKey=$this->_config->getQuerySignkey();
         $this->data=$array;
         $this->query=$query;
         $this->params=$params;
         $this->server_id=$server_id;
+        // @todo wtf sing?
+        $this->_sing=substr(sha1($server_id.microtime(true).$query.'*'.$server_id),0,10);
     }
     public function sql()
     {
@@ -38,6 +42,14 @@ class Result
     {
         return true;
     }
+    public function getSign()
+    {
+        return $this->_sing;
+    }
+    public function setQuid($quid)
+    {
+        $this->_quid=strval($quid);
+    }
     public function quid()
     {
         return $this->_quid;
@@ -46,11 +58,16 @@ class Result
 
     public function toArray()
     {
+        $p=$this->params->as_array();
+        unset($p['auth']);
         return [
             'sql'=>$this->query->sql(),
-            'params'=>$this->params->as_array(),
+            'params'=>$p,
             'data'=>$this->data(),
-            'server_id'=>$this->server_id
+            'sign'=>$this->getSign(),
+            'server_id'=>$this->server_id,
+            'server_settings'=>[],
+
         ];
     }
 

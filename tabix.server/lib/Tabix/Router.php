@@ -113,6 +113,32 @@ class Router
         return $this->dbs()->describe($path,$this->param());
     }
 
+    public function renderResultInFormat($data,$format)
+    {
+        // $format in (json , tsv , csv )
+
+
+        return [];
+
+    }
+    public function actionFetch()
+    {
+        $quid=$this->param('quid');
+        $sing=$this->param('sign');
+        $format=$this->param('format');
+        $z= $this->mongo()->fetch($quid,$sing);
+
+        if (!is_array($z)) {
+            throw new \Exception('Can`t fecth');
+        }
+
+        if ($format)
+        {
+            return $this->renderResultInFormat($z['db']['data'],$format);
+        }
+
+        return $z;
+    }
 
     public function actionDashboards($param=false,$value=false)
     {
@@ -147,7 +173,7 @@ class Router
         }
 
         if (stripos($query,'%TABIX_CHECK_LOGIN%')) {
-            return ["meta"=>"1","data"=>["%TABIX_CHECK_LOGIN%"],'tabix'=>[]];
+            return ['db'=>["meta"=>"1","data"=>["%TABIX_CHECK_LOGIN%"],'tabix'=>[]]];
         }
 
         $q=new SQLQuery($query);

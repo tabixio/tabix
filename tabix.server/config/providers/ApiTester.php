@@ -1,4 +1,5 @@
 <?php
+define('CONFIG_ID','ApiTester');
 return [
 
 
@@ -27,7 +28,8 @@ return [
 
 'mongodb'=>
     [
-        'client'=>"mongodb://localhost:27017"
+        'client'=>"mongodb://tabix.dev7:27017",
+        'database'=>"tabix_".CONFIG_ID
     ],
 'auth'=>[
             'type'=>'plaintext',
