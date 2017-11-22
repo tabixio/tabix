@@ -1,3 +1,10 @@
+## 2017-11-13 Master [17.11.2]
+
+* Fix `WITH 1+1 as a SELECT a`
+* Fix AutoFormat error
+* Disable RO User
+* Fix highlight `RENAME TABLE`
+
 ## 2017-11-13 Master [17.11.1]
 
 * Fix echarts error if empty "median"
