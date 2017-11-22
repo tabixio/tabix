@@ -1,5 +1,7 @@
 #### TODO UI:
 
+* Отрисовка кластера : узлы и реплики, подсветка основных параметров узлов
+
 * Int64 problem, детекирование максимального размера и размера таблицы, если OK - делаем преобразование в parseInt()
 
 * Review database  + Right click - database - overview db?
@@ -7,8 +9,6 @@
 * Parse "LIMIT" and button `loadMore`
 
 * Parse cursor position - then click on fields  
-
-* Fix old grid in "metrix"
 
 * Chart editor
 
@@ -28,7 +28,7 @@
 
 * HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
 
-
+* Дашборд : связанные таблицы через колонку, выбор в верхней устанавливает переменные
 
 * Pivot table by column http://techbrij.com/convert-column-to-row-javascript-array-pivot
 
