@@ -255,7 +255,7 @@ class DrawBasicChart {
 
 
             let code = '(' + codeDrawText + ')';
-            console.log("CODE>>>",code);
+            // console.log("CODE>>>",code);
             let obj = eval(code);
             // console.log("Result>>>",obj);
             let type = typeof obj;
