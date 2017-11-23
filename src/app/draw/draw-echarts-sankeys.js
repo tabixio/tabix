@@ -35,7 +35,6 @@ class DrawEchartsSunkeys extends DrawEcharts {
             path=drw;
         }
         else {
-
             // ишем path
             if (sets['path']) {
                 path = sets['path'];
@@ -169,11 +168,11 @@ class DrawEchartsSunkeys extends DrawEcharts {
             _.set(option.series[0],'label.normal.textStyle.color','white');
         }
 
-         option = Object.assign(option, this.options);
+        option = Object.assign(option, this.options);
 
-        console.log(option);
+        console.log('option',option );
 
-        // this.options=option;
+        this.options=option;
         return true;
 
     }

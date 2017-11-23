@@ -657,7 +657,7 @@ window.aceJSRules = {
                     if (keyword.hasOwnProperty('value')) {
                         _keyword = keyword.value;
                     }
-                    if (_keyword !== 'select') {
+                    if (!(_keyword == 'select' || _keyword == 'with')) {
                         _format = false;
                         _format_seted = false;
                     }
@@ -1572,7 +1572,7 @@ window.aceJSRules = {
 
         //gets triggered when an item in the context menu is selected
         $scope.rightMenuProcess = function(item){
-
+            $scope.vars.currentTab.sql = $scope.vars.currentTab.editor.getValue();
             let session=$scope.vars.currentTab.editor.session;
 
             $scope.vars.currentTab.editor.resize();
