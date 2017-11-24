@@ -123,6 +123,7 @@ class DrawPlotly extends DrawBasicChart {
         if (_.isObject(drw))
         {
 
+            if( _.isObject(drw.data))  { ll.data=drw.data;}
             if( _.isObject(drw.trace))  { ll.data.push(drw.trace);}
             if( _.isObject(drw.trace1)) { ll.data.push(drw.trace1);}
             if( _.isObject(drw.trace2)) { ll.data.push(drw.trace2);}
@@ -132,15 +133,6 @@ class DrawPlotly extends DrawBasicChart {
 
         }
         console.info(ll);
-
-        let xll=[
-            {
-                x:[1,2],
-                y:[1,2],
-                type:'bar'
-            }
-        ];
-        console.log("CONS:",xll);
         console.log("llll:",ll);
 
         let settings={
@@ -172,7 +164,183 @@ class DrawPlotly extends DrawBasicChart {
     makeAutoDraw()
     {
         console.info("<<<<<<< makeAutoDraw >>>>>>>>>>");
-    }
+        let sets = {
+            autoAxis: false,
+            markLine: true,
+            stack: false,
+            path: false,
+            sort: true,
+            xAxis: false,
+            yAxis: false
+        };
+
+        let enableColumns = {};
+        let columns = this.getColumns();
+        let firstCol = this.getFirstColumn();
+        let xAxisCol = firstCol;
+        let dtCol = this.findDateTimeAxis();
+
+        let $data = this.data();
+
+        if (dtCol) {
+            firstCol = dtCol;
+        }
+
+        // Если указана ось X
+        if (false && sets.xAxis) {
+            if (!this.haveColumn(sets.xAxis)) {
+                throw "xAxis column not exists";
+            }
+            xAxisCol = sets.xAxis;
+        }
+        else {
+            // Отсортируем данные
+            if (sets.sort) {
+                $data = _.sortBy($data, firstCol);
+            }
+            // Берем первую колонку
+            xAxisCol = firstCol;
+
+        }
+
+        // ------------------------------------------------------------------------------------------------------------------------------------
+        let cntStrAdd = 0;
+        let path =[];
+        let colValues = [];
+        for (let colPos in columns) {
+            // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+            let col = columns[colPos];
+
+            let skip = false;
+
+            if (_.size(enableColumns)) {
+                skip = _.isUndefined(enableColumns[col]);
+            }
+
+            if (col != xAxisCol && !skip) {
+                if (this.isStringColumn(col) && cntStrAdd < 2 && !groupPath) {
+                    // Автопуть - автоматические создание групп если вторая и/или третья колонка строки
+                    if (!_.isArray(path)) {
+                        path = [];
+                    }
+
+                    path.push(col);
+                    cntStrAdd++;
+                }
+                else {
+                    if (this.isNumericColumn(col)) {
+                        colValues.push(col);
+                    }
+                }
+            }
+        }
+        // ------------------------------------------------------------------------------------------------------------------------------------
+
+        // ------------------------------------------------------------------------------------------------------------------------------------
+        let len = $data.length;
+        let index=0;
+        let xAxisData=[];
+        let series = [];
+        let $series = {};
+
+        console.log("DATA LEN", len, $data);
+
+        // выбираем только уникальные значения для оси }{
+        for (index = 0; index < len; ++index) {
+            let item = $data[index];
+            xAxisData.push(item[xAxisCol]);
+        }
+        xAxisData = _.uniq(xAxisData);
+
+
+        for (index = 0; index < len; ++index) {
+            let item = $data[index];
+            // xAxis[0].data.push(item[xAxis[0].name]);
+
+            for (let colPos in columns) {
+                // Идем по каждой колонке, если она не нужна для постореняи оси, или она числовая - доавляем ее в series
+                let col = columns[colPos];
+                let series_path = [xAxisCol];
+                let skip = false;
+
+                if (_.size(enableColumns)) {
+                    skip = _.isUndefined(enableColumns[col]);
+                }
+
+
+                if (col !== xAxisCol && !skip && this.isNumericColumn(col) && _.findIndex(path, col) < 0) {
+                    if (path) {
+
+                        for (let pi = 0; pi < path.length; ++pi) {
+                            let cc = path[pi];
+                            series_path.push(item[cc]);
+                        }
+                    }
+                    series_path.push(col);
+                    series_path = series_path.join(':___:');
+
+                    if (!$series[series_path]) {
+                        $series[series_path] = new Map();
+
+                        xAxisData.forEach(function (x) {
+                            $series[series_path].set(x, null);
+                        });
+
+                    }
+                    let __val = item[col];
+                    if (this.isNumericColumn(col)) {
+                        __val = parseFloat(__val);
+                    }
+
+                    // console.log('item[firstCol]=',item[firstCol],__val);
+                    $series[series_path].set(item[xAxisCol], __val);
+                }
+            }// for columns
+        } // for $data
+
+
+
+        // ---------
+        // ---------
+        // ---------
+        let plotlyDataObject=[];
+
+
+        // ---------
+        // ---------
+
+        for (let seriaName in $series) {
+            let yAxisIndex = 0;
+            let showSeriaName = '';
+            showSeriaName = seriaName.replace(/:___:/g, ':');
+            // Fetch data from Map()
+            let dataThisColumn = Array.from($series[seriaName].values());
+
+
+
+            plotlyDataObject.push({
+                x:xAxisData,
+                y:dataThisColumn,
+                type: 'scatter'
+            });
+            //
+            // let seria = {
+            //     name: showSeriaName,
+            //     type: 'line',
+            //     symbolSize: 8,
+            //     hoverAnimation: false,
+            //     smooth: true,
+            //     //yAxisIndex:yAxisIndex
+            //     data: dataThisColumn
+            // };
+        }
+        console.warn('plotlyDataObject',plotlyDataObject);
+
+        return {
+            data:plotlyDataObject
+        };
+
+        }
 
     create() {
         if (this.getCode())
@@ -183,7 +351,9 @@ class DrawPlotly extends DrawBasicChart {
         {
             // auto-create, is empty code
             // make auto draw
-            this.makeAutoDraw();
+            this.applyObject(
+                this.makeAutoDraw()
+            );
         }
 
 

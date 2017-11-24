@@ -167,6 +167,21 @@ class DrawBasicChart {
 
     }
 
+
+    findDateTimeAxis() {
+        // Автоматическое определение
+        let dt = this.getDateTimeColumn();
+        if (dt) {
+            return dt;
+        }
+
+        let d = this.getDateColumn();
+        if (d) {
+            return d;
+        }
+        return false;
+    }
+
     getColumns(position) {
         let list=_.map(this.meta(),'name');
         if (!_.isUndefined(position)) {
