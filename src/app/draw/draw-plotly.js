@@ -102,7 +102,7 @@ class DrawPlotly extends DrawBasicChart {
     }
     applyLayout(layout)
     {
-        console.info("<<<<<<< applyLayout >>>>>>>>>>");
+        console.info("<<<<<<< applyLayout >>>>>>>>>>",layout);
         this.layout=layout;
         let h=this.widget.getSizeElementHeight();
         let w=this.widget.getSizeElementWidth();
@@ -145,10 +145,12 @@ class DrawPlotly extends DrawBasicChart {
             //     }
             // }]
         };
+        settings=this.getDarkThemeSettings();
 
 
         this.applyLayout(ll.layout);
 
+        console.warn('this.layout',this.layout);
         if (this.plotly)
         {
             console.info("UPDATE!");
@@ -321,7 +323,8 @@ class DrawPlotly extends DrawBasicChart {
             plotlyDataObject.push({
                 x:xAxisData,
                 y:dataThisColumn,
-                type: 'scatter'
+                type: 'scatter',
+                name:showSeriaName
             });
             //
             // let seria = {
@@ -359,41 +362,32 @@ class DrawPlotly extends DrawBasicChart {
 
         return true;
     }
-    getDarkThemeLayout() {
 
+    getDarkThemeSettings()
+    {
         if (!this.isDark()) return {};
-        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/themes.py
-        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/palettes.py
-
         return {
-           layout:{
-               // autosize:true,
-               font:{'color':'eee','family':'Menlo'},
-               plot_bgcolor:'#333',
-               paper_bgcolor:'#333',
-               legend:{bgcolor:'#333'},
-           },
-           colors:{
-               increasing:'#00FF00',
-               decreasing:'#FF9900',
-               border_increasing:'rgba(255, 255, 255, 0.05)',
-               border_decreasing:'rgba(255, 255, 255, 0.05)',
-               primary :'#11AAEE',
-               secondary : '#0084FF',
-               tertiary : '#FC0D1B',
-               quaternary : '#00FF00',
-               grey:'rgba(255, 255, 255, 0.25)',
-               grey_light:'rgba(255, 255, 255, 0.15)',
-               grey_strong:'rgba(255, 255, 255, 0.40)',
-               fill:'rgba(255, 255, 255, 0.10)',
-               fill_light:'rgba(255, 255, 255, 0.05)',
-               fill_strong:'rgba(255, 255, 255, 0.15)'
-           },
+            colors:{
+                increasing:'#00FF00',
+                decreasing:'#FF9900',
+                border_increasing:'rgba(255, 255, 255, 0.05)',
+                border_decreasing:'rgba(255, 255, 255, 0.05)',
+                primary :'#11AAEE',
+                secondary : '#0084FF',
+                tertiary : '#FC0D1B',
+                quaternary : '#00FF00',
+                grey:'rgba(255, 255, 255, 0.25)',
+                grey_light:'rgba(255, 255, 255, 0.15)',
+                grey_strong:'rgba(255, 255, 255, 0.40)',
+                fill:'rgba(255, 255, 255, 0.10)',
+                fill_light:'rgba(255, 255, 255, 0.05)',
+                fill_strong:'rgba(255, 255, 255, 0.15)'
+        },
 
-           additions:{
+            additions:{
                 xaxis:{
                     color:'#333',
-                    tickfont:'#CCC',
+                        tickfont:'#CCC',
                     //                 rangeslider = dict(
                     //                     bordercolor = '#444444',
                     //                     bgcolor = '#444444',
@@ -405,8 +399,22 @@ class DrawPlotly extends DrawBasicChart {
                     //                     activecolor = '#666666',
                     //                 ),
                 }
-           },
-       };// o
+            }
+        };
+
+    }
+    getDarkThemeLayout() {
+        if (!this.isDark()) return {};
+        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/themes.py
+        // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/palettes.py
+
+        return  {
+               // autosize:true,
+               font:{'color':'eee','family':'Menlo'},
+               plot_bgcolor:'#333',
+               paper_bgcolor:'#333',
+               legend:{bgcolor:'#333'},
+           };
 
 
 
