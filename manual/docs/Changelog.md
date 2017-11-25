@@ -2,7 +2,7 @@
 
 
 * Int64 problem is String auto find max value and convert to Int
-
+* Calc selected cells [avg,median,sum,std]
 
 
 ## 2017-11-13 Master [17.11.2]

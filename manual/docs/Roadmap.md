@@ -34,14 +34,21 @@
 
 * Pivot table by https://github.com/pat310/quick-pivot
 
+* Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
+
+* draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
+
 
 #### TODO Server:
 * T.Server : Public !
 * T.Server : Class "ReportTools"
 * T.Server : Разбор результата для советов в "WHERE" - Подсказки по полям, и фичам сервера хранит backend
 * T.Server : Задает структуру таблиц ( хотябы названия и типы )  
-  
-
+* Ldap Auth, скрыть прямой доступ в CH/MySQL
+* Cross database simple join
+* Подсказки по полям сервера хранит backend
+* http-stream as table 
+* 
 
 
 
