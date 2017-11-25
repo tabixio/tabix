@@ -17,8 +17,6 @@ class DataProvider {
         {
             result.data.push(result.totals);
         }
-        // prepare (Int64+UInt64)
-        result.data=this.prepareInt64(result.data,result.meta);
 
         this.data = result.data;
         this.text = false;
@@ -40,6 +38,14 @@ class DataProvider {
         if (!sourceType) sourceType='ch';
         this.sourceType = sourceType;
         this.meta = result.meta;
+        this.prepareInt64Cols={};
+
+        // prepare (Int64+UInt64)
+        if (this.data)
+        {
+            this.prepareInt64();
+            this.meta.prepareInt64Cols=this.prepareInt64Cols;
+        }
 
         if (result.query) {
             this.query = result.query;
@@ -66,30 +72,34 @@ class DataProvider {
         this.countAll = result.countAllQuery;   // всего запросов в выполнении
 
     }
-    prepareInt64(data,meta)
+    prepareInt64()
     {
         let $canConvert=[];
-
-        meta.forEach((cell) => {
+        this.prepareInt64Cols={};
+        this.meta.forEach((cell) => {
             if (cell.type.includes('Int64')) {
                 // find max value
 
-                let $max=parseInt(_.maxBy(data, function(o){ return parseInt(o[cell.name]); } )[cell.name]);
+                let $max=parseInt(_.maxBy(this.data, function(o){ return parseInt(o[cell.name]); } )[cell.name]);
 
                 if ($max<18017313154530008000) {
                     $canConvert.push(cell.name);
+                    this.prepareInt64Cols[cell.name]=true;
                 }
             }
         });
 
-        data=_.map(data,function (o) {
+        this.data=_.map(this.data,function (o) {
             $canConvert.forEach((cell)=>{
                 o[cell]=parseInt(o[cell]);
             });
             return o;
         });
 
-        return data;
+    }
+    isNormalInt64Col(coll)
+    {
+        return this.prepareInt64Cols[coll];
     }
     /**
      * Преобразование массива в обьект для конструктора  DataProvider

@@ -96,9 +96,14 @@ class HandsTable {
 
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
             if (cell.type.includes('Int64')) {
-              //
-              c.type = 'text';
-              c.width = 100;
+                // Default string type
+                c.type = 'text';
+                c.width = 100;
+                // if DataProvider.prepareInt64() convert String->Int64, use numeric type
+                if (_.isObject(this.meta.prepareInt64Cols)) {
+                    if (this.meta.prepareInt64Cols[cell.name])
+                        c.type='numeric';
+                  }
 
             } else  if (cell.type.includes('Int')) {
                 c.width = 80;
@@ -372,14 +377,17 @@ class HandsTable {
                 }
             }
         }
-        let val={
-            median:_.median(rr),
-            sum:_.sum(rr),
-            average:_.average(rr),
-            std:_.stdDeviation(rr)
-        };
-        angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
+        if (_.isArray(rr) && rr.length)
+        {
+            let val={
+                median:_.round(_.median(rr),3),
+                sum:_.round(_.sum(rr),3),
+                average:_.round(_.average(rr),3),
+                std:_.round(_.stdDeviation(rr),3)
+            };
+            angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
 
+        }
     }
 
     static Transpose(ht,command) {
