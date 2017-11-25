@@ -108,9 +108,6 @@ class DrawPlotly extends DrawBasicChart {
         let w=this.widget.getSizeElementWidth();
         this.layout.height=h;
         this.layout.width=w;
-
-
-        this.layout=Object.assign(this.layout,this.getDarkThemeLayout());
     }
 
     applyObject(drw) {
@@ -145,8 +142,7 @@ class DrawPlotly extends DrawBasicChart {
             //     }
             // }]
         };
-        settings=this.getDarkThemeSettings();
-
+        ll=Object.assign(ll,this.getDarkThemeSettings());
 
         this.applyLayout(ll.layout);
 
@@ -324,18 +320,11 @@ class DrawPlotly extends DrawBasicChart {
                 x:xAxisData,
                 y:dataThisColumn,
                 type: 'scatter',
-                name:showSeriaName
+                line: {shape: 'spline'},
+                name:showSeriaName,
+                mode: "lines",
             });
-            //
-            // let seria = {
-            //     name: showSeriaName,
-            //     type: 'line',
-            //     symbolSize: 8,
-            //     hoverAnimation: false,
-            //     smooth: true,
-            //     //yAxisIndex:yAxisIndex
-            //     data: dataThisColumn
-            // };
+
         }
         console.warn('plotlyDataObject',plotlyDataObject);
 
@@ -367,6 +356,14 @@ class DrawPlotly extends DrawBasicChart {
     {
         if (!this.isDark()) return {};
         return {
+
+            layout:{
+                autosize:true,
+                font:{'color':'eee','family':'Menlo'},
+                plot_bgcolor:'#333',
+                paper_bgcolor:'#333',
+                legend:{bgcolor:'#333',"orientation": "h"},
+            },
             colors:{
                 increasing:'#00FF00',
                 decreasing:'#FF9900',
@@ -382,8 +379,7 @@ class DrawPlotly extends DrawBasicChart {
                 fill:'rgba(255, 255, 255, 0.10)',
                 fill_light:'rgba(255, 255, 255, 0.05)',
                 fill_strong:'rgba(255, 255, 255, 0.15)'
-        },
-
+            },
             additions:{
                 xaxis:{
                     color:'#333',
@@ -402,24 +398,8 @@ class DrawPlotly extends DrawBasicChart {
             }
         };
 
-    }
-    getDarkThemeLayout() {
-        if (!this.isDark()) return {};
         // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/themes.py
         // https://github.com/plotly/dash-technical-charting/blob/master/quantmod/theming/palettes.py
-
-        return  {
-               // autosize:true,
-               font:{'color':'eee','family':'Menlo'},
-               plot_bgcolor:'#333',
-               paper_bgcolor:'#333',
-               legend:{bgcolor:'#333'},
-           };
-
-
-
-
-
 
         // select number as nu,
         // sin(number) as s,

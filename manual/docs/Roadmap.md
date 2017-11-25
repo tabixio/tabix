@@ -2,7 +2,7 @@
 
 * Отрисовка кластера : узлы и реплики, подсветка основных параметров узлов
 
-* Int64 problem, детекирование максимального размера и размера таблицы, если OK - делаем преобразование в parseInt()
+* Sum|Avg|Median -  selected cells in table
 
 * Review database  + Right click - database - overview db?
 

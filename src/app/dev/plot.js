@@ -133,7 +133,7 @@
         $scope.loads = function() {
             $scope.vars.show=false;
 
-            let lx=30;
+            let lx=230;
 
             API.fetchQuery("SELECT number,sin(number) as s,cos(number) as c from system.numbers limit "+lx)
                 .then(data => {
