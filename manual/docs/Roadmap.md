@@ -18,7 +18,7 @@
 
 * aceJSRules - apply on all with window : 1) Disable window , 2) Apply only active tab
 
-* Show+Hide columns in handtable
+* Show+Hide columns in HandTable
 
 * Авто позиционирование на таблицу
 

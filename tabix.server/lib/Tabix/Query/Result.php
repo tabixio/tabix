@@ -61,7 +61,8 @@ class Result
         $p=$this->params->as_array();
         unset($p['auth']);
         return [
-            'sql'=>$this->query->sql(),
+            'sql'=>$this->query->originalSql(),
+            'vars'=>$this->query->vars(),
             'params'=>$p,
             'data'=>$this->data(),
             'sign'=>$this->getSign(),

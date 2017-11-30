@@ -5,9 +5,11 @@ class Parser
 {
     private $sql;
     private $_parse;
-    public function __construct($sql)
+    private $vars;
+    public function __construct($sql,$vars=[])
     {
         $this->sql=$sql;
+        $this->vars=$vars;
     }
 
     /**

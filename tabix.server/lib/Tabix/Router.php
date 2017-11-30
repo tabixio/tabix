@@ -168,6 +168,7 @@ class Router
     public function actionQuery()
     {
         $query=$this->param('query');
+        $vars=$this->param('vars');
         if (!$query) {
             throw new \Exception("Empty Query");
         }
@@ -176,7 +177,7 @@ class Router
             return ['db'=>["meta"=>"1","data"=>["%TABIX_CHECK_LOGIN%"],'tabix'=>[]]];
         }
 
-        $q=new SQLQuery($query);
+        $q=new SQLQuery($query,$vars);
         return $this->dbs()->query($q,$this->param());
     }
 }

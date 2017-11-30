@@ -1,7 +1,7 @@
 <?php
 define('CONFIG_ID','ApiTester');
 return [
-
+'config_id'=>CONFIG_ID, // need
 
 'servers'=>[
     'chDevelop2'=>[
@@ -29,7 +29,8 @@ return [
 'mongodb'=>
     [
         'client'=>"mongodb://tabix.dev7:27017",
-        'database'=>"tabix_".CONFIG_ID
+        'database'=>"tabix_".CONFIG_ID,
+        'cleanDatabaseKey'=>'VFTQWESDFXCV' // need for api.test only ! use `empty` or not set -- on production!
     ],
 'auth'=>[
             'type'=>'plaintext',

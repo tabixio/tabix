@@ -56,7 +56,7 @@ $I->wantTo('Отправить запрос и получить его QUID c п
 $I->sendPOST('/query',
     [
             'auth' =>Fixtures::get('auth'),
-            'query'=>'SELECT number FROM :table LIMIT $limit',
+            'query'=>'SELECT number FROM {table} LIMIT $limit',
             'host'=>'$chDevelop2',
             'vars' =>
             [
@@ -69,11 +69,25 @@ $I->sendPOST('/query',
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 $I->seeResponseJsonMatchesXpath('//db//data');
 $I->seeResponseJsonMatchesXpath('//db//meta');
-$I->seeResponseJsonMatchesXpath('//db//sql');
+
+$quid = $I->grabDataFromResponseByJsonPath('tabix.qid')[0];
+$sign = $I->grabDataFromResponseByJsonPath('tabix.sign')[0];
+
 
 // Получить еще раз данные по QUID c limit & table - т/е НЕ передавая переменные
+$I->wantTo('Получить еще раз данные по QUID : JSON');
+$I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),
+    'sign'=>$sign,
+    'quid'=>$quid,
+    'format'=>'json',
+    'vars'=>['limit'=>1] // todo check result 1
+] );
+$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 
 // Получить еще раз данные по QUID c limit & table - т/е передавая переменные другие
+
+
+
 
 //
 
