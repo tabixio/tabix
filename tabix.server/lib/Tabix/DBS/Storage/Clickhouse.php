@@ -32,11 +32,7 @@ class Clickhouse
     }
     public function databaseStructure()
     {
-        $sql['columns']="SELECT * FROM system.columns";
-        $sql['tables']="SELECT database,name,engine FROM system.tables" ;
-        $sql['databases']= "SELECT name FROM system.databases" ;
-        $sql['dictionaries']="SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names";
-        $sql['functions']="SELECT name,is_aggregate from system.functions";
+
     }
 
     public function processlist($where)
@@ -68,8 +64,15 @@ class Clickhouse
     {
         // ---
     }
-    public function tree()
+    public function structure()
     {
+        $sql['columns']="SELECT * FROM system.columns";
+        $sql['tables']="SELECT database,name,engine FROM system.tables" ;
+        $sql['databases']= "SELECT name FROM system.databases" ;
+        $sql['dictionaries']="SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names";
+        $sql['functions']="SELECT name,is_aggregate from system.functions";
+
+
         // --- system.columns + system.tables + system.databases
     }
     public function describe($path)

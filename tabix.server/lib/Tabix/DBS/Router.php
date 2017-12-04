@@ -135,10 +135,23 @@ class Router
 
         return [];
     }
-    public function tree($params=[])
+    public function structure($params=[])
     {
+        // get structure from all servers
+        $out=\Tabix\Cache::get('structure');
 
-        return [];
+        if (!$out)
+        {
+
+            $servers=$this->config()->getServers();
+            foreach ($servers as $sid)
+            {
+                $out[$sid]=['type'=>$this->config()->getServerType($sid),'id'=>$sid];
+                $out[$sid]['structure']=$this->getServer($sid)->structure();
+            }
+            \Tabix\Cache::set('structure',$out,523);
+        }
+        return ['structure'=>$out];
     }
 
     public function query(Tabix\SQLQuery $SQL,\dotArray $params=null)

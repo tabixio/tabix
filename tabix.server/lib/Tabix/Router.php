@@ -115,7 +115,7 @@ class Router
 
     public function renderResultInFormat($data,$format)
     {
-        // $format in (json , tsv , csv )
+        // @todo : $format in (json , tsv , csv )
 
 
         return [];
@@ -162,7 +162,7 @@ class Router
 
     public function actionTree()
     {
-        return $this->dbs()->tree($this->param());
+        return $this->dbs()->structure($this->param());
     }
 
     public function actionQuery()

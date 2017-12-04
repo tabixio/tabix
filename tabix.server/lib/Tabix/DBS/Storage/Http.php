@@ -43,9 +43,10 @@ class Http
     {
         return false;
     }
-    public function tree()
+
+    public function structure()
     {
-        // --- system.columns + system.tables + system.databases
+        return [];
     }
     public function describe($path)
     {

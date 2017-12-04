@@ -2,7 +2,6 @@
 
 * Отрисовка кластера : узлы и реплики, подсветка основных параметров узлов
 
-* Sum|Avg|Median -  selected cells in table
 
 * Review database  + Right click - database - overview db?
 

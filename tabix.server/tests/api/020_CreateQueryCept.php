@@ -5,6 +5,7 @@ $I = new ApiTester($scenario);
 $I->wantTo('2 check Online service');
 $I->sendGET('/');
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+$I->haveHttpHeader('Content-Type', 'application/json');
 
 
 $I->wantTo('2 login as default user');
@@ -40,14 +41,21 @@ $I->seeResponseJsonMatchesXpath('//db//sql');
 $I->wantTo('Получить еще раз данные по QUID : JSON');
 $I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'json'] );
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+// ????
+$I->seeResponseContainsJson(array('name' => 'john'));
+
 
 $I->wantTo('Получить еще раз данные по QUID : csv');
 $I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'csv'] );
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+$I->seeResponseContains('BBBB');
+$I->seeBinaryResponseEquals('BBBB');
 
 $I->wantTo('Получить еще раз данные по QUID : tsv');
 $I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'tsv'] );
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+$I->seeResponseContains('BBBB');
+$I->seeBinaryResponseEquals('BBBB');
 
 
 

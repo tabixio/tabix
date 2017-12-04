@@ -23,22 +23,8 @@ class Mysql extends PDOProxy
 
     public function processlist($where)
     {
-        // --
-        /**
-         * SELECT
-        now() as dt,
-        query,
-        1 as count,
 
-        formatReadableSize(read_bytes) as bytes_read,
-        formatReadableSize(written_bytes) as written_bytes,
-        formatReadableSize(memory_usage) as memory_usage,
-        read_rows,written_rows,
-        round(elapsed,4) as elapsed ,  * ,
-        cityHash64(query) as hash,
-        hostName()
-        FROM system.processes
-         */
+        // ---
     }
 
     public function kill($qid)
@@ -46,14 +32,14 @@ class Mysql extends PDOProxy
         // ---
 
     }
-    public function dictionaries()
+
+
+    public function structure()
     {
-        // ---
+        // information schema
+        return [];
     }
-    public function tree()
-    {
-        // --- system.columns + system.tables + system.databases
-    }
+
     public function describe($path)
     {
         // ----
