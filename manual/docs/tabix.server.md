@@ -34,16 +34,36 @@ php MongoDB Driver 2.2
 #
 
 
-# Need mongodb 3.4 install
+# Need mongodb 3.6 install
 # https://docs.mongodb.com/v3.2/tutorial/install-mongodb-on-ubuntu/
-# aptitude install mongodb-org
 
-# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927 &&  sudo   echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list &&  sudo   apt-get update
+# aptitude install mongodb-org 
+# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+# echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
 # sudo apt-get install -y mongodb-org
 # sudo service mongod start
 
+
+```
+
+*authentication MongoDB*
+
+Use manual: 
+a) https://docs.mongodb.com/manual/tutorial/enable-authentication/
+b) https://medium.com/@raj_adroit/mongodb-enable-authentication-enable-access-control-e8a75a26d332
+
+For develop need : ```-u "superAdmin" -p "admin123"``` in `ApiTester.php`
+
+```
+# check login 
+# mongo --port 27017 -u "superAdmin" -p "admin123" --authenticationDatabase "admin"
+```
+
+*Php Driver for MongoDB*
+
+```
 # --------------------------------------------
-# Php Driver for MongoDB
+# 
 # see https://stackoverflow.com/questions/38963608/setup-mongodb-extension-for-php7
 
 sudo apt-get install php-pear phpize

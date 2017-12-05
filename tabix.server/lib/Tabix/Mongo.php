@@ -62,6 +62,14 @@ class Mongo
     {
         return $this->connect();
     }
+    public function collection_dashboards()
+    {
+        return $this->db()->dashboards;
+    }
+    public function collection_query()
+    {
+        return $this->db()->query;
+    }
 
     public function query(\Tabix\Query\Result $q)
     {
@@ -74,14 +82,14 @@ class Mongo
         $insert['dtm']=microtime(true);
         $insert['sign']=$q->getSign();
 
-        $x=$this->db()->query->insertOne($insert);
+        $x=$this->collection_query()->insertOne($insert);
         $q->setQuid($x->getInsertedId());
         return $q;
     }
     public function fetch($quid,$sing)
     {
         //$quid,$sing
-        return iterator_to_array($this->db()->query->findOne(['_id'=>new \MongoDB\BSON\ObjectId($quid),'sign'=>$sing]));
+        return iterator_to_array($this->collection_query()->findOne(['_id'=>new \MongoDB\BSON\ObjectId($quid),'sign'=>$sing]));
 
 
     }
@@ -100,6 +108,12 @@ class Mongo
     public function dropHistory()
     {
 
+    }
+    public function cleanDevDatabase()
+    {
+        $this->collection_dashboards()->drop();
+        $this->collection_query()->drop();
+        return ['ok'=>true];
     }
     public function test()
     {

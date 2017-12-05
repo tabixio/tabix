@@ -28,6 +28,10 @@ class ConfigProvider
         $this->load();
     }
 
+    public function getId()
+    {
+        return $this->config_id;
+    }
     private function load() {
         if ($this->_is_load) return true;
 

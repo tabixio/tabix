@@ -1,8 +1,5 @@
 <?php
-define('CONFIG_ID','ApiTester');
 return [
-'config_id'=>CONFIG_ID, // need
-
 'servers'=>[
     'chDevelop2'=>[
         'type'=>'Clickhouse',
@@ -26,12 +23,19 @@ return [
         'hash'=>'MY_CRYPTO_KEY',
     ],
 
+
+
 'mongodb'=>
     [
-        'client'=>"mongodb://tabix.dev7:27017",
-        'database'=>"tabix_".CONFIG_ID,
-        'cleanDatabaseKey'=>'VFTQWESDFXCV' // need for api.test only ! use `empty` or not set -- on production!
+        // mongodb://${username}:${password}@localhost
+        'client'=>"mongodb://superAdmin:admin123@127.0.0.1:27017",
+        'database'=>"tabix_ApiTester",
+        'cleanDatabaseKey'=>'##VFTQWESDFXCV##' // need for api.test only ! use `empty` or not set -- on production!
     ],
+
+
+
+
 'auth'=>[
             'type'=>'plaintext',
             'helper'=>[

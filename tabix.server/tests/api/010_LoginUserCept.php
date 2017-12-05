@@ -20,18 +20,6 @@ $I->seeResponseContainsJson(['result' => 'ok']);
 
 
 
-$I->wantTo('get database structure');
-$I->sendPOST('/structure',['auth' =>Fixtures::get('auth')]);
-$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-$I->seeResponseIsJson();
-//$I->seeResponseMatchesJsonType([
-//    'user_id' => 'integer',
-//    'name' => 'string|null',
-//    'is_active' => 'boolean'
-//]);
-
-$I->seeResponseContainsJson(['structure' => 'ok']);
-
 
 
 $I->wantTo('check login as default select');
@@ -75,7 +63,7 @@ $I->seeResponseJsonMatchesXpath('//db//rows');
 //$I->seeResponseJsonMatchesJsonPath('$.data[0].number');
 // ----------------------------------------------------------------------
 ////
-$I->wantTo('check path to MySQL_DB');
+$I->wantTo('check path to MySQL DB');
 $I->sendPOST('/query', ['auth' =>Fixtures::get('auth'),'query'=>'SELECT * FROM $sqldb.information_schema.FILES limit 1' ] );
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 $I->seeResponseJsonMatchesXpath('//db//data');
@@ -85,3 +73,9 @@ $I->seeResponseJsonMatchesXpath('//db//rows');
 $I->seeResponseJsonMatchesJsonPath('$.db.meta[0].name');
 $I->seeResponseJsonMatchesJsonPath('$.db.data[0].FILE_NAME');
 // ----------------------------------------------------------------------
+//
+$I->wantTo('Удалить все данные в mongoDB');
+$I->sendPOST('/developapi/cleandb', ['auth' =>Fixtures::get('auth'),'cleanDatabaseKey'=>'##VFTQWESDFXCV##' ] );
+$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+$I->seeResponseJsonMatchesXpath('//dev//ok');
+// ------------------------
