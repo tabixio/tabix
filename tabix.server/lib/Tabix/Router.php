@@ -160,7 +160,7 @@ class Router
         }
     }
 
-    public function actionDevelopapi($param=false)
+    public function actionDevelopapi($param=false,$value=false)
     {
         if ($param=='cleandb' && ($this->config()->getId()==='ApiTester'))
         {
@@ -168,7 +168,7 @@ class Router
             if ($this->param('cleanDatabaseKey')===$this->config()->getMongoDB('cleanDatabaseKey'))
             {
 
-                return ['dev'=>$this->mongo()->cleanDevDatabase()];
+                return ['dev'=>$this->mongo()->cleanDevDatabase($value)];
             }
         }
     }

@@ -78,6 +78,9 @@ class Mongo
         $insert=[];
         $insert['db']=$q->toArray();
         // @todo  sizeOf insert[data]
+
+
+
         $insert['dt']=time();
         $insert['dtm']=microtime(true);
         $insert['sign']=$q->getSign();
@@ -109,10 +112,19 @@ class Mongo
     {
 
     }
-    public function cleanDevDatabase()
+    public function cleanDevDatabase($value=false)
     {
-        $this->collection_dashboards()->drop();
-        $this->collection_query()->drop();
+        if (!$value)
+        {
+            $this->collection_dashboards()->drop();
+            $this->collection_query()->drop();
+        } elseif ($value=='query')
+        {
+            $this->collection_query()->drop();
+        } elseif ($value=='dashboard')
+        {
+            $this->collection_dashboards()->drop();
+        }
         return ['ok'=>true];
     }
     public function test()

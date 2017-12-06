@@ -60,16 +60,32 @@ class Result
     {
         $p=$this->params->as_array();
         unset($p['auth']);
-        return [
+        $z=[
             'sql'=>$this->query->originalSql(),
             'vars'=>$this->query->vars(),
             'params'=>$p,
-            'data'=>$this->data(),
-            'sign'=>$this->getSign(),
             'server_id'=>$this->server_id,
             'server_settings'=>[],
 
         ];
+
+        $apply_data=true;
+
+
+        if ($p['widget']) {
+            $apply_data=false;
+        }
+
+
+
+
+        if ($apply_data){
+            $z['data']=$this->data();
+            $z['sign']=$this->getSign();
+
+        }
+
+        return $z;
     }
 
     public function data()
