@@ -160,7 +160,7 @@ class Router
         if (!$sid) {
             throw new \Exception("Cant find server to route SQL");
         }
-        $SQL->replaceHost($sid);
+        $SQL->applyHost($sid);
         $q=$this->execQuery($sid,$SQL,$params);
         // ------------------------------------------------------------------------------------------------
         $resultStore=$this->storeToMongo($q);

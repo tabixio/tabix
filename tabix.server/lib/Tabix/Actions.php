@@ -1,7 +1,7 @@
 <?php
 namespace Tabix;
 
-class Router
+class Actions
 {
     /**
      * @var \dotArray
@@ -176,7 +176,29 @@ class Router
     {
         return $this->dbs()->structure($this->param());
     }
+    public function actionDashboard($id,$update=false)
+    {
+        // get by id
+        if ($update==='update') {
+            // update
+            $d=$this->param('dash');
+            if ($d){
+                return $this->mongo()->dashboardUpdate($id,$d);
+            }
+        } else {
+            return $this->mongo()->dashboard($id);
+        }
 
+    }
+    public function actionDashboardNew()
+    {
+        $d=$this->param('dash');
+        if ($d){
+            return $this->mongo()->dashboardNew($d);
+        }
+        return ['false'];
+
+    }
     public function actionQuery()
     {
         $query=$this->param('query');

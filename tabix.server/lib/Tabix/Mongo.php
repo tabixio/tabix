@@ -1,6 +1,8 @@
 <?php
 namespace Tabix;
 
+use ClickHouseDB\Exception;
+
 class Mongo
 {
     /**
@@ -70,7 +72,14 @@ class Mongo
     {
         return $this->db()->query;
     }
-
+    private function makeNewObject()
+    {
+        $insert=[];
+        $insert['uid']=$this->_user->userId();
+        $insert['dt']=time();
+        $insert['dtm']=microtime(true);
+        return $insert;
+    }
     public function query(\Tabix\Query\Result $q)
     {
 
@@ -79,10 +88,8 @@ class Mongo
         $insert['db']=$q->toArray();
         // @todo  sizeOf insert[data]
 
+        $insert=array_merge_recursive($insert,$this->makeNewObject());
 
-
-        $insert['dt']=time();
-        $insert['dtm']=microtime(true);
         $insert['sign']=$q->getSign();
 
         $x=$this->collection_query()->insertOne($insert);
@@ -111,6 +118,37 @@ class Mongo
     public function dropHistory()
     {
 
+    }
+
+    private function load_dash($id)
+    {
+        $a=$this->collection_dashboards()->findOne(['_id'=>new \MongoDB\BSON\ObjectId($id)]);
+        if (!$a) throw new \Exception("Not find dashboard : ".$id);
+        $a=iterator_to_array($a);
+        $a['did']=strval($a['_id']);
+        unset($a['_id']);
+        return $a;
+    }
+
+    public function dashboard($id)
+    {
+        $dash=$this->load_dash($id);
+        return ['did'=>$id,'dash'=>$dash];
+    }
+    public function dashboardUpdate($id,$params)
+    {
+        $dash=$this->load_dash($id);
+        $dash=array_replace_recursive($dash,$params);
+        $dash['dtu']=time();
+        unset($dash['did']);
+        $this->collection_dashboards()->updateOne(['_id'=>new \MongoDB\BSON\ObjectId($id)],['$set' =>$dash]);
+        return ['did'=>$id,'dash'=>$dash];
+    }
+    public function dashboardNew($params)
+    {
+        $insert=array_replace_recursive($params,$this->makeNewObject());
+        $x=$this->collection_dashboards()->insertOne($insert);
+        return ['did'=>strval($x->getInsertedId())];
     }
     public function cleanDevDatabase($value=false)
     {

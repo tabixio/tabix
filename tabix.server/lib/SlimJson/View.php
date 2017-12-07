@@ -16,27 +16,27 @@ class View extends \Slim\View {
     $app = Slim::getInstance();
     $response = $this->all();
 
+
+    if (!empty($response['flash'])) unset($response['flash']);
+
+
     $status = \intval($status);
     $app->response()->status($status);
-    if ($app->config(Config::Status)) {
-      $response['_status'] = $status;
-//      $response['_data']= $data;
-//      $response['_trace'] = debug_backtrace(false);
-    }
 
-    if (isset($response['flash']) && \is_object($response['flash'])) {
-      $flash = $this->data->flash->getMessages();
-      if (count($flash)) {
-        $response['flash'] = $flash;
-      } else {
-        unset($response['flash']);
+
+      if (!is_array($response))
+      {
+          $app->response()->status(500);
+          $app->response()->body($response);
+
       }
-    }
-//
 
        $app->response()->body(
 //           json_encode($response,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-           json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)
+           json_encode($response,
+               JSON_PARTIAL_OUTPUT_ON_ERROR|
+                        JSON_PRETTY_PRINT |
+                        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE)
         );
   }
 

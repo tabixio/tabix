@@ -69,11 +69,15 @@ $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=n
     try
     {
 
-        $router=new \Tabix\Router($app->json());
-        $call='action'.ucwords($action);
+        $router=new \Tabix\Actions($app->json());
+        $call='action'.ucwords($action).''.ucwords($first);
         if (!method_exists($router,$call))
         {
-            throw new \Exception("Method ".$action." not exists");
+            $call='action'.ucwords($action);
+            if (!method_exists($router,$call))
+            {
+                throw new \Exception("Method ".$action." not exists");
+            }
         }
         $result=$router->$call($first,$second);
         $app->render(200, $result);

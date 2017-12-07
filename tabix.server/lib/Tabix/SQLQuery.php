@@ -13,11 +13,19 @@ class SQLQuery
 
     private $_vars;
 
+    private $_drawCommands;
+
+    private $_originalSQL='';
+
+    private $_server_id=false;
+
     public function __construct($text_SQL,$vars=[])
     {
-        $this->_text=$text_SQL;
+        $this->_server_id=false;
         $this->_vars=$vars;
-        $this->variablesSQL();
+        $this->_drawCommands=[];
+        $this->preProcessSQL($text_SQL);
+
     }
 
     /**
@@ -38,13 +46,11 @@ class SQLQuery
         return $this->_text;
     }
 
-    public function replaceHost($server_id)
+    public function applyHost($server_id)
     {
-        $this->_text=str_ireplace('$'.$server_id.'.','',$this->_text);
-    }
+        $this->_server_id=$server_id;
 
-    private function variablesSQL()
-    {
+        $this->_text=str_ireplace('$'.$server_id.'.','',$this->_text);
     }
 
     public function vars()
@@ -53,12 +59,40 @@ class SQLQuery
     }
     public function originalSql()
     {
-        return $this->_text;
+        return $this->_originalSQL;
     }
-    public function sql()
-    {
 
-        $sql=$this->_text;
+    private function preProcessSQL($sql)
+    {
+        $this->_originalSQL=$sql;
+        $drawCommands=[];
+        if (stripos($sql,'DRAW_'))
+        {
+            $sql=str_ireplace('DRAW_','DRAW_',$sql);
+            // drop draw command
+
+            $z=explode('DRAW_',$sql);
+            if (sizeof($z)) {
+
+                foreach ($z as $pos=>$item)
+                {
+                    if ($pos==0) {
+                        $sql=$item;
+                    } else {
+                        $drawCommands[]='DRAW_'.$item;
+                    }
+                }
+            }
+
+        }
+        $this->_drawCommands=$drawCommands;
+
+
+        //
+
+
+
+
         if (is_array($this->_vars))
         {
 
@@ -67,6 +101,20 @@ class SQLQuery
             $deg->bindParams($this->_vars);
             $sql=$deg->process($sql);
         }
+
+
+
+
+
+        $this->_text=$sql;
+
+        return $sql;
+    }
+
+    public function sql()
+    {
+
+        $sql=$this->_text;
 
 
         return $sql;

@@ -31,6 +31,10 @@ class User {
         }
 
     }
+    public function userId()
+    {
+        return $this->login;
+    }
     public function userNicName()
     {
         return false;
