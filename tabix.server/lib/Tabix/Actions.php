@@ -134,7 +134,7 @@ class Actions
 
         if ($format)
         {
-            return $this->renderResultInFormat($z['db']['data'],$format);
+            return $this->renderResultInFormat($z['data'],$format);
         }
 
         return $z;
@@ -208,7 +208,7 @@ class Actions
         }
 
         if (stripos($query,'%TABIX_CHECK_LOGIN%')) {
-            return ['db'=>["meta"=>"1","data"=>["%TABIX_CHECK_LOGIN%"],'tabix'=>[]]];
+            return ["meta"=>"1","data"=>["%TABIX_CHECK_LOGIN%",'tabix'=>[]]];
         }
 
         $q=new SQLQuery($query,$vars);

@@ -48,10 +48,20 @@ class DatabaseStructure {
 
             this.all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type,active:true });
 
-            if (!this.uciq_fields[item.database])
-            {
+            // if (!this.uciq_fields[item.database])
+            // {
+            //     this.uciq_fields[item.database]=[];
+            // }
+
+
+            if (!_.isArray(this.uciq_fields[item.database])) {
+
+                console.warn("WTF ??? `"+item.database+'` is not ARRAY');
+
                 this.uciq_fields[item.database]=[];
             }
+
+
             this.uciq_fields[item.database].push(item);
             this.uciq_dbtables[item.database+'.'+item.table]=1;
 

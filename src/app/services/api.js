@@ -184,32 +184,16 @@
         };
 
         this.isTabixServer = () => {
-
             if (!connection.tabix) return false;
-
             if (connection.tabix.server) return true;
-
             return false;
         };
-
-        this.tabixQuery = ( request ) => {
-
-
-            console.info("[request]>",request);
-            $http(req).then(
-                response => defer.resolve(response.data),
-                reason => defer.reject(reason)
-            );
-
-            return defer.promise;
-        };
-
 
         this._tabixRequest = (request,action) => {
 
 
             let o = {
-                version:1,
+                version:window.TabixVersion,
                 auth: {
                     login: connection.tabix.login,
                     password: connection.tabix.password,
@@ -259,28 +243,19 @@
             return query;
         };
 
-        this.makeUrlRequest = (withDatabase,extend_settings) => {
+        this.direct_makeUrlRequest = (withDatabase,extend_settings) => {
             let url = "";
             let httpProto = '';
             if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
                 httpProto = 'http://';
             }
             // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
-
-
-
             url = httpProto + connection.host ;
-
             url = url + '/?';
-
-
             url = url + 'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1';
-
             if (!connection.NotCH1_1_54276) {
                 url=url+'&output_format_json_quote_denormals=1';
             }
-
-
             //max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
             let BasicAuthorization=false;
 
@@ -316,9 +291,94 @@
         };
         this.fetchQuery = (sql,withDatabase,format,extend_settings) =>
         {
+            if (!this.isTabixServer()) {
+                return this.direct_fetchQuery(sql,withDatabase,format,extend_settings);
+            } else {
+                return this.ts_fetchQuery(sql,withDatabase,format,extend_settings);
+            }
+
+        };
+
+        this.fetchTabixServer = (action,body,extend_settings) =>
+        {
+            let url = connection.tabix.server;
+            url = url + '/'+action+'?tabix_client='+window.TabixVersion+'&random='+Math.round(Math.random() * 100000000);
+            if (extend_settings) {
+                url += '&' + extend_settings;
+            }
+
+            let request = {
+                version:window.TabixVersion,
+                auth: {
+                    login: connection.tabix.login,
+                    password: connection.tabix.password,
+                    confid:connection.tabix.confid
+                }
+            };
+
+            request = Object.assign(body,request);
+
+            let init={
+                mode: 'cors',
+                method: 'post',
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                body : (JSON.stringify(request))
+            };
+
+            console.info("TS Request",url,init);
+
+            let myRequest = new Request(url, init);
+
+
+
+            return fetch(myRequest)
+                .then(function(response) {
+                    let contentType = response.headers.get("content-type");
+                    if (contentType.includes('text/plain') && response.status == 200 &&  response.statusText.toLowerCase() == 'ok' )
+                    {
+                        // create table && drop table
+                        return 'OK';
+
+                    }
+                    if (contentType && contentType.includes("application/json") && response.status >= 200 && response.status < 300) {
+                        return Promise.resolve(response)
+                    } else {
+                        return response.text().then(Promise.reject.bind(Promise));
+                    }
+                })
+                .then(function(response) {
+                        if (response==='OK') {
+                            return 'OK';
+                        }
+                        return response.json();
+                    },
+                    function (responseBody) {
+                        return Promise.reject(responseBody);
+                    }
+                );
+
+        };
+
+
+        this.ts_fetchQuery = (sql,withDatabase,format,extend_settings) =>
+        {
+
+            this.fetchTabixServer('query',{
+                query:this.makeSqlQuery(sql,format)
+            },extend_settings);
+
+
+        };
+
+
+
+        this.direct_fetchQuery = (sql,withDatabase,format,extend_settings) =>
+        {
 
             let query=this.makeSqlQuery(sql,format);
-            let url=this.makeUrlRequest(withDatabase,extend_settings);
+            let url=this.direct_makeUrlRequest(withDatabase,extend_settings);
             let myInit={
                 mode: 'cors',
                 method: 'post',

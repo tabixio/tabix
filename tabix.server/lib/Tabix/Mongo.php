@@ -82,10 +82,7 @@ class Mongo
     }
     public function query(\Tabix\Query\Result $q)
     {
-
-
-        $insert=[];
-        $insert['db']=$q->toArray();
+        $insert=$q->toArray();
         // @todo  sizeOf insert[data]
 
         $insert=array_merge_recursive($insert,$this->makeNewObject());

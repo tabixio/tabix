@@ -14,7 +14,7 @@ $I->haveHttpHeader('Content-Type', 'application/json');
 $I->sendPOST('/state', ['auth' =>Fixtures::get('auth') ] );
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 $I->seeResponseIsJson();
-$I->seeResponseContainsJson(['_status' => '200']);
+$I->seeResponseContainsJson(['mongodb' => '1']);
 
 // ------------------------------------------------------------------------
 
@@ -33,33 +33,10 @@ $I->wantTo('Получить еще раз отправленный запрос
 $I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid ] );
 
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-$I->seeResponseJsonMatchesXpath('//db//data');
-$I->seeResponseJsonMatchesXpath('//db//meta');
-$I->seeResponseJsonMatchesXpath('//db//sql');
+$I->seeResponseJsonMatchesXpath('//data');
+$I->seeResponseJsonMatchesXpath('//meta');
+$I->seeResponseJsonMatchesXpath('//sql');
 
-// --------------------------------------------------------------------------------
-$I->wantTo('Получить еще раз данные по QUID : JSON');
-$I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'json'] );
-$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-// ????
-$I->seeResponseContainsJson(array('name' => 'john'));
-
-
-$I->wantTo('Получить еще раз данные по QUID : csv');
-$I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'csv'] );
-$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-$I->seeResponseContains('BBBB');
-$I->seeBinaryResponseEquals('BBBB');
-
-$I->wantTo('Получить еще раз данные по QUID : tsv');
-$I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),'sign'=>$sign,'quid'=>$quid,'format'=>'tsv'] );
-$I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-$I->seeResponseContains('BBBB');
-$I->seeBinaryResponseEquals('BBBB');
-
-
-
-// --------------------------------------------------------------------------------
 $I->wantTo('Отправить запрос и получить его QUID c переменными');
 $I->sendPOST('/query',
     [
@@ -75,8 +52,8 @@ $I->sendPOST('/query',
 );
 
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
-$I->seeResponseJsonMatchesXpath('//db//data');
-$I->seeResponseJsonMatchesXpath('//db//meta');
+$I->seeResponseJsonMatchesXpath('//data');
+$I->seeResponseJsonMatchesXpath('//meta');
 
 $quid = $I->grabDataFromResponseByJsonPath('tabix.qid')[0];
 $sign = $I->grabDataFromResponseByJsonPath('tabix.sign')[0];
@@ -93,24 +70,5 @@ $I->sendPOST('/fetch', ['auth' =>Fixtures::get('auth'),
 $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
 
 // Получить еще раз данные по QUID c limit & table - т/е передавая переменные другие
-
-
-
-
-//
-
-
-
-// Сделать запрос с доступом по ключу - [public share key]
-
-// Получить с ключем по QUID + KEY
-
-
-// Отпривить запрос с DRAW_COMMAND
-
-
-// Отпривить запрос с DRAW_COMMAND и получить QUID
-
-
 
 

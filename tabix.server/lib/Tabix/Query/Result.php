@@ -72,7 +72,7 @@ class Result
         $apply_data=true;
 
 
-        if ($p['widget']) {
+        if (!empty($p['widget'])) {
             $apply_data=false;
         }
 
