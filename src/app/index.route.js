@@ -27,11 +27,16 @@
                             }
 
                             var defer = $q.defer();
-                            if (angular.isDefined(API.getConnectionInfo().host)) {
+
+                            if (API.isAuthorized())
+                            {
                                 defer.resolve();
                             } else {
                                 defer.reject('notAuthorized');
                             }
+
+
+
                             return defer.promise;
                         }]
                     },

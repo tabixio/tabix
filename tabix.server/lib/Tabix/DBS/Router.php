@@ -84,9 +84,13 @@ class Router
     {
         $pq=$params->get('query_params');
         if (!$pq) $pq=[];
+
+        $data=$this->getServer($sid)->query($query,$pq);
+
+
         return new \Tabix\Query\Result(
 
-            $this->getServer($sid)->query($query,$pq),
+            $data,
             $query,
             $params,
             $sid
@@ -138,10 +142,10 @@ class Router
     public function structure($params=[])
     {
         // get structure from all servers
-        $out=\Tabix\Cache::get('structure');
+//        $out=\Tabix\Cache::get('structure'.$sid);
 
-        if (!$out)
-        {
+//        if (!$out)
+//        {
 
             $servers=$this->config()->getServers();
             foreach ($servers as $sid)
@@ -149,8 +153,8 @@ class Router
                 $out[$sid]=['type'=>$this->config()->getServerType($sid),'id'=>$sid];
                 $out[$sid]['structure']=$this->getServer($sid)->structure();
             }
-            \Tabix\Cache::set('structure',$out,523);
-        }
+//            \Tabix\Cache::set('structure'.$sid,$out,523);
+//        }
         return ['structure'=>$out];
     }
 
@@ -161,7 +165,11 @@ class Router
             throw new \Exception("Cant find server to route SQL");
         }
         $SQL->applyHost($sid);
+
+
+
         $q=$this->execQuery($sid,$SQL,$params);
+
         // ------------------------------------------------------------------------------------------------
         $resultStore=$this->storeToMongo($q);
         // ------------------------------------------------------------------------------------------------

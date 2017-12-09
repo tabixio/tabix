@@ -24,8 +24,9 @@ class View extends \Slim\View {
     $app->response()->status($status);
 
 
-      if (!is_array($response))
-      {
+
+    if (!is_array($response))
+    {
           $app->response()->status(500);
           $app->response()->body($response);
 

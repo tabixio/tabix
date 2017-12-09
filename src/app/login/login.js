@@ -34,7 +34,11 @@
 
 
         $scope.loginCheckDone= ()=> {
-            API.databaseStructure(   (ds) => $state.go('sql') , true);
+            API.databaseStructure(
+                (ds) => {
+                    console.log('loginCheckDone ... DS ... done');
+                    $state.go('sql');
+                } , true);
         };
 
         /**
@@ -60,6 +64,7 @@
             API.setConnection($scope.vars.db);
 
             API.fetchQuery('SELECT \'login success\'').then( data => {
+
                     $mdToast.show(
                     $mdToast
                         .simple()

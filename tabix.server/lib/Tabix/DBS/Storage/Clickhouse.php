@@ -21,13 +21,8 @@ class Clickhouse
      */
     public function query(\Tabix\SQLQuery $sql,$params)
     {
-        try {
-            $st=$this->client->select($sql->sql(),$params);
-        }
-        catch (\Exception $E)
-        {
-            throw new \Exception('Error from DB:',$E->getMessage(),$E->getCode());
-        }
+
+        $st=$this->client->select($sql->sql(),$params);
         return $st->rawData();
     }
     public function databaseStructure()
@@ -72,6 +67,20 @@ class Clickhouse
         $sql['dictionaries']="SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names";
         $sql['functions']="SELECT name,is_aggregate from system.functions";
 
+
+        $r=[];
+        foreach ($sql as $key=>$q)
+        {
+            $r[$key]=$this->client->selectAsync($q);
+        }
+
+        $this->client->executeAsync();
+        $out=[];
+        foreach ($sql as $key=>$q)
+        {
+                $out[$key]=$r[$key]->rows();
+        }
+        return $out;
 
         // --- system.columns + system.tables + system.databases
     }

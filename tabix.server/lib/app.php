@@ -80,12 +80,19 @@ $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=n
             }
         }
         $result=$router->$call($first,$second);
+        if (!is_array($result)) {
+            throw  new Exception("Result not array:".json_encode($result));
+        }
         $app->render(200, $result);
     }
     catch (Exception $E)
     {
-        die($E);
-//        $app->render(500,json_encode($E));
+
+        $app->render(500,[
+                'error'=>$E->getMessage(),
+                'file'=>$E->getFile().':'.$E->getLine(),
+                'trace'=>$E->getTrace()]
+        );
     }
 });
 

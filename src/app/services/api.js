@@ -43,7 +43,18 @@
             //     connection.host += ':' + DEFAULT_PORT;
             // }
         };
-
+        this.isAuthorized = () => {
+            console.log("this.connection",connection);
+            if (this.isTabixServer()) {
+                if (!connection) return false;
+                if (!connection.tabix) return false;
+                return connection.tabix.server;
+            }
+            else {
+                if (!connection) return false;
+                return connection.host;
+            }
+        };
         /**
          * @ngdoc method
          * @methodOf smi2.service:API
@@ -137,7 +148,21 @@
             // const functions = this.fetchQuery("SELECT name,is_aggregate from system.functions", null)
 
 
+            // //
             //
+            // if (this.isTabixServer()) {
+            //
+            //
+            //     console.time("TS:Load Database Structure!");
+            //     this.fetchTabixServer('structure').then(data=> {
+            //
+            //         console.info("TS>",data);
+            //
+            //     });
+            //
+            //     return ;
+            // }
+
 
             // @todo - need rewrite async / await
             // тут нужно или остановить другие потоки, и повесить ожидание пока не завершиться инициализация
@@ -189,43 +214,6 @@
             return false;
         };
 
-        this._tabixRequest = (request,action) => {
-
-
-            let o = {
-                version:window.TabixVersion,
-                auth: {
-                    login: connection.tabix.login,
-                    password: connection.tabix.password,
-                    confid:connection.tabix.confid
-                }
-            };
-
-            request = Object.assign(o,request);
-
-            // let parameter = JSON.stringify(Object.assign(o,request));
-
-            let url=connection.tabix.server+'/'+action;
-
-
-            return {
-                method: 'POST',
-                data  : request,
-                // headers: {
-                    // 'Content-Type': 'application/x-www-form-urlencoded'
-                // },
-                url: url,
-                transformResponse: (data, header, status) => {
-                    try {
-                        return JSON.parse(data);
-                        // return angular.fromJson(data);
-                    } catch (err) {
-
-                        return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
-                    }
-                }
-            };
-        };
 
         this.makeSqlQuery = (sql,format) => {
             let query = '';
@@ -301,6 +289,9 @@
 
         this.fetchTabixServer = (action,body,extend_settings) =>
         {
+
+            if (!_.isObject(body)) body={};
+
             let url = connection.tabix.server;
             url = url + '/'+action+'?tabix_client='+window.TabixVersion+'&random='+Math.round(Math.random() * 100000000);
             if (extend_settings) {
@@ -365,7 +356,7 @@
         this.ts_fetchQuery = (sql,withDatabase,format,extend_settings) =>
         {
 
-            this.fetchTabixServer('query',{
+            return this.fetchTabixServer('query',{
                 query:this.makeSqlQuery(sql,format)
             },extend_settings);
 
@@ -478,6 +469,10 @@
         this.query = (sql, format, withDatabase, extend_settings) => {
             let defer = $q.defer();
 
+            console.warn("!!!!!!! DEPRICATED!");
+            console.warn("!query DEPRICATED !");
+            console.warn("!!!!!!! DEPRICATED!");
+
             let query=this.makeSqlQuery(sql,format);
             let url=this.makeUrlRequest(withDatabase,extend_settings);
             let req=false;
@@ -488,7 +483,6 @@
 
             if (this.isTabixServer()) {
                 // tabix server
-                 req = this._tabixRequest({query:query},'query');
             } else {
                  req = {
                     method: 'POST',
@@ -498,10 +492,8 @@
                     cache: false,
                 };
 
-                if (connection.baseauth)
-                {
-                    req.headers['Authorization']='Basic ' + window.btoa(connection.login+":"+connection.password);
-                }
+
+
 
             }
             console.info("SQL>",url,query,req);

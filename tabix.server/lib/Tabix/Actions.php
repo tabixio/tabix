@@ -172,7 +172,7 @@ class Actions
             }
         }
     }
-    public function actionTree()
+    public function actionStructure()
     {
         return $this->dbs()->structure($this->param());
     }

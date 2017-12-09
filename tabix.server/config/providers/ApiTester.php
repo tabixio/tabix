@@ -7,9 +7,9 @@ return [
         'connection'=>['host'=>'127.0.0.1','port'=>'8123','username'=>'default','password'=>'']
 
     ],
-    'chDevelop1'=>[
-        'type'=>'Clickhouse',
-    ],
+//    'chDevelop1'=>[
+//        'type'=>'Clickhouse',
+//    ],
 
     'sqldb'=>[
         'type'=>'MySQL',
