@@ -23,7 +23,7 @@
 
         // Первичная загрузка данных из LS
         let data = localStorageService.get(CURRENT_BASE_KEY);
-        if (data && data.host) {
+        if (data && ( data.host || data.tabix) ) {
             connection = data;
         }
 

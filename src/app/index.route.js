@@ -69,6 +69,11 @@
                             templateUrl: 'app/base/header.html',
                             controller: 'HeaderController'
                         },
+
+                        sidebar: {
+                            templateUrl: 'app/dash/dashsidebar.html',
+                            controller: 'DashSidebarController'
+                        },
                         main: {
                             template: '<ui-view/>'
                         }
@@ -83,7 +88,7 @@
                     }]
                 })
                 .state('dash', {
-                    parent: 'layout',
+                    parent: 'layoutDash',
                     url: '/dash',
                     templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'
