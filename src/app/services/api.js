@@ -287,6 +287,11 @@
 
         };
 
+        this.getDashboardsTree = (body) => {
+            return this.fetchTabixServer('dashboards',body);
+        };
+
+
         this.fetchTabixServer = (action,body,extend_settings) =>
         {
 

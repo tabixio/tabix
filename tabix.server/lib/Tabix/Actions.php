@@ -142,7 +142,14 @@ class Actions
 
     public function actionDashboards($param=false,$value=false)
     {
-        return $this->mongo()->listDashboards($param,$value);
+        $list=$this->mongo()->dashboards($this->param());
+        $tree=[];
+        foreach ($list as $id=>$entry)
+        {
+
+        }
+
+        return $tree;
     }
 
     public function actionDrophistory()

@@ -127,6 +127,19 @@ class Mongo
         return $a;
     }
 
+    public function dashboards(\dotArray $params)
+    {
+        $out=[];
+
+
+        $result = $this->collection_dashboards()->find( );
+        foreach ($result as $entry) {
+            $entry['id']=strval($entry['_id']);
+            unset($entry['_id']);
+            $out[$entry['id']]=$entry;
+        }
+        return $out;
+    }
     public function dashboard($id)
     {
         $dash=$this->load_dash($id);
