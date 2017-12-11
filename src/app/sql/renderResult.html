@@ -60,6 +60,35 @@
             </md-menu-content>
         </md-menu>
 
+
+
+
+
+        <md-menu md-position-mode="target" ng-repeat="tableData in ::resultContainer.widgets.tables"
+                 ng-if="::tableData.data.progressQuery">
+            <md-button aria-label="menu" class="md-icon-button tabs-buttons" ng-click="$mdOpenMenu($event)">
+                <md-tooltip>{{::tableData.data.progressQuery}}</md-tooltip>
+                <i class="mdi mdi-18px mdi-bank"></i>
+            </md-button>
+            <md-menu-content>
+                <md-menu-item>
+                    <md-button ng-click="SendToDashboard(tableData,'table')">
+                        Table to Dashboard
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="SendToDashboard(tableData,'chart')">
+                        Chart to Dashboard
+                    </md-button>
+                </md-menu-item>
+
+            </md-menu-content>
+        </md-menu>
+
+
+
+
+
             <md-button aria-label="menu" class="md-icon-button tabs-buttons">
                 <i class="mdi mdi-18px " ng-class="vars.staticGrid ? 'mdi-pin' : 'mdi-pin-off'" ng-click="switchStaticGrid()"></i>
                 <md-tooltip>Pinned</md-tooltip>

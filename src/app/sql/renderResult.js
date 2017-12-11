@@ -18,7 +18,7 @@
         '$mdDialog',
         '$mdToast',
         'ThemeService',
-        '$timeout'
+        '$timeout','$mdPanel'
     ];
 
     /**
@@ -34,7 +34,7 @@
                            $mdSidenav,
                            $mdDialog,
                            $mdToast,
-                              ThemeService,$timeout) {
+                              ThemeService,$timeout,$mdPanel) {
 
 
 
@@ -127,6 +127,27 @@
             $scope.staticGrid=$scope.vars.staticGrid;
             console.info("staticGrid",$scope.staticGrid);
 
+        };
+
+        $scope.SendToDashboard = (w,type) => {
+            // ---------------------------------------------
+            let position = $mdPanel.newPanelPosition() .absolute() .right()  .top();
+            $mdPanel.open({
+                controller: PlotlyEditorController,
+                templateUrl: 'app/panels/sendtodashboard.html',
+                attachTo: angular.element(document.body),
+                position: position,
+                panelClass: 'demo-dialog-example',
+                trapFocus: true,
+                zIndex: 150,
+                clickOutsideToClose: true,
+                clickEscapeToClose: true,
+                hasBackdrop: true,
+                controllerAs: 'ctrl',
+                locals:{
+                    '$widget':w
+                },
+            });
         };
 
         $scope.initNoTabs = () => {
