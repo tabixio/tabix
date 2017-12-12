@@ -94,6 +94,11 @@
                 <md-tooltip>Pinned</md-tooltip>
             </md-button>
 
+            <md-button aria-label="menu" class="md-icon-button tabs-buttons">
+                <i class="mdi mdi-18px mdi-share-variant" ng-click="shareResult()"></i>
+                <md-tooltip>Share</md-tooltip>
+            </md-button>
+
         <md-button aria-label="menu" class="md-icon-button tabs-buttons" ng-repeat="wplotly in ::resultContainer.widgets.draw" ng-if="vars.active.draw">
 
         <i class="mdi mdi-18px mdi-chart-bar" ng-click="openEditorPlotLy(wplotly)"></i>

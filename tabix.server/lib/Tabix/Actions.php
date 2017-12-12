@@ -121,6 +121,45 @@ class Actions
         return [];
 
     }
+    public function actionWidget($id)
+    {
+        $data=[];
+        $z= $this->mongo()->widget($id);
+
+        $query=$z['sql'];
+        $vars=[];
+
+        if (is_array($z['vars'])) $vars=$z['vars'];
+        if (is_array($this->param('vars'))) {
+            $vars=array_replace_recursive($vars,$this->param('vars'));
+        }
+
+        if (!empty($vars['limit'])) $vars['limit']=intval($vars['limit']);
+
+        if (empty($z['params']['widget']))
+        {
+            $widget=['type'=>'table'];
+        }
+        else {
+            $widget=$z['params']['widget'];
+
+        }
+
+
+
+        $q=new SQLQuery($query,$vars);
+        $data=$this->dbs()->query($q,$this->param());
+        $draw=$q->extractDraw();
+
+
+
+        return [
+            'draw'=>$draw,
+            'query'=>trim($q->sql()),
+            'widget'=>$widget,
+            'data'=>$data
+        ];
+    }
     public function actionFetch()
     {
         $quid=$this->param('quid');
@@ -143,13 +182,29 @@ class Actions
     public function actionDashboards($param=false,$value=false)
     {
         $list=$this->mongo()->dashboards($this->param());
-        $tree=[];
+        $tree=[
+
+        ];
         foreach ($list as $id=>$entry)
         {
+             if ($entry['path']) {
+                 if (is_array($entry['path']))
+                 {
+                     $p=$entry['path'][0];
+                 }else
+                 {
+                     $p=$entry['path'];
+                 }
 
+
+             }
+             else {
+                 $p='Main';
+             }
+            $tree[$p][$entry['id']]=['title'=>$entry['title']];
         }
 
-        return $tree;
+        return ['tree'=>$tree,'list'=>$list];
     }
 
     public function actionDrophistory()

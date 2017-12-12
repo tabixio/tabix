@@ -45,3 +45,6 @@ return [
             ]
 ]
 ];
+
+// select * from default.ontime INTO OUTFILE 'fly.tsv'
+// cat fly.tsv | clickhouse-client --query="INSERT INTO ontime FORMAT TabSeparated"

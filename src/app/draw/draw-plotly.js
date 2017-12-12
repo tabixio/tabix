@@ -75,6 +75,7 @@ class DrawPlotly extends DrawBasicChart {
             }
         }
         this._datajs=data;
+        return data;
     }
     applyCode() {
 
@@ -86,7 +87,8 @@ class DrawPlotly extends DrawBasicChart {
             console.info("applyCode",codeJS);
 
             let data = this.getDataForCodeJS();
-            console.log(data);
+            console.log('getDataForCodeJS',data);
+            console.log('this.data()',this.data());
             codeJS = '(' + codeJS + ')';
             let obj = eval(codeJS);
 
@@ -359,10 +361,10 @@ class DrawPlotly extends DrawBasicChart {
 
             layout:{
                 autosize:true,
-                font:{'color':'eee','family':'Menlo'},
-                plot_bgcolor:'#333',
-                paper_bgcolor:'#333',
-                legend:{bgcolor:'#333',"orientation": "h"},
+                font:{'color':'eee'},//,'family':'Menlo'
+                plot_bgcolor:'#303030',
+                paper_bgcolor:'#303030',
+                legend:{bgcolor:'#303030',"orientation": "h"},
             },
             colors:{
                 increasing:'#00FF00',

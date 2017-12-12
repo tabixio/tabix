@@ -287,6 +287,12 @@
 
         };
 
+        this.getWidget= (wId,body) => {
+            return this.fetchTabixServer('widget/'+wId,body);
+        };
+        this.getDashboard= (dashId,body) => {
+            return this.fetchTabixServer('dashboard/'+dashId,body);
+        };
         this.getDashboardsTree = (body) => {
             return this.fetchTabixServer('dashboards',body);
         };

@@ -64,57 +64,46 @@
             // staticGrid:true
         };
 
-        function PlotlyEditorController($scope, $mdDialog)
+        function ShareEditorController(mdPanelRef,$widget)
         {
-            $scope.editor=false;
-            $scope.hide = function() {
-                $mdDialog.hide();
+
+            this.apply=function() {
+
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Share OK, link in clipboard')
+                        .theme(ThemeService.theme)
+                        .position('top right')
+                );
+
+
+                if (mdPanelRef) mdPanelRef.close();
             };
 
-            $scope.cancel = function() {
-                $mdDialog.cancel();
+            this.close=function() {
+                if (mdPanelRef) mdPanelRef.close();
             };
+        }
 
 
-            $scope.applyCode=()=>{
+        function SendToDashboardController(mdPanelRef,$widget)
+        {
+            this.apply=function() {
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Add to dashboard - OK')
+                        .theme(ThemeService.theme)
+                        .position('top right')
+                );
 
-                console.log('applyCODE');
 
+
+                if (mdPanelRef) mdPanelRef.close();
             };
-            $scope.aceLoadedEditor=(editor)=>{
-                $scope.editor=editor;
-                console.warn('aceLoadedEditor');
-                editor.$blockScrolling = Infinity;
-                editor.session.setUseWrapMode(true);
-                editor.setOptions({
-                    fontSize: '14px',
-                    enableBasicAutocompletion : true,
-                    behavioursEnabled:true ,
-                    wrapBehavioursEnabled:true ,
-                    highlightSelectedWord:true ,
-                    showGutter:true ,
-                    enableLiveAutocompletion:true,
-                    liveAutocompletionDelay: 500,
-                    liveAutocompletionThreshold: 1
-                });
-                editor.commands.addCommand({
-                    name: 'runCurrentCommand',
-                    bindKey: {
-                        win: 'Ctrl-Enter',
-                        mac: 'Command-Enter'
-                    },
-                    exec: () => {
-                        $scope.applyCode();
-                    }
-                });
-                editor.setTheme('ace/theme/cobalt');
-                editor.setValue('{}');
-                editor.clearSelection();
-                editor.focus();
-                editor.selection.moveTo(0, 0);
-                editor.session.setMode({
-                    path: "ace/mode/javascript",
-                });
+            this.close=function() {
+                if (mdPanelRef) mdPanelRef.close();
             };
         }
 
@@ -129,11 +118,30 @@
 
         };
 
+        $scope.shareResult = () => {
+            let position = $mdPanel.newPanelPosition() .absolute() .right()  .top();
+            $mdPanel.open({
+                controller: ShareEditorController,
+                templateUrl: 'app/panels/share.html',
+                attachTo: angular.element(document.body),
+                position: position,
+                panelClass: 'demo-dialog-example',
+                trapFocus: true,
+                zIndex: 150,
+                clickOutsideToClose: true,
+                clickEscapeToClose: true,
+                hasBackdrop: true,
+                controllerAs: 'ctrl',
+                locals:{
+                    '$widget':''
+                },
+            });
+        };
         $scope.SendToDashboard = (w,type) => {
             // ---------------------------------------------
             let position = $mdPanel.newPanelPosition() .absolute() .right()  .top();
             $mdPanel.open({
-                controller: PlotlyEditorController,
+                controller: SendToDashboardController,
                 templateUrl: 'app/panels/sendtodashboard.html',
                 attachTo: angular.element(document.body),
                 position: position,

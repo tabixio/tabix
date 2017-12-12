@@ -12,11 +12,11 @@
 
     <div class="demo-dialog-content">
         <div ng-cloak>
-            <md-content>
+            <md-content style="min-width: 600px ;min-height: 300px">
                 <md-tabs md-dynamic-height md-border-bottom>
                     <md-tab label="Exists dashboards">
                         <md-content class="md-padding">
-                            <h1 class="md-display-2">Exists dashboards</h1>
+
 
                             <div layout="row">
                                 <md-input-container flex="50">
@@ -28,14 +28,38 @@
                                 </md-input-container>
                             </div>
 
+                            <br>
+                            <md-input-container class="md-block">
+                                <label>Title widget</label>
+                                <input value="My report">
+                            </md-input-container>
+                            <br>
+
+
+                            <md-radio-group>
+                                <md-radio-button value="Apple" class="md-primary">Append</md-radio-button>
+                                <md-radio-button value="Banana">Bottom </md-radio-button>
+                            </md-radio-group>
 
 
                         </md-content>
                     </md-tab>
                     <md-tab label="New dashboards">
                         <md-content class="md-padding">
-                            <h1 class="md-display-2">New dashboards</h1>
 
+                            <br>
+                            <br>
+                            <md-input-container class="md-block">
+                                <label>Title dashboard</label>
+                                <input value="New dash">
+                            </md-input-container>
+                            <br>
+                            <br>
+                            <md-input-container class="md-block">
+                                <label>Title widget</label>
+                                <input value="My report">
+                            </md-input-container>
+                            <br>
 
 
                         </md-content>
@@ -49,7 +73,9 @@
                     <md-button md-autofocus  class="md-primary" ng-click="ctrl.close()">
                         Close
                     </md-button>
-
+                    <md-button md-autofocus  class="md-warn" ng-click="ctrl.apply()">
+                        Apply
+                    </md-button>
                 </div>
 
 

@@ -87,6 +87,14 @@
                         $state.go('sql');
                     }]
                 })
+                // Show 1 table
+                .state('dashId', {
+                    parent: 'layoutDash',
+                    url: '/dash/{dashId}',
+                    templateUrl: 'app/dash/dash.html',
+                    controller: 'DashController'
+                })
+
                 .state('dash', {
                     parent: 'layoutDash',
                     url: '/dash',

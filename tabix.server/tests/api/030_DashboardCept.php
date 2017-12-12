@@ -14,16 +14,23 @@ $I->seeResponseJsonMatchesXpath('//dev//ok');
 $I->wantTo('Отправка запросов в CH + widget');
 $I->sendPOST('/query', ['auth' =>Fixtures::get('auth'),
     'query'=>
-            'SELECT number FROM $chDevelop2.system.numbers LIMIT 3
-          DRAW_PLOTLY {
-            yAxis:numver
-          }
+            'SELECT number,sin(number) as s,cos(number) as c FROM $chDevelop2.system.numbers LIMIT 100
+          DRAW_PLOTLY { 
+    trace:{
+    z:data.c,
+    x:data.number,
+    y:data.c, 
+    mode: \'markers\',
+    type:\'scatter3d\',opacity:0.3}
 
-          DRAW_CHART {
-            xAxis:numver
-          }
-          
+}
+         
 ',
+//    DRAW_CHART {
+//            xAxis:number,
+//            yAxis:["c","s"]
+//          }
+//
     'widget'=>[
         'type'=>'table'
     ]
@@ -67,13 +74,29 @@ $I->sendPOST('/dashboard/new',
     [
         'auth' =>Fixtures::get('auth'),
         'dash'=>[
-            'path'   => ['Sales & Продажи','Лето 2017'],
+            'path'   => ['Sales & Продажи'],
             'widgets'=>
             [
                     'id1'=>['id'=>$quid1,'x'=>0,'y'=>0,'w'=>3,'h'=>3],
                     'id2'=>['id'=>$quid2],
             ],
             'title'  => 'Продажи летом 2017',
+
+        ]
+    ]);
+
+// Сохранить запрос на Dashboard новый,path="Sales & Продажи / Лето 2017 " - получить DID
+$I->sendPOST('/dashboard/new',
+    [
+        'auth' =>Fixtures::get('auth'),
+        'dash'=>[
+            'path'   => ['Sales & Продажи'],
+            'widgets'=>
+                [
+                    'id1'=>['id'=>$quid2,'x'=>0,'y'=>0,'w'=>3,'h'=>3],
+                    'id2'=>['id'=>$quid1],
+                ],
+            'title'  => 'Продажи Зимой 2017',
 
         ]
     ]);
@@ -104,7 +127,7 @@ $I->wantTo('Обновить Dashboard '.$dash2);
 $I->sendPOST('/dashboard/'.$dash2.'/update',
     [
         'auth' =>Fixtures::get('auth'),
-        'dash'=>['title'=>'Продажи Lетом 2017']
+        'dash'=>['title'=>'Продажи Зимой 2017']
     ]
 );
 $I->seeResponseJsonMatchesXpath('//did');
@@ -114,7 +137,7 @@ $I->wantTo('Обновить Dashboard '.$dash1);
 $I->sendPOST('/dashboard/'.$dash1.'/update',
     [
         'auth' =>Fixtures::get('auth'),
-        'dash'=>['title'=>'Продажи Весной 2017']
+        'dash'=>['title'=>'Закупки']
     ]
 );
 // ------------------------------------------------------------------------

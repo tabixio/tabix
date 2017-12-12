@@ -17,7 +17,7 @@ class DrawEchartsMap extends DrawEcharts {
         sc.charset = 'utf-8';
         let s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);
-
+        console.log("loadWorldMapJSEcharts!!!!!!!!!!!!!!!!!!");
         window.loadWorldMapJSEcharts=true;
     }
 

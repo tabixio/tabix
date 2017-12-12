@@ -91,7 +91,8 @@ $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=n
         $app->render(500,[
                 'error'=>$E->getMessage(),
                 'file'=>$E->getFile().':'.$E->getLine(),
-                'trace'=>$E->getTrace()]
+//                'trace'=>$E->getTrace()
+                ]
         );
     }
 });

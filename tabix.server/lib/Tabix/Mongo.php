@@ -93,6 +93,16 @@ class Mongo
         $q->setQuid($x->getInsertedId());
         return $q;
     }
+    public function widget($quid)
+    {
+        $x=iterator_to_array($this->collection_query()->findOne(['_id'=>new \MongoDB\BSON\ObjectId($quid)]));
+
+        if (!empty($x['vars'])) {  $x['vars']=iterator_to_array($x['vars']);   }
+        if (!empty($x['params'])) {  $x['params']=iterator_to_array($x['params']);   }
+        if (!empty($x['server_settings'])) {  $x['server_settings']=iterator_to_array($x['server_settings']);   }
+
+        return $x;
+    }
     public function fetch($quid,$sing)
     {
         //$quid,$sing
@@ -124,6 +134,12 @@ class Mongo
         $a=iterator_to_array($a);
         $a['did']=strval($a['_id']);
         unset($a['_id']);
+
+
+        // prepare vars
+
+
+
         return $a;
     }
 

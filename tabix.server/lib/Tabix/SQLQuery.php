@@ -61,7 +61,26 @@ class SQLQuery
     {
         return $this->_originalSQL;
     }
+    public function extractDraw()
+    {
+        $out=[];
 
+        // find all DRAW_COMMANDS
+
+        foreach ($this->_drawCommands as $command)
+        {
+            $math=false;
+            if (preg_match('%DRAW_([a-zA-Z]+)%ius',$command,$math))
+            {
+                $type=$math[1];
+                $code=str_ireplace($math[0],'',$command);
+
+                $out[]=['drawtype'=>$type,'code'=>trim($code)];
+            }
+        }
+        if (!sizeof($out)) return false;
+        return $out;
+    }
     private function preProcessSQL($sql)
     {
         $this->_originalSQL=$sql;
