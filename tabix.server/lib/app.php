@@ -63,7 +63,6 @@ $app->any('/ping',function () use ($app) {
     $app->render(200, ['msg' =>"PONG!"]);
 });
 
-
 $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=null) use ($app)
 {
     try

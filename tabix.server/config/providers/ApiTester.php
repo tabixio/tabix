@@ -44,6 +44,22 @@ return [
                 ['login'=>'tabix3','password'=>'tabix3'],
             ]
 ]
+
+//    [
+//        'type'=>'ldap',
+//        'helper'=>[
+//
+//            'domain_controllers'    => ['ACME-DC01.corp.acme.org', '192.168.1.1'],    // use the either the host name or the IP address of your host.
+//            'base_dn'               => 'dc=corp,dc=acme,dc=org',// The base distinguished name of your domain.
+//            // The account to use for querying / modifying LDAP records.
+//            'admin_username'        => 'admin@corp.acme.org',
+//            'admin_password'        => 'password',
+//
+//            'cache'=>true,
+//
+//        ]
+//    ]
+
 ];
 
 // select * from default.ontime INTO OUTFILE 'fly.tsv'

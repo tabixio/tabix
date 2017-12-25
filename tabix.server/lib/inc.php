@@ -9,7 +9,6 @@ define('LIB_PATH',__DIR__.'');
 // --------------------------------------------------------------------------------------------------
 // main lib
 include_once 'autoloader.php';
-include_once '../phpClickHouse/include.php';
 include_once '../vendor/autoload.php';
 // --------------------------------------------------------------------------------------------------
 include_once 'SlimJson/Middleware.php';

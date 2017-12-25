@@ -82,14 +82,6 @@ php -m|grep mongodb
 ```
 
 git clone https://github.com/smi2/tabix.ui 
-
-cd tabix.ui/
-
-git submodule init
-git submodule update --init --recursive
-git submodule update --remote
-
-
 cd tabix.ui/tabix.server/
 php composer.phar install
 ```
