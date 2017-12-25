@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "05ba1827e26395893095c9b50872663c",
+    "hash": "c7f09d96f61c9ad173eb76dd687ba114",
+    "content-hash": "03595f0ba2842d85dca73655546919d5",
     "packages": [
         {
             "name": "analog/analog",
@@ -53,7 +54,7 @@
                 "logging",
                 "syslog"
             ],
-            "time": "2016-11-17T14:39:33+00:00"
+            "time": "2016-11-17 14:39:33"
         },
         {
             "name": "greenlion/php-sql-parser",
@@ -109,7 +110,7 @@
                 "parser",
                 "sql"
             ],
-            "time": "2016-10-12T04:29:55+00:00"
+            "time": "2016-10-12 04:29:55"
         },
         {
             "name": "mongodb/mongodb",
@@ -167,7 +168,7 @@
                 "mongodb",
                 "persistence"
             ],
-            "time": "2017-02-16T18:40:32+00:00"
+            "time": "2017-02-16 18:40:32"
         },
         {
             "name": "psr/log",
@@ -214,7 +215,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2016-10-10 12:19:37"
         },
         {
             "name": "slim/slim",
@@ -261,7 +262,58 @@
                 "rest",
                 "router"
             ],
-            "time": "2017-01-07T12:21:41+00:00"
+            "time": "2017-01-07 12:21:41"
+        },
+        {
+            "name": "smi2/phpclickhouse",
+            "version": "0.17.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smi2/phpClickHouse.git",
+                "reference": "2bbbd380e0eb2f8162a1f09ced5b35042db67d93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smi2/phpClickHouse/zipball/2bbbd380e0eb2f8162a1f09ced5b35042db67d93",
+                "reference": "2bbbd380e0eb2f8162a1f09ced5b35042db67d93",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "5.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Strykhar",
+                    "email": "isublimity@gmail.com",
+                    "homepage": "https://github.com/isublimity"
+                }
+            ],
+            "description": "php ClickHouse client library",
+            "homepage": "https://github.com/smi2/phpClickHouse",
+            "keywords": [
+                "clickhouse",
+                "client",
+                "curl",
+                "driver",
+                "http",
+                "http client"
+            ],
+            "time": "2017-12-22 12:22:22"
         }
     ],
     "packages-dev": [],
