@@ -153,9 +153,15 @@ class Router
                 $out[$sid]=['type'=>$this->config()->getServerType($sid),'id'=>$sid];
                 $out[$sid]['structure']=$this->getServer($sid)->structure();
             }
+            dump($out);
 //            \Tabix\Cache::set('structure'.$sid,$out,523);
 //        }
-        return ['structure'=>$out];
+        return ['structure'=>
+            [
+                'servers'=>array_keys($out),
+                'cache'=>false,
+                'data'=>$out
+            ]];
     }
 
     public function query(Tabix\SQLQuery $SQL,\dotArray $params=null)

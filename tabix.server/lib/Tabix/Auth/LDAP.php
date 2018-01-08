@@ -55,6 +55,7 @@ class LDAP
     public function login($user,$password)
     {
 
+        return false;
         $cacheKey=sha1($user.':'.json_encode($this->helper).$password);
 
         $user=false;

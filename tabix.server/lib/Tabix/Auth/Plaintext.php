@@ -35,7 +35,22 @@ class Plaintext
         $this->authConfig=[];
         $this->isLogin=false;
         if (isset($this->users[$user])) {
+
+            $ll=false;
+            if (strlen($this->users[$user]['password'])==40) {
+                // try SHA1
+                if ($this->users[$user]['password']==sha1($password))
+                {
+                    $ll=true;
+                }
+            }
+
             if ($this->users[$user]['password']==$password) {
+                $ll=true;
+            }
+
+
+            if ($ll) {
                 $this->isLogin=true;
                 $this->authConfig=$this->users[$user];
                 return true;

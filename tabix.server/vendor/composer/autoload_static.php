@@ -8,6 +8,7 @@ class ComposerStaticInitd153e2a5442461bfce4df9d4785be4d8
 {
     public static $files = array (
         '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
+        '98794879b9f3bba010855e1c65c9d901' => __DIR__ . '/..' . '/smi2/phpclickhouse/include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
