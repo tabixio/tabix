@@ -227,6 +227,7 @@
             return {
                 method: 'POST',
                 data  : request,
+                withCredentials: true,
                 // headers: {
                     // 'Content-Type': 'application/x-www-form-urlencoded'
                 // },
@@ -322,6 +323,7 @@
             let myInit={
                 mode: 'cors',
                 method: 'post',
+                credentials: 'include',
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 },
@@ -436,6 +438,7 @@
                     headers: {  'Content-Type': 'application/x-www-form-urlencoded'},
                     url: url,
                     cache: false,
+                    withCredentials: true,
                 };
 
                 if (connection.baseauth)
