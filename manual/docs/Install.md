@@ -88,3 +88,7 @@ Now you can access `tabix.ui` by the link http://localhost:8080.
 > **More security**: you can limit access to your `tabix.ui` application on the proxy level. 
 > Use `-e USER='myuser' -e PASSWORD='mypass'` parameters to restrict access only for specified user. 
 > For example, `docker run -d -p 8080:80 -e USER='myuser' -e PASSWORD='mypass' spoonest/clickhouse-tabix-web-client`
+
+> **Automatic connection**: you can automatically connect to a Clickhouse server by specifying
+> `CH_NAME`, `CH_HOST`, `CH_LOGIN`, `CH_PASSWORD` and/or `CH_PARAMS` environment variables.
+> For example, `docker run -d -p 8080:80 -e CH_NAME='myco' -e CH_HOST='clickhouse.myco.intranet:8123' spoonest/clickhouse-tabix-web-client`
