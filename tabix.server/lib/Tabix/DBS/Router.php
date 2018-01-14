@@ -24,7 +24,6 @@ class Router
         $this->_user=$user;
         $this->_mongo=$mongo;
     }
-
     /**
      * @return Tabix\User
      */
@@ -32,7 +31,6 @@ class Router
     {
         return $this->_user;
     }
-
     /**
      * @return Tabix\ConfigProvider
      */
@@ -40,7 +38,6 @@ class Router
     {
         return $this->_config;
     }
-
     /**
      * @return Tabix\Mongo
      */
@@ -72,8 +69,6 @@ class Router
         $this->__connect[$sid]=new $class($connection);
         return $this->__connect[$sid];
     }
-
-
     /**
      * @param $sid
      * @param Tabix\SQLQuery $query
@@ -114,7 +109,6 @@ class Router
         }
         return $default;
     }
-
     /**
      * @param Tabix\Query\Result $q
      * @return Tabix\Query\Result
@@ -123,7 +117,6 @@ class Router
     {
         return $this->mongo()->query($q);
     }
-
     public function kill($params=[])
     {
 
@@ -141,29 +134,35 @@ class Router
     }
     public function structure($params=[])
     {
-        // get structure from all servers
-//        $out=\Tabix\Cache::get('structure'.$sid);
-
-//        if (!$out)
-//        {
-
-            $servers=$this->config()->getServers();
-            foreach ($servers as $sid)
+        // Get structure from all servers
+        $servers=$this->config()->getServers();
+        foreach ($servers as $sid)
+        {
+            // ------------------------------------------------
+            //  $out=\Tabix\Cache::get('structure'.$sid);
+            $out[$sid]=
+                [
+                        'type'=>$this->config()->getServerType($sid),
+                        'id'=>$sid
+                ];
+            // ------------------------------------------------
+            $structure=\Tabix\Cache::get('structure'.$sid);
+            if (!$structure)
             {
-                $out[$sid]=['type'=>$this->config()->getServerType($sid),'id'=>$sid];
-                $out[$sid]['structure']=$this->getServer($sid)->structure();
+                $structure=$this->getServer($sid)->structure();
+                \Tabix\Cache::set('structure'.$sid,$structure);
             }
-            dump($out);
-//            \Tabix\Cache::set('structure'.$sid,$out,523);
-//        }
-        return ['structure'=>
+            $out[$sid]=$structure;
+            // columns,tables,databases,dictionaries,functions
+            // ------------------------------------------------
+        }
+        return
             [
                 'servers'=>array_keys($out),
                 'cache'=>false,
-                'data'=>$out
-            ]];
+                'meta'=>$out
+            ];
     }
-
     public function query(Tabix\SQLQuery $SQL,\dotArray $params=null)
     {
         $sid=$this->findRouteServer($SQL,$params);

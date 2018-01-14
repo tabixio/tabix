@@ -59,6 +59,10 @@ class Clickhouse
     {
         // ---
     }
+
+    /**
+     * @return array
+     */
     public function structure()
     {
         $sql['columns']="SELECT * FROM system.columns";

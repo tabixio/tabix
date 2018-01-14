@@ -15,7 +15,7 @@ return [
     'sqldb'=>[
         'type'=>'MySQL',
         'driver'=>'PDO',
-        'connection'=>['dsn'=>'mysql:host=127.0.0.1;dbname=sys','username'=>'tabix','password'=>'tabix858']
+        'connection'=>['dsn'=>'mysql:host=127.0.0.1;dbname=sys;charset=utf8','username'=>'tabix','password'=>'tabix858']
     ]
 ],
 
