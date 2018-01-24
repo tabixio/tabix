@@ -14,4 +14,4 @@ ADD ./build /var/www/html
 RUN rm $DEFAULT
 RUN mv default $DEFAULT
 
-CMD if [ ! -z "$PASSWORD" ]; then sh -c "echo -n '$USER:$(openssl passwd -crypt $PASSWORD)\n' >> /etc/nginx/.htpasswd" ; else mv -f $APP_HOME/default_no_pass $DEFAULT ; fi && ./start.sh
+CMD ./start.sh
