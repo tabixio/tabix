@@ -1,1 +1,0 @@
-SELECT organism_name AS reference FROM organisms GROUP BY reference

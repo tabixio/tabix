@@ -1,1 +1,0 @@
-CREATE TABLE hohoho (a integer not null) REPLACE AS SELECT DISTINCT * FROM abcd WHERE x < 5

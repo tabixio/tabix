@@ -1,1 +1,0 @@
-SELECT user(), MAX(salary) FROM users GROUP BY user() HAVING MAX(salary) > 10

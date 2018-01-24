@@ -1,1 +1,0 @@
-CREATE TABLE t1 (c1 CHAR (3), c2 CHAR (3), KEY (c1))

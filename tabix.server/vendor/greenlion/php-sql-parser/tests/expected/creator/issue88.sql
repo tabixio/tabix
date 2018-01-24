@@ -1,1 +1,0 @@
-SELECT (some_field = 'string') FROM table

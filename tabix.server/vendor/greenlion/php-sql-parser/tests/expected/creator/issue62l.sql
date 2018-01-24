@@ -1,1 +1,0 @@
-SELECT round((1 - (phy.value / (cur.value + con.value))) * 100,2) FROM vtiger_users

@@ -1,1 +1,0 @@
-CREATE TABLE "cachetable01" ("sp_id" varchar (240) DEFAULT NULL, "ro" varchar (240) DEFAULT NULL, "balance" varchar (240) DEFAULT NULL, "last_cache_timestamp" varchar (25) DEFAULT NULL) ENGINE = InnoDB DEFAULT CHARACTER SET = latin1

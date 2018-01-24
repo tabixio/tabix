@@ -1,7 +1,0 @@
-{
-    "require": {
-        "slim/slim": "2.*",
-        "mongodb/mongodb": "^1.1",
-        "greenlion/php-sql-parser": "^4.1"
-    }
-}
