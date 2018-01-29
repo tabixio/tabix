@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 IgorStrykhar in SMI2
+ * Copyright (C) 2017 IgorStrykhar in Tabix LLC
  * All rights reserved.
  */
 

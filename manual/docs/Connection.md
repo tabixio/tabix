@@ -3,7 +3,7 @@
 * If open clickhouse 
 
 
-## Use chproxy (experimentally)
+## Use chproxy
 
 
 chproxy provides the following features to tabix:

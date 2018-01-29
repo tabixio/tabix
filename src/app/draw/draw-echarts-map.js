@@ -1,5 +1,5 @@
 /*
- * Licensed under the Apache License, Version 2.0 Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors
+ * Licensed under the Apache License, Version 2.0 Copyright 2017 Tabix LLC,Igor Strykhar and other contributors
  */
 
 'use strict';
@@ -17,7 +17,7 @@ class DrawEchartsMap extends DrawEcharts {
         sc.charset = 'utf-8';
         let s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(sc, s);
-        console.log("loadWorldMapJSEcharts!!!!!!!!!!!!!!!!!!");
+
         window.loadWorldMapJSEcharts=true;
     }
 
