@@ -96,9 +96,14 @@ class HandsTable {
 
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
             if (cell.type.includes('Int64')) {
-              //
+                // Default string type
               c.type = 'text';
               c.width = 100;
+                // if DataProvider.prepareInt64() convert String->Int64, use numeric type
+                if (_.isObject(this.meta.prepareInt64Cols)) {
+                    if (this.meta.prepareInt64Cols[cell.name])
+                        c.type='numeric';
+                  }
 
             } else  if (cell.type.includes('Int')) {
                 c.width = 80;
@@ -354,6 +359,35 @@ class HandsTable {
         HandsTable.pushToClipboardText(q);
 
 
+    }
+
+    static Calc(ht,command) {
+
+        let s = HandsTable.getSelected(ht,true);
+
+        let outText = [];
+        let columns = ht.getSettings().columns;
+        let rr = [];
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+
+            for (let row = s.fromRow; row <= s.toRow; row++) {
+                let typeColumn = columns[col].type.toLowerCase();
+                if (typeColumn.includes('numeric')) {
+                    rr.push(ht.getDataAtCell(row, col));
+                }
+            }
+        }
+        if (_.isArray(rr) && rr.length)
+        {
+            let val={
+                median:_.round(_.median(rr),3),
+                sum:_.round(_.sum(rr),3),
+                average:_.round(_.average(rr),3),
+                std:_.round(_.stdDeviation(rr),3)
+            };
+            angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
+
+        }
     }
 
     static Transpose(ht,command) {
@@ -783,12 +817,15 @@ class HandsTable {
                                 name: "Transpose full table",
                                 callback: function (key, options, pf) {
                                     HandsTable.Transpose(this, 'Transpose');
+                    }
                                 },
-                                key: "Transform:1"
+                "Calculate": {
+                    name: "Calc Avg & Sum & Median",
+                    callback: function (key, options, pf) {
+                        HandsTable.Calc(this, 'All');
+                    }
                             },
-                        ]//items
-                    },//submenu
-                },
+                "hsep4": "---------",
                 // "HideShow": {
                 //     name: 'Hide & Show',
                 //     submenu: {
@@ -813,7 +850,7 @@ class HandsTable {
                 "undo": {},
                 "make_read_only": {},
                 "alignment": {},
-                "hsep4": "---------",
+                "hsep5": "---------",
 
 
             }

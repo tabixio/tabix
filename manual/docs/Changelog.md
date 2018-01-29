@@ -1,3 +1,10 @@
+## 2017-12-13 BETA [17.12.1]
+
+
+* Int64 problem is String auto find max value and convert to Int
+* Calc selected cells [avg,median,sum,std]
+
+
 ## 2017-11-13 Master [17.11.2]
 
 * Fix `WITH 1+1 as a SELECT a`

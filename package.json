@@ -5,7 +5,7 @@
   "homepage": "https://tabix.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/smi2/tabix.ui.git"
+    "url": "https://github.com/tabixio/tabix.git"
   },
   "dependencies": {
     "babel": "^6.23.0",

@@ -1366,7 +1366,14 @@ window.aceJSRules = {
         $rootScope.$on('handleBroadcastUpdateVarsAndSnippets', function(event,args) {
                 $scope.aceApply();
         });
+        $rootScope.$on('handleBroadcastCalcSumCells', function(event,args) {
+            if (_.isObject($scope.vars.currentTab.results[0]))
+            {
+                $scope.vars.currentTab.results[0].cellsCalc=args;
+                $scope.$applyAsync();
+            }
 
+        });
         // вставка текста в активное окно редактора там где курсор
         $rootScope.$on('handleBroadcastInsertInActive', function(event,args) {
             if (args.value) {

@@ -7,6 +7,7 @@ class Widget {
         this._scheduledResize = false;
         this.data = DataProvider;
         this.drawCommnads = draw;
+        this.title=false;
 
         this._draw = false;
         if (draw && this.drawCommnads.drawtype) {
@@ -38,7 +39,13 @@ class Widget {
         this.isDark = isDark;
         window.isDarkTheme=isDark;
     }
+    applySettings(o)
+    {
+        console.log('applySettings',o);
 
+        if (!_.isObject(o)) return;
+        if (o.title) this.title=o.title;
+    }
     onDrag() {
         // console.info("On widget Draw",this);
     }

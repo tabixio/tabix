@@ -56,8 +56,6 @@ class DatabaseStructure {
 
             if (!_.isArray(this.uciq_fields[item.database])) {
 
-                console.warn("WTF ??? `"+item.database+'` is not ARRAY');
-
                 this.uciq_fields[item.database]=[];
             }
 
@@ -69,6 +67,7 @@ class DatabaseStructure {
 
         });
 
+        console.log('DS init ... done');
         this._init=true;
 
     }

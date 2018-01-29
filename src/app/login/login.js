@@ -34,7 +34,11 @@
 
 
         $scope.loginCheckDone= ()=> {
-            API.databaseStructure(   (ds) => $state.go('sql') , true);
+            API.databaseStructure(
+                (ds) => {
+                    console.log('loginCheckDone ... DS ... done');
+                    $state.go('sql');
+                } , true);
         };
 
         /**

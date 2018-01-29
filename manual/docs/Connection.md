@@ -14,3 +14,18 @@ chproxy provides the following features to tabix:
 
 
 https://github.com/Vertamedia/chproxy
+
+
+
+## Use mode "RO User" (experimentally)
+
+Your need config in CH server :
+
+* add_http_cors_header=1
+* output_format_json_quote_64bit_integers=1
+* output_format_json_quote_denormals=1
+
+
+## Use mode "HTTP Auth" (experimentally)
+
+Your need Nginx as http proxy
