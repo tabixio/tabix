@@ -242,7 +242,7 @@
             }
 
             if(key == "InsertSQLDescribe"){
-                API.query( 'SHOW CREATE TABLE ' + db + '."' + table+'"' ).then( data => {
+                API.fetchQuery( 'SHOW CREATE TABLE ' + db + '."' + table+'"' ).then( data => {
 
                     let sql=window.sqlFormatter.format(data.data[0].statement);
                     $rootScope.$emit('handleBroadcastInsertInActive', {value:sql});
@@ -256,7 +256,7 @@
             }
 
             if(key == "InsertDescribe"){
-               API.query( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
+               API.fetchQuery( 'SELECT * FROM system.columns WHERE database=\'' + db + '\' AND table=\'' + table+'\'' ).then( data =>{
 
                    let fields=[];
                    let where=[];

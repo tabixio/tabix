@@ -81,6 +81,7 @@
                         if (x.data)
                             msg=x.data;
                     }
+                    if (_.isString(x)) msg=x;
                     console.log('Error on login',x);
                     $mdToast.show(
                         $mdToast
@@ -130,10 +131,19 @@
          * Remove connection item
          */
         $scope.add = () => {
-            $scope.vars.bases.push($scope.vars.db);
+            let x=angular.copy($scope.vars.db);
+            x.id=(new Date()).getTime();
+
+            if (!x.name) {
+                x.name="new connection";
+            }
+            console.warn(x);
+            $scope.vars.bases.push(x);
         };
+
         $scope.remove = () => {
             const index = $scope.vars.bases.findIndex((item) => (item.id == $scope.vars.db.id));
+            console.warn($scope.vars.bases,index);
             $scope.vars.bases.splice(index);
             localStorageService.set(ALL_BASES_KEY, $scope.vars.bases);
             $scope.vars.db = {};

@@ -430,12 +430,18 @@
             let myInit={
                 mode: 'cors',
                 method: 'post',
-                credentials: 'include',
+
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
                 },
                 body : query
             };
+
+
+            if (connection.includeCredentials)
+            {
+                myInit.credentials='include'; // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+            }
 
             let myRequest = new Request(url, myInit);
 

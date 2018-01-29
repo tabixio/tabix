@@ -87,7 +87,7 @@
             console.warn("LOAD DATA! IN TABLES");
 
             $scope.vars.data = -1;
-            API.query( `
+            API.fetchQuery( `
             select * from ${ $scope.vars.currentDatabase }.${ $scope.vars.currentTable } limit ${ $scope.vars.offset }, ${ $scope.vars.limit }
                 ` ).then( function ( data ) {
 
@@ -132,7 +132,7 @@
             // Потом прогресс вручную домножить на 10000
 
             $scope.vars.isRawStatistics=true;
-            API.query( 'SELECT any(ignore(*)) FROM ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable +' SAMPLE 1 / 10000 ' ).then( data => {
+            API.fetchQuery( 'SELECT any(ignore(*)) FROM ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable +' SAMPLE 1 / 10000 ' ).then( data => {
                 //
                 $scope.vars.rawstatistics=data.statistics;
                 // console.log("RAcalcRawSizeWresult",data);
@@ -145,7 +145,7 @@
         $scope.init = ( ) => {
             $scope.vars.loading = true;
             $scope.vars.createtable = "N/A";
-            API.query( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
+            API.fetchQuery( 'SHOW CREATE TABLE ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data =>{
                 $scope.vars.createtable = window.sqlFormatter.format(data.data[0].statement);
             } );
 
@@ -153,7 +153,7 @@
             /**
             * Запрос статистики по таблице
             */
-            API.query( 'SELECT ' +
+            API.fetchQuery( 'SELECT ' +
                 '	table, ' +
                 '	formatReadableSize(sum(bytes)) as size, ' +
                 '	sum(bytes) as sizeBytes, ' +
@@ -168,11 +168,11 @@
             /**
              * Запрос полей таблицы
              */
-            API.query( 'SELECT * FROM system.columns WHERE database=\'' + $scope.vars.currentDatabase + '\' AND table=\'' + $scope.vars.currentTable+'\'' ).then( columnsData => {
+            API.fetchQuery( 'SELECT * FROM system.columns WHERE database=\'' + $scope.vars.currentDatabase + '\' AND table=\'' + $scope.vars.currentTable+'\'' ).then( columnsData => {
 
                 // columnsData
 
-                API.query( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => {
+                API.fetchQuery( 'describe table ' + $scope.vars.currentDatabase + '.' + $scope.vars.currentTable ).then( data => {
 
 
                     _.map(data.data,function(o) {

@@ -305,7 +305,7 @@
                 round(elapsed,4) as elapsed 
             FROM system.processes /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%' ORDER BY elapsed DESC`;
 
-            API.query(sql).then(function ( data ) {
+            API.fetchQuery(sql).then(function ( data ) {
 
                 $mdDialog.show({
                     controller: function($scope){
@@ -327,7 +327,7 @@
 
 
                                 //
-                                API.query(sqlKill,false).then(function ( killdata ) {
+                                API.fetchQuery(sqlKill,false).then(function ( killdata ) {
 
                                     $mdDialog.show(
                                         $mdDialog.alert()

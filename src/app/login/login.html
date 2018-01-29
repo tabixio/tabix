@@ -127,20 +127,22 @@
                                             </md-input-container>
                                         </div>
                                         <div>
-                                            <md-checkbox md-no-ink ng-model="vars.db.baseauth" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
-                                                HTTP Base auth
-                                            </md-checkbox>
-
-                                            <!--<md-checkbox md-no-ink ng-model="vars.db.rouser" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">-->
-                                                <!--RO user ClickHouse-->
-                                            <!--</md-checkbox>-->
 
                                             <md-checkbox md-no-ink ng-model="vars.db.NotCH1_1_54276" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
-                                                Server < 1.1.54276
+                                                Server Version < 1.1.54276
                                             </md-checkbox>
 
 
 
+                                        </div>
+                                        <div layout="row">
+                                                    Experimental:&nbsp
+                                                    <md-checkbox md-no-ink ng-model="vars.db.baseauth" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
+                                                        HTTP Base auth
+                                                    </md-checkbox>
+                                                    <md-checkbox md-no-ink ng-model="vars.db.includeCredentials" ng-disabled="vars.loading" class="md-block" flex-gt-sm aria-label="No Ink Effects">
+                                                        Include Credentials
+                                                    </md-checkbox>
                                         </div>
                                         <div layout="row">
                                             <div flex>
@@ -224,16 +226,12 @@
             <div class="footer">
                 <md-card class="m0 p">
                     <div>
-                        <a href="https://github.com/smi2/" target="_blank" class="pull-right">
+                        <a href="https://tabix.io/" target="_blank" class="pull-right">
                             <i class="mdi mdi-github-circle mdi-24px"></i>
                         </a>
                         <p class="copyright text-center" style="line-height: 24px">
-                            <a href="https://tabix.io/" target="_blank" class="tc-white" style="text-decoration: underline">Tabix.IO</a> from
-                            <a href="https://github.com/smi2" target="_blank" style="text-decoration: underline" class="tc-white">SMI2</a>
-                            &copy;
-                            {{::vars.year}}, all rights reserved.
-                            Build <b>{{::vars.version}}</b>
-
+                            <a href="https://tabix.io/" target="_blank" class="tc-white" style="text-decoration: underline">Tabix.IO</a> by
+                            Tabix LLC &copy; {{::vars.year}}, all rights reserved. Build <b>{{::vars.version}}</b>
                         </p>
                     </div>
                 </md-card>

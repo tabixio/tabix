@@ -351,7 +351,7 @@
             }
 
 
-            API.query(sql).then(function ( raw ) {
+            API.fetchQuery(sql).then(function ( raw ) {
                 $scope.vars.loading=false;
                 // push data to scope
                 let d={
