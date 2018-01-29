@@ -1,9 +1,9 @@
-## 2017-12-13 BETA [17.12.1]
+## 2018-01-29 Master [18.01.1]
 
 
 * Int64 problem is String auto find max value and convert to Int
 * Calc selected cells [avg,median,sum,std]
-
+* Add credentials include
 
 ## 2017-11-13 Master [17.11.2]
 
