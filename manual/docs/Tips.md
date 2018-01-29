@@ -1,15 +1,16 @@
+## Working with multiple queries
 
-## Работа с мульти запросами
 
-Работа с мульти запросами, удобно написать несколько запросов в одной вкладке и разделить их ";;"
- 
-Передвигая курсор на первый или второй запрос и нажать Cmd(Ctrl)+Enter - выполняется запрос под курсором
+Working with multiple queries, it is convenient to write several queries in one tab and split them ";;"
+ 
+Moving the cursor to the first or second query and pressing Cmd (Ctrl) + Enter - the query is performed under the cursor
 
-Не нужно использовать историю запросов - все в одном редакторе. 
+Do not use the query history - all in one editor.
 
-Можно нажать Shift+Cmd+Enter - и выполнятся все запросы разом в редакторе. 
+You can press Shift + Cmd + Enter - and all queries are executed at once in the editor.
 
-Допустим вы хотите: 
+Let's say you want:
+
 ```
 DROP TABLE IF EXISTS default.x 
 ;;
@@ -19,21 +20,23 @@ INSERT INTO default.x
 SELECT 12345
 ```
 
-Можно ввести это все в поле и выполнить разом 
+You can enter this all into the field and execute at once
 
 ![Tabix multi query](https://tabix.io/anime/MultiQuery.gif)
 
-Также история запросов отображается в левой части.
+Also, the query history is displayed on the left.
+
 
 ## Double click
 
-Двойной клик сворачивает панель 
+Double-click to collapse the panel
 
 ![Tabix multi query](https://tabix.io/anime/DoubleClicks.gif)
 
 ## Переменные 
 
-Отдельная панель для редактирования Vars, поддерживается синтаксис: 
+A separate panel for editing Vars, the syntax is supported:
+
 
 ```
 $var_name
@@ -46,14 +49,14 @@ $var_name
 
 ## Снипеты 
 
-Часто используемый код, в качестве примера : `event_date=today()` можно сохранить в сниппет и он появляется в автокомплите
+Often used code, as an example: `event_date = today ()` can be saved to the snippet and it appears in the autocomplete
 
 ![Tabix Snippets](https://tabix.io/anime/Snippets.gif)
 
 
 ## Transpose, поворот таблицы
 
-Бывает очень удобно повернуть таблицу у которой очень большое кол-во колонок и мало строк
+It can be very convenient to rotate the table which has a very large number of columns and few rows
 
 ![Tabix Transpose](https://tabix.io/anime/Transpose.gif)
 
@@ -61,7 +64,7 @@ $var_name
 
 ## SQL + With totals
 
-Если в запросе указано `WITH TOTALS` последняя строка в результирующей таблице содержит TOTALS
+If the query specifies `WITH TOTALS`, the last row in the resulting table contains TOTALS
 
 
 ![Tabix Transpose](https://tabix.io/anime/withtotals.gif)
@@ -70,7 +73,7 @@ $var_name
 
 ## Right click в таблице 
 
-Правый клик - открывает меню
+Right click - opens the menu
 
 ![Tabix Right Click Table](https://tabix.io/anime/RightClickTable.gif)
 
@@ -79,13 +82,13 @@ $var_name
 
 ## Draw_Chart - [xAxis,yAxis]
 
-Можно указать колонки которые используются для осей
+You can specify the columns that are used for the axes
 
-По умолчанию для построения графиков берется за ось X - первая колонка, или колонка формата DateTime
+By default, the X-axis is used for plotting - the first column, or the DateTime column
 
-На оси Y откладываются отдельно другие колонки, если встречается колонка типа String, она становится группировочной
+On the Y axis, other columns are stored separately, if there is a column of type String, it becomes grouping
 
-Но бывает необходимо построить график только по заданным колонкам:
+But sometimes it is necessary to build a graph only on the given columns:
 
 
 
@@ -96,7 +99,7 @@ $var_name
 
 ## Draw_Plotly
 
-Экспериментальная разработка - поддержка Plotly для построения 3D
+Experimental development - Plotly support for building 3D
 
 ![Tabix 3D ](https://tabix.io/doc/img/plotly_mesh3d.png)
 
@@ -104,3 +107,5 @@ $var_name
 ## Calc sum
 
 Select cells -> Right click -> "Calc Avg & Sum & Median"
+
+![Tabix 3D ](https://tabix.io/doc/img/CalcSumMedian.png)
