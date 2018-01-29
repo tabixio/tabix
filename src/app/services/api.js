@@ -456,7 +456,7 @@
 
                     }
                     if (contentType && contentType.includes("application/json") && response.status >= 200 && response.status < 300) {
-                        return Promise.resolve(response)
+                        return Promise.resolve(response);
                     } else {
                         return response.text().then(Promise.reject.bind(Promise));
                     }
@@ -471,7 +471,7 @@
                         return Promise.reject(responseBody);
                     }
                 );
-                // ).catch(function(error)
+                // .catch(function(error)
                 //     {
                 //             console.error("fetchQuery",error);
                 //     });

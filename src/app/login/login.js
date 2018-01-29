@@ -82,6 +82,7 @@
                             msg=x.data;
                     }
                     if (_.isString(x)) msg=x;
+                    console.error('--------------- ^^^^^^ ERROR ^^^^^^^ ---------------------');
                     console.log('Error on login',x);
                     $mdToast.show(
                         $mdToast
