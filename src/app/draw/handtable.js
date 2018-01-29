@@ -361,6 +361,35 @@ class HandsTable {
 
     }
 
+    static Calc(ht,command) {
+
+        let s = HandsTable.getSelected(ht,true);
+
+        let outText = [];
+        let columns = ht.getSettings().columns;
+        let rr = [];
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+
+            for (let row = s.fromRow; row <= s.toRow; row++) {
+                let typeColumn = columns[col].type.toLowerCase();
+                if (typeColumn.includes('numeric')) {
+                    rr.push(ht.getDataAtCell(row, col));
+                }
+            }
+        }
+        if (_.isArray(rr) && rr.length)
+        {
+            let val={
+                median:_.round(_.median(rr),3),
+                sum:_.round(_.sum(rr),3),
+                average:_.round(_.average(rr),3),
+                std:_.round(_.stdDeviation(rr),3)
+            };
+            angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
+
+        }
+    }
+
     static Transpose(ht,command) {
         let d=HandsTable.transpose(ht.getSourceData());
         let colHeaders=[];

@@ -99,3 +99,8 @@ $var_name
 Экспериментальная разработка - поддержка Plotly для построения 3D
 
 ![Tabix 3D ](https://tabix.io/doc/img/plotly_mesh3d.png)
+
+
+## Calc sum
+
+Select cells -> Right click -> "Calc Avg & Sum & Median"
