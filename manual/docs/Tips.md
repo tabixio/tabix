@@ -33,7 +33,7 @@ Double-click to collapse the panel
 
 ![Tabix multi query](https://tabix.io/anime/DoubleClicks.gif)
 
-## Переменные 
+## Variables
 
 A separate panel for editing Vars, the syntax is supported:
 
@@ -47,14 +47,14 @@ $var_name
 
 ![Tabix variables](https://tabix.io/anime/Vars.gif)
 
-## Снипеты 
+## Snippet
 
 Often used code, as an example: `event_date = today ()` can be saved to the snippet and it appears in the autocomplete
 
 ![Tabix Snippets](https://tabix.io/anime/Snippets.gif)
 
 
-## Transpose, поворот таблицы
+## Transpose table
 
 It can be very convenient to rotate the table which has a very large number of columns and few rows
 
