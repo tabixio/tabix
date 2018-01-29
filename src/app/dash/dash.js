@@ -6,45 +6,168 @@
         '$scope',
         'API',
         'ThemeService',
-        '$interval',
+        '$stateParams',
         'localStorageService',
         '$mdDialog',
         '$window',
-        'hotRegisterer'
+        '$mdToast'
+
     ];
 
 
-    function DashController($scope, API, ThemeService, $interval, localStorageService,$mdDialog,$window,hotRegisterer) {
+    function DashController($scope, API, ThemeService, $stateParams, localStorageService,$mdDialog,$window,$mdToast) {
+        let { dashId} = $stateParams;
 
-
+        $scope.dashId=dashId;
+        $scope.widgets=[];
         //
+        $scope.staticGrid=true;
+        $scope.gridStackOptions={     cellHeight: 200,
+            verticalMargin: 0,
+            disableDrag:true,
+            disableResize:true,
+            staticGrid:true  };
+
         $scope.vars = {
-            loading:false,
+            loaded:false,
+            dash:{},
             show:false,
-            counter:0,
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),
-            table:{
-                settings:{},
-                data:[]
-            },
             dashInits:{},
 
         };
-        $scope.size=100;
-        $scope.w=false;
-        $scope.preDashId=0;
+        /**
+         * Привязка сетки
+         */
+        $scope.switchStaticGrid = function() {
 
+            $scope.staticGrid=!$scope.staticGrid;
+            console.info("staticGrid",$scope.staticGrid);
 
-
-        $scope.initDash = function(dashid) {
-
-            if ($scope.dashInits[dashid]) return;
-
-            $scope.dashInits[dashid]=1;
-
-            console.info("initDash : "+dashid);
         };
+        $scope.addFavorite=()=>{
+            $mdToast.show(
+                $mdToast
+                    .simple()
+                    .content('Favorite done')
+                    .theme(ThemeService.theme)
+                    .position('bottom right')
+            );
+        };
+        $scope.saveState=()=>{
+            $mdToast.show(
+                $mdToast
+                    .simple()
+                    .content('Save done')
+                    .theme(ThemeService.theme)
+                    .position('bottom right')
+            );
+        };
+
+
+
+
+
+        $scope.addWidget = (DataProvider) => {
+
+        };
+
+
+        $scope.loadWidget = (w,position_id,use_vars) => {
+            // init Widget
+            console.log('init Widget',position_id,w.id,w);
+            API.getWidget(w.id,{vars:use_vars}).then(tsw=>{
+                //
+                console.log('Result',tsw);
+
+
+
+
+                // grid {x:w.x,y:w.y,w:w.w,h:w.h}
+
+
+                let dp= new DataProvider(tsw.data,'api');
+                dp.progressQuery = tsw.sql;
+
+
+                if (!tsw.draw) {
+
+                    let ww=new WidgetTable(dp);
+                    if (tsw.widget) ww.applySettings(tsw.widget);
+                    $scope.widgets.push(ww);
+                } else
+                {
+                    _.forEach(tsw.draw,function (drawObject,id) {
+                        let ww=new WidgetDraw(dp,drawObject);
+                        if (tsw.widget) ww.applySettings(tsw.widget);
+                        $scope.widgets.push(ww);
+                    });
+                }
+                $scope.$applyAsync();
+            });
+
+
+
+        };
+
+
+
+        $scope.loadWidgets = ($widgets,use_vars) => {
+            // init dash grid
+            $scope.widgets=[];
+
+            _.forEach($widgets,function (w,id) {
+                $scope.loadWidget(w,id,use_vars);
+
+
+                //
+                //
+                $scope.$applyAsync();
+                //
+                //
+
+            });
+        };
+
+
+        $scope.init = () => {
+            if (!$scope.dashId) return;
+
+            let vars={};
+
+            if ($scope.vars.dash && $scope.vars.dash.vars)
+            {
+                _.forEach($scope.vars.dash.vars,function (o,id) {
+
+                    vars[id]=o.default;
+                });
+            }
+
+            console.info("--------------------------- VARS -------------------------");
+            console.table(vars);
+            console.info("----------------------------------------------------------");
+
+            API.getDashboard($scope.dashId,{vars:vars})  .then(data => {
+                $scope.vars.loaded=true;
+                console.info("initDash",data.dash);
+
+                $scope.vars.dash=data.dash;
+                $scope.loadWidgets(data.dash.widgets,vars);
+
+
+            });
+
+        };
+
+        // base load
+        $scope.init();
+
+
+
+
+
+
         $scope.isInitDash = function (dashid) {
 
             return $scope.dashInits[dashid];

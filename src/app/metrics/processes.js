@@ -112,6 +112,52 @@
         };
 
         // ------------------------------------------------------------------------------
+        $scope.dataToHandsontable = (data) => {
+            // colHeaders: ['A', 'B', 'C', 'D'],
+            // colWidths: [200, 200, 200, 200, 200],
+            // columns: [
+            //     { data: 'a' },
+            //     { data: 'b' },
+            //     { data: 'c' },
+            //     { data: 'd' }
+            // ],
+            // data: data,
+
+            let colWidths = [];
+            let colHeaders = [];
+            let columns = [];
+            data.meta.forEach((cell) => {
+
+                colHeaders.push(cell.name);
+                let c={};
+                c.type='text';
+                c.width=100;
+
+
+                switch (cell.type) {
+                    case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
+                    case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
+                    case 'Int32':       c.width=80;c.type='numeric'; break;
+                    case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
+                    case 'UInt32':      c.width=80; c.type='numeric';break;
+                    case 'String':      c.width=180; break;
+                }
+
+                c.data=cell.name;
+                columns.push(c);
+            });
+
+            return {
+
+                colHeaders: colHeaders,
+                columns: columns,
+                data: data.data,
+                currentRowClassName: 'currentRow',
+                currentColClassName: 'currentCol'
+            };
+        };
+
+        // ------------------------------------------------------------------------------
         $scope.load = () => {
             let sql = `SELECT  now() as dt, query,  1 as count,  formatReadableSize(read_bytes) as bytes_read, 
                 formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
@@ -132,7 +178,7 @@
 
             API.fetchQuery(sql).then(function ( data ) {
 
-                let handsontable = API.dataToHandsontable( data );
+                let handsontable = $scope.dataToHandsontable( data );
                 $scope.table.colHeaders=handsontable.colHeaders;
                 $scope.table.settings.columns=handsontable.columns;
                 $scope.table.settings.manualColumnResize=handsontable.columns;

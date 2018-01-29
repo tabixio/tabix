@@ -1,3 +1,0 @@
-[submodule "tabix.server/phpClickHouse"]
-	path = tabix.server/phpClickHouse
-	url = https://github.com/smi2/phpClickHouse.git

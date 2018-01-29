@@ -97,8 +97,8 @@ class HandsTable {
             //UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64
             if (cell.type.includes('Int64')) {
                 // Default string type
-              c.type = 'text';
-              c.width = 100;
+                c.type = 'text';
+                c.width = 100;
                 // if DataProvider.prepareInt64() convert String->Int64, use numeric type
                 if (_.isObject(this.meta.prepareInt64Cols)) {
                     if (this.meta.prepareInt64Cols[cell.name])
@@ -361,35 +361,6 @@ class HandsTable {
 
     }
 
-    static Calc(ht,command) {
-
-        let s = HandsTable.getSelected(ht,true);
-
-        let outText = [];
-        let columns = ht.getSettings().columns;
-        let rr = [];
-        for (let col = s.fromCol; col <= s.toCol; col++) {
-
-            for (let row = s.fromRow; row <= s.toRow; row++) {
-                let typeColumn = columns[col].type.toLowerCase();
-                if (typeColumn.includes('numeric')) {
-                    rr.push(ht.getDataAtCell(row, col));
-                }
-            }
-        }
-        if (_.isArray(rr) && rr.length)
-        {
-            let val={
-                median:_.round(_.median(rr),3),
-                sum:_.round(_.sum(rr),3),
-                average:_.round(_.average(rr),3),
-                std:_.round(_.stdDeviation(rr),3)
-            };
-            angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
-
-        }
-    }
-
     static Transpose(ht,command) {
         let d=HandsTable.transpose(ht.getSourceData());
         let colHeaders=[];
@@ -434,46 +405,7 @@ class HandsTable {
         return {data:o,columns:cols};
     }
 
-    static getPivotArray(dataArray, rowIndex, colIndex, dataIndex) {
-    //Code from http://techbrij.com
-    var result = {}, ret = [];
-    var newCols = [];
-    for (var i = 0; i < dataArray.length; i++) {
 
-        if (!result[dataArray[i][rowIndex]]) {
-            result[dataArray[i][rowIndex]] = {};
-        }
-        result[dataArray[i][rowIndex]][dataArray[i][colIndex]] = dataArray[i][dataIndex];
-
-        //To get column names
-        if (newCols.indexOf(dataArray[i][colIndex]) == -1) {
-            newCols.push(dataArray[i][colIndex]);
-        }
-    }
-
-    newCols.sort();
-    var item = [];
-
-    //Add Header Row
-    item.push('Item');
-    item.push.apply(item, newCols);
-    ret.push(item);
-
-    //Add content
-    for (var key in result) {
-        item = [];
-        item.push(key);
-        for (var i = 0; i < newCols.length; i++) {
-            item.push(result[key][newCols[i]] || "-");
-        }
-        ret.push(item);
-    }
-    return ret;
-}
-
-    static transposeData(a) {
-        return a && a.length && a[0].map && a[0].map(function (_, c) { return a.map(function (r) { return r[c]; }); }) || [];
-    }
 
 
     static makeWhereIn(ht) {
@@ -810,21 +742,17 @@ class HandsTable {
                 "hsep3": "---------",
                 // -------------------- Copy to  --------------------------------------------------------------------
                 "Transform": {
-                    name: 'Transform',
-                    submenu: {
-                        items: [
-                            {
-                                name: "Transpose full table",
-                                callback: function (key, options, pf) {
-                                    HandsTable.Transpose(this, 'Transpose');
+                    name: "Transpose full table",
+                    callback: function (key, options, pf) {
+                        HandsTable.Transpose(this, 'Transpose');
                     }
-                                },
+                },
                 "Calculate": {
                     name: "Calc Avg & Sum & Median",
                     callback: function (key, options, pf) {
                         HandsTable.Calc(this, 'All');
                     }
-                            },
+                },
                 "hsep4": "---------",
                 // "HideShow": {
                 //     name: 'Hide & Show',

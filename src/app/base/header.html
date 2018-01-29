@@ -2,7 +2,7 @@
     <md-card class="m0 pl0">
         <div>
             <div class="pull-left" style="width: 210px">
-                <a ui-sref="dashboard"><img src="assets/images/logo2.png" class="mr logo"/></a>
+                <a ui-sref="dashboard"><img src="assets/images/TabixBeta2018.png?1" class="mr logo"/></a>
             </div>
 
             <div class="pull-right top-menu">
@@ -15,11 +15,15 @@
 
 
 
+                <md-button aria-label="menu"  ui-sref="dash" ng-if="isTabixServer">
+                    <i class="mdi mdi-18px mdi-bank" ></i>
+                    Dashboard
+                </md-button>
+
                 <md-button aria-label="menu"  ui-sref="sql">
                     <i class="mdi mdi-18px mdi-console" ></i>
                     SQL
                 </md-button>
-
 
                 <md-button aria-label="menu"  ui-sref="metrics">
                     <i class="mdi mdi-18px mdi-playlist-play"></i>

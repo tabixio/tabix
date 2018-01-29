@@ -55,6 +55,13 @@ class DatabaseStructure {
 
 
             if (!_.isArray(this.uciq_fields[item.database])) {
+                this.uciq_fields[item.database]=[];
+            }
+
+
+
+
+            if (!_.isArray(this.uciq_fields[item.database])) {
 
                 this.uciq_fields[item.database]=[];
             }

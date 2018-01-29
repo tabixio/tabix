@@ -19,13 +19,11 @@
         // bower install fun-metis-menu --save
         // bower uninstall ngAnimate --save
 
-
         'ui.router',
         'LocalStorageModule',
         'angularScreenfull',
         'ui.ace',
         'ngScrollbars',
-
         'angularResizable',
         'ngSanitize',
         'ngMaterial',

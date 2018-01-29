@@ -395,37 +395,37 @@ window.aceJSRules = {
          * @returns {*}
          */
         $scope.renderResult = (data) => {
-
-            // ставим активной закладку 0
-
-            data.echarts=false;
-            data.pivot=false;
-            data.charts=false;
-
-            data.selectedTabIndex=0;
             //
-            if (typeof data.error == 'string') {
-                data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
-            }
-            else if (!angular.isObject(data.data)) {
-                if (!angular.isString(data.data)) {
-                    data.result = '<pre class="fs-caption">' + angular.toJson(data.data, true) + '</pre>';
-                }
-                else {
-                    data.result = '<pre class="fs-caption">' + data.data + '</pre>';
-                }
-            }
-            else {
-
-                // рендер таблицы в HTML
-                data.result = API.dataToHtml(data);
-                // запрос на createtable из select
-                data.createtable = API.dataToCreateTable(data);
-
-                data.pivot=true;
-                data.charts=true;
-            }
-            return data;
+            // // ставим активной закладку 0
+            //
+            // data.echarts=false;
+            // data.pivot=false;
+            // data.charts=false;
+            //
+            // data.selectedTabIndex=0;
+            // //
+            // if (typeof data.error == 'string') {
+            //     data.result = '<pre class="fs-caption tc-red-700">' + data.error + '</pre>';
+            // }
+            // else if (!angular.isObject(data.data)) {
+            //     if (!angular.isString(data.data)) {
+            //         data.result = '<pre class="fs-caption">' + angular.toJson(data.data, true) + '</pre>';
+            //     }
+            //     else {
+            //         data.result = '<pre class="fs-caption">' + data.data + '</pre>';
+            //     }
+            // }
+            // else {
+            //
+            //     // рендер таблицы в HTML
+            //     data.result = API.dataToHtml(data);
+            //     // запрос на createtable из select
+            //     data.createtable = API.dataToCreateTable(data);
+            //
+            //     data.pivot=true;
+            //     data.charts=true;
+            // }
+            // return data;
         };
 
         /**

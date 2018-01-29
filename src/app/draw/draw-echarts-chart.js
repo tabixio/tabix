@@ -50,20 +50,6 @@ class DrawEchartsChart extends DrawEcharts {
     }
 
 
-    findDateTimeAxis() {
-        // Автоматическое определение
-        let dt = this.getDateTimeColumn();
-        if (dt) {
-            return dt;
-        }
-
-        let d = this.getDateColumn();
-        if (d) {
-            return d;
-        }
-        return false;
-    }
-
     postCreate(drw) {
         return {};
     }

@@ -10,30 +10,32 @@ angular.module('ui.ace', [])
     }
     return {
       restrict: 'EA',
+      scope:{
+            onChange:'=?',
+            load:'=?'
+      },
       link: function (scope, elm, attrs) {
-
-        /**
-         * Corresponds the uiAceConfig ACE configuration.
-         * @type object
-         */
-        var options = uiAceConfig.ace || {};
-
-        /**
-         * uiAceConfig merged with user options via json in attribute or data binding
-         * @type object
-         */
-        var opts = angular.extend({}, options, scope.$eval(attrs.uiAce));
 
         /**
          * ACE editor
          * @type object
          */
-        var acee = window.ace.edit(elm[0]);
+        let acee = window.ace.edit(elm[0]);
 
         console.time("Ace Load");
-        // console.groupCollapsed("Ace Load");
 
-        opts.onLoad(acee);
+
+        scope.load(acee);
+
+
+
+        if (scope.onChange) {
+            console.warn("Ace+bind:scope.onChange");
+            acee.session.on('change', function (e) {
+                scope.onChange(acee.session);
+            });
+        }
+
         // console.groupEnd("Ace Load");
         console.timeEnd("Ace Load");
 

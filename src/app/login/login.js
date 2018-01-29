@@ -64,6 +64,7 @@
             API.setConnection($scope.vars.db);
 
             API.fetchQuery('SELECT \'login success\'').then( data => {
+
                     $mdToast.show(
                     $mdToast
                         .simple()

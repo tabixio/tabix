@@ -167,6 +167,21 @@ class DrawBasicChart {
 
     }
 
+
+    findDateTimeAxis() {
+        // Автоматическое определение
+        let dt = this.getDateTimeColumn();
+        if (dt) {
+            return dt;
+        }
+
+        let d = this.getDateColumn();
+        if (d) {
+            return d;
+        }
+        return false;
+    }
+
     getColumns(position) {
         let list=_.map(this.meta(),'name');
         if (!_.isUndefined(position)) {
@@ -187,6 +202,43 @@ class DrawBasicChart {
         if (!this.drawCodeObject.type) return false;
         // if (this.drawCodeObject.exec) return false;
         return this.drawCodeObject.code;
+    }
+
+
+    updateCode(codejs,showErrors) {
+        let drawCommand = this.widget.drawCommnads;
+        if (drawCommand && drawCommand.code) {
+
+            try{
+                let data={};
+                let code = '(' + codejs + ')';
+                let obj = eval(code);
+                if (_.isObject(obj))
+                {
+                    console.info("Apply code",codejs);
+                    drawCommand.code=codejs;
+                    this.applyCode();
+
+                }
+            } catch (E) {
+                if (showErrors) console.error('error eval ',codejs, E);
+            }
+
+
+        }
+
+
+
+    }
+
+    getCode() {
+        let codeDrawText = false;
+        let drawCommand = this.widget.drawCommnads;
+        if (drawCommand && drawCommand.code) {
+            codeDrawText = drawCommand.code;
+        }
+        if ( codeDrawText.length<9 ) return false;
+        return codeDrawText;
     }
 
     initDrawCodeObject() {
@@ -231,21 +283,6 @@ class DrawBasicChart {
             return draw;
         }
 
-        // @todo : optimize
-
-        let data={};
-
-        let columns=this.getColumns();
-        let len = this.data().length;
-        for (let index = 0; index < len; ++index) {
-            let item=this.data()[index];
-            for ( let colPos in columns) {
-                let col = columns[colPos];
-
-                if (!data[col]) data[col]=[];
-                data[col].push(item[col]);
-            }
-        }
 
 
         // console.log("DATA::::",data);

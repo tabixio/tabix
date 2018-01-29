@@ -27,11 +27,16 @@
                             }
 
                             var defer = $q.defer();
-                            if (angular.isDefined(API.getConnectionInfo().host)) {
+
+                            if (API.isAuthorized())
+                            {
                                 defer.resolve();
                             } else {
                                 defer.reject('notAuthorized');
                             }
+
+
+
                             return defer.promise;
                         }]
                     },
@@ -64,6 +69,11 @@
                             templateUrl: 'app/base/header.html',
                             controller: 'HeaderController'
                         },
+
+                        sidebar: {
+                            templateUrl: 'app/dash/dashsidebar.html',
+                            controller: 'DashSidebarController'
+                        },
                         main: {
                             template: '<ui-view/>'
                         }
@@ -77,16 +87,30 @@
                         $state.go('sql');
                     }]
                 })
+                // Show 1 table
+                .state('dashId', {
+                    parent: 'layoutDash',
+                    url: '/dash/{dashId}',
+                    templateUrl: 'app/dash/dash.html',
+                    controller: 'DashController'
+                })
+
                 .state('dash', {
-                    parent: 'layout',
+                    parent: 'layoutDash',
                     url: '/dash',
                     templateUrl: 'app/dash/dash.html',
                     controller: 'DashController'
                 })
-                .state('edit', {
+                .state('devplot', {
                     parent: 'layoutDash',
-                    url: '/edit',
-                    templateUrl: 'app/dash/edit.html',
+                    url: '/devplot',
+                    templateUrl: 'app/dev/plot.html',
+                    controller: 'devplotController'
+                })
+                .state('devedit', {
+                    parent: 'layoutDash',
+                    url: '/devedit',
+                    templateUrl: 'app/dev/edit.html',
                     controller: 'EditController'
                 })
                 .state('preference', {
