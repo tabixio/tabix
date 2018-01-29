@@ -9,7 +9,7 @@ repo_name: 'GitHub'
 repo_url: 'https://github.com/smi2/tabix.ui'
 edit_uri: 'edit/master/manual/docs/'
 # Copyright
-copyright: 'Copyright &copy; 2017 Igor Strykhar '
+copyright: 'Copyright &copy; 2018 Tabix LLC,Igor Strykhar '
 
 # Documentation and theme
 theme: 'material'
@@ -25,7 +25,7 @@ extra:
     code: 'Roboto Mono'
   social:
     - type: 'github'
-      link: 'https://github.com/smi2/tabix.ui'
+      link: 'https://github.com/tabixio/tabix'
     - type: 'twitter'
       link: 'https://twitter.com/tabix_io'
 
@@ -56,7 +56,7 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist(custom_checkbox=true)
   - pymdownx.tilde
-copyright: Copyright 2017 Igor Strykhar,Ivan Kudinov,SMI2 LLC and other contributors<script type="text/javascript">
+copyright: Copyright 2018 Igor Strykhar,Tabix LLC and other contributors<script type="text/javascript">
                   (function (d, w, c) {
                       (w[c] = w[c] || []).push(function() {
                           try {
