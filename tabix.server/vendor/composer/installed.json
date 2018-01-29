@@ -17,7 +17,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-10-10 12:19:37",
+        "time": "2016-10-10T12:19:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -67,7 +67,7 @@
             "php": ">=5.3.2",
             "psr/log": "1.*"
         },
-        "time": "2016-11-17 14:39:33",
+        "time": "2016-11-17T14:39:33+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -122,7 +122,7 @@
             "phpunit/phpunit": "^4.0.14",
             "squizlabs/php_codesniffer": "^1.5.1"
         },
-        "time": "2016-10-12 04:29:55",
+        "time": "2016-10-12T04:29:55+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -179,7 +179,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4.8"
         },
-        "time": "2017-02-16 18:40:32",
+        "time": "2017-02-16T18:40:32+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -239,7 +239,7 @@
             "ext-mcrypt": "Required for HTTP cookie encryption",
             "phpseclib/mcrypt_compat": "Polyfil for mcrypt extension"
         },
-        "time": "2017-01-07 12:21:41",
+        "time": "2017-01-07T12:21:41+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

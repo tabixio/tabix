@@ -1,4 +1,9 @@
-## 2017-12-13 BETA [17.12.1]
+## 2018-01-01 BETA [18.01.1]
+
+* TS init release beta 
+
+
+In 2017-12-13 BETA [17.12.1]
 
 
 * Int64 problem is String auto find max value and convert to Int

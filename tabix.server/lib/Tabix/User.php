@@ -5,6 +5,7 @@ class User {
     private $login;
     private $password;
     private $config;
+    private $services;
 
     public function __construct($login, $password, ConfigProvider $config)
     {
@@ -13,24 +14,46 @@ class User {
         $this->config=$config;
         $this->auth=false;
 
-        if ($this->config->getAuth('type')) {
+        // List services
+
+
+        $services=$this->config->getAuthList();
+        foreach ($services as $position=>$service)
+        {
+            if (empty($service['type'])) {
+                throw new \Exception("Empty TYPE in Auth config position =".$position);
+            }
+
+            $type=strtolower($service['type']);
             // Тут грузим провайдера Auth метода
             // LDAP
-            // oAuth
+            // Lambda
             // MySQL
-            $type=strtolower($this->config->getAuth('type'));
+            // PlainText
             if ($type=='plaintext')
             {
-                $this->auth=new \Tabix\Auth\Plaintext($this->config->getAuth('helper'));
+                $this->auth[]=new \Tabix\Auth\Plaintext($service['helper']);
+            }
+            if ($type=='lambda')
+            {
+                $this->auth[]=new \Tabix\Auth\LambdaService($service['helper']);
+            }
+            if ($type=='ldap')
+            {
+                $this->auth[]=new \Tabix\Auth\LDAP($service['helper']);
             }
         }
 
-
         if (!$this->auth) {
-            throw new \Exception("can`t load auth provider");
+            throw new \Exception("Can`t load auth provider");
         }
 
     }
+    private function bruteforce()
+    {
+        // @todo -- need check bruteforces
+    }
+
     public function userId()
     {
         return $this->login;
@@ -41,6 +64,12 @@ class User {
     }
     public function isAuth()
     {
-        return $this->auth->login($this->login,$this->password);
+        foreach ($this->auth as $a)
+        {
+            $result=$a->login($this->login,$this->password);
+            if ($result) return true;
+        }
+        return false;
+//        return $this->auth->login($this->login,$this->password);
     }
 }

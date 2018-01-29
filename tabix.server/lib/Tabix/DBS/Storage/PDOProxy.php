@@ -19,10 +19,14 @@ class PDOProxy
     {
         if (empty($config['dsn'])) throw new \Exception("Not set PDO - dsn param");
         if (empty($config['username'])) throw new \Exception("Not set PDO - username param");
-        $this->client=new \PDO($config['dsn'],$config['username'],$config['password']);
+        $this->client=new \PDO($config['dsn'],$config['username'],$config['password'],$this->configConnect());
         $this->client->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
+    public function configConnect()
+    {
+
+    }
     /**
      * @param $query SQLQuery
      * @param $bind

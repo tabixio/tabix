@@ -61,9 +61,9 @@ class ConfigProvider
         }
         return $this->hash;
     }
-    public function getAuth($key)
+    public function getAuthList()
     {
-        return $this->config->get('auth.'.$key);
+        return $this->config->get('auth');
     }
 
     public function getMongoDB($key)

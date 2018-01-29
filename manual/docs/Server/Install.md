@@ -42,6 +42,7 @@ php MongoDB Driver 2.2
 # echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
 # sudo apt-get install -y mongodb-org
 # sudo service mongod start
+# sudo systemctl enable mongod.service
 
 
 ```
@@ -55,6 +56,17 @@ b) https://medium.com/@raj_adroit/mongodb-enable-authentication-enable-access-co
 For develop need : ```-u "superAdmin" -p "admin123"``` in `ApiTester.php`
 
 ```
+use admin
+db.createUser(
+  {
+    user: "superAdmin",
+    pwd: "admin123",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+
+
 # check login 
 # mongo --port 27017 -u "superAdmin" -p "admin123" --authenticationDatabase "admin"
 ```

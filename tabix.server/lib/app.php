@@ -67,8 +67,8 @@ $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=n
 {
     try
     {
-
         $router=new \Tabix\Actions($app->json());
+
         $call='action'.ucwords($action).''.ucwords($first);
         if (!method_exists($router,$call))
         {
@@ -86,7 +86,6 @@ $app->any('/:action(/:first(/:second))', function ($action,$first=null,$second=n
     }
     catch (Exception $E)
     {
-
         $app->render(500,[
                 'error'=>$E->getMessage(),
                 'file'=>$E->getFile().':'.$E->getLine(),
