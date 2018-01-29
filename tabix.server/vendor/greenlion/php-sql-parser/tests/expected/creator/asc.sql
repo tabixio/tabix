@@ -1,1 +1,0 @@
-SELECT qid FROM QUESTIONS WHERE gid = '1' and language = 'de-informal' ORDER BY question_order ASC, title ASC

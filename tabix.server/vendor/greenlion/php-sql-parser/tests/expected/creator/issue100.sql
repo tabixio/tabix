@@ -1,1 +1,0 @@
-SELECT 0 AS Zero FROM table

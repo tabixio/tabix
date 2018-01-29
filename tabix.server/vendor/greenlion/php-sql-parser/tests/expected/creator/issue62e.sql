@@ -1,1 +1,0 @@
-SELECT * FROM table ORDER BY column DESC

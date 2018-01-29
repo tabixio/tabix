@@ -1,1 +1,0 @@
-DELETE FROM tab1 WHERE col1 = 1

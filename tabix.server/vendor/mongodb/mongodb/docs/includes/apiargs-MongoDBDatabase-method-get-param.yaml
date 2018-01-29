@@ -1,6 +1,0 @@
-source:
-  file: apiargs-common-param.yaml
-  ref: $collectionName
-replacement:
-  action: " to select"
-...

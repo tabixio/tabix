@@ -1,1 +1,0 @@
-SELECT haha(foo,bar)

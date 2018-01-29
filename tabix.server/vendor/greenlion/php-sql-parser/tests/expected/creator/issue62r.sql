@@ -1,1 +1,0 @@
-UPDATE table1 SET col1 = (1 + 3)

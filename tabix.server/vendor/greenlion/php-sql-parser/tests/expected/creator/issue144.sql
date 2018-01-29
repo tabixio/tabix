@@ -1,1 +1,0 @@
-SELECT * FROM TableA INNER JOIN TableB USING (Col1,Col2)

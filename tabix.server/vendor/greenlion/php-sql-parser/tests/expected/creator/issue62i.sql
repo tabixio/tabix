@@ -1,1 +1,0 @@
-SELECT COUNT(colname) AS aliasname FROM tablename

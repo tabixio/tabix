@@ -1,1 +1,0 @@
-SELECT * FROM `users` WHERE id_user = @ID_USER

@@ -1,1 +1,0 @@
-SHOW FULL COLUMNS FROM `foo.bar` FROM hohoho LIKE '%xmas%'

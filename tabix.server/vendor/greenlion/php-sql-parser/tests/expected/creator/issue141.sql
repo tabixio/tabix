@@ -1,1 +1,0 @@
-SELECT f FROM t ORDER BY (f - 0.0) ASC

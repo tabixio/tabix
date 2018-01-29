@@ -1,1 +1,0 @@
-SHOW columns from `foo.bar`

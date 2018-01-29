@@ -1,1 +1,0 @@
-INSERT INTO newTablename (SELECT field1, field2, field3 FROM oldTablename WHERE field1 > 100)

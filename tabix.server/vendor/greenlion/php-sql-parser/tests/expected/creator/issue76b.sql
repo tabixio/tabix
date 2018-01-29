@@ -1,1 +1,0 @@
-SELECT AVG(2.0 * foo,x) FROM bar
