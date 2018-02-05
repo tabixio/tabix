@@ -74,12 +74,20 @@ class DataProvider {
     prepareInt64()
     {
         let $canConvert=[];
+
+        if (!(_.isArray(this.data) && this.data.length>1)) return false;
+
         this.prepareInt64Cols={};
         this.meta.forEach((cell) => {
             if (cell.type.includes('Int64')) {
-                // find max value
+                //  max value
 
-                let $max=parseInt(_.maxBy(this.data, function(o){ return parseInt(o[cell.name]); } )[cell.name]);
+                let $max=parseInt(_.maxBy(this.data, function(o){
+                    if (!_.isEmpty(o[cell.name]))
+                        return parseInt(o[cell.name]);
+                } )[cell.name]);
+
+
 
                 if ($max<18017313154530008000) {
                     $canConvert.push(cell.name);
@@ -87,6 +95,10 @@ class DataProvider {
                 }
             }
         });
+
+        if (!($canConvert.length>0)) return false;
+
+        console.log("$canConvert, convert to Int",$canConvert);
 
         this.data=_.map(this.data,function (o) {
             $canConvert.forEach((cell)=>{

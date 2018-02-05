@@ -445,6 +445,16 @@ window.aceJSRules = {
                     ) != -1
                 ))) {
 
+
+
+                $mdToast.show(
+                    $mdToast
+                        .simple()
+                        .content('Press `Reload Structure` for reload')
+                        .theme(ThemeService.theme)
+                        .position('bottom right')
+                );
+
                 // $scope.selectDatabase($scope.vars.db);
                 // если в списке был запрос на CREATE / DROP нужно перерисовать
                 // $rootScope.$emit('handleBroadcastDatabases',{});

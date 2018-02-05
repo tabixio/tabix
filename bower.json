@@ -1,6 +1,6 @@
 {
   "name": "Tabix",
-  "version": "18.01.1",
+  "version": "18.02.1",
   "dependencies": {
     "angular-animate": "1.6.6",
     "angular-aria": "1.5.9",

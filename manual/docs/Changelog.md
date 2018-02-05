@@ -1,3 +1,8 @@
+## 2018-02-05 Master [18.02.1]
+
+* Fix error if Int64 column & result is empty
+* Show message `Press reload structure` if query : CREATE or DROP 
+
 ## 2018-01-29 Master [18.01.1]
 
 
