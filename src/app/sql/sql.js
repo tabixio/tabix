@@ -234,85 +234,94 @@ window.aceJSRules = {
             // API.fetchQuery(Q_ID + query.sql, query.format, true, extendSettings).then((data) => {
             API.fetchQuery(Q_ID + query.sql, true,query.format,  extendSettings).then((data) => {
 
-                let r = data;
+                try {
 
-                if (!angular.isObject(data)) {
-                    data = {
-                        data: r,
-                        meta: null,
-                        rows: null,
-                        statistics: null
+                    let r = data;
+
+                    if (!angular.isObject(data)) {
+                        data = {
+                            data: r,
+                            meta: null,
+                            rows: null,
+                            statistics: null
+                        };
+                    }
+                    data.error = false;
+                    data.query = query;
+                    data.countAllQuery = queue.length;
+
+
+                    // Для текущего currentTab, сохраняем statistics массив
+                    let st={
+                        time:moment().format('HH:mm:ss')
                     };
+                    if (angular.isObject(data.statistics)) {
+                        Object.assign(st,data.statistics);
+                    }
+
+
+                    st.query=progressQuery;
+                    // st.query_order=query.index;
+                    if (_.isArray($scope.vars.currentTab.statistics))
+                    {
+                        $scope.vars.currentTab.statistics.push(st);
+                    }
+
+                    $scope.vars.LastStatistics = st;
+
+
+
+                    // make DataProvider
+                    let dp= new DataProvider(data,'ch');
+                    dp.progressQuery = progressQuery;
+
+
+                    // Получаем список виджетов в каждый передаем DP
+                    // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
+                    // Запрос может содержать несколько DRAW комманд, тогда в разделе Draw должно быть указанное кол-во комманд
+
+                    // resultContainer - Стек отправленных запросов и результатов - доступен в view через tab.results
+
+                    resultContainer.widgets.tables.push(new WidgetTable(dp));
+
+                    // resultContainer.widgets.pivot.push(new WidgetPivot(dp));
+
+
+                    if ('drawCommand' in query && query.drawCommand.length)
+                    {
+                        dp.countAll=(query.drawCommand.length>data.countAllQuery ? query.drawCommand.length : data.countAllQuery);
+
+                        console.info("query.drawCommand",query.drawCommand);
+                        // У запроса есть список DRAW комманд каждая идет в стек
+                        query.drawCommand.forEach((item) => {
+                            resultContainer.widgets.draw.push(new WidgetDraw(dp,item));
+                        });
+                    }
+                    else {
+                        // Если у запроса не указана коммпанда Draw попробовать использовать автомат
+                        resultContainer.widgets.draw.push(new WidgetDraw(dp,false));
+                    }
+
+                    resultContainer.data.push(query);
+
+                    //
+                    $scope.$applyAsync();
+
+                    // Рекурсивный вызов executeQuery если в очереди
+                    // еще остались элементы
+                    if ((query.index + 1) < queue.length) {
+                        $scope.executeQuery(queue[query.index + 1], queue, resultContainer);
+                    }
+                    else {
+                        // Финал запросов
+                        $scope.finalizeResult(resultContainer);
+                    }
+
+                } catch (e) {
+                    alert('System Tabix error, see console log.'+"\n"+e.name + ":" + e.message );
+                    console.error("Error in tabix",e);
                 }
-                data.error = false;
-                data.query = query;
-                data.countAllQuery = queue.length;
 
-
-                // Для текущего currentTab, сохраняем statistics массив
-                let st={
-                    time:moment().format('HH:mm:ss')
-                };
-                if (angular.isObject(data.statistics)) {
-                    Object.assign(st,data.statistics);
-                }
-
-
-                st.query=progressQuery;
-                // st.query_order=query.index;
-                if (_.isArray($scope.vars.currentTab.statistics))
-                {
-                    $scope.vars.currentTab.statistics.push(st);
-                }
-
-                $scope.vars.LastStatistics = st;
-
-
-                // make DataProvider
-                let dp= new DataProvider(data,'ch');
-                dp.progressQuery = progressQuery;
-
-
-                // Получаем список виджетов в каждый передаем DP
-                // На каждый запрос как минимум 3и виджета Table & Draw & Pivot - т/е три основных вкладки
-                // Запрос может содержать несколько DRAW комманд, тогда в разделе Draw должно быть указанное кол-во комманд
-
-                // resultContainer - Стек отправленных запросов и результатов - доступен в view через tab.results
-
-                resultContainer.widgets.tables.push(new WidgetTable(dp));
-
-                // resultContainer.widgets.pivot.push(new WidgetPivot(dp));
-
-
-                if ('drawCommand' in query && query.drawCommand.length)
-                {
-                    dp.countAll=(query.drawCommand.length>data.countAllQuery ? query.drawCommand.length : data.countAllQuery);
-
-                    console.info("query.drawCommand",query.drawCommand);
-                    // У запроса есть список DRAW комманд каждая идет в стек
-                    query.drawCommand.forEach((item) => {
-                        resultContainer.widgets.draw.push(new WidgetDraw(dp,item));
-                    });
-                }
-                else {
-                    // Если у запроса не указана коммпанда Draw попробовать использовать автомат
-                    resultContainer.widgets.draw.push(new WidgetDraw(dp,false));
-                }
-
-                resultContainer.data.push(query);
-
-                //
-                $scope.$applyAsync();
-
-                // Рекурсивный вызов executeQuery если в очереди
-                // еще остались элементы
-                if ((query.index + 1) < queue.length) {
-                    $scope.executeQuery(queue[query.index + 1], queue, resultContainer);
-                }
-                else {
-                    // Финал запросов
-                    $scope.finalizeResult(resultContainer);
-                }
 
             }, (response) => {
 

@@ -42,8 +42,18 @@ class DataProvider {
         // prepare (Int64+UInt64)
         if (this.data)
         {
-            this.prepareInt64();
-            this.meta.prepareInt64Cols=this.prepareInt64Cols;
+            try {
+                this.prepareInt64();
+            } catch (e)
+            {
+                console.error("Error in prepareInt64",e);
+            }
+
+            if (_.isObject(this.meta))
+            {
+                this.meta.prepareInt64Cols=this.prepareInt64Cols;
+            }
+
         }
 
         if (result.query) {
@@ -79,13 +89,24 @@ class DataProvider {
 
         this.prepareInt64Cols={};
         this.meta.forEach((cell) => {
-            if (cell.type.includes('Int64')) {
+            if (cell.type.includes('Int64') && !cell.type.includes('Array(') ) {
                 //  max value
 
-                let $max=parseInt(_.maxBy(this.data, function(o){
-                    if (!_.isEmpty(o[cell.name]))
-                        return parseInt(o[cell.name]);
-                } )[cell.name]);
+                let $v=0;
+                try {
+
+                    $v=_.maxBy(this.data, function(o){
+                        if (!_.isEmpty(o[cell.name]))
+                            return parseInt(o[cell.name]);
+                    } )[cell.name];
+
+                } catch (e)
+                {
+                    console.error("prepareInt64,maxBy",e,'in cell',cell,'meta',this.meta);
+                }
+
+
+                let $max=parseInt($v);
 
 
 
