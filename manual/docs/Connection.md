@@ -1,6 +1,6 @@
 ## Direct connection 
 
-* If open clickhouse 
+* If open clickhouse , see russian article for more info : https://www.etlforeveryone.ru/single-post/connecttotabix
 
 
 ## Use chproxy
