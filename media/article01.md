@@ -16,7 +16,8 @@ Tabix is open source simple BI and sql editor tool for Clickhouse.
 
 ![Alt Text](tabixlogin.png)
 
-Указываем:
-*  в поле url ваш адресс к серверу СH `todo`
-* Lhogin & Password
-* Другие парамерты оставдяем пустми 
+Заполняем:
+* В поле url ваш адресс к серверу СH `http://clickhouse.ip:8123`
+* Login & Password
+* Другие парамерты оставдяем пустми
+
