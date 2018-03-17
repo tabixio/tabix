@@ -325,6 +325,7 @@ window.aceJSRules = {
 
             }, (response) => {
 
+                // @todo fix 
                 console.log("ERROR : response :",response);
                 // Ошибка
                 $mdToast.show(

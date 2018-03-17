@@ -14,7 +14,7 @@ Tabix is open source simple BI and sql editor tool for Clickhouse.
 Далее заходим на `ui.tabix.io`
 
 
-![Alt Text](tabixlogin.png)
+![Alt Text](articel01img/tabixlogin.png)
 
 Заполняем:
 * В поле url ваш адресс к серверу СH `http://clickhouse.ip:8123`
@@ -26,7 +26,7 @@ Tabix is open source simple BI and sql editor tool for Clickhouse.
 
 Основной экран Tabix
 ==================================================================
-![tabixmainpage](tabixmainpage2.png)
+![tabixmainpage](articel01img/tabixmainpage2.png)
 
 
 
@@ -46,11 +46,17 @@ Todo: Какие горячие клавиши есть глобальные
 
 Todo: про дерево - что поддержка правой кнопки,
 
+
+![Tabix MultiQuery Chart](articel01img/treeRightClick.png)
+
+
 Todo: про дерево - что можно кликнуть на поля
 
 Todo: про дерево - Для чего нужна кнопка Reload structure
 
 Todo: про дерево - Как открыть быстро таблицу для просмотра, сделав DoubleClick
+![Tabix MultiQuery Chart](articel01img/TablePreview.png)
+
 
 
 Display the number of tables at the database
@@ -68,7 +74,15 @@ Todo: - Как работает автокомплит
 
 Todo: - Как использовать `;;`
 
+
+![Tabix MultiQuery Chart](articel01img/MultiQuery.png)
+
+
+
 Todo: - Использование правой кнопки мышки
+
+![Tabix Editor rightmenu](articel01img/EditorRightMenu.png)
+
 
 Todo: - Какие горячие клавиши есть в редакторе
 
@@ -87,12 +101,34 @@ The list of functions is loaded based on the capabilities of the server
 
 Todo: - выгрузка в эксель / redmine /
 
+![Tabix Redmine export](articel01img/redmine_export.png)
+
+
+Redmine format data:
+```
+ | Carrier | DestCityName |
+ | EV | Chicago, IL |
+ | DL | Minneapolis, MN |
+ | WN | Dallas, TX |
+ | WN | Chicago, IL |
+ | B6 | Boston, MA |
+ | EV | Atlanta, GA |
+ | AA | Philadelphia, PA |
+```
+
+
+
 Todo: - Трансформация / переворот таблицы
+
+![Tabix Transpose Table](articel01img/TransposeTable.png)
 
 Todo: - стилизация ячеек и форматирования
 
+![Tabix Style cell](articel01img/StylingCelss.png)
+
 Todo: - расчет median / avg по выделенным ячейкам
 
+![Tabix Calc avg](articel01img/CalcAVG.png)
 
 
 
@@ -101,8 +137,88 @@ Todo: - расчет median / avg по выделенным ячейкам
 
 Todo: - пример как используются простейшие графики - как tabix пытается подстроиться под данные
 
+
+
+```sql
+
+
+SELECT
+ FlightDate, count() as fly
+FROM
+  ontime
+GROUP BY FlightDate
+```
+![Tabix DRAW Chart](articel01img/fly.png)
+
+
+```sql
+SELECT
+ Carrier ,count() as fly
+FROM
+  ontime
+GROUP BY Carrier
+HAVING fly>1000
+
+```
+![Tabix GROUP BY draw chart](articel01img/GROUPBYCarrier.png)
+
+```sql
+SELECT
+ FlightDate, Carrier ,count() as fly
+FROM
+  ontime
+GROUP BY FlightDate,Carrier
+HAVING fly>1000
+```
+![Tabix GROUP BY DATE chart](articel01img/FlightDate,Carrier.png)
+
+
+
+
+
+
+
 Todo: - Пару примеров как строить сложные графики
 
 
+// DRAW_SANKEYS https://tabix.io/doc/draw/Draw_Sankeys/
 
 
+```sql
+SELECT
+ Carrier , DestCityName ,count() as fly
+FROM
+  ontime
+GROUP BY Carrier,DestCityName
+HAVING fly>5000
+DRAW_SANKEYS  "Carrier.fly.DestCityName"
+```
+
+![Tabix SANKEYS](articel01img/DRAW_SANKEYS_Carrier.fly.DestCityName.png)
+
+
+
+// Draw Treemap : https://tabix.io/doc/draw/Draw_Treemap/
+
+
+
+```sql
+SELECT
+ Carrier , DestCityName ,count() as fly
+FROM
+  ontime
+GROUP BY Carrier,DestCityName
+HAVING fly>1000
+DRAW_TREEMAP  "Carrier.DestCityName"
+```
+![Tabix TREEMAP](articel01img/DRAW_TREEMAP_Carrier.DestCityName.fly.png)
+```sql
+
+SELECT
+ FlightDate, count() as fly
+FROM
+  ontime
+GROUP BY FlightDate
+DRAW_CALENDAR {}
+```
+![Tabix CALENDAR](articel01img/DRAW_CALENDAR.png)
