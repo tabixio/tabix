@@ -2,6 +2,13 @@ Tabix is open source simple BI and sql editor tool for Clickhouse.
 ==================================================================
 
 
+Tabix -- Что это ?
+Tabix -- Откуда он появился ?
+
+
+## Install and run
+
+
 Для старта ипользованая Tabix, нужно подкорректировать настройки Clickhouse. 
 
 Нужно разрешить подключаться с вашего IP адресса к CH, добавив listen_host в `/etc/clickhouse-server/config.xml` 
@@ -70,7 +77,12 @@ List of fields in the table and inserting the field when clicking in the editor
 Основной экран Tabix - Редактор
 ==================================================================
 
-Todo: - Как работает автокомплит
+## Auto complete
+
+Как работает автокомплит
+
+
+## Multiquery in editor
 
 Todo: - Как использовать `;;`
 
@@ -79,24 +91,19 @@ Todo: - Как использовать `;;`
 
 
 
-Todo: - Использование правой кнопки мышки
+## Editor right click menu
 
 ![Tabix Editor rightmenu](articel01img/EditorRightMenu.png)
 
 
-Todo: - Какие горячие клавиши есть в редакторе
-
-
 ## Tabix HotKeys
 
+Какие горячие клавиши есть в редакторе
 
 | Windows/Linux                  | Mac                            | Action                         |
 |:-------------------------------|:-------------------------------|:-------------------------------|
-
-
 | Ctrl-Enter | Command-Enter | Exec current query under cursor |
 | Shift-Ctrl-Enter | Shift-Command-Enter | Exec all query in current editor |
-
 | Ctrl-Shift-F | Command-Shift-F | AutoFormat code |
 | Alt-Shift-Ctrl-Left | Command-Alt-Shift-Right | Goto Next tab |
 | Alt-Shift-Ctrl-Right | Command-Alt-Shift-Right | Goto Prev tab  |
