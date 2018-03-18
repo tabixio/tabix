@@ -86,6 +86,68 @@ Todo: - Использование правой кнопки мышки
 
 Todo: - Какие горячие клавиши есть в редакторе
 
+
+## Tabix HotKeys
+
+
+| Windows/Linux                  | Mac                            | Action                         |
+|:-------------------------------|:-------------------------------|:-------------------------------|
+
+
+| Ctrl-Enter | Command-Enter | Exec current query under cursor |
+| Shift-Ctrl-Enter | Shift-Command-Enter | Exec all query in current editor |
+
+| Ctrl-Shift-F | Command-Shift-F | AutoFormat code |
+| Alt-Shift-Ctrl-Left | Command-Alt-Shift-Right | Goto Next tab |
+| Alt-Shift-Ctrl-Right | Command-Alt-Shift-Right | Goto Prev tab  |
+| Shift-Ctrl-[0...9] | Command-Shift-[0...9] | Goto tab number |
+| Shift-Ctrl-+ | Command-Shift-+ | Fold code |
+| Shift-Ctrl-- | Command-Shift-- | Unfold code |
+| Alt-L, Ctrl-F1 | Command-Option-L, Command-F1 | Fold selection |
+| Alt-Shift-L, Ctrl-Shift-F1 | Command-Option-Shift-L, Command-Shift-F1 | Unfold |
+| Alt-0 | Command-Option-0 | Fold all |
+| Alt-Shift-0 | Command-Option-Shift-0 | Unfold all |
+
+### Line Operations
+
+| Windows/Linux                  | Mac                            | Action                         |
+|:-------------------------------|:-------------------------------|:-------------------------------|
+| Ctrl-D | Command-D | Remove line |
+| Ctrl-Y | Command-Y | Remove line |
+| Alt-Shift-Down | Command-Option-Down | Copy lines down |
+| Alt-Shift-Up | Command-Option-Up | Copy lines up |
+| Alt-Down | Option-Down | Move lines down |
+| Alt-Up | Option-Up | Move lines up |
+| Alt-Delete | Ctrl-K | Remove to line end |
+| Alt-Backspace | Command-Backspace | Remove to linestart |
+| Ctrl-Backspace | Option-Backspace, Ctrl-Option-Backspace | Remove word left |
+| Ctrl-Delete | Option-Delete | Remove word right |
+
+
+### Find/Replace
+
+| Windows/Linux                  | Mac                            | Action                         |
+|:-------------------------------|:-------------------------------|:-------------------------------|
+| Ctrl-F | Command-F | Find |
+| Ctrl-H | Command-Option-F | Replace |
+| Ctrl-K | Command-G | Find next |
+| Ctrl-Shift-K | Command-Shift-G | Find previous |
+
+
+### Other
+
+| Windows/Linux                  | Mac                            | Action                         |
+|:-------------------------------|:-------------------------------|:-------------------------------|
+| Ctrl-Shift-U | Ctrl-Shift-U | Change to lower case |
+| Ctrl-U | Ctrl-U | Change to upper case |
+| Ctrl-/ | Command-/ | Toggle comment |
+| Ctrl-Shift-D | Command-Shift-D | Duplicate selection |
+
+
+More hot keys  https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts#line-operations
+
+
+
 Todo: - Зачем переключатель Базы
 
 
@@ -134,6 +196,10 @@ Todo: - расчет median / avg по выделенным ячейкам
 
 Основной экран Tabix - Результаты запросов - Графики
 ==================================================================
+
+Воспользуемся DataSet OnTime:  https://clickhouse.yandex/docs/ru/single/index.html#ontime
+
+
 
 Todo: - пример как используются простейшие графики - как tabix пытается подстроиться под данные
 
