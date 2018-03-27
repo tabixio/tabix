@@ -1,7 +1,7 @@
 ## Direct chart by JS code
 
 
-Доступно у любого типа DRAW_MAP / DRAW_C3 / DRAW_CHART -> результат ф-ции передается в обьект графика как настройки
+Available for any type DRAW_MAP / DRAW_C3 / DRAW_CHART -> the result of the f-tion is transferred to the object of the graph as settings
 
 
 ```sql

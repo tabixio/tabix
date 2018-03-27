@@ -71,7 +71,7 @@ If the query specifies `WITH TOTALS`, the last row in the resulting table contai
 
 
 
-## Right click в таблице 
+## Right click in the table 
 
 Right click - opens the menu
 

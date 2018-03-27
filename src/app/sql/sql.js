@@ -325,7 +325,7 @@ window.aceJSRules = {
 
             }, (response) => {
 
-                // @todo fix 
+                // @todo fix
                 console.log("ERROR : response :",response);
                 // Ошибка
                 $mdToast.show(
@@ -1062,65 +1062,72 @@ window.aceJSRules = {
          * @param editor
          */
         $scope.aceLoaded = (editor) => {
-            // console.log("aceLoaded : ACE editor init on creation");
-            $scope.AceEditorInLoad=true;
+
+            $scope.editorVisiable = false;
+
+            $timeout(()=>{
+
+                $scope.editorVisiable = true;
+
+                // console.log("aceLoaded : ACE editor init on creation");
+                $scope.AceEditorInLoad=true;
 
 
-            if ($rootScope.currentDatabase) {
-                $scope.selectDatabase($rootScope.currentDatabase);
-            }
-
-
-
-            $scope.aceLoadDictionaries();
-            $scope.aceLoadDatabaseStructure();
-            $scope.aceLoadDatabaseFields();
-
-            let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
-
-            tab.editor = editor;
-            editor.$blockScrolling = Infinity;
-            //
-            // useWrapMode : true,=> session.setUseWrapMode(true/false)
-            //     mode: 'clickhouse',
-            //     onLoad: aceLoaded,
-
-            // Load settings from LocalStorage
-            editor.setOptions({
-                fontSize: $scope.vars.fontSize + 'px',
-                enableBasicAutocompletion : true,
-                behavioursEnabled:true ,
-                wrapBehavioursEnabled:true ,
-                highlightSelectedWord:true ,
-                //showInvisibles:true ,
-                showGutter:true ,
-                enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
-                liveAutocompletionDelay: 500,
-                liveAutocompletionThreshold: 1
-            });
-
-            editor.setTheme('ace/theme/' + $scope.vars.theme);
-
-            // reload keywords & highlights
-            // editor.session.setMode({
-            //     path: "ace/mode/clickhouse",
-            //     v: Date.now()
-            // });
-            editor.session.setUseWrapMode(    Preference.get('useWrapMode'));
-
-            // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
-            editor.commands.addCommand({
-                name: 'runCurrentCommand',
-                bindKey: {
-                    win: 'Ctrl-Enter',
-                    mac: 'Command-Enter'
-                },
-                exec: () => {
-                    $scope.execute('current', tab);
+                if ($rootScope.currentDatabase) {
+                    $scope.selectDatabase($rootScope.currentDatabase);
                 }
-            });
-            // removeLines
-            editor.commands.addCommand({
+
+
+
+                $scope.aceLoadDictionaries();
+                $scope.aceLoadDatabaseStructure();
+                $scope.aceLoadDatabaseFields();
+
+                let tab = $scope.vars.tabs.find(tab => !tab.editor) || $scope.vars.currentTab;
+
+                tab.editor = editor;
+                editor.$blockScrolling = Infinity;
+                //
+                // useWrapMode : true,=> session.setUseWrapMode(true/false)
+                //     mode: 'clickhouse',
+                //     onLoad: aceLoaded,
+
+                // Load settings from LocalStorage
+                editor.setOptions({
+                    fontSize: $scope.vars.fontSize + 'px',
+                    enableBasicAutocompletion : true,
+                    behavioursEnabled:true ,
+                    wrapBehavioursEnabled:true ,
+                    highlightSelectedWord:true ,
+                    //showInvisibles:true ,
+                    showGutter:true ,
+                    enableLiveAutocompletion:$scope.vars.enableLiveAutocompletion,
+                    liveAutocompletionDelay: 500,
+                    liveAutocompletionThreshold: 1
+                });
+
+                editor.setTheme('ace/theme/' + $scope.vars.theme);
+
+                // reload keywords & highlights
+                // editor.session.setMode({
+                //     path: "ace/mode/clickhouse",
+                //     v: Date.now()
+                // });
+                editor.session.setUseWrapMode(    Preference.get('useWrapMode'));
+
+                // @todo:Кастомный cmd+enter чтобы ранать Все/или выделенное
+                editor.commands.addCommand({
+                    name: 'runCurrentCommand',
+                    bindKey: {
+                        win: 'Ctrl-Enter',
+                        mac: 'Command-Enter'
+                    },
+                    exec: () => {
+                        $scope.execute('current', tab);
+                    }
+                });
+                // removeLines
+                editor.commands.addCommand({
                     name: 'removeLiness',
                     bindKey: {
                         win: 'Ctrl-Y',
@@ -1129,9 +1136,9 @@ window.aceJSRules = {
                     exec: (editor) => {
                         editor.removeLines();
                     }
-             });
-            // removeLines
-            editor.commands.addCommand({
+                });
+                // removeLines
+                editor.commands.addCommand({
                     name: 'collapseAll',
                     bindKey: {
                         win: 'Ctrl-Shift--',
@@ -1140,8 +1147,8 @@ window.aceJSRules = {
                     exec: (editor) => {
                         editor.session.$mode.collapseAll(editor.session);
                     }
-             });
-            editor.commands.addCommand({
+                });
+                editor.commands.addCommand({
                     name: 'unfold',
                     bindKey: {
                         win: 'Ctrl-Shift-+',
@@ -1151,71 +1158,73 @@ window.aceJSRules = {
                         editor.session.unfold();
 
                     }
-             });
-            // https://github.com/ajaxorg/ace/blob/master/lib/ace/lib/keys.js
-
-            editor.commands.addCommand({
-                name: 'runAllCommand',
-                bindKey: {
-                    win: 'Shift-Ctrl-Enter',
-                    mac: 'Shift-Command-Enter'
-                },
-                exec: () => {
-                    $scope.execute('all', tab);
-                }
-            });
-
-            for (let i = 0; i < 9; i++) {
-                editor.commands.addCommand({
-                    name: 'selecttab' + i,
-                    bindKey: {
-                        win: 'Ctrl-Shift-' + (i + 1),
-                        mac: 'Command-Shift-' + (i + 1)
-                    },
-                    exec: () => selectTab(i)
                 });
-            }
-            editor.commands.addCommand({
-                name: 'selectnexttab',
-                bindKey: {
-                    win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Right' : 'Ctrl-Right'),
-                    mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Right' : 'Command-Right')
-                },
-                exec: selectNextTab
-            });
-            editor.commands.addCommand({
-                name: 'selectprevtab',
-                bindKey: {
-                    win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Left' : 'Ctrl-Left'),
-                    mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Left' : 'Command-Left')
-                },
-                exec: selectPrevTab
-            });
-            editor.commands.addCommand({
-                name: 'formatcode',
-                bindKey: {
-                    win: 'Ctrl-Shift-F',
-                    mac: 'Command-Shift-F'
-                },
-                exec: formatCode
-            });
+                // https://github.com/ajaxorg/ace/blob/master/lib/ace/lib/keys.js
 
-            editor.setValue(tab.sql);
-            editor.clearSelection();
-            editor.focus();
-            editor.selection.moveTo(0, 0);
-
-            // Повесить эвент и переиминовывать кнопку -"Выполнить"
-            editor.on('changeSelection', () => {
-                $timeout(() => {
-                    tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
-                    if (tab.originalSql) {
-                        tab.changed = (tab.originalSql != tab.sql);
+                editor.commands.addCommand({
+                    name: 'runAllCommand',
+                    bindKey: {
+                        win: 'Shift-Ctrl-Enter',
+                        mac: 'Shift-Command-Enter'
+                    },
+                    exec: () => {
+                        $scope.execute('all', tab);
                     }
                 });
-            });
-            $scope.AceEditorInLoad=false;
-            $scope.aceApply(editor);
+
+                for (let i = 0; i < 9; i++) {
+                    editor.commands.addCommand({
+                        name: 'selecttab' + i,
+                        bindKey: {
+                            win: 'Ctrl-Shift-' + (i + 1),
+                            mac: 'Command-Shift-' + (i + 1)
+                        },
+                        exec: () => selectTab(i)
+                    });
+                }
+                editor.commands.addCommand({
+                    name: 'selectnexttab',
+                    bindKey: {
+                        win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Right' : 'Ctrl-Right'),
+                        mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Right' : 'Command-Right')
+                    },
+                    exec: selectNextTab
+                });
+                editor.commands.addCommand({
+                    name: 'selectprevtab',
+                    bindKey: {
+                        win: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Ctrl-Left' : 'Ctrl-Left'),
+                        mac: ($scope.vars.disableHotKeyCmdLeft ? 'Shift-Alt-Command-Left' : 'Command-Left')
+                    },
+                    exec: selectPrevTab
+                });
+                editor.commands.addCommand({
+                    name: 'formatcode',
+                    bindKey: {
+                        win: 'Ctrl-Shift-F',
+                        mac: 'Command-Shift-F'
+                    },
+                    exec: formatCode
+                });
+
+                editor.setValue(tab.sql);
+                editor.clearSelection();
+                editor.focus();
+                editor.selection.moveTo(0, 0);
+
+                // Повесить эвент и переиминовывать кнопку -"Выполнить"
+                editor.on('changeSelection', () => {
+                    $timeout(() => {
+                        tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
+                        if (tab.originalSql) {
+                            tab.changed = (tab.originalSql != tab.sql);
+                        }
+                    });
+                });
+                $scope.AceEditorInLoad=false;
+                $scope.aceApply(editor);
+
+            }, 100);
 
         };
 

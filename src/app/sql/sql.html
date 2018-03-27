@@ -4,168 +4,122 @@
 <div ng-if="vars.EditorIsInit">
 
 
-<div ngsf-fullscreen="fullscreenCtrl" class="fullscreen md-tabs-fix" ng-class="::vars.uiTheme.name" >
-    <md-tabs md-dynamic-height md-border-bottom md-selected="vars.selectedTab" md-autoselect class="sql-tabs" >
-        <md-tab ng-repeat="tab in vars.tabs track by $index" ng-click="changeTab(tab);" style="border:1px sienna solid">
+    <div ngsf-fullscreen="fullscreenCtrl" class="fullscreen md-tabs-fix" ng-class="::vars.uiTheme.name" >
 
-            <md-tab-label>
-                {{tab.name + (tab.changed ? ' *' : '')}}
-                <i class="mdi mdi-pencil ml+" ng-click="changeTabName(tab, $event)" style="cursor: pointer"></i>
-                <i class="mdi mdi-close" ng-click="removeTab(tab, $event)" style="cursor: pointer"></i>
-            </md-tab-label>
+        <md-tabs md-dynamic-height md-border-bottom md-selected="vars.selectedTab" md-autoselect class="sql-tabs" >
+
+            <md-tab ng-repeat="tab in vars.tabs track by $index" ng-click="changeTab(tab);" style="border:1px sienna solid">
+
+                <md-tab-label>
+                    {{tab.name + (tab.changed ? ' *' : '')}}
+                    <i class="mdi mdi-pencil ml+" ng-click="changeTabName(tab, $event)" style="cursor: pointer"></i>
+                    <i class="mdi mdi-close" ng-click="removeTab(tab, $event)" style="cursor: pointer"></i>
+                </md-tab-label>
+
+                <md-tab-body>
+
+                    <div style="display: table; width: 100%;">
+                        <div style="min-height: 100px; position: relative; display: table-cell;">
+                            <div resizable r-directions="['bottom']" r-height="300">
+                                <md-menu mousepoint-menu>
+
+                                    <div
+                                        ng-show="editorVisiable"
+                                        ng-right-click="$mdOpenMousepointMenu($event)"
+                                        ui-ace="" load="aceLoaded"
+                                        style="width: 100%; height: 100%"
+                                        ng-mouseenter
+                                    ></div>
+
+                                    <md-menu-content id="menu" width="4">
+                                        <md-menu-item><md-button ng-click="rightMenuProcess('Snippet')"> <i class="mdi mdi-fish"></i>Make snippet</md-button></md-menu-item>
+                                        <md-menu-item><md-button ng-click="rightMenuProcess('AutoFormat')"> <i class="mdi mdi-format-size"></i>AutoFormat</md-button></md-menu-item>
+                                        <md-menu-item><md-button ng-click="rightMenuProcess('Expand')"> <i class="mdi mdi-expand"></i>Expand</md-button></md-menu-item>
+                                        <md-menu-item><md-button ng-click="rightMenuProcess('Collapse')"> <i class="mdi mdi-compress"></i>Collapse</md-button></md-menu-item>
+                                        <md-menu-item><md-button ng-click="rightMenuProcess('Collapse All')"> <i class="mdi mdi-compress"></i>Collapse All</md-button></md-menu-item>
+                                        <md-menu-divider></md-menu-divider>
+                                    </md-menu-content>
+                                </md-menu>
+                            </div>
+
+                            <md-button class="md-raised1 md-primary" ng-disabled="tab.loading" ng-click="execute('all', tab)">{{tab.buttonTitle}}</md-button>
+                            <md-button class="md-raised1 md-primary" ng-disabled="tab.loading" ng-click="execute('current', tab)">Run current  ⌘ + ⏎</md-button>
+
+                            <md-button class="md-icon-button " ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
+                                <i class="mdi mdi-fullscreen"></i>
+                                <md-tooltip>Full screen</md-tooltip>
+                            </md-button>
 
 
+                            <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
+                                <i class="mdi mdi-content-save"></i>
+                                <md-tooltip>Save</md-tooltip>
+                            </md-button>
 
-            <md-tab-body>
-                <div style="display: table; width: 100%;">
-                    <div style="min-height: 100px; position: relative; display: table-cell;">
-                        <div resizable r-directions="['bottom']" r-height="300" style="">
-                            <md-menu mousepoint-menu>
-                                <div
-                                    ng-right-click="$mdOpenMousepointMenu($event)"
-                                    ui-ace="" load="aceLoaded"
-                                    style=" width: 100%; height: 100%;"
-                                    ng-mouseenter
-                                ></div>
-
-                                <md-menu-content id="menu" width="4">
-                                    <md-menu-item><md-button ng-click="rightMenuProcess('Snippet')"> <i class="mdi mdi-fish"></i>Make snippet</md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="rightMenuProcess('AutoFormat')"> <i class="mdi mdi-format-size"></i>AutoFormat</md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="rightMenuProcess('Expand')"> <i class="mdi mdi-expand"></i>Expand</md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="rightMenuProcess('Collapse')"> <i class="mdi mdi-compress"></i>Collapse</md-button></md-menu-item>
-                                    <md-menu-item><md-button ng-click="rightMenuProcess('Collapse All')"> <i class="mdi mdi-compress"></i>Collapse All</md-button></md-menu-item>
-                                    <md-menu-divider></md-menu-divider>
+                            <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
+                                <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                    <i class="mdi mdi-history"></i>
+                                </md-button>
+                                <md-menu-content width="4">
+                                    <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
+                                        <md-button>
+                                            {{item.name}}
+                                            <md-tooltip>Query log</md-tooltip>
+                                            <div class="pull-right">
+                                                <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
+                                            </div>
+                                        </md-button>
+                                    </md-menu-item>
                                 </md-menu-content>
                             </md-menu>
+
+                            <md-input-container>
+                                <md-select ng-model="vars.db" placeholder="Select database">
+                                    <md-optgroup label="Database">
+                                        <md-option ng-value="dbb.name" ng-repeat="dbb in vars.databasesList track by $index" ng-click="changeRootSelectDatabase(dbb.name,'s')">USE {{::dbb.name}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+
+
+
+
+
+
+
+                            <small class="pull-right" ng-if="vars.LastStatistics" style="color: silver;padding-top: 20px">
+                                {{vars.LastStatistics.elapsed| number:2}} sec.| {{vars.LastStatistics.rows_read| number}}
+                                rows.| {{vars.LastStatistics.bytes_read|filesize}}
+                            </small>
+
+                            <div ng-if="tab.loading" style="display: table; width: 100%;">
+                                <md-progress-linear md-mode="indeterminate" ></md-progress-linear>
+                                <i style="font-size: 70%">..... {{tab.progress.query}} </i>
+                            </div>
+
+
+
+
+
                         </div>
-
-
-
-
-
-                        <md-button class="md-raised1 md-primary" ng-disabled="tab.loading" ng-click="execute('all', tab)">{{tab.buttonTitle}}</md-button>
-                        <md-button class="md-raised1 md-primary" ng-disabled="tab.loading" ng-click="execute('current', tab)">Run current  ⌘ + ⏎</md-button>
-
-                        <md-button class="md-icon-button " ng-click="fullscreenCtrl.toggleFullscreen()" aria-label="fullscreen">
-                            <i class="mdi mdi-fullscreen"></i>
-                            <md-tooltip>Full screen</md-tooltip>
-                        </md-button>
-
-
-                        <md-button class="md-icon-button" ng-click="save(tab, $event)" show-if-fullscreen="false" aria-label="save">
-                            <i class="mdi mdi-content-save"></i>
-                            <md-tooltip>Save</md-tooltip>
-                        </md-button>
-
-                        <md-menu md-position-mode="target-right target" ng-if="vars.sqlHistory.length" show-if-fullscreen="false">
-                            <md-button aria-label="menu" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                                <i class="mdi mdi-history"></i>
-                            </md-button>
-                            <md-menu-content width="4">
-                                <md-menu-item ng-repeat="item in vars.sqlHistory track by $index" ng-click="load(item)">
-                                    <md-button>
-                                        {{item.name}}
-                                        <md-tooltip>Query log</md-tooltip>
-                                        <div class="pull-right">
-                                            <i class="mdi mdi-close ml+" ng-click="removeHistory(item, $event)"></i>
-                                        </div>
-                                    </md-button>
-                                </md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
-
-                        <md-input-container>
-                            <md-select ng-model="vars.db" placeholder="Select database">
-                                <md-optgroup label="Database">
-                                    <md-option ng-value="dbb.name" ng-repeat="dbb in vars.databasesList track by $index" ng-click="changeRootSelectDatabase(dbb.name,'s')">USE {{::dbb.name}}</md-option>
-                                </md-optgroup>
-                            </md-select>
-                        </md-input-container>
-
-
-
-
-
-
-
-                        <small class="pull-right" ng-if="vars.LastStatistics" style="color: silver;padding-top: 20px">
-                            {{vars.LastStatistics.elapsed| number:2}} sec.| {{vars.LastStatistics.rows_read| number}}
-                            rows.| {{vars.LastStatistics.bytes_read|filesize}}
-                        </small>
-
-                        <div ng-if="tab.loading" style="display: table; width: 100%;">
-                            <md-progress-linear md-mode="indeterminate" ></md-progress-linear>
-                            <i style="font-size: 70%">..... {{tab.progress.query}} </i>
-                        </div>
-
-
-
-
-
                     </div>
-                </div>
 
-
-
-                <!-- ---------------------------------------- BASE RENDER RESULT -------------------- -->
+                    <!-- ---------------------------------------- BASE RENDER RESULT -------------------- -->
                     <span ng-if="!tab.loading" style="width: 100%;height: 100%" ng-include="'app/sql/renderResult.html'"></span>
+                    <!-- ------------------ -->
 
-                <!-- ------------------ -->
+                </md-tab-body>
 
+            </md-tab>
 
-            </md-tab-body>
-        </md-tab>
+            <md-tab ng-click="addTab()">
+                <md-tab-label>
+                    <i class="mdi mdi-plus-circle"></i>
+                </md-tab-label>
+            </md-tab>
 
-
-
-        <md-tab ng-click="addTab()">
-            <md-tab-label>
-                <i class="mdi mdi-plus-circle"></i>
-            </md-tab-label>
-        </md-tab>
-    </md-tabs>
-</div>
+        </md-tabs>
+    </div>
 
 
 </div>
-
-
-
-                <!--<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">-->
-
-<!--</md-sidenav>-->
-
-<!--<md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="log">-->
-    <!--<div class="p+">-->
-        <!--<h4 class="mt0">-->
-            <!--<md-button class="md-icon-button pull-right" ng-click="toggleSidenav('log')" aria-label="close" style="margin-top: -10px; margin-right: -10px">-->
-                <!--<i class="mdi mdi-close"></i>-->
-                <!--<md-tooltip>Save</md-tooltip>-->
-            <!--</md-button>-->
-            <!--Request's log-->
-        <!--</h4>-->
-    <!--</div>-->
-    <!--<div>-->
-    <!--<md-input-container>-->
-        <!--<label>Search on server</label>-->
-        <!--<input ng-model="vars.searchQueryOnServer"/>-->
-    <!--</md-input-container>-->
-    <!--<md-button md-no-ink class="md-primary" ng-click="searchSqlLogServer()">Search</md-button>-->
-
-    <!--</div>-->
-    <!--<div>-->
-            <!--<hr>-->
-            <!--<div ng-repeat="sql in vars.sqlLogServer" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">-->
-                <!--<pre class="p0 m0"-->
-                     <!--style="font-size:10px;max-height: 88px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>-->
-            <!--</div>-->
-    <!--</div>-->
-
-    <!--<div ng-repeat="sql in vars.sqlLog" md-ink-ripple="" style="position: relative; cursor: pointer; border-bottom: 1px rgba(120, 120, 120, 0.2) solid;" class="p pl+" ng-click="setSql(sql)">-->
-        <!--<pre class="p0 m0" style="max-height: 48px; line-height: 16px; overflow: hidden; text-overflow: ellipsis">{{::sql}}</pre>-->
-    <!--</div>-->
-    <!--<small class="p+" ng-if="vars.sqlLog.length === 0">-->
-        <!--Request history is empty-->
-    <!--</small>-->
-<!--</md-sidenav>-->
-<!--</div>-->

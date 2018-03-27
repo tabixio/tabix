@@ -1,6 +1,6 @@
 #### TODO UI:
 
-* Отрисовка кластера : узлы и реплики, подсветка основных параметров узлов
+Cluster rendering: nodes and replicas, highlighting the main parameters of nodes
 
 
 * Review database  + Right click - database - overview db?
@@ -19,33 +19,33 @@
 
 * Show+Hide columns in HandTable
 
-* Авто позиционирование на таблицу
+* Auto positioning on the table
 
-* Виджет список предустановленных графиков
+* Widget list of predefined charts
 
-* Теряются стили в таблице , color then heatmap, reset
+* The styles in the table are lost, color then heatmap, reset
 
-* HotTable запоминать размеры установленные руками ( не сбрасывать в ноль )
+* HotTable to remember the sizes set by hands (not to reset to zero)
 
-* Дашборд : связанные таблицы через колонку, выбор в верхней устанавливает переменные
+* Dashboard: linked tables through the column, the selection at the top sets the variables
 
 * Pivot table by column http://techbrij.com/convert-column-to-row-javascript-array-pivot
 
 * Pivot table by https://github.com/pat310/quick-pivot
 
-* Парсинг в тексте FROM DBName.TBName,список доступных полей исходя из имени таблиц
+* Parsing in text FROM DBName.TBName, a list of available fields based on the name of the tables
 
-* draw Andrews  Визуализация многомерных данных с помощью диаграмм Эндрюса
+* draw Andrews Visualization of multidimensional data using Andrews diagrams
 
 
 #### TODO Server:
 * T.Server : Public !
 * T.Server : Class "ReportTools"
-* T.Server : Разбор результата для советов в "WHERE" - Подсказки по полям, и фичам сервера хранит backend
-* T.Server : Задает структуру таблиц ( хотябы названия и типы )  
-* Ldap Auth, скрыть прямой доступ в CH/MySQL
+* T.Server: parsing the result for tips in "WHERE" - Field hints and server features store backend
+* T.Server: Specifies the structure of tables (at least titles and types)
+* LDAP Auth, hide direct access to CH / MySQL
 * Cross database simple join
-* Подсказки по полям сервера хранит backend
+* Tips on server fields store backend
 * http-stream as table
 *
 
