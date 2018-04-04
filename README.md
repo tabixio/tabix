@@ -31,6 +31,11 @@ https://tabix.io/doc/
 * Clickhouse server version up v1.1.54164
 * Not readonly CH user [note](https://tabix.io/doc/Requirements/#note)
 
+## Tabix repositories
+
+[Docs & articles](https://github.com/tabixio/tabix.docs)
+
+[Tabix.backend server](https://github.com/tabixio/tabix.backend)
 
 
 ## Tabix changelog & news
