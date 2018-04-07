@@ -703,14 +703,14 @@ class HandsTable {
                                 callback: function (key, options) {
                                     HandsTable.makeStyle(this, 'Yellow');
                                 },
-                                key: "style:green"
+                                key: "style:yellow"
                             },
                             {
                                 name: 'Orange color',
                                 callback: function (key, options) {
                                     HandsTable.makeStyle(this, 'Orange');
                                 },
-                                key: "style:green"
+                                key: "style:orange"
                             }
                         ]
                     },
