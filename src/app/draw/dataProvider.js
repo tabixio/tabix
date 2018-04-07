@@ -108,9 +108,9 @@ class DataProvider {
 
                 let $max=parseInt($v);
 
+                // 11117311154531369000
 
-
-                if ($max<18017313154530008000) {
+                if ($max<Number.MAX_SAFE_INTEGER) {
                     $canConvert.push(cell.name);
                     this.prepareInt64Cols[cell.name]=true;
                 }
