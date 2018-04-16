@@ -34,6 +34,7 @@
         $scope.logData={};
 
         $scope.vars = {
+            readOnlyRows : true,
             canShowTable : false,
             WidgetTable : false,
             queryesToKill:{},
@@ -117,9 +118,17 @@
         // ------------------------------------------------------------------------------
         $scope.load = () => {
             console.info("Call load  processes");
-            let sql = `SELECT  now() as dt, query,  1 as count, (read_rows+written_rows) as rows, formatReadableSize(read_bytes) as bytes_read, 
-                formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
-                read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName()`
+            let sql = `SELECT  now() as dt, query,  1 as count,
+                toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
+                round(elapsed,1) as elapsed ,
+                formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
+               
+                formatReadableSize(memory_usage) as memory_usage,
+                
+                * ,     formatReadableSize(read_bytes) as bytes_read,
+                formatReadableSize(written_bytes) as bytes_written,  
+                cityHash64(query) as hash,  
+                hostName()`;
 
 
             if ($scope.vars.isClusterLoad && $scope.vars.clusterList && $scope.vars.clusterMode) {
@@ -129,11 +138,12 @@
                 sql = sql + ` FROM system.processes `;
             }
 
-            if ($scope.vars.logMode) {
-                // исключить запрос
-                sql=sql+" /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'";
+            // исключить запрос
+            sql=sql+" /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'";
+            if ($scope.vars.readOnlyRows)
+            {
+                sql=sql+' AND read_rows>0';
             }
-
             API.fetchQuery(sql).then(function ( queryResult ) {
 
                 let $_dataProvider=new DataProvider(queryResult);
