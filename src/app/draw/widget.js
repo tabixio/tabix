@@ -54,9 +54,11 @@ class Widget {
 
     getSizeElementHeight()
     {
-        // console.log("Height : element:",this.element[0].Height);
+        // console.log("Height : clientHeight:",this.element[0].clientHeight);
         // console.log("offsetHeight : element:",this.element[0].offsetHeight);
-        return this.element[0].offsetHeight;
+        let $h=this.element[0].offsetHeight;
+        if ($h<100) $h=100;
+        return $h;
     }
     getSizeElementWidth()
     {

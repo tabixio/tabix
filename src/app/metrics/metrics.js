@@ -20,7 +20,7 @@
         $scope.vars = {
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),
-            selectedTabResultIndex:1,//
+            selectedTabResultIndex:0,//
             active:{
                 Overview:false,
                 Chart:false,

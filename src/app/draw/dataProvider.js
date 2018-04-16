@@ -175,8 +175,15 @@ class DataProvider {
     getError() {
         return this.error;
     }
+    update(data)
+    {
+        this.data=data;
+    }
 
     data() {
+        return this.data;
+    }
+    getData() {
         return this.data;
     }
 

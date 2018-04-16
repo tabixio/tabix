@@ -32,7 +32,7 @@ class WidgetTable extends Widget {
         // init HandsTable helper
         let ht = new HandsTable(this.isDark,this.data.meta,
             {
-                // @todo : use for statistic table
+                //  use for statistic table
                 sort:false,
                 sortOrder:false
             }
@@ -149,7 +149,17 @@ class WidgetTable extends Widget {
         this.onResize();
     }
 
-    onResize(size) {
+    updateData($data)
+    {
+        this.data.update($data);
+        this.handsonTable.loadData($data);
+        this.handsonTable.render();
+    }
+
+
+
+    onResize() {
+        console.info('table.onResize()');
         if (!this.init) return;
         if (!this.handsonTable) return;
 
@@ -162,7 +172,6 @@ class WidgetTable extends Widget {
                 this.handsonTable.getSettings().height==new_H
         ){
 
-            // console.log("Skip resize handsonTable, no resize");
             return;
         }
 

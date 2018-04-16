@@ -13,11 +13,11 @@
             </md-input-container>
 
 
-            <md-input-container class="md-block" flex-gt-sm>
-                <md-switch class="md-primary" name="special" ng-model="table.wordWrap">
-                    Word wrap
-                </md-switch>
-            </md-input-container>
+            <!--<md-input-container class="md-block" flex-gt-sm>-->
+                <!--<md-switch class="md-primary" name="special" ng-model="table.wordWrap">-->
+                    <!--Word wrap-->
+                <!--</md-switch>-->
+            <!--</md-input-container>-->
             <md-input-container class="md-block" flex-gt-sm>
                 <md-switch class="md-primary" name="special" ng-model="vars.logMode">
                     Log Mode
@@ -45,33 +45,34 @@
 
         </div>
 
-        <div layout="row">
-        <md-progress-circular ng-if="vars.loading" class="md-accent" md-diameter="40"></md-progress-circular>
-        <hot-table
-                ng-class="{'handsontable-dark': vars.isDark}"
-                hot-id="hotTableProcesses"
-                word-wrap="table.wordWrap"
-                settings="table.settings"
-                datarows="table.data"
-                style="width: 100%;height: 100%;"
-                col-headers="table.colHeaders"
-                manual-column-resize="true"
-                class="font-monospace"
-        >
-        </hot-table>
-
-
-        </div>
     </md-card-content>
+
+
+    <div class="row" flex>
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="WidgetsListResult">
+                    <div gridstack class="grid-stack grid1" options="gridStackOptions" staticGrid="staticGrid">
+
+
+
+                        <div gridstack-item ng-repeat="w in widgets" class="grid-stack-item WidgetsListItem"
+                             gs-item-x="w.x" gs-item-y="w.y"
+                             gs-item-width="w.sizeX" gs-item-height="w.sizeY" >
+
+                            <div class="widget-grid-stack grid-stack-item-content ">
+                                <draw-widget
+                                        widget="w" ng-if="w.init && !w.error"
+                                        isdark="vars.isDark" class="widget widget-grid-stack-item widget-{{w.type}} widget-selector" events="events">
+                                </draw-widget>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
-
-<md-card-content>
-<!--<div class="card__actions pl pr+ pt+ pb" style="position:absolute; top:46px; bottom:0;left:0;right:0; overflow:hidden;">-->
-
-
-
-
-    <!--<div ng-if="vars.data !== null && vars.data != -1" ng-bind-html="vars.data"></div>-->
-</div>
-
-</md-card-content>

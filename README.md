@@ -50,7 +50,7 @@ https://tabix.io/doc/
 
 ## License
 
-Copyright 2017 Tabix LLC,Igor Strykhar and other contributors
+Copyright 2018 Tabix LLC,Igor Strykhar and other contributors
 
 Licensed under the Apache License, Version 2.0
 

@@ -44,7 +44,7 @@
             // }
         };
         this.isAuthorized = () => {
-            console.log("this.connection",connection);
+            // console.log("this.connection",connection);
             if (this.isTabixServer()) {
                 if (!connection) return false;
                 if (!connection.tabix) return false;

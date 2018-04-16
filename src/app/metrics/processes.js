@@ -21,14 +21,31 @@
         const LS_SORT_KEY = 'proc.key';
 
 
-        //
+        $scope.widgets=[];
+
+        $scope.staticGrid=true;
+        $scope.gridStackOptions = {
+            cellHeight: 200,
+            verticalMargin: 0,
+            disableDrag:true,
+            disableResize:true,
+            staticGrid:true
+        };
+        $scope.vars = {
+            uiTheme: ThemeService.themeObject,
+            isDark:ThemeService.isDark(),
+        };
+        $scope.logData={};
 
         $scope.vars = {
+            canShowTable : false,
+            WidgetTable : false,
+
             queryesToKill:{},
             clusterMode: true,
             logMode : true,
             loading: false,
-            logData: {},
+
             cols: [],
             isClusterLoad: false,
             clusterList: false,
@@ -50,39 +67,8 @@
             }
         };
 
-        $scope.updateHandTable = ( ) => {
-            hotRegisterer.getInstance('hotTableProcesses').render();
-        };
 
-//
-        $scope.table = {
-            wordWrap:false,
 
-            data:{
-
-            },
-            settings : {
-                observeChanges:false, // WARN! Memory leak
-                manualColumnMove: true,
-                manualColumnResize: true,
-                autoWrapRow: true,
-                rowHeaders: true,
-                colWidths: 70,
-                dropdownMenu: true,
-                stretchH: 'all',
-                fillHandle: false,
-                preventOverflow: 'horizontal',
-                // persistentState:true,
-
-                columnSorting: true,
-                sortIndicator: true,
-                manualRowResize: true,
-                viewportColumnRenderingOffset:'auto',
-                autoColumnSize: {
-                    samplingRatio: 23
-                }
-            }
-        };
 
 
         let intervalHandle = null;
@@ -99,7 +85,9 @@
 
                 });
                 $scope.vars.isClusterLoad = true;
-                console.log("Cluster nodes list", $scope.vars.clusterList.join(","))
+                console.log("Cluster nodes list", $scope.vars.clusterList.join(","));
+                // then cluster load config
+                $scope.load();
             }, function (response) {
                 $scope.vars.isClusterLoad = true;
                 console.error('Error ' + response);
@@ -107,58 +95,46 @@
         };
         // ------------------------------------------------------------------------------
         $scope.flush = () => {
-            $scope.vars.logData={};
-            $scope.table.data=[];
+            $scope.logData={};
         };
 
         // ------------------------------------------------------------------------------
-        $scope.dataToHandsontable = (data) => {
-            // colHeaders: ['A', 'B', 'C', 'D'],
-            // colWidths: [200, 200, 200, 200, 200],
-            // columns: [
-            //     { data: 'a' },
-            //     { data: 'b' },
-            //     { data: 'c' },
-            //     { data: 'd' }
-            // ],
-            // data: data,
+        $scope.megre = ($new) => {
 
-            let colWidths = [];
-            let colHeaders = [];
-            let columns = [];
-            data.meta.forEach((cell) => {
+            // @todo : logData ???? need merge and update `++count`
+            $new.forEach((cell) => {
+                if ($scope.logData[cell.hash])
+                    {
 
-                colHeaders.push(cell.name);
-                let c={};
-                c.type='text';
-                c.width=100;
+                        let c=$scope.logData[cell.hash].count;
+
+                        if ($scope.logData[cell.hash].query_id!=cell.query_id)
+                        {
+                            c=c+1;
+                        }
+                        cell.count=c;
+                        $scope.logData[cell.hash]=cell;
+                    } else
+                    {
+                        cell.count=1;
+                        $scope.logData[cell.hash]=cell;
+
+                    }
 
 
-                switch (cell.type) {
-                    case 'Date':        c.width=90; c.type='date'; c.dateFormat='MM/DD/YYYY';break;
-                    case 'DateTime':    c.width=150; c.type='time'; c.timeFormat='HH:mm:ss'; break;
-                    case 'Int32':       c.width=80;c.type='numeric'; break;
-                    case 'Float64':     c.width=80; c.type='numeric';c.format='0,0.0000';break;
-                    case 'UInt32':      c.width=80; c.type='numeric';break;
-                    case 'String':      c.width=180; break;
-                }
 
-                c.data=cell.name;
-                columns.push(c);
+            });
+            let array = $.map($scope.logData, function(value, index) {
+                return [value];
             });
 
-            return {
+            return array;
 
-                colHeaders: colHeaders,
-                columns: columns,
-                data: data.data,
-                currentRowClassName: 'currentRow',
-                currentColClassName: 'currentCol'
-            };
-        };
+        } ;
 
         // ------------------------------------------------------------------------------
         $scope.load = () => {
+            console.info("Call load  processes");
             let sql = `SELECT  now() as dt, query,  1 as count,  formatReadableSize(read_bytes) as bytes_read, 
                 formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
                 read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName()`
@@ -176,54 +152,39 @@
                 sql=sql+" /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'";
             }
 
-            API.fetchQuery(sql).then(function ( data ) {
+            API.fetchQuery(sql).then(function ( queryResult ) {
 
-                let handsontable = $scope.dataToHandsontable( data );
-                $scope.table.colHeaders=handsontable.colHeaders;
-                $scope.table.settings.columns=handsontable.columns;
-                $scope.table.settings.manualColumnResize=handsontable.columns;
-                $scope.table.settings.colWidths=handsontable.colWidths;
-
-                if ($scope.vars.logMode)
+                let $_dataProvider=new DataProvider(queryResult);
+                if (!$scope.widgets[0])
                 {
-
-                    handsontable.data.forEach((cell) => {
-                        if ($scope.vars.logData[cell.hash])
-                        {
-
-                            let c=$scope.vars.logData[cell.hash].count;
-
-                            if ($scope.vars.logData[cell.hash].query_id!=cell.query_id)
-                            {
-                                c=c+1;
-                            }
-                            cell.count=c;
-                            $scope.vars.logData[cell.hash]=cell;
-                        } else
-                        {
-                            cell.count=1;
-                            $scope.vars.logData[cell.hash]=cell;
-
-                        }
-
-
+                    // make new WidgetTable
+                    $scope.widgets[0]=new WidgetTable($_dataProvider);
+                    $_dataProvider.data.forEach((cell) => {
+                        $scope.logData[cell.hash]=cell;
                     });
-
-                    let array = $.map($scope.vars.logData, function(value, index) {
-                        return [value];
-                    });
-                    // array.splice(0, 5);
-                    $scope.table.data=array;
                 }
-                else
-                {
-                    $scope.table.data=handsontable.data;
+                else {
+                    // on update exists
+
+
+                    if ($scope.vars.logMode) {
+                        // if need merge data
+                        $scope.widgets[0].updateData($scope.megre($_dataProvider.data));
+                    } else {
+                        // force reset data, no merge
+                        $scope.widgets[0].updateData($_dataProvider.data);
+                    }
+
+
+
                 }
 
+
+                $scope.vars.canShowTable=true;
                 $scope.vars.data = true;
-                // $scope.vars.cols = data.meta.map(col => col.name);
                 $scope.vars.loading = false;
-                $scope.updateHandTable();
+
+                $scope.$applyAsync();
 
             }, function ( response ) {
                 $scope.vars.loading = false;
@@ -256,7 +217,7 @@
         // ------------------------------------------------------------------------------
         // start
         $scope.initClusterConfig();
-        $scope.load();
+
 
 
         if ($scope.vars.interval > -1) {
