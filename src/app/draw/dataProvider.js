@@ -17,6 +17,8 @@ class DataProvider {
         {
             result.data.push(result.totals);
         }
+        this._sortBy=false;
+        this._sortOrder=false;
         this.data = result.data;
         this.text = false;
         this.progressQuery = '';
@@ -193,6 +195,25 @@ class DataProvider {
 
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
+    }
+    setSort($coll,$order)
+    {
+        // column : Number - this index of column, by which you want to sorter the table.
+        // sortOrder : Boolean - defines the order of sorting (true for ascending, false for descending).
+        this._sortBy=$coll;
+        this._sortOrder=$order;
+
+        if (_.isNumber($order))
+        {
+            this._sortOrder=(parseInt($order)<0?false:true);
+        }
+    }
+    sortByColl() {
+        return this._sortBy;
+    }
+
+    sortOrderBy() {
+        return this._sortOrder;
     }
 
 }

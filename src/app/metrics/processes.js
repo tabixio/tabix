@@ -31,40 +31,22 @@
             disableResize:true,
             staticGrid:true
         };
-        $scope.vars = {
-            uiTheme: ThemeService.themeObject,
-            isDark:ThemeService.isDark(),
-        };
         $scope.logData={};
 
         $scope.vars = {
             canShowTable : false,
             WidgetTable : false,
-
             queryesToKill:{},
             clusterMode: true,
             logMode : true,
             loading: false,
 
-            cols: [],
             isClusterLoad: false,
             clusterList: false,
             isDark: ThemeService.isDark(),
             sort: /^[a-z0-9_]+$/.test(localStorageService.get(LS_SORT_KEY)) ? localStorageService.get(LS_SORT_KEY) : null,
             interval: localStorageService.get(LS_INTERVAL_KEY) || -1,
-            scrollConfig: {
-                autoHideScrollbar: false,
-                theme: ThemeService.isDark( )
-                    ? 'light'
-                    : 'dark',
-                scrollButtons: {
-                    enable: false
-                },
-                scrollInertia: 100,
-                advanced: {
-                    updateOnContentResize: true
-                }
-            }
+
         };
 
 
@@ -108,7 +90,7 @@
 
                         let c=$scope.logData[cell.hash].count;
 
-                        if ($scope.logData[cell.hash].query_id!=cell.query_id)
+                        if ($scope.logData[cell.hash].inital_query_id!=cell.inital_query_id)
                         {
                             c=c+1;
                         }
@@ -135,7 +117,7 @@
         // ------------------------------------------------------------------------------
         $scope.load = () => {
             console.info("Call load  processes");
-            let sql = `SELECT  now() as dt, query,  1 as count,  formatReadableSize(read_bytes) as bytes_read, 
+            let sql = `SELECT  now() as dt, query,  1 as count, (read_rows+written_rows) as rows, formatReadableSize(read_bytes) as bytes_read, 
                 formatReadableSize(written_bytes) as written_bytes,  formatReadableSize(memory_usage) as memory_usage,
                 read_rows,written_rows, round(elapsed,4) as elapsed ,  * ,   cityHash64(query) as hash,  hostName()`
 
@@ -158,7 +140,10 @@
                 if (!$scope.widgets[0])
                 {
                     // make new WidgetTable
-                    $scope.widgets[0]=new WidgetTable($_dataProvider);
+
+                    $_dataProvider.setSort('rows',-1);
+
+                    $scope.widgets[0]=new WidgetTable($_dataProvider,false,12,9);
                     $_dataProvider.data.forEach((cell) => {
                         $scope.logData[cell.hash]=cell;
                     });

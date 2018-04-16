@@ -33,8 +33,8 @@ class WidgetTable extends Widget {
         let ht = new HandsTable(this.isDark,this.data.meta,
             {
                 //  use for statistic table
-                sort:false,
-                sortOrder:false
+                sort        :this.data.sortByColl(),
+                sortOrder   :this.data.sortOrderBy()
             }
         );
 

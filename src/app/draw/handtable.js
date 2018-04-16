@@ -864,11 +864,11 @@ class HandsTable {
         };
 
 
-        if (this.Preset.sort && this.Preset.sortOrder) {
+        if (this.Preset.sort) {
             o.columnSorting = {
-                column: makeColumns.colPositions[this.Preset.sort],
-                sortOrder: (this.Preset.sortOrder.toLowerCase() == 'desc' ? false : true)
+                column: makeColumns.colPositions[this.Preset.sort]
             };
+            o.columnSorting.sortOrder=this.Preset.sortOrder;
         }
         return o;
 
