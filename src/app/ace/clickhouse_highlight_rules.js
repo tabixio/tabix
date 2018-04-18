@@ -62,6 +62,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
         ];
         let drawCommand = [
             'DRAW_GMAPS',
+            'DRAW_GRAPH',
             'DRAW_PLOTLY',
             'DRAW_CALENDAR',
             'DRAW_TEXT',
