@@ -22,6 +22,7 @@ class DrawEchartsGraph extends DrawEcharts {
             targetValue:'',
             sourceValue:'',
             layout:'',
+            edgeSymbol:''
             // target+source
         };
 
@@ -218,6 +219,9 @@ class DrawEchartsGraph extends DrawEcharts {
                 }
             ]
         };
+        if (sets['edgeSymbol']) {
+            _.set(option.series[0],'edgeSymbol',sets['edgeSymbol']);
+        }
         if (sets['layout']) {
             _.set(option.series[0],'layout',sets['layout']);
         }
