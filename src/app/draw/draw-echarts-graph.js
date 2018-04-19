@@ -19,7 +19,9 @@ class DrawEchartsGraph extends DrawEcharts {
             name: 'name',
             value: 'value',
             target:'target',
-            source:'source',
+            targetValue:'',
+            sourceValue:'',
+            layout:'',
             // target+source
         };
 
@@ -53,6 +55,10 @@ class DrawEchartsGraph extends DrawEcharts {
 
         }
         let patharr = [];
+
+        let _isTargetValue = this.haveColumn(sets['targetValue']);
+        let _isSourceValue = this.haveColumn(sets['sourceValue']);
+        let _isCategories = this.haveColumn(sets['categories']);
 
         if (!path) {
 
@@ -100,18 +106,8 @@ class DrawEchartsGraph extends DrawEcharts {
         let links = [];
         let nodes = [];
 
-        // установлен path ,
-        //        Format :  [ _source_ . _count_ . _target_ . _count2_ . _target2_
-        //         DRAWSANKEY
-        //         {
-        //             "region.count_in_city.city.count_in_street.street"
-        //         }
-        //         DRAWSANKEY
-        //         {
-        //             path : "region.count_in_city.city.count_in_street.street",
-        //         }
-        //
-        //          DRAWSANKEY  "region.count_in_city.city.count_in_street.street"
+
+
 
         this.data().forEach((row) => {
 
@@ -119,13 +115,54 @@ class DrawEchartsGraph extends DrawEcharts {
                 let l_source = patharr[i];
                 let l_value = patharr[i + 1];
                 let l_target = patharr[i + 2];
-                if (_.isUndefined(l_value) || _.isUndefined(l_target)) break;
-                nodes[row[l_source]] = 1;
-                nodes[row[l_target]] = 1;
+                if ( _.isUndefined(l_target)) break;
+
+
+
+                if (_isSourceValue){
+                    let $size = row[sets['sourceValue']] / 1.5;
+                    nodes[row[l_source]] = {
+                        symbolSize: $size,
+                        label : {
+                            normal: {
+                                show: $size > 10
+                            }
+                        }
+                    };
+                } else {
+
+                    nodes[row[l_source]] = {
+                        symbolSize: 1
+                    };
+                }
+
+                if (_isTargetValue)
+                {
+                    let $size = row[sets['targetValue']] / 1.5;
+                    nodes[row[l_target]] = {
+                        symbolSize: $size,
+                        label : {
+                            normal: {
+                                show: $size > 10
+                            }
+                        }
+                    };
+
+                }
+                else
+                {
+                    nodes[row[l_target]] = {
+                        symbolSize: 1
+                    };
+
+                }
+
+
                 links.push({
                     source: row[l_source],
                     target: row[l_target],
-                    value: row[l_value]
+                    value: row[l_value],
+
                 });
             }
         });
@@ -134,8 +171,11 @@ class DrawEchartsGraph extends DrawEcharts {
 
         let result_nodes = [];
         for (let key in nodes) {
-            result_nodes.push({name: key});
+            result_nodes.push(_.merge({name: key},nodes[key]));
         }
+
+        console.log("result_nodes",result_nodes);
+
         let option = {
             tooltip: {
                 trigger: 'item',
@@ -178,7 +218,9 @@ class DrawEchartsGraph extends DrawEcharts {
                 }
             ]
         };
-
+        if (sets['layout']) {
+            _.set(option.series[0],'layout',sets['layout']);
+        }
 
         if (this.isDark()) {
             _.set(option.series[0],'label.normal.textStyle.color','white');
