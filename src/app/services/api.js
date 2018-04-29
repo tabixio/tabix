@@ -472,7 +472,7 @@
                     }
                 })
                 .then(function(response) {
-                    console.info("response",response);
+
                         if (response==='OK') {
                             return 'OK';
                         }
