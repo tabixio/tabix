@@ -448,10 +448,20 @@
 
             return fetch(myRequest)
                 .then(function(response) {
+
                     let contentType = response.headers.get("content-type");
+
+
+                    // console.info("response",response);
+                    // console.info("contentType",contentType);
+                    if (contentType.includes('text/tab-separated-values') && response.status == 200 &&  response.statusText.toLowerCase() == 'ok' )
+                    {
+                        // if insert
+                        return 'OK';
+                    }
                     if (contentType.includes('text/plain') && response.status == 200 &&  response.statusText.toLowerCase() == 'ok' )
                     {
-                        // create table && drop table
+                        // if create table && drop table
                         return 'OK';
 
                     }
@@ -462,6 +472,7 @@
                     }
                 })
                 .then(function(response) {
+                    console.info("response",response);
                         if (response==='OK') {
                             return 'OK';
                         }
