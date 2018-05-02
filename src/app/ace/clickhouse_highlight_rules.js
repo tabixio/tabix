@@ -70,6 +70,7 @@ ace.define("ace/mode/clickhouse_highlight_rules", [ "require", "exports", "$root
             'DRAW_CHART',
             'DRAW_BAR',
             'DRAW_GRIDCHART',
+            'DRAW_FLATTREE',
             'DRAW_RIVER',
             'DRAW_RAW',
             'DRAW_SANKEYS',

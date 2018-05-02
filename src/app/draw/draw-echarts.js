@@ -98,8 +98,39 @@ class DrawEcharts extends DrawBasicChart {
 
         if (this.isDark()) {
             this.options.backgroundColor = '#404a59';
+            this.options.textStyle={
+                color: 'rgba(255, 255, 255, 0.3)'
+            };
+            this.options.lineStyle= {
+                color: 'rgba(255, 255, 255, 0.3)'
+            };
+
             // this.options.color = ['#1a4882','#dd4444', '#fec42c', '#80F1BE'];
         }
+
+        // merge object settings to series
+
+        if (_.isArray(this.options.series))
+        {
+            if (_.isObject(this.options.series[0]))
+            {
+                if (_.isObject(drw))
+                {
+                    this.options.series[0] = _.merge(drw, this.options.series[0]);
+                }
+
+
+                if (this.isDark()) {
+                    _.set(this.options.series[0],'label.normal.textStyle.color','white');
+                }
+            }
+        }
+
+
+
+
+
+        // console.log('option',option );
         this.chart.setOption(this.options);
         // log
         console.info('preProcessor', this.init, this.options );

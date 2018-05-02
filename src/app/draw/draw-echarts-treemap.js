@@ -7,7 +7,46 @@
 
 class DrawEchartsTreemap extends DrawEcharts {
 
+    getSerieSettings(sets)
+    {
 
+        let  formatUtil = echarts.format;
+
+        return {
+            tooltip: {
+                formatter: function (info) {
+                    let value = info.value;
+                    let treePath = [];
+                    let treePathInfo = info.treePathInfo;
+
+                    if (_.isArray(treePathInfo))
+                    {
+
+                        for (let i = 1; i < treePathInfo.length; i++) {
+                            treePath.push(treePathInfo[i].name);
+                        }
+                    }
+
+                    let valueformat=sets['valueformat'];
+
+                    if (!valueformat) valueformat='0,0.0';
+                    //value
+
+
+                    return [
+                        '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('.')) + '</div>',
+                        sets['tooltip']+' : ' + numbro(value).format(valueformat),
+                    ].join('');
+                }
+            },
+            itemStyle: {
+                normal: {
+                    borderColor: '#fff'
+                }
+            },
+            type:'treemap'
+        };
+    }
     getLevelOption() {
         return [
             {
@@ -149,11 +188,9 @@ class DrawEchartsTreemap extends DrawEcharts {
 
         };
 
-        let  formatUtil = echarts.format;
-
         o.series = [
             {
-                type: 'treemap',
+
                 name: sets['title'],
                 // visibleMin: 300,
                 label: {
@@ -161,38 +198,14 @@ class DrawEchartsTreemap extends DrawEcharts {
                     formatter: '{b}'
                 },
 
-                tooltip: {
-                    formatter: function (info) {
-                        let value = info.value;
-                        let treePath = [];
-                        let treePathInfo = info.treePathInfo;
-                        for (let i = 1; i < treePathInfo.length; i++) {
-                            treePath.push(treePathInfo[i].name);
-                        }
 
-                        let valueformat=sets['valueformat'];
-
-                        if (!valueformat) valueformat='0,0.0';
-                        //value
-
-
-                        return [
-                            '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('.')) + '</div>',
-                            sets['tooltip']+' : ' + numbro(value).format(valueformat),
-                        ].join('');
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        borderColor: '#fff'
-                    }
-                },
                 levels: this.getLevelOption(),
                 data: bTree
             }
         ];
 
-        this.options = Object.assign(o, this.options);
+        this.options = Object.assign(o, this.options,);
+        this.options.series[0] = Object.assign(this.getSerieSettings(sets), this.options.series[0]);
         return true;
 
     }

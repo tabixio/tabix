@@ -219,20 +219,17 @@ class DrawEchartsGraph extends DrawEcharts {
                 }
             ]
         };
-        if (sets['edgeSymbol']) {
-            _.set(option.series[0],'edgeSymbol',sets['edgeSymbol']);
-        }
-        if (sets['layout']) {
-            _.set(option.series[0],'layout',sets['layout']);
-        }
+        // if (sets['edgeSymbol']) {
+        //     _.set(option.series[0],'edgeSymbol',sets['edgeSymbol']);
+        // }
+        // if (sets['layout']) {
+        //     _.set(option.series[0],'layout',sets['layout']);
+        // }
 
-        if (this.isDark()) {
-            _.set(option.series[0],'label.normal.textStyle.color','white');
-        }
 
         option = Object.assign(option, this.options);
 
-        console.log('option',option );
+
 
         this.options=option;
         return true;
