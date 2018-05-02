@@ -116,7 +116,21 @@ class DrawEcharts extends DrawBasicChart {
             {
                 if (_.isObject(drw))
                 {
-                    this.options.series[0] = _.merge(drw, this.options.series[0]);
+
+                    if (_.isArray(drw.series)) {
+                        for (let col = 0; col <= drw.series.length; col++) {
+                            if (_.isObject(this.options.series[col]))
+                            {
+                                this.options.series[col] = _.merge( this.options.series[col],drw.series[col]);
+                            }
+
+                        }
+
+                    }
+                    else {
+                        this.options.series[0] = _.merge(drw, this.options.series[0]);
+                    }
+
                 }
 
 
