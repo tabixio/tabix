@@ -128,7 +128,7 @@ class DrawEcharts extends DrawBasicChart {
 
                     }
                     else {
-                        this.options.series[0] = _.merge(drw, this.options.series[0]);
+                        this.options.series[0] = _.merge( this.options.series[0],drw);
                     }
 
                 }
