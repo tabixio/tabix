@@ -82,7 +82,7 @@
         };
 
         // ------------------------------------------------------------------------------
-        $scope.megre = ($new) => {
+        $scope.megreProcessData = ($new) => {
 
             // @todo : logData ???? need merge and update `++count`
             $new.forEach((cell) => {
@@ -91,7 +91,7 @@
 
                         let c=$scope.logData[cell.hash].count;
 
-                        if ($scope.logData[cell.hash].inital_query_id!=cell.inital_query_id)
+                        if ($scope.logData[cell.hash].initial_query_id!=cell.initial_query_id)
                         {
                             c=c+1;
                         }
@@ -107,11 +107,11 @@
 
 
             });
-            let array = $.map($scope.logData, function(value, index) {
-                return [value];
-            });
+            // let array = $.map($scope.logData, function(value, index) {
+            //     return [value];
+            // });
 
-            return array;
+            return _.values($scope.logData);
 
         } ;
 
@@ -122,11 +122,10 @@
                 toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
                 round(elapsed,1) as elapsed ,
                 formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
-               
                 formatReadableSize(memory_usage) as memory_usage,
-                
-                * ,     formatReadableSize(read_bytes) as bytes_read,
+                formatReadableSize(read_bytes) as bytes_read,
                 formatReadableSize(written_bytes) as bytes_written,  
+                * ,     
                 cityHash64(query) as hash,  
                 hostName()`;
 
@@ -151,6 +150,7 @@
                 {
                     // make new WidgetTable
 
+                    $_dataProvider.setColumnsHumanSort(['bytes','memory_usage','bytes_read','bytes_written']);
                     $_dataProvider.setSort('rows',-1);
 
                     $scope.widgets[0]=new WidgetTable($_dataProvider,false,12,9);
@@ -164,7 +164,7 @@
 
                     if ($scope.vars.logMode) {
                         // if need merge data
-                        $scope.widgets[0].updateData($scope.megre($_dataProvider.data));
+                        $scope.widgets[0].updateData($scope.megreProcessData($_dataProvider.data));
                     } else {
                         // force reset data, no merge
                         $scope.widgets[0].updateData($_dataProvider.data);

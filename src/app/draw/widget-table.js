@@ -33,8 +33,9 @@ class WidgetTable extends Widget {
         let ht = new HandsTable(this.isDark,this.data.meta,
             {
                 //  use for statistic table
-                sort        :this.data.sortByColl(),
-                sortOrder   :this.data.sortOrderBy()
+                sort            :this.data.sortByColl(),
+                sortOrder       :this.data.sortOrderBy(),
+                humanSortCols   :this.data.getColumnsHumanSort(),
             }
         );
 
@@ -151,8 +152,15 @@ class WidgetTable extends Widget {
 
     updateData($data)
     {
+        const { sortColumn, sortOrder } = this.handsonTable;
         this.data.update($data);
         this.handsonTable.loadData($data);
+        this.handsonTable.updateSettings({
+            columnSorting: {
+                column: sortColumn,
+                sortOrder
+            }
+        });
         this.handsonTable.render();
     }
 

@@ -74,9 +74,9 @@ class HandsTable {
     countColumns() {
         return this.meta.length;
     }
-
     makeColumns() {
 
+        const humanSortCols=this.Preset.humanSortCols;
         let colHeaders = [];
         let columns = [];
         let positions = {};
@@ -137,6 +137,54 @@ class HandsTable {
             }
             c.renderer = this._handsRenderer;
             c.data = cell.name;
+
+
+
+            if (_.isArray(humanSortCols) && _.indexOf(humanSortCols,cell.name)>-1)
+            {
+                c.sortFunction=function (sortOrder) {
+                // Handsontable's object iteration helper
+                let objectEach = Handsontable.helper.objectEach;
+                let unitsRatios = {
+                    'TiB': 1024*1024*1024*1024,
+                    'GiB': 1024*1024*1024,
+                    'MiB': 1024*1024,
+                    'KiB': 1024,
+                    'B': 1,
+                };
+                let parseUnit = function(value, unit, ratio) {
+                    if (_.isUndefined(value)) return value;
+                    if (isNaN(value) && value.indexOf(' ' + unit) > -1) {
+                        value = parseFloat(value.replace(unit, '')) * ratio;
+                    }
+                    return value;
+                };
+
+
+
+                return function(a, b) {
+                    let newA = a[1];
+                    let newB = b[1];
+                    // console.log(">",a,b);
+                    objectEach(unitsRatios, function(val, prop) {
+                        newA = parseUnit(newA, prop, val);
+                        newB = parseUnit(newB, prop, val);
+                    });
+
+                    if (newA < newB) {
+                        return sortOrder ? -1 : 1;
+                    }
+                    if (newA > newB) {
+                        return sortOrder ? 1 : -1;
+                    }
+                    return 0;
+                };
+
+            }
+            }
+
+
+
             columns.push(c);
         });
 
@@ -870,6 +918,13 @@ class HandsTable {
             };
             o.columnSorting.sortOrder=this.Preset.sortOrder;
         }
+
+
+
+
+        console.log("Make settings");
+
+
         return o;
 
 

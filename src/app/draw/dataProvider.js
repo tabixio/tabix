@@ -17,6 +17,7 @@ class DataProvider {
         {
             result.data.push(result.totals);
         }
+        this._humanSortCols=[];
         this._sortBy=false;
         this._sortOrder=false;
         this.data = result.data;
@@ -121,7 +122,7 @@ class DataProvider {
 
         if (!($canConvert.length>0)) return false;
 
-        console.log("$canConvert, convert to Int",$canConvert);
+        // console.log("$canConvert, convert to Int",$canConvert);
 
         this.data=_.map(this.data,function (o) {
             $canConvert.forEach((cell)=>{
@@ -195,6 +196,14 @@ class DataProvider {
 
     toString() {
         return '(' + this.name + ', ' + this.y + ')';
+    }
+    getColumnsHumanSort()
+    {
+        return this._humanSortCols;
+    }
+    setColumnsHumanSort($cols)
+    {
+        this._humanSortCols=$cols;
     }
     setSort($coll,$order)
     {
