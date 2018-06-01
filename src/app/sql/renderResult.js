@@ -164,8 +164,6 @@
             $scope.vars.active.pivot=true;
         };
         $scope.initTableTab = () => {
-
-            console.warn("initTableTab!!!!");
             $scope.vars.active.table=true;
         };
 

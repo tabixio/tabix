@@ -22,12 +22,7 @@ angular.module('ui.ace', [])
          */
         let acee = window.ace.edit(elm[0]);
 
-        console.time("Ace Load");
-
-
         scope.load(acee);
-
-
 
         if (scope.onChange) {
             console.warn("Ace+bind:scope.onChange");
@@ -35,9 +30,6 @@ angular.module('ui.ace', [])
                 scope.onChange(acee.session);
             });
         }
-
-        // console.groupEnd("Ace Load");
-        console.timeEnd("Ace Load");
 
         elm.on('$destroy', function () {
           acee.session.$stopWorker();

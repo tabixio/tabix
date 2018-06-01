@@ -918,13 +918,6 @@ class HandsTable {
             };
             o.columnSorting.sortOrder=this.Preset.sortOrder;
         }
-
-
-
-
-        console.log("Make settings");
-
-
         return o;
 
 
