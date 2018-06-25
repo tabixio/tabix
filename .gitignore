@@ -9,4 +9,16 @@ manual/site
 *.iml
 out
 gen
-#build
+build
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+.DS_Store
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
