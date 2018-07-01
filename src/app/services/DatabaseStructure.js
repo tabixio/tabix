@@ -36,14 +36,18 @@ class DatabaseStructure {
             {
                 this.all_fields[item.database+'.'+item.table]=[];
             }
-            if (!this.all_db_fields[item.database])
+
+            // TypeError: r.all_db_fields[e.database][e.table].push is not a function
+            if (!_.isArray(this.all_db_fields[item.database]))
             {
                 this.all_db_fields[item.database]=[];
             }
-            if (!this.all_db_fields[item.database][item.table])
+
+            if (!_.isArray(this.all_db_fields[item.database][item.table]))
             {
                 this.all_db_fields[item.database][item.table]=[];
             }
+
             this.all_db_fields[item.database][item.table].push(item);
 
             this.all_fields[item.database+'.'+item.table].push({ name:item.name,type: item.type,active:true });
