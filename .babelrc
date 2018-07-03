@@ -1,6 +1,18 @@
 {
   "presets": [
-    ["env", { "modules": false }],
-    "stage-3"
+      "@babel/preset-env",
+      "@babel/preset-react",
+      ["@babel/preset-stage-0", { "decoratorsLegacy": true }]
+  ],
+  "plugins": [
+      "react-hot-loader/babel",
+      "babel-plugin-transform-class-properties",
+      [
+          "babel-plugin-styled-components",
+          {
+              "displayName": false,
+              "transpileTemplateLiterals": true
+          }
+      ]
   ]
 }
