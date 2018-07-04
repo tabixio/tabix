@@ -1,7 +1,13 @@
+import appConst from '../constants/app';
+
 const initialState = {
-    msg: 'tabix'
+    darkTheme: true
 };
 
 export default (state = initialState, action) => {
-    return {...state};
+    switch (action.type) {
+    case appConst.ENABLE_DARK_THEME:
+        return { ...state, darkTheme: action.payload };
+    }
+    return state;
 };

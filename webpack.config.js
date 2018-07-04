@@ -44,7 +44,7 @@ const build = async () => {
         analyzeBundle && new BundleAnalyzerPlugin({ analyzerMode: 'static' }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'src/template/index.html'
+            template: 'src/template/template.html'
         })
     ].filter(x => x !== false);
 
