@@ -11,13 +11,15 @@ function mapDispatchToProps(dispatch) {
     return {};
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps
+)
 export default class Main extends Component {
     render() {
-
         const { msg } = this.props;
         return (
-            <h1>{msg}</h1>
+            <h1>{ msg }</h1>
         );
     }
 }

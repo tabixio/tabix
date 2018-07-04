@@ -16,7 +16,9 @@ build
 *.ntvs*
 *.njsproj
 *.sln
-public/
+public/assets/css
+public/assets/js
+public/index.html
 
 .DS_Store
 node_modules/
