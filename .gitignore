@@ -25,4 +25,3 @@ node_modules/
 dist/
 npm-debug.log
 yarn-error.log
-package-lock.json
