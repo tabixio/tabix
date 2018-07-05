@@ -38,8 +38,11 @@ export default class Layout extends PureComponent {
                     </NavbarGroup>
 
                     <NavbarGroup align={Alignment.RIGHT}>
-                        <ReqButton title={`Tabix.io Build ${version}`} themeName={darkTheme && Classes.DARK}/>
-                        <ThemeButton onEnableDarkTheme={onEnableDarkTheme}/>
+                        <ReqButton
+                            title={`Tabix.io Build ${version}`}
+                            themeName={darkTheme && Classes.DARK}
+                        />
+                        <ThemeButton onEnableDarkTheme={onEnableDarkTheme} />
                     </NavbarGroup>
                 </Navbar>
                 {children}
