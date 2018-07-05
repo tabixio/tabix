@@ -8,7 +8,7 @@
         "url": "https://github.com/tabixio/tabix.git"
     },
     "scripts": {
-        "start": "webpack-dev-server --content-base public --debug --output-pathinfo --watch-poll --hot --inline --open --port 4001 --mode development",
+        "start": "webpack-dev-server --content-base public --debug --output-pathinfo --watch-poll --hot --inline --open --port 4002 --mode development",
         "build": "NODE_ENV=production webpack -p --mode production",
         "test:new": "node ./utils/new-test",
         "test": "jest"

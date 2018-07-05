@@ -3,7 +3,8 @@ import classname from 'libs/components/classname';
 import { enableDarkTheme } from '../actions/app';
 import React, { PureComponent } from 'react';
 import Logo from 'Layout/Logo.jsx';
-import MainButtons from 'Layout/Buttons/MainButtons.jsx';
+import ReqButton from 'Layout/Buttons/ReqButton.jsx';
+import ThemeButton from 'Layout/Buttons/ThemeButton.jsx';
 import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
 import Footer from 'Layout/Footer.jsx';
 
@@ -37,7 +38,8 @@ export default class Layout extends PureComponent {
                     </NavbarGroup>
 
                     <NavbarGroup align={Alignment.RIGHT}>
-                        <MainButtons onEnableDarkTheme={onEnableDarkTheme} />
+                        <ReqButton title={`Tabix.io Build ${version}`} themeName={darkTheme && Classes.DARK}/>
+                        <ThemeButton onEnableDarkTheme={onEnableDarkTheme}/>
                     </NavbarGroup>
                 </Navbar>
                 {children}
