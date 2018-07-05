@@ -2,6 +2,10 @@ import CoreProvider from './core';
 
 export default class DirectClickHouse extends CoreProvider
 {
+    getType()
+    {
+        return 'direct';
+    }
     makeUrlRequest(withDatabase,extend_settings)
     {
         let url = '';

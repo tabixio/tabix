@@ -1,5 +1,6 @@
 import providerTabixServer from './provider/tabixserver.js';
 import providerDirectClickHouse from './provider/directch.js';
+import DataDecorator from './DataDecorator.js';
 
 
 
@@ -41,9 +42,30 @@ export default class API {
         // if (connection.tabix.server) return true;
         return false;
     }
+
+    /**
+     * @param sql
+     * @param withDatabase
+     * @param format
+     * @param extend_settings
+     * @returns {Promise<*>}
+     */
     async query(sql,withDatabase,format,extend_settings)
     {
         return this.provider().query(sql,withDatabase,format,extend_settings);
+    }
+
+    /**
+     * @param sql
+     * @param withDatabase
+     * @param format
+     * @param extend_settings
+     * @returns {Promise<DataDecorator>}
+     */
+    async fetch(sql,withDatabase,format,extend_settings)
+    {
+        let data=await this.query(sql,withDatabase,format,extend_settings);
+        return new DataDecorator(data,this.provider().getType());
     }
     async loadDatabaseStructure()
     {
@@ -62,12 +84,13 @@ export default class API {
 
         let ping = await this.query('SELECT 1 as ping');
         console.log('ping',ping);
-        let dsInit =await this.loadDatabaseStructure();
-        console.log('dsInit',dsInit);
-        // .then(result=> console.log("result",result));
-        // return ;
-        // let s=await
-        // console.info("Z",z);
-        // return "OK!";
+
+        let isInit =await this.loadDatabaseStructure();
+        console.log('dsInit',isInit);
+
+
+        let data = await this.fetch('select number,sin(number) as sin,cos(number) as cos FROM system.numbers LIMIT 100');
+        console.log('ping',data);
+        return isInit;
     }
 }
