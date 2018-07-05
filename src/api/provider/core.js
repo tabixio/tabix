@@ -1,3 +1,5 @@
+import DatabaseStructure from './../DatabaseStructure.js';
+
 export default class CoreProvider {
     // const CURRENT_BASE_KEY = 'currentBaseConfig';
     // let _DatabaseStructure=new DatabaseStructure();
@@ -7,8 +9,16 @@ export default class CoreProvider {
     constructor(connection)
     {
         this.connection=connection;
-        this.DatabaseStructure={};
+        this._ds=new DatabaseStructure();
         // connection.login
+    }
+
+    /**
+     * @returns {DatabaseStructure}
+     */
+    databaseStructure()
+    {
+        return this._ds;
     }
     render()
     {
