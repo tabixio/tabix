@@ -1,3 +1,4 @@
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import classname from 'libs/components/classname';
 import { enableDarkTheme } from '../actions/app';
@@ -7,8 +8,23 @@ import ReqButton from 'Layout/Buttons/ReqButton.jsx';
 import ThemeButton from 'Layout/Buttons/ThemeButton.jsx';
 import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
 import Footer from 'Layout/Footer.jsx';
+import { Fill } from 'Shared/styled';
 
-const version = require('../../package.json').version;
+const App = styled.div`
+    background-color: #f5f8fa;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    min-height: 100vh;
+    max-width: 100vw;
+    ${props =>
+        props.dark &&
+        css`
+            background-color: #293742;
+        `};
+`;
+
+const { version } = require('../../package.json');
 
 function mapStateToProps(state) {
     return {
@@ -31,20 +47,24 @@ export default class Layout extends PureComponent {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
 
         return (
-            <div {...classname({ [Classes.DARK]: darkTheme })}>
-                <Navbar key="navbar">
-                    <NavbarGroup align={Alignment.LEFT}>
-                        <Logo src="assets/images/logo.png" />
-                    </NavbarGroup>
+            <App {...classname({ [Classes.DARK]: darkTheme })} dark={darkTheme}>
+                <Fill>
+                    <Navbar key="navbar">
+                        <NavbarGroup align={Alignment.LEFT}>
+                            <Logo src="assets/images/logo.png" />
+                        </NavbarGroup>
 
-                    <NavbarGroup align={Alignment.RIGHT}>
-                        <ReqButton
-                            title={`Tabix.io Build ${version}`}
-                            themeName={darkTheme && Classes.DARK}
-                        />
-                        <ThemeButton onEnableDarkTheme={onEnableDarkTheme} />
-                    </NavbarGroup>
-                </Navbar>
+                        <NavbarGroup align={Alignment.RIGHT}>
+                            <ReqButton
+                                title={`Tabix.io Build ${version}`}
+                                themeName={darkTheme && Classes.DARK}
+                            />
+                            <ThemeButton
+                                onEnableDarkTheme={onEnableDarkTheme}
+                            />
+                        </NavbarGroup>
+                    </Navbar>
+                </Fill>
                 {children}
                 <Footer key="footer">
                     <a href="https://tabix.io/" target="_blank">
@@ -52,7 +72,7 @@ export default class Layout extends PureComponent {
                     </a>{' '}
                     by Tabix LLC ©, all rights reserved. Build {version}
                 </Footer>
-            </div>
+            </App>
         );
     }
 }

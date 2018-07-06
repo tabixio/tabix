@@ -30,6 +30,7 @@
         "redux": "^4.0.0",
         "redux-form": "^7.3.0",
         "redux-thunk": "^2.2.0",
+        "react-splitter-layout": "^3.0.0",
         "styled-components": "^3.3.3"
     },
     "browserslist": [

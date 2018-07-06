@@ -7,7 +7,6 @@ import createHistory from 'history/createBrowserHistory';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
-import 'react-flexbox-grid/dist/react-flexbox-grid.css';
 import './styles/index.less';
 import { FocusStyleManager } from "@blueprintjs/core";
 
