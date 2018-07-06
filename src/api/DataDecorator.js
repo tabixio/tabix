@@ -174,11 +174,11 @@ export default class DataDecorator {
         this.data=data;
     }
 
-    data() {
+    getData() {
         return this.data;
     }
 
-    meta() {
+    getMeta() {
         return this.meta;
     }
 

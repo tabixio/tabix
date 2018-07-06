@@ -1,0 +1,673 @@
+export class HandsTableContextMenu {
+
+    static makeHeatmaps(ht, format) {
+
+        // format = Heatmaps | NegaPosi
+        // Heatmap для выбранных колонок,
+
+        let selection = ht.getSelectedRange();
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+
+        let h1 = "#a900e5";
+        let h2 = "#3668ff";
+
+        let heatmapScale = chroma.scale([h1, h2]);
+
+        for (let col = fromCol; col <= toCol; col++) {
+
+            let allRows = ht.countRows();
+            let values = ht.getDataAtCol(col);
+            let min = Math.min.apply(null, values);
+            let max = Math.max.apply(null, values);
+
+            if (min !== null && max !== null) {
+                for (let row = 0; row <= allRows; row++) {
+                    let value = parseFloat(ht.getDataAtCell(row, col));
+
+
+                    if (format == 'Heatmaps') {
+                        let point = (value - min) / (max - min);
+                        let color = heatmapScale(point).hex();
+                        let meta = ht.getCellMeta(row, col);
+                        if (meta) {
+                            // пробрасыавем в ренден _handsRenderer параметр backgroundColor
+                            ht.setCellMeta(row, col, 'backgroundColor', color);
+                        }
+                    }
+
+                    if (format == 'NegaPosi') {
+
+                        let color = false;
+                        if (value < 0) {
+                            color = "#e27137";
+                        }
+                        if (value > 0) {
+                            color = "#31b3e5";
+                        }
+
+                        let meta = ht.getCellMeta(row, col);
+                        if (meta && color) {
+                            // пробрасыавем в ренден _handsRenderer параметр color
+                            ht.setCellMeta(row, col, 'color', color);
+                        }
+                    }
+
+                }
+            }
+            else {
+                console.warn("Can`t find Min&Max in column", col);
+            }
+        }
+        ht.render();
+    }
+
+    static getSelected(ht,autoFullSelect,needFullTable) {
+        // отдельный метод - выделение если оно пустое - выделять всю таблицу
+        let selection = ht.getSelectedRangeLast();
+        let isSelection=false;
+        if ((!selection && autoFullSelect) || needFullTable)
+        {
+            // тут получаем число строк + число колонок
+            return {
+                isSelection:false,
+                fromRow:0,
+                toRow:ht.countRows(),
+                toCol:ht.countCols(),
+                fromCol:0,
+            }
+        }
+        if (!selection)
+        {
+            return {
+                isSelection:false,
+                fromRow:-1,
+                toRow:-1,
+                toCol:-1,
+                fromCol:-1,
+            }
+        }
+        console.info("selection",selection);
+        let fromCol = Math.min(selection.from.col, selection.to.col);
+        let toCol = Math.max(selection.from.col, selection.to.col);
+        let fromRow = Math.min(selection.from.row, selection.to.row);
+        let toRow = Math.max(selection.from.row, selection.to.row);
+
+        return {
+            isSelection:isSelection,
+            fromRow:fromRow,
+            toRow:toRow,
+            toCol:toCol,
+            fromCol:fromCol,
+
+        }
+    }
+
+    static makeFormat(ht, makeFormat) {
+
+        let selection = HandsTableContextMenu.getSelected(ht,true);
+
+
+        let columns = ht.getSettings().columns;
+        for (let col = selection.fromCol; col <= selection.toCol; col++) {
+            console.log("makeFormat for coll =" + col, makeFormat);
+
+            switch (makeFormat) {
+                case 'Reset':
+                    columns[col].format = false;
+                    columns[col].renderDateFormat = false;
+                    break;
+                case 'Money':
+                    columns[col].format = '$0,0.00';
+                    break;
+                case 'Human':
+                    columns[col].format = '5a';
+                    break;
+                case 'Bytes':
+                    columns[col].format = '0.0b';
+                    break;
+                case 'Percentages':
+                    columns[col].format = '(0.00 %)';
+                    break;
+                case 'Time':
+                    columns[col].renderDateFormat = 'HH:mm:ss';
+                    break;
+                case 'Date':
+                    columns[col].renderDateFormat = 'YYYY-MM-DD';
+                    break;
+                case 'DateTime':
+                    columns[col].renderDateFormat = 'YYYY-MM-DD HH:mm:ss';
+                    break;
+                case 'DateLoc':
+                    columns[col].renderDateFormat = 'LLLL';
+                    break;
+                case 'Float':
+                    columns[col].format = '0.[0000000]';
+                    break;
+            }
+        }
+        ht.updateSettings({
+            columns: columns
+        });
+        ht.render();
+    }
+
+    static isFormatColl(ht, needFormat) {
+
+        needFormat = needFormat.toLowerCase();
+
+        // {toCol,fromCol} = this.getSelected(ht);
+        let s = HandsTableContextMenu.getSelected(ht,true);
+        // let selection = ht.getSelectedRange();
+        // let fromCol = Math.min(selection.from.col, selection.to.col);
+        // let toCol = Math.max(selection.from.col, selection.to.col);
+        let columns = ht.getSettings().columns;
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            if (!columns[col].type.toLowerCase().includes(needFormat)) return false;
+        }
+        return true;
+    }
+
+    static pushToClipboardText(outText) {
+        let textarea = document.createElement('textarea');
+        textarea.style.width = 0;
+        textarea.style.height = 0;
+        textarea.style.border = 0;
+        textarea.style.position = 'absolute';
+        textarea.style.top = 0;
+        document.body.append(textarea);
+        textarea.value = outText;
+        textarea.focus();
+        textarea.select();
+        try {
+            var successful = document.execCommand('copy');
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textarea);
+    }
+
+    static makeCreateTable(ht) {
+        // @todo : вынести в отдельный метод - выделение если оно пустое - выделять всю таблицу
+        let s = HandsTableContextMenu.getSelected(ht, true);
+
+        let outText = [];
+        let q = "\n" + 'CREATE TABLE x (' + "\n";
+        let keys = [];
+        //
+
+
+        let columns = ht.getSettings().columns;
+
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+
+            let typeColumn = columns[col].typeOriginal;
+
+            keys.push("\t" + ht.colToProp(col) + " " + typeColumn);
+
+
+        }
+
+        q = q + keys.join(",\n") + "\n)\nENGINE = TinyLog\n;;\n";
+
+
+        console.log(q);
+        HandsTableContextMenu.pushToClipboardText(q);
+
+
+    }
+
+    static Calc(ht,command) {
+
+        let s = HandsTableContextMenu.getSelected(ht,true);
+
+        let outText = [];
+        let columns = ht.getSettings().columns;
+        let rr = [];
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+
+            for (let row = s.fromRow; row <= s.toRow; row++) {
+                let typeColumn = columns[col].type.toLowerCase();
+                if (typeColumn.includes('numeric')) {
+                    rr.push(ht.getDataAtCell(row, col));
+                }
+            }
+        }
+        if (_.isArray(rr) && rr.length)
+        {
+            let val={
+                median:_.round(_.median(rr),3),
+                sum:_.round(_.sum(rr),3),
+                average:_.round(_.average(rr),3),
+                std:_.round(_.stdDeviation(rr),3)
+            };
+            angular.element(document).scope().$emit('handleBroadcastCalcSumCells', val);
+
+        }
+    }
+
+    static Transpose(ht,command) {
+        let d=HandsTableContextMenu.transpose(ht.getSourceData());
+        let colHeaders=[];
+        let columns=[];
+        for (let col of d.columns) {
+            let c={};
+            c.renderer = this._handsRenderer;
+            c.data = col;
+            c.type = 'text';
+            c.width = 100;
+            columns.push(c);
+            colHeaders.push(col);
+
+        }
+        ht.updateSettings({
+            columns: columns,
+            colHeaders: colHeaders,
+            data: d.data
+        });
+
+    }
+    static transpose(matrix)  {
+
+        let cols=[];
+        let rownum=1;
+        let o=[];
+        cols.push(0);
+        for (let row of matrix) {
+            let colnum=0;
+            for (let [key, value] of Object.entries(row)) {
+                if (!o[colnum]) o[colnum]={};
+                if (rownum==1) {
+                    o[colnum][0]=key;
+
+                }
+                o[colnum][rownum]=value;// Создаем строки
+                colnum++;
+            }
+            cols.push(rownum);        // Создаем колонки
+            rownum++;
+        }
+        return {data:o,columns:cols};
+    }
+
+
+
+
+    static makeWhereIn(ht) {
+
+        let s = HandsTableContextMenu.getSelected(ht,true);
+
+        let outText = [];
+        let columns = ht.getSettings().columns;
+
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            let rr = [];
+            for (let row = s.fromRow; row <= s.toRow; row++) {
+                rr.push(ht.getDataAtCell(row, col));
+            }
+
+            let unique = rr.filter((v, i, a) => a.indexOf(v) === i);
+
+            // get Type of column
+
+            let typeColumn = columns[col].type.toLowerCase();
+            if (typeColumn.includes('numeric')) {
+                // Если числовая колонка
+
+                outText.push(ht.colToProp(col) + " IN ( " + unique.join(" , ") + ') ');
+
+            } else {
+                outText.push(ht.colToProp(col) + " IN ( '" + unique.join("' , '") + "') ");
+            }
+
+
+        }
+        outText = "\n" + outText.join("\n\tAND\n") + "\n\n";
+
+        console.log(outText);
+        HandsTableContextMenu.pushToClipboardText(outText);
+    }
+
+    static copyToClipboard(ht, styleMarkdown,fullTable) {
+        let s = HandsTableContextMenu.getSelected(ht,true,fullTable);
+
+        let outText = "";
+        let cols = [];
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            cols.push(ht.colToProp(col));
+        }
+
+        outText = outText + " | " + cols.join(" | ") + " |\n";
+        cols = [];
+        for (let row = s.fromRow; row <= s.toRow; row++) {
+            for (let col = s.fromCol; col <= s.toCol; col++) {
+                cols.push(ht.getDataAtCell(row, col));
+            }
+            outText = outText + " | " + cols.join(" | ") + " |\n";
+            cols = [];
+        }
+
+        HandsTableContextMenu.pushToClipboardText(outText);
+
+
+    }
+
+    static HideColumn(ht) {
+        let s = HandsTableContextMenu.getSelected(ht,true);
+        let columns = ht.getSettings().columns;
+        for (let col = s.fromCol; col <= s.toCol; col++) {
+            //width
+            columns[col]['width']=0;
+        }
+
+
+        ht.updateSettings({
+            columns: columns
+        });
+
+    }
+    static ShowAllColumns(ht) {
+        let columns = ht.getSettings().columns;
+        console.info("SHOWALL",columns);
+        for (let col of columns) {
+            console.info("COL",columns[col]);
+        };
+
+        ht.updateSettings({
+            columns: columns
+        });
+    }
+
+    static makeStyle(ht, style) {
+        console.log("makeStyle", style);
+        let s = HandsTableContextMenu.getSelected(ht,true);
+
+
+        for (let row = s.fromRow; row <= s.toRow; row++) {
+            for (let col = s.fromCol; col <= s.toCol; col++) {
+                let cellMeta = ht.getCellMeta(row, col);
+                let cl = 'htCell' + style;
+                if (!cellMeta.className || (cellMeta.className && cellMeta.className.indexOf(cl) < 0)) {
+                    // добавление класса лучше использовать
+                    ht.setCellMeta(row, col, 'className', cl);
+                }
+            }
+        }
+        ht.render();
+    }
+
+
+
+    fecthContextMenu()
+    {
+        return {
+            items: {
+                "columnformat": {
+                    name: 'Column format',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Reset", key: "columnformat:1", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Reset');
+                                },
+                            },
+                            {
+                                name: "Money", key: "columnformat:2", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Money');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Human", key: "columnformat:3", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Human');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Bytes", key: "columnformat:4", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Bytes');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Percentages", key: "columnformat:5", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Percentages');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Time only", key: "columnformat:6",
+                                callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Time');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'Time');
+                                }
+                            },
+                            {
+                                name: "Date only", key: "columnformat:7", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Date');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'Date');
+                                }
+                            },
+                            {
+                                name: "Date loc.", key: "columnformat:8", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'DateLoc');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'Date');
+                                }
+                            },
+                            {
+                                name: "Float", key: "columnformat:9", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeFormat(this, 'Float');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Heatmaps", key: "columnformat:10", callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeHeatmaps(this, 'Heatmaps');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+                            {
+                                name: "Negative & Positive",
+                                key: "columnformat:11",
+                                callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeHeatmaps(this, 'NegaPosi');
+                                },
+                                disabled: function () {
+                                    return !HandsTableContextMenu.isFormatColl(this, 'numeric');
+                                }
+                            },
+
+
+                        ]//items
+                    }//submenu
+                },
+
+                // -------------------- column Show Hide --------------------------------------------------------------------
+                //
+                // "columnshowhide": {
+                //     name: 'ShowHide Columns',
+                //     submenu: {
+                //         items: [
+                //             {
+                //                 name: "Hide this column",
+                //                 callback: function (key, options,pf) {
+                //                     // HandsTableContextMenu.makeStyle(this,'Normal');;
+                //                     console.log("Hide this column");
+                //                 },
+                //                 key:"columnshowhide:1"
+                //             }//Money
+                //         ]//items
+                //     },//submenu
+                // },
+                //
+
+
+                // -------------------- Style CELL --------------------------------------------------------------------
+                "style": {
+                    name: 'Style',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Normal",
+                                callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeStyle(this, 'Normal');
+                                },
+                                key: "style:normal"
+                            },
+                            {
+                                name: 'Bold',
+                                callback: function (key, options) {
+                                    HandsTableContextMenu.makeStyle(this, 'Bold');
+                                },
+                                key: "style:makebold"
+
+                            },
+                            {
+                                name: 'Red color',
+                                callback: function (key, options) {
+                                    HandsTableContextMenu.makeStyle(this, 'Red');
+                                },
+                                key: "style:red"
+                            },
+                            {
+                                name: 'Green color',
+                                callback: function (key, options) {
+                                    HandsTableContextMenu.makeStyle(this, 'Green');
+                                },
+                                key: "style:green"
+                            },
+                            {
+                                name: 'Yellow color',
+                                callback: function (key, options) {
+                                    HandsTableContextMenu.makeStyle(this, 'Yellow');
+                                },
+                                key: "style:yellow"
+                            },
+                            {
+                                name: 'Orange color',
+                                callback: function (key, options) {
+                                    HandsTableContextMenu.makeStyle(this, 'Orange');
+                                },
+                                key: "style:orange"
+                            }
+                        ]
+                    },
+                },//style
+                "hsep1": "---------",
+
+                // -------------------- Copy to  --------------------------------------------------------------------
+                "copyTo": {
+                    name: 'To Clipboard',
+                    submenu: {
+                        items: [
+                            {
+                                name: "Redmine Markdown",
+                                callback: function (key, options, pf) {
+                                    console.info("copyToClipboard");
+                                    HandsTableContextMenu.copyToClipboard(this, 'Redmine');
+                                },
+                                key: "copyTo:1"
+                            },//
+                            {
+                                name: "Redmine Markdown (full)",
+                                callback: function (key, options, pf) {
+                                    console.info("copyToClipboard");
+                                    HandsTableContextMenu.copyToClipboard(this, 'Redmine',true);
+                                },
+                                key: "copyTo:2"
+                            },//
+                            {
+                                name: "WHERE col1 IN (val,val),col2 IN ...",
+                                callback: function (key, options, pf) {
+                                    console.info("makeWhereIn");
+                                    HandsTableContextMenu.makeWhereIn(this);
+                                },
+                                key: "copyTo:3"
+                            },
+                            {
+                                name: "Create TABLE...",
+                                callback: function (key, options, pf) {
+                                    HandsTableContextMenu.makeCreateTable(this);
+                                },
+                                key: "copyTo:4"
+                            },
+                            // {
+                            //     name: "make Create Table",
+                            //     callback: function (key, options, pf) {
+                            //         HandsTableContextMenu.makeCreateTable(this);
+                            //     },
+                            //     key: "copyTo:4"
+                            // }
+                        ]//items
+                    },//submenu
+                },
+
+                // "remove_row":{},
+                // "col_left":{},
+                // "col_right":{},
+                // "remove_col":{},
+                "hsep3": "---------",
+                // -------------------- Copy to  --------------------------------------------------------------------
+                "Transform": {
+                    name: "Transpose full table",
+                    callback: function (key, options, pf) {
+                        HandsTableContextMenu.Transpose(this, 'Transpose');
+                    }
+                },
+                "Calculate": {
+                    name: "Calc Avg & Sum & Median",
+                    callback: function (key, options, pf) {
+                        HandsTableContextMenu.Calc(this, 'All');
+                    }
+                },
+                "hsep4": "---------",
+                // "HideShow": {
+                //     name: 'Hide & Show',
+                //     submenu: {
+                //         items: [
+                //             {
+                //                 name: "Hide current column",
+                //                 callback: function (key, options, pf) {
+                //                     HandsTableContextMenu.HideColumn(this);
+                //                 },
+                //                 key: "HideShow:1"
+                //             },
+                //             {
+                //                 name: "Show all columns",
+                //                 callback: function (key, options, pf) {
+                //                     HandsTableContextMenu.ShowAllColumns(this);
+                //                 },
+                //                 key: "HideShow:2"
+                //             },
+                //         ]//items
+                //     },//submenu
+                // },
+                "undo": {},
+                "make_read_only": {},
+                "alignment": {},
+                "hsep5": "---------",
+
+
+            }
+        };
+    }
+
+}

@@ -13,6 +13,8 @@ export default class API {
     constructor(connection)
     {
         this._provider=new providerDirectClickHouse(connection);
+        this._initDs=false;
+        this._version=null;
 
     }
 
@@ -71,6 +73,20 @@ export default class API {
     {
         return this.provider().loadDatabaseStructure();
     }
+    async init()
+    {
+        let ver = await this.query('SELECT version() as ver');
+        if (ver.data && ver.data[0] && ver.data[0]['ver'])
+        {
+            this._version=ver.data[0]['ver'];
+        }
+        console.log('ClickHouse version',this._version);
+        if (!this._initDs)
+        {
+            this._initDs=await this.loadDatabaseStructure();
+        }
+        return this._initDs;
+    }
     async check()
     {
         let sql='SELECT \'login success\'';
@@ -81,16 +97,15 @@ export default class API {
     async test()
     {
         //// @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
+        //
 
-        let ping = await this.query('SELECT 1 as ping');
-        console.log('ping',ping);
-
-        let isInit =await this.loadDatabaseStructure();
-        console.log('dsInit',isInit);
+        //
+        // let isInit =await this.loadDatabaseStructure();
+        // console.log('dsInit',isInit);
 
 
         let data = await this.fetch('select number,sin(number) as sin,cos(number) as cos FROM system.numbers LIMIT 100');
-        console.log('ping',data);
-        return isInit;
+
+        return data;
     }
 }

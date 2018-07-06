@@ -38,6 +38,7 @@ export class HotTable extends React.Component {
    */
     componentDidMount() {
         const newSettings = this.settingsMapper.getSettings(this.props);
+        console.log("newSettings",newSettings);
         this.hotInstance = new Handsontable(document.getElementById(this.id), newSettings);
     }
 
@@ -50,7 +51,6 @@ export class HotTable extends React.Component {
    */
     shouldComponentUpdate(nextProps, nextState) {
         this.updateHot(this.settingsMapper.getSettings(nextProps));
-
         return false;
     }
 
@@ -68,7 +68,7 @@ export class HotTable extends React.Component {
    */
     render() {
         this.id = this.props.id || 'hot' + new Date().getTime();
-        this.className = this.props.className || '';
+        this.className = ( this.props.className || '') +(this.props.dark ? ' handsontable-dark ' : '' );
         this.style = this.props.style || {};
 
         return <div id={this.id} className={this.className} style={this.style}></div>;
@@ -79,6 +79,7 @@ export class HotTable extends React.Component {
    * @param newSettings
    */
     updateHot(newSettings) {
+        console.log("hotInstance.updateSettings,HOT",newSettings);
         this.hotInstance.updateSettings(newSettings);
     }
 }
