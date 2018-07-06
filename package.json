@@ -15,21 +15,22 @@
     },
     "dependencies": {
         "@babel/polyfill": "7.0.0-beta.51",
+        "@blueprintjs/core": "^2.3.1",
+        "handsontable": "^4.0.0",
         "ramda": "^0.25.0",
         "react": "^16.4.1",
         "react-dom": "^16.4.1",
-        "styled-components": "^3.3.3",
+        "react-flexbox-grid": "^2.1.2",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.2",
         "react-router-redux": "^5.0.0-alpha.6",
+        "react-transition-group": "^2.4.0",
+        "recompose": "^0.27.1",
         "redux": "^4.0.0",
         "redux-form": "^7.3.0",
         "redux-thunk": "^2.2.0",
-        "@blueprintjs/core": "^2.3.1",
-        "react-transition-group": "^2.4.0",
-        "recompose": "^0.27.1",
-        "react-flexbox-grid": "^2.1.2"
+        "styled-components": "^3.3.3"
     },
     "browserslist": [
         "> 1%",
