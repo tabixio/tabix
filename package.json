@@ -16,6 +16,7 @@
     "dependencies": {
         "@babel/polyfill": "7.0.0-beta.51",
         "@blueprintjs/core": "^2.3.1",
+        "brace": "^0.11.1",
         "handsontable": "^4.0.0",
         "ramda": "^0.25.0",
         "react": "^16.4.1",
@@ -25,12 +26,12 @@
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.2",
         "react-router-redux": "^5.0.0-alpha.6",
+        "react-splitter-layout": "^3.0.0",
         "react-transition-group": "^2.4.0",
         "recompose": "^0.27.1",
         "redux": "^4.0.0",
         "redux-form": "^7.3.0",
         "redux-thunk": "^2.2.0",
-        "react-splitter-layout": "^3.0.0",
         "styled-components": "^3.3.3"
     },
     "browserslist": [
