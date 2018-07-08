@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import {equals} from 'ramda';
 import 'brace/theme/cobalt';
 import './ext/mode-clickhouse.js';
+import 'brace/ext/language_tools';
+//
 const { Range } = ace.acequire('ace/range');
 import { editorOptions, editorEvents,debounce } from './editorOptions.js';
 
@@ -15,6 +17,46 @@ export default class ReactAce extends Component {
         });
         this.debounce=debounce;
     }
+
+    loadInAceData()
+    {
+
+        // // @todo : 1 - переписать и отказаться полностью от Window!!
+        // // @todo : 2 - Может вкладки будут переключать сессии - а не полностью редакотор
+        // // @todo : 3 - вынести этот код в ui-ace-directive
+        // // грузим
+        // for (let func in window.aceJSRules.builtinFunctions)
+        // {
+        //     let f=window.aceJSRules.builtinFunctions[func];
+        //     editor.session.$mode.$highlightRules.addCompletionsFunctions(f);
+        // }
+        // // ---------- LOAD TABLES ----------
+        // editor.session.$mode.$highlightRules.addArrayCompletions(window.aceJSRules.tables, '[table]','table');
+        //
+        // // ---------- LOAD dictionaries ----------
+        // for (let dic in window.aceJSRules.dictionaries )
+        // {
+        //     let d=window.aceJSRules.dictionaries[dic];
+        //     editor.session.$mode.$highlightRules.addCompletionsDictionaries(d);
+        // }
+        // // ---------- LOAD fieldsList ----------
+        // for (let field in window.aceJSRules.fieldsList )
+        // {
+        //     let v=window.aceJSRules.fieldsList[field];
+        //     editor.session.$mode.$highlightRules.addCompletionsTableFiled(v);
+        // }
+        //
+        // // ---------- LOAD vars ----------
+        // let vars=Variables.getCompletions();
+        // let snip=Snippets.getCompletions();
+        // editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');
+        // editor.session.$mode.$highlightRules.addArrayCompletions(snip, '[snippet]','snippet');
+        //
+        //
+        // editor.session.bgTokenizer.start(0);
+    }
+
+
     // Source https://github.com/securingsincity/react-ace
     componentDidMount() {
         const {
@@ -53,6 +95,11 @@ export default class ReactAce extends Component {
             this.onChange = this.debounce(this.onChange, this.props.debounceChangePeriod);
         }
         this.editor.renderer.setScrollMargin(scrollMargin[0], scrollMargin[1], scrollMargin[2], scrollMargin[3])
+
+
+        this.editor.$blockScrolling = Infinity;
+
+
 
         // this.editor.getSession().setMode(mode);
         this.editor.getSession().setMode(`ace/mode/${mode}`);
@@ -402,6 +449,11 @@ ReactAce.defaultProps = {
     scrollMargin: [ 0, 0, 0, 0],
     setOptions: {},
     wrapEnabled: false,
-    enableBasicAutocompletion: false,
-    enableLiveAutocompletion: false,
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: true,
+    behavioursEnabled:true ,
+    wrapBehavioursEnabled:true ,
+    highlightSelectedWord:true ,
+    liveAutocompletionDelay: 500,
+    liveAutocompletionThreshold: 1
 };
