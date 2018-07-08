@@ -10,6 +10,7 @@ const { Range } = ace.acequire('ace/range');
 import { editorOptions, editorEvents,debounce } from './editorOptions.js';
 
 export default class ReactAce extends Component {
+    // Source https://github.com/securingsincity/react-ace
     constructor(props) {
         super(props);
         editorEvents.forEach(method => {
@@ -18,34 +19,43 @@ export default class ReactAce extends Component {
         this.debounce=debounce;
     }
 
-    loadInAceData()
+    insertWordInEditor()
     {
+        // const editor = $scope.vars.currentTab.editor;
+        // const position = editor.getCursorPosition();
+        // position.column += word.length;
+        // editor.clearSelection();
+        // editor.insert(word);
+        // $scope.vars.currentTab.sql = editor.getValue();
+        // $timeout(() => {
+        //     editor.focus();
+        //     editor.moveCursorToPosition(position);
+        // });
+    }
 
-        // // @todo : 1 - переписать и отказаться полностью от Window!!
-        // // @todo : 2 - Может вкладки будут переключать сессии - а не полностью редакотор
-        // // @todo : 3 - вынести этот код в ui-ace-directive
-        // // грузим
-        // for (let func in window.aceJSRules.builtinFunctions)
-        // {
-        //     let f=window.aceJSRules.builtinFunctions[func];
-        //     editor.session.$mode.$highlightRules.addCompletionsFunctions(f);
-        // }
-        // // ---------- LOAD TABLES ----------
-        // editor.session.$mode.$highlightRules.addArrayCompletions(window.aceJSRules.tables, '[table]','table');
-        //
-        // // ---------- LOAD dictionaries ----------
-        // for (let dic in window.aceJSRules.dictionaries )
-        // {
-        //     let d=window.aceJSRules.dictionaries[dic];
-        //     editor.session.$mode.$highlightRules.addCompletionsDictionaries(d);
-        // }
-        // // ---------- LOAD fieldsList ----------
-        // for (let field in window.aceJSRules.fieldsList )
-        // {
-        //     let v=window.aceJSRules.fieldsList[field];
-        //     editor.session.$mode.$highlightRules.addCompletionsTableFiled(v);
-        // }
-        //
+
+    /**
+     * @param DatabaseStructure ds
+     * @param String dataBaseName
+     */
+    updateDataStructure(ds,dataBaseName)
+    {
+        if (!ds || !ds.constructor) return;
+        if (ds.constructor.name !== 'DatabaseStructure') return;
+        console.info('Ace:updateDataStructure',dataBaseName,ds);
+        // ------------------------------- -----------------------------------
+        let $aceJSRules = ds.getForAceJS(dataBaseName);
+        $aceJSRules.builtinFunctions.map((v)=> { // ---------- builtinFunctions ----------
+            this.editor.session.$mode.$highlightRules.addCompletionsFunctions(v);
+        });
+        $aceJSRules.fieldsList.map((v)=>{ // ---------- fieldsList ----------
+            this.editor.session.$mode.$highlightRules.addCompletionsTableFiled(v);
+        });
+        $aceJSRules.dictionaries.map((v)=>{ // ---------- dictionaries ----------
+            this.editor.session.$mode.$highlightRules.addCompletionsDictionaries(v);
+        });
+        this.editor.session.$mode.$highlightRules.addArrayCompletions($aceJSRules.tables, '[table]','table');
+
         // // ---------- LOAD vars ----------
         // let vars=Variables.getCompletions();
         // let snip=Snippets.getCompletions();
@@ -53,11 +63,11 @@ export default class ReactAce extends Component {
         // editor.session.$mode.$highlightRules.addArrayCompletions(snip, '[snippet]','snippet');
         //
         //
-        // editor.session.bgTokenizer.start(0);
+        this.editor.session.bgTokenizer.start(0);
+
     }
 
 
-    // Source https://github.com/securingsincity/react-ace
     componentDidMount() {
         const {
             className,
@@ -79,6 +89,8 @@ export default class ReactAce extends Component {
             commands,
             annotations,
             markers,
+            dataStructure,
+            currentDatabaseName
         } = this.props;
 
         this.editor = ace.edit(this.refEditor);
@@ -107,7 +119,7 @@ export default class ReactAce extends Component {
         this.editor.setTheme(`ace/theme/${theme}`);
         this.editor.setFontSize(fontSize);
         this.editor.getSession().setValue(!defaultValue ? value : defaultValue, cursorStart);
-        this.editor.navigateFileEnd()
+        this.editor.navigateFileEnd();
         this.editor.renderer.setShowGutter(showGutter);
         this.editor.getSession().setUseWrapMode(wrapEnabled);
         this.editor.setShowPrintMargin(showPrintMargin);
@@ -147,6 +159,9 @@ export default class ReactAce extends Component {
             }
         }
         this.handleOptions(this.props);
+
+        // DataStructure
+        this.updateDataStructure(this.props.dataStructure,this.props.currentDatabaseName);
 
         if (Array.isArray(commands)) {
             commands.forEach((command) => {
@@ -237,6 +252,12 @@ export default class ReactAce extends Component {
         if (!equals(nextProps.setOptions, oldProps.setOptions)) {
             this.handleOptions(nextProps);
         }
+
+        // DataStructure & currentDatabaseName
+        if (!equals(nextProps.dataStructure, oldProps.dataStructure) || !equals(nextProps.currentDatabaseName, oldProps.currentDatabaseName)) {
+            this.updateDataStructure(nextProps.dataStructure,nextProps.currentDatabaseName);
+        }
+
         if (!equals(nextProps.annotations, oldProps.annotations)) {
             this.editor.getSession().setAnnotations(nextProps.annotations || []);
         }
@@ -252,6 +273,7 @@ export default class ReactAce extends Component {
         if (nextProps.focus && !oldProps.focus) {
             this.editor.focus();
         }
+
     }
 
     componentDidUpdate(prevProps) {
@@ -411,6 +433,7 @@ ReactAce.propTypes = {
     annotations: PropTypes.array,
     markers: PropTypes.array,
     keyboardHandler: PropTypes.string,
+    currentDatabaseName: PropTypes.string,
     wrapEnabled: PropTypes.bool,
     enableBasicAutocompletion: PropTypes.oneOfType([
         PropTypes.bool,

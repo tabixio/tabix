@@ -7,6 +7,7 @@ export default class DatabaseStructure {
         this.all_fields=[];
         this.all_db_fields=[];
         this.uciq_dbtables=[];
+        this.aceJSRules={};
     }
     init(columns,tables,databases,dictionaries,functions) {
 
@@ -18,7 +19,13 @@ export default class DatabaseStructure {
         this.all_fields=[];
         this.all_db_fields=[];
         this.uciq_dbtables=[];
-
+        this.aceJSRules = {
+            builtinFunctions:[],
+            lang:'en',
+            dictionaries:[],
+            fieldsList:[],
+            tables:[]
+        };
 
         this.columns=columns;
         this.tables=tables;
@@ -63,7 +70,58 @@ export default class DatabaseStructure {
             this.uciq_fields[item.database].push(item);
             this.uciq_dbtables[item.database+'.'+item.table]=1;
         });
+
+
+        // ------------------------------- builtinFunctions -----------------------------------
+        this.functions.forEach((item) => {
+            this.aceJSRules.builtinFunctions.push({name:item.name,isaggr:item.is_aggregate,score:101,comb:false,origin:item.name});
+            if (item.is_aggregate)
+            {
+                // Комбинатор -If. Условные агрегатные функции
+                let p={name:item.name+'If',isaggr:item.is_aggregate,score:3,comb:'If',origin:item.name};
+                this.aceJSRules.builtinFunctions.push(p);
+
+                // Комбинатор -Array. Агрегатные функции для аргументов-массивов
+                p={name:item.name+'Array',isaggr:item.is_aggregate,score:2,comb:'Array',origin:item.name};
+                this.aceJSRules.builtinFunctions.push(p);
+
+                // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
+                p={name:item.name+'State',isaggr:item.is_aggregate,score:1,comb:'State',origin:item.name};
+                this.aceJSRules.builtinFunctions.push(p);
+            }
+        });
+        // -------------------------------- dictionaries ---------------------------------------------------
+        this.dictionaries.forEach((item) => {
+            let id_field=item.name;
+
+            // Определяем id_field из item.name
+            // Если id_field содержит точку вырезать все что до точки
+            // Если в конце `s` вырезать
+            // подставить _id и все в нижний регистр
+
+            id_field = id_field.replace(/^.*\./gm, '');
+
+            if (id_field!=='news') {
+                id_field = id_field.replace(/s$/gm, '');
+            }
+
+            if (!id_field) {
+                id_field='ID';
+            }else {
+                id_field=id_field.toLowerCase()+'_id';
+            }
+
+
+            let dic = 'dictGet' + item['attribute.types'] + '(\'' + item.name + '\',\'' + item['attribute.names'] + '\',to' + item.key + '( '+id_field+' ) ) AS ' + item['attribute.names'] + ',';
+            this.aceJSRules.dictionaries.push({
+                dic:dic,
+                title: 'dic_'+item.name + '.' + item['attribute.names']
+            });
+        });
+        this.aceJSRules.tables=this.getUniqueDatabaseTables();
         console.log('DS init ... done');
+
+
         this._init=true;
     }
 
@@ -96,6 +154,12 @@ export default class DatabaseStructure {
     }
     getColumns() {
         return this.columns;
+    }
+    getForAceJS(dataBaseName)
+    {
+        let r=this.aceJSRules;
+        r.fieldsList=this.getAllFieldsInDatabase(dataBaseName);
+        return r;
     }
 
 }

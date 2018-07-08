@@ -34,7 +34,6 @@ ace.define('ace/mode/clickhouse', ['require', 'exports', 'module', 'ace/lib/oop'
         this.$behaviour = new CstyleBehaviour();
         this.HighlightRules = ClickhouseHighlightRules;
     };
-    console.log('ModeModeMode',Mode);
     oop.inherits(Mode, TextMode);
 
     (function () {

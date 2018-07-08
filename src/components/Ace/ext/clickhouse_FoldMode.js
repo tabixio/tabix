@@ -183,7 +183,6 @@ ace.define("ace/mode/matching_brace_outdent",["require","exports","module","ace/
 ace.define("ace/mode/clickhouse_FoldMode", ["require", "exports", "module", "ace/lib/oop",
     "ace/range",'ace/mode/sqlserver','ace/mode/folding/cstyle'], function (require, exports, module) {
 
-    console.info('clickhouse_FoldMode:TRY');
 
     let oop = null;
     let BaseFoldMode = null;
@@ -201,7 +200,6 @@ ace.define("ace/mode/clickhouse_FoldMode", ["require", "exports", "module", "ace
 
 
     let FoldMode = exports.FoldMode = function () { };
-    console.info('clickhouse_FoldMode:END');
 
     oop.inherits(FoldMode, BaseFoldMode);
 

@@ -1,6 +1,5 @@
 ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'module', 'ace/lib/oop', 'ace/snippets', 'ace/ext/language_tools' ,'ace/mode/text_highlight_rules'], function (require, exports) {
     'use strict';
-    console.info('Start: clickhouse_highlight_rules');
     let oop = require('../lib/oop');
     let TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 

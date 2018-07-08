@@ -87,6 +87,14 @@ export default class API {
         }
         return this._initDs;
     }
+
+    /**
+     * @returns {DatabaseStructure}
+     */
+    getDatabaseStructure()
+    {
+        return this.provider().databaseStructure();
+    }
     async check()
     {
         let sql='SELECT \'login success\'';
