@@ -35,7 +35,12 @@ add props
 
 ## HotTable
 
-HotTable support prop `data` if data instance of `DataDecorator` - auto render result from Query
+HotTable support props:
+
+* dark - Bool
+* `data` if data instance of `DataDecorator` - auto render result from Query
+
+
 
 ```javascript
 
