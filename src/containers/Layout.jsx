@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import classname from 'libs/components/classname';
-import { enableDarkTheme } from '../actions/app';
+import { enableDarkTheme, init } from '../actions/app';
 import React, { PureComponent } from 'react';
 import Logo from 'Layout/Logo.jsx';
 import ReqButton from 'Layout/Buttons/ReqButton.jsx';
@@ -13,7 +13,7 @@ import { Fill } from 'Shared/styled';
 const App = styled.div`
     background-color: #f5f8fa;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin: auto;
     min-height: 100vh;
     max-width: 100vw;
@@ -22,6 +22,10 @@ const App = styled.div`
         css`
             background-color: #293742;
         `};
+`;
+
+const AppContent = styled.div`
+    flex: 1;
 `;
 
 const { version } = require('../../package.json');
@@ -34,7 +38,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(disaptch) {
     return {
-        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch
+        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch,
+        onInit: () => disaptch(init())
     };
 }
 
@@ -43,6 +48,13 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Layout extends PureComponent {
+
+    componentDidMount() {
+        const { onInit } = this.props;
+
+        onInit();
+    }
+
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
 
@@ -65,7 +77,7 @@ export default class Layout extends PureComponent {
                         </NavbarGroup>
                     </Navbar>
                 </Fill>
-                {children}
+                <AppContent>{children}</AppContent>
                 <Footer key="footer">
                     <a href="https://tabix.io/" target="_blank">
                         Tabix.IO

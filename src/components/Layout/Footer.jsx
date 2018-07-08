@@ -3,7 +3,7 @@ import React from 'react';
 import { Card } from '@blueprintjs/core';
 
 const StyledFooter = styled.div`
-    position: fixed;
+    position: relative;
     bottom: 0;
     width: 100%;
     & > div {
