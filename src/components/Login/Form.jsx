@@ -23,47 +23,55 @@ export const validateServer = values =>
 export const validateDirect = values =>
     values |> commonValidate |> R.assoc('host', required(values.host));
 
-const Form = ({ handleSubmit, mode, valid }) => (
-    <form onSubmit={handleSubmit}>
-        <Field name="name" component={Input} label="Name" placeholder="dev" />
-        {mode === 'server' && (
+const Form = ({ handleSubmit, mode, invalid, ...props }) => {
+    console.log(props);
+    return (
+        <form onSubmit={handleSubmit}>
             <Field
-                name="server"
+                name="name"
                 component={Input}
-                label="url"
-                placeholder="https://tabix.dev/s1"
+                label="Name"
+                placeholder="dev"
             />
-        )}
-        {mode === 'server' && (
-            <Field
-                name="config"
-                component={Input}
-                label="Config key"
-                placeholder="empty"
-            />
-        )}
-        {mode === 'direct' && (
-            <Field
-                name="host"
-                component={Input}
-                label="http://host:port"
-                placeholder="http://127.0.0.1:8123"
-            />
-        )}
-        <Field name="login" component={Input} label="login" />
-        <Field name="password" component={Input} label="password" />
-        {mode === 'direct' && (
-            <Field
-                name="params"
-                component={Input}
-                label="Extend params query"
-                placeholder="key1=value&key2=value"
-            />
-        )}
-        <ButtonArea>
-            <Button text="SIGN IN" type="submit" disabled={!valid} />
-        </ButtonArea>
-    </form>
-);
+            {mode === 'server' && (
+                <Field
+                    name="server"
+                    component={Input}
+                    label="url"
+                    placeholder="https://tabix.dev/s1"
+                />
+            )}
+            {mode === 'server' && (
+                <Field
+                    name="config"
+                    component={Input}
+                    label="Config key"
+                    placeholder="empty"
+                />
+            )}
+            {mode === 'direct' && (
+                <Field
+                    name="host"
+                    component={Input}
+                    label="http://host:port"
+                    placeholder="http://127.0.0.1:8123"
+                />
+            )}
+            <Field name="login" component={Input} label="login" />
+            <Field name="password" component={Input} label="password" />
+            {mode === 'direct' && (
+                <Field
+                    name="params"
+                    component={Input}
+                    label="Extend params query"
+                    placeholder="key1=value&key2=value"
+                />
+            )}
+            <ButtonArea>
+                <Button text="SIGN IN" type="submit" disabled={invalid} />
+            </ButtonArea>
+        </form>
+    );
+};
 
 export default reduxForm()(Form);

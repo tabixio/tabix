@@ -1,19 +1,23 @@
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { switchMode } from '../actions/login';
+import {
+    switchMode,
+    updateConnection,
+    newConnection,
+    activateConnection
+} from '../actions/login';
 import React, { Component } from 'react';
 import { Tab, Tabs } from '@blueprintjs/core';
 import Form, { validateServer, validateDirect } from 'Login/Form.jsx';
 import SplitterLayout from 'react-splitter-layout';
 import Connections from 'Login/Connections.jsx';
-import { Wrapper } from 'Shared/styled';
 
 const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
+    margin-top: 16px;
     & > div,
     input {
         width: 300px;
@@ -22,13 +26,17 @@ const Container = styled.div`
 
 function mapStateToProps(state) {
     return {
-        mode: state.login.mode
+        mode: state.login.mode,
+        connections: state.login.connections
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onSwitch: mode => mode |> switchMode |> dispatch
+        onSwitch: mode => mode |> switchMode |> dispatch,
+        onUpdateConnection: data => data |> updateConnection |> dispatch,
+        onNewConnection: () => newConnection() |> dispatch,
+        onActivateConnection: id => id |> activateConnection |> dispatch
     };
 }
 
@@ -37,12 +45,19 @@ function mapDispatchToProps(dispatch) {
     mapDispatchToProps
 )
 export default class Login extends Component {
-    onSubmit = (dispatch, values) => {
-        console.log(values);
+    onSubmit = values => {
+        const { onUpdateConnection } = this.props;
+        values |> onUpdateConnection;
     };
 
     render() {
-        const { mode, onSwitch } = this.props;
+        const {
+            mode,
+            onSwitch,
+            connections,
+            onNewConnection,
+            onActivateConnection
+        } = this.props;
 
         const formProps = {
             onSubmit: this.onSubmit
@@ -54,43 +69,39 @@ export default class Login extends Component {
                 primaryMinSize={12}
                 secondaryInitialSize={80}
             >
-                <Wrapper>
-                    <Connections />
-                </Wrapper>
-                <Wrapper>
-                    <Container key="form">
-                        <Tabs
-                            id="login"
-                            selectedTabId={mode}
-                            onChange={onSwitch}
-                        >
-                            <Tab
-                                id="direct"
-                                title="DIRECT CH"
-                                panel={
-                                    <Form
-                                        {...formProps}
-                                        mode="direct"
-                                        form="directLogin"
-                                        validate={validateDirect}
-                                    />
-                                }
-                            />
-                            <Tab
-                                id="server"
-                                title="TABIX.SERVER"
-                                panel={
-                                    <Form
-                                        {...formProps}
-                                        mode="server"
-                                        form="serverLogin"
-                                        validate={validateServer}
-                                    />
-                                }
-                            />
-                        </Tabs>
-                    </Container>
-                </Wrapper>
+                <Connections
+                    items={connections}
+                    onNewConnection={onNewConnection}
+                    onActivateConnection={onActivateConnection}
+                />
+                <Container>
+                    <Tabs id="login" selectedTabId={mode} onChange={onSwitch}>
+                        <Tab
+                            id="direct"
+                            title="DIRECT CH"
+                            panel={
+                                <Form
+                                    {...formProps}
+                                    mode="direct"
+                                    form="directLogin"
+                                    validate={validateDirect}
+                                />
+                            }
+                        />
+                        <Tab
+                            id="server"
+                            title="TABIX.SERVER"
+                            panel={
+                                <Form
+                                    {...formProps}
+                                    mode="server"
+                                    form="serverLogin"
+                                    validate={validateServer}
+                                />
+                            }
+                        />
+                    </Tabs>
+                </Container>
             </SplitterLayout>
         );
     }
