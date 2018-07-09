@@ -238,7 +238,6 @@ export class SettingsMapper {
         let o = {
             observeChanges:false, // WARN! Memory leak
             observeDOMVisibility: true,
-            dropdownMenu: true,
             manualColumnMove: true,
             manualColumnResize: true,
             rowHeaders: true,
@@ -258,6 +257,7 @@ export class SettingsMapper {
             autoColumnSize: {samplingRatio: 23},
             columns: columns,
             colHeaders: colHeaders,
+            dropMenu: true,//
             // preventOverflow: 'horizontal',
             // visibleRows:120,
             // width:'100%',

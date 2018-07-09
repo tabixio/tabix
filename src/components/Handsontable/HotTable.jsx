@@ -1,6 +1,7 @@
 import React from 'react';
 import Handsontable from 'handsontable';
 import {SettingsMapper} from './settingsMapper';
+import {DropMenuPlugin} from './plugins/dropmenu';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -27,10 +28,15 @@ import {SettingsMapper} from './settingsMapper';
 export class HotTable extends React.Component {
     constructor() {
         super();
-
         this.hotInstance = null;
         this.settingsMapper = new SettingsMapper();
         this.id = null;
+
+
+        // registerPlugin
+        Handsontable.plugins.registerPlugin('dropMenuPlugin', DropMenuPlugin);
+
+
     }
 
     /**
@@ -38,7 +44,7 @@ export class HotTable extends React.Component {
    */
     componentDidMount() {
         const newSettings = this.settingsMapper.getSettings(this.props);
-        console.log("newSettings",newSettings);
+
         this.hotInstance = new Handsontable(document.getElementById(this.id), newSettings);
     }
 
@@ -79,7 +85,6 @@ export class HotTable extends React.Component {
    * @param newSettings
    */
     updateHot(newSettings) {
-        console.log("hotInstance.updateSettings,HOT",newSettings);
         this.hotInstance.updateSettings(newSettings);
     }
 }
