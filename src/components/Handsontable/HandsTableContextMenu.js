@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 export class HandsTableContextMenu {
 
     static makeHeatmaps(ht, format) {
