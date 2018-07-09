@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Button, Classes, Card, Colors } from '@blueprintjs/core';
+import { Button, Classes, Card } from '@blueprintjs/core';
 import { Fill } from 'Shared/styled';
 
 const Content = styled.div`
