@@ -8,3 +8,7 @@ C9 IDE:
 * https://github.com/exsilium/cloud9
 * https://github.com/c9/core/tree/master/plugins/c9.ide.layout.classic/less
 
+
+Idea:
+
+* https://github.com/nhabuiduc/react-filter-box#readme

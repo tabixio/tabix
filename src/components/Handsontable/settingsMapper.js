@@ -1,7 +1,8 @@
 import {HandsTableContextMenu} from './HandsTableContextMenu.js';
 import Handsontable from 'handsontable';
 import {indexOf,isNil,is} from 'ramda';
-
+import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
+import React from 'react';
 export class SettingsMapper {
     constructor() {
         this.registeredHooks = Handsontable.hooks.getRegistered();
@@ -67,7 +68,7 @@ export class SettingsMapper {
                 // SELECT  inf, nan
                 if (value==null)
                 {
-                    arguments[5] = "NULL";// так работает ;)
+                    arguments[5] = 'NULL';// так работает ;)
                 }
                 td.style.color='black';
                 td.style.background='red';
@@ -111,7 +112,7 @@ export class SettingsMapper {
         if (cellProperties.color) {
             td.style.color = cellProperties.color;
         }
-    };
+    }
 
     makeColumns(data,isDarkTheme)
     {
@@ -150,29 +151,29 @@ export class SettingsMapper {
             }
             // other type
             switch (cell.type) {
-                case 'Date':
-                    c.width = 90;
-                    c.type = 'date';
-                    c.dateFormat = 'YYYY-MM-DD';
-                    break;
-                case 'DateTime':
-                    c.width = 150;
-                    c.type = 'time';
-                    c.timeFormat = 'YYYY-MM-DD HH:mm:ss';
-                    break;
-                case 'Float32':
-                    c.width = 80;
-                    c.type = 'numeric';
-                    c.format = "0.[0000000]";
-                    break;
-                case 'Float64':
-                    c.width = 80;
-                    c.type = 'numeric';
-                    c.format = "0.[0000000]";
-                    break;
-                case 'String':
-                    c.width = 180;
-                    break;
+            case 'Date':
+                c.width = 90;
+                c.type = 'date';
+                c.dateFormat = 'YYYY-MM-DD';
+                break;
+            case 'DateTime':
+                c.width = 150;
+                c.type = 'time';
+                c.timeFormat = 'YYYY-MM-DD HH:mm:ss';
+                break;
+            case 'Float32':
+                c.width = 80;
+                c.type = 'numeric';
+                c.format = '0.[0000000]';
+                break;
+            case 'Float64':
+                c.width = 80;
+                c.type = 'numeric';
+                c.format = '0.[0000000]';
+                break;
+            case 'String':
+                c.width = 180;
+                break;
             }
             c.renderer = this._handsRenderer;
             c.data = cell.name;
@@ -219,7 +220,7 @@ export class SettingsMapper {
                         return 0;
                     };
 
-                }
+                };
             }
 
             columns.push(c);
@@ -230,6 +231,24 @@ export class SettingsMapper {
             columns: columns,
             colPositions: positions
         };
+    }
+    getDropMenu(dropMenu,event,rect)
+    {
+
+        // const selectedColumn = dropMenu.getSelectedColumn();
+        // const physicalIndex = selectedColumn && selectedColumn.physicalIndex;
+        console.warn('getDropMenu(event,rect)',event,dropMenu);
+        // ContextMenu.show(this.menu, { left: e.clientX, top: e.clientY }, () => {
+        ContextMenu.show(dropMenu.hot.getSettings().columnsMenu, { left:rect.left, top: rect.top + event.target.offsetHeight + 3,}, () => {
+        //     // menu was closed; callback optional
+        });
+        // width: rect.width, height: rect.height,
+
+
+    }
+    menuEvent(ev)
+    {
+
     }
     makeSettings(properties)
     {
@@ -257,7 +276,8 @@ export class SettingsMapper {
             autoColumnSize: {samplingRatio: 23},
             columns: columns,
             colHeaders: colHeaders,
-            dropMenu: true,//
+            dropMenuEnable: true,
+            dropMenu: this.getDropMenu,//
             // preventOverflow: 'horizontal',
             // visibleRows:120,
             // width:'100%',
@@ -271,6 +291,12 @@ export class SettingsMapper {
         // Make ContextMenu
         let z=new HandsTableContextMenu();
         o.contextMenu=z.fecthContextMenu();
+        o.columnsMenu= React.createElement(
+            Menu,
+            {}, // empty props
+            React.createElement(MenuItem, { onClick: this.menuEvent, text: 'Save' ,icon:'search'}),
+            React.createElement(MenuItem, { onClick: this.menuEvent, text: 'Delete',icon:'graph-remove' }),
+        );
 
 
         // Preset

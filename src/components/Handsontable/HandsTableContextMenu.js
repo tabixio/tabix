@@ -9,8 +9,8 @@ export class HandsTableContextMenu {
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
 
-        let h1 = "#a900e5";
-        let h2 = "#3668ff";
+        let h1 = '#a900e5';
+        let h2 = '#3668ff';
 
         let heatmapScale = chroma.scale([h1, h2]);
 
@@ -40,10 +40,10 @@ export class HandsTableContextMenu {
 
                         let color = false;
                         if (value < 0) {
-                            color = "#e27137";
+                            color = '#e27137';
                         }
                         if (value > 0) {
-                            color = "#31b3e5";
+                            color = '#31b3e5';
                         }
 
                         let meta = ht.getCellMeta(row, col);
@@ -56,7 +56,7 @@ export class HandsTableContextMenu {
                 }
             }
             else {
-                console.warn("Can`t find Min&Max in column", col);
+                console.warn('Can`t find Min&Max in column', col);
             }
         }
         ht.render();
@@ -75,7 +75,7 @@ export class HandsTableContextMenu {
                 toRow:ht.countRows(),
                 toCol:ht.countCols(),
                 fromCol:0,
-            }
+            };
         }
         if (!selection)
         {
@@ -85,9 +85,8 @@ export class HandsTableContextMenu {
                 toRow:-1,
                 toCol:-1,
                 fromCol:-1,
-            }
+            };
         }
-        console.info("selection",selection);
         let fromCol = Math.min(selection.from.col, selection.to.col);
         let toCol = Math.max(selection.from.col, selection.to.col);
         let fromRow = Math.min(selection.from.row, selection.to.row);
@@ -100,7 +99,7 @@ export class HandsTableContextMenu {
             toCol:toCol,
             fromCol:fromCol,
 
-        }
+        };
     }
 
     static makeFormat(ht, makeFormat) {
@@ -110,40 +109,40 @@ export class HandsTableContextMenu {
 
         let columns = ht.getSettings().columns;
         for (let col = selection.fromCol; col <= selection.toCol; col++) {
-            console.log("makeFormat for coll =" + col, makeFormat);
+            console.log('makeFormat for coll =' + col, makeFormat);
 
             switch (makeFormat) {
-                case 'Reset':
-                    columns[col].format = false;
-                    columns[col].renderDateFormat = false;
-                    break;
-                case 'Money':
-                    columns[col].format = '$0,0.00';
-                    break;
-                case 'Human':
-                    columns[col].format = '5a';
-                    break;
-                case 'Bytes':
-                    columns[col].format = '0.0b';
-                    break;
-                case 'Percentages':
-                    columns[col].format = '(0.00 %)';
-                    break;
-                case 'Time':
-                    columns[col].renderDateFormat = 'HH:mm:ss';
-                    break;
-                case 'Date':
-                    columns[col].renderDateFormat = 'YYYY-MM-DD';
-                    break;
-                case 'DateTime':
-                    columns[col].renderDateFormat = 'YYYY-MM-DD HH:mm:ss';
-                    break;
-                case 'DateLoc':
-                    columns[col].renderDateFormat = 'LLLL';
-                    break;
-                case 'Float':
-                    columns[col].format = '0.[0000000]';
-                    break;
+            case 'Reset':
+                columns[col].format = false;
+                columns[col].renderDateFormat = false;
+                break;
+            case 'Money':
+                columns[col].format = '$0,0.00';
+                break;
+            case 'Human':
+                columns[col].format = '5a';
+                break;
+            case 'Bytes':
+                columns[col].format = '0.0b';
+                break;
+            case 'Percentages':
+                columns[col].format = '(0.00 %)';
+                break;
+            case 'Time':
+                columns[col].renderDateFormat = 'HH:mm:ss';
+                break;
+            case 'Date':
+                columns[col].renderDateFormat = 'YYYY-MM-DD';
+                break;
+            case 'DateTime':
+                columns[col].renderDateFormat = 'YYYY-MM-DD HH:mm:ss';
+                break;
+            case 'DateLoc':
+                columns[col].renderDateFormat = 'LLLL';
+                break;
+            case 'Float':
+                columns[col].format = '0.[0000000]';
+                break;
             }
         }
         ht.updateSettings({
@@ -192,7 +191,7 @@ export class HandsTableContextMenu {
         let s = HandsTableContextMenu.getSelected(ht, true);
 
         let outText = [];
-        let q = "\n" + 'CREATE TABLE x (' + "\n";
+        let q = '\n' + 'CREATE TABLE x (' + '\n';
         let keys = [];
         //
 
@@ -203,12 +202,12 @@ export class HandsTableContextMenu {
 
             let typeColumn = columns[col].typeOriginal;
 
-            keys.push("\t" + ht.colToProp(col) + " " + typeColumn);
+            keys.push('\t' + ht.colToProp(col) + ' ' + typeColumn);
 
 
         }
 
-        q = q + keys.join(",\n") + "\n)\nENGINE = TinyLog\n;;\n";
+        q = q + keys.join(',\n') + '\n)\nENGINE = TinyLog\n;;\n';
 
 
         console.log(q);
@@ -314,15 +313,15 @@ export class HandsTableContextMenu {
             if (typeColumn.includes('numeric')) {
                 // Если числовая колонка
 
-                outText.push(ht.colToProp(col) + " IN ( " + unique.join(" , ") + ') ');
+                outText.push(ht.colToProp(col) + ' IN ( ' + unique.join(' , ') + ') ');
 
             } else {
-                outText.push(ht.colToProp(col) + " IN ( '" + unique.join("' , '") + "') ");
+                outText.push(ht.colToProp(col) + ' IN ( \'' + unique.join('\' , \'') + '\') ');
             }
 
 
         }
-        outText = "\n" + outText.join("\n\tAND\n") + "\n\n";
+        outText = '\n' + outText.join('\n\tAND\n') + '\n\n';
 
         console.log(outText);
         HandsTableContextMenu.pushToClipboardText(outText);
@@ -331,19 +330,19 @@ export class HandsTableContextMenu {
     static copyToClipboard(ht, styleMarkdown,fullTable) {
         let s = HandsTableContextMenu.getSelected(ht,true,fullTable);
 
-        let outText = "";
+        let outText = '';
         let cols = [];
         for (let col = s.fromCol; col <= s.toCol; col++) {
             cols.push(ht.colToProp(col));
         }
 
-        outText = outText + " | " + cols.join(" | ") + " |\n";
+        outText = outText + ' | ' + cols.join(' | ') + ' |\n';
         cols = [];
         for (let row = s.fromRow; row <= s.toRow; row++) {
             for (let col = s.fromCol; col <= s.toCol; col++) {
                 cols.push(ht.getDataAtCell(row, col));
             }
-            outText = outText + " | " + cols.join(" | ") + " |\n";
+            outText = outText + ' | ' + cols.join(' | ') + ' |\n';
             cols = [];
         }
 
@@ -368,10 +367,10 @@ export class HandsTableContextMenu {
     }
     static ShowAllColumns(ht) {
         let columns = ht.getSettings().columns;
-        console.info("SHOWALL",columns);
+        console.info('SHOWALL',columns);
         for (let col of columns) {
-            console.info("COL",columns[col]);
-        };
+            console.info('COL',columns[col]);
+        }
 
         ht.updateSettings({
             columns: columns
@@ -379,7 +378,7 @@ export class HandsTableContextMenu {
     }
 
     static makeStyle(ht, style) {
-        console.log("makeStyle", style);
+        console.log('makeStyle', style);
         let s = HandsTableContextMenu.getSelected(ht,true);
 
 
@@ -402,17 +401,17 @@ export class HandsTableContextMenu {
     {
         return {
             items: {
-                "columnformat": {
+                'columnformat': {
                     name: 'Column format',
                     submenu: {
                         items: [
                             {
-                                name: "Reset", key: "columnformat:1", callback: function (key, options, pf) {
+                                name: 'Reset', key: 'columnformat:1', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Reset');
                                 },
                             },
                             {
-                                name: "Money", key: "columnformat:2", callback: function (key, options, pf) {
+                                name: 'Money', key: 'columnformat:2', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Money');
                                 },
                                 disabled: function () {
@@ -420,7 +419,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Human", key: "columnformat:3", callback: function (key, options, pf) {
+                                name: 'Human', key: 'columnformat:3', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Human');
                                 },
                                 disabled: function () {
@@ -428,7 +427,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Bytes", key: "columnformat:4", callback: function (key, options, pf) {
+                                name: 'Bytes', key: 'columnformat:4', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Bytes');
                                 },
                                 disabled: function () {
@@ -436,7 +435,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Percentages", key: "columnformat:5", callback: function (key, options, pf) {
+                                name: 'Percentages', key: 'columnformat:5', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Percentages');
                                 },
                                 disabled: function () {
@@ -444,7 +443,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Time only", key: "columnformat:6",
+                                name: 'Time only', key: 'columnformat:6',
                                 callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Time');
                                 },
@@ -453,7 +452,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Date only", key: "columnformat:7", callback: function (key, options, pf) {
+                                name: 'Date only', key: 'columnformat:7', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Date');
                                 },
                                 disabled: function () {
@@ -461,7 +460,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Date loc.", key: "columnformat:8", callback: function (key, options, pf) {
+                                name: 'Date loc.', key: 'columnformat:8', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'DateLoc');
                                 },
                                 disabled: function () {
@@ -469,7 +468,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Float", key: "columnformat:9", callback: function (key, options, pf) {
+                                name: 'Float', key: 'columnformat:9', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeFormat(this, 'Float');
                                 },
                                 disabled: function () {
@@ -477,7 +476,7 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Heatmaps", key: "columnformat:10", callback: function (key, options, pf) {
+                                name: 'Heatmaps', key: 'columnformat:10', callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeHeatmaps(this, 'Heatmaps');
                                 },
                                 disabled: function () {
@@ -485,8 +484,8 @@ export class HandsTableContextMenu {
                                 }
                             },
                             {
-                                name: "Negative & Positive",
-                                key: "columnformat:11",
+                                name: 'Negative & Positive',
+                                key: 'columnformat:11',
                                 callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeHeatmaps(this, 'NegaPosi');
                                 },
@@ -521,23 +520,23 @@ export class HandsTableContextMenu {
 
 
                 // -------------------- Style CELL --------------------------------------------------------------------
-                "style": {
+                'style': {
                     name: 'Style',
                     submenu: {
                         items: [
                             {
-                                name: "Normal",
+                                name: 'Normal',
                                 callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeStyle(this, 'Normal');
                                 },
-                                key: "style:normal"
+                                key: 'style:normal'
                             },
                             {
                                 name: 'Bold',
                                 callback: function (key, options) {
                                     HandsTableContextMenu.makeStyle(this, 'Bold');
                                 },
-                                key: "style:makebold"
+                                key: 'style:makebold'
 
                             },
                             {
@@ -545,69 +544,69 @@ export class HandsTableContextMenu {
                                 callback: function (key, options) {
                                     HandsTableContextMenu.makeStyle(this, 'Red');
                                 },
-                                key: "style:red"
+                                key: 'style:red'
                             },
                             {
                                 name: 'Green color',
                                 callback: function (key, options) {
                                     HandsTableContextMenu.makeStyle(this, 'Green');
                                 },
-                                key: "style:green"
+                                key: 'style:green'
                             },
                             {
                                 name: 'Yellow color',
                                 callback: function (key, options) {
                                     HandsTableContextMenu.makeStyle(this, 'Yellow');
                                 },
-                                key: "style:yellow"
+                                key: 'style:yellow'
                             },
                             {
                                 name: 'Orange color',
                                 callback: function (key, options) {
                                     HandsTableContextMenu.makeStyle(this, 'Orange');
                                 },
-                                key: "style:orange"
+                                key: 'style:orange'
                             }
                         ]
                     },
                 },//style
-                "hsep1": "---------",
+                'hsep1': '---------',
 
                 // -------------------- Copy to  --------------------------------------------------------------------
-                "copyTo": {
+                'copyTo': {
                     name: 'To Clipboard',
                     submenu: {
                         items: [
                             {
-                                name: "Redmine Markdown",
+                                name: 'Redmine Markdown',
                                 callback: function (key, options, pf) {
-                                    console.info("copyToClipboard");
+                                    console.info('copyToClipboard');
                                     HandsTableContextMenu.copyToClipboard(this, 'Redmine');
                                 },
-                                key: "copyTo:1"
+                                key: 'copyTo:1'
                             },//
                             {
-                                name: "Redmine Markdown (full)",
+                                name: 'Redmine Markdown (full)',
                                 callback: function (key, options, pf) {
-                                    console.info("copyToClipboard");
+                                    console.info('copyToClipboard');
                                     HandsTableContextMenu.copyToClipboard(this, 'Redmine',true);
                                 },
-                                key: "copyTo:2"
+                                key: 'copyTo:2'
                             },//
                             {
-                                name: "WHERE col1 IN (val,val),col2 IN ...",
+                                name: 'WHERE col1 IN (val,val),col2 IN ...',
                                 callback: function (key, options, pf) {
-                                    console.info("makeWhereIn");
+                                    console.info('makeWhereIn');
                                     HandsTableContextMenu.makeWhereIn(this);
                                 },
-                                key: "copyTo:3"
+                                key: 'copyTo:3'
                             },
                             {
-                                name: "Create TABLE...",
+                                name: 'Create TABLE...',
                                 callback: function (key, options, pf) {
                                     HandsTableContextMenu.makeCreateTable(this);
                                 },
-                                key: "copyTo:4"
+                                key: 'copyTo:4'
                             },
                             // {
                             //     name: "make Create Table",
@@ -624,21 +623,21 @@ export class HandsTableContextMenu {
                 // "col_left":{},
                 // "col_right":{},
                 // "remove_col":{},
-                "hsep3": "---------",
+                'hsep3': '---------',
                 // -------------------- Copy to  --------------------------------------------------------------------
-                "Transform": {
-                    name: "Transpose full table",
+                'Transform': {
+                    name: 'Transpose full table',
                     callback: function (key, options, pf) {
                         HandsTableContextMenu.Transpose(this, 'Transpose');
                     }
                 },
-                "Calculate": {
-                    name: "Calc Avg & Sum & Median",
+                'Calculate': {
+                    name: 'Calc Avg & Sum & Median',
                     callback: function (key, options, pf) {
                         HandsTableContextMenu.Calc(this, 'All');
                     }
                 },
-                "hsep4": "---------",
+                'hsep4': '---------',
                 // "HideShow": {
                 //     name: 'Hide & Show',
                 //     submenu: {
@@ -660,10 +659,10 @@ export class HandsTableContextMenu {
                 //         ]//items
                 //     },//submenu
                 // },
-                "undo": {},
-                "make_read_only": {},
-                "alignment": {},
-                "hsep5": "---------",
+                'undo': {},
+                'make_read_only': {},
+                'alignment': {},
+                'hsep5': '---------',
 
 
             }

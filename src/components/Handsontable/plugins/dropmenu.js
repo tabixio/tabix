@@ -2,53 +2,95 @@ import Handsontable from 'handsontable';
 /**
  * @plugin DropMenuPlugin
  *
- * @description
- * Every time you type "Hello" in a cell, DropMenuPlugins adds "World!" in the next cell.
- * Also, when you type "Handsontable", it adds "is awesome!" in the next cell.
  */
+const MENU_BUTTON_CLASS_NAME = 'DropMenuButton';
+
 class DropMenuPlugin extends Handsontable.plugins.BasePlugin{
     constructor(hotInstance) {
         super(hotInstance);
-
-        console.warn('DropMenuPlugin:start');
-        /**
-         * Array containing the vocabulary used in the plugin.
-         *
-         * @type {Array}
-         */
-        this.vocabularyArray = [];
+        this.eventManager = new Handsontable.EventManager(this);
+        this.hot.addHook('afterGetColHeader', (col, TH) => this.onAfterGetColHeader(col, TH));
     }
 
     /**
      * Check if the plugin is enabled in the settings.
      */
     isEnabled() {
-        return !!this.hot.getSettings().dropMenu;
+        return this.hot.getSettings().dropMenu && !!this.hot.getSettings().dropMenuEnable;
     }
-
+    registerEvents() {
+        this.eventManager.addEventListener(this.hot.rootElement, 'click', (event) => this.onToggleMenuClick(event));
+    }
     /**
      * Enable the plugin.
      */
     enablePlugin() {
-
-        console.warn('DropMenuPlugin:enablePlugin');
-        this.vocabularyArray = [
-            ['Hello', 'World!'],
-            ['Handsontable', 'is awesome!']
-        ];
-
+        this.registerEvents();
+        this.menu = this.hot.getSettings().dropMenu;
         this.addHook('afterChange', this.onAfterChange.bind(this));
-
         super.enablePlugin();
     }
 
+    onToggleMenuClick(event) {
+
+        if (typeof event.stopPropagation === 'function') {
+            event.stopPropagation();
+        } else {
+            event.cancelBubble = true;
+        }
+
+        if (Handsontable.dom.hasClass(event.target, MENU_BUTTON_CLASS_NAME) ) {
+            let rect = event.target.getBoundingClientRect();
+            this.menu(this,event,rect);
+
+        }
+    }
+
+    /**
+     * `onAfterGetColHeader` callback. Adds column menu css classes to clickable button.
+     *
+     * @param col
+     * @param TH
+     */
+    onAfterGetColHeader(col, TH) {
+        //
+        if (col < 0 || !TH.parentNode) {
+            return false;
+        }
+
+        let headerRow = TH.parentNode;
+        let headerRowList = headerRow.parentNode.childNodes;
+
+        let level = Array.prototype.indexOf.call(headerRowList, headerRow);
+
+        if (col < 0 || level !== headerRowList.length - 1) {
+            return;
+        }
+
+        const isExist = TH.querySelector('.' + MENU_BUTTON_CLASS_NAME);
+        if (this.enabled && isExist) {
+            return;
+        }
+        if (!this.enabled) {
+            if (isExist) {
+                isExist.parentNode.removeChild(isExist);
+            }
+
+            return;
+        }
+        let button = document.createElement('button');
+
+        button.className = MENU_BUTTON_CLASS_NAME;
+        button.onclick = function() {
+            return false;
+        };
+        TH.firstChild.insertBefore(button, TH.firstChild.firstChild);
+
+    }
     /**
      * Disable the plugin.
      */
     disablePlugin() {
-        console.warn('DropMenuPlugin:disablePlugin');
-        this.vocabularyArray = [];
-
         super.disablePlugin();
     }
 
@@ -56,10 +98,8 @@ class DropMenuPlugin extends Handsontable.plugins.BasePlugin{
      * Update the plugin.
      */
     updatePlugin() {
-        console.warn('DropMenuPlugin:updatePlugin');
         this.disablePlugin();
         this.enablePlugin();
-
         super.updatePlugin();
     }
 
@@ -70,7 +110,6 @@ class DropMenuPlugin extends Handsontable.plugins.BasePlugin{
      * @param {String} source Describes the source of the change.
      */
     onAfterChange(changes, source) {
-        console.warn('DropMenuPlugin:onAfterChange');
         // Check wheter the changes weren't blank or the hook wasn't triggered inside this callback.
         if (!changes || source === 'DropMenuPlugin') {
             return;
@@ -91,7 +130,6 @@ class DropMenuPlugin extends Handsontable.plugins.BasePlugin{
      * Destroy the plugin.
      */
     destroy() {
-        console.warn('DropMenuPlugin:destroy');
         super.destroy();
     }
 }
