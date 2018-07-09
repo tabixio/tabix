@@ -25,7 +25,7 @@ import {DropMenuPlugin} from './plugins/dropmenu';
  *
  * @class HotTable
  */
-export class HotTable extends React.Component {
+export default class HotTable extends React.Component {
     constructor() {
         super();
         this.hotInstance = null;

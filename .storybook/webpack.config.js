@@ -8,7 +8,7 @@ module.exports = {
             path.resolve(__dirname, '..', 'src/components/')
         ]
     },
-    devtool: 'source-map',
+    //devtool: 'source-map',
     devServer: {
         hot: true
     },

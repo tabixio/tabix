@@ -3,6 +3,8 @@ import Handsontable from 'handsontable';
 import {indexOf,isNil,is} from 'ramda';
 import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
 import React from 'react';
+import moment from 'moment';
+
 export class SettingsMapper {
     constructor() {
         this.registeredHooks = Handsontable.hooks.getRegistered();

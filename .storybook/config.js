@@ -1,6 +1,6 @@
+import '@babel/polyfill';
 import { configure } from '@storybook/react';
 import { setOptions } from '@storybook/addon-options';
-
 import 'github-markdown-css';
 import 'highlight.js/styles/github.css';
 import '@blueprintjs/core/lib/css/blueprint.css';
