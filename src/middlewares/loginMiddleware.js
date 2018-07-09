@@ -1,4 +1,5 @@
 import { initialize, reset } from 'redux-form';
+import { push } from 'react-router-redux';
 import appConst from '../constants/app';
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
@@ -6,7 +7,8 @@ const R = require('ramda');
 
 const getMode = item => (item.host ? 'direct' : 'server');
 
-const init = store => next => action => {
+export default store => next => action => {
+
     //init local storage
     if (action.type === appConst.INIT_APP) {
         const { dispatch } = store;
@@ -26,6 +28,14 @@ const init = store => next => action => {
             });
 
         item && (initialize(`${item |> getMode}Login`, item) |> dispatch);
+
+        //try connect logic
+        item.autorize &&
+            dispatch({
+                type: appConst.SET_USER_CONNECTION,
+                payload: item
+            });
+        
     }
 
     //on update/create connection in login
@@ -36,11 +46,9 @@ const init = store => next => action => {
             connections.findIndex(x => x.active) ||
             (connections.length ? 0 : connections.length - 1);
 
-        const activeConnection = connections.find(x => x.active);
         const item = {
             ...action.payload,
             active: true,
-            id: activeConnection?.id || new Date().valueOf()
         };
 
         const updateConnections =
@@ -72,7 +80,7 @@ const init = store => next => action => {
             type: loginConst.DISABLE_ACTIVE_CONNECTIONS
         });
 
-        initialize('directLogin', { name: 'New connection' }) |> dispatch;
+        initialize('directLogin', { name: 'New connection', id: new Date().valueOf() }) |> dispatch;
     }
 
     //on change connection
@@ -94,5 +102,3 @@ const init = store => next => action => {
 
     next(action);
 };
-
-export default init;
