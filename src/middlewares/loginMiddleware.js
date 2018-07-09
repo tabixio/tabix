@@ -28,16 +28,19 @@ const init = store => next => action => {
         item && (initialize(`${item |> getMode}Login`, item) |> dispatch);
     }
 
-    //on update/create conenction in login
+    //on update/create connection in login
     if (action.type === loginConst.UPDATE_CONNECTION) {
         const { connections } = store.getState().login;
 
         const index =
             connections.findIndex(x => x.active) ||
             (connections.length ? 0 : connections.length - 1);
+
+        const activeConnection = connections.find(x => x.active);
         const item = {
             ...action.payload,
-            active: true
+            active: true,
+            id: activeConnection?.id || new Date().valueOf()
         };
 
         const updateConnections =

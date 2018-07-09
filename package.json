@@ -8,20 +8,19 @@
         "url": "https://github.com/tabixio/tabix.git"
     },
     "scripts": {
-        "start": "webpack-dev-server --content-base public --debug --output-pathinfo --watch-poll --hot --inline --open --port 4002 --mode development",
+        "start": "webpack-dev-server --content-base public --debug --output-pathinfo --watch-poll --hot --inline --port 4002 --mode development",
         "build": "NODE_ENV=production webpack -p --mode production",
         "test:new": "node ./utils/new-test",
         "test": "jest"
     },
     "dependencies": {
-        "@babel/polyfill": "7.0.0-beta.51",
+        "@babel/polyfill": "^7.0.0-beta.52",
         "@blueprintjs/core": "^2.3.1",
         "brace": "^0.11.1",
         "handsontable": "^4.0.0",
         "ramda": "^0.25.0",
         "react": "^16.4.1",
         "react-dom": "^16.4.1",
-        "react-flexbox-grid": "^2.1.2",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
         "react-router-dom": "^4.2.2",
@@ -40,12 +39,12 @@
         "not ie <= 8"
     ],
     "devDependencies": {
-        "@babel/cli": "7.0.0-beta.51",
-        "@babel/core": "7.0.0-beta.51",
-        "@babel/preset-env": "7.0.0-beta.51",
-        "@babel/preset-react": "7.0.0-beta.51",
-        "@babel/preset-stage-0": "7.0.0-beta.51",
-        "@babel/register": "7.0.0-beta.51",
+        "@babel/cli": "^7.0.0-beta.52",
+        "@babel/core": "^7.0.0-beta.52",
+        "@babel/preset-env": "^7.0.0-beta.52",
+        "@babel/preset-react": "^7.0.0-beta.52",
+        "@babel/preset-stage-0": "^7.0.0-beta.52",
+        "@babel/register": "^7.0.0-beta.52",
         "@storybook/addon-options": "^4.0.0-alpha.11",
         "@storybook/react": "^4.0.0-alpha.11",
         "@types/enzyme": "^3.1.11",
