@@ -30,7 +30,6 @@ export class SettingsMapper {
 
         if (properties.data && properties.data.constructor.name === 'DataDecorator') {
 
-            console.log('------------------- asdasdasdads --------------');
             newSettings=this.makeSettings(properties);
 
         } else {
@@ -267,9 +266,11 @@ export class SettingsMapper {
             stretchH: 'all',
             isDark:isDarkTheme,
             customBorders: true,
-            filters: true,
+
+            // Highlighting selection подсветка строк
             currentRowClassName: (isDarkTheme?'currentRowDark':'currentRowWhite'),
             currentColClassName: 'currentCol',
+
             columnSorting: true,
             sortIndicator: true,
             manualRowResize: true,
@@ -278,17 +279,15 @@ export class SettingsMapper {
             autoColumnSize: {samplingRatio: 23},
             columns: columns,
             colHeaders: colHeaders,
-            dropMenuEnable: true,
-            dropMenu: this.getDropMenu,//
+            // dropMenuEnable: true,
+            // filters: true,
+            // dropMenu: this.getDropMenu,//
             // preventOverflow: 'horizontal',
-            // visibleRows:120,
-            // width:'100%',
-            // height:'100%',
-            // fixedRowsTop: 1,
+            fixedRowsTop: 1,
             // fixedColumnsLeft: 1,
             // maxRows: 1000,
             renderAllRows:false,
-            visibleRows:1500
+            visibleRows:1000
         };
         // Make ContextMenu
         let z=new HandsTableContextMenu();

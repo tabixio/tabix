@@ -114,16 +114,7 @@ class DropMenuPlugin extends Handsontable.plugins.BasePlugin{
         if (!changes || source === 'DropMenuPlugin') {
             return;
         }
-        let arrayEach = Handsontable.helper.arrayEach;
-        arrayEach(changes, function(change, i) {
-            arrayEach(this.vocabularyArray, function(entry, j) {
 
-                if (change[3] && change[3].toString().toLowerCase() === entry[0].toString().toLowerCase()) {
-                    this.hot.setDataAtCell(change[0], change[1] + 1, entry[1], 'DropMenuPlugin');
-                }
-
-            });
-        });
     }
 
     /**

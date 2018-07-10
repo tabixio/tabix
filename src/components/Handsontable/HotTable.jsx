@@ -74,7 +74,7 @@ export default class HotTable extends React.Component {
    */
     render() {
         this.id = this.props.id || 'hot' + new Date().getTime();
-        this.className = ( this.props.className || '') +(this.props.dark ? ' handsontable-dark ' : '' );
+        this.className = ( this.props.className || '') +(!!this.props.dark ? ' handsontable-dark ' : '' );
         this.style = this.props.style || {};
 
         return <div id={this.id} className={this.className} style={this.style}></div>;

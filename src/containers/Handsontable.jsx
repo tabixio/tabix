@@ -12,13 +12,16 @@ const connection = {
 };
 
 const query =
-    'select number,sin(number) as sin,cos(number) as cos FROM system.numbers LIMIT 100';
+    'select number,sin(number) as sin,cos(number) as cos FROM  numbers(123) ORDER BY number DESC';
 
 const Wrapper = styled.div`
-    width: 100%;
-    height: 100vh;
-    overflow-y: auto;
+  width: 100%;
+  height: 300px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-height: 200px;
 `;
+
 
 const withUserData = lifecycle({
     state: {
@@ -49,6 +52,6 @@ const enhance = compose(
 
 export default enhance(({ data }) => (
     <Wrapper>
-        <HotTable dark="true" data={data} />
+        <HotTable dark='true'  data={data} />
     </Wrapper>
 ));
