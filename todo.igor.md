@@ -16,3 +16,13 @@ Idea:
 projects-using-react-grid-layout:
 
 * https://github.com/STRML/react-grid-layout#projects-using-react-grid-layout
+
+
+## BI
+
+* https://redash.io/
+* https://reflect.io/
+* https://metabase.com/
+* https://www.periscopedata.com/
+* https://looker.com/
+
