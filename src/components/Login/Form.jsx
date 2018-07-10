@@ -25,7 +25,7 @@ export const validateDirect = values =>
 
 const Form = ({ handleSubmit, mode, invalid }) => (
     <form onSubmit={handleSubmit}>
-        <Field name="id" component={Input} label="id" />
+        <Field name="id" component={Input} label="id" hidden />
         <Field name="name" component={Input} label="Name" placeholder="dev" />
         {mode === 'server' && (
             <Field

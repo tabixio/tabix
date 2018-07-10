@@ -9,10 +9,11 @@ export default ({
     placeholder,
     id,
     input: inputForm,
+    hidden,
     meta: { touched, error },
     ...props
 }) => (
-    <FormGroup labelFor={id} {...props} {...errorClass(touched && error)}>
+    !hidden && <FormGroup labelFor={id} {...props} {...errorClass(touched && error)}>
         <input
             id={id}
             placeholder={placeholder}

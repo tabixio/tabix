@@ -110,7 +110,7 @@ const build = async () => {
             filename: `js/bundle${isDevelopment ? '' : '.v.' + version}.js`,
             chunkFilename: 'js/[name].[chunkhash].js'
         },
-        devtool: isDevelopment && 'source-map',
+        devtool: isDevelopment && 'inline-source-map',
         devServer: {
             historyApiFallback: true,
             hot: true

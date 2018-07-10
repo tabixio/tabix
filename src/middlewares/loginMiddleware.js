@@ -1,45 +1,54 @@
-import { initialize, reset } from 'redux-form';
+import { initialize as initializeBase, reset } from 'redux-form';
+import {
+    activateConnection,
+    changeMode as changeModeAction,
+    loadConnections,
+    pushConnection
+} from '../actions/login';
 import { push } from 'react-router-redux';
 import appConst from '../constants/app';
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
 const R = require('ramda');
 
-const getMode = item => (item.host ? 'direct' : 'server');
+const forms = ['serverLogin', 'directLogin'];
+
+/**
+ * Curry function initialize
+ */
+const initialize = tuple => initializeBase(`${tuple[0]}Login`, tuple[1]);
+
+const changeMode = tuple => tuple[0] |> changeModeAction;
+
+/**
+ * Get mode
+ * @param {Object} item
+ */
+const getMode = item => {
+    return [item.url ? 'server' : 'direct', item];
+};
 
 export default store => next => action => {
-
     //init local storage
     if (action.type === appConst.INIT_APP) {
         const { dispatch } = store;
         const connections =
             localStorage.getItem(lsConst.CONNECTIONS) || '[]' |> JSON.parse;
-        dispatch({
-            type: loginConst.LOAD_CONNECTIONS,
-            payload: connections
-        });
+
+        connections |> loadConnections |> dispatch;
 
         const item = connections.find(x => x.active);
 
-        item &&
-            dispatch({
-                type: loginConst.CHANGE_MODE,
-                payload: item |> getMode
-            });
-
-        item && (initialize(`${item |> getMode}Login`, item) |> dispatch);
-
-        //try connect logic
-        item && item.autorize &&
-            dispatch({
-                type: appConst.SET_USER_CONNECTION,
-                payload: item
-            });
-        
+        item && item
+            |> getMode
+            |> R.tap(_ => _ |> changeMode |> dispatch)
+            |> initialize
+            |> dispatch;
     }
 
     //on update/create connection in login
     if (action.type === loginConst.UPDATE_CONNECTION) {
+        const { dispatch } = store;
         const { connections } = store.getState().login;
 
         const index =
@@ -48,39 +57,31 @@ export default store => next => action => {
 
         const item = {
             ...action.payload,
-            active: true,
+            active: true
         };
 
-        const updateConnections =
-            connections |> R.filter(x => !x.active) |> R.insert(index, item);
-        localStorage.setItem(
-            lsConst.CONNECTIONS,
-            updateConnections |> JSON.stringify
-        );
-
-        store.dispatch({
-            type: loginConst.LOAD_CONNECTIONS,
-            payload: updateConnections
-        });
+        connections
+            |> R.filter(x => !x.active)
+            |> R.insert(index, item)
+            |> R.tap(_ =>
+                localStorage.setItem(lsConst.CONNECTIONS, _ |> JSON.stringify)
+            )
+            |> loadConnections
+            |> dispatch;
     }
 
     //on create new connection
     if (action.type === loginConst.NEW_CONNECTION) {
         const { dispatch } = store;
 
-        'serverLogin' |> reset |> dispatch;
-        'directLogin' |> reset |> dispatch;
+        forms.forEach(x => dispatch(reset(x)));
 
-        dispatch({
-            type: loginConst.CHANGE_MODE,
-            payload: 'direct'
-        });
-
-        dispatch({
-            type: loginConst.DISABLE_ACTIVE_CONNECTIONS
-        });
-
-        initialize('directLogin', { name: 'New connection', id: new Date().valueOf() }) |> dispatch;
+        const newItem = { name: 'New connection', id: new Date().valueOf() };
+        newItem
+            |> R.tap(_ => _ |> pushConnection |> dispatch)
+            |> (_ => _.id)
+            |> activateConnection
+            |> dispatch;
     }
 
     //on change connection
@@ -89,15 +90,13 @@ export default store => next => action => {
         const { connections } = store.getState().login;
         const item = connections.find(x => x.id === action.payload);
 
-        dispatch({
-            type: loginConst.CHANGE_MODE,
-            payload: item |> getMode
-        });
+        forms.forEach(x => dispatch(reset(x)));
 
-        'serverLogin' |> reset |> dispatch;
-        'directLogin' |> reset |> dispatch;
-
-        initialize(`${item |> getMode}Login`, item) |> dispatch;
+        item && item
+            |> getMode
+            |> R.tap(_ => _ |> changeMode |> dispatch)
+            |> initialize
+            |> dispatch;
     }
 
     next(action);

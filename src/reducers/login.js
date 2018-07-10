@@ -10,6 +10,11 @@ export default (state = initialState, action) => {
     switch (action.type) {
     case loginConst.CHANGE_MODE:
         return { ...state, mode: action.payload };
+    case loginConst.PUSH_CONNECTION:
+        return {
+            ...state,
+            connections: R.append(action.payload, state.connections)
+        };
     case loginConst.LOAD_CONNECTIONS:
         return { ...state, connections: action.payload };
     case loginConst.DISABLE_ACTIVE_CONNECTIONS:

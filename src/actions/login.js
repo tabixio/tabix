@@ -18,3 +18,19 @@ export const activateConnection = id => ({
     type: loginConst.ACTIVATE_CONNECTION,
     payload: id
 });
+
+export const changeMode = mode => ({
+    type: loginConst.CHANGE_MODE,
+    payload: mode
+});
+
+export const loadConnections = connections => ({
+    type: loginConst.LOAD_CONNECTIONS,
+    payload: connections
+});
+
+export const pushConnection = connection => ({
+    type: loginConst.PUSH_CONNECTION,
+    payload: connection
+});
+
