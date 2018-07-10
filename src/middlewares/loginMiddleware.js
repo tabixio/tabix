@@ -30,7 +30,7 @@ export default store => next => action => {
         item && (initialize(`${item |> getMode}Login`, item) |> dispatch);
 
         //try connect logic
-        item.autorize &&
+        item && item.autorize &&
             dispatch({
                 type: appConst.SET_USER_CONNECTION,
                 payload: item
