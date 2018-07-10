@@ -23,7 +23,7 @@ export const validateServer = values =>
 export const validateDirect = values =>
     values |> commonValidate |> R.assoc('host', required(values.host));
 
-const Form = ({ handleSubmit, mode, invalid }) => (
+const Form = ({ handleSubmit, mode, invalid, submitSucceeded }) => (
     <form onSubmit={handleSubmit}>
         <Field name="id" component={Input} label="id" hidden />
         <Field name="name" component={Input} label="Name" placeholder="dev" />
@@ -62,7 +62,11 @@ const Form = ({ handleSubmit, mode, invalid }) => (
             />
         )}
         <ButtonArea>
-            <Button text="SIGN IN" type="submit" disabled={invalid} />
+            <Button
+                text="SIGN IN"
+                type="submit"
+                disabled={invalid || submitSucceeded}
+            />
         </ButtonArea>
     </form>
 );

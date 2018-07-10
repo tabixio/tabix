@@ -1,4 +1,5 @@
 import loginConst from '../constants/login';
+import Api from '../api';
 
 export const switchMode = mode => ({
     type: loginConst.CHANGE_MODE,
@@ -34,3 +35,24 @@ export const pushConnection = connection => ({
     payload: connection
 });
 
+export const login = connection => async dispatch => {
+    const api = new Api(connection);
+    dispatch({ type: loginConst.LOGIN_REQUEST });
+
+    try {
+        await api.check();
+
+    } catch (e) {
+        console.error(e);
+        dispatch({ type: loginConst.LOGIN_ERROR, payload: 'Check error' });
+        return;
+    }
+
+    try {
+        await api.init();
+    } catch (e) {
+        console.error(e);
+        dispatch({ type: loginConst.LOGIN_ERROR, payload: 'Init error' });
+        return;
+    }
+};

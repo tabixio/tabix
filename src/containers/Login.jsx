@@ -4,7 +4,8 @@ import {
     switchMode,
     updateConnection,
     newConnection,
-    activateConnection
+    activateConnection, 
+    login
 } from '../actions/login';
 import React, { Component } from 'react';
 import { Tab, Tabs } from '@blueprintjs/core';
@@ -36,7 +37,8 @@ function mapDispatchToProps(dispatch) {
         onSwitch: mode => mode |> switchMode |> dispatch,
         onUpdateConnection: data => data |> updateConnection |> dispatch,
         onNewConnection: () => newConnection() |> dispatch,
-        onActivateConnection: id => id |> activateConnection |> dispatch
+        onActivateConnection: id => id |> activateConnection |> dispatch,
+        onLogin: connection => connection |> login |> dispatch
     };
 }
 
@@ -46,8 +48,9 @@ function mapDispatchToProps(dispatch) {
 )
 export default class Login extends Component {
     onSubmit = values => {
-        const { onUpdateConnection } = this.props;
-        values |> onUpdateConnection;
+        const { onUpdateConnection, onLogin } = this.props;
+        onUpdateConnection(values);
+        onLogin(values);
     };
 
     render() {

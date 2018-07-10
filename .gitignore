@@ -19,7 +19,6 @@ build
 public/assets/css
 public/assets/js
 index.html
-
 .DS_Store
 node_modules/
 dist/

@@ -3,7 +3,8 @@ const R = require('ramda');
 
 const initialState = {
     mode: 'direct',
-    connections: []
+    connections: [],
+    fetching: false
 };
 
 export default (state = initialState, action) => {
@@ -28,6 +29,12 @@ export default (state = initialState, action) => {
                 |> R.map(x => R.assoc('active', x.id === action.payload, x))
                 |> R.assoc('connections', R.__, state)
         );
+    case loginConst.LOGIN_REQUEST:
+        return R.assoc('fetching', true, state);
+    case loginConst.LOGIN_ERROR:
+        return R.assoc('fetching', false, state);
+    case loginConst.LOGIN_COMPLETE:
+        return R.assoc('fetching', false, state);
     }
 
     return { ...state };
