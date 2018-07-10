@@ -12,3 +12,7 @@ C9 IDE:
 Idea:
 
 * https://github.com/nhabuiduc/react-filter-box#readme
+
+projects-using-react-grid-layout:
+
+* https://github.com/STRML/react-grid-layout#projects-using-react-grid-layout
