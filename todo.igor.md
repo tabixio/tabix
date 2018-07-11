@@ -17,6 +17,13 @@ projects-using-react-grid-layout:
 
 * https://github.com/STRML/react-grid-layout#projects-using-react-grid-layout
 
+## querybuilder
+
+* https://github.com/sapientglobalmarkets/react-querybuilder
+* http://summitroute.github.io/react-structured-filter/demo.html#
+* https://ukrbublik.github.io/react-awesome-query-builder/
+* https://nhabuiduc.github.io/
+
 
 ## BI
 
