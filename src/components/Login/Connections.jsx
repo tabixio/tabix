@@ -21,9 +21,13 @@ const ButtonArea = Fill.extend`
     margin-top: 12px;
 `;
 
-export default ({ items, onNewConnection, onActivateConnection }) => (
+const Connections = ({
+    connections,
+    onNewConnection,
+    onActivateConnection
+}) => (
     <Content>
-        {items.map((x, ind) => (
+        {connections.map((x, ind) => (
             <CardArea
                 key={ind}
                 active={x.active}
@@ -43,3 +47,5 @@ export default ({ items, onNewConnection, onActivateConnection }) => (
         </ButtonArea>
     </Content>
 );
+
+export default Connections;

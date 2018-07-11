@@ -1,11 +1,14 @@
 import styled from 'styled-components';
-import { connect } from 'react-redux';
+import propsToComponent from 'libs/components/propsToComponent';
+import { connect, initialize } from 'react-redux';
+import { getFormValues } from 'redux-form';
 import {
     switchMode,
     updateConnection,
     newConnection,
-    activateConnection, 
-    login
+    activateConnection,
+    login,
+    deleteConnetion
 } from '../actions/login';
 import React, { Component } from 'react';
 import { Tab, Tabs } from '@blueprintjs/core';
@@ -28,7 +31,10 @@ const Container = styled.div`
 function mapStateToProps(state) {
     return {
         mode: state.login.mode,
-        connections: state.login.connections
+        connections: state.login.connections || [],
+        connectionSelect:
+            state.login.connections.find(x => x.active) !== undefined,
+        getValuesFrom: form => getFormValues(form)(state)
     };
 }
 
@@ -38,7 +44,8 @@ function mapDispatchToProps(dispatch) {
         onUpdateConnection: data => data |> updateConnection |> dispatch,
         onNewConnection: () => newConnection() |> dispatch,
         onActivateConnection: id => id |> activateConnection |> dispatch,
-        onLogin: connection => connection |> login |> dispatch
+        onLogin: connection => connection |> login |> dispatch,
+        onDeleteConnection: id => id |> deleteConnetion |> dispatch
     };
 }
 
@@ -53,17 +60,19 @@ export default class Login extends Component {
         onLogin(values);
     };
 
+    onDelete = () => {
+        const { onDeleteConnection, getValuesFrom, mode } = this.props;
+        const values = getValuesFrom(`${mode}Login`);
+        onDeleteConnection(values.id);
+    };
+
     render() {
-        const {
-            mode,
-            onSwitch,
-            connections,
-            onNewConnection,
-            onActivateConnection
-        } = this.props;
+        const { mode, onSwitch, connectionSelect } = this.props;
 
         const formProps = {
-            onSubmit: this.onSubmit
+            onSubmit: this.onSubmit,
+            connectionSelect,
+            onDelete: this.onDelete
         };
 
         return (
@@ -73,9 +82,11 @@ export default class Login extends Component {
                 secondaryInitialSize={80}
             >
                 <Connections
-                    items={connections}
-                    onNewConnection={onNewConnection}
-                    onActivateConnection={onActivateConnection}
+                    {...propsToComponent(this.props, [
+                        'connections',
+                        'onNewConnection',
+                        'onActivateConnection'
+                    ])}
                 />
                 <Container>
                     <Tabs id="login" selectedTabId={mode} onChange={onSwitch}>

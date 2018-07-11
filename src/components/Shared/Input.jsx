@@ -13,12 +13,13 @@ export default ({
     meta: { touched, error },
     ...props
 }) => (
-    !hidden && <FormGroup labelFor={id} {...props} {...errorClass(touched && error)}>
+    <FormGroup labelFor={id} {...props} {...errorClass(touched && error)}>
         <input
             id={id}
             placeholder={placeholder}
             {...errorClass(touched && error, Classes.INPUT)}
             {...inputForm}
+            hidden={hidden}
         />
     </FormGroup>
 );

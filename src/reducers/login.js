@@ -29,6 +29,13 @@ export default (state = initialState, action) => {
                 |> R.map(x => R.assoc('active', x.id === action.payload, x))
                 |> R.assoc('connections', R.__, state)
         );
+    case loginConst.DELETE_CONNECTION:
+        return {
+            ...state,
+            connections: state.connections.filter(
+                x => x.id !== action.payload
+            )
+        };
     case loginConst.LOGIN_REQUEST:
         return R.assoc('fetching', true, state);
     case loginConst.LOGIN_ERROR:

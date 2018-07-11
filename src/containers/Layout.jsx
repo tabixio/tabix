@@ -6,7 +6,14 @@ import React, { PureComponent } from 'react';
 import Logo from 'Layout/Logo.jsx';
 import ReqButton from 'Layout/Buttons/ReqButton.jsx';
 import ThemeButton from 'Layout/Buttons/ThemeButton.jsx';
-import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
+import {
+    Navbar,
+    NavbarGroup,
+    Alignment,
+    Classes,
+    Position,
+    Toaster
+} from '@blueprintjs/core';
 import Footer from 'Layout/Footer.jsx';
 import { Fill } from 'Shared/styled';
 
@@ -48,18 +55,28 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Layout extends PureComponent {
-
     componentDidMount() {
         const { onInit } = this.props;
-
         onInit();
+
+        setTimeout(
+            () =>
+                this.toaster.show({
+                    message: 'Toaster'
+                }),
+            1000
+        );
     }
 
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
 
         return (
-            <App {...classname({ [Classes.DARK]: darkTheme })} dark={darkTheme}>
+            <App
+                {...classname({ [Classes.DARK]: darkTheme })}
+                dark={darkTheme}
+                innerRef={e => (this.node = e)}
+            >
                 <Fill>
                     <Navbar key="navbar">
                         <NavbarGroup align={Alignment.LEFT}>
@@ -84,6 +101,11 @@ export default class Layout extends PureComponent {
                     </a>{' '}
                     by Tabix LLC ©, all rights reserved. Build {version}
                 </Footer>
+
+                <Toaster
+                    position={Position.TOP_RIGHT}
+                    ref={e => (this.toaster = e)}
+                />
             </App>
         );
     }

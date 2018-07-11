@@ -56,3 +56,8 @@ export const login = connection => async dispatch => {
         return;
     }
 };
+
+export const deleteConnetion = id => ({
+    type: loginConst.DELETE_CONNECTION,
+    payload: id
+});

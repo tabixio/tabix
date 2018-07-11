@@ -1,9 +1,10 @@
-import { initialize as initializeBase, reset } from 'redux-form';
+import { initialize, reset } from 'redux-form';
 import {
     activateConnection,
     changeMode as changeModeAction,
     loadConnections,
-    pushConnection
+    pushConnection,
+    newConnection
 } from '../actions/login';
 import { push } from 'react-router-redux';
 import appConst from '../constants/app';
@@ -13,28 +14,30 @@ const R = require('ramda');
 
 const forms = ['serverLogin', 'directLogin'];
 
-/**
- * Curry function initialize
- */
-const initialize = tuple => initializeBase(`${tuple[0]}Login`, tuple[1]);
+const initializeForm = tuple => initialize(`${tuple[0]}Login`, tuple[1]);
 
 const changeMode = tuple => tuple[0] |> changeModeAction;
+
+const getFromStorage = key => localStorage.getItem(key) || '[]';
+
+const saveInStorage = key => value => {
+    localStorage.setItem(key, value |> JSON.stringify);
+    return value;
+};
 
 /**
  * Get mode
  * @param {Object} item
  */
 const getMode = item => {
-    return [item && item.url ? 'server' : 'direct', item];
+    return [item?.server ? 'server' : 'direct', item];
 };
 
 export default store => next => action => {
     //init local storage
     if (action.type === appConst.INIT_APP) {
         const { dispatch } = store;
-        const connections =
-            localStorage.getItem(lsConst.CONNECTIONS) || '[]' |> JSON.parse;
-
+        const connections = getFromStorage(lsConst.CONNECTIONS) |> JSON.parse;
         connections |> loadConnections |> dispatch;
 
         const item = connections.find(x => x.active);
@@ -42,7 +45,7 @@ export default store => next => action => {
         item && item
             |> getMode
             |> R.tap(_ => _ |> changeMode |> dispatch)
-            |> initialize
+            |> initializeForm
             |> dispatch;
     }
 
@@ -63,9 +66,7 @@ export default store => next => action => {
         connections
             |> R.filter(x => !x.active)
             |> R.insert(index, item)
-            |> R.tap(_ =>
-                localStorage.setItem(lsConst.CONNECTIONS, _ |> JSON.stringify)
-            )
+            |> saveInStorage(lsConst.CONNECTIONS)
             |> loadConnections
             |> dispatch;
     }
@@ -95,8 +96,24 @@ export default store => next => action => {
         item && item
             |> getMode
             |> R.tap(_ => _ |> changeMode |> dispatch)
-            |> initialize
+            |> initializeForm
             |> dispatch;
+    }
+
+    if (action.type === loginConst.DELETE_CONNECTION) {
+        lsConst.CONNECTIONS
+            |> getFromStorage
+            |> JSON.parse
+            |> R.filter(x => x.id !== action.payload)
+            |> saveInStorage(lsConst.CONNECTIONS);
+
+        const { connections } = store.getState().login;
+        const { dispatch } = store;
+
+        const activeItem = connections.length > 0 ? connections[0] : {};
+        (Object.keys(activeItem).length
+            ? activeItem.id |> activateConnection
+            : newConnection) |> dispatch;
     }
 
     next(action);

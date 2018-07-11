@@ -2,12 +2,14 @@ import styled from 'styled-components';
 const R = require('ramda');
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Button } from '@blueprintjs/core';
+import { Button, Classes } from '@blueprintjs/core';
 import Input from '../Shared/Input.jsx';
 
 const ButtonArea = styled.div`
+    display: flex;
     button {
         width: 100%;
+        margin: 0 10px;
     }
 `;
 
@@ -23,9 +25,15 @@ export const validateServer = values =>
 export const validateDirect = values =>
     values |> commonValidate |> R.assoc('host', required(values.host));
 
-const Form = ({ handleSubmit, mode, invalid, submitSucceeded }) => (
+const Form = ({
+    handleSubmit,
+    mode,
+    invalid,
+    submitSucceeded,
+    connectionSelect,
+    onDelete
+}) => (
     <form onSubmit={handleSubmit}>
-        <Field name="id" component={Input} label="id" hidden />
         <Field name="name" component={Input} label="Name" placeholder="dev" />
         {mode === 'server' && (
             <Field
@@ -67,6 +75,14 @@ const Form = ({ handleSubmit, mode, invalid, submitSucceeded }) => (
                 type="submit"
                 disabled={invalid || submitSucceeded}
             />
+            {connectionSelect && (
+                <Button
+                    text="DELETE"
+                    disabled={submitSucceeded}
+                    className={Classes.INTENT_DANGER}
+                    onClick={onDelete}
+                />
+            )}
         </ButtonArea>
     </form>
 );
