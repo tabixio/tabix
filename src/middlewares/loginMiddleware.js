@@ -25,7 +25,7 @@ const changeMode = tuple => tuple[0] |> changeModeAction;
  * @param {Object} item
  */
 const getMode = item => {
-    return [item.url ? 'server' : 'direct', item];
+    return [item && item.url ? 'server' : 'direct', item];
 };
 
 export default store => next => action => {
