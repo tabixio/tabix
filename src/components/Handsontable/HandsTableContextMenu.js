@@ -6,16 +6,16 @@ export class HandsTableContextMenu {
         // format = Heatmaps | NegaPosi
         // Heatmap для выбранных колонок,
 
-        let selection = ht.getSelectedRange();
-        let fromCol = Math.min(selection.from.col, selection.to.col);
-        let toCol = Math.max(selection.from.col, selection.to.col);
+        let selection=HandsTableContextMenu.getSelected(ht);
+        // let fromCol = Math.min(selection.from.col, selection.to.col);
+        // let toCol = Math.max(selection.from.col, selection.to.col);
 
         let h1 = '#a900e5';
         let h2 = '#3668ff';
 
         let heatmapScale = chroma.scale([h1, h2]);
 
-        for (let col = fromCol; col <= toCol; col++) {
+        for (let col = selection.fromCol; col <= selection.toCol; col++) {
 
             let allRows = ht.countRows();
             let values = ht.getDataAtCol(col);
