@@ -1,5 +1,6 @@
 import React from 'react';
 import Routes from './routes.jsx';
+import Toastr from 'Service/Toastr.jsx';
 import { ConnectedRouter } from 'react-router-redux';
 import { hot } from 'react-hot-loader';
 
@@ -9,11 +10,12 @@ class App extends React.Component {
     }
 
     render() {
-        return (
-            <ConnectedRouter history={this.props.history}>
+        return [
+            <ConnectedRouter key="app" history={this.props.history}>
                 <Routes />
-            </ConnectedRouter>
-        );
+            </ConnectedRouter>,
+            <Toastr key="toaster"/>
+        ];
     }
 }
 

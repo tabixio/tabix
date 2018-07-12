@@ -10,9 +10,7 @@ import {
     Navbar,
     NavbarGroup,
     Alignment,
-    Classes,
-    Position,
-    Toaster
+    Classes
 } from '@blueprintjs/core';
 import Footer from 'Layout/Footer.jsx';
 import { Fill } from 'Shared/styled';
@@ -58,14 +56,6 @@ export default class Layout extends PureComponent {
     componentDidMount() {
         const { onInit } = this.props;
         onInit();
-
-        setTimeout(
-            () =>
-                this.toaster.show({
-                    message: 'Toaster'
-                }),
-            1000
-        );
     }
 
     render() {
@@ -102,10 +92,7 @@ export default class Layout extends PureComponent {
                     by Tabix LLC ©, all rights reserved. Build {version}
                 </Footer>
 
-                <Toaster
-                    position={Position.TOP_RIGHT}
-                    ref={e => (this.toaster = e)}
-                />
+                
             </App>
         );
     }

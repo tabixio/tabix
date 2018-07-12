@@ -4,9 +4,9 @@ import {
     changeMode as changeModeAction,
     loadConnections,
     pushConnection,
-    newConnection
+    newConnection,
+    login
 } from '../actions/login';
-import { push } from 'react-router-redux';
 import appConst from '../constants/app';
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
@@ -47,6 +47,10 @@ export default store => next => action => {
             |> R.tap(_ => _ |> changeMode |> dispatch)
             |> initializeForm
             |> dispatch;
+
+        //check autorized
+        const auth = connections.find(x => x.authorized);
+        auth && auth |> login |> dispatch;
     }
 
     //on update/create connection in login
@@ -114,6 +118,25 @@ export default store => next => action => {
         (Object.keys(activeItem).length
             ? activeItem.id |> activateConnection
             : newConnection) |> dispatch;
+    }
+
+    if (
+        action.type === loginConst.LOGIN_COMPLETE ||
+        action.type === appConst.USER_LOGOUT
+    ) {
+        lsConst.CONNECTIONS
+            |> getFromStorage
+            |> JSON.parse
+            |> R.map(x =>
+                R.assoc(
+                    'authorized',
+                    action.type === appConst.USER_LOGOUT
+                        ? false
+                        : x.id === action.payload,
+                    x
+                )
+            )
+            |> saveInStorage(lsConst.CONNECTIONS);
     }
 
     next(action);

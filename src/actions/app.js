@@ -5,6 +5,15 @@ export const enableDarkTheme = payload => ({
     payload
 });
 
+export const userAuthorized = auth => ({
+    type: appConst.USER_AUTHORIZED,
+    payload: auth
+});
+
+export const logout = () => ({
+    type: appConst.USER_LOGOUT
+});
+
 export const init = () => ({
     type: appConst.INIT_APP
 });

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import propsToComponent from 'libs/components/propsToComponent';
-import { connect, initialize } from 'react-redux';
+import { connect } from 'react-redux';
 import { getFormValues } from 'redux-form';
 import {
     switchMode,
@@ -34,7 +34,8 @@ function mapStateToProps(state) {
         connections: state.login.connections || [],
         connectionSelect:
             state.login.connections.find(x => x.active) !== undefined,
-        getValuesFrom: form => getFormValues(form)(state)
+        getValuesFrom: form => getFormValues(form)(state),
+        fetching: state.login.fetching
     };
 }
 
@@ -67,11 +68,12 @@ export default class Login extends Component {
     };
 
     render() {
-        const { mode, onSwitch, connectionSelect } = this.props;
+        const { mode, onSwitch, connectionSelect, fetching } = this.props;
 
         const formProps = {
             onSubmit: this.onSubmit,
             connectionSelect,
+            fetching,
             onDelete: this.onDelete
         };
 

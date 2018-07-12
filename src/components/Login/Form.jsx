@@ -29,7 +29,7 @@ const Form = ({
     handleSubmit,
     mode,
     invalid,
-    submitSucceeded,
+    fetching,
     connectionSelect,
     onDelete
 }) => (
@@ -60,7 +60,7 @@ const Form = ({
             />
         )}
         <Field name="login" component={Input} label="login" />
-        <Field name="password" component={Input} label="password" />
+        <Field name="password" component={Input} label="password" type="password" />
         {mode === 'direct' && (
             <Field
                 name="params"
@@ -73,12 +73,12 @@ const Form = ({
             <Button
                 text="SIGN IN"
                 type="submit"
-                disabled={invalid || submitSucceeded}
+                disabled={invalid || fetching}
             />
             {connectionSelect && (
                 <Button
                     text="DELETE"
-                    disabled={submitSucceeded}
+                    disabled={fetching}
                     className={Classes.INTENT_DANGER}
                     onClick={onDelete}
                 />

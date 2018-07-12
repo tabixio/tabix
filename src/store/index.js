@@ -2,7 +2,6 @@ import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from 'reducers';
 import { routerMiddleware } from 'react-router-redux';
-import initMiddleware from '../middlewares/initMiddleware';
 import loginMiddleware from '../middlewares/loginMiddleware';
 
 const composeEnhancers = process.env.DEV
@@ -16,7 +15,6 @@ export default function configureStore(history) {
             applyMiddleware(
                 thunkMiddleware,
                 routerMiddleware(history),
-                initMiddleware,
                 loginMiddleware
             )
         )

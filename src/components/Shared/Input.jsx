@@ -11,6 +11,7 @@ export default ({
     input: inputForm,
     hidden,
     meta: { touched, error },
+    type = 'text',
     ...props
 }) => (
     <FormGroup labelFor={id} {...props} {...errorClass(touched && error)}>
@@ -20,6 +21,7 @@ export default ({
             {...errorClass(touched && error, Classes.INPUT)}
             {...inputForm}
             hidden={hidden}
+            type={type}
         />
     </FormGroup>
 );

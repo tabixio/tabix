@@ -1,4 +1,5 @@
 import loginConst from '../constants/login';
+import appConst from '../constants/app';
 const R = require('ramda');
 
 const initialState = {
@@ -9,6 +10,13 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
+    case appConst.USER_LOGOUT:
+        return {
+            ...state,
+            connections: state.connections.map(x =>
+                R.assoc('authorized', false, x)
+            )
+        };
     case loginConst.CHANGE_MODE:
         return { ...state, mode: action.payload };
     case loginConst.PUSH_CONNECTION:
@@ -41,7 +49,15 @@ export default (state = initialState, action) => {
     case loginConst.LOGIN_ERROR:
         return R.assoc('fetching', false, state);
     case loginConst.LOGIN_COMPLETE:
-        return R.assoc('fetching', false, state);
+        return (
+            R.assoc('fetching', false, state)
+                |> R.assoc(
+                    'connections',
+                    state.connections.map(x =>
+                        R.assoc('authorized', x.id === action.payload, x)
+                    )
+                )
+        );
     }
 
     return { ...state };
