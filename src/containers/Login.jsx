@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import propsToComponent from 'libs/components/propsToComponent';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { getFormValues } from 'redux-form';
 import {
     switchMode,
@@ -46,7 +47,8 @@ function mapDispatchToProps(dispatch) {
         onNewConnection: () => newConnection() |> dispatch,
         onActivateConnection: id => id |> activateConnection |> dispatch,
         onLogin: connection => connection |> login |> dispatch,
-        onDeleteConnection: id => id |> deleteConnetion |> dispatch
+        onDeleteConnection: id => id |> deleteConnetion |> dispatch,
+        onChangeRoute: () => '/sql' |> push |> dispatch
     };
 }
 
@@ -55,17 +57,13 @@ function mapDispatchToProps(dispatch) {
     mapDispatchToProps
 )
 export default class Login extends Component {
-    onSubmit = values => {
-        const { onUpdateConnection, onLogin } = this.props;
-        onUpdateConnection(values);
-        onLogin(values);
-    };
 
-    onDelete = () => {
-        const { onDeleteConnection, getValuesFrom, mode } = this.props;
-        const values = getValuesFrom(`${mode}Login`);
-        onDeleteConnection(values.id);
-    };
+    componentDidMount() {
+        const { connections, onActivateConnection } = this.props;
+
+        const activeConnection = connections.find(x => x.active);
+        activeConnection && (onActivateConnection(activeConnection.id));
+    }
 
     render() {
         const { mode, onSwitch, connectionSelect, fetching } = this.props;
@@ -121,4 +119,18 @@ export default class Login extends Component {
             </SplitterLayout>
         );
     }
+
+    onSubmit = async values => {
+        const { onUpdateConnection, onLogin, onChangeRoute } = this.props;
+        onUpdateConnection(values);
+        const result = await onLogin(values);
+        result && onChangeRoute();
+    };
+
+    onDelete = () => {
+        const { onDeleteConnection, getValuesFrom, mode } = this.props;
+        const values = getValuesFrom(`${mode}Login`);
+        onDeleteConnection(values.id);
+    };
+
 }

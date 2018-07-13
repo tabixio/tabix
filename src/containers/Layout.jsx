@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import classname from 'libs/components/classname';
-import { enableDarkTheme, init } from '../actions/app';
+import { enableDarkTheme } from '../actions/app';
 import React, { PureComponent } from 'react';
 import Logo from 'Layout/Logo.jsx';
 import ReqButton from 'Layout/Buttons/ReqButton.jsx';
@@ -43,8 +43,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(disaptch) {
     return {
-        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch,
-        onInit: () => disaptch(init())
+        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch
     };
 }
 
@@ -53,10 +52,6 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Layout extends PureComponent {
-    componentDidMount() {
-        const { onInit } = this.props;
-        onInit();
-    }
 
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;

@@ -3,6 +3,7 @@ import appConst from '../constants/app';
 const initialState = {
     darkTheme: true,
     userConnection: {},
+    init: false,
     autorized: false
 };
 
@@ -16,6 +17,8 @@ export default (state = initialState, action) => {
         return { ...state, autorized: action.payload };
     case appConst.USER_LOGOUT:
         return { ...state, autorized: false };
+    case appConst.INIT_APP:
+        return { ...state, init: true };
     }
     return state;
 };

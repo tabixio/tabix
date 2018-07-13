@@ -14,7 +14,7 @@ function mapDispatchToProps(disaptch) {
     return {
         onLogout: () => {
             disaptch(logout());
-            disaptch(push('/'));
+            disaptch(push('/login'));
         }
     };
 }
