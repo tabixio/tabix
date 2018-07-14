@@ -3,14 +3,14 @@ import { Route, Switch } from 'react-router';
 import Layout from 'containers/Layout.jsx';
 import Login from 'containers/Login.jsx';
 import Sql from 'containers/Sql.jsx';
-//import Handsontable from 'containers/Handsontable.jsx';
+import AceTest from 'containers/AceTest.jsx';
 
 export default () => (
     <Layout>
         <Switch>
             <Route path="/login" component={Login} />
             <Route path="/sql" component={Sql} />
-            {/* <Route path="/hot" component={Handsontable} /> */}
+            <Route path="/acetest" component={AceTest} />
         </Switch>
     </Layout>
 );
