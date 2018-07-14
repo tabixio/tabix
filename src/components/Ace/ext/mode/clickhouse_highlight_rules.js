@@ -3,6 +3,14 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
     let oop = require('../lib/oop');
     let TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
+    // https://stackoverflow.com/questions/28767920/dynamically-update-syntax-highlighting-for-the-ace-editor-requirejs
+    // https://stackoverflow.com/questions/22166784/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
+    // http://qaru.site/questions/1187040/dynamically-update-syntax-highlighting-mode-rules-for-the-ace-editor
+    // https://gist.github.com/anonymous/c08f414ac819c1e5531b
+    // https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode
+    // https://github.com/ajaxorg/ace/blob/master/lib/ace/mode/javascript_highlight_rules.js#L40
+    // https://gist.github.com/geakstr/68cc92493feb166271ff
+    //
 
     let ClickhouseHighlightRules = function () {
         let keywords = (
@@ -77,49 +85,27 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
             'DRAW_C3',
             'DRAW_MAP'
         ];
-        let listOfTables='';
-        // ------------------------------------------ Init builtin functions ---------------------------------------------
-        // if (window.aceJSRules && window.aceJSRules.builtinFunctions)
-        // {
-        //     // автодополнение builtin Functions
-        //     if (window.aceJSRules.builtinFunctions) {
-        //
-        //         let builtin=[];
-        //         window.aceJSRules.builtinFunctions.forEach(function (v) {
-        //             builtin.push(v.name);
-        //         });
-        //         builtinFunctions=builtin.join('|');
-        //     }
-        //     // список всех доступных "баз.табли"
-        //     if (_.isArray(window.aceJSRules.tables)){
-        //         listOfTables=window.aceJSRules.tables.join('|');
-        //     }
-        // }
-
-        //
-        let delit='';
-        if (window.global_delimiter)
-        {
-            delit=new RegExp(window.global_delimiter);
-        }
-        else{
-            delit=new RegExp(';;');
-        }
-
-        let $_fields = [];
-        let _keywords = keywords.toLowerCase();
         // ----------------------------------------------------------------------------------------------------------------------------------------------
-        let keywordMapper = this.createKeywordMapper({
-            'support.function': builtinFunctions,
-            'keyword': keywords,
-            'constant.language': builtinConstants,
-            'storage.type': dataTypes,
-            'markup.bold': listOfTables,
-            'markup.heading': $_fields.join('|')
-        }, 'identifier', true);
+        let delimiter=new RegExp(';;');
+        if (window.global_delimiter)
+        {   // @todo : drop support `window`
+            delimiter=new RegExp(window.global_delimiter);
+        }
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+        // let keywordMapper = this.createKeywordMapper({
+        //     'keyword': keywords, // static
+        //     'constant.language': builtinConstants, // static
+        //     'storage.type': dataTypes,  // static
+        // }, 'identifier', true);
 
-        // ------------------------------------------------------------------------------
-        // https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode
+        this.keywordRule = {
+            token : 'keywordRule',
+            // regex : "\\w+",
+            regex: '[a-zA-Z_$][a-zA-Z0-9_$]*\\b',
+            onMatch : function() {return 'text';}
+        };
+
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
         this.$rules = {
             'start': [
                 {
@@ -166,6 +152,17 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
                     regex: keywordsDouble
                 },
                 {
+                    token: 'keyword',
+                    regex: keywords
+                },
+                {
+                    token: 'constant.language',
+                    regex: builtinConstants
+                },{
+                    token: 'storage.type',
+                    regex: dataTypes
+                },
+                {
                     token: 'invalid.illegal',
                     regex: drawCommand.join('|')
                 },
@@ -175,13 +172,10 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
                 }, {
                     token: 'constant.numeric', // float
                     regex: '[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b'
-                }, {
-                    token: keywordMapper,
-                    regex: '[a-zA-Z_$][a-zA-Z0-9_$]*\\b'
                 },
                 {
                     token: 'constant.character.escape',
-                    regex: delit
+                    regex: delimiter
                 },
                 {
                     token: 'punctuation',
@@ -199,7 +193,12 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
                 }, {
                     token: 'text',
                     regex: '\\s+'
-                }
+                }, {
+                    token: 'string',
+                    start: '"',
+                    end: '"',
+                    next: [{ token : 'language.escape', regex : /\\[tn"\\]/}]
+                },this.keywordRule
 
             ]
         };
@@ -267,9 +266,13 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
             });
         };
         // ---------------------------------------------------------------------------------------------------------
+        // add function to change keywords
         this.setKeywords = function(kwMap) {
             console.log('setKeywords > ',kwMap);
-            this.keywordRule.onMatch = this.createKeywordMapper(kwMap, 'identifier');
+            // (map, defaultToken, ignoreCase, splitChar)
+            // this.keywordDynamicRule.token = this.createKeywordMapper(kwMap, 'identifier',true);
+            this.keywordRule.onMatch = this.createKeywordMapper(kwMap, 'identifier',true);
+            this.normalizeRules();
         };
         // ------------------------------------------------------------------------------
         this.makeCompletionsDocFunctions = function (fn, origin,comb) {
@@ -320,7 +323,6 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
             }
             return body+ '<a title="close" class="ace_doc-tooltip-boxclose"></a></span></div>';
         };
-        // // ------------------------------------------------------------------------------
         this.makeCompletionsdocHTML = function (name, meta) {
             return '<div style="padding: 15px 5px 5px 15px"><b>' + name + '</b><br>' + meta + '</div>';
         };

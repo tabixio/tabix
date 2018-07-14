@@ -12,13 +12,22 @@ const connection = {
     login: 'default',
     password: ''
 };
-
+const defaultValue=`SELECT field2 , fiels5  FROM DBTABLE | DB2TABLE2 
+fack ( fiels5 ) , baz(123)  -- support.function 
+var1 , var2 , var3          -- markup.heading
+field2,fiels5 ,field1       -- variable.parameter
+underline,underline1        -- underline
+deprecated deprecated1      -- invalid.deprecated
+    
+ReplicatedCollapsingMergeTree -- dataTypes
+final , typedef | struct | framework | library
+`;
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 300px;
+  height: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
   min-height: 200px;
 `;
 
@@ -64,6 +73,7 @@ export default enhance(({ dataStructure,currentDatabaseName }) => (
             theme="cobalt"
             dataStructure={dataStructure}
             currentDatabaseName={currentDatabaseName}
+            value={defaultValue}
             name="UNIQUE_ID_OF_DIV"
 
         />

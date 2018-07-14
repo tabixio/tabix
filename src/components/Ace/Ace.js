@@ -56,6 +56,7 @@ export default class ReactAce extends Component {
         console.info('Ace:updateDataStructure',dataBaseName,ds);
         // ------------------------------- -----------------------------------
         let $aceJSRules = ds.getForAceJS(dataBaseName);
+        // update completions
         $aceJSRules.builtinFunctions.map((v)=> { // ---------- builtinFunctions ----------
             this.editor.session.$mode.$highlightRules.addCompletionsFunctions(v);
         });
@@ -67,13 +68,33 @@ export default class ReactAce extends Component {
         });
         this.editor.session.$mode.$highlightRules.addArrayCompletions($aceJSRules.tables, '[table]','table');
 
+        // update keywords
+        // 'markup.bold': listOfTables,          // dynamic
+        // 'support.function': builtinFunctions, // dynamic
+        // 'markup.heading': $_fields.join('|')  // dynamic
+
+        this.editor.session.$mode.$highlightRules.setKeywords(
+            {
+                'support.class' : 'DBTABLE|DB2TABLE2', // green [DB.TABLE]
+                'markup.italic': 'fuck|foo|bprpw|bnoorw', // functionNames
+                'variable.parameter':'field2|fiels5|field1',
+                'markup.heading':'var1|var2|var3',
+                'markup.underline': 'underline|underline1|underline2|underline3',
+                'support.type' : 'fack|baz|BPRPQ|BPPPP',
+                'keyword.other' : 'deprecated|deprecated1|deprecated2',
+
+            }
+        );
+        console.info('this.editor.session.$mode.$highlightRules.getKeywords()',this.editor.session.$mode.$highlightRules.getKeywords());
+        console.info('this.editor.session.$mode.$highlightRules.getRules()',this.editor.session.$mode.$highlightRules.getRules());
+
         // // ---------- LOAD vars ----------
         // let vars=Variables.getCompletions();
         // let snip=Snippets.getCompletions();
         // editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');
         // editor.session.$mode.$highlightRules.addArrayCompletions(snip, '[snippet]','snippet');
         //
-        //
+        // force rehighlight whole document
         this.editor.session.bgTokenizer.start(0);
 
     }
@@ -117,7 +138,7 @@ export default class ReactAce extends Component {
         if (this.props.debounceChangePeriod) {
             this.onChange = this.debounce(this.onChange, this.props.debounceChangePeriod);
         }
-        this.editor.renderer.setScrollMargin(scrollMargin[0], scrollMargin[1], scrollMargin[2], scrollMargin[3])
+        this.editor.renderer.setScrollMargin(scrollMargin[0], scrollMargin[1], scrollMargin[2], scrollMargin[3]);
 
 
         this.editor.$blockScrolling = Infinity;
@@ -125,7 +146,7 @@ export default class ReactAce extends Component {
 
 
         // this.editor.getSession().setMode(mode);
-        this.editor.getSession().setMode(`ace/mode/${mode}`);
+        this.editor.getSession().setMode({path:`ace/mode/${mode}`, v: Date.now()});
 
         this.editor.setTheme(`ace/theme/${theme}`);
         this.editor.setFontSize(fontSize);
@@ -166,7 +187,7 @@ export default class ReactAce extends Component {
             if (availableOptions.hasOwnProperty(option)) {
                 this.editor.setOption(option, this.props[option]);
             } else if (this.props[option]) {
-                console.warn(`ReactAce: editor option ${option} was activated but not found. Did you need to import a related tool or did you possibly mispell the option?`)
+                console.warn(`ReactAce: editor option ${option} was activated but not found. Did you need to import a related tool or did you possibly mispell the option?`);
             }
         }
         this.handleOptions(this.props);
@@ -294,7 +315,7 @@ export default class ReactAce extends Component {
     }
 
     handleScrollMargins(margins = [0, 0, 0, 0]) {
-        this.editor.renderer.setScrollMargins(margins[0], margins[1], margins[2], margins[3])
+        this.editor.renderer.setScrollMargins(margins[0], margins[1], margins[2], margins[3]);
     }
 
     componentWillUnmount() {
@@ -318,12 +339,12 @@ export default class ReactAce extends Component {
     onCursorChange(event) {
         if(this.props.onCursorChange) {
             const value = this.editor.getSelection();
-            this.props.onCursorChange(value, event)
+            this.props.onCursorChange(value, event);
         }
     }
     onInput(event) {
         if (this.props.onInput) {
-            this.props.onInput(event)
+            this.props.onInput(event);
         }
     }
     onFocus(event) {
@@ -394,8 +415,8 @@ export default class ReactAce extends Component {
         const divStyle = { width, height, ...style };
         return (
             <div ref={this.updateRef}
-                 id={name}
-                 style={divStyle}
+                id={name}
+                style={divStyle}
             >
             </div>
         );
@@ -465,7 +486,7 @@ ReactAce.defaultProps = {
     height: '500px',
     width: '500px',
     value: '',
-    fontSize: 12,
+    fontSize: 14,
     showGutter: true,
     onChange: null,
     onPaste: null,
