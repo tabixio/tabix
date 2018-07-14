@@ -108,17 +108,6 @@ ace.define('ace/mode/clickhouse_highlight_rules', [ 'require', 'exports', 'modul
 
         let $_fields = [];
         let _keywords = keywords.toLowerCase();
-        //
-        // if (window.aceJSRules && _.isArray(window.aceJSRules.fieldsList)) {
-        //     window.aceJSRules.fieldsList.forEach(function (v) {
-        //         let p = v['name'].toLowerCase() + '|';
-        //         if (_keywords.indexOf(p) > -1) {
-        //             // skip fields if == keyword ( like from )
-        //             return;
-        //         }
-        //         $_fields.push(v['name']);
-        //     });
-        // }
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         let keywordMapper = this.createKeywordMapper({
             'support.function': builtinFunctions,

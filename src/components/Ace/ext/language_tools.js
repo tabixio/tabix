@@ -1,12 +1,12 @@
-ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/event_emitter","ace/lib/lang","ace/range","ace/anchor","ace/keyboard/hash_handler","ace/tokenizer","ace/lib/dom","ace/editor"], function(require, exports, module) {
-    "use strict";
-    var oop = require("./lib/oop");
-    var EventEmitter = require("./lib/event_emitter").EventEmitter;
-    var lang = require("./lib/lang");
-    var Range = require("./range").Range;
-    var Anchor = require("./anchor").Anchor;
-    var HashHandler = require("./keyboard/hash_handler").HashHandler;
-    var Tokenizer = require("./tokenizer").Tokenizer;
+ace.define('ace/snippets',['require','exports','module','ace/lib/oop','ace/lib/event_emitter','ace/lib/lang','ace/range','ace/anchor','ace/keyboard/hash_handler','ace/tokenizer','ace/lib/dom','ace/editor'], function(acequire, exports, module) {
+    'use strict';
+    var oop = acequire('./lib/oop');
+    var EventEmitter = acequire('./lib/event_emitter').EventEmitter;
+    var lang = acequire('./lib/lang');
+    var Range = acequire('./range').Range;
+    var Anchor = acequire('./anchor').Anchor;
+    var HashHandler = acequire('./keyboard/hash_handler').HashHandler;
+    var Tokenizer = acequire('./tokenizer').Tokenizer;
     var comparePoints = Range.comparePoints;
 
     var SnippetManager = function() {
@@ -25,52 +25,52 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                 return [{text: str}];
             }
             function escape(ch) {
-                return "(?:[^\\\\" + ch + "]|\\\\.)";
+                return '(?:[^\\\\' + ch + ']|\\\\.)';
             }
             SnippetManager.$tokenizer = new Tokenizer({
                 start: [
                     {regex: /:/, onMatch: function(val, state, stack) {
-                            if (stack.length && stack[0].expectIf) {
-                                stack[0].expectIf = false;
-                                stack[0].elseBranch = stack[0];
-                                return [stack[0]];
-                            }
-                            return ":";
-                        }},
+                        if (stack.length && stack[0].expectIf) {
+                            stack[0].expectIf = false;
+                            stack[0].elseBranch = stack[0];
+                            return [stack[0]];
+                        }
+                        return ':';
+                    }},
                     {regex: /\\./, onMatch: function(val, state, stack) {
-                            var ch = val[1];
-                            if (ch == "}" && stack.length) {
-                                val = ch;
-                            }else if ("`$\\".indexOf(ch) != -1) {
-                                val = ch;
-                            } else if (stack.inFormatString) {
-                                if (ch == "n")
-                                    val = "\n";
-                                else if (ch == "t")
-                                    val = "\n";
-                                else if ("ulULE".indexOf(ch) != -1) {
-                                    val = {changeCase: ch, local: ch > "a"};
-                                }
+                        var ch = val[1];
+                        if (ch == '}' && stack.length) {
+                            val = ch;
+                        }else if ('`$\\'.indexOf(ch) != -1) {
+                            val = ch;
+                        } else if (stack.inFormatString) {
+                            if (ch == 'n')
+                                val = '\n';
+                            else if (ch == 't')
+                                val = '\n';
+                            else if ('ulULE'.indexOf(ch) != -1) {
+                                val = {changeCase: ch, local: ch > 'a'};
                             }
+                        }
 
-                            return [val];
-                        }},
+                        return [val];
+                    }},
                     {regex: /}/, onMatch: function(val, state, stack) {
-                            return [stack.length ? stack.shift() : val];
-                        }},
+                        return [stack.length ? stack.shift() : val];
+                    }},
                     {regex: /\$(?:\d+|\w+)/, onMatch: TabstopToken},
                     {regex: /\$\{[\dA-Z_a-z]+/, onMatch: function(str, state, stack) {
-                            var t = TabstopToken(str.substr(1), state, stack);
-                            stack.unshift(t[0]);
-                            return t;
-                        }, next: "snippetVar"},
-                    {regex: /\n/, token: "newline", merge: false}
+                        var t = TabstopToken(str.substr(1), state, stack);
+                        stack.unshift(t[0]);
+                        return t;
+                    }, next: 'snippetVar'},
+                    {regex: /\n/, token: 'newline', merge: false}
                 ],
                 snippetVar: [
-                    {regex: "\\|" + escape("\\|") + "*\\|", onMatch: function(val, state, stack) {
-                            stack[0].choices = val.slice(1, -1).split(",");
-                        }, next: "start"},
-                    {regex: "/(" + escape("/") + "+)/(?:(" + escape("/") + "*)/)(\\w*):?",
+                    {regex: '\\|' + escape('\\|') + '*\\|', onMatch: function(val, state, stack) {
+                        stack[0].choices = val.slice(1, -1).split(',');
+                    }, next: 'start'},
+                    {regex: '/(' + escape('/') + '+)/(?:(' + escape('/') + '*)/)(\\w*):?',
                         onMatch: function(val, state, stack) {
                             var ts = stack[0];
                             ts.fmtString = val;
@@ -79,23 +79,23 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                             ts.guard = val[1];
                             ts.fmt = val[2];
                             ts.flag = val[3];
-                            return "";
-                        }, next: "start"},
-                    {regex: "`" + escape("`") + "*`", onMatch: function(val, state, stack) {
-                            stack[0].code = val.splice(1, -1);
-                            return "";
-                        }, next: "start"},
-                    {regex: "\\?", onMatch: function(val, state, stack) {
-                            if (stack[0])
-                                stack[0].expectIf = true;
-                        }, next: "start"},
-                    {regex: "([^:}\\\\]|\\\\.)*:?", token: "", next: "start"}
+                            return '';
+                        }, next: 'start'},
+                    {regex: '`' + escape('`') + '*`', onMatch: function(val, state, stack) {
+                        stack[0].code = val.splice(1, -1);
+                        return '';
+                    }, next: 'start'},
+                    {regex: '\\?', onMatch: function(val, state, stack) {
+                        if (stack[0])
+                            stack[0].expectIf = true;
+                    }, next: 'start'},
+                    {regex: '([^:}\\\\]|\\\\.)*:?', token: '', next: 'start'}
                 ],
                 formatString: [
-                    {regex: "/(" + escape("/") + "+)/", token: "regex"},
-                    {regex: "", onMatch: function(val, state, stack) {
-                            stack.inFormatString = true;
-                        }, next: "start"}
+                    {regex: '/(' + escape('/') + '+)/', token: 'regex'},
+                    {regex: '', onMatch: function(val, state, stack) {
+                        stack.inFormatString = true;
+                    }, next: 'start'}
                 ]
             });
             SnippetManager.prototype.getTokenizer = function() {
@@ -113,65 +113,65 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
         this.$getDefaultValue = function(editor, name) {
             if (/^[A-Z]\d+$/.test(name)) {
                 var i = name.substr(1);
-                return (this.variables[name[0] + "__"] || {})[i];
+                return (this.variables[name[0] + '__'] || {})[i];
             }
             if (/^\d+$/.test(name)) {
                 return (this.variables.__ || {})[name];
             }
-            name = name.replace(/^TM_/, "");
+            name = name.replace(/^TM_/, '');
 
             if (!editor)
                 return;
             var s = editor.session;
             switch(name) {
-                case "CURRENT_WORD":
-                    var r = s.getWordRange();
-                case "SELECTION":
-                case "SELECTED_TEXT":
-                    return s.getTextRange(r);
-                case "CURRENT_LINE":
-                    return s.getLine(editor.getCursorPosition().row);
-                case "PREV_LINE": // not possible in textmate
-                    return s.getLine(editor.getCursorPosition().row - 1);
-                case "LINE_INDEX":
-                    return editor.getCursorPosition().column;
-                case "LINE_NUMBER":
-                    return editor.getCursorPosition().row + 1;
-                case "SOFT_TABS":
-                    return s.getUseSoftTabs() ? "YES" : "NO";
-                case "TAB_SIZE":
-                    return s.getTabSize();
-                case "FILENAME":
-                case "FILEPATH":
-                    return "";
-                case "FULLNAME":
-                    return "Ace";
+            case 'CURRENT_WORD':
+                var r = s.getWordRange();
+            case 'SELECTION':
+            case 'SELECTED_TEXT':
+                return s.getTextRange(r);
+            case 'CURRENT_LINE':
+                return s.getLine(editor.getCursorPosition().row);
+            case 'PREV_LINE': // not possible in textmate
+                return s.getLine(editor.getCursorPosition().row - 1);
+            case 'LINE_INDEX':
+                return editor.getCursorPosition().column;
+            case 'LINE_NUMBER':
+                return editor.getCursorPosition().row + 1;
+            case 'SOFT_TABS':
+                return s.getUseSoftTabs() ? 'YES' : 'NO';
+            case 'TAB_SIZE':
+                return s.getTabSize();
+            case 'FILENAME':
+            case 'FILEPATH':
+                return '';
+            case 'FULLNAME':
+                return 'Ace';
             }
         };
         this.variables = {};
         this.getVariableValue = function(editor, varName) {
             if (this.variables.hasOwnProperty(varName))
-                return this.variables[varName](editor, varName) || "";
-            return this.$getDefaultValue(editor, varName) || "";
+                return this.variables[varName](editor, varName) || '';
+            return this.$getDefaultValue(editor, varName) || '';
         };
         this.tmStrFormat = function(str, ch, editor) {
-            var flag = ch.flag || "";
+            var flag = ch.flag || '';
             var re = ch.guard;
-            re = new RegExp(re, flag.replace(/[^gi]/, ""));
-            var fmtTokens = this.tokenizeTmSnippet(ch.fmt, "formatString");
+            re = new RegExp(re, flag.replace(/[^gi]/, ''));
+            var fmtTokens = this.tokenizeTmSnippet(ch.fmt, 'formatString');
             var _self = this;
             var formatted = str.replace(re, function() {
                 _self.variables.__ = arguments;
                 var fmtParts = _self.resolveVariables(fmtTokens, editor);
-                var gChangeCase = "E";
+                var gChangeCase = 'E';
                 for (var i  = 0; i < fmtParts.length; i++) {
                     var ch = fmtParts[i];
-                    if (typeof ch == "object") {
-                        fmtParts[i] = "";
+                    if (typeof ch == 'object') {
+                        fmtParts[i] = '';
                         if (ch.changeCase && ch.local) {
                             var next = fmtParts[i + 1];
-                            if (next && typeof next == "string") {
-                                if (ch.changeCase == "u")
+                            if (next && typeof next == 'string') {
+                                if (ch.changeCase == 'u')
                                     fmtParts[i] = next[0].toUpperCase();
                                 else
                                     fmtParts[i] = next[0].toLowerCase();
@@ -180,13 +180,13 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                         } else if (ch.changeCase) {
                             gChangeCase = ch.changeCase;
                         }
-                    } else if (gChangeCase == "U") {
+                    } else if (gChangeCase == 'U') {
                         fmtParts[i] = ch.toUpperCase();
-                    } else if (gChangeCase == "L") {
+                    } else if (gChangeCase == 'L') {
                         fmtParts[i] = ch.toLowerCase();
                     }
                 }
-                return fmtParts.join("");
+                return fmtParts.join('');
             });
             this.variables.__ = null;
             return formatted;
@@ -196,9 +196,9 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             var result = [];
             for (var i = 0; i < snippet.length; i++) {
                 var ch = snippet[i];
-                if (typeof ch == "string") {
+                if (typeof ch == 'string') {
                     result.push(ch);
-                } else if (typeof ch != "object") {
+                } else if (typeof ch != 'object') {
                     continue;
                 } else if (ch.skip) {
                     gotoNext(ch);
@@ -243,26 +243,26 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             if (cursor.column < indentString.length)
                 indentString = indentString.slice(0, cursor.column);
 
-            snippetText = snippetText.replace(/\r/g, "");
+            snippetText = snippetText.replace(/\r/g, '');
             var tokens = this.tokenizeTmSnippet(snippetText);
             tokens = this.resolveVariables(tokens, editor);
             tokens = tokens.map(function(x) {
-                if (x == "\n")
+                if (x == '\n')
                     return x + indentString;
-                if (typeof x == "string")
+                if (typeof x == 'string')
                     return x.replace(/\t/g, tabString);
                 return x;
             });
             var tabstops = [];
             tokens.forEach(function(p, i) {
-                if (typeof p != "object")
+                if (typeof p != 'object')
                     return;
                 var id = p.tabstopId;
                 var ts = tabstops[id];
                 if (!ts) {
                     ts = tabstops[id] = [];
                     ts.index = id;
-                    ts.value = "";
+                    ts.value = '';
                 }
                 if (ts.indexOf(p) !== -1)
                     return;
@@ -272,20 +272,20 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                     return;
 
                 var value = tokens.slice(i + 1, i1);
-                var isNested = value.some(function(t) {return typeof t === "object"});
+                var isNested = value.some(function(t) {return typeof t === 'object';});
                 if (isNested && !ts.value) {
                     ts.value = value;
-                } else if (value.length && (!ts.value || typeof ts.value !== "string")) {
-                    ts.value = value.join("");
+                } else if (value.length && (!ts.value || typeof ts.value !== 'string')) {
+                    ts.value = value.join('');
                 }
             });
-            tabstops.forEach(function(ts) {ts.length = 0});
+            tabstops.forEach(function(ts) {ts.length = 0;});
             var expanding = {};
             function copyValue(val) {
                 var copy = [];
                 for (var i = 0; i < val.length; i++) {
                     var p = val[i];
-                    if (typeof p == "object") {
+                    if (typeof p == 'object') {
                         if (expanding[p.tabstopId])
                             continue;
                         var j = val.lastIndexOf(p, i - 1);
@@ -297,7 +297,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             }
             for (var i = 0; i < tokens.length; i++) {
                 var p = tokens[i];
-                if (typeof p != "object")
+                if (typeof p != 'object')
                     continue;
                 var id = p.tabstopId;
                 var i1 = tokens.indexOf(p, i + 1);
@@ -308,7 +308,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                 }
 
                 var ts = tabstops[id];
-                var arg = typeof ts.value == "string" ? [ts.value] : copyValue(ts.value);
+                var arg = typeof ts.value == 'string' ? [ts.value] : copyValue(ts.value);
                 arg.unshift(i + 1, Math.max(0, i1 - i));
                 arg.push(p);
                 expanding[id] = p;
@@ -318,10 +318,10 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                     ts.push(p);
             }
             var row = 0, column = 0;
-            var text = "";
+            var text = '';
             tokens.forEach(function(t) {
-                if (typeof t === "string") {
-                    var lines = t.split("\n");
+                if (typeof t === 'string') {
+                    var lines = t.split('\n');
                     if (lines.length > 1){
                         column = lines[lines.length - 1].length;
                         row += lines.length - 1;
@@ -357,23 +357,23 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
         };
 
         this.$getScope = function(editor) {
-            var scope = editor.session.$mode.$id || "";
-            scope = scope.split("/").pop();
-            if (scope === "html" || scope === "php") {
-                if (scope === "php" && !editor.session.$mode.inlinePhp)
-                    scope = "html";
+            var scope = editor.session.$mode.$id || '';
+            scope = scope.split('/').pop();
+            if (scope === 'html' || scope === 'php') {
+                if (scope === 'php' && !editor.session.$mode.inlinePhp)
+                    scope = 'html';
                 var c = editor.getCursorPosition();
                 var state = editor.session.getState(c.row);
-                if (typeof state === "object") {
+                if (typeof state === 'object') {
                     state = state[0];
                 }
                 if (state.substring) {
-                    if (state.substring(0, 3) == "js-")
-                        scope = "javascript";
-                    else if (state.substring(0, 4) == "css-")
-                        scope = "css";
-                    else if (state.substring(0, 4) == "php-")
-                        scope = "php";
+                    if (state.substring(0, 3) == 'js-')
+                        scope = 'javascript';
+                    else if (state.substring(0, 4) == 'css-')
+                        scope = 'css';
+                    else if (state.substring(0, 4) == 'php-')
+                        scope = 'php';
                 }
             }
 
@@ -387,7 +387,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             if (snippetMap[scope] && snippetMap[scope].includeScopes) {
                 scopes.push.apply(scopes, snippetMap[scope].includeScopes);
             }
-            scopes.push("_");
+            scopes.push('_');
             return scopes;
         };
 
@@ -442,10 +442,10 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                 if (!s.startRe && !s.endRe)
                     continue;
 
-                s.matchBefore = s.startRe ? s.startRe.exec(before) : [""];
-                s.matchAfter = s.endRe ? s.endRe.exec(after) : [""];
-                s.replaceBefore = s.triggerRe ? s.triggerRe.exec(before)[0] : "";
-                s.replaceAfter = s.endTriggerRe ? s.endTriggerRe.exec(after)[0] : "";
+                s.matchBefore = s.startRe ? s.startRe.exec(before) : [''];
+                s.matchAfter = s.endRe ? s.endRe.exec(after) : [''];
+                s.replaceBefore = s.triggerRe ? s.triggerRe.exec(before)[0] : '';
+                s.replaceAfter = s.endTriggerRe ? s.endTriggerRe.exec(after)[0] : '';
                 return s;
             }
         };
@@ -462,28 +462,28 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
 
             function wrapRegexp(src) {
                 if (src && !/^\^?\(.*\)\$?$|^\\b$/.test(src))
-                    src = "(?:" + src + ")";
+                    src = '(?:' + src + ')';
 
-                return src || "";
+                return src || '';
             }
             function guardedRegexp(re, guard, opening) {
                 re = wrapRegexp(re);
                 guard = wrapRegexp(guard);
                 if (opening) {
                     re = guard + re;
-                    if (re && re[re.length - 1] != "$")
-                        re = re + "$";
+                    if (re && re[re.length - 1] != '$')
+                        re = re + '$';
                 } else {
                     re = re + guard;
-                    if (re && re[0] != "^")
-                        re = "^" + re;
+                    if (re && re[0] != '^')
+                        re = '^' + re;
                 }
                 return new RegExp(re);
             }
 
             function addSnippet(s) {
                 if (!s.scope)
-                    s.scope = scope || "_";
+                    s.scope = scope || '_';
                 scope = s.scope;
                 if (!snippetMap[scope]) {
                     snippetMap[scope] = [];
@@ -501,7 +501,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
 
                 if (s.tabTrigger && !s.trigger) {
                     if (!s.guard && /^\w/.test(s.tabTrigger))
-                        s.guard = "\\b";
+                        s.guard = '\\b';
                     s.trigger = lang.escapeRegExp(s.tabTrigger);
                 }
 
@@ -509,10 +509,10 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                     return;
 
                 s.startRe = guardedRegexp(s.trigger, s.guard, true);
-                s.triggerRe = new RegExp(s.trigger, "", true);
+                s.triggerRe = new RegExp(s.trigger, '', true);
 
                 s.endRe = guardedRegexp(s.endTrigger, s.endGuard, true);
-                s.endTriggerRe = new RegExp(s.endTrigger, "", true);
+                s.endTriggerRe = new RegExp(s.endTrigger, '', true);
             }
 
             if (snippets && snippets.content)
@@ -520,7 +520,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             else if (Array.isArray(snippets))
                 snippets.forEach(addSnippet);
 
-            this._signal("registerSnippets", {scope: scope});
+            this._signal('registerSnippets', {scope: scope});
         };
         this.unregister = function(snippets, scope) {
             var snippetMap = this.snippetMap;
@@ -542,7 +542,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                 snippets.forEach(removeSnippet);
         };
         this.parseSnippetFile = function(str) {
-            str = str.replace(/\r/g, "");
+            str = str.replace(/\r/g, '');
             var list = [], snippet = {};
             var re = /^#.*|^({[\s\S]*})\s*$|^(\S+) (.*)$|^((?:\n*\t.*)+)/gm;
             var m;
@@ -553,19 +553,18 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
                         list.push(snippet);
                     } catch (e) {}
                 } if (m[4]) {
-                    snippet.content = m[4].replace(/^\t/gm, "");
+                    snippet.content = m[4].replace(/^\t/gm, '');
                     list.push(snippet);
                     snippet = {};
                 } else {
                     var key = m[2], val = m[3];
-                    if (key == "regex") {
+                    if (key == 'regex') {
                         var guardRe = /\/((?:[^\/\\]|\\.)*)|$/g;
                         snippet.guard = guardRe.exec(val)[1];
-                         snippet.trigger = guardRe.exec(val)[1];
+                        snippet.trigger = guardRe.exec(val)[1];
                         snippet.endTrigger = guardRe.exec(val)[1];
                         snippet.endGuard = guardRe.exec(val)[1];
-                    } else if (key == "snippet") {
-
+                    } else if (key == 'snippet') {
                         snippet.tabTrigger = val.match(/^\S*/)[0];
                         if (!snippet.name)
                             snippet.name = val;
@@ -610,10 +609,10 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             this.selectedTabstop = null;
 
             this.editor = editor;
-            this.editor.on("change", this.$onChange);
-            this.editor.on("changeSelection", this.$onChangeSelection);
-            this.editor.on("changeSession", this.$onChangeSession);
-            this.editor.commands.on("afterExec", this.$onAfterExec);
+            this.editor.on('change', this.$onChange);
+            this.editor.on('changeSelection', this.$onChangeSelection);
+            this.editor.on('changeSession', this.$onChangeSession);
+            this.editor.commands.on('afterExec', this.$onAfterExec);
             this.editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
         };
         this.detach = function() {
@@ -621,10 +620,10 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             this.ranges = null;
             this.tabstops = null;
             this.selectedTabstop = null;
-            this.editor.removeListener("change", this.$onChange);
-            this.editor.removeListener("changeSelection", this.$onChangeSelection);
-            this.editor.removeListener("changeSession", this.$onChangeSession);
-            this.editor.commands.removeListener("afterExec", this.$onAfterExec);
+            this.editor.removeListener('change', this.$onChange);
+            this.editor.removeListener('changeSelection', this.$onChangeSelection);
+            this.editor.removeListener('changeSession', this.$onChangeSession);
+            this.editor.commands.removeListener('afterExec', this.$onAfterExec);
             this.editor.keyBinding.removeKeyboardHandler(this.keyboardHandler);
             this.editor.tabstopManager = null;
             this.editor = null;
@@ -632,7 +631,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
 
         this.onChange = function(delta) {
             var changeRange = delta;
-            var isRemove = delta.action[0] == "r";
+            var isRemove = delta.action[0] == 'r';
             var start = delta.start;
             var end = delta.end;
             var startRow = start.row;
@@ -810,7 +809,7 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
             var session = this.editor.session;
             ts.forEach(function(range) {
                 if  (!range.markerId)
-                    range.markerId = session.addMarker(range, "ace_snippet-marker", "text");
+                    range.markerId = session.addMarker(range, 'ace_snippet-marker', 'text');
             });
         };
         this.removeTabstopMarkers = function(ts) {
@@ -837,20 +836,20 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
 
         this.keyboardHandler = new HashHandler();
         this.keyboardHandler.bindKeys({
-            "Tab": function(ed) {
+            'Tab': function(ed) {
                 if (exports.snippetManager && exports.snippetManager.expandWithTab(ed)) {
                     return;
                 }
 
                 ed.tabstopManager.tabNext(1);
             },
-            "Shift-Tab": function(ed) {
+            'Shift-Tab': function(ed) {
                 ed.tabstopManager.tabNext(-1);
             },
-            "Esc": function(ed) {
+            'Esc': function(ed) {
                 ed.tabstopManager.detach();
             },
-            "Return": function(ed) {
+            'Return': function(ed) {
                 return false;
             }
         });
@@ -883,19 +882,19 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
     };
 
 
-    require("./lib/dom").importCssString("\
+    acequire('./lib/dom').importCssString('\
 .ace_snippet-marker {\
     -moz-box-sizing: border-box;\
     box-sizing: border-box;\
     background: rgba(194, 193, 208, 0.09);\
     border: 1px dotted rgba(211, 208, 235, 0.62);\
     position: absolute;\
-}");
+}');
 
     exports.snippetManager = new SnippetManager();
 
 
-    var Editor = require("./editor").Editor;
+    var Editor = acequire('./editor').Editor;
     (function() {
         this.insertSnippet = function(content, options) {
             return exports.snippetManager.insertSnippet(this, content, options);
@@ -907,15 +906,15 @@ ace.define("ace/snippets",["require","exports","module","ace/lib/oop","ace/lib/e
 
 });
 
-ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_renderer","ace/editor","ace/range","ace/lib/event","ace/lib/lang","ace/lib/dom"], function(require, exports, module) {
-    "use strict";
+ace.define('ace/autocomplete/popup',['require','exports','module','ace/virtual_renderer','ace/editor','ace/range','ace/lib/event','ace/lib/lang','ace/lib/dom'], function(acequire, exports, module) {
+    'use strict';
 
-    var Renderer = require("../virtual_renderer").VirtualRenderer;
-    var Editor = require("../editor").Editor;
-    var Range = require("../range").Range;
-    var event = require("../lib/event");
-    var lang = require("../lib/lang");
-    var dom = require("../lib/dom");
+    var Renderer = acequire('../virtual_renderer').VirtualRenderer;
+    var Editor = acequire('../editor').Editor;
+    var Range = acequire('../range').Range;
+    var event = acequire('../lib/event');
+    var lang = acequire('../lib/lang');
+    var dom = acequire('../lib/dom');
 
     var $singleLineEditor = function(el) {
         var renderer = new Renderer(el);
@@ -936,17 +935,17 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
     };
 
     var AcePopup = function(parentNode) {
-        var el = dom.createElement("div");
+        var el = dom.createElement('div');
         var popup = new $singleLineEditor(el);
 
         if (parentNode)
             parentNode.appendChild(el);
-        el.style.display = "none";
-        popup.renderer.content.style.cursor = "default";
-        popup.renderer.setStyle("ace_autocomplete");
+        el.style.display = 'none';
+        popup.renderer.content.style.cursor = 'default';
+        popup.renderer.setStyle('ace_autocomplete');
 
-        popup.setOption("displayIndentGuides", false);
-        popup.setOption("dragDelay", 150);
+        popup.setOption('displayIndentGuides', false);
+        popup.setOption('dragDelay', 150);
 
         var noop = function(){};
 
@@ -960,10 +959,10 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
         popup.renderer.$keepTextAreaAtCursor = false;
 
         popup.setHighlightActiveLine(false);
-        popup.session.highlight("");
-        popup.session.$searchHighlight.clazz = "ace_highlight-marker";
+        popup.session.highlight('');
+        popup.session.$searchHighlight.clazz = 'ace_highlight-marker';
 
-        popup.on("mousedown", function(e) {
+        popup.on('mousedown', function(e) {
             var pos = e.getDocumentPosition();
             popup.selection.moveToPosition(pos);
             selectionMarker.start.row = selectionMarker.end.row = pos.row;
@@ -973,17 +972,17 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
         var lastMouseEvent;
         var hoverMarker = new Range(-1,0,-1,Infinity);
         var selectionMarker = new Range(-1,0,-1,Infinity);
-        selectionMarker.id = popup.session.addMarker(selectionMarker, "ace_active-line", "fullLine");
+        selectionMarker.id = popup.session.addMarker(selectionMarker, 'ace_active-line', 'fullLine');
         popup.setSelectOnHover = function(val) {
             if (!val) {
-                hoverMarker.id = popup.session.addMarker(hoverMarker, "ace_line-hover", "fullLine");
+                hoverMarker.id = popup.session.addMarker(hoverMarker, 'ace_line-hover', 'fullLine');
             } else if (hoverMarker.id) {
                 popup.session.removeMarker(hoverMarker.id);
                 hoverMarker.id = null;
             }
         };
         popup.setSelectOnHover(false);
-        popup.on("mousemove", function(e) {
+        popup.on('mousemove', function(e) {
             if (!lastMouseEvent) {
                 lastMouseEvent = e;
                 return;
@@ -1000,7 +999,7 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
                 setHoverMarker(row);
             }
         });
-        popup.renderer.on("beforeRender", function() {
+        popup.renderer.on('beforeRender', function() {
             if (lastMouseEvent && hoverMarker.start.row != -1) {
                 lastMouseEvent.$pos = null;
                 var row = lastMouseEvent.getDocumentPosition().row;
@@ -1009,43 +1008,43 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
                 setHoverMarker(row, true);
             }
         });
-        popup.renderer.on("afterRender", function() {
+        popup.renderer.on('afterRender', function() {
             var row = popup.getRow();
             var t = popup.renderer.$textLayer;
             var selected = t.element.childNodes[row - t.config.firstRow];
             if (selected == t.selectedNode)
                 return;
             if (t.selectedNode)
-                dom.removeCssClass(t.selectedNode, "ace_selected");
+                dom.removeCssClass(t.selectedNode, 'ace_selected');
             t.selectedNode = selected;
             if (selected)
-                dom.addCssClass(selected, "ace_selected");
+                dom.addCssClass(selected, 'ace_selected');
         });
-        var hideHoverMarker = function() { setHoverMarker(-1) };
+        var hideHoverMarker = function() { setHoverMarker(-1); };
         var setHoverMarker = function(row, suppressRedraw) {
             if (row !== hoverMarker.start.row) {
                 hoverMarker.start.row = hoverMarker.end.row = row;
                 if (!suppressRedraw)
-                    popup.session._emit("changeBackMarker");
-                popup._emit("changeHoverMarker");
+                    popup.session._emit('changeBackMarker');
+                popup._emit('changeHoverMarker');
             }
         };
         popup.getHoveredRow = function() {
             return hoverMarker.start.row;
         };
 
-        event.addListener(popup.container, "mouseout", hideHoverMarker);
-        popup.on("hide", hideHoverMarker);
-        popup.on("changeSelection", hideHoverMarker);
+        event.addListener(popup.container, 'mouseout', hideHoverMarker);
+        popup.on('hide', hideHoverMarker);
+        popup.on('changeSelection', hideHoverMarker);
 
         popup.session.doc.getLength = function() {
             return popup.data.length;
         };
         popup.session.doc.getLine = function(i) {
             var data = popup.data[i];
-            if (typeof data == "string")
+            if (typeof data == 'string')
                 return data;
-            return (data && data.value) || "";
+            return (data && data.value) || '';
         };
 
         var bgTokenizer = popup.session.bgTokenizer;
@@ -1054,7 +1053,7 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
             var tokens = [];
             if (!data)
                 return tokens;
-            if (typeof data == "string")
+            if (typeof data == 'string')
                 data = {value: data};
             if (!data.caption)
                 data.caption = data.value || data.name;
@@ -1066,14 +1065,14 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
             if (data.iconClass)//show icon in popup if specified by completor
                 tokens.push({
                     type: 'icon ace_icon-'+data.iconClass,
-                    value: " "
+                    value: ' '
                 });
 
             for (var i = 0; i < data.caption.length; i++) {
                 c = data.caption[i];
                 flag = data.matchMask & (1 << i) ? 1 : 0;
                 if (last !== flag) {
-                    tokens.push({type: data.className || "" + ( flag ? "completion-highlight" : ""), value: c});
+                    tokens.push({type: data.className || '' + ( flag ? 'completion-highlight' : ''), value: c});
                     last = flag;
                 } else {
                     tokens[tokens.length - 1].value += c;
@@ -1084,9 +1083,9 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
                 var maxW = popup.renderer.$size.scrollerWidth / popup.renderer.layerConfig.characterWidth;
                 var metaData = data.meta;
                 if (metaData.length + data.caption.length > maxW - 2) {
-                    metaData = metaData.substr(0, maxW - data.caption.length - 3) + "\u2026"
+                    metaData = metaData.substr(0, maxW - data.caption.length - 3) + '\u2026';
                 }
-                tokens.push({type: "rightAlignedText", value: metaData});
+                tokens.push({type: 'rightAlignedText', value: metaData});
             }
             return tokens;
         };
@@ -1100,10 +1099,11 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
         popup.$blockScrolling = Infinity;
         popup.isOpen = false;
         popup.isTopdown = false;
+        popup.autoSelect = true;
 
         popup.data = [];
         popup.setData = function(list) {
-            popup.setValue(lang.stringRepeat("\n", list.length), -1);
+            popup.setValue(lang.stringRepeat('\n', list.length), -1);
             popup.data = list || [];
             popup.setRow(0);
         };
@@ -1115,26 +1115,26 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
             return selectionMarker.start.row;
         };
         popup.setRow = function(line) {
-            line = Math.max(0, Math.min(this.data.length, line));
+            line = Math.max(this.autoSelect ? 0 : -1, Math.min(this.data.length, line));
             if (selectionMarker.start.row != line) {
                 popup.selection.clearSelection();
                 selectionMarker.start.row = selectionMarker.end.row = line || 0;
-                popup.session._emit("changeBackMarker");
+                popup.session._emit('changeBackMarker');
                 popup.moveCursorTo(line || 0, 0);
                 if (popup.isOpen)
-                    popup._signal("select");
+                    popup._signal('select');
             }
         };
 
-        popup.on("changeSelection", function() {
+        popup.on('changeSelection', function() {
             if (popup.isOpen)
                 popup.setRow(popup.selection.lead.row);
             popup.renderer.scrollCursorIntoView();
         });
 
         popup.hide = function() {
-            this.container.style.display = "none";
-            this._signal("hide");
+            this.container.style.display = 'none';
+            this._signal('hide');
             popup.isOpen = false;
         };
         popup.show = function(pos, lineHeight, topdownOnly) {
@@ -1147,27 +1147,27 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
             var allowTopdown = top > screenHeight / 2 && !topdownOnly;
             if (allowTopdown && top + lineHeight + maxH > screenHeight) {
                 renderer.$maxPixelHeight = top - 2 * this.$borderSize;
-                el.style.top = "";
-                el.style.bottom = screenHeight - top + "px";
+                el.style.top = '';
+                el.style.bottom = screenHeight - top + 'px';
                 popup.isTopdown = false;
             } else {
                 top += lineHeight;
                 renderer.$maxPixelHeight = screenHeight - top - 0.2 * lineHeight;
-                el.style.top = top + "px";
-                el.style.bottom = "";
+                el.style.top = top + 'px';
+                el.style.bottom = '';
                 popup.isTopdown = true;
             }
 
-            el.style.display = "";
+            el.style.display = '';
             this.renderer.$textLayer.checkForSizeChanges();
 
             var left = pos.left;
             if (left + el.offsetWidth > screenWidth)
                 left = screenWidth - el.offsetWidth;
 
-            el.style.left = left + "px";
+            el.style.left = left + 'px';
 
-            this._signal("show");
+            this._signal('show');
             lastMouseEvent = null;
             popup.isOpen = true;
         };
@@ -1182,7 +1182,7 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
         return popup;
     };
 
-    dom.importCssString("\
+    dom.importCssString('\
 .ace_editor.ace_autocomplete .ace_marker-layer .ace_active-line {\
     background-color: #CAD6FA;\
     z-index: 1;\
@@ -1222,14 +1222,14 @@ ace.define("ace/autocomplete/popup",["require","exports","module","ace/virtual_r
     position: fixed;\
     box-shadow: 2px 3px 5px rgba(0,0,0,.2);\
     line-height: 1.4;\
-}");
+}');
 
     exports.AcePopup = AcePopup;
 
 });
 
-ace.define("ace/autocomplete/util",["require","exports","module"], function(require, exports, module) {
-    "use strict";
+ace.define('ace/autocomplete/util',['require','exports','module'], function(acequire, exports, module) {
+    'use strict';
 
     exports.parForEach = function(array, fn, callback) {
         var completed = 0;
@@ -1256,7 +1256,7 @@ ace.define("ace/autocomplete/util",["require","exports","module"], function(requ
             else
                 break;
         }
-        return buf.reverse().join("");
+        return buf.reverse().join('');
     };
 
     exports.retrieveFollowingIdentifier = function(text, pos, regex) {
@@ -1288,16 +1288,16 @@ ace.define("ace/autocomplete/util",["require","exports","module"], function(requ
 
 });
 
-ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_handler","ace/autocomplete/popup","ace/autocomplete/util","ace/lib/event","ace/lib/lang","ace/lib/dom","ace/snippets"], function(require, exports, module) {
-    "use strict";
+ace.define('ace/autocomplete',['require','exports','module','ace/keyboard/hash_handler','ace/autocomplete/popup','ace/autocomplete/util','ace/lib/event','ace/lib/lang','ace/lib/dom','ace/snippets'], function(acequire, exports, module) {
+    'use strict';
 
-    var HashHandler = require("./keyboard/hash_handler").HashHandler;
-    var AcePopup = require("./autocomplete/popup").AcePopup;
-    var util = require("./autocomplete/util");
-    var event = require("./lib/event");
-    var lang = require("./lib/lang");
-    var dom = require("./lib/dom");
-    var snippetManager = require("./snippets").snippetManager;
+    var HashHandler = acequire('./keyboard/hash_handler').HashHandler;
+    var AcePopup = acequire('./autocomplete/popup').AcePopup;
+    var util = acequire('./autocomplete/util');
+    var event = acequire('./lib/event');
+    var lang = acequire('./lib/lang');
+    var dom = acequire('./lib/dom');
+    var snippetManager = acequire('./snippets').snippetManager;
 
     var Autocomplete = function() {
         this.autoInsert = false;
@@ -1323,14 +1323,14 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
 
         this.$init = function() {
             this.popup = new AcePopup(document.body || document.documentElement);
-            this.popup.on("click", function(e) {
+            this.popup.on('click', function(e) {
                 this.insertMatch();
                 e.stop();
             }.bind(this));
             this.popup.focus = this.editor.focus.bind(this.editor);
-            this.popup.on("show", this.tooltipTimer.bind(null, null));
-            this.popup.on("select", this.tooltipTimer.bind(null, null));
-            this.popup.on("changeHoverMarker", this.tooltipTimer.bind(null, null));
+            this.popup.on('show', this.tooltipTimer.bind(null, null));
+            this.popup.on('select', this.tooltipTimer.bind(null, null));
+            this.popup.on('changeHoverMarker', this.tooltipTimer.bind(null, null));
             return this.popup;
         };
 
@@ -1341,6 +1341,8 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
         this.openPopup = function(editor, prefix, keepPopupPosition) {
             if (!this.popup)
                 this.$init();
+
+            this.popup.autoSelect = this.autoSelect;
 
             this.popup.setData(this.completions.filtered);
 
@@ -1370,10 +1372,10 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
 
         this.detach = function() {
             this.editor.keyBinding.removeKeyboardHandler(this.keyboardHandler);
-            this.editor.off("changeSelection", this.changeListener);
-            this.editor.off("blur", this.blurListener);
-            this.editor.off("mousedown", this.mousedownListener);
-            this.editor.off("mousewheel", this.mousewheelListener);
+            this.editor.off('changeSelection', this.changeListener);
+            this.editor.off('blur', this.blurListener);
+            this.editor.off('mousedown', this.mousedownListener);
+            this.editor.off('mousewheel', this.mousewheelListener);
             this.changeTimer.cancel();
             this.hideDocTooltip();
 
@@ -1399,12 +1401,12 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
         };
 
         this.blurListener = function(e) {
-            if (e.relatedTarget && e.relatedTarget.nodeName == "A" && e.relatedTarget.href) {
-                window.open(e.relatedTarget.href, "_blank");
+            if (e.relatedTarget && e.relatedTarget.nodeName == 'A' && e.relatedTarget.href) {
+                window.open(e.relatedTarget.href, '_blank');
             }
             var el = document.activeElement;
             var text = this.editor.textInput.getElement();
-            var fromTooltip = e.relatedTarget && e.relatedTarget == this.tooltipNode;
+            var fromTooltip = e.relatedTarget && this.tooltipNode && this.tooltipNode.contains(e.relatedTarget);
             var container = this.popup && this.popup.container;
             if (el != text && el.parentNode != container && !fromTooltip
                 && el != this.tooltipNode && e.relatedTarget != text
@@ -1426,10 +1428,10 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
             var max = this.popup.session.getLength() - 1;
 
             switch(where) {
-                case "up": row = row <= 0 ? max : row - 1; break;
-                case "down": row = row >= max ? -1 : row + 1; break;
-                case "start": row = 0; break;
-                case "end": row = max; break;
+            case 'up': row = row <= 0 ? max : row - 1; break;
+            case 'down': row = row >= max ? -1 : row + 1; break;
+            case 'start': row = 0; break;
+            case 'end': row = max; break;
             }
 
             this.popup.setRow(row);
@@ -1454,31 +1456,31 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
                 if (data.snippet)
                     snippetManager.insertSnippet(this.editor, data.snippet);
                 else
-                    this.editor.execCommand("insertstring", data.value || data);
+                    this.editor.execCommand('insertstring', data.value || data);
             }
             this.detach();
         };
 
 
         this.commands = {
-            "Up": function(editor) { editor.completer.goTo("up"); },
-            "Down": function(editor) { editor.completer.goTo("down"); },
-            "Ctrl-Up|Ctrl-Home": function(editor) { editor.completer.goTo("start"); },
-            "Ctrl-Down|Ctrl-End": function(editor) { editor.completer.goTo("end"); },
+            'Up': function(editor) { editor.completer.goTo('up'); },
+            'Down': function(editor) { editor.completer.goTo('down'); },
+            'Ctrl-Up|Ctrl-Home': function(editor) { editor.completer.goTo('start'); },
+            'Ctrl-Down|Ctrl-End': function(editor) { editor.completer.goTo('end'); },
 
-            "Esc": function(editor) { editor.completer.detach(); },
-            "Return": function(editor) { return editor.completer.insertMatch(); },
-            "Shift-Return": function(editor) { editor.completer.insertMatch(null, {deleteSuffix: true}); },
-            "Tab": function(editor) {
+            'Esc': function(editor) { editor.completer.detach(); },
+            'Return': function(editor) { return editor.completer.insertMatch(); },
+            'Shift-Return': function(editor) { editor.completer.insertMatch(null, {deleteSuffix: true}); },
+            'Tab': function(editor) {
                 var result = editor.completer.insertMatch();
                 if (!result && !editor.tabstopManager)
-                    editor.completer.goTo("down");
+                    editor.completer.goTo('down');
                 else
                     return result;
             },
 
-            "PageUp": function(editor) { editor.completer.popup.gotoPageUp(); },
-            "PageDown": function(editor) { editor.completer.popup.gotoPageDown(); }
+            'PageUp': function(editor) { editor.completer.popup.gotoPageUp(); },
+            'PageDown': function(editor) { editor.completer.popup.gotoPageDown(); }
         };
 
         this.gatherCompletions = function(editor, callback) {
@@ -1500,7 +1502,7 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
                     var pos = editor.getCursorPosition();
                     var line = session.getLine(pos.row);
                     callback(null, {
-                        prefix: prefix,
+                        prefix: util.getCompletionPrefix(editor),
                         matches: matches,
                         finished: (--total === 0)
                     });
@@ -1522,10 +1524,10 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
                 editor.completer = this;
             }
 
-            editor.on("changeSelection", this.changeListener);
-            editor.on("blur", this.blurListener);
-            editor.on("mousedown", this.mousedownListener);
-            editor.on("mousewheel", this.mousewheelListener);
+            editor.on('changeSelection', this.changeListener);
+            editor.on('blur', this.blurListener);
+            editor.on('mousedown', this.mousedownListener);
+            editor.on('mousewheel', this.mousewheelListener);
 
             this.updateCompletions();
         };
@@ -1598,7 +1600,7 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
             if (!doc)
                 doc = selected;
 
-            if (typeof doc == "string")
+            if (typeof doc == 'string')
                 doc = {docText: doc};
             if (!doc || !(doc.docHTML || doc.docText))
                 return this.hideDocTooltip();
@@ -1607,12 +1609,13 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
 
         this.showDocTooltip = function(item) {
             if (!this.tooltipNode) {
-                this.tooltipNode = dom.createElement("div");
-                this.tooltipNode.className = "ace_tooltip ace_doc-tooltip";
+                this.tooltipNode = dom.createElement('div');
+                this.tooltipNode.className = 'ace_tooltip ace_doc-tooltip';
                 this.tooltipNode.style.margin = 0;
-                this.tooltipNode.style.pointerEvents = "auto";
+                this.tooltipNode.style.pointerEvents = 'auto';
                 this.tooltipNode.tabIndex = -1;
                 this.tooltipNode.onblur = this.blurListener.bind(this);
+                this.tooltipNode.onclick = this.onTooltipClick.bind(this);
             }
 
             var tooltipNode = this.tooltipNode;
@@ -1630,13 +1633,13 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
             tooltipNode.style.bottom = popup.container.style.bottom;
 
             if (window.innerWidth - rect.right < 320) {
-                tooltipNode.style.right = window.innerWidth - rect.left + "px";
-                tooltipNode.style.left = "";
+                tooltipNode.style.right = window.innerWidth - rect.left + 'px';
+                tooltipNode.style.left = '';
             } else {
-                tooltipNode.style.left = (rect.right + 1) + "px";
-                tooltipNode.style.right = "";
+                tooltipNode.style.left = (rect.right + 1) + 'px';
+                tooltipNode.style.right = '';
             }
-            tooltipNode.style.display = "block";
+            tooltipNode.style.display = 'block';
         };
 
         this.hideDocTooltip = function() {
@@ -1650,10 +1653,22 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
                 el.parentNode.removeChild(el);
         };
 
+        this.onTooltipClick = function(e) {
+            var a = e.target;
+            while (a && a != this.tooltipNode) {
+                if (a.nodeName == 'A' && a.href) {
+                    a.rel = 'noreferrer';
+                    a.target = '_blank';
+                    break;
+                }
+                a = a.parentNode;
+            }
+        };
+
     }).call(Autocomplete.prototype);
 
     Autocomplete.startCommand = {
-        name: "startAutocomplete",
+        name: 'startAutocomplete',
         exec: function(editor) {
             if (!editor.completer)
                 editor.completer = new Autocomplete();
@@ -1662,13 +1677,13 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
             editor.completer.showPopup(editor);
             editor.completer.cancelContextMenu();
         },
-        bindKey: "Ctrl-Space|Ctrl-Shift-Space|Alt-Space"
+        bindKey: 'Ctrl-Space|Ctrl-Shift-Space|Alt-Space'
     };
 
     var FilteredList = function(array, filterText) {
         this.all = array;
         this.filtered = array;
-        this.filterText = filterText || "";
+        this.filterText = filterText || '';
         this.exactMatch = false;
     };
     (function(){
@@ -1739,8 +1754,8 @@ ace.define("ace/autocomplete",["require","exports","module","ace/keyboard/hash_h
 
 });
 
-ace.define("ace/autocomplete/text_completer",["require","exports","module","ace/range"], function(require, exports, module) {
-    var Range = require("../range").Range;
+ace.define('ace/autocomplete/text_completer',['require','exports','module','ace/range'], function(acequire, exports, module) {
+    var Range = acequire('../range').Range;
 
     var splitRegex = /[^a-zA-Z_0-9\$\-\u00C0-\u1FFF\u2C00-\uD7FF\w]+/;
 
@@ -1777,22 +1792,22 @@ ace.define("ace/autocomplete/text_completer",["require","exports","module","ace/
                 caption: word,
                 value: word,
                 score: wordScore[word],
-                meta: "local"
+                meta: 'local'
             };
         }));
     };
 });
 
-ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets","ace/autocomplete","ace/config","ace/lib/lang","ace/autocomplete/util","ace/autocomplete/text_completer","ace/editor","ace/config"], function(require, exports, module) {
-    "use strict";
+ace.define('ace/ext/language_tools',['require','exports','module','ace/snippets','ace/autocomplete','ace/config','ace/lib/lang','ace/autocomplete/util','ace/autocomplete/text_completer','ace/editor','ace/config'], function(acequire, exports, module) {
+    'use strict';
 
-    var snippetManager = require("../snippets").snippetManager;
-    var Autocomplete = require("../autocomplete").Autocomplete;
-    var config = require("../config");
-    var lang = require("../lib/lang");
-    var util = require("../autocomplete/util");
+    var snippetManager = acequire('../snippets').snippetManager;
+    var Autocomplete = acequire('../autocomplete').Autocomplete;
+    var config = acequire('../config');
+    var lang = acequire('../lib/lang');
+    var util = acequire('../autocomplete/util');
 
-    var textCompleter = require("../autocomplete/text_completer");
+    var textCompleter = acequire('../autocomplete/text_completer');
     var keyWordCompleter = {
         getCompletions: function(editor, session, pos, prefix, callback) {
             if (session.$mode.completer) {
@@ -1818,19 +1833,19 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
                     completions.push({
                         caption: caption,
                         snippet: s.content,
-                        meta: s.tabTrigger && !s.name ? s.tabTrigger + "\u21E5 " : "snippet",
-                        type: "snippet"
+                        meta: s.tabTrigger && !s.name ? s.tabTrigger + '\u21E5 ' : 'snippet',
+                        type: 'snippet'
                     });
                 }
             }, this);
             callback(null, completions);
         },
         getDocTooltip: function(item) {
-            if (item.type == "snippet" && !item.docHTML) {
+            if (item.type == 'snippet' && !item.docHTML) {
                 item.docHTML = [
-                    "<b>", lang.escapeHTML(item.caption), "</b>", "<hr></hr>",
+                    '<b>', lang.escapeHTML(item.caption), '</b>', '<hr></hr>',
                     lang.escapeHTML(item.snippet)
-                ].join("");
+                ].join('');
             }
         }
     };
@@ -1848,11 +1863,11 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
     exports.snippetCompleter = snippetCompleter;
 
     var expandSnippet = {
-        name: "expandSnippet",
+        name: 'expandSnippet',
         exec: function(editor) {
             return snippetManager.expandWithTab(editor);
         },
-        bindKey: "Tab"
+        bindKey: 'Tab'
     };
 
     var onChangeMode = function(e, editor) {
@@ -1871,7 +1886,7 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
     var loadSnippetFile = function(id) {
         if (!id || snippetManager.files[id])
             return;
-        var snippetFilePath = id.replace("mode", "snippets");
+        var snippetFilePath = id.replace('mode', 'snippets');
         snippetManager.files[id] = {};
         config.loadModule(snippetFilePath, function(m) {
             if (m) {
@@ -1882,7 +1897,7 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
                 if (m.includeScopes) {
                     snippetManager.snippetMap[m.scope].includeScopes = m.includeScopes;
                     m.includeScopes.forEach(function(x) {
-                        loadSnippetFile("ace/mode/" + x);
+                        loadSnippetFile('ace/mode/' + x);
                     });
                 }
             }
@@ -1892,11 +1907,11 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
     var doLiveAutocomplete = function(e) {
         var editor = e.editor;
         var hasCompleter = editor.completer && editor.completer.activated;
-        if (e.command.name === "backspace") {
+        if (e.command.name === 'backspace') {
             if (hasCompleter && !util.getCompletionPrefix(editor))
                 editor.completer.detach();
         }
-        else if (e.command.name === "insertstring") {
+        else if (e.command.name === 'insertstring') {
             var prefix = util.getCompletionPrefix(editor);
             if (prefix && prefix.length >= editor.$liveAutocompletionThreshold && !hasCompleter) {
                 if (!editor.completer) {
@@ -1916,11 +1931,10 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
         lastExec_e = e;
         liveAutocompleteTimer.delay(e.editor.$liveAutocompletionDelay);
 
-    }
+    };
 
-
-    var Editor = require("../editor").Editor;
-    require("../config").defineOptions(Editor.prototype, "editor", {
+    var Editor = acequire('../editor').Editor;
+    acequire('../config').defineOptions(Editor.prototype, 'editor', {
         enableBasicAutocompletion: {
             set: function(val) {
                 if (val) {
@@ -1958,11 +1972,11 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
             set: function(val) {
                 if (val) {
                     this.commands.addCommand(expandSnippet);
-                    this.on("changeMode", onChangeMode);
+                    this.on('changeMode', onChangeMode);
                     onChangeMode(null, this);
                 } else {
                     this.commands.removeCommand(expandSnippet);
-                    this.off("changeMode", onChangeMode);
+                    this.off('changeMode', onChangeMode);
                 }
             },
             value: false
@@ -1970,5 +1984,5 @@ ace.define("ace/ext/language_tools",["require","exports","module","ace/snippets"
     });
 });
 (function() {
-    ace.require(["ace/ext/language_tools"], function() {});
+    ace.acequire(['ace/ext/language_tools'], function() {});
 })();

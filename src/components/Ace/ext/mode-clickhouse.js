@@ -1,5 +1,4 @@
-import './clickhouse_FoldMode.js';
-import './clickhouse_highlight_rules.js';
+
 // ------------------------------------------------------------------------------
 ace.define('ace/mode/clickhouse', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text',
     'ace/token_iterator',

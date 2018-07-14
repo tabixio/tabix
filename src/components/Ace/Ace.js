@@ -2,10 +2,21 @@ import ace from 'brace';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {equals} from 'ramda';
+// Default ACE Modules
 import 'brace/theme/cobalt';
+import 'brace/ext/spellcheck';
+import 'brace/ext/searchbox';
+import 'brace/ext/keybinding_menu';
+import 'brace/ext/settings_menu';
+import 'brace/ext/whitespace';
+// Custom ACE Modules
+import './ext/language_tools.js';
+import './ext/mode/folding_cstyle.js';
+import './ext/mode/matching_brace_outdent.js';
+import './ext/mode/clickhouse_FoldMode.js';
+import './ext/mode/clickhouse_highlight_rules.js';
 import './ext/mode-clickhouse.js';
-import 'brace/ext/language_tools';
-//
+
 const { Range } = ace.acequire('ace/range');
 import { editorOptions, editorEvents,debounce } from './editorOptions.js';
 
@@ -478,5 +489,5 @@ ReactAce.defaultProps = {
     wrapBehavioursEnabled:true ,
     highlightSelectedWord:true ,
     liveAutocompletionDelay: 500,
-    liveAutocompletionThreshold: 1
+    liveAutocompletionThreshold: 2
 };
