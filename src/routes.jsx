@@ -8,7 +8,7 @@ import Sql from 'containers/Sql.jsx';
 export default () => (
     <Layout>
         <Switch>
-            <Route exact path="/" component={Login} />
+            <Route path="/login" component={Login} />
             <Route path="/sql" component={Sql} />
             {/* <Route path="/hot" component={Handsontable} /> */}
         </Switch>

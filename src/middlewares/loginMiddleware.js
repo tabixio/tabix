@@ -7,6 +7,7 @@ import {
     newConnection,
     login
 } from '../actions/login';
+import { getFromStorage, saveInStorage } from '../helpers/storage';
 import appConst from '../constants/app';
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
@@ -18,13 +19,6 @@ const initializeForm = tuple => initialize(`${tuple[0]}Login`, tuple[1]);
 
 const changeMode = tuple => tuple[0] |> changeModeAction;
 
-const getFromStorage = key => localStorage.getItem(key) || '[]';
-
-const saveInStorage = key => value => {
-    localStorage.setItem(key, value |> JSON.stringify);
-    return value;
-};
-
 /**
  * Get mode
  * @param {Object} item
@@ -34,24 +28,6 @@ const getMode = item => {
 };
 
 export default store => next => action => {
-    //init local storage
-    if (action.type === appConst.INIT_APP) {
-        const { dispatch } = store;
-        const connections = getFromStorage(lsConst.CONNECTIONS) |> JSON.parse;
-        connections |> loadConnections |> dispatch;
-
-        const item = connections.find(x => x.active);
-
-        item && item
-            |> getMode
-            |> R.tap(_ => _ |> changeMode |> dispatch)
-            |> initializeForm
-            |> dispatch;
-
-        //check autorized
-        const auth = connections.find(x => x.authorized);
-        auth && auth |> login |> dispatch;
-    }
 
     //on update/create connection in login
     if (action.type === loginConst.UPDATE_CONNECTION) {
@@ -106,7 +82,7 @@ export default store => next => action => {
 
     if (action.type === loginConst.DELETE_CONNECTION) {
         lsConst.CONNECTIONS
-            |> getFromStorage
+            |> getFromStorage('[]')
             |> JSON.parse
             |> R.filter(x => x.id !== action.payload)
             |> saveInStorage(lsConst.CONNECTIONS);
@@ -125,7 +101,7 @@ export default store => next => action => {
         action.type === appConst.USER_LOGOUT
     ) {
         lsConst.CONNECTIONS
-            |> getFromStorage
+            |> getFromStorage('[]')
             |> JSON.parse
             |> R.map(x =>
                 R.assoc(

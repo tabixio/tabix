@@ -1,7 +1,6 @@
 import loginConst from '../constants/login';
 import Api from '../api';
-import { showSuccess, showError } from './toastr';
-import { push } from 'react-router-redux';
+import { showError } from './toastr';
 
 export const switchMode = mode => ({
     type: loginConst.CHANGE_MODE,
@@ -38,6 +37,11 @@ export const pushConnection = connection => ({
 });
 
 export const login = connection => async dispatch => {
+
+    if (!connection) {
+        return false;
+    }
+
     const api = new Api(connection);
     dispatch({ type: loginConst.LOGIN_REQUEST });
 
@@ -60,8 +64,7 @@ export const login = connection => async dispatch => {
     }
 
     dispatch({ type: loginConst.LOGIN_COMPLETE, payload: connection.id });
-    dispatch(showSuccess('login OK'));
-    dispatch(push('/sql'));
+    return true;
 };
 
 export const deleteConnetion = id => ({
