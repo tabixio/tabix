@@ -60,16 +60,16 @@ export default class ReactAce extends Component {
         if (!ds || !ds.constructor) return;
         if (ds.constructor.name !== 'DatabaseStructure') return;
         let $rules=this.editor.session.$mode.$highlightRules;
-        // ------------------------------- -----------------------------------
+        // ------- -----------
         let $aceJSRules = ds.getForAceJS(dataBaseName);
         // update completions
-        $aceJSRules.builtinFunctions.map((v)=> { // ---------- builtinFunctions ----------
+        $aceJSRules.builtinFunctions.map((v)=> { // -- builtinFunctions --
             $rules.addCompletionsFunctions(v);
         });
-        $aceJSRules.fieldsList.map((v)=>{ // ---------- fieldsList ----------
+        $aceJSRules.fieldsList.map((v)=>{ // -- fieldsList --
             $rules.addCompletionsTableFiled(v);
         });
-        $aceJSRules.dictionaries.map((v)=>{ // ---------- dictionaries ----------
+        $aceJSRules.dictionaries.map((v)=>{ // -- dictionaries --
             $rules.addCompletionsDictionaries(v);
         });
         $rules.addArrayCompletions(R.keys($aceJSRules.tables), '[table]','table');
@@ -103,7 +103,7 @@ export default class ReactAce extends Component {
 
             }
         );
-        // // ---------- LOAD vars ----------
+        // // -- LOAD vars --
         // let vars=Variables.getCompletions();
         // let snip=Snippets.getCompletions();
         // editor.session.$mode.$highlightRules.addArrayCompletions(vars, '[var]','var');

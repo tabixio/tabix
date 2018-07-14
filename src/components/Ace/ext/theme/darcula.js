@@ -63,9 +63,13 @@ exports.cssText =`
 
 .ace-darcula .ace_constant,
 .ace-darcula .ace_constant.ace_character,
-.ace-darcula .ace_constant.ace_character.ace_escape,
 .ace-darcula .ace_constant.ace_other {
   color: #6897bb
+}
+.ace-darcula .ace_constant.ace_character.ace_escape {
+    background-color: #130D26;
+    color:#a9b7c6;
+    font-weight: bold;
 }
 
 .ace-darcula .ace_invalid {

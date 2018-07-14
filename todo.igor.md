@@ -1,6 +1,7 @@
 [x] ACE: Tooltip with 'K','F',''
 [x] ACE: https://monosnap.com/file/rSDbEMZb3oNbn2Q7EpFUAYv6oW8CSO
 [ ] ACE darcula : https://monosnap.com/file/HKpHZvtmaC0eOt8i5l6kJIWRnOO6mt
+[ ] ACE RightClick menu
 -----------------
 =================
 

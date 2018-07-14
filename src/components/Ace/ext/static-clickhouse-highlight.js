@@ -1,8 +1,8 @@
 const ch_keywords = (
     'SELECT|CASE|THEN|DISTINCT|INSERT|UPDATE|DELETE|WHERE|AND|OR|OFFSET|HAVING|AS|FROM|' +
-    'WHEN|ELSE|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|' +
-    'FOREIGN|NOT|REFERENCES|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|' +
-    'ANY|BETWEEN|ATTACH|DETACH|CAST|WITH|BIT_AND|BIT_OR|TO|BIT_XOR|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF'
+    'WHEN|ELSE|USING|END|TYPE|LEFT|RIGHT|JOIN|ON|OUTER|DESC|ASC|UNION|CREATE|TABLE|PRIMARY|KEY|' +
+    'FOREIGN|NOT|REFERENCES|INNER|CROSS|NATURAL|DATABASE|DROP|GRANT|ARRAY JOIN|' +
+    'ANY|BETWEEN|ENGINE|ATTACH|DETACH|CAST|WITH|BIT_AND|BIT_OR|TO|BIT_XOR|DESCRIBE|OPTIMIZE|PREWHERE|TOTALS|DATABASES|PROCESSLIST|SHOW|IF'
 );
 
 const ch_dataTypes = (
@@ -10,7 +10,7 @@ const ch_dataTypes = (
     'integer|' +
     'uint8|uint16|uint32|uint64|int8|int16|int32|int64|float32|float64|datetime|enum8|enum16|' +
     'fixedstring|array|tuple|string'+
-    'MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree'
+    'Distributed|MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree'
 );
 
 const ch_constants = (
@@ -42,6 +42,8 @@ const ch_doubleWordKeywords=[
     'GROUP BY',
     'ORDER BY',
     'UNION ALL',
+    'ARRAY JOIN',
+    'INTO OUTFILE',
     // FORM
     'FORMAT JSON',
     'FORMAT JSONCompact',
