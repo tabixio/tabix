@@ -89,6 +89,10 @@ exports.cssText =`
 .ace-darcula .ace_support.ace_function {
   color: #FFB054
 }
+.ace-darcula .ace_support.ace_class {
+  color: #3AD900;
+  font-weight: bold;
+}
 
 .ace-darcula .ace_storage {
   color: #FFEE80
@@ -99,7 +103,7 @@ exports.cssText =`
 }
 
 .ace-darcula .ace_string {
-  color: #3AD900
+  color: #6a8759
 }
 
 .ace-darcula .ace_string.ace_regexp {
