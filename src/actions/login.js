@@ -36,12 +36,12 @@ export const pushConnection = connection => ({
     payload: connection
 });
 
-export const login = connection => async dispatch => {
-
+export const loginApp = connection => async dispatch => {
     if (!connection) {
-        return false;
+        return Promise.resolve(false);
     }
 
+    console.log('try login');
     const api = new Api(connection);
     dispatch({ type: loginConst.LOGIN_REQUEST });
 

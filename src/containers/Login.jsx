@@ -8,7 +8,7 @@ import {
     updateConnection,
     newConnection,
     activateConnection,
-    login,
+    loginApp,
     deleteConnetion
 } from '../actions/login';
 import React, { Component } from 'react';
@@ -46,7 +46,7 @@ function mapDispatchToProps(dispatch) {
         onUpdateConnection: data => data |> updateConnection |> dispatch,
         onNewConnection: () => newConnection() |> dispatch,
         onActivateConnection: id => id |> activateConnection |> dispatch,
-        onLogin: connection => connection |> login |> dispatch,
+        onLogin: connection => connection |> loginApp |> dispatch,
         onDeleteConnection: id => id |> deleteConnetion |> dispatch,
         onChangeRoute: () => '/sql' |> push |> dispatch
     };
