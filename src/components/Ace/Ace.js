@@ -1,9 +1,8 @@
 import ace from 'brace';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {equals} from 'ramda';
+const R = require('ramda');
 // Default ACE Modules
-import 'brace/theme/cobalt';
 import 'brace/ext/spellcheck';
 import 'brace/ext/searchbox';
 import 'brace/ext/keybinding_menu';
@@ -16,7 +15,14 @@ import './ext/mode/matching_brace_outdent.js';
 import './ext/mode/clickhouse_FoldMode.js';
 import './ext/mode/clickhouse_highlight_rules.js';
 import './ext/mode-clickhouse.js';
+// Themes
+import 'brace/theme/dracula';
+import 'brace/theme/cobalt';
+import './ext/theme/darcula';
 
+
+
+import { ch_keywords, ch_dataTypes, ch_constants, ch_drawCommands} from './ext/static-clickhouse-highlight';
 const { Range } = ace.acequire('ace/range');
 import { editorOptions, editorEvents,debounce } from './editorOptions.js';
 
@@ -53,41 +59,50 @@ export default class ReactAce extends Component {
     {
         if (!ds || !ds.constructor) return;
         if (ds.constructor.name !== 'DatabaseStructure') return;
-        console.info('Ace:updateDataStructure',dataBaseName,ds);
+        let $rules=this.editor.session.$mode.$highlightRules;
         // ------------------------------- -----------------------------------
         let $aceJSRules = ds.getForAceJS(dataBaseName);
         // update completions
         $aceJSRules.builtinFunctions.map((v)=> { // ---------- builtinFunctions ----------
-            this.editor.session.$mode.$highlightRules.addCompletionsFunctions(v);
+            $rules.addCompletionsFunctions(v);
         });
         $aceJSRules.fieldsList.map((v)=>{ // ---------- fieldsList ----------
-            this.editor.session.$mode.$highlightRules.addCompletionsTableFiled(v);
+            $rules.addCompletionsTableFiled(v);
         });
         $aceJSRules.dictionaries.map((v)=>{ // ---------- dictionaries ----------
-            this.editor.session.$mode.$highlightRules.addCompletionsDictionaries(v);
+            $rules.addCompletionsDictionaries(v);
         });
-        this.editor.session.$mode.$highlightRules.addArrayCompletions($aceJSRules.tables, '[table]','table');
+        $rules.addArrayCompletions(R.keys($aceJSRules.tables), '[table]','table');
+        $rules.addArrayCompletions(ch_keywords.split('|'), 'keyword','keyword');
+        $rules.addArrayCompletions(ch_drawCommands, 'draw','draw');
+        $rules.addArrayCompletions(ch_dataTypes.split('|'), 'type','type');
+        $rules.addArrayCompletions(ch_constants.split('|'), 'const','const');
 
+
+        let builtinFields=R.map(R.prop('name'),$aceJSRules.fieldsList).join('|');
+        let builtinFunctions=R.map(R.prop('name'),$aceJSRules.builtinFunctions).join('|');
+        let builtinTables=R.keys($aceJSRules.tables).join('|');
         // update keywords
-        // 'markup.bold': listOfTables,          // dynamic
-        // 'support.function': builtinFunctions, // dynamic
-        // 'markup.heading': $_fields.join('|')  // dynamic
-
-        this.editor.session.$mode.$highlightRules.setKeywords(
+        $rules.setKeywords(
             {
-                'support.class' : 'DBTABLE|DB2TABLE2', // green [DB.TABLE]
-                'markup.italic': 'fuck|foo|bprpw|bnoorw', // functionNames
-                'variable.parameter':'field2|fiels5|field1',
-                'markup.heading':'var1|var2|var3',
-                'markup.underline': 'underline|underline1|underline2|underline3',
-                'support.type' : 'fack|baz|BPRPQ|BPPPP',
-                'keyword.other' : 'deprecated|deprecated1|deprecated2',
+                // FUTURE:
+                // 'markup.italic': builtinFunctions, // functionNames
+                // 'support.type' : builtinFunctions ,//'fack|baz|BPRPQ|BPPPP',
+                // 'variable.parameter':builtinFields,
+                // 'markup.bold'   :listOfTables,  // fields
+                // 'markup.underline': '$VAR1|$VAR2|{var1}|{var2}', // VARS?
+
+                // BASE:
+                'support.class' : builtinTables, // green [DB.TABLE]
+                'support.function': builtinFunctions, // functionNames
+                'markup.heading':builtinFields,  // fields
+                'storage.type':ch_dataTypes,
+                'invalid.illegal':ch_drawCommands.join('|'),
+                'constant.language': ch_constants,
+                'keyword': ch_keywords,
 
             }
         );
-        console.info('this.editor.session.$mode.$highlightRules.getKeywords()',this.editor.session.$mode.$highlightRules.getKeywords());
-        console.info('this.editor.session.$mode.$highlightRules.getRules()',this.editor.session.$mode.$highlightRules.getRules());
-
         // // ---------- LOAD vars ----------
         // let vars=Variables.getCompletions();
         // let snip=Snippets.getCompletions();
@@ -281,24 +296,24 @@ export default class ReactAce extends Component {
         if (nextProps.showGutter !== oldProps.showGutter) {
             this.editor.renderer.setShowGutter(nextProps.showGutter);
         }
-        if (!equals(nextProps.setOptions, oldProps.setOptions)) {
+        if (!R.equals(nextProps.setOptions, oldProps.setOptions)) {
             this.handleOptions(nextProps);
         }
 
         // DataStructure & currentDatabaseName
-        if (!equals(nextProps.dataStructure, oldProps.dataStructure) || !equals(nextProps.currentDatabaseName, oldProps.currentDatabaseName)) {
+        if (!R.equals(nextProps.dataStructure, oldProps.dataStructure) || !R.equals(nextProps.currentDatabaseName, oldProps.currentDatabaseName)) {
             this.updateDataStructure(nextProps.dataStructure,nextProps.currentDatabaseName);
         }
 
-        if (!equals(nextProps.annotations, oldProps.annotations)) {
+        if (!R.equals(nextProps.annotations, oldProps.annotations)) {
             this.editor.getSession().setAnnotations(nextProps.annotations || []);
         }
-        if (!equals(nextProps.markers, oldProps.markers) && (Array.isArray(nextProps.markers))) {
+        if (!R.equals(nextProps.markers, oldProps.markers) && (Array.isArray(nextProps.markers))) {
             this.handleMarkers(nextProps.markers);
         }
 
         // this doesn't look like it works at all....
-        if (!equals(nextProps.scrollMargin, oldProps.scrollMargin)) {
+        if (!R.equals(nextProps.scrollMargin, oldProps.scrollMargin)) {
             this.handleScrollMargins(nextProps.scrollMargin);
         }
 

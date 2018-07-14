@@ -40,6 +40,9 @@ export default class DatabaseStructure {
 
             }
 
+            let tableNameTrim=item.table;
+            if (tableNameTrim.indexOf('.') !== -1) {tableNameTrim='"'+tableNameTrim+'"';}
+
 
 
             if (!this.all_fields[item.database+'.'+item.table])
@@ -68,7 +71,8 @@ export default class DatabaseStructure {
                 this.uciq_fields[item.database]=[];
             }
             this.uciq_fields[item.database].push(item);
-            this.uciq_dbtables[item.database+'.'+item.table]=1;
+
+            this.uciq_dbtables[item.database+'.'+tableNameTrim]=1;
         });
 
 

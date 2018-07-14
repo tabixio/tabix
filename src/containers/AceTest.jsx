@@ -12,15 +12,42 @@ const connection = {
     login: 'default',
     password: ''
 };
-const defaultValue=`SELECT field2 , fiels5  FROM DBTABLE | DB2TABLE2 
-fack ( fiels5 ) , baz(123)  -- support.function 
+const defaultValue=`73709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
+;;
+SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
+;;
+SELECT field2 , sin(number) as sin  FROM system.numbers
+sin( cos(DepTimeBlk) ) , bar(123)  -- support.function 
 var1 , var2 , var3          -- markup.heading
-field2,fiels5 ,field1       -- variable.parameter
-underline,underline1        -- underline
-deprecated deprecated1      -- invalid.deprecated
-    
+ OriginWac,DepTimeBlk,DepTime,OriginAirportSeqID      -- variable.parameter
+true|false|NULL    -- const
+system.numbers_mt | system.numbers -- tables
 ReplicatedCollapsingMergeTree -- dataTypes
-final , typedef | struct | framework | library
+SYSTEM RELOAD CONFIG -- doubleSysWord
+
+CREATE TABLE IF NOT EXISTS all_hits ON CLUSTER cluster (p Date, i Int32) ENGINE = Distributed(cluster, default, hits)
+DROP DATABASE IF EXISTS db ON CLUSTER cluster
+SHOW TEMPORARY TABLES FROM default LIKE 'pattern' INTO OUTFILE filename FORMAT JSON
+SELECT s, arr, a FROM arrays_test ARRAY JOIN arr AS a
+;;
+SELECT
+    domainWithoutWWW(URL) AS domain,
+    domainWithoutWWW(REFERRER_URL) AS referrer,
+    device_type,
+    count() cnt
+FROM hits
+GROUP BY domain, referrer, device_type
+ORDER BY cnt DESC
+LIMIT 5 BY domain, device_type
+LIMIT 100
+;;
+ 1, 18446744073709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
+;;
+1 + 2 * 3 + 4
+;;
+SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
+ 
+
 `;
 
 const Wrapper = styled.div`
@@ -67,10 +94,10 @@ const enhance = compose(
 
 export default enhance(({ dataStructure,currentDatabaseName }) => (
     <Wrapper>
-      <pre>ACE TEST PAGE</pre>
         <AceEditor
             mode="clickhouse" focus={true}
-            theme="cobalt"
+            theme="darcula"
+            width="100%"
             dataStructure={dataStructure}
             currentDatabaseName={currentDatabaseName}
             value={defaultValue}
