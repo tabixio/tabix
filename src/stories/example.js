@@ -5,7 +5,7 @@ import Connections from '../components/Login/Connections.jsx';
 import exampleMD from './example.md';
 import { compose, withState, withHandlers } from 'recompose';
 import styled from 'styled-components';
-const R = require('ramda');
+import * as R from 'ramda';
 
 const connectionsHOC = compose(
     withState('items', 'change', [

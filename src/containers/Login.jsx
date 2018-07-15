@@ -1,3 +1,4 @@
+import config from '../config';
 import styled from 'styled-components';
 import propsToComponent from 'libs/components/propsToComponent';
 import { connect } from 'react-redux';
@@ -77,9 +78,7 @@ export default class Login extends Component {
 
         return (
             <SplitterLayout
-                percentage
-                primaryMinSize={12}
-                secondaryInitialSize={80}
+                {...config.splitterLayout}
             >
                 <Connections
                     {...propsToComponent(this.props, [

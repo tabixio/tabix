@@ -4,14 +4,13 @@ import {
     changeMode as changeModeAction,
     loadConnections,
     pushConnection,
-    newConnection,
-    login
+    newConnection
 } from '../actions/login';
+import * as R from 'ramda';
 import { getFromStorage, saveInStorage } from '../helpers/storage';
 import appConst from '../constants/app';
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
-const R = require('ramda');
 
 const forms = ['serverLogin', 'directLogin'];
 

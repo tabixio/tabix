@@ -1,4 +1,7 @@
 import loginConst from '../constants/login';
+import { loadStructure } from './app';
+import { toTreeStructure } from '../helpers/sql';
+
 import Api from '../api';
 import { showError } from './toastr';
 
@@ -41,7 +44,6 @@ export const loginApp = connection => async dispatch => {
         return Promise.resolve(false);
     }
 
-    console.log('try login');
     const api = new Api(connection);
     dispatch({ type: loginConst.LOGIN_REQUEST });
 
@@ -62,6 +64,10 @@ export const loginApp = connection => async dispatch => {
         dispatch(showError('Init error'));
         return false;
     }
+
+    console.log(api.getDatabaseStructure());
+
+    api.getDatabaseStructure() |> toTreeStructure |> loadStructure |> dispatch;
 
     dispatch({ type: loginConst.LOGIN_COMPLETE, payload: connection.id });
     return true;

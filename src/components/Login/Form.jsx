@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-const R = require('ramda');
 import React from 'react';
+import * as R from 'ramda';
 import { Field, reduxForm } from 'redux-form';
 import { Button, Classes } from '@blueprintjs/core';
 import Input from '../Shared/Input.jsx';
+
 
 const ButtonArea = styled.div`
     display: flex;

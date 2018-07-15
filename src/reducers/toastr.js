@@ -1,5 +1,6 @@
 import toastrConst from '../constants/toastr';
-const R = require('ramda');
+import { merge } from 'ramda';
+
 const initialState = {
     id: '',
     message: '',
@@ -9,7 +10,7 @@ const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
     case toastrConst.SHOW:
-        return R.merge(state, action.payload);
+        return merge(state, action.payload);
     }
 
     return state;

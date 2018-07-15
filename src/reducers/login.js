@@ -1,6 +1,6 @@
 import loginConst from '../constants/login';
 import appConst from '../constants/app';
-const R = require('ramda');
+import * as R from 'ramda';
 
 const initialState = {
     mode: 'direct',
