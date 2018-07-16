@@ -41,3 +41,7 @@ projects-using-react-grid-layout:
 * https://www.periscopedata.com/
 * https://looker.com/
 
+## Chart
+
+* https://github.com/plotly/react-chart-editor
+* https://plot.ly/products/react/
