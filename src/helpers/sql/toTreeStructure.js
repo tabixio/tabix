@@ -30,6 +30,7 @@ export default structure => [
             icon: 'database',
             label: x.name,
             isExpanded: false,
+            secondaryLabel: structure.tables.filter(t => t.database === x.name).length,
             //tables of database
             childNodes: structure.tables
                 .filter(t => t.database === x.name)
