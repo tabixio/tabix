@@ -1,18 +1,15 @@
 const iconEngine = engine => {
-    switch (engine) {
-    case 'Distributed':
-        return 'vertical-distribution';
-    case 'ReplicatedMergeTree':
-        return 'th';
-    case 'View':
-        return 'th';
-    case 'ReplicatedSummingMergeTree':
-        return 'join-table';
-    case 'Dictionary':
-        return 'list-detail-view';
-    default:
-        return 'help';
-    }
+    let icon='th-list';
+    if (engine.match(/Dictionary.*/))  icon='library';
+    if (engine.match(/MaterializedView.*/))  icon='duplicate';
+    if (engine.match(/Dictionary.*/))  icon='git-repo';
+    if (engine.match(/Distributed.*/))  icon='send-to-graph';
+    if (engine.match(/SummingMergeTree.*/))  icon='collapse-all';
+    if (engine.match(/CollapsingMergeTree.*/))  icon='layout-sorted-clusters';
+    if (engine.match(/AggregatingMergeTree.*/))  icon='delta';
+    if (engine.match(/.*Log.*/))  icon='home';
+    if (engine.match(/$Merge^/))  icon='pulse';
+    return icon;
 };
 
 export const nodeId = (...arg) =>
