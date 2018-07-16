@@ -125,7 +125,7 @@ const build = async () => {
         optimization: {
             minimize: true,
             minimizer: minimizers,
-            splitChunks: !isDevelopment && splitChunks
+            splitChunks: splitChunks
         },
         module: {
             rules: [
