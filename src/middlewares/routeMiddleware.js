@@ -1,7 +1,7 @@
 import lsConst from '../constants/localStorage';
 import { push } from 'react-router-redux';
 import { loginApp, loadConnections } from '../actions/login';
-import { init, logout } from '../actions/app';
+import { init } from '../actions/app';
 import { getFromStorage } from '../helpers/storage';
 
 const paths = ['/', '/login'];
@@ -23,7 +23,7 @@ export default store => next => action => {
         //on enter or login
         if (!state.app.init) {
             if (paths.find(x => x === action.payload.pathname)) {
-                (state.app.autorized ? '/sql' : '/login') |> push |> dispatch;
+                (state.app.autorized ? '/pages' : '/login') |> push |> dispatch;
             } else {
                 !state.app.autorized &&
                     !state.login.fetching &&

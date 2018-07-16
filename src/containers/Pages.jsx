@@ -1,13 +1,11 @@
-import config from '../config';
 import { getConnection } from '../selectors';
 import { connect } from 'react-redux';
 import { logout, expandStructure } from '../actions/app';
 import { push } from 'react-router-redux';
 import React, { Component } from 'react';
 import { Button, Spinner } from '@blueprintjs/core';
-import SplitterLayout from 'react-splitter-layout';
+import SplitterLayout from 'Service/SplitterLayout.jsx';
 import { Tree } from '@blueprintjs/core';
-import Scrollbar from 'Service/Scrollbar.jsx';
 
 function mapStateToProps(state) {
     return {
@@ -31,21 +29,18 @@ function mapDispatchToProps(disaptch) {
     mapStateToProps,
     mapDispatchToProps
 )
-export default class Sql extends Component {
+export default class Pages extends Component {
     render() {
         const { onLogout, connection, fetching, structure } = this.props;
         return (
-            <SplitterLayout {...config.splitterLayout}>
-                <Scrollbar>
-                    <Tree
-                        contents={structure}
-                        onNodeCollapse={this.handleNodeCollapse}
-                        onNodeExpand={this.handleNodeExpand}
-                    />
-                </Scrollbar>
-
+            <SplitterLayout>
+                <Tree
+                    contents={structure}
+                    onNodeCollapse={this.handleNodeCollapse}
+                    onNodeExpand={this.handleNodeExpand}
+                />
                 <div>
-                    <h2>SQL</h2>
+                    <h2>PAGES</h2>
                     {fetching && <Spinner />}
                     <p>{connection |> JSON.stringify}</p>
                     <Button text="logout" onClick={onLogout} />

@@ -22,6 +22,7 @@ const App = styled.div`
     margin: auto;
     min-height: 100vh;
     max-width: 100vw;
+    position: relative;
     ${props =>
         props.dark &&
         css`
@@ -31,6 +32,7 @@ const App = styled.div`
 
 const AppContent = styled.div`
     flex: 1;
+    position: relative;
 `;
 
 const { version } = require('../../package.json');
@@ -86,8 +88,6 @@ export default class Layout extends PureComponent {
                     </a>{' '}
                     by Tabix LLC ©, all rights reserved. Build {version}
                 </Footer>
-
-                
             </App>
         );
     }

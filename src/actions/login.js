@@ -65,8 +65,6 @@ export const loginApp = connection => async dispatch => {
         return false;
     }
 
-    console.log(api.getDatabaseStructure());
-
     api.getDatabaseStructure() |> toTreeStructure |> loadStructure |> dispatch;
 
     dispatch({ type: loginConst.LOGIN_COMPLETE, payload: connection.id });

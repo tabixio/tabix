@@ -1,4 +1,3 @@
-import config from '../config';
 import styled from 'styled-components';
 import propsToComponent from 'libs/components/propsToComponent';
 import { connect } from 'react-redux';
@@ -15,7 +14,7 @@ import {
 import React, { Component } from 'react';
 import { Tab, Tabs } from '@blueprintjs/core';
 import Form, { validateServer, validateDirect } from 'Login/Form.jsx';
-import SplitterLayout from 'react-splitter-layout';
+import SplitterLayout from 'Service/SplitterLayout.jsx';
 import Connections from 'Login/Connections.jsx';
 
 const Container = styled.div`
@@ -49,7 +48,7 @@ function mapDispatchToProps(dispatch) {
         onActivateConnection: id => id |> activateConnection |> dispatch,
         onLogin: connection => connection |> loginApp |> dispatch,
         onDeleteConnection: id => id |> deleteConnetion |> dispatch,
-        onChangeRoute: () => '/sql' |> push |> dispatch
+        onChangeRoute: () => '/pages' |> push |> dispatch
     };
 }
 
@@ -58,12 +57,11 @@ function mapDispatchToProps(dispatch) {
     mapDispatchToProps
 )
 export default class Login extends Component {
-
     componentDidMount() {
         const { connections, onActivateConnection } = this.props;
 
         const activeConnection = connections.find(x => x.active);
-        activeConnection && (onActivateConnection(activeConnection.id));
+        activeConnection && onActivateConnection(activeConnection.id);
     }
 
     render() {
@@ -77,9 +75,7 @@ export default class Login extends Component {
         };
 
         return (
-            <SplitterLayout
-                {...config.splitterLayout}
-            >
+            <SplitterLayout>
                 <Connections
                     {...propsToComponent(this.props, [
                         'connections',
@@ -131,5 +127,4 @@ export default class Login extends Component {
         const values = getValuesFrom(`${mode}Login`);
         onDeleteConnection(values.id);
     };
-
 }
