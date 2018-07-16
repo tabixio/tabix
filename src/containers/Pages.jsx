@@ -38,6 +38,7 @@ export default class Pages extends Component {
                     contents={structure}
                     onNodeCollapse={this.handleNodeCollapse}
                     onNodeExpand={this.handleNodeExpand}
+                    onNodeClick={this.handleNodeClick}
                 />
                 <div>
                     <h2>PAGES</h2>
@@ -52,4 +53,6 @@ export default class Pages extends Component {
     handleNodeCollapse = node => this.props.onExpand(node.id, false);
 
     handleNodeExpand = node => this.props.onExpand(node.id, true);
+
+    handleNodeClick = node => this.props.onExpand(node.id, !node.isExpanded);
 }
