@@ -27,6 +27,7 @@ export default structure => [
             icon: 'database',
             label: x.name,
             isExpanded: false,
+            hasCaret:false,
             secondaryLabel: structure.tables.filter(t => t.database === x.name).length,
             //tables of database
             childNodes: structure.tables
@@ -34,6 +35,7 @@ export default structure => [
                 .map((t, tInd) => ({
                     id: nodeId(dInd, tInd),
                     label: t.name,
+                    hasCaret:false,
                     icon: iconEngine(t.engine),
                     isExpanded: false,
                     //columns of table
