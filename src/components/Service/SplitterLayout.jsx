@@ -20,7 +20,7 @@ export default ({ children }) => (
     <SplitterContent>
         <SplitterLayout
             percentage
-            primaryMinSize={12}
+            primaryMinSize={0}
             secondaryInitialSize={80}
         >
             <Scrollbar {...scrollbarConfig}>{children[0]}</Scrollbar>
