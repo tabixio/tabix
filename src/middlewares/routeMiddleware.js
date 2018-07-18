@@ -1,7 +1,7 @@
 import lsConst from '../constants/localStorage';
 import { push } from 'react-router-redux';
 import { loginApp, loadConnections } from '../actions/login';
-import { init } from '../actions/app';
+import { init } from '../reducers/app';
 import { getFromStorage } from '../helpers/storage';
 
 const paths = ['/', '/login'];
@@ -37,7 +37,6 @@ export default store => next => action => {
                     });
             }
         }
-        
     }
 
     next(action);

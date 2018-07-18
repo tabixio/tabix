@@ -1,17 +1,12 @@
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import classname from 'libs/components/classname';
-import { enableDarkTheme } from '../actions/app';
+import { enableDarkTheme } from '../reducers/app';
 import React, { PureComponent } from 'react';
 import Logo from 'Layout/Logo.jsx';
 import ReqButton from 'Layout/Buttons/ReqButton.jsx';
 import ThemeButton from 'Layout/Buttons/ThemeButton.jsx';
-import {
-    Navbar,
-    NavbarGroup,
-    Alignment,
-    Classes
-} from '@blueprintjs/core';
+import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
 import Footer from 'Layout/Footer.jsx';
 import { Fill } from 'Shared/styled';
 
@@ -54,7 +49,6 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Layout extends PureComponent {
-
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
 

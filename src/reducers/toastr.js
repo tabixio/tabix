@@ -1,5 +1,4 @@
-import toastrConst from '../constants/toastr';
-import { merge } from 'ramda';
+import { createReducer, makeActionCreator } from '../libs/reduxActions';
 
 const initialState = {
     id: '',
@@ -7,11 +6,26 @@ const initialState = {
     intent: 'PRIMARY'
 };
 
-export default (state = initialState, action) => {
-    switch (action.type) {
-    case toastrConst.SHOW:
-        return merge(state, action.payload);
-    }
+const SHOW_SUCCESS = 'SHOW_TOASTR_SUCCESS';
+const SHOW_ERROR = 'SHOW_TOASTR_ERROR';
 
-    return state;
-};
+const setId = obj => ({ ...obj, id: new Date().valueOf() });
+
+export const showSuccess = makeActionCreator(SHOW_SUCCESS, 'message');
+
+export const showError = makeActionCreator(SHOW_ERROR, 'message');
+
+export default createReducer(initialState, {
+    [SHOW_SUCCESS]: (state, { message }) =>
+        ({
+            ...state,
+            intent: 'SUCCESS',
+            message
+        } |> setId),
+    [SHOW_ERROR]: (state, { message }) =>
+        ({
+            ...state,
+            intent: 'DANGER',
+            message
+        } |> setId)
+});

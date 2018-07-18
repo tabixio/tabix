@@ -1,5 +1,5 @@
-import appConst from '../constants/app';
 import * as R from 'ramda';
+import { createReducer, makeActionCreator } from '../libs/reduxActions';
 
 const initialState = {
     darkTheme: true,
@@ -9,11 +9,10 @@ const initialState = {
     structure: []
 };
 
-export const expandStructure = (structure, idArray, expand) => {
+export const expandStructureFromArray = (structure, idArray, expand) => {
     const newObj = R.clone(structure);
     const element = idArray.reduce(
-        (el, index, ind) =>
-            ind === 0 ? el[index] : el.childNodes[index],
+        (el, index, ind) => (ind === 0 ? el[index] : el.childNodes[index]),
         newObj
     );
     element.isExpanded = expand;
@@ -21,29 +20,35 @@ export const expandStructure = (structure, idArray, expand) => {
     return newObj;
 };
 
-export default (state = initialState, action) => {
-    switch (action.type) {
-    case appConst.ENABLE_DARK_THEME:
-        return { ...state, darkTheme: action.payload };
-    case appConst.SET_USER_CONNECTION:
-        return { ...state, userConnection: action.payload };
-    case appConst.USER_AUTHORIZED:
-        return { ...state, autorized: action.payload };
-    case appConst.USER_LOGOUT:
-        return { ...state, autorized: false, structure: [] };
-    case appConst.LOAD_STRUCETURE:
-        return { ...state, structure: action.payload };
-    case appConst.INIT_APP:
-        return { ...state, init: true };
-    case appConst.EXPAND_STRUCTURE:
-        return {
-            ...state,
-            structure: expandStructure(
-                state.structure,
-                action.payload.id,
-                action.payload.expand
-            )
-        };
-    }
-    return state;
-};
+export const enableDarkTheme = makeActionCreator('ENABLE_DARK_THEME', 'enable');
+
+export const userAuthorized = makeActionCreator('USER_AUTHORIZED', 'auth');
+
+export const logout = makeActionCreator('USER_LOGOUT');
+
+export const init = makeActionCreator('INIT_APP');
+
+export const loadStructure = makeActionCreator('LOAD_STRUCETURE', 'structure');
+
+export const expandStructure = makeActionCreator(
+    'EXPAND_STRUCTURE',
+    'id',
+    'expand'
+);
+
+export default createReducer(initialState, {
+    ENABLE_DARK_THEME: (state, { enable }) => ({ ...state, darkTheme: enable }),
+    USER_AUTHORIZED: (state, { auth }) => ({ ...state, autorized: auth }),
+    LOAD_STRUCETURE: (state, { structure }) => ({
+        ...state,
+        structure: structure
+    }),
+    EXPAND_STRUCTURE: (state, { id, expand }) => ({
+        ...state,
+        structure: expandStructureFromArray(state.structure, id, expand)
+    }),
+    SET_USER_CONNECTION: (state, { payload }) => ({
+        ...state,
+        userConnection: payload
+    })
+});

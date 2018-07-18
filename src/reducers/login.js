@@ -1,5 +1,4 @@
 import loginConst from '../constants/login';
-import appConst from '../constants/app';
 import * as R from 'ramda';
 
 const initialState = {
@@ -10,7 +9,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-    case appConst.USER_LOGOUT:
+    case 'USER_LOGOUT':
         return {
             ...state,
             connections: state.connections.map(x =>

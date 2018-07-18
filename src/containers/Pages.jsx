@@ -1,6 +1,6 @@
 import { getConnection } from '../selectors';
 import { connect } from 'react-redux';
-import { logout, expandStructure } from '../actions/app';
+import { logout, expandStructure } from '../reducers/app';
 import { push } from 'react-router-redux';
 import React, { Component } from 'react';
 import { Button, Spinner } from '@blueprintjs/core';
@@ -21,7 +21,10 @@ function mapDispatchToProps(disaptch) {
             disaptch(logout());
             disaptch(push('/login'));
         },
-        onExpand: (id, expand) => disaptch(expandStructure(id, expand))
+        onExpand: (id, expand) =>
+            disaptch(
+                expandStructure(id.split(',').map(x => parseInt(x)), expand)
+            )
     };
 }
 
@@ -54,5 +57,7 @@ export default class Pages extends Component {
 
     handleNodeExpand = node => this.props.onExpand(node.id, true);
 
-    handleNodeClick = node => node.childNodes.length && this.props.onExpand(node.id,  !node.isExpanded);
+    handleNodeClick = node =>
+        node.childNodes.length &&
+        this.props.onExpand(node.id, !node.isExpanded);
 }

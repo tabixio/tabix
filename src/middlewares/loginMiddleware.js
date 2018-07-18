@@ -8,7 +8,7 @@ import {
 } from '../actions/login';
 import * as R from 'ramda';
 import { getFromStorage, saveInStorage } from '../helpers/storage';
-import appConst from '../constants/app';
+
 import lsConst from '../constants/localStorage';
 import loginConst from '../constants/login';
 
@@ -27,7 +27,6 @@ const getMode = item => {
 };
 
 export default store => next => action => {
-
     //on update/create connection in login
     if (action.type === loginConst.UPDATE_CONNECTION) {
         const { dispatch } = store;
@@ -97,7 +96,7 @@ export default store => next => action => {
 
     if (
         action.type === loginConst.LOGIN_COMPLETE ||
-        action.type === appConst.USER_LOGOUT
+        action.type === 'USER_LOGOUT'
     ) {
         lsConst.CONNECTIONS
             |> getFromStorage('[]')
@@ -105,7 +104,7 @@ export default store => next => action => {
             |> R.map(x =>
                 R.assoc(
                     'authorized',
-                    action.type === appConst.USER_LOGOUT
+                    action.type === 'USER_LOGOUT'
                         ? false
                         : x.id === action.payload,
                     x

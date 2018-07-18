@@ -1,9 +1,8 @@
 import loginConst from '../constants/login';
-import { loadStructure } from './app';
+import { loadStructure } from '../reducers/app';
 import { toTreeStructure } from '../helpers/sql';
-
 import Api from '../api';
-import { showError } from './toastr';
+import { showError } from '../reducers/toastr';
 
 export const switchMode = mode => ({
     type: loginConst.CHANGE_MODE,
