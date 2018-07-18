@@ -1,14 +1,27 @@
 import { createReducer, makeActionCreator } from '../libs/reduxActions';
 
 const initialState = {
-    id: '',
+    /**
+     * ID тостера
+     */
+    id: 0,
+    /**
+     * Его сообщение
+     */
     message: '',
+    /**
+     * Тип сообщения
+     */
     intent: 'PRIMARY'
 };
 
-const SHOW_SUCCESS = 'SHOW_TOASTR_SUCCESS';
-const SHOW_ERROR = 'SHOW_TOASTR_ERROR';
+const SHOW_SUCCESS = 'SHOW_TOASTR_SUCCESS'; //toastr на зеленом фоне
+const SHOW_ERROR = 'SHOW_TOASTR_ERROR'; //toastr на красном фоне
 
+/**
+ * Установка id к экшену объекта
+ * @param {Object} obj 
+ */
 const setId = obj => ({ ...obj, id: new Date().valueOf() });
 
 export const showSuccess = makeActionCreator(SHOW_SUCCESS, 'message');
