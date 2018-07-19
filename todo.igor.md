@@ -45,3 +45,9 @@ projects-using-react-grid-layout:
 
 * https://github.com/plotly/react-chart-editor
 * https://plot.ly/products/react/
+
+
+
+tasks:
+
+[ ] SplitterLayout DoubleClick
