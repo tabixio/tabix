@@ -1,5 +1,6 @@
 import * as R from 'ramda';
 import { createReducer, makeActionCreator } from '../libs/reduxActions';
+import { LOGIN_COMPLETE } from './login';
 
 const initialState = {
     /**
@@ -22,7 +23,7 @@ const initialState = {
 
 const ENABLE_DARK_THEME = 'ENABLE_DARK_THEME'; //включить/отключить темную тему
 const USER_AUTHORIZED = 'USER_AUTHORIZED'; //прошел ли пользователь авторизацию
-const INIT_APP = 'INIT_APP'; //первая инициализация приложения
+export const INIT_APP = 'INIT_APP'; //первая инициализация приложения
 const LOAD_STRUCETURE = 'LOAD_STRUCETURE'; //загрузка структуры приложения в store
 const EXPAND_STRUCTURE = 'EXPAND_STRUCTURE'; //свертка/разворачивание структуры сервера
 
@@ -45,7 +46,7 @@ export const expandStructureFromArray = (structure, idArray, expand) => {
 };
 
 export const enableDarkTheme = makeActionCreator(ENABLE_DARK_THEME, 'enable');
-export const userAuthorized = makeActionCreator(USER_AUTHORIZED, 'auth');
+export const userAuthorized = makeActionCreator(USER_AUTHORIZED, 'autorized');
 export const init = makeActionCreator(INIT_APP);
 export const loadStructure = makeActionCreator(LOAD_STRUCETURE, 'structure');
 export const expandStructure = makeActionCreator(
@@ -55,8 +56,11 @@ export const expandStructure = makeActionCreator(
 );
 
 export default createReducer(initialState, {
-    [ENABLE_DARK_THEME]: (state, { enable }) => ({ ...state, darkTheme: enable }),
-    [USER_AUTHORIZED]: (state, { auth }) => ({ ...state, autorized: auth }),
+    [ENABLE_DARK_THEME]: (state, { enable }) => ({
+        ...state,
+        darkTheme: enable
+    }),
+    [USER_AUTHORIZED]: (state, { autorized }) => ({ ...state, autorized }),
     [LOAD_STRUCETURE]: (state, { structure }) => ({
         ...state,
         structure: structure
@@ -65,8 +69,8 @@ export default createReducer(initialState, {
         ...state,
         structure: expandStructureFromArray(state.structure, id, expand)
     }),
-    // [SET_USER_CONNECTION]: (state, { payload }) => ({
-    //     ...state,
-    //     userConnection: payload
-    // })
+    [LOGIN_COMPLETE]: (state, { response }) => ({
+        ...state,
+        structure: response
+    })
 });

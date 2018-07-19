@@ -1,4 +1,11 @@
 import { createReducer, makeActionCreator } from '../libs/reduxActions';
+import { tap } from 'ramda';
+import Api from '../api';
+import lsConst from '../constants/localStorage';
+import { saveInStorage } from '../helpers/storage';
+import { showError } from './toastr';
+import { push } from 'react-router-redux';
+const saveConnections = saveInStorage(lsConst.CONNECTIONS);
 
 const initialState = {
     /**
@@ -24,9 +31,14 @@ export const LOGIN_REQUEST = 'LOGIN_REQUEST'; //запрос на соедине
 export const LOGIN_ERROR = 'LOGIN_ERROR'; // ошибка подключения
 export const LOGIN_COMPLETE = 'LOGIN_COMPLETE'; // подключение прошло успешно
 export const USER_LOGOUT = 'USER_LOGOUT'; //запрос на logout
+export const UPDATE_CONNECTION = 'UPDATE_CONNECTION'; //обновление соединения
 
 export const changeMode = makeActionCreator(CHANGE_MODE, 'mode');
 export const pushConnection = makeActionCreator(PUSH_CONNECTION, 'connection');
+export const updateConnection = makeActionCreator(
+    UPDATE_CONNECTION,
+    'connection'
+);
 export const loadConnections = makeActionCreator(
     LOAD_CONNECTIONS,
     'connections'
@@ -35,6 +47,22 @@ export const activateConnection = makeActionCreator(ACTIVATE_CONNECTION, 'id');
 export const deleteConnection = makeActionCreator(DELETE_CONNECTION, 'id');
 export const logout = makeActionCreator(USER_LOGOUT);
 
+export const loginApp = (connection, route) => ({
+    types: [LOGIN_REQUEST, LOGIN_COMPLETE, LOGIN_ERROR],
+    callAPI: async () => {
+        const api = new Api(connection);
+        await api.check();
+        await api.init();
+        //обработка структуры происходит в loginMiddleware
+        return api.getDatabaseStructure();
+    },
+    //перекидываем на роут
+    successAction: () => push(route),
+    //информационный toastr
+    errorAction: () => showError('connection failed'),
+    payload: { connection, route }
+});
+
 export default createReducer(initialState, {
     [CHANGE_MODE]: (state, { mode }) => ({ ...state, mode }),
     [LOAD_CONNECTIONS]: (state, { connections }) => ({ ...state, connections }),
@@ -42,77 +70,32 @@ export default createReducer(initialState, {
         ...state,
         connections: state.connections.map(x => ({ ...x, active: x.id === id }))
     }),
+    [UPDATE_CONNECTION]: (state, { connection }) => ({
+        ...state,
+        connections:
+            state.connections.map(
+                x =>
+                    x.id === connection.id ? { ...connection, active: true } : x
+            ) |> tap(saveConnections)
+    }),
     [PUSH_CONNECTION]: (state, { connection }) => ({
         ...state,
         connections: [...state.connections, connection]
     }),
     [DELETE_CONNECTION]: (state, { id }) => ({
         ...state,
-        connections: state.connections.filter(x => x.id !== id)
+        connections:
+            state.connections.filter(x => x.id !== id) |> tap(saveConnections)
     }),
     [LOGIN_REQUEST]: state => ({ ...state, fetching: true }),
     [LOGIN_ERROR]: state => ({ ...state, fetching: false }),
-    [LOGIN_COMPLETE]: (state, { id }) => ({
+    [LOGIN_COMPLETE]: (state, { connection: { id } }) => ({
         ...state,
         fetching: false,
-        connections: state.connections.map(x => ({
-            ...x,
-            authorized: x.id === id
-        }))
+        connections:
+            state.connections.map(x => ({
+                ...x,
+                authorized: x.id === id
+            })) |> tap(saveConnections)
     })
 });
-
-// export default (state = initialState, action) => {
-//     switch (action.type) {
-//     case 'USER_LOGOUT':
-//         return {
-//             ...state,
-//             connections: state.connections.map(x =>
-//                 R.assoc('authorized', false, x)
-//             )
-//         };
-//     case loginConst.CHANGE_MODE:
-//         return { ...state, mode: action.payload };
-//     case loginConst.PUSH_CONNECTION:
-//         return {
-//             ...state,
-//             connections: R.append(action.payload, state.connections)
-//         };
-//     case loginConst.LOAD_CONNECTIONS:
-//         return { ...state, connections: action.payload };
-//     case loginConst.DISABLE_ACTIVE_CONNECTIONS:
-//         return (
-//             state.connections.map(x => R.assoc('active', false, x))
-//                 |> R.assoc('connections', R.__, state)
-//         );
-//     case loginConst.ACTIVATE_CONNECTION:
-//         return (
-//             state.connections
-//                 |> R.map(x => R.assoc('active', x.id === action.payload, x))
-//                 |> R.assoc('connections', R.__, state)
-//         );
-//     case loginConst.DELETE_CONNECTION:
-//         return {
-//             ...state,
-//             connections: state.connections.filter(
-//                 x => x.id !== action.payload
-//             )
-//         };
-//     case loginConst.LOGIN_REQUEST:
-//         return R.assoc('fetching', true, state);
-//     case loginConst.LOGIN_ERROR:
-//         return R.assoc('fetching', false, state);
-//     case loginConst.LOGIN_COMPLETE:
-//         return (
-//             R.assoc('fetching', false, state)
-//                 |> R.assoc(
-//                     'connections',
-//                     state.connections.map(x =>
-//                         R.assoc('authorized', x.id === action.payload, x)
-//                     )
-//                 )
-//         );
-//     }
-
-//     return { ...state };
-// };

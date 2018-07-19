@@ -1,8 +1,11 @@
+import lsConst from '../constants/localStorage';
+import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import classname from 'libs/components/classname';
-import { enableDarkTheme } from '../reducers/app';
-import React, { PureComponent } from 'react';
+import { getFromStorage } from '../helpers/storage';
+import { loadConnections } from '../reducers/login';
+import { enableDarkTheme, init } from '../reducers/app';
 import Logo from 'Layout/Logo.jsx';
 import ReqButton from 'Layout/Buttons/ReqButton.jsx';
 import ThemeButton from 'Layout/Buttons/ThemeButton.jsx';
@@ -34,13 +37,17 @@ const { version } = require('../../package.json');
 
 function mapStateToProps(state) {
     return {
-        darkTheme: state.app.darkTheme
+        darkTheme: state.app.darkTheme,
+        path: state.routing.location.pathname
     };
 }
 
 function mapDispatchToProps(disaptch) {
     return {
-        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch
+        onEnableDarkTheme: enable => enable |> enableDarkTheme |> disaptch,
+        onLoadConnections: connections =>
+            connections |> loadConnections |> disaptch,
+        onInit: () => disaptch(init())
     };
 }
 
@@ -49,6 +56,16 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Layout extends PureComponent {
+    componentDidMount() {
+        //load connections from storage
+        const { onLoadConnections, onInit } = this.props;
+
+        const connections =
+            lsConst.CONNECTIONS |> getFromStorage('[]') |> JSON.parse;
+
+        connections |> onLoadConnections |> onInit;
+    }
+
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
 

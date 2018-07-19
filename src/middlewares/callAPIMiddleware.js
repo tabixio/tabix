@@ -1,10 +1,12 @@
 export default function callAPIMiddleware({ dispatch, getState }) {
-    return next => action => {
+    return next => async action => {
         const {
             types,
             callAPI,
             shouldCallAPI = () => true,
-            payload = {}
+            payload = {},
+            errorAction,
+            successAction
         } = action;
 
         if (!types) {
@@ -35,21 +37,24 @@ export default function callAPIMiddleware({ dispatch, getState }) {
             })
         );
 
-        return callAPI().then(
-            response =>
-                dispatch(
-                    Object.assign({}, payload, {
-                        response,
-                        type: successType
-                    })
-                ),
-            error =>
-                dispatch(
-                    Object.assign({}, payload, {
-                        error,
-                        type: failureType
-                    })
-                )
-        );
+        try {
+            const response = await callAPI();
+            dispatch(
+                Object.assign({}, payload, {
+                    response,
+                    type: successType
+                })
+            );
+
+            successAction && dispatch(successAction());
+        } catch (error) {
+            dispatch(
+                Object.assign({}, payload, {
+                    error,
+                    type: failureType
+                })
+            );
+            errorAction && dispatch(errorAction());
+        }
     };
 }

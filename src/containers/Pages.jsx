@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { logout, expandStructure } from '../reducers/app';
 import { push } from 'react-router-redux';
 import React, { Component } from 'react';
-import { Button, Spinner } from '@blueprintjs/core';
+import { Spinner } from '@blueprintjs/core';
 import SplitterLayout from 'Service/SplitterLayout.jsx';
 import { Tree } from '@blueprintjs/core';
 
@@ -34,7 +34,7 @@ function mapDispatchToProps(disaptch) {
 )
 export default class Pages extends Component {
     render() {
-        const { onLogout, connection, fetching, structure } = this.props;
+        const { connection, fetching, structure } = this.props;
         return (
             <SplitterLayout>
                 <Tree
@@ -47,7 +47,6 @@ export default class Pages extends Component {
                     <h2>PAGES</h2>
                     {fetching && <Spinner />}
                     <p>{connection |> JSON.stringify}</p>
-                    <Button text="logout" onClick={onLogout} />
                 </div>
             </SplitterLayout>
         );

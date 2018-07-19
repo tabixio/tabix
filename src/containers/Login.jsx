@@ -1,10 +1,7 @@
-import lsConst from '../constants/localStorage';
-import { saveInStorage } from '../helpers/storage';
 import styled from 'styled-components';
 import propsToComponent from 'libs/components/propsToComponent';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import { getFormValues, initialize, reset } from 'redux-form';
+import { getFormValues } from 'redux-form';
 import {
     updateConnection,
     newConnection,
@@ -15,22 +12,9 @@ import {
     changeMode
 } from '../reducers/login';
 import React, { Component } from 'react';
-import { Tab, Tabs } from '@blueprintjs/core';
-import Form, { validateServer, validateDirect } from 'Login/Form.jsx';
+import Tabs from 'Login/Tabs.jsx';
 import SplitterLayout from 'Service/SplitterLayout.jsx';
 import Connections from 'Login/Connections.jsx';
-
-// const initializeForm = tuple => initialize(`${tuple[0]}Login`, tuple[1]);
-
-// const changeMode = tuple => tuple[0] |> changeModeAction;
-
-// /**
-//  * Get mode
-//  * @param {Object} item
-//  */
-// const getMode = item => {
-//     return [item?.server ? 'server' : 'direct', item];
-// };
 
 const Container = styled.div`
     display: flex;
@@ -51,7 +35,6 @@ function mapStateToProps(state) {
         connectionSelect:
             state.login.connections.find(x => x.active) !== undefined,
         getValuesFrom: form => getFormValues(form)(state),
-        getConnections: () => state.login.connections,
         fetching: state.login.fetching
     };
 }
@@ -64,9 +47,8 @@ function mapDispatchToProps(dispatch) {
         onPushConnection: connection =>
             connection |> pushConnection |> dispatch,
         onActivateConnection: id => id |> activateConnection |> dispatch,
-        onLogin: connection => connection |> loginApp |> dispatch,
-        onDeleteConnection: id => id |> deleteConnection |> dispatch,
-        onChangeRoute: () => '/pages' |> push |> dispatch
+        onLogin: (connection, route) => dispatch(loginApp(connection, route)),
+        onDeleteConnection: id => id |> deleteConnection |> dispatch
     };
 }
 
@@ -80,6 +62,19 @@ export default class Login extends Component {
 
         const activeConnection = connections.find(x => x.active);
         activeConnection && onActivateConnection(activeConnection.id);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { connections, onActivateConnection } = this.props;
+
+        //активация в форме подключения
+        if (
+            connections.length === 0 &&
+            connections.length !== nextProps.connections.length
+        ) {
+            const activeConnection = nextProps.connections.find(x => x.active);
+            activeConnection && onActivateConnection(activeConnection.id);
+        }
     }
 
     render() {
@@ -102,36 +97,7 @@ export default class Login extends Component {
                     ])}
                 />
                 <Container>
-                    <Tabs
-                        id="login"
-                        selectedTabId={mode}
-                        onChange={onChangeMode}
-                    >
-                        <Tab
-                            id="direct"
-                            title="DIRECT CH"
-                            panel={
-                                <Form
-                                    {...formProps}
-                                    mode="direct"
-                                    form="directLogin"
-                                    validate={validateDirect}
-                                />
-                            }
-                        />
-                        <Tab
-                            id="server"
-                            title="TABIX.SERVER"
-                            panel={
-                                <Form
-                                    {...formProps}
-                                    mode="server"
-                                    form="serverLogin"
-                                    validate={validateServer}
-                                />
-                            }
-                        />
-                    </Tabs>
+                    <Tabs {...{ mode, onChangeMode, formProps }} />
                 </Container>
             </SplitterLayout>
         );
@@ -149,19 +115,10 @@ export default class Login extends Component {
         connection.id |> onActivateConnection;
     };
 
-    onSubmit = async values => {
-        const {
-            onUpdateConnection,
-            onLogin,
-            onChangeRoute,
-            getConnections
-        } = this.props;
+    onSubmit = values => {
+        const { onUpdateConnection, onLogin } = this.props;
         onUpdateConnection(values);
-        const result = await onLogin(values);
-        result && onChangeRoute();
-
-        //сохраним в local storage
-        getConnections() |> saveInStorage(lsConst.CONNECTIONS);
+        onLogin(values, '/pages');
     };
 
     onDelete = () => {
@@ -169,19 +126,18 @@ export default class Login extends Component {
             onDeleteConnection,
             getValuesFrom,
             mode,
-            getConnections,
-            onActivateConnection
+            onActivateConnection,
+            connections
         } = this.props;
         const connection = getValuesFrom(`${mode}Login`);
         onDeleteConnection(connection.id);
 
-        //сохраним в local storage
-        const connections = getConnections();
-        connections |> saveInStorage(lsConst.CONNECTIONS);
-
-        const activeItem = connections.length > 0 ? connections[0] : {};
-        Object.keys(activeItem).length
-            ? (activeItem.id |> onActivateConnection)
-            : this.onAddNewConnection();
+        //активируем подключение после удаления
+        connections.filter(x => x.id !== connection.id)
+            |> (_ => (_.length > 0 ? _[0] : {}))
+            |> (_ =>
+                Object.keys(_).length
+                    ? onActivateConnection(_.id)
+                    : this.onAddNewConnection());
     };
 }
