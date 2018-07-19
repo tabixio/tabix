@@ -8,13 +8,9 @@ const initialState = {
      */
     darkTheme: true,
     /**
-     * Проверка на первый запуск
+     * Выполнена ли авторизация пользователя
      */
-    init: false,
-    /**
-     * Выполнена ли вторизация пользователя
-     */
-    autorized: false,
+    userAutorized: false,
     /**
      * Структура сервера
      */
@@ -60,7 +56,7 @@ export default createReducer(initialState, {
         ...state,
         darkTheme: enable
     }),
-    [USER_AUTHORIZED]: (state, { autorized }) => ({ ...state, autorized }),
+    [USER_AUTHORIZED]: (state, { autorized }) => ({ ...state, userAutorized: autorized }),
     [LOAD_STRUCETURE]: (state, { structure }) => ({
         ...state,
         structure: structure

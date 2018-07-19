@@ -39,7 +39,7 @@ export default ({ dispatch, getState }) => next => action => {
 
     if (action.type === LOGIN_COMPLETE) {
         next({ ...action, response: action.response |> toTreeStructure });
-        dispatch(userAuthorized());
+        dispatch(userAuthorized(true));
 
         return;
     }
