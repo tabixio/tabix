@@ -1,6 +1,6 @@
 import { createReducer, makeActionCreator } from '../libs/reduxActions';
 import { tap } from 'ramda';
-import Api from '../api';
+import { connect, disconnect } from '../api';
 import lsConst from '../constants/localStorage';
 import { saveInStorage } from '../helpers/storage';
 import { showError } from './toastr';
@@ -50,16 +50,19 @@ export const logout = makeActionCreator(USER_LOGOUT);
 export const loginApp = (connection, route) => ({
     types: [LOGIN_REQUEST, LOGIN_COMPLETE, LOGIN_ERROR],
     callAPI: async () => {
-        const api = new Api(connection);
-        await api.check();
-        await api.init();
+        const Api = connect(connection);
+        await Api.check();
+        await Api.init();
         //обработка структуры происходит в loginMiddleware
-        return api.getDatabaseStructure();
+        return Api.getDatabaseStructure();
     },
     //перекидываем на роут
     successAction: () => push(route),
     //информационный toastr
-    errorAction: () => showError('connection failed'),
+    errorAction: () => {
+        disconnect();
+        return showError('connection failed');
+    },
     payload: { connection, route }
 });
 

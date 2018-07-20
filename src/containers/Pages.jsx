@@ -1,3 +1,4 @@
+import { connectedApi } from '../api';
 import { getConnection } from '../selectors';
 import { connect } from 'react-redux';
 import { logout, expandStructure } from '../reducers/app';
@@ -33,6 +34,10 @@ function mapDispatchToProps(disaptch) {
     mapDispatchToProps
 )
 export default class Pages extends Component {
+    componentDidMount() {
+        connectedApi().getDatabaseStructure() |> console.log;
+    }
+
     render() {
         const { connection, fetching, structure } = this.props;
         return (

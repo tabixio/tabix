@@ -44,7 +44,6 @@ export const expandStructureFromArray = (structure, idArray, expand) => {
 export const enableDarkTheme = makeActionCreator(ENABLE_DARK_THEME, 'enable');
 export const userAuthorized = makeActionCreator(USER_AUTHORIZED, 'autorized');
 export const init = makeActionCreator(INIT_APP);
-export const loadStructure = makeActionCreator(LOAD_STRUCETURE, 'structure');
 export const expandStructure = makeActionCreator(
     EXPAND_STRUCTURE,
     'id',
@@ -56,10 +55,9 @@ export default createReducer(initialState, {
         ...state,
         darkTheme: enable
     }),
-    [USER_AUTHORIZED]: (state, { autorized }) => ({ ...state, userAutorized: autorized }),
-    [LOAD_STRUCETURE]: (state, { structure }) => ({
+    [USER_AUTHORIZED]: (state, { autorized }) => ({
         ...state,
-        structure: structure
+        userAutorized: autorized
     }),
     [EXPAND_STRUCTURE]: (state, { id, expand }) => ({
         ...state,
