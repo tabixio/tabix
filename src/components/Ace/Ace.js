@@ -507,7 +507,7 @@ ReactAce.defaultProps = {
     onPaste: null,
     onLoad: null,
     onScroll: null,
-    minLines: null,
+    minLines: 1,
     maxLines: null,
     readOnly: false,
     highlightActiveLine: true,

@@ -35,12 +35,13 @@ export default class SplitterLayoutWrapper extends React.PureComponent {
     }
 
     render() {
-        const { children } = this.props;
+        const { children ,vertical} = this.props;
         return (
             <SplitterContent innerRef={e => this.item = e}>
                 <SplitterLayout
                     percentage
                     primaryMinSize={0}
+                    vertical={vertical}
                     secondaryInitialSize={80}
                 >
                     <Scrollbar {...scrollbarConfig}>{children[0]}</Scrollbar>
