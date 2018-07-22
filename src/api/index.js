@@ -11,4 +11,9 @@ export const disconnect = () => {
     Api = undefined;
 };
 
-export const connectedApi = () => Api;
+export const connectedApi = () => {
+    if (Api === undefined)
+        console.warn('API not Connected!');
+    //     throw 'API not Connected';
+    return Api;
+};

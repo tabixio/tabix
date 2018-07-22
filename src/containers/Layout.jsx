@@ -66,8 +66,40 @@ export default class Layout extends PureComponent {
         connections |> onLoadConnections |> onInit;
     }
 
+    renderNavbar(darkTheme,onEnableDarkTheme) {
+        return (
+            <Navbar key="navbar">
+                <NavbarGroup align={Alignment.LEFT}>
+                    <Logo src="assets/images/logo.png" />
+                </NavbarGroup>
+
+                <NavbarGroup align={Alignment.RIGHT}>
+                    <ReqButton
+                        title={`Tabix.io Build ${version}`}
+                        themeName={darkTheme && Classes.DARK}
+                    />
+                    <ThemeButton
+                        onEnableDarkTheme={onEnableDarkTheme}
+                    />
+                </NavbarGroup>
+            </Navbar>
+        );
+    }
+    renderFooter() {
+        return (<Footer key="footer">
+            <a href="https://tabix.io/" target="_blank">
+                        Tabix.IO
+            </a>{' '}
+                    by Tabix LLC ©, all rights reserved. Build {version}
+        </Footer>);
+    }
+
     render() {
         const { children, darkTheme, onEnableDarkTheme } = this.props;
+
+        // @todo : select from router?
+        const showNavbar=false;
+        const showFooter=false;
 
         return (
             <App
@@ -76,29 +108,10 @@ export default class Layout extends PureComponent {
                 innerRef={e => (this.node = e)}
             >
                 <Fill>
-                    <Navbar key="navbar">
-                        <NavbarGroup align={Alignment.LEFT}>
-                            <Logo src="assets/images/logo.png" />
-                        </NavbarGroup>
-
-                        <NavbarGroup align={Alignment.RIGHT}>
-                            <ReqButton
-                                title={`Tabix.io Build ${version}`}
-                                themeName={darkTheme && Classes.DARK}
-                            />
-                            <ThemeButton
-                                onEnableDarkTheme={onEnableDarkTheme}
-                            />
-                        </NavbarGroup>
-                    </Navbar>
+                    {showNavbar && this.renderNavbar(darkTheme,onEnableDarkTheme)}
                 </Fill>
                 <AppContent>{children}</AppContent>
-                <Footer key="footer">
-                    <a href="https://tabix.io/" target="_blank">
-                        Tabix.IO
-                    </a>{' '}
-                    by Tabix LLC ©, all rights reserved. Build {version}
-                </Footer>
+                {showFooter && this.renderFooter()}
             </App>
         );
     }

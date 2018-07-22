@@ -24,6 +24,7 @@
         "plotly.js": "^1.39.2",
         "ramda": "^0.25.0",
         "react": "^16.4.1",
+        "react-chart-editor": "^0.20.0",
         "react-dom": "^16.4.1",
         "react-plotly.js": "^2.2.0",
         "react-redux": "^5.0.7",

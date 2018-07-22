@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router';
 import Layout from 'containers/Layout.jsx';
 import Login from 'containers/Login.jsx';
-import Pages from 'containers/Pages.jsx';
+import Pages from 'containers/_PagesTest.jsx';
 // import AceTest from 'containers/AceTest.jsx';
 
 export default () => (
