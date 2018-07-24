@@ -7,11 +7,12 @@ import { Spinner } from '@blueprintjs/core';
 import SplitterLayout from 'Service/SplitterLayout.jsx';
 import { Tree } from '@blueprintjs/core';
 import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
-import { Button,AnchorButton,ButtonGroup,Tag, Tab, TabId, Tabs } from "@blueprintjs/core";
-import { InputGroup,ContextMenu, ContextMenuTarget, Menu, MenuDivider, MenuItem} from "@blueprintjs/core";
+import { Tag,Tabs, Tab, TabId } from "@blueprintjs/core";
+import { Card,InputGroup,ContextMenu, ContextMenuTarget, Menu, MenuDivider, MenuItem} from "@blueprintjs/core";
 import Scrollbar from '../components/Service/Scrollbar.jsx';
 import _PageEditor  from './_PageEditor.jsx';
 import {connectedApi} from 'api';
+import {Popover,PopoverInteractionKind, Position} from "@blueprintjs/core/lib/esm/index";
 
 function mapStateToProps(state) {
     return {
@@ -49,6 +50,19 @@ export default class Pages extends Component {
     componentDidMount() {
         // connectedApi().getDatabaseStructure() |> console.warn;
     }
+    showContextMenuNewPage(e) {
+        if (!e) return;
+        e.preventDefault();
+        ContextMenu.show(
+            <Menu className={Classes.DARK}>
+                <MenuItem icon="citation" text="New SQL" />
+                <MenuItem icon="series-configuration" text="New DASH" />
+            </Menu>,
+            { left: e.clientX, top: e.clientY },
+            () => {},
+            true
+        );
+    }
     showContextMenuTag(e) {
         if (!e) return;
         e.preventDefault();
@@ -83,7 +97,9 @@ export default class Pages extends Component {
         console.log("structure",structure);
         const tabs=Array.from(Array(32).keys());
         const tabElements = tabs.map(tag => {
-            return (<Tab id={`TabId${tag}`} title={`TabId${tag}`} panel={<ReactPanel />} />);
+            return (<Tab id={`TabId${tag}`}
+                         // title={`TabId${tag}`}
+                         panel={<ReactPanel />} />);
         });
         const tagElements = tabs.map(tag => {
             const onRemove = () => console.warn('onRemove',tag);
@@ -126,12 +142,20 @@ export default class Pages extends Component {
                     onNodeClick={this.handleNodeClick}
                 />
                 <div>
-                    {/*<Scrollbar {...scrollbarConfig} >*/}
-                        {/*<div style={{maxHeight:25+'px',border:'1px solid silver'}}>*/}
-                            {/*{tagElements}*/}
-                        {/*</div>*/}
-                    {/*</Scrollbar>*/}
-
+                    <div className={'TagLists'}>
+                            <Tag
+                                key='NewPage'
+                                onClick={this.showContextMenuNewPage}
+                                active={true}
+                                intent={'warning'}
+                                interactive={true}
+                                icon={'plus'}
+                                style={{marginLeft:5+'px',marginRight:5+'px',marginBottom:3+'px',marginTop:3+'px'}}
+                            >
+                                New
+                            </Tag>
+                        {tagElements}
+                    </div>
                     <Tabs
                         id="TabsExample"
                         renderActiveTabPanelOnly
@@ -149,7 +173,7 @@ export default class Pages extends Component {
     handleNodeExpand = node => this.props.onExpand(node.id, true);
 
     handleNodeClick = node =>
-        node.childNodes.length &&
+        node.childNodes && node.childNodes.length &&
         this.props.onExpand(node.id, !node.isExpanded);
 }
 

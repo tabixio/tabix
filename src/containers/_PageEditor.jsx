@@ -62,7 +62,7 @@ export default class _PageEditor extends Component {
         const id='aceId'+Date.now().toString();
         return (
             <div style={{display: 'table', width: '100%',height:'inherit'}}>
-                <SplitterLayout vertical>
+                {/*<SplitterLayout vertical>*/}
                     <div>
                         <AceEditor
                             mode="clickhouse" focus={true}
@@ -93,7 +93,7 @@ export default class _PageEditor extends Component {
 
 
                     </div>
-                </SplitterLayout>
+                {/*</SplitterLayout>*/}
             </div>
         );
     }
