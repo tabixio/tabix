@@ -20,6 +20,9 @@ export default class API {
     provider() {
         return this._provider;
     }
+    getVersion() {
+        return this._version;
+    }
     getDatabase() {
         return this.provider().getDatabase();
     }
@@ -62,6 +65,12 @@ export default class API {
     }
 
     /**
+     * @returns {Promise<*>}
+     */
+    async fastGetVersion() {
+        return this.provider().fastGetVersion();
+    }
+    /**
      * @param sql
      * @param withDatabase
      * @param format
@@ -78,11 +87,10 @@ export default class API {
     }
 
     async init() {
-        const ver = await this.query('SELECT version() as ver');
-        if (ver.data && ver.data[0] && ver.data[0]['ver']) {
-            this._version = ver.data[0]['ver'];
+        this._version = await this.fastGetVersion();
+        if (!this._version) {
+            throw 'Can`t fetch version server';
         }
-
         if (!this._initDs) {
             this._initDs = await this.loadDatabaseStructure();
         }
@@ -100,7 +108,9 @@ export default class API {
      * Check connection
      * Send query: SELECT \'login success\'
      */
-    check = () => this.query('SELECT \'login success\'');
+    check () {
+        // this.query('SELECT \'login success\'');
+    }
 
     async test() {
         //// @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client

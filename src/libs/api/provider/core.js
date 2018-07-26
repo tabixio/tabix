@@ -85,6 +85,46 @@ export default class CoreProvider {
         }
         return query;
     }
+
+    /**
+     * @param q
+     * @param url
+     * @returns {Promise<any>}
+     */
+    xhr(q,url)
+    {
+        return new Promise( function (resolve,reject) {
+            let xhr = new XMLHttpRequest();
+            url=url+'&query='+q;
+            xhr.open('GET', url, true);
+            xhr.onload = function () {
+                if (this.status>=200 && this.status<=300)
+                {
+                    resolve(xhr.response);
+                } else {
+                    reject(`Status ${this.status} ${xhr.statusText}`);
+                }
+            };
+
+            xhr.ontimeout= function()
+            {
+                reject('Timeout');
+            };
+            xhr.onerror= function()
+            {
+                console.warn(this);
+                reject(`Status ${this.status} ${this.statusText}`);
+            };
+            xhr.timeout=1000;
+            xhr.send();
+        });
+
+    }
+
+    /**
+     * @param q
+     * @returns {Promise<Response>}
+     */
     request(q)
     {
         return fetch(q)

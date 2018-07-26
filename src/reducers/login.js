@@ -51,17 +51,17 @@ export const loginApp = (connection, route) => ({
     types: [LOGIN_REQUEST, LOGIN_COMPLETE, LOGIN_ERROR],
     callAPI: async () => {
         const Api = connect(connection);
-        await Api.check();
         await Api.init();
+        console.log(`Connection - OK, version:${Api.getVersion()}`);
         //обработка структуры происходит в loginMiddleware
         return Api.getDatabaseStructure();
     },
     //перекидываем на роут
     successAction: () => push(route),
     //информационный toastr
-    errorAction: () => {
+    errorAction: (error) => {
         disconnect();
-        return showError('connection failed');
+        return showError(`connection failed, ${error}`);
     },
     payload: { connection, route }
 });

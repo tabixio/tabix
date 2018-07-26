@@ -74,4 +74,10 @@ export default class DirectClickHouse extends CoreProvider
         let myRequest = new Request(url, myInit);
         return this.request(myRequest);
     }
+    fastGetVersion()
+    {
+        let url=this.makeUrlRequest(false,false);
+        let query='SELECT version() as version';
+        return this.xhr(query,url);
+    }
 }

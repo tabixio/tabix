@@ -48,13 +48,14 @@ export default function callAPIMiddleware({ dispatch, getState }) {
 
             successAction && dispatch(successAction());
         } catch (error) {
+            console.error('error',error);
             dispatch(
                 Object.assign({}, payload, {
                     error,
                     type: failureType
                 })
             );
-            errorAction && dispatch(errorAction());
+            errorAction && dispatch(errorAction(error));
         }
     };
 }
