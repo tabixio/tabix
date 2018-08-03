@@ -84,7 +84,7 @@ export default class _PageEditor extends Component {
                         <ButtonGroup style={{ minWidth: 200 }} minimal>
                             <Button icon="fast-forward" intent="success" minimal>Run all ⇧ + ⌘ + ⏎</Button>
                             <Button icon="play" minimal>Run current</Button>
-                            <AnchorButton icon="cog" minimal>Options</AnchorButton>
+                            <AnchorButton icon="cog" minimal></AnchorButton>
                             {this.renderListDatabaseButton()}
                         </ButtonGroup>
                         <hr />
