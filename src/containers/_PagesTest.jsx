@@ -22,7 +22,7 @@ function mapStateToProps(state) {
 
         structure[0]['icon']=(<img src='favicon.png' style={{width:19,marginRight:15,left:-10}}/>);
         structure[0]['secondaryLabel'] = (
-            <Popover content={listDatabasePopover()} position={Position.RIGHT_TOP}
+            <Popover content={getMenuSettings()} position={Position.RIGHT_TOP}
                      interactionKind={PopoverInteractionKind.HOVER}>
                 <Button icon="cog" small minimal/>
             </Popover>
@@ -36,12 +36,14 @@ function mapStateToProps(state) {
         structure: structure
     };
 }
-function listDatabasePopover() {
+function getMenuSettings() {
     return (
         <Menu className={Classes.DARK}>
-            <MenuItem text="Group by"/>
-            <MenuItem text="Find"/>
-            <MenuItem text="default" disabled={true} />
+            <MenuItem icon="group-objects" text="Tree group by">
+                <MenuItem icon="align-left" text="Table name" />
+                <MenuItem icon="align-right" text="Engine" />
+            </MenuItem>
+            <InputGroup leftIcon="filter" large={false} placeholder="Search" type="text" defaultValue=""/>
         </Menu>
     );
 }
