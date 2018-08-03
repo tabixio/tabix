@@ -54,7 +54,7 @@ export default class _PageEditor extends Component {
 
         return (
             <Popover content={this.listDatabasePopover()} position={Position.RIGHT_TOP} interactionKind={PopoverInteractionKind.HOVER}>
-                <Button rightIcon='caret-down' icon='database' text={currentDatase} minimal={true} />
+                <Button minimal rightIcon='caret-down' icon='database' text={currentDatase} minimal={true} />
             </Popover>
         );
     }
@@ -66,7 +66,7 @@ export default class _PageEditor extends Component {
                     <div>
                         <AceEditor
                             mode="clickhouse" focus={true}
-                            theme="darcula" fontSize="12"
+                            theme="cobalt" fontSize="14"
                             width="100%"
                             minHeight="200px"
                             height="inherit"
@@ -82,9 +82,9 @@ export default class _PageEditor extends Component {
                     </div>
                     <div>
                         <ButtonGroup style={{ minWidth: 200 }} minimal>
-                            <Button icon="fast-forward" intent="success">Run all ⇧ + ⌘ + ⏎</Button>
-                            <Button icon="play">Run current</Button>
-                            <AnchorButton icon="cog" rightIcon="settings">Options</AnchorButton>
+                            <Button icon="fast-forward" intent="success" minimal>Run all ⇧ + ⌘ + ⏎</Button>
+                            <Button icon="play" minimal>Run current</Button>
+                            <AnchorButton icon="cog" minimal>Options</AnchorButton>
                             {this.renderListDatabaseButton()}
                         </ButtonGroup>
                         <hr />

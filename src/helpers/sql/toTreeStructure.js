@@ -18,9 +18,10 @@ export const nodeId = (...arg) =>
 export default structure => [
     {
         id: '0',
-        icon: 'properties',
-        label: 'Clickhouse Server',
+
+        label: 'Tabix',
         isExpanded: true,
+        // hasCaret:false,
         //databases
         childNodes: structure.databases.map((x, dInd) => ({
             id: nodeId(dInd),

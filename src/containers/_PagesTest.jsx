@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Spinner } from '@blueprintjs/core';
 import SplitterLayout from 'Service/SplitterLayout.jsx';
 import { Tree } from '@blueprintjs/core';
-import { Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
+import { Button,Navbar, NavbarGroup, Alignment, Classes } from '@blueprintjs/core';
 import { Tag,Tabs, Tab, TabId } from "@blueprintjs/core";
 import { Card,InputGroup,ContextMenu, ContextMenuTarget, Menu, MenuDivider, MenuItem} from "@blueprintjs/core";
 import Scrollbar from '../components/Service/Scrollbar.jsx';
@@ -15,11 +15,35 @@ import {connectedApi} from 'api';
 import {Popover,PopoverInteractionKind, Position} from "@blueprintjs/core/lib/esm/index";
 
 function mapStateToProps(state) {
+
+    const tabs=Array.from(Array(20).keys());
+    let structure=state.app.structure;
+    if (structure && structure[0]) {
+
+        structure[0]['icon']=(<img src='favicon.png' style={{width:19,marginRight:15,left:-10}}/>);
+        structure[0]['secondaryLabel'] = (
+            <Popover content={listDatabasePopover()} position={Position.RIGHT_TOP}
+                     interactionKind={PopoverInteractionKind.HOVER}>
+                <Button icon="cog" small minimal/>
+            </Popover>
+        );
+    }
     return {
+        tabs:tabs,
+        currentTab:2,
         connection: getConnection(state),
         fetching: state.login.fetching,
-        structure: state.app.structure
+        structure: structure
     };
+}
+function listDatabasePopover() {
+    return (
+        <Menu className={Classes.DARK}>
+            <MenuItem text="Group by"/>
+            <MenuItem text="Find"/>
+            <MenuItem text="default" disabled={true} />
+        </Menu>
+    );
 }
 
 function mapDispatchToProps(disaptch) {
@@ -92,13 +116,11 @@ export default class Pages extends Component {
     }
 
     render() {
-        const { connection, fetching, structure } = this.props;
+        const { connection,currentTab, tabs, structure } = this.props;
 
-        console.log("structure",structure);
-        const tabs=Array.from(Array(32).keys());
         const tabElements = tabs.map(tag => {
-            return (<Tab id={`TabId${tag}`}
-                         // title={`TabId${tag}`}
+            return (<Tab id={`TabId${tag}`} key={`TabId${tag}`}
+                // title={`TabId${tag}`}
                          panel={<ReactPanel />} />);
         });
         const tagElements = tabs.map(tag => {
@@ -109,17 +131,17 @@ export default class Pages extends Component {
             let title=`SQL ${tag}`;
             let right=false;
             let intent='';
-
-            if (rand>70) {
-                icon='series-configuration'; // dash
-                title=`Dash ${tag}`;
-                intent='primary';
-            }
+            //
+            // if (rand>70) {
+            //     icon='series-configuration'; // dash
+            //     title=`Dash ${tag}`;
+            //     intent='primary';
+            // }
             return (
                 <Tag
                     key={tag}
                     onClick={onClick}
-                    active={tag==2}
+                    active={tag==currentTab}
                     rightIcon={right}
                     intent={intent}
                     // intent={'primary'}
@@ -140,20 +162,20 @@ export default class Pages extends Component {
                     onNodeCollapse={this.handleNodeCollapse}
                     onNodeExpand={this.handleNodeExpand}
                     onNodeClick={this.handleNodeClick}
+                    //onNodeContextMenu
                 />
                 <div>
                     <div className={'TagLists'}>
-                            <Tag
-                                key='NewPage'
-                                onClick={this.showContextMenuNewPage}
-                                active={true}
-                                intent={'warning'}
-                                interactive={true}
-                                icon={'plus'}
-                                style={{marginLeft:5+'px',marginRight:5+'px',marginBottom:3+'px',marginTop:3+'px'}}
-                            >
-                                New
-                            </Tag>
+                        <Tag
+
+                            key='NewPage'
+                            onClick={this.showContextMenuNewPage}
+                            active={true}
+                            intent={'warning'}
+                            interactive={true}
+                            icon={'plus'}
+                            style={{marginLeft:5+'px',marginRight:5+'px',marginBottom:3+'px',marginTop:3+'px'}}
+                        >New</Tag>
                         {tagElements}
                     </div>
                     <Tabs
