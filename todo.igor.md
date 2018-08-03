@@ -3,6 +3,12 @@
 [ ] ACE darcula : https://monosnap.com/file/HKpHZvtmaC0eOt8i5l6kJIWRnOO6mt
 [ ] ACE RightClick menu
 -----------------
+
+
+[ ] Результат в новом окне
+
+
+
 =================
 
 
