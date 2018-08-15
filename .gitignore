@@ -1,26 +1,22 @@
-bower_components
-node_modules
-.tmp
-coverage
-help
-manual/site
-# IntelliJ project files
-.idea
-*.iml
-out
-gen
-build
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-public/assets/css
-public/assets/js
-index.html
-.DS_Store
-node_modules/
+# Output
 dist/
-npm-debug.log
-yarn-error.log
+*.log
+
+# Temp and caches
+node_modules/
+.cache/
+.awcache/
+.DS_Store
+*~
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.history/
+
+# Remove after prepare project
+app/src/*
+!/app/src/index.tsx
+!/app/src/views/
+!/app/src/assets/

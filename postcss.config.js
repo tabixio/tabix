@@ -1,5 +1,3 @@
-module.exports = {
-    plugins: [
-        require('autoprefixer')
-    ]
-};
+const postcssConfig = require('@vzh/configs/css/postcssConfig').default;
+
+module.exports = postcssConfig();

@@ -1,0 +1,9 @@
+{
+  "client": {
+    "root": "app",
+
+    "output": {
+      "root": ""
+    }
+  }
+}

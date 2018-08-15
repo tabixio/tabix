@@ -1,1 +1,0 @@
-export default defaultValue => key => localStorage.getItem(key) || defaultValue;

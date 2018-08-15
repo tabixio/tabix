@@ -1,0 +1,14 @@
+{
+  "extends": ["../node_modules/@vzh/configs/eslint/ts.react.eslintrc.json"],
+  "rules": {
+    "dot-notation": "off",
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": "off",
+    "no-useless-constructor": "off",
+    "no-empty-function": ["error", { "allow": ["constructors"] }],
+    "react/sort-comp": ["off"],
+    "react/no-array-index-key": ["off"],
+    "react/jsx-one-expression-per-line": "off",
+    "jsx-a11y/aria-role": "off"
+  }
+}

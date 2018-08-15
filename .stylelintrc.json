@@ -1,0 +1,3 @@
+{
+  "extends": ["@vzh/configs/css/stylelintrc.json"]
+}

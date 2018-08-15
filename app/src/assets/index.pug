@@ -1,0 +1,30 @@
+- const favicon = require('assets/images/favicon.png');
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(id="theme-color" name="theme-color" content="#1e1e1e")
+    //- 
+    title Tabix.IO
+    //- 
+    link(rel="shortcut icon" type="image/png" sizes="any" href=favicon)
+    
+    //- Styles
+    each file in htmlWebpackPlugin.files.css
+      link(rel="stylesheet" href=file)
+
+    script(id="initialStateScript").
+      !{initialState}
+    
+  body
+    #root.
+      !{appHtml}
+    //- Not need with SSR, but need to show when app data loading 
+    #appLoader.
+      !{appLoaderHtml}
+
+    //- App JS
+    each file in htmlWebpackPlugin.files.js
+      script(defer src=file)

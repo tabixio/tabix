@@ -1,0 +1,11 @@
+{
+  "extends": "../node_modules/@vzh/configs/ts/dev.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "typeRoots": [
+      "./types",
+      "../node_modules/@types"
+    ],
+  },
+  "files": ["./src/index.tsx"]
+}
