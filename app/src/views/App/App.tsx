@@ -1,4 +1,5 @@
 import React from 'react';
+import 'assets/styles/global.css';
 
 export interface Props {}
 

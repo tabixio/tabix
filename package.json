@@ -72,6 +72,7 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
+    "normalize.css": "^8.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-router": "^4.3.1",
