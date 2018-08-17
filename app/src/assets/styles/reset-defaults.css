@@ -1,0 +1,34 @@
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  font: inherit;
+  color: inherit;
+}
+
+body svg {
+  fill: inherit;
+}
+
+input::placeholder {
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
