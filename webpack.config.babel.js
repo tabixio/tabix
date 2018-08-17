@@ -1,15 +1,36 @@
 import path from 'path';
 import webpackMerge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import tsImportPlugin from 'ts-import-plugin';
 import paths from '@vzh/configs/paths';
-import clientConfigTs from '@vzh/configs/webpack/client.config.ts';
+import clientConfigTs, { baseDefaultRules } from '@vzh/configs/webpack/client.config.ts';
+import loaders from '@vzh/configs/webpack/loaders';
 
-export default webpackMerge(
+const config = webpackMerge(
   clientConfigTs({
     rhl: false,
 
     entry: {
       app: ['./index'],
+    },
+
+    rules: {
+      tsRule: {
+        ...baseDefaultRules.tsRule,
+        use: loaders.ts({
+          tsconfig: path.join(paths.client.root, 'tsconfig.json'),
+          forkedChecks: true,
+          getCustomTransformers: () => ({
+            before: [
+              tsImportPlugin({
+                libraryDirectory: 'es',
+                libraryName: 'antd',
+                style: 'css',
+              }),
+            ],
+          }),
+        }),
+      },
     },
   }),
   {
@@ -26,3 +47,7 @@ export default webpackMerge(
     ],
   }
 );
+
+// console.log(config);
+
+export default config;
