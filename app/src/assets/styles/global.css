@@ -1,9 +1,7 @@
 @import 'normalize.css';
+@import './reset-defaults.css';
 
 body {
-  z-index: 0;
-  margin: 0;
-  padding: 0;
   /* font-family: 'Proxima Nova', sans-serif; */
   font-size: 16px;
   /* line-height: 1.15; */

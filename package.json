@@ -17,6 +17,7 @@
     "build": "yarn run clean && cross-env NODE_ENV=production webpack --config webpack.config.babel.js"
   },
   "devDependencies": {
+    "@types/css-modules": "^1.0.0",
     "@types/react": "16.4.10",
     "@types/react-dom": "^16.0.7",
     "@types/react-router": "^4.0.30",
@@ -85,6 +86,7 @@
     "react-dom": "^16.4.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "reflexy": "^1.16.2",
     "valtors": "^1.4.1"
   }
 }
