@@ -1,14 +1,15 @@
 import React from 'react';
 import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
-import { Switch, Route, withRouter, RouteComponentProps } from 'react-router';
-import { AuthorizationProvider } from '@vzh/react-auth';
+import { Switch, withRouter, RouteComponentProps, Redirect } from 'react-router';
+import { AuthorizationProvider, NotLoggedInRoute } from '@vzh/react-auth';
 import { typedInject } from '@vzh/mobx-stores';
 
 import 'assets/styles/global.css';
 import { AppStore, Stores } from 'stores';
 import { routePaths } from 'routes';
-import HomeView from 'views/HomeView';
+// import HomeView from 'views/HomeView';
+import SignInView from 'views/SignInView';
 
 export interface InjectedProps {
   store: AppStore;
@@ -68,8 +69,13 @@ class App extends React.Component<RoutedProps> {
         notLoggedInRedirectTo={routePaths.home.path}
       >
         <Switch>
-          <Route exact path={routePaths.home.path} component={HomeView} />
-          {/* <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} /> */}
+          {/* <Route exact path={routePaths.home.path} component={HomeView} /> */}
+
+          <NotLoggedInRoute exact path={routePaths.home.path}>
+            <Redirect to={routePaths.signIn.path} />
+          </NotLoggedInRoute>
+
+          <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
           {/* <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} /> */}
           {/* <Route component={NotFoundView} /> */}
         </Switch>
