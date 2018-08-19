@@ -1,9 +1,9 @@
 import React from 'react';
 import { Flex } from 'reflexy';
-import { Layout } from 'antd';
+import { Layout, Tabs } from 'antd';
 import Page from 'components/Page';
-// import { SignInBox } from 'components/SignIn';
-// import css from './SignInView.css';
+import { DirectSignInForm, ServerSignInForm } from 'components/SignIn';
+import css from './SignInView.css';
 
 export default function SignInView() {
   return (
@@ -15,7 +15,14 @@ export default function SignInView() {
       </Flex>
 
       <Flex column grow shrink={false} alignItems="center" justifyContent="center">
-        {/* <SignInBox className={css['box']} /> */}
+        <Tabs type="line" defaultActiveKey="1" className={css['form']}>
+          <Tabs.TabPane tab="DIRECT CH" key="1">
+            <DirectSignInForm />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="TABIX.SERVER" key="2">
+            <ServerSignInForm />
+          </Tabs.TabPane>
+        </Tabs>
       </Flex>
     </Page>
   );
