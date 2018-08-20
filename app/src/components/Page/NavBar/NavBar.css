@@ -1,0 +1,9 @@
+.brand {
+  display: inline-block;
+  background-image: url('assets/images/logo.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 28px;
+  width: 100px;
+}

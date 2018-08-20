@@ -79,6 +79,7 @@
     "@vzh/react-auth": "^0.1.0",
     "antd": "^3.8.2",
     "funfix-core": "^7.0.1",
+    "history": "^4.7.2",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.5",
     "normalize.css": "^8.0.0",

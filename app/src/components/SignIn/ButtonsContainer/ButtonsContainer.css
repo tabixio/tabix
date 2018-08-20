@@ -1,0 +1,5 @@
+.root {
+  button + button {
+    margin-left: 1em;
+  }
+}
