@@ -1,11 +1,19 @@
 import React from 'react';
 import { Flex } from 'reflexy';
 import { Layout, Tabs } from 'antd';
+import queryProps from 'react-query-props';
 import Page from 'components/Page';
 import { DirectSignInForm, ServerSignInForm } from 'components/SignIn';
+import { RouteComponentProps, withRouter } from 'react-router';
 import css from './SignInView.css';
 
-export default function SignInView() {
+export interface Props extends RouteComponentProps<any> {
+  query: any;
+}
+
+const SignInView = queryProps()((props: Props) => {
+  console.log(props);
+
   return (
     <Page column={false}>
       <Flex alignItems="stretch">
@@ -26,4 +34,7 @@ export default function SignInView() {
       </Flex>
     </Page>
   );
-}
+});
+SignInView.displayName = 'SignInView';
+
+export default withRouter(SignInView);
