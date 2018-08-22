@@ -3,7 +3,7 @@ import { None } from 'funfix-core';
 import { required } from 'valtors';
 import { ValidableStoreModel } from '@vzh/mobx-stores';
 
-interface BaseSignInEntity {
+export interface BaseSignInEntity {
   connectionName: string;
   connectionUrl: string;
   username: string;
@@ -22,11 +22,11 @@ export abstract class BaseSignInModel<T extends BaseSignInEntity> extends Valida
   implements BaseSignInEntity {
   @required()
   @observable
-  connectionName: string;
+  connectionName: string = '';
 
   @required()
   @observable
-  connectionUrl: string;
+  connectionUrl: string = '';
 
   @required()
   @observable

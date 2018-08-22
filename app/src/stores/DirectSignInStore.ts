@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { LocalUIStore } from '@vzh/mobx-stores';
+import { DirectSignInModel } from 'models/SignInModel';
 import RootStore from './RootStore';
-import { DirectSignInModel } from './models/SignInModel';
 import BaseSignInStore from './BaseSignInStore';
 
 export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel> {
