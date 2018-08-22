@@ -1,5 +1,7 @@
 import CoreProvider from './CoreProvider';
 
+/* eslint-disable */
+
 export default class TabixServerProvider extends CoreProvider {
   //     pushProjectState = (body) => {
   //     return fetchTabixServer('projectstate/push',body);

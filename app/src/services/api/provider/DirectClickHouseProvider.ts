@@ -1,10 +1,13 @@
 import CoreProvider from './CoreProvider';
 
+/* eslint-disable */
+
 export default class DirectClickHouseProvider extends CoreProvider {
   getType() {
     return 'direct';
   }
 
+  // @ts-ignore
   makeUrlRequest(withDatabase, extend_settings) {
     let url = '';
     const connection = this.getConnection();
@@ -35,7 +38,9 @@ export default class DirectClickHouseProvider extends CoreProvider {
       url += `&${extend_settings}`;
     }
 
+    // @ts-ignore
     if (connection.params) {
+      // @ts-ignore
       url += `&${connection.params}`;
     }
     return url;
@@ -43,16 +48,22 @@ export default class DirectClickHouseProvider extends CoreProvider {
 
   async loadDatabaseStructure() {
     console.time('Load Database Structure!');
+    // @ts-ignore
     const columns = await this.query('SELECT * FROM system.columns');
+    // @ts-ignore
     const tables = await this.query('SELECT database,name,engine FROM system.tables');
+    // @ts-ignore
     const databases = await this.query('SELECT name FROM system.databases');
+    // @ts-ignore
     const dictionaries = await this.query(
       'SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names'
     );
+    // @ts-ignore
     const functions = await this.query('SELECT name,is_aggregate from system.functions');
     console.timeEnd('Load Database Structure!');
 
     // @todo : put to cache ( in localStore )
+    // @ts-ignore
     this.databaseStructure().init(
       columns.data,
       tables.data,
@@ -60,9 +71,11 @@ export default class DirectClickHouseProvider extends CoreProvider {
       dictionaries.data,
       functions.data
     );
+    // @ts-ignore
     return this.databaseStructure().isInit();
   }
 
+  // @ts-ignore
   query(sql, withDatabase, format, extend_settings) {
     const query = this.makeSqlQuery(sql, format);
     const url = this.makeUrlRequest(withDatabase, extend_settings);
@@ -76,6 +89,7 @@ export default class DirectClickHouseProvider extends CoreProvider {
       body: query,
       // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
     };
+    // @ts-ignore
     const myRequest = new Request(url, myInit);
     return this.request(myRequest);
   }
