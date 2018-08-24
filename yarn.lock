@@ -694,9 +694,11 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@vzh/configs/-/configs-2.0.0.tgz#7266cdc7eb1802a22997ccb11dce4ab1f148ef7a"
 
-"@vzh/mobx-stores@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.4.0.tgz#f4f6867dea2689c83ba20c79c1cae78678a2236e"
+"@vzh/mobx-stores@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.5.0.tgz#280c2d5e678c026f20e0a0443bff21f449be8ee0"
+  dependencies:
+    typelevel-ts "^0.3.1"
 
 "@vzh/react-auth@^0.1.0":
   version "0.1.0"
