@@ -1,5 +1,5 @@
 // import TabixServerProvider from './provider/TabixServerProvider';
-import { Connection } from './provider/CoreProvider';
+import Connection from '../Connection';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import DataDecorator from './DataDecorator';
 
@@ -29,17 +29,17 @@ export default class Api {
     return this.provider.getDatabase();
   }
 
-  getLogin() {
-    return this.provider.getLogin();
-  }
+  // getLogin() {
+  //   return this.provider.getLogin();
+  // }
 
-  getPassword() {
-    return this.provider.getPassword();
-  }
+  // getPassword() {
+  //   return this.provider.getPassword();
+  // }
 
-  getHost() {
-    return this.provider.getHost();
-  }
+  // getHost() {
+  //   return this.provider.getHost();
+  // }
 
   useDatabase(db: any) {
     // @ts-ignore

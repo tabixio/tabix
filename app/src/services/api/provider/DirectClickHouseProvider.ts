@@ -12,11 +12,11 @@ export default class DirectClickHouseProvider extends CoreProvider {
     let url = '';
     const connection = this.getConnection();
     let httpProto = '';
-    if (!(connection.host.indexOf('://') > 0 || connection.host.indexOf('/') == 0)) {
+    if (!(connection.connectionUrl.indexOf('://') > 0 || connection.connectionUrl.indexOf('/') == 0)) {
       httpProto = 'http://';
     }
     // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
-    url = httpProto + connection.host;
+    url = httpProto + connection.connectionUrl;
     url += '/?';
     url +=
       'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1&output_format_json_quote_denormals=1';
@@ -24,11 +24,11 @@ export default class DirectClickHouseProvider extends CoreProvider {
     // ------------
 
     if (connection.password) {
-      url += `&user=${encodeURIComponent(connection.login)}&password=${encodeURIComponent(
+      url += `&user=${encodeURIComponent(connection.username)}&password=${encodeURIComponent(
         connection.password
       )}`;
     } else {
-      url += `&user=${encodeURIComponent(connection.login)}`;
+      url += `&user=${encodeURIComponent(connection.username)}`;
     }
 
     if (withDatabase) {
@@ -63,16 +63,14 @@ export default class DirectClickHouseProvider extends CoreProvider {
     console.timeEnd('Load Database Structure!');
 
     // @todo : put to cache ( in localStore )
-    // @ts-ignore
-    this.databaseStructure().init(
+    this.databaseStructure.init(
       columns.data,
       tables.data,
       databases.data,
       dictionaries.data,
       functions.data
     );
-    // @ts-ignore
-    return this.databaseStructure().isInit();
+    return this.databaseStructure.isInit();
   }
 
   // @ts-ignore

@@ -1,10 +1,5 @@
+import Connection from '../../Connection';
 import DatabaseStructure from '../DatabaseStructure';
-
-export interface Connection {
-  password: string;
-  login: string;
-  host: string;
-}
 
 /* eslint-disable */
 
@@ -58,17 +53,17 @@ export default class CoreProvider {
     return this.connection;
   }
 
-  getPassword() {
-    return this.connection.password;
-  }
+  // getPassword() {
+  //   return this.connection.password;
+  // }
 
-  getLogin() {
-    return this.connection.login;
-  }
+  // getLogin() {
+  //   return this.connection.login;
+  // }
 
-  getHost() {
-    return this.connection.host;
-  }
+  // getHost() {
+  //   return this.connection.host;
+  // }
 
   isTabixServer() {
     return false;
