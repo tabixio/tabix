@@ -3,7 +3,7 @@ import { Flex } from 'reflexy';
 import { Layout, Tabs } from 'antd';
 import queryProps from 'react-query-props';
 import Page from 'components/Page';
-import { DirectSignInForm, ServerSignInForm } from 'components/SignIn';
+import { DirectSignInForm, ServerSignInForm, ConnectionList } from 'components/SignIn';
 import { RouteComponentProps, withRouter } from 'react-router';
 import css from './SignInView.css';
 
@@ -18,7 +18,9 @@ const SignInView = queryProps()((props: Props) => {
     <Page column={false}>
       <Flex alignItems="stretch">
         <Layout>
-          <Layout.Sider>123</Layout.Sider>
+          <Layout.Sider>
+            <ConnectionList />
+          </Layout.Sider>
         </Layout>
       </Flex>
 
