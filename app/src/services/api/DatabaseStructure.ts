@@ -1,16 +1,29 @@
-import { isEmpty } from 'ramda';
+/* eslint-disable */
 
 export default class DatabaseStructure {
-  constructor() {
-    this._init = false;
-    this.uciq_fields = [];
-    this.all_fields = [];
-    this.all_db_fields = [];
-    this.uciq_dbtables = [];
-    this.aceJSRules = {};
-  }
+  private _init = false;
 
-  init(columns, tables, databases, dictionaries, functions) {
+  private uciq_fields: any[] = [];
+
+  private all_fields: any[] = [];
+
+  private all_db_fields: any[] = [];
+
+  private uciq_dbtables: any[] = [];
+
+  private aceJSRules: Record<string, any> = {};
+
+  private columns: any[] = [];
+
+  private tables: any[] = [];
+
+  private databases: any[] = [];
+
+  private functions: any[] = [];
+
+  private dictionaries: any[] = [];
+
+  init(columns: any[], tables: any[], databases: any[], dictionaries: any[], functions: any[]) {
     console.log('Try init DS....');
     if (this._init) return;
 
@@ -34,7 +47,8 @@ export default class DatabaseStructure {
     this.dictionaries = dictionaries;
 
     this.columns.forEach(item => {
-      if (!isEmpty(item.default_kind) && isEmpty(item.default_type)) {
+      // if (!isEmpty(item.default_kind) && isEmpty(item.default_type)) {
+      if (item.default_kind && !item.default_type) {
         // Renamed column 'default_type' to 'default_kind' in system.columns tab… · yandex/ClickHouse@8d570e2
         item.default_type = item.default_kind;
       }
@@ -162,6 +176,7 @@ export default class DatabaseStructure {
     return this.databases;
   }
 
+  // @ts-ignore
   getFieldsByDatabase(database) {
     return this.all_db_fields[database];
   }
@@ -178,6 +193,7 @@ export default class DatabaseStructure {
     return this.uciq_dbtables;
   }
 
+  // @ts-ignore
   getAllFieldsInDatabase(database) {
     return this.uciq_fields[database];
   }
@@ -190,6 +206,7 @@ export default class DatabaseStructure {
     return this.columns;
   }
 
+  // @ts-ignore
   getForAceJS(dataBaseName) {
     const r = this.aceJSRules;
     r.fieldsList = this.getAllFieldsInDatabase(dataBaseName);

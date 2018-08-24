@@ -1,4 +1,4 @@
-import { Omit } from '@vzh/mobx-stores';
+import { Omit } from 'typelevel-ts';
 import { Props, InjectedProps } from './App';
 
 export type AppProps = Omit<Props, keyof InjectedProps>;

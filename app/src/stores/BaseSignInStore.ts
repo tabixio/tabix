@@ -18,18 +18,5 @@ export default abstract class BaseSignInStore<
   //     : super.getResponseErrorMessage(response);
   // }
 
-  signIn(_: History) {
-    return Promise.resolve();
-    // this.submit(this.model, () => authApi.login(this.model)).then(r =>
-    //   r.forEach(result => {
-    //     this.rootStore.appStore.updateToken(Option.of(result.accessToken));
-    //     this.rootStore.appStore.loadData();
-
-    //     const {
-    //       state: { from: path } = { from: routePaths.home.path },
-    //     } = history.location as FromLocationDescriptorObject;
-    //     history.push(path);
-    //   })
-    // );
-  }
+  abstract signIn(_: History): Promise<any>;
 }

@@ -29,8 +29,8 @@ class ServerSignInForm extends React.Component<RoutedProps> {
 
   render() {
     const {
-      store,
       store: {
+        model,
         model: { changeField, errors },
       },
       className,
@@ -45,7 +45,7 @@ class ServerSignInForm extends React.Component<RoutedProps> {
           <Input
             name="connectionName"
             placeholder="Connection name"
-            value={store.model.connectionName}
+            value={model.connectionName}
             onChange={changeField}
           />
         </Form.Item>
@@ -57,7 +57,7 @@ class ServerSignInForm extends React.Component<RoutedProps> {
           <Input
             name="connectionUrl"
             placeholder="Connection url"
-            value={store.model.connectionUrl}
+            value={model.connectionUrl}
             onChange={changeField}
           />
         </Form.Item>
@@ -66,7 +66,7 @@ class ServerSignInForm extends React.Component<RoutedProps> {
           <Input
             name="configKey"
             placeholder="Config key"
-            value={store.model.configKey}
+            value={model.configKey}
             onChange={changeField}
           />
         </Form.Item>
@@ -75,7 +75,7 @@ class ServerSignInForm extends React.Component<RoutedProps> {
           <Input
             name="username"
             placeholder="Login"
-            value={store.model.username}
+            value={model.username}
             onChange={changeField}
           />
         </Form.Item>
@@ -85,7 +85,7 @@ class ServerSignInForm extends React.Component<RoutedProps> {
             name="password"
             type="password"
             placeholder="Password"
-            value={store.model.password}
+            value={model.password}
             onChange={changeField}
           />
         </Form.Item>

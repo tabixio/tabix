@@ -1,11 +1,53 @@
+// @ts-ignore
 import { map, maxBy, isEmpty, is } from 'ramda';
 
+/* eslint-disable */
+
 export default class DataDecorator {
-  /**
-   *
-   * @param result
-   * @param sourceType
-   */
+  private _humanSortCols: any[] = [];
+
+  private _sortBy = false;
+
+  private _sortOrder = false;
+
+  private data: any;
+
+  private text: any = false;
+
+  // @ts-ignore
+  private sourceType: any;
+
+  // @ts-ignore
+  private progressQuery = '';
+
+  // @ts-ignore
+  private sort = false;
+
+  // @ts-ignore
+  private sortOrder = false;
+
+  private meta: any;
+
+  private prepareInt64Cols: any = {};
+
+  private query: any;
+
+  private error: any = false;
+
+  // @ts-ignore
+  private draw: any;
+
+  // @ts-ignore
+  private rows: any;
+
+  // @ts-ignore
+  private position: any;
+
+  // порядковый номер
+  // @ts-ignore
+  private countAll: any; // всего запросов в выполнении
+
+  // @ts-ignore
   constructor(result, sourceType) {
     if (result.totals && result.data) {
       result.data.push(result.totals);
@@ -32,8 +74,7 @@ export default class DataDecorator {
         .replace(/>/g, '&gt;');
     }
     // --------------------------------------------------
-    if (!sourceType) sourceType = 'ch';
-    this.sourceType = sourceType;
+    this.sourceType = sourceType || 'ch';
 
     this.meta = result.meta;
     this.prepareInt64Cols = {};
@@ -74,18 +115,22 @@ export default class DataDecorator {
     this.countAll = result.countAllQuery; // всего запросов в выполнении
   }
 
+  // @ts-ignore
   prepareInt64() {
+    // @ts-ignore
     const $canConvert = [];
 
     if (!(Array.isArray(this.data) && this.data.length > 1)) return false;
 
     this.prepareInt64Cols = {};
+    // @ts-ignore
     this.meta.forEach(cell => {
       if (cell.type.includes('Int64') && !cell.type.includes('Array(')) {
         //  max value
 
         let $v = 0;
         try {
+          // @ts-ignore
           const comparator = o => {
             if (!isEmpty(o[cell.name])) return parseInt(o[cell.name]);
           };
@@ -94,11 +139,13 @@ export default class DataDecorator {
           console.error('prepareInt64,maxBy', e, 'in cell', cell, 'meta', this.meta);
         }
 
+        // @ts-ignore
         const $max = parseInt($v);
 
         // 11117311154531369000
 
         if ($max < Number.MAX_SAFE_INTEGER) {
+          // @ts-ignore
           $canConvert.push(cell.name);
           this.prepareInt64Cols[cell.name] = true;
         }
@@ -109,7 +156,9 @@ export default class DataDecorator {
 
     // console.log("$canConvert, convert to Int",$canConvert);
 
+    // @ts-ignore
     this.data = map(o => {
+      // @ts-ignore
       $canConvert.forEach(cell => {
         o[cell] = parseInt(o[cell]);
       });
@@ -117,6 +166,7 @@ export default class DataDecorator {
     }, this.data);
   }
 
+  // @ts-ignore
   isNormalInt64Col(coll) {
     return this.prepareInt64Cols[coll];
   }
@@ -127,15 +177,18 @@ export default class DataDecorator {
    * @param data
    * @returns {DataDecorator}
    */
+  // @ts-ignore
   static convertArrayToDataProvider(data, sourceType) {
-    const result = {};
-    result.data = data;
-    result.meta = [];
-    result.error = false;
-    result.query = { drawCommands: false };
-    result.rows = data.length;
-    result.position = 0;
-    result.countAll = 0;
+    const result = {
+      data,
+      meta: [],
+      error: false,
+      query: { drawCommands: false },
+      rows: data.length,
+      position: 0,
+      countAll: 0,
+    };
+    // @ts-ignore
     Object.keys(data[0]).map(key => result.meta.push({ name: key, type: 'string' }));
     return new DataDecorator(result, sourceType);
   }
@@ -158,6 +211,7 @@ export default class DataDecorator {
     return this.error;
   }
 
+  // @ts-ignore
   update(data) {
     this.data = data;
   }
@@ -178,10 +232,12 @@ export default class DataDecorator {
     return this._humanSortCols;
   }
 
+  // @ts-ignore
   setColumnsHumanSort($cols) {
     this._humanSortCols = $cols;
   }
 
+  // @ts-ignore
   setSort($coll, $order) {
     // column : Number - this index of column, by which you want to sorter the table.
     // sortOrder : Boolean - defines the order of sorting (true for ascending, false for descending).

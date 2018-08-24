@@ -1,4 +1,7 @@
+import Connection from '../../Connection';
 import DatabaseStructure from '../DatabaseStructure';
+
+/* eslint-disable */
 
 export default class CoreProvider {
   // const CURRENT_BASE_KEY = 'currentBaseConfig';
@@ -8,9 +11,9 @@ export default class CoreProvider {
 
   readonly databaseStructure: DatabaseStructure;
 
-  readonly connection: any;
+  readonly connection: Connection;
 
-  constructor(connection: any) {
+  constructor(connection: Connection) {
     this.connection = connection;
     this.databaseStructure = new DatabaseStructure();
     // connection.login
@@ -27,7 +30,9 @@ export default class CoreProvider {
     return 'default';
   }
 
+  // @ts-ignore
   hashCode(s) {
+    // @ts-ignore
     return s.split('').reduce((a, b) => {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
@@ -48,22 +53,23 @@ export default class CoreProvider {
     return this.connection;
   }
 
-  getPassword() {
-    return this.connection.password;
-  }
+  // getPassword() {
+  //   return this.connection.password;
+  // }
 
-  getLogin() {
-    return this.connection.login;
-  }
+  // getLogin() {
+  //   return this.connection.login;
+  // }
 
-  getHost() {
-    return this.connection.host;
-  }
+  // getHost() {
+  //   return this.connection.host;
+  // }
 
   isTabixServer() {
     return false;
   }
 
+  // @ts-ignore
   makeSqlQuery(sql, format) {
     let query = '';
 
@@ -84,6 +90,7 @@ export default class CoreProvider {
    * @param url
    * @returns {Promise<any>}
    */
+  // @ts-ignore
   xhr(q, url) {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -109,47 +116,51 @@ export default class CoreProvider {
     });
   }
 
-  /**
-   * @param q
-   * @returns {Promise<Response>}
-   */
+  // @ts-ignore
   request(q) {
     return fetch(q)
-      .then(response => {
-        const contentType = response.headers.get('content-type');
-        if (
-          contentType.includes('text/tab-separated-values') &&
-          response.status == 200 &&
-          response.statusText.toLowerCase() == 'ok'
-        ) {
-          // if insert
-          return 'OK';
-        }
-        if (
-          contentType.includes('text/plain') &&
-          response.status == 200 &&
-          response.statusText.toLowerCase() == 'ok'
-        ) {
-          // if create table && drop table
-          return 'OK';
-        }
-        if (
-          contentType &&
-          contentType.includes('application/json') &&
-          response.status >= 200 &&
-          response.status < 300
-        ) {
-          return Promise.resolve(response);
-        }
-        return response.text().then(Promise.reject.bind(Promise));
-      })
       .then(
+        // @ts-ignore
+        response => {
+          const contentType = response.headers.get('content-type');
+          if (
+            // @ts-ignore
+            contentType.includes('text/tab-separated-values') &&
+            response.status == 200 &&
+            response.statusText.toLowerCase() == 'ok'
+          ) {
+            // if insert
+            return 'OK';
+          }
+          if (
+            // @ts-ignore
+            contentType.includes('text/plain') &&
+            response.status == 200 &&
+            response.statusText.toLowerCase() == 'ok'
+          ) {
+            // if create table && drop table
+            return 'OK';
+          }
+          if (
+            contentType &&
+            contentType.includes('application/json') &&
+            response.status >= 200 &&
+            response.status < 300
+          ) {
+            return Promise.resolve(response);
+          }
+          return response.text().then(Promise.reject.bind(Promise));
+        }
+      )
+      .then(
+        // @ts-ignore
         response => {
           if (response === 'OK') {
             return 'OK';
           }
           return response.json();
         },
+        // @ts-ignore
         responseBody => Promise.reject(responseBody)
       );
   }

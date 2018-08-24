@@ -1,20 +1,24 @@
-import TabixServerProvider from './provider/TabixServerProvider';
+// import TabixServerProvider from './provider/TabixServerProvider';
+import Connection from '../Connection';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import DataDecorator from './DataDecorator';
 
-export default class API {
+/* eslint-disable */
+
+export default class Api {
   // const CURRENT_BASE_KEY = 'currentBaseConfig';
   // let _DatabaseStructure=new DatabaseStructure();
   // let database = null;
   // let connection = {};
 
-  readonly provider: DirectClickHouseProvider;
+  private readonly provider: DirectClickHouseProvider;
 
   private version?: Object = undefined;
 
-  constructor(connection) {
+  private isInitialized: boolean = false;
+
+  constructor(connection: Connection) {
     this.provider = new DirectClickHouseProvider(connection);
-    this._initDs = false;
   }
 
   getVersion() {
@@ -25,19 +29,20 @@ export default class API {
     return this.provider.getDatabase();
   }
 
-  getLogin() {
-    return this.provider.getLogin();
-  }
+  // getLogin() {
+  //   return this.provider.getLogin();
+  // }
 
-  getPassword() {
-    return this.provider.getPassword();
-  }
+  // getPassword() {
+  //   return this.provider.getPassword();
+  // }
 
-  getHost() {
-    return this.provider.getHost();
-  }
+  // getHost() {
+  //   return this.provider.getHost();
+  // }
 
-  useDatabase(db) {
+  useDatabase(db: any) {
+    // @ts-ignore
     this.provider.setDatabase(db);
   }
 
@@ -58,6 +63,7 @@ export default class API {
    * @param extend_settings
    * @returns {Promise<*>}
    */
+  // @ts-ignore
   async query(sql, withDatabase, format, extend_settings) {
     return this.provider.query(sql, withDatabase, format, extend_settings);
   }
@@ -76,6 +82,7 @@ export default class API {
    * @param extend_settings
    * @returns {Promise<DataDecorator>}
    */
+  // @ts-ignore
   async fetch(sql, withDatabase, format, extend_settings) {
     const data = await this.query(sql, withDatabase, format, extend_settings);
     return new DataDecorator(data, this.provider.getType());
@@ -90,17 +97,17 @@ export default class API {
     if (!this.version) {
       throw new Error('Can`t fetch version server');
     }
-    if (!this._initDs) {
-      this._initDs = await this.loadDatabaseStructure();
+    if (!this.isInitialized) {
+      this.isInitialized = await this.loadDatabaseStructure();
     }
-    return this._initDs;
+    return this.isInitialized;
   }
 
   /**
    * @returns {DatabaseStructure}
    */
   getDatabaseStructure() {
-    return this.provider.databaseStructure();
+    return this.provider.databaseStructure;
   }
 
   /**
@@ -119,6 +126,7 @@ export default class API {
     // let isInit =await this.loadDatabaseStructure();
     // console.log('dsInit',isInit);
 
+    // @ts-ignore
     const data = await this.fetch(
       'select number,sin(number) as sin,cos(number) as cos FROM system.numbers LIMIT 100'
     );

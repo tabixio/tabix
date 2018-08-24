@@ -60,4 +60,3 @@ Use components:
 * [Handsontable](https://github.com/handsontable/handsontable)
 * [Lodash](https://github.com/lodash/lodash) Copyright JS Foundation
 * [pivottable](https://github.com/nicolaskruchten/pivottable)
-
