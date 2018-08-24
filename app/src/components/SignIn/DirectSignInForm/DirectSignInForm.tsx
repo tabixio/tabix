@@ -21,16 +21,16 @@ type RoutedProps = Props & RouteComponentProps<any>;
 class DirectSignInForm extends React.Component<RoutedProps> {
   private submit = (event: React.FormEvent<any>) => {
     event.preventDefault();
+
     const { store, history } = this.props;
-    if (store.model.validate()) {
-      store.signIn(history);
-    }
+
+    store.signIn(history);
   };
 
   render() {
     const {
-      store,
       store: {
+        model,
         model: { changeField, errors },
       },
       className,
@@ -45,7 +45,7 @@ class DirectSignInForm extends React.Component<RoutedProps> {
           <Input
             name="connectionName"
             placeholder="Connection name"
-            value={store.model.connectionName}
+            value={model.connectionName}
             onChange={changeField}
           />
         </Form.Item>
@@ -57,7 +57,7 @@ class DirectSignInForm extends React.Component<RoutedProps> {
           <Input
             name="connectionUrl"
             placeholder="Connection url"
-            value={store.model.connectionUrl}
+            value={model.connectionUrl}
             onChange={changeField}
           />
         </Form.Item>
@@ -66,7 +66,7 @@ class DirectSignInForm extends React.Component<RoutedProps> {
           <Input
             name="username"
             placeholder="Login"
-            value={store.model.username}
+            value={model.username}
             onChange={changeField}
           />
         </Form.Item>
@@ -76,7 +76,7 @@ class DirectSignInForm extends React.Component<RoutedProps> {
             name="password"
             type="password"
             placeholder="Password"
-            value={store.model.password}
+            value={model.password}
             onChange={changeField}
           />
         </Form.Item>
@@ -88,7 +88,7 @@ class DirectSignInForm extends React.Component<RoutedProps> {
           <Input
             name="params"
             placeholder="Extend params query"
-            value={store.model.params}
+            value={model.params}
             onChange={changeField}
           />
         </Form.Item>

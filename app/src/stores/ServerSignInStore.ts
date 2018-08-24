@@ -1,3 +1,4 @@
+import { History } from 'history';
 import { observable } from 'mobx';
 import { LocalUIStore } from '@vzh/mobx-stores';
 import { ServerSignInModel } from 'models/SignInModel';
@@ -11,5 +12,9 @@ export default class ServerSignInStore extends BaseSignInStore<ServerSignInModel
   constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
     super(rootStore, uiState);
     initialState && console.log(initialState);
+  }
+
+  signIn(_: History) {
+    return Promise.resolve();
   }
 }

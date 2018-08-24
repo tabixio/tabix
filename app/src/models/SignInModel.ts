@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { None } from 'funfix-core';
 import { required } from 'valtors';
-import { ValidableStoreModel } from '@vzh/mobx-stores';
+import { ValidableStoreModel, SerializableModel, JSONModel } from '@vzh/mobx-stores';
 
 export interface BaseSignInEntity {
   connectionName: string;
@@ -38,7 +38,7 @@ export abstract class BaseSignInModel<T extends BaseSignInEntity> extends Valida
 }
 
 export class DirectSignInModel extends BaseSignInModel<DirectSignInEntity>
-  implements DirectSignInEntity {
+  implements DirectSignInEntity, SerializableModel<DirectSignInEntity> {
   @observable
   params?: string;
 
@@ -50,6 +50,16 @@ export class DirectSignInModel extends BaseSignInModel<DirectSignInEntity>
       password: { error: None },
       params: { error: None },
     });
+  }
+
+  toJSON(): JSONModel<DirectSignInEntity> {
+    return {
+      connectionName: this.connectionName,
+      connectionUrl: this.connectionUrl,
+      username: this.username,
+      password: this.password,
+      // params: this.params,
+    };
   }
 }
 

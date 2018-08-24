@@ -3,7 +3,8 @@ import { LocalUIStore, SerializableModel, JSONModel } from '@vzh/mobx-stores';
 import ApiRequestableStore from './ApiRequestableStore';
 import RootStore from './RootStore';
 
-export default class AppStore extends ApiRequestableStore implements SerializableModel<AppStore> {
+export default class AppStore extends ApiRequestableStore
+  implements SerializableModel<Exclude<AppStore, Function>> {
   constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
     super(rootStore, uiState);
     if (initialState) {
@@ -22,6 +23,6 @@ export default class AppStore extends ApiRequestableStore implements Serializabl
   }
 
   toJSON(): JSONModel<AppStore> {
-    return {};
+    throw new Error('Method not implemented.');
   }
 }
