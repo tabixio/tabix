@@ -5,18 +5,9 @@ import { Provider } from 'mobx-react';
 import appEnv from '@vzh/configs/appEnv';
 import App, { AppProps } from 'views/App';
 import { RootStore } from 'stores';
+import { localStorage } from 'services';
 
 const appRootElement = document.getElementById('root')!;
-
-// Keep initial state in variable.
-const appState = window.__INITIAL_STATE__;
-
-// Delete node and variable with initial state after keeping initial state in variable.
-const initStateElement = document.getElementById('initialStateScript');
-if (initStateElement && initStateElement.parentNode) {
-  initStateElement.parentNode.removeChild(initStateElement);
-  delete window.__INITIAL_STATE__;
-}
 
 function render(
   container: HTMLElement,
@@ -34,7 +25,14 @@ function render(
   );
 }
 
-const rootStore = new RootStore(appState);
+const lastActiveConnection = localStorage.getLastActiveConnection();
+const rootStore = new RootStore({
+  appStore: {
+    connection: lastActiveConnection.orUndefined(),
+    connectionList: localStorage.getConnections(),
+  },
+});
+
 render(appRootElement, App, rootStore);
 
 if (module.hot) {

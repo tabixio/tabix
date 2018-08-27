@@ -5,6 +5,7 @@
     "class-methods-use-this": "off",
     "no-underscore-dangle": "off",
     "no-useless-constructor": "off",
+    "no-use-before-define": "off",
     "no-empty-function": ["error", { "allow": ["constructors"] }],
     "react/sort-comp": ["off"],
     "react/no-array-index-key": ["off"],
