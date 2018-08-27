@@ -1,3 +1,16 @@
-.name {
-  
+.root {
+  & :global(.ant-menu-item) {
+    height: auto;
+    line-height: 1;
+  }
+
+  & .title {
+    font-size: 1.5em;
+    padding: 0.25em 0;
+  }
+
+  & .subtitle {
+    font-size: 1em;
+    padding: 0.25em 0;
+  }
 }
