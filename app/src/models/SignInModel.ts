@@ -19,7 +19,7 @@ export interface ServerSignInEntity extends BaseSignInEntity {
 }
 
 export abstract class BaseSignInModel<T extends BaseSignInEntity> extends ValidableStoreModel<T>
-  implements BaseSignInEntity {
+  implements BaseSignInEntity, SerializableModel<T> {
   @required()
   @observable
   connectionName: string = '';
@@ -35,10 +35,12 @@ export abstract class BaseSignInModel<T extends BaseSignInEntity> extends Valida
   @required()
   @observable
   password: string = '';
+
+  abstract toJSON(): JSONModel<T>;
 }
 
 export class DirectSignInModel extends BaseSignInModel<DirectSignInEntity>
-  implements DirectSignInEntity, SerializableModel<DirectSignInEntity> {
+  implements DirectSignInEntity {
   @observable
   params?: string;
 
@@ -58,7 +60,7 @@ export class DirectSignInModel extends BaseSignInModel<DirectSignInEntity>
       connectionUrl: this.connectionUrl,
       username: this.username,
       password: this.password,
-      // params: this.params,
+      params: this.params,
     };
   }
 }
@@ -76,5 +78,15 @@ export class ServerSignInModel extends BaseSignInModel<ServerSignInEntity>
       password: { error: None },
       configKey: { error: None },
     });
+  }
+
+  toJSON(): JSONModel<ServerSignInEntity> {
+    return {
+      connectionName: this.connectionName,
+      connectionUrl: this.connectionUrl,
+      username: this.username,
+      password: this.password,
+      configKey: this.configKey,
+    };
   }
 }

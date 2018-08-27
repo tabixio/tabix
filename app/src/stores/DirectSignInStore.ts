@@ -1,3 +1,4 @@
+import { Omit } from 'typelevel-ts';
 import { History } from 'history';
 import { observable } from 'mobx';
 import { LocalUIStore, SerializableModel, JSONModel } from '@vzh/mobx-stores';
@@ -7,7 +8,7 @@ import RootStore from './RootStore';
 import BaseSignInStore from './BaseSignInStore';
 
 export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel>
-  implements SerializableModel<DirectSignInStore> {
+  implements SerializableModel<Omit<DirectSignInStore, 'uiStore'>> {
   @observable
   readonly model: DirectSignInModel = new DirectSignInModel();
 
@@ -17,7 +18,6 @@ export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel
   }
 
   private connect = async () => {
-    // @ts-ignore
     const api = new Api(this.model.toJSON());
     await api.init();
     console.log(`Connection - OK, version:${api.getVersion()}`);
@@ -40,7 +40,7 @@ export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel
     );
   }
 
-  toJSON(): JSONModel<DirectSignInStore> {
-    throw new Error('Method not implemented.');
+  toJSON(): JSONModel<Omit<DirectSignInStore, 'uiStore'>> {
+    return { model: this.model.toJSON() };
   }
 }
