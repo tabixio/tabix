@@ -20,10 +20,6 @@ export default class RootStore {
       new LocalUIStore(this),
       initialState.directSignInStore
     );
-    this.directSignInStore.model.connectionName = 'test';
-    this.directSignInStore.model.connectionUrl = 'http://148.251.39.212:8123/';
-    this.directSignInStore.model.username = 'default';
-    this.directSignInStore.model.password = 'Tkd453EWStHRE';
 
     this.serverSignInStore = new ServerSignInStore(
       this,

@@ -4,24 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import appEnv from '@vzh/configs/appEnv';
 import App, { AppProps } from 'views/App';
-import { RootStore } from 'stores';
+import { initStores } from 'stores';
 
 const appRootElement = document.getElementById('root')!;
-
-// Keep initial state in variable.
-const appState = window.__INITIAL_STATE__;
-
-// Delete node and variable with initial state after keeping initial state in variable.
-const initStateElement = document.getElementById('initialStateScript');
-if (initStateElement && initStateElement.parentNode) {
-  initStateElement.parentNode.removeChild(initStateElement);
-  delete window.__INITIAL_STATE__;
-}
 
 function render(
   container: HTMLElement,
   Component: React.ComponentType<AppProps>,
-  store: RootStore
+  store: ReturnType<typeof initStores>
 ) {
   const supportsHistory = 'pushState' in window.history;
   return (appEnv.ssr ? ReactDOM.hydrate : ReactDOM.render)(
@@ -34,7 +24,8 @@ function render(
   );
 }
 
-const rootStore = new RootStore(appState);
+const rootStore = initStores();
+
 render(appRootElement, App, rootStore);
 
 if (module.hot) {
