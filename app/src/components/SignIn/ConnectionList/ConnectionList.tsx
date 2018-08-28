@@ -5,7 +5,7 @@ import { Connection } from 'services';
 import css from './ConnectionList.css';
 
 export interface Props {
-  connections: Connection[];
+  connections: ReadonlyArray<Connection>;
 }
 
 export default function ConnectionList({ connections }: Props) {

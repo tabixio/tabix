@@ -4,15 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import appEnv from '@vzh/configs/appEnv';
 import App, { AppProps } from 'views/App';
-import { RootStore } from 'stores';
-import { localStorage } from 'services';
+import { initStores } from 'stores';
 
 const appRootElement = document.getElementById('root')!;
 
 function render(
   container: HTMLElement,
   Component: React.ComponentType<AppProps>,
-  store: RootStore
+  store: ReturnType<typeof initStores>
 ) {
   const supportsHistory = 'pushState' in window.history;
   return (appEnv.ssr ? ReactDOM.hydrate : ReactDOM.render)(
@@ -25,13 +24,7 @@ function render(
   );
 }
 
-const lastActiveConnection = localStorage.getLastActiveConnection();
-const rootStore = new RootStore({
-  appStore: {
-    connection: lastActiveConnection.orUndefined(),
-    connectionList: localStorage.getConnections(),
-  },
-});
+const rootStore = initStores();
 
 render(appRootElement, App, rootStore);
 

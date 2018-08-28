@@ -6,12 +6,14 @@ import { DirectSignInStore, Stores } from 'stores';
 import { typedInject } from '@vzh/mobx-stores';
 import { error2status } from 'components/utils';
 import ButtonsContainer from '../ButtonsContainer';
+import { Connection } from 'services';
 
 interface InjectedProps {
   store: DirectSignInStore;
 }
 
 export interface Props extends InjectedProps {
+  connection?: Connection;
   className?: string;
 }
 
