@@ -1,10 +1,11 @@
+import { ConnectionType } from 'services';
 import CoreProvider from './CoreProvider';
 
 /* eslint-disable */
 
 export default class DirectClickHouseProvider extends CoreProvider {
   getType() {
-    return 'direct';
+    return ConnectionType.direct;
   }
 
   // @ts-ignore
@@ -12,7 +13,9 @@ export default class DirectClickHouseProvider extends CoreProvider {
     let url = '';
     const connection = this.getConnection();
     let httpProto = '';
-    if (!(connection.connectionUrl.indexOf('://') > 0 || connection.connectionUrl.indexOf('/') == 0)) {
+    if (
+      !(connection.connectionUrl.indexOf('://') > 0 || connection.connectionUrl.indexOf('/') == 0)
+    ) {
       httpProto = 'http://';
     }
     // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h

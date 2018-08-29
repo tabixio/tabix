@@ -1,5 +1,5 @@
 // import TabixServerProvider from './provider/TabixServerProvider';
-import Connection from '../Connection';
+import { IConnection } from '../Connection';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import DataDecorator from './DataDecorator';
 
@@ -17,7 +17,7 @@ export default class Api {
 
   private isInitialized: boolean = false;
 
-  constructor(connection: Connection) {
+  constructor(connection: IConnection) {
     this.provider = new DirectClickHouseProvider(connection);
   }
 

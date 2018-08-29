@@ -1,13 +1,13 @@
 import { History } from 'history';
 import { observable } from 'mobx';
 import { LocalUIStore } from '@vzh/mobx-stores';
-import { ServerSignInModel } from 'models/SignInModel';
+import { ServerConnectionModel } from 'models/ConnectionModel';
 import RootStore from './RootStore';
 import BaseSignInStore from './BaseSignInStore';
 
-export default class ServerSignInStore extends BaseSignInStore<ServerSignInModel> {
+export default class ServerSignInStore extends BaseSignInStore<ServerConnectionModel> {
   @observable
-  readonly model: ServerSignInModel = new ServerSignInModel();
+  readonly model: ServerConnectionModel = new ServerConnectionModel({});
 
   constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
     super(rootStore, uiState);

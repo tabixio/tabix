@@ -1,41 +1,30 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Form, Input, Button } from 'antd';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { DirectSignInStore, Stores } from 'stores';
-import { typedInject } from '@vzh/mobx-stores';
 import { error2status } from 'components/utils';
+import { DirectConnectionModel } from 'models';
 import ButtonsContainer from '../ButtonsContainer';
-import { Connection } from 'services';
 
-interface InjectedProps {
-  store: DirectSignInStore;
-}
-
-export interface Props extends InjectedProps {
-  connection?: Connection;
+export interface Props {
+  model: DirectConnectionModel;
   className?: string;
 }
 
-type RoutedProps = Props & RouteComponentProps<any>;
-
 @observer
-class DirectSignInForm extends React.Component<RoutedProps> {
+export default class DirectSignInForm extends React.Component<Props> {
   private submit = (event: React.FormEvent<any>) => {
     event.preventDefault();
-
-    const { store, history } = this.props;
-
-    store.signIn(history);
+    const { model } = this.props;
+    model.validate();
+    // const { store, history } = this.props;
+    // store.signIn(history);
   };
 
   render() {
     const {
-      store: {
-        model,
-        model: { changeField, errors },
-      },
       className,
+      model,
+      model: { changeField, errors },
     } = this.props;
 
     return (
@@ -109,9 +98,3 @@ class DirectSignInForm extends React.Component<RoutedProps> {
     );
   }
 }
-
-export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({
-    store: store.directSignInStore,
-  }))(DirectSignInForm)
-);
