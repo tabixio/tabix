@@ -1,5 +1,5 @@
 import { Option, None, Some } from 'funfix-core';
-import Connection from './Connection';
+import { Connection, DirectConnection, ConnectionType } from './Connection';
 
 const storageKey = 'tabix.connection';
 const connectionListKey = `${storageKey}.list`;
@@ -12,18 +12,21 @@ export function getConnections(): Connection[] {
     //   .getOrElse([]);
     return [
       {
+        type: ConnectionType.direct,
         connectionName: 'test',
         connectionUrl: 'http://148.251.39.212:8123/',
         username: 'default',
         password: 'Tkd453EWStHRE',
       },
       {
+        type: ConnectionType.server,
         connectionName: '2',
         connectionUrl: 'url',
         username: '',
         password: '',
       },
       {
+        type: ConnectionType.server,
         connectionName: '3',
         connectionUrl: 'url',
         username: '',
@@ -41,7 +44,8 @@ export function getLastActiveConnection(): Option<Connection> {
     // return Option.of(window.localStorage.getItem(lastActiveKey)).flatMap(n =>
     //   Option.of(getConnections().find(c => c.connectionName === n))
     // );
-    return Some({
+    return Some<DirectConnection>({
+      type: ConnectionType.direct,
       connectionName: 'test',
       connectionUrl: 'http://148.251.39.212:8123/',
       username: 'default',

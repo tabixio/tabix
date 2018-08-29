@@ -1,12 +1,12 @@
 import { LocalUIStore, JSONModel } from '@vzh/mobx-stores';
-import DirectSignInStore from './DirectSignInStore';
+import SignInStore from './SignInStore';
 import ServerSignInStore from './ServerSignInStore';
 import AppStore from './AppStore';
 
 export default class RootStore {
   readonly appStore: AppStore;
 
-  readonly directSignInStore: DirectSignInStore;
+  readonly signInStore: SignInStore;
 
   readonly serverSignInStore: ServerSignInStore;
 
@@ -15,11 +15,7 @@ export default class RootStore {
 
     this.appStore = new AppStore(this, new LocalUIStore(this), initialState.appStore);
 
-    this.directSignInStore = new DirectSignInStore(
-      this,
-      new LocalUIStore(this),
-      initialState.directSignInStore
-    );
+    this.signInStore = new SignInStore(this, new LocalUIStore(this), initialState.signInStore);
 
     this.serverSignInStore = new ServerSignInStore(
       this,

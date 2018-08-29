@@ -5,9 +5,6 @@ export default function initStores() {
   const lastActiveConnection = localStorage.getLastActiveConnection();
 
   return new RootStore({
-    appStore: {
-      connection: lastActiveConnection.orUndefined(),
-      connectionList: localStorage.getConnections(),
-    },
+    appStore: { connection: lastActiveConnection.orUndefined() },
   });
 }

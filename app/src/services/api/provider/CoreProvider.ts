@@ -1,4 +1,4 @@
-import Connection from '../../Connection';
+import { IConnection } from '../../Connection';
 import DatabaseStructure from '../DatabaseStructure';
 
 /* eslint-disable */
@@ -11,9 +11,9 @@ export default class CoreProvider {
 
   readonly databaseStructure: DatabaseStructure;
 
-  readonly connection: Connection;
+  readonly connection: IConnection;
 
-  constructor(connection: Connection) {
+  constructor(connection: IConnection) {
     this.connection = connection;
     this.databaseStructure = new DatabaseStructure();
     // connection.login

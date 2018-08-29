@@ -20,15 +20,11 @@ export default class AppStore extends ApiRequestableStore
     super(rootStore, uiState);
     if (initialState) {
       this.connection = Option.of(initialState.connection);
-      this.connectionList = initialState.connectionList;
     }
   }
 
   @observable
   connection: Option<Connection> = None;
-
-  @observable
-  connectionList: ReadonlyArray<Connection> = [];
 
   @computed
   get isLoggedIn(): boolean {
@@ -42,6 +38,6 @@ export default class AppStore extends ApiRequestableStore
   }
 
   toJSON(): JSONModel<AppStoreModel> {
-    return { connection: this.connection.orUndefined(), connectionList: this.connectionList };
+    return { connection: this.connection.orUndefined() };
   }
 }

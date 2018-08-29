@@ -1,9 +1,10 @@
 import { History } from 'history';
-import { BaseSignInModel, BaseSignInEntity } from 'models/SignInModel';
+import { BaseConnectionModel } from 'models';
+import { Connection } from 'services';
 import ApiRequestableStore from './ApiRequestableStore';
 
 export default abstract class BaseSignInStore<
-  Model extends BaseSignInModel<BaseSignInEntity>
+  Model extends BaseConnectionModel<Connection>
 > extends ApiRequestableStore {
   abstract readonly model: Model;
 

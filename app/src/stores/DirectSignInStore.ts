@@ -2,15 +2,17 @@ import { Omit } from 'typelevel-ts';
 import { History } from 'history';
 import { observable } from 'mobx';
 import { LocalUIStore, SerializableModel, JSONModel } from '@vzh/mobx-stores';
-import { DirectSignInModel } from 'models/SignInModel';
+import { DirectConnectionModel } from 'models/ConnectionModel';
 import { Api } from 'services';
 import RootStore from './RootStore';
 import BaseSignInStore from './BaseSignInStore';
 
-export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel>
-  implements SerializableModel<Omit<DirectSignInStore, 'uiStore'>> {
+type Model = Omit<DirectSignInStore, 'uiStore'>;
+
+export default class DirectSignInStore extends BaseSignInStore<DirectConnectionModel>
+  implements SerializableModel<Model> {
   @observable
-  readonly model: DirectSignInModel = new DirectSignInModel();
+  readonly model: DirectConnectionModel = new DirectConnectionModel({});
 
   constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
     super(rootStore, uiState);
@@ -40,7 +42,7 @@ export default class DirectSignInStore extends BaseSignInStore<DirectSignInModel
     );
   }
 
-  toJSON(): JSONModel<Omit<DirectSignInStore, 'uiStore'>> {
+  toJSON(): JSONModel<Model> {
     return { model: this.model.toJSON() };
   }
 }
