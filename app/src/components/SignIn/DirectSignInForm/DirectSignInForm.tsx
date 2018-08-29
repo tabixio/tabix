@@ -1,13 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Form, Input, Button } from 'antd';
-import { error2status } from 'components/utils';
+import { Form, Input } from 'antd';
 import { DirectConnectionModel } from 'models';
-import ButtonsContainer from '../ButtonsContainer';
+import { error2status } from 'components/utils';
+import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
 
-export interface Props {
+export interface Props extends ActionButtonsProps {
   model: DirectConnectionModel;
-  className?: string;
 }
 
 @observer
@@ -22,13 +21,13 @@ export default class DirectSignInForm extends React.Component<Props> {
 
   render() {
     const {
-      className,
       model,
       model: { changeField, errors },
+      ...rest
     } = this.props;
 
     return (
-      <Form layout="vertical" className={className} onSubmit={this.submit}>
+      <Form layout="vertical" onSubmit={this.submit}>
         <Form.Item
           help="For example: dev"
           validateStatus={error2status(errors.connectionName.error.nonEmpty())}
@@ -85,14 +84,7 @@ export default class DirectSignInForm extends React.Component<Props> {
         </Form.Item>
 
         <Form.Item>
-          <ButtonsContainer>
-            <Button block type="primary" htmlType="submit">
-              SIGN IN
-            </Button>
-            <Button block type="danger">
-              DELETE
-            </Button>
-          </ButtonsContainer>
+          <ActionButtons {...rest} />
         </Form.Item>
       </Form>
     );

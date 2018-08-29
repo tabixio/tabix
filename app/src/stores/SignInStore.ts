@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 import { LocalUIStore } from '@vzh/mobx-stores';
-import { Connection, localStorage, ConnectionType } from 'services';
+import { Connection, localStorage, Api, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
 import ApiRequestableStore from './ApiRequestableStore';
 import RootStore from './RootStore';
@@ -19,9 +19,8 @@ export default class SignInStore extends ApiRequestableStore {
 
   @action
   loadConnections() {
-    return this.request(() => Promise.resolve(localStorage.getConnections())).then(_ =>
+    return this.request(async () => localStorage.getConnections()).then(_ =>
       _.forEach(list => {
-        // console.log(list);
         this.connectionList = list.map(ConnectionModel.of);
       })
     );
@@ -32,10 +31,38 @@ export default class SignInStore extends ApiRequestableStore {
     this.selectedConnection = ConnectionModel.of(connection);
   }
 
+  private getNewConnectionName = () => `CONNECTION ${this.connectionList.length + 1}`;
+
   @action
-  addNewConnection = () => {
-    this.connectionList = this.connectionList.concat(
-      ConnectionModel.of({ type: ConnectionType.direct, connectionName: 'CONNECTION 1' })
+  addNewConnection = () =>
+    this.request(async () => {
+      const con = ConnectionModel.of({
+        type: this.selectedConnection.type,
+        connectionName: this.getNewConnectionName(),
+      });
+      this.connectionList = this.connectionList.concat(con);
+      this.setSelectedConnection(con);
+      localStorage.saveConnections(this.connectionList);
+    });
+
+  @action
+  deleteSelectedConnection = () => {
+    this.connectionList = this.connectionList.filter(
+      c => c.connectionName !== this.selectedConnection.connectionName
     );
+    this.setSelectedConnection(
+      isDirectConnection(this.selectedConnection)
+        ? ConnectionModel.DirectEmpty
+        : ConnectionModel.ServerEmpty
+    );
+    localStorage.saveConnections(this.connectionList);
+  };
+
+  connect = async () => {
+    const api = new Api(this.selectedConnection.toJSON());
+    await api.init();
+    console.log(`Connection - OK, version:${api.getVersion()}`);
+    // обработка структуры происходит в loginMiddleware
+    return api.getDatabaseStructure();
   };
 }

@@ -24,8 +24,8 @@ export interface ServerConnection extends IConnection {
 
 export type Connection = DirectConnection | ServerConnection;
 
-export function isDirectConnection(
-  connection: Partial<Omit<Connection, 'type'>> & Pick<Connection, 'type'>
-): connection is DirectConnection {
+export type PartialConnection = Partial<Omit<Connection, 'type'>> & Pick<Connection, 'type'>;
+
+export function isDirectConnection(connection: PartialConnection): connection is DirectConnection {
   return connection.type === ConnectionType.direct;
 }

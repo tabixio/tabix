@@ -1,43 +1,33 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
-import { ServerSignInStore, Stores } from 'stores';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { Form, Input } from 'antd';
 import { observer } from 'mobx-react';
-import { typedInject } from '@vzh/mobx-stores';
+import { ServerConnectionModel } from 'models';
 import { error2status } from 'components/utils';
-import ButtonsContainer from '../ButtonsContainer';
+import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
 
-interface InjectedProps {
-  store: ServerSignInStore;
+export interface Props extends ActionButtonsProps {
+  model: ServerConnectionModel;
 }
-
-export interface Props extends InjectedProps {
-  className?: string;
-}
-
-type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
-class ServerSignInForm extends React.Component<RoutedProps> {
+export default class ServerSignInForm extends React.Component<Props> {
   private submit = (event: React.FormEvent<any>) => {
     event.preventDefault();
-    const { store, history } = this.props;
-    if (store.model.validate()) {
-      store.signIn(history);
-    }
+    // const { store, history } = this.props;
+    // if (store.model.validate()) {
+    // store.signIn(history);
+    // }
   };
 
   render() {
     const {
-      store: {
-        model,
-        model: { changeField, errors },
-      },
-      className,
+      model,
+      model: { changeField, errors },
+      ...rest
     } = this.props;
 
     return (
-      <Form layout="vertical" className={className} onSubmit={this.submit}>
+      <Form layout="vertical" onSubmit={this.submit}>
         <Form.Item
           help="For example: dev"
           validateStatus={error2status(errors.connectionName.error.nonEmpty())}
@@ -91,22 +81,9 @@ class ServerSignInForm extends React.Component<RoutedProps> {
         </Form.Item>
 
         <Form.Item>
-          <ButtonsContainer>
-            <Button block type="primary" htmlType="submit">
-              SIGN IN
-            </Button>
-            <Button block type="danger">
-              DELETE
-            </Button>
-          </ButtonsContainer>
+          <ActionButtons {...rest} />
         </Form.Item>
       </Form>
     );
   }
 }
-
-export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({
-    store: store.serverSignInStore,
-  }))(ServerSignInForm)
-);

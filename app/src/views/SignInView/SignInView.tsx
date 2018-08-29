@@ -30,7 +30,7 @@ class SignInView extends React.Component<RoutedProps> {
   }
 
   private onSelectConnection = (connection: Connection) => {
-    console.log(JSON.stringify(connection));
+    // console.log(JSON.stringify(connection));
     const { store } = this.props;
     store.setSelectedConnection(connection);
   };
@@ -43,14 +43,14 @@ class SignInView extends React.Component<RoutedProps> {
   };
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     const { store } = this.props;
 
     return (
       <Page column={false}>
         <Flex alignItems="stretch">
           <Layout>
-            <Layout.Sider>
+            <Layout.Sider width="250">
               <ConnectionList
                 selectedConnection={store.selectedConnection}
                 connections={store.connectionList}
@@ -82,11 +82,21 @@ class SignInView extends React.Component<RoutedProps> {
           >
             <Tabs.TabPane tab="DIRECT CH" key={ConnectionType.direct}>
               {isDirectConnection(store.selectedConnection) && (
-                <DirectSignInForm model={store.selectedConnection} />
+                <DirectSignInForm
+                  model={store.selectedConnection}
+                  onDelete={store.deleteSelectedConnection}
+                  deleteEnabled={!!store.selectedConnection.connectionName}
+                />
               )}
             </Tabs.TabPane>
             <Tabs.TabPane tab="TABIX.SERVER" key={ConnectionType.server}>
-              {!isDirectConnection(store.selectedConnection) && <ServerSignInForm />}
+              {!isDirectConnection(store.selectedConnection) && (
+                <ServerSignInForm
+                  model={store.selectedConnection}
+                  onDelete={store.deleteSelectedConnection}
+                  deleteEnabled={!!store.selectedConnection.connectionName}
+                />
+              )}
             </Tabs.TabPane>
           </Tabs>
         </Flex>
