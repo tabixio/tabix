@@ -1,6 +1,5 @@
 import { observable } from 'mobx';
 import { None } from 'funfix-core';
-import { Omit } from 'typelevel-ts';
 import { required } from 'valtors';
 import { ValidableStoreModel, SerializableModel, JSONModel } from '@vzh/mobx-stores';
 import {
@@ -10,6 +9,7 @@ import {
   ServerConnection,
   isDirectConnection,
   ConnectionType,
+  PartialConnection,
 } from 'services';
 
 export abstract class BaseConnectionModel<T extends Connection> extends ValidableStoreModel<T>
@@ -106,10 +106,15 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
 }
 
 const ConnectionModel = {
+  // Can edited and saved
   DirectEmpty: new DirectConnectionModel({ type: ConnectionType.direct }),
   ServerEmpty: new ServerConnectionModel({ type: ConnectionType.server }),
 
-  of(connection: Partial<Omit<Connection, 'type'>> & Pick<Connection, 'type'>) {
+  of(connection: PartialConnection) {
+    if ((connection as ConnectionModel).changeField) {
+      return connection as ConnectionModel;
+    }
+
     return isDirectConnection(connection)
       ? new DirectConnectionModel(connection)
       : new ServerConnectionModel(connection);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex } from 'reflexy';
-import { Menu } from 'antd';
+import { Menu, Icon } from 'antd';
 import { SelectParam } from 'antd/lib/menu';
 import { Connection } from 'services';
 import css from './ConnectionList.css';
@@ -22,6 +22,7 @@ export default class ConnectionList extends React.Component<Props> {
 
   render() {
     const { connections, selectedConnection } = this.props;
+
     const selectedKeys =
       selectedConnection && selectedConnection.connectionName
         ? [selectedConnection.connectionName]
@@ -37,9 +38,12 @@ export default class ConnectionList extends React.Component<Props> {
       >
         {connections.map(c => (
           <Menu.Item key={c.connectionName}>
-            <Flex column>
-              <div className={css['title']}>{c.connectionName}</div>
-              <div className={css['subtitle']}>{c.connectionUrl}</div>
+            <Flex alignItems="center" justifyContent="space-between">
+              <Flex column>
+                <div className={css['title']}>{c.connectionName}</div>
+                <div className={css['subtitle']}>{c.connectionUrl}</div>
+              </Flex>
+              <Icon type="ellipsis" />
             </Flex>
           </Menu.Item>
         ))}
