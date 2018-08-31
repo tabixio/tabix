@@ -10,56 +10,40 @@ export function getConnections(): Connection[] {
     return Option.of(window.localStorage.getItem(connectionListKey))
       .map(JSON.parse)
       .getOrElse([]);
-    // return [
-    //   {
-    //     type: ConnectionType.direct,
-    //     connectionName: 'test',
-    //     connectionUrl: 'http://148.251.39.212:8123/',
-    //     username: 'default',
-    //     password: 'Tkd453EWStHRE',
-    //   },
-    //   {
-    //     type: ConnectionType.server,
-    //     connectionName: '2',
-    //     connectionUrl: 'url',
-    //     username: '',
-    //     password: '',
-    //   },
-    //   {
-    //     type: ConnectionType.server,
-    //     connectionName: '3',
-    //     connectionUrl: 'url',
-    //     username: '',
-    //     password: '',
-    //   },
-    // ];
   } catch (e) {
     console.error(e);
     return [];
   }
 }
 
+export function saveConnections(connections: ReadonlyArray<Connection>) {
+  try {
+    window.localStorage.setItem(connectionListKey, JSON.stringify(connections));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function getLastActiveConnection(): Option<Connection> {
   try {
-    return Option.of(window.localStorage.getItem(lastActiveKey)).flatMap(n =>
-      Option.of(getConnections().find(c => c.connectionName === n))
-    );
-    // return Some<DirectConnection>({
-    //   type: ConnectionType.direct,
-    //   connectionName: 'test',
-    //   connectionUrl: 'http://148.251.39.212:8123/',
-    //   username: 'default',
-    //   password: 'Tkd453EWStHRE',
-    // });
+    return Option.of(window.localStorage.getItem(lastActiveKey))
+      .map(str => JSON.parse(str))
+      .flatMap(lastConnection =>
+        Option.of(getConnections().find(c => c.connectionName === lastConnection.connectionName))
+      );
   } catch (e) {
     console.error(e);
     return None;
   }
 }
 
-export function saveConnections(connections: ReadonlyArray<Connection>) {
+export function saveLastActiveConnection(connection?: Connection) {
   try {
-    window.localStorage.setItem(connectionListKey, JSON.stringify(connections));
+    if (!connection) {
+      window.localStorage.removeItem(lastActiveKey);
+      return;
+    }
+    window.localStorage.setItem(lastActiveKey, JSON.stringify(connection));
   } catch (e) {
     console.error(e);
   }

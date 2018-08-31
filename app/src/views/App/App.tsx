@@ -2,13 +2,13 @@ import React from 'react';
 import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import { Switch, withRouter, RouteComponentProps, Redirect } from 'react-router';
-import { AuthorizationProvider, NotLoggedInRoute } from '@vzh/react-auth';
+import { AuthorizationProvider, NotLoggedInRoute, LoggedInRoute } from '@vzh/react-auth';
 import { typedInject } from '@vzh/mobx-stores';
 
 import 'assets/styles/global.css';
 import { AppStore, Stores } from 'stores';
 import { routePaths } from 'routes';
-// import HomeView from 'views/HomeView';
+import DashboardView from 'views/DashboardView';
 import SignInView from 'views/SignInView';
 
 export interface InjectedProps {
@@ -19,6 +19,7 @@ export interface Props extends InjectedProps {}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
+@observer
 class App extends React.Component<RoutedProps> {
   private loadingReaction: IReactionDisposer | null = null;
 
@@ -39,7 +40,7 @@ class App extends React.Component<RoutedProps> {
       loading => this.toggleAppLoader(loading)
     );
 
-    store.loadData();
+    // store.loadData();
   }
 
   componentWillUnmount() {
@@ -69,14 +70,15 @@ class App extends React.Component<RoutedProps> {
         notLoggedInRedirectTo={routePaths.home.path}
       >
         <Switch>
-          {/* <Route exact path={routePaths.home.path} component={HomeView} /> */}
-
-          <NotLoggedInRoute exact path={routePaths.home.path}>
-            <Redirect to={routePaths.signIn.path} />
-          </NotLoggedInRoute>
+          <LoggedInRoute exact path={routePaths.home.path}>
+            <Redirect to={routePaths.dashboard.path} />
+          </LoggedInRoute>
 
           <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
-          {/* <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} /> */}
+
+          <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
+
+          <Redirect to={routePaths.home.path} />
           {/* <Route component={NotFoundView} /> */}
         </Switch>
       </AuthorizationProvider>
@@ -86,7 +88,5 @@ class App extends React.Component<RoutedProps> {
 
 // Need `withRouter` to work router with mobx `observer`.
 export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.appStore }))(
-    observer(App)
-  )
+  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.appStore }))(App)
 );

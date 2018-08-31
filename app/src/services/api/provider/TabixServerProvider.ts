@@ -1,8 +1,9 @@
+import { ServerConnection } from '../../Connection';
 import CoreProvider from './CoreProvider';
 
 /* eslint-disable */
 
-export default class TabixServerProvider extends CoreProvider {
+export default class TabixServerProvider extends CoreProvider<ServerConnection> {
   //     pushProjectState = (body) => {
   //     return fetchTabixServer('projectstate/push',body);
   // };
@@ -23,6 +24,7 @@ export default class TabixServerProvider extends CoreProvider {
   //     getDashboardsTree = (body) => {
   //     return fetchTabixServer('dashboards',body);
   // };
+  //@ts-ignore
   fetchQuery(sql, withDatabase, format, extend_settings) {
     return this.fetchTabixServer(
       'query',
@@ -33,6 +35,7 @@ export default class TabixServerProvider extends CoreProvider {
     );
   }
 
+  //@ts-ignore
   fetchTabixServer(action, body, extend_settings) {
     // if (!_.isObject(body)) body={};
     //
