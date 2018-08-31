@@ -1,9 +1,13 @@
+import { History } from 'history';
 import { observable, action } from 'mobx';
+import { Option } from 'funfix-core';
 import { LocalUIStore } from '@vzh/mobx-stores';
+import { FromLocationDescriptorObject } from '@vzh/react-auth';
 import { Connection, localStorage, Api, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
-import ApiRequestableStore from './ApiRequestableStore';
+import { routePaths } from 'routes';
 import RootStore from './RootStore';
+import ApiRequestableStore from './ApiRequestableStore';
 
 export default class SignInStore extends ApiRequestableStore {
   @observable
@@ -58,11 +62,26 @@ export default class SignInStore extends ApiRequestableStore {
     localStorage.saveConnections(this.connectionList);
   };
 
-  connect = async () => {
-    const api = new Api(this.selectedConnection.toJSON());
-    await api.init();
-    console.log(`Connection - OK, version:${api.getVersion()}`);
-    // обработка структуры происходит в loginMiddleware
-    return api.getDatabaseStructure();
-  };
+  @action
+  signIn = (history: History) =>
+    this.submit(this.selectedConnection, async () => {
+      const api = new Api(this.selectedConnection.toJSON());
+      await api.init();
+      console.log(`Connection - OK, version:${api.getVersion()}`);
+      // обработка структуры происходит в loginMiddleware
+      // return api.getDatabaseStructure();
+      return api.provider.getConnection();
+    }).then(r =>
+      r.forEach(result => {
+        console.log('signIn', result);
+
+        this.rootStore.appStore.updateConnection(Option.of(result));
+        // this.rootStore.appStore.loadData();
+
+        const {
+          state: { from: path } = { from: routePaths.home.path },
+        } = history.location as FromLocationDescriptorObject;
+        history.push(path);
+      })
+    );
 }

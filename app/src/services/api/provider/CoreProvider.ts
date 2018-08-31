@@ -3,7 +3,7 @@ import DatabaseStructure from '../DatabaseStructure';
 
 /* eslint-disable */
 
-export default class CoreProvider {
+export default class CoreProvider<C extends IConnection> {
   // const CURRENT_BASE_KEY = 'currentBaseConfig';
   // let _DatabaseStructure=new DatabaseStructure();
   // let database = null;
@@ -11,9 +11,9 @@ export default class CoreProvider {
 
   readonly databaseStructure: DatabaseStructure;
 
-  readonly connection: IConnection;
+  readonly connection: C;
 
-  constructor(connection: IConnection) {
+  constructor(connection: C) {
     this.connection = connection;
     this.databaseStructure = new DatabaseStructure();
     // connection.login

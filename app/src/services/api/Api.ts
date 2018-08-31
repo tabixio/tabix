@@ -1,9 +1,8 @@
-// import TabixServerProvider from './provider/TabixServerProvider';
-import { IConnection } from '../Connection';
+import { Connection, isDirectConnection } from '../Connection';
+import CoreProvider from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
+import TabixServerProvider from './provider/TabixServerProvider';
 import DataDecorator from './DataDecorator';
-
-/* eslint-disable */
 
 export default class Api {
   // const CURRENT_BASE_KEY = 'currentBaseConfig';
@@ -11,14 +10,16 @@ export default class Api {
   // let database = null;
   // let connection = {};
 
-  private readonly provider: DirectClickHouseProvider;
+  readonly provider: CoreProvider<Connection>;
 
   private version?: Object = undefined;
 
   private isInitialized: boolean = false;
 
-  constructor(connection: IConnection) {
-    this.provider = new DirectClickHouseProvider(connection);
+  constructor(connection: Connection) {
+    this.provider = isDirectConnection(connection)
+      ? new DirectClickHouseProvider(connection)
+      : new TabixServerProvider(connection);
   }
 
   getVersion() {
@@ -60,18 +61,20 @@ export default class Api {
    * @param sql
    * @param withDatabase
    * @param format
-   * @param extend_settings
+   * @param extendSettings
    * @returns {Promise<*>}
    */
   // @ts-ignore
-  async query(sql, withDatabase, format, extend_settings) {
-    return this.provider.query(sql, withDatabase, format, extend_settings);
+  async query(sql, withDatabase, format, extendSettings) {
+    // @ts-ignore
+    return this.provider.query(sql, withDatabase, format, extendSettings);
   }
 
   /**
    * @returns {Promise<*>}
    */
   async fastGetVersion() {
+    // @ts-ignore
     return this.provider.fastGetVersion();
   }
 
@@ -79,16 +82,18 @@ export default class Api {
    * @param sql
    * @param withDatabase
    * @param format
-   * @param extend_settings
+   * @param extendSettings
    * @returns {Promise<DataDecorator>}
    */
   // @ts-ignore
-  async fetch(sql, withDatabase, format, extend_settings) {
-    const data = await this.query(sql, withDatabase, format, extend_settings);
+  async fetch(sql, withDatabase, format, extendSettings) {
+    const data = await this.query(sql, withDatabase, format, extendSettings);
+    // @ts-ignore
     return new DataDecorator(data, this.provider.getType());
   }
 
   async loadDatabaseStructure() {
+    // @ts-ignore
     return this.provider.loadDatabaseStructure();
   }
 

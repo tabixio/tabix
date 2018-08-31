@@ -3,7 +3,6 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Flex } from 'reflexy';
 import { Layout, Tabs, Button } from 'antd';
 import { observer } from 'mobx-react';
-import queryProps from 'react-query-props';
 import { typedInject } from '@vzh/mobx-stores';
 import Page from 'components/Page';
 import { DirectSignInForm, ServerSignInForm, ConnectionList } from 'components/SignIn';
@@ -16,9 +15,7 @@ interface InjectedProps {
   store: SignInStore;
 }
 
-export interface Props extends InjectedProps {
-  query: any;
-}
+export interface Props extends InjectedProps {}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
@@ -42,12 +39,17 @@ class SignInView extends React.Component<RoutedProps> {
     store.setSelectedConnection(con);
   };
 
+  private signIn = () => {
+    const { store, history } = this.props;
+    store.signIn(history);
+  };
+
   render() {
     // console.log(this.props);
     const { store } = this.props;
 
     return (
-      <Page column={false}>
+      <Page column={false} uiStore={store.uiStore}>
         <Flex alignItems="stretch">
           <Layout>
             <Layout.Sider width="250">
@@ -85,6 +87,7 @@ class SignInView extends React.Component<RoutedProps> {
                 <DirectSignInForm
                   model={store.selectedConnection}
                   onDelete={store.deleteSelectedConnection}
+                  onSignIn={this.signIn}
                   deleteEnabled={!!store.selectedConnection.connectionName}
                 />
               )}
@@ -106,9 +109,7 @@ class SignInView extends React.Component<RoutedProps> {
 }
 
 export default withRouter(
-  queryProps()(
-    typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.signInStore }))(
-      SignInView
-    )
+  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.signInStore }))(
+    SignInView
   )
 );

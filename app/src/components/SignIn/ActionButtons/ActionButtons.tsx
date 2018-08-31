@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Button, Popconfirm } from 'antd';
 import { Flex } from 'reflexy';
 import css from './ActionButtons.css';
 
@@ -21,9 +21,17 @@ export default function ActionButtons({
       <Button block type="primary" htmlType="submit" onClick={onSignIn} disabled={!signInEnabled}>
         SIGN IN
       </Button>
-      <Button block type="danger" onClick={onDelete} disabled={!deleteEnabled}>
-        DELETE
-      </Button>
+
+      <Popconfirm
+        title="Are you sure delete this connection?"
+        onConfirm={onDelete}
+        okText="Yes"
+        cancelText="No"
+      >
+        <Button block type="danger" disabled={!deleteEnabled}>
+          DELETE
+        </Button>
+      </Popconfirm>
     </Flex>
   );
 }

@@ -1,9 +1,9 @@
-import { ConnectionType } from 'services';
+import { DirectConnection, ConnectionType } from '../../Connection';
 import CoreProvider from './CoreProvider';
 
 /* eslint-disable */
 
-export default class DirectClickHouseProvider extends CoreProvider {
+export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   getType() {
     return ConnectionType.direct;
   }
@@ -41,9 +41,7 @@ export default class DirectClickHouseProvider extends CoreProvider {
       url += `&${extend_settings}`;
     }
 
-    // @ts-ignore
     if (connection.params) {
-      // @ts-ignore
       url += `&${connection.params}`;
     }
     return url;

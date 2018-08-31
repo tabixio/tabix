@@ -11,14 +11,6 @@ export interface Props extends ActionButtonsProps {
 
 @observer
 export default class DirectSignInForm extends React.Component<Props> {
-  private submit = (event: React.FormEvent<any>) => {
-    event.preventDefault();
-    const { model } = this.props;
-    model.validate();
-    // const { store, history } = this.props;
-    // store.signIn(history);
-  };
-
   render() {
     const {
       model,
@@ -27,7 +19,7 @@ export default class DirectSignInForm extends React.Component<Props> {
     } = this.props;
 
     return (
-      <Form layout="vertical" onSubmit={this.submit}>
+      <Form layout="vertical">
         <Form.Item
           help="For example: dev"
           validateStatus={error2status(errors.connectionName.error.nonEmpty())}
