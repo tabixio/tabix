@@ -1,0 +1,15 @@
+.root {
+  li :global(.ant-tree-node-content-wrapper) {
+    color: #fff;
+  }
+
+  li[class*='ant-tree-treenode-switcher-'] {
+    display: flex;
+    flex-wrap: wrap;
+
+    [class*='ant-tree-node-content-wrapper-'] {
+      flex-grow: 1;
+      padding-right: 1em;
+    }
+  }
+}

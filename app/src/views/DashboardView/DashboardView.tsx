@@ -4,11 +4,12 @@ import { observer } from 'mobx-react';
 import { Layout } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
-import { Stores, AppStore } from 'stores';
+import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
+import { DBTree } from 'components/Dashboard';
 
 interface InjectedProps {
-  store: AppStore;
+  store: DashboardStore;
 }
 
 export interface Props extends InjectedProps {}
@@ -17,15 +18,21 @@ type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
 class DashboardView extends React.Component<RoutedProps> {
+  componentWillMount() {
+    const { store } = this.props;
+    store.loadData();
+  }
+
   render() {
-    // console.log(this.props);
     const { store } = this.props;
 
     return (
       <Page column={false} uiStore={store.uiStore}>
         <Flex alignItems="stretch">
           <Layout>
-            <Layout.Sider width="250">tree</Layout.Sider>
+            <Layout.Sider width="250">
+              {store.databaseStructure.map(s => <DBTree dbStructure={s} />).orUndefined()}
+            </Layout.Sider>
           </Layout>
         </Flex>
 
@@ -38,7 +45,7 @@ class DashboardView extends React.Component<RoutedProps> {
 }
 
 export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.appStore }))(
+  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.dashboardStore }))(
     DashboardView
   )
 );
