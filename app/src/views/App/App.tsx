@@ -10,6 +10,7 @@ import { AppStore, Stores } from 'stores';
 import { routePaths } from 'routes';
 import DashboardView from 'views/DashboardView';
 import SignInView from 'views/SignInView';
+import SignOut from 'components/SignOut';
 
 export interface InjectedProps {
   store: AppStore;
@@ -75,6 +76,8 @@ class App extends React.Component<RoutedProps> {
           </LoggedInRoute>
 
           <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
+
+          <LoggedInRoute exact path={routePaths.signOut.path} component={SignOut} />
 
           <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
 

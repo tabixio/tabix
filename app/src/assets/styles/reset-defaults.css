@@ -20,7 +20,7 @@ body * {
 }
 
 body svg {
-  fill: inherit;
+  /* fill: inherit; */
 }
 
 input::placeholder {

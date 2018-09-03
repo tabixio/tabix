@@ -7,3 +7,10 @@
   height: 28px;
   width: 100px;
 }
+
+.item {
+  &:global(.ant-btn-primary):not(:hover) {
+    background-color: transparent;
+    border-color: transparent;
+  }
+}
