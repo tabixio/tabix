@@ -1,5 +1,17 @@
 /* eslint-disable */
 
+export interface Database {
+  name: string;
+}
+
+export interface Table {
+  name: string;
+  database: string;
+  engine: string;
+}
+
+export type DbTables = Record<string, Table[]>;
+
 export default class DatabaseStructure {
   private _init = false;
 
@@ -15,15 +27,21 @@ export default class DatabaseStructure {
 
   private columns: any[] = [];
 
-  private tables: any[] = [];
+  private tables: DbTables = {};
 
-  private databases: any[] = [];
+  private databases: Database[] = [];
 
   private functions: any[] = [];
 
   private dictionaries: any[] = [];
 
-  init(columns: any[], tables: any[], databases: any[], dictionaries: any[], functions: any[]) {
+  init(
+    columns: any[],
+    tables: Table[],
+    databases: Database[],
+    dictionaries: any[],
+    functions: any[]
+  ) {
     console.log('Try init DS....');
     if (this._init) return;
 
@@ -41,7 +59,11 @@ export default class DatabaseStructure {
     };
 
     this.columns = columns;
-    this.tables = tables;
+    this.tables = tables.reduce((acc, t) => {
+      acc[t.database] = acc[t.database] || [];
+      acc[t.database].push(t);
+      return acc;
+    }, {});
     this.databases = databases;
     this.functions = functions;
     this.dictionaries = dictionaries;
@@ -168,8 +190,8 @@ export default class DatabaseStructure {
     return this._init && this.functions && this.functions.length > 1;
   }
 
-  getTables() {
-    return this.tables;
+  getTables(db: string) {
+    return this.tables[db];
   }
 
   getDatabases() {
