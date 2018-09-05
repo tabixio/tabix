@@ -1,4 +1,5 @@
 import { DirectConnection, ConnectionType } from '../../Connection';
+import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
 
 /* eslint-disable */
@@ -63,15 +64,35 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const functions = await this.query('SELECT name,is_aggregate from system.functions');
     console.timeEnd('Load Database Structure!');
 
+    const columnList = columns.data.map((c: any) => {
+      const {
+        data_compressed_bytes,
+        data_uncompressed_bytes,
+        default_expression,
+        default_kind,
+        default_type,
+        marks_bytes,
+        ...rest
+      } = c;
+      return {
+        ...rest,
+        dataCompressedBytes: +data_compressed_bytes,
+        dataUncompressedBytes: +data_uncompressed_bytes,
+        defaultExpression: default_expression,
+        defaultKind: default_kind,
+        defaultType: default_type || '',
+        marksBytes: +marks_bytes,
+      } as ServerStructure.Column;
+    });
     // @todo : put to cache ( in localStore )
-    this.databaseStructure.init(
-      columns.data,
+    this.databaseStructure = ServerStructure.from(
+      columnList,
       tables.data,
       databases.data,
       dictionaries.data,
       functions.data
     );
-    return this.databaseStructure.isInit();
+    return true;
   }
 
   // @ts-ignore

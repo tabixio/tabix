@@ -4,15 +4,15 @@ import { Flex } from 'reflexy';
 import css from './DbTitle.css';
 
 interface Props {
-  dbName: string;
+  name: string;
   tableCount: number;
 }
 
-export default function DbTitle({ dbName, tableCount }: Props) {
+export default function DbTitle({ name, tableCount }: Props) {
   return (
     <Flex alignItems="center" hfill className={css.root}>
       <Icon type="database" theme="outlined" />
-      <div>{dbName}</div>
+      <div>{name}</div>
       <Flex grow justifyContent="flex-end">
         {tableCount}
       </Flex>

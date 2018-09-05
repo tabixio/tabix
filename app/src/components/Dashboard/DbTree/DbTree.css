@@ -1,15 +1,30 @@
 .root {
-  li :global(.ant-tree-node-content-wrapper) {
+  & :global(.anticon-caret-down) {
     color: #fff;
   }
 
-  li[class*='ant-tree-treenode-switcher-'] {
+  & li :global(.ant-tree-node-content-wrapper) {
+    color: #fff;
+    padding: 0 0.25em;
+  }
+
+  & li[class*='ant-tree-treenode-switcher-'] {
     display: flex;
     flex-wrap: wrap;
 
-    [class*='ant-tree-node-content-wrapper-'] {
+    & > :global(.ant-tree-child-tree) {
+      width: 100%;
+      padding-right: 0.5em;
+    }
+
+    & > [class*='ant-tree-node-content-wrapper-'] {
       flex-grow: 1;
       padding-right: 1em;
     }
+  }
+
+  & li.column {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
