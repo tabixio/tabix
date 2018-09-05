@@ -29,6 +29,10 @@ const config = webpackMerge(
               }),
             ],
           }),
+          compilerOptions: {
+            module: 'esnext',
+            resolveJsonModule: false,
+          },
         }),
       },
     },

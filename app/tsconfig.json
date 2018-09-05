@@ -1,14 +1,12 @@
 {
   "extends": "../node_modules/@vzh/configs/ts/dev.tsconfig.json",
   "compilerOptions": {
+    "outDir": "../dist",
     "baseUrl": "./src",
-    "module": "esnext",
-    "resolveJsonModule": false,
-    "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "./types",
       "../node_modules/@types"
-    ],
+    ]
   },
   "files": ["./src/index.tsx"]
 }

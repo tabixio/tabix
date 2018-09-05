@@ -1,5 +1,5 @@
 import { IConnection } from '../../Connection';
-import DatabaseStructure from '../DatabaseStructure';
+import ServerStructure from '../ServerStructure';
 
 /* eslint-disable */
 
@@ -9,14 +9,13 @@ export default class CoreProvider<C extends IConnection> {
   // let database = null;
   // let connection = {};
 
-  readonly databaseStructure: DatabaseStructure;
+  // refactor
+  databaseStructure = new ServerStructure.Structure([], [], [], {});
 
   readonly connection: C;
 
   constructor(connection: C) {
     this.connection = connection;
-    this.databaseStructure = new DatabaseStructure();
-    // connection.login
   }
 
   render() {
