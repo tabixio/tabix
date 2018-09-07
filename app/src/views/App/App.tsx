@@ -22,23 +22,19 @@ type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
 class App extends React.Component<RoutedProps> {
-  private loadingReaction: IReactionDisposer | null = null;
-
-  private toggleAppLoader(loading: boolean) {
+  private static toggleAppLoader(loading: boolean) {
     const appRootElement = document.getElementById('root')!;
     appRootElement.classList.toggle('loading', loading);
   }
 
-  componentWillMount() {
-    console.log('App Will Mount');
-  }
+  private loadingReaction: IReactionDisposer | null = null;
 
   componentDidMount() {
     const { store } = this.props;
 
     this.loadingReaction = reaction(
       () => store.uiStore.loading,
-      loading => this.toggleAppLoader(loading)
+      loading => App.toggleAppLoader(loading)
     );
 
     // store.loadData();

@@ -6,6 +6,10 @@
   & li :global(.ant-tree-node-content-wrapper) {
     color: #fff;
     padding: 0 0.25em;
+
+    &:hover {
+      color: inherit;
+    }
   }
 
   & li[class*='ant-tree-treenode-switcher-'] {
@@ -17,7 +21,8 @@
       padding-right: 0.5em;
     }
 
-    & > [class*='ant-tree-node-content-wrapper-'] {
+    & > :global(.ant-tree-node-content-wrapper) {
+    /* & > [class*='ant-tree-node-content-wrapper-'] { */
       flex-grow: 1;
       padding-right: 1em;
     }
