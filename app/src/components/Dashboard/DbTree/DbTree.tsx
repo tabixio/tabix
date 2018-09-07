@@ -2,13 +2,13 @@ import React from 'react';
 import { Tree } from 'antd';
 import { AntTreeNode } from 'antd/lib/tree';
 import { ServerStructure } from 'services';
-import RootTitle, { RootTitleProps } from './RootTitle';
+import ServerTitle, { ServerTitleProps } from './ServerTitle';
 import DbTitle from './DbTitle';
-import TableTitle from './TableTitle';
+import TableTitle, { TableActions } from './TableTitle';
 import ColumnTitle from './ColumnTitle';
 import css from './DbTree.css';
 
-interface Props extends Pick<RootTitleProps, 'onReload'> {
+interface Props extends Pick<ServerTitleProps, 'onReload'> {
   structure: ServerStructure.Structure;
   onColumnClick?: (column: ServerStructure.Column) => void;
 }
@@ -38,19 +38,23 @@ export default class DbTree extends React.Component<Props> {
     onColumnClick(column);
   };
 
+  onTableAction = (action: TableActions) => {
+    console.log(action);
+  };
+
   render() {
     const { structure, onReload } = this.props;
 
     return (
       <Tree
         className={css.root}
-        defaultExpandedKeys={['root']}
+        defaultExpandedKeys={['root', 'ads']}
         selectable={false}
         onClick={this.onNodeClick}
       >
         <Tree.TreeNode
           key="root"
-          title={<RootTitle title="Clickhouse Server" onReload={onReload} />}
+          title={<ServerTitle title="Clickhouse Server" onReload={onReload} />}
         >
           {/* databases */}
           {structure.databases.map(d => (
@@ -60,7 +64,10 @@ export default class DbTree extends React.Component<Props> {
             >
               {/* tables */}
               {d.tables.map(t => (
-                <Tree.TreeNode key={`${t.database}.${t.name}`} title={<TableTitle name={t.name} />}>
+                <Tree.TreeNode
+                  key={`${t.database}.${t.name}`}
+                  title={<TableTitle name={t.name} onAction={this.onTableAction} />}
+                >
                   {/* columns */}
                   {t.columns.map(c => (
                     <Tree.TreeNode
