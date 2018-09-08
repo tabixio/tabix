@@ -7,7 +7,7 @@ import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
-import { DBTree } from 'components/Dashboard';
+import { DBTree, SqlEditor } from 'components/Dashboard';
 
 interface InjectedProps {
   store: DashboardStore;
@@ -49,8 +49,8 @@ class DashboardView extends React.Component<RoutedProps> {
           </Layout>
         </Flex>
 
-        <Flex column grow shrink={false} alignItems="center" justifyContent="center">
-          content
+        <Flex column grow shrink={false}>
+          <SqlEditor />
         </Flex>
       </Page>
     );
