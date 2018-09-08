@@ -2,8 +2,12 @@ import path from 'path';
 import webpackMerge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import tsImportPlugin from 'ts-import-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import paths from '@vzh/configs/paths';
+import appEnv from '@vzh/configs/appEnv';
 import clientConfigTs, { baseDefaultRules } from '@vzh/configs/webpack/client.config.ts';
+import { defaultRules } from '@vzh/configs/webpack/client.config';
 import loaders from '@vzh/configs/webpack/loaders';
 
 const config = webpackMerge(
@@ -35,6 +39,20 @@ const config = webpackMerge(
           },
         }),
       },
+
+      cssNodeModulesRule: {
+        ...defaultRules.cssNodeModulesRule,
+        exclude: [path.join(paths.nodeModules.root, 'monaco-editor')],
+      },
+
+      monacoCssRule: {
+        ...defaultRules.cssNodeModulesRule,
+        include: [path.join(paths.nodeModules.root, 'monaco-editor')],
+        use: [
+          appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
+          ...loaders.css({ modules: false, postcss: false }),
+        ],
+      },
     },
   }),
   {
@@ -48,10 +66,11 @@ const config = webpackMerge(
         template: path.join(paths.client.assets, 'index.pug'),
         filename: 'index.html',
       }),
+      new MonacoWebpackPlugin(),
     ],
   }
 );
 
-// console.log(config);
+// console.log(JSON.stringify(config));
 
 export default config;
