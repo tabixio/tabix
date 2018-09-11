@@ -1,11 +1,20 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
 import monacoEditor from 'monaco-editor';
-import { Flex } from 'reflexy';
+import { Flex, FlexProps } from 'reflexy';
+import classNames from 'classnames';
 import { languageDef, configuration } from './Clickhouse';
 import css from './SqlEditor.css';
 
-export default class SqlEditor extends React.Component {
+const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
+  automaticLayout: true,
+  selectOnLineNumbers: true,
+  fontSize: 14,
+  formatOnPaste: true,
+  fontFamily: 'Menlo',
+};
+
+export default class SqlEditor extends React.Component<FlexProps> {
   state = {
     // data: [],
     // layout: {},
@@ -137,23 +146,16 @@ export default class SqlEditor extends React.Component {
   };
 
   render() {
+    const { className, ...rest } = this.props;
     const { code } = this.state;
 
-    const options: monacoEditor.editor.IEditorConstructionOptions = {
-      automaticLayout: true,
-      selectOnLineNumbers: true,
-      fontSize: 14,
-      formatOnPaste: true,
-      fontFamily: 'Menlo',
-    };
-
     return (
-      <Flex fill className={css.root}>
+      <Flex fill className={classNames(css.root, className)} {...rest}>
         <MonacoEditor
           language="clickhouse"
           theme="vs-dark"
           value={code}
-          options={options}
+          options={monacoEditorOptions}
           editorWillMount={this.editorWillMount}
           editorDidMount={this.editorDidMount}
           onChange={this.onChange}

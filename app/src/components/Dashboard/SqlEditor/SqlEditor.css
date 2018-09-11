@@ -1,3 +1,9 @@
 .root {
-  /* height: 300px; */
+  & :global {
+    /* tweek autosize when use split panes */
+    .monaco-editor,
+    .overflow-guard {
+      width: 100% !important;
+    }
+  }
 }
