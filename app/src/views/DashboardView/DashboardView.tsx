@@ -8,6 +8,7 @@ import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
 import { DBTree, SqlEditor } from 'components/Dashboard';
+import Splitter from 'components/Splitter';
 
 interface InjectedProps {
   store: DashboardStore;
@@ -37,21 +38,21 @@ class DashboardView extends React.Component<RoutedProps> {
 
     return (
       <Page column={false} uiStore={store.uiStore}>
-        <Flex alignItems="stretch">
-          <Layout>
-            <Layout.Sider width="300">
-              {store.serverStructure
-                .map(s => (
-                  <DBTree structure={s} onReload={this.load} onColumnClick={this.onColumnClick} />
-                ))
-                .orUndefined()}
-            </Layout.Sider>
-          </Layout>
-        </Flex>
+        <Splitter>
+          <Flex alignItems="stretch" vfill>
+            <Layout>
+              <Layout.Sider width="100%">
+                {store.serverStructure
+                  .map(s => (
+                    <DBTree structure={s} onReload={this.load} onColumnClick={this.onColumnClick} />
+                  ))
+                  .orUndefined()}
+              </Layout.Sider>
+            </Layout>
+          </Flex>
 
-        <Flex column grow shrink={false}>
           <SqlEditor />
-        </Flex>
+        </Splitter>
       </Page>
     );
   }

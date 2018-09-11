@@ -1,0 +1,34 @@
+:global {
+  :local(.root) {
+    &.SplitPane {
+      position: relative !important;
+      height: auto !important;
+      overflow: visible !important; /* for showing context menu of the monaco editor */
+    }
+
+    & .Resizer.vertical {
+      width: 10px;
+      cursor: col-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #001529;
+
+      &::before {
+        content: '';
+        height: 2em;
+        width: 4px;
+        border-left: 1px solid #ffffff50;
+        border-right: 1px solid #ffffff50;
+      }
+
+      &:hover {
+        background-color: #001529dd;
+
+        &::before {
+          border-color: #fff;
+        }
+      }
+    }
+  }
+}
