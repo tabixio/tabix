@@ -10,6 +10,8 @@ export default class RootStore {
 
   readonly dashboardStore: DashboardStore;
 
+  // readonly SqlEditorStore: SqlEditorStore;
+
   constructor(initialState: Partial<JSONModel<RootStore>> = {}) {
     console.log('initialState', initialState);
 

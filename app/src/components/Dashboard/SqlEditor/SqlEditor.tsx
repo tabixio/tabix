@@ -4,6 +4,8 @@ import monacoEditor from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { ServerStructure } from 'services';
+import { Omit } from 'typelevel-ts';
+import { Tab } from 'stores/DashboardStore';
 import { languageDef, configuration } from './Clickhouse';
 import Toolbar from './Toolbar';
 import css from './SqlEditor.css';
@@ -16,7 +18,7 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   fontFamily: 'Menlo',
 };
 
-interface Props extends FlexProps {
+interface Props extends FlexProps, Omit<Tab, 'id' | 'title'> {
   databases: ReadonlyArray<ServerStructure.Database>;
 }
 
