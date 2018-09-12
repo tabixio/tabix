@@ -1,0 +1,24 @@
+.tabs {
+  margin-bottom: 0;
+
+  & :global {
+    .ant-tabs-bar {
+      display: flex;
+      align-items: center;
+
+      & div.ant-tabs-extra-content {
+        order: 999;
+        line-height: normal;
+      }
+    }
+  }
+
+  & :global(.ant-tabs-content) {
+    /* height: calc(100% - 40px); */
+  }
+}
+
+.tabpane {
+  /* height: 100%; */
+  /* height: calc(100% - 40px - 40px); */
+}

@@ -1,15 +1,15 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { observer } from 'mobx-react';
-import { Layout } from 'antd';
+import { Layout, Tabs } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
-import { DBTree, SqlEditor } from 'components/Dashboard';
+import { DBTree, TabPage } from 'components/Dashboard';
 import Splitter from 'components/Splitter';
-// import css from './DashboardView.css';
+import css from './DashboardView.css';
 
 interface InjectedProps {
   store: DashboardStore;
@@ -52,11 +52,13 @@ class DashboardView extends React.Component<RoutedProps> {
             </Layout>
           </Flex>
 
-          <Splitter split="horizontal" minSize={100} defaultSize={350}>
-            <SqlEditor databases={store.serverStructure.map(_ => _.databases).getOrElse([])} fill />
-
-            <Flex>123</Flex>
-          </Splitter>
+          <Tabs type="editable-card" className={css.tabs}>
+            {store.tabs.map(t => (
+              <Tabs.TabPane key={t.id} closable tab={t.title} className={css.tabpane}>
+                <TabPage databases={store.serverStructure.map(_ => _.databases).getOrElse([])} />
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
         </Splitter>
       </Page>
     );
