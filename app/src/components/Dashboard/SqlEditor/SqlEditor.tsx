@@ -3,7 +3,9 @@ import MonacoEditor from 'react-monaco-editor';
 import monacoEditor from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
+import { ServerStructure } from 'services';
 import { languageDef, configuration } from './Clickhouse';
+import Toolbar from './Toolbar';
 import css from './SqlEditor.css';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
@@ -14,7 +16,11 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   fontFamily: 'Menlo',
 };
 
-export default class SqlEditor extends React.Component<FlexProps> {
+interface Props extends FlexProps {
+  databases: ReadonlyArray<ServerStructure.Database>;
+}
+
+export default class SqlEditor extends React.Component<Props> {
   state = {
     // data: [],
     // layout: {},
@@ -146,20 +152,24 @@ export default class SqlEditor extends React.Component<FlexProps> {
   };
 
   render() {
-    const { className, ...rest } = this.props;
+    const { databases, className, ...rest } = this.props;
     const { code } = this.state;
 
     return (
-      <Flex fill className={classNames(css.root, className)} {...rest}>
-        <MonacoEditor
-          language="clickhouse"
-          theme="vs-dark"
-          value={code}
-          options={monacoEditorOptions}
-          editorWillMount={this.editorWillMount}
-          editorDidMount={this.editorDidMount}
-          onChange={this.onChange}
-        />
+      <Flex column className={classNames(css.root, className)} {...rest}>
+        <Flex grow fill className={css.editor}>
+          <MonacoEditor
+            language="clickhouse"
+            theme="vs-dark"
+            value={code}
+            options={monacoEditorOptions}
+            editorWillMount={this.editorWillMount}
+            editorDidMount={this.editorDidMount}
+            onChange={this.onChange}
+          />
+        </Flex>
+
+        <Toolbar databases={databases} className={css.toolbar} />
       </Flex>
     );
   }
