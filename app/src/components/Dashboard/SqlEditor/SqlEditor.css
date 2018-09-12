@@ -1,9 +1,17 @@
 .root {
-  & :global {
+  /* :global { */
     /* tweek autosize when use split panes */
-    .monaco-editor,
-    .overflow-guard {
-      width: 100% !important;
-    }
-  }
+    /* & .monaco-editor, */
+    /* & .overflow-guard { */
+      /* width: 100% !important; */
+    /* } */
+  /* } */
+}
+
+.editor {
+  height: calc(100% - 40px);
+}
+
+.toolbar {
+  height: 40px;
 }

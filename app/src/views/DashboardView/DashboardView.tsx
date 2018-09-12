@@ -9,6 +9,7 @@ import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
 import { DBTree, SqlEditor } from 'components/Dashboard';
 import Splitter from 'components/Splitter';
+// import css from './DashboardView.css';
 
 interface InjectedProps {
   store: DashboardStore;
@@ -51,7 +52,11 @@ class DashboardView extends React.Component<RoutedProps> {
             </Layout>
           </Flex>
 
-          <SqlEditor />
+          <Splitter split="horizontal" minSize={100} defaultSize={350}>
+            <SqlEditor databases={store.serverStructure.map(_ => _.databases).getOrElse([])} fill />
+
+            <Flex>123</Flex>
+          </Splitter>
         </Splitter>
       </Page>
     );

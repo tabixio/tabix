@@ -18,7 +18,7 @@
     "build": "yarn run clean && cross-env NODE_ENV=production webpack --config webpack.config.babel.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.0.1",
     "@babel/preset-env": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@types/classnames": "^2.2.6",
