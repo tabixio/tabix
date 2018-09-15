@@ -3,11 +3,8 @@ import MonacoEditor from 'react-monaco-editor';
 import monacoEditor from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
-import { ServerStructure } from 'services';
-import { Omit } from 'typelevel-ts';
-import { Tab } from 'stores/DashboardStore';
 import { languageDef, configuration } from './Clickhouse';
-import Toolbar from './Toolbar';
+import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
@@ -18,32 +15,12 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   fontFamily: 'Menlo',
 };
 
-interface Props extends FlexProps, Omit<Tab, 'id' | 'title'> {
-  databases: ReadonlyArray<ServerStructure.Database>;
+interface Props extends ToolbarProps {
+  content: string;
+  onContentChange: (content: string) => void;
 }
 
-export default class SqlEditor extends React.Component<Props> {
-  state = {
-    // data: [],
-    // layout: {},
-    // frames: [],
-    // DatabaseStructure: false,
-    code: `@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...
-    ;;
-      SELECT
-      use_news_ctp,
-      round(use_news_ctp*1.9,2) as show_CTP
-      FROM
-      model.history_model_22_news
-      WHERE
-      event_date>=today()-1
-      AND 
-      news_id IN (4724145)
-      ORDER BY event_time desc
-      LIMIT 100
-     `,
-  };
-
+export default class SqlEditor extends React.Component<Props & FlexProps> {
   editorWillMount = (monaco: typeof monacoEditor) => {
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
@@ -149,13 +126,16 @@ export default class SqlEditor extends React.Component<Props> {
     return null;
   };
 
-  onChange = (value: string, event: monacoEditor.editor.IModelContentChangedEvent) => {
-    console.log('onChange', value, event);
-  };
-
   render() {
-    const { databases, className, ...rest } = this.props;
-    const { code } = this.state;
+    const {
+      databases,
+      currentDatabase,
+      onDatabaseChange,
+      content,
+      onContentChange,
+      className,
+      ...rest
+    } = this.props;
 
     return (
       <Flex column className={classNames(css.root, className)} {...rest}>
@@ -163,15 +143,20 @@ export default class SqlEditor extends React.Component<Props> {
           <MonacoEditor
             language="clickhouse"
             theme="vs-dark"
-            value={code}
             options={monacoEditorOptions}
             editorWillMount={this.editorWillMount}
             editorDidMount={this.editorDidMount}
-            onChange={this.onChange}
+            value={content}
+            onChange={onContentChange}
           />
         </Flex>
 
-        <Toolbar databases={databases} className={css.toolbar} />
+        <Toolbar
+          databases={databases}
+          currentDatabase={currentDatabase}
+          onDatabaseChange={onDatabaseChange}
+          className={css.toolbar}
+        />
       </Flex>
     );
   }

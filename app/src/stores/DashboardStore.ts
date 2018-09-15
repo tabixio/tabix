@@ -1,23 +1,19 @@
-import { observable, action } from 'mobx';
-import { Option, None } from 'funfix-core';
-import { LocalUIStore } from '@vzh/mobx-stores';
+import { observable, action, runInAction } from 'mobx';
+import { Option, None, Some } from 'funfix-core';
+import uuid from 'uuid';
+import { UIStore } from '@vzh/mobx-stores';
 import { Api, ServerStructure } from 'services';
+import { TabModel } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
-
-export interface Tab {
-  id: string;
-  title: string;
-  content: string;
-}
 
 export default class DashboardStore extends ApiRequestableStore {
   @observable
   serverStructure: Option<ServerStructure.Structure> = None;
 
   @observable
-  tabs: Tab[] = [
-    {
+  tabs: TabModel[] = [
+    new TabModel({
       id: '1',
       title: 'SQL 1',
       content: `@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...
@@ -34,30 +30,61 @@ export default class DashboardStore extends ApiRequestableStore {
         ORDER BY event_time desc
         LIMIT 100
        `,
-    },
-    {
+      currentDatabase: Some('ads'),
+    }),
+    new TabModel({
       id: '2',
       title: 'SQL 2',
       content: '',
-    },
+      currentDatabase: Some('default'),
+    }),
   ];
 
-  constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
-    super(rootStore, uiState);
+  @observable
+  activeTab: Option<TabModel> = None;
+
+  constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
+    super(rootStore, uiStore);
     initialState && console.log(initialState);
   }
 
   @action
-  loadData() {
-    this.request(async () => {
+  async loadData() {
+    const t = await this.request(async () => {
       const api = new Api(this.rootStore.appStore.connection.get());
       await api.init();
       return api.getDatabaseStructure();
-    }).then(r =>
-      r.forEach(result => {
-        console.log(result);
+    });
+
+    console.log(t.orUndefined());
+    t.forEach(result => {
+      runInAction(() => {
         this.serverStructure = Option.of(result);
-      })
-    );
+      });
+    });
   }
+
+  private getNewTabName = () => `SQL ${this.tabs.length + 1}`;
+
+  @action
+  addNewTab() {
+    const newTab = new TabModel({
+      id: uuid(),
+      title: this.getNewTabName(),
+      content: '',
+      currentDatabase: this.serverStructure.map(s => s.databases[0]).map(d => d.name),
+    });
+    this.tabs = this.tabs.concat(newTab);
+    this.activeTab = Some(newTab);
+  }
+
+  @action
+  deleteActiveTab = () => {
+    if (this.tabs.length <= 1 || this.activeTab.isEmpty()) return;
+
+    this.activeTab.forEach(({ id }) => {
+      this.tabs = this.tabs.filter(t => t.id !== id);
+      this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
+    });
+  };
 }

@@ -36,6 +36,7 @@ class DashboardView extends React.Component<RoutedProps> {
 
   render() {
     const { store } = this.props;
+    const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
     return (
       <Page column={false} uiStore={store.uiStore}>
@@ -55,7 +56,7 @@ class DashboardView extends React.Component<RoutedProps> {
           <Tabs type="editable-card" className={css.tabs}>
             {store.tabs.map(t => (
               <Tabs.TabPane key={t.id} closable tab={t.title} className={css.tabpane}>
-                <TabPage databases={store.serverStructure.map(_ => _.databases).getOrElse([])} />
+                <TabPage model={t} databases={databases} />
               </Tabs.TabPane>
             ))}
           </Tabs>

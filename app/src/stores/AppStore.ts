@@ -2,7 +2,7 @@ import { History } from 'history';
 import { computed, observable, action } from 'mobx';
 import { None, Option } from 'funfix-core';
 import { Omit } from 'typelevel-ts';
-import { LocalUIStore, SerializableModel, JSONModel, JSONObjectModel } from '@vzh/mobx-stores';
+import { UIStore, SerializableModel, JSONModel, JSONObjectModel } from '@vzh/mobx-stores';
 import { Connection, localStorage } from 'services';
 import { routePaths } from 'routes';
 import ApiRequestableStore from './ApiRequestableStore';
@@ -16,10 +16,10 @@ export default class AppStore extends ApiRequestableStore
 
   constructor(
     rootStore: RootStore,
-    uiState: LocalUIStore<RootStore>,
+    uiStore: UIStore<RootStore>,
     initialState?: JSONObjectModel<AppStoreModel>
   ) {
-    super(rootStore, uiState);
+    super(rootStore, uiStore);
     if (initialState) {
       this.connection = Option.of(initialState.connection);
     }

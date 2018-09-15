@@ -1,5 +1,5 @@
 import { Option, None } from 'funfix-core';
-import { Connection } from './Connection';
+import Connection from './Connection';
 
 const storageKey = 'tabix.connection';
 const connectionListKey = `${storageKey}.list`;

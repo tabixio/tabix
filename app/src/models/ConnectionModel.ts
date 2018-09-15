@@ -3,7 +3,7 @@ import { None } from 'funfix-core';
 import { required } from 'valtors';
 import { ValidableStoreModel, SerializableModel, JSONModel } from '@vzh/mobx-stores';
 import {
-  IConnection,
+  ConnectionLike,
   Connection,
   DirectConnection,
   ServerConnection,
@@ -13,7 +13,7 @@ import {
 } from 'services';
 
 export abstract class BaseConnectionModel<T extends Connection> extends ValidableStoreModel<T>
-  implements IConnection, SerializableModel<T> {
+  implements ConnectionLike, SerializableModel<T> {
   @required()
   @observable
   connectionName: string = '';
@@ -40,7 +40,13 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
   @observable
   params?: string;
 
-  constructor(connection: Partial<DirectConnection>) {
+  constructor({
+    connectionName = '',
+    connectionUrl = '',
+    username = '',
+    password = '',
+    params,
+  }: Partial<DirectConnection>) {
     super({
       type: { error: None },
       connectionName: { error: None },
@@ -50,11 +56,11 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
       params: { error: None },
     });
 
-    this.connectionName = connection.connectionName || '';
-    this.connectionUrl = connection.connectionUrl || '';
-    this.username = connection.username || '';
-    this.password = connection.password || '';
-    this.params = connection.params;
+    this.connectionName = connectionName;
+    this.connectionUrl = connectionUrl;
+    this.username = username;
+    this.password = password;
+    this.params = params;
   }
 
   toJSON(): JSONModel<DirectConnection> {
@@ -76,7 +82,13 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
   @observable
   configKey?: string;
 
-  constructor(connection: Partial<ServerConnection>) {
+  constructor({
+    connectionName = '',
+    connectionUrl = '',
+    username = '',
+    password = '',
+    configKey,
+  }: Partial<ServerConnection>) {
     super({
       type: { error: None },
       connectionName: { error: None },
@@ -86,11 +98,11 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
       configKey: { error: None },
     });
 
-    this.connectionName = connection.connectionName || '';
-    this.connectionUrl = connection.connectionUrl || '';
-    this.username = connection.username || '';
-    this.password = connection.password || '';
-    this.configKey = connection.configKey;
+    this.connectionName = connectionName;
+    this.connectionUrl = connectionUrl;
+    this.username = username;
+    this.password = password;
+    this.configKey = configKey;
   }
 
   toJSON(): JSONModel<ServerConnection> {
