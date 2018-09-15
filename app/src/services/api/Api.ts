@@ -1,4 +1,4 @@
-import { Connection, isDirectConnection } from '../Connection';
+import Connection, { isDirectConnection } from '../Connection';
 import CoreProvider from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import TabixServerProvider from './provider/TabixServerProvider';

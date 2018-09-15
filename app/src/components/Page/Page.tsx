@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'antd';
 import { Flex, FlexProps } from 'reflexy';
-import { LocalUIStore } from '@vzh/mobx-stores';
+import { UIStore } from '@vzh/mobx-stores';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import { observer } from 'mobx-react';
@@ -10,7 +10,7 @@ import PageFooter from './PageFooter';
 import css from './Page.css';
 
 export interface Props extends FlexProps {
-  uiStore?: LocalUIStore<RootStore>;
+  uiStore?: UIStore<RootStore>;
   children?: React.ReactNode;
 }
 

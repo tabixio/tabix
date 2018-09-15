@@ -1,7 +1,7 @@
 import { History } from 'history';
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
-import { LocalUIStore } from '@vzh/mobx-stores';
+import { UIStore } from '@vzh/mobx-stores';
 import { FromLocationDescriptorObject } from '@vzh/react-auth';
 import { Connection, localStorage, Api, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
@@ -16,15 +16,16 @@ export default class SignInStore extends ApiRequestableStore {
   @observable
   connectionList: ReadonlyArray<ConnectionModel> = [];
 
-  constructor(rootStore: RootStore, uiState: LocalUIStore<RootStore>, initialState: any) {
-    super(rootStore, uiState);
+  constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
+    super(rootStore, uiStore);
     initialState && console.log(initialState);
   }
 
   @action
-  loadConnections() {
-    return this.request(async () => localStorage.getConnections()).then(_ =>
-      _.forEach(list => {
+  async loadConnections() {
+    const t = await this.request(async () => localStorage.getConnections());
+    t.forEach(list =>
+      runInAction(() => {
         this.connectionList = list.map(ConnectionModel.of);
       })
     );

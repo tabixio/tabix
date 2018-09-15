@@ -1,9 +1,9 @@
-import { IConnection } from '../../Connection';
+import { ConnectionLike } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 
 /* eslint-disable */
 
-export default class CoreProvider<C extends IConnection> {
+export default class CoreProvider<C extends ConnectionLike> {
   // const CURRENT_BASE_KEY = 'currentBaseConfig';
   // let _DatabaseStructure=new DatabaseStructure();
   // let database = null;

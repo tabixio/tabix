@@ -1,17 +1,17 @@
 import React from 'react';
 import { Flex, FlexProps } from 'reflexy';
 import { Button, Select } from 'antd';
-import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 import { SelectValue } from 'antd/lib/select';
 import css from './Toolbar.css';
 
-interface Props extends FlexProps {
+export interface Props {
   databases: ReadonlyArray<ServerStructure.Database>;
+  currentDatabase?: string;
   onDatabaseChange?: (db: ServerStructure.Database) => void;
 }
 
-export default class Toolbar extends React.Component<Props> {
+export default class Toolbar extends React.Component<Props & FlexProps> {
   private onDatabaseChange = (value: SelectValue) => {
     const { onDatabaseChange } = this.props;
     if (!onDatabaseChange) return;
@@ -22,7 +22,7 @@ export default class Toolbar extends React.Component<Props> {
   };
 
   render() {
-    const { databases, ...rest } = this.props;
+    const { databases, currentDatabase, onDatabaseChange, ...rest } = this.props;
 
     return (
       <Flex alignItems="center" {...rest}>
@@ -40,12 +40,7 @@ export default class Toolbar extends React.Component<Props> {
 
           <div className={css['space-h']} />
 
-          <Select
-            defaultValue={Option.of(databases[0])
-              .map(_ => _.name)
-              .orUndefined()}
-            onChange={this.onDatabaseChange}
-          >
+          <Select value={currentDatabase} onChange={this.onDatabaseChange}>
             {databases.map(db => (
               <Select.Option key={db.name} value={db.name}>
                 {db.name}
@@ -58,9 +53,7 @@ export default class Toolbar extends React.Component<Props> {
 
         <Flex grow justifyContent="flex-end">
           <div className={css['space-h']} />
-
           <Button icon="fullscreen" />
-
           <div className={css['space-h']} />
         </Flex>
       </Flex>

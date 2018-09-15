@@ -1,6 +1,6 @@
 import { Omit } from 'typelevel-ts';
 
-export interface IConnection {
+export interface ConnectionLike {
   connectionName: string;
   connectionUrl: string;
   username: string;
@@ -12,20 +12,25 @@ export enum ConnectionType {
   server = 'server',
 }
 
-export interface DirectConnection extends IConnection {
+export interface DirectConnection extends ConnectionLike {
   type: ConnectionType.direct;
   params?: string;
 }
 
-export interface ServerConnection extends IConnection {
+export interface ServerConnection extends ConnectionLike {
   type: ConnectionType.server;
   configKey?: string;
 }
 
-export type Connection = DirectConnection | ServerConnection;
+type Connection = DirectConnection | ServerConnection;
 
 export type PartialConnection = Partial<Omit<Connection, 'type'>> & Pick<Connection, 'type'>;
 
 export function isDirectConnection(connection: PartialConnection): connection is DirectConnection {
   return connection.type === ConnectionType.direct;
 }
+
+// Just to avoid warnings when reexporting types when compile with webpack and tsc module option is 'esnext'.
+const Connection = {};
+
+export default Connection;
