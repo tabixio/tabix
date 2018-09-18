@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tree } from 'antd';
 import { AntTreeNode } from 'antd/lib/tree';
+import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 import ServerTitle, { ServerTitleProps } from './ServerTitle';
 import DbTitle from './DbTitle';
@@ -10,6 +11,7 @@ import css from './DbTree.css';
 
 interface Props extends Pick<ServerTitleProps, 'onReload'> {
   structure: ServerStructure.Structure;
+  selectedDatabase?: string;
   onColumnClick?: (column: ServerStructure.Column) => void;
 }
 
@@ -24,15 +26,16 @@ export default class DbTree extends React.Component<Props> {
     const names = key.split('.');
     if (names.length !== 3) return;
 
+    const [dbName, tableName, columnName] = names;
     const { structure } = this.props;
 
-    const db = structure.databases.find(d => d.name === names[0]);
+    const db = structure.databases.find(d => d.name === dbName);
     if (!db) return;
 
-    const table = db.tables.find(t => t.name === names[1]);
+    const table = db.tables.find(t => t.name === tableName);
     if (!table) return;
 
-    const column = table.columns.find(c => c.name === names[2]);
+    const column = table.columns.find(c => c.name === columnName);
     if (!column) return;
 
     onColumnClick(column);
@@ -43,13 +46,16 @@ export default class DbTree extends React.Component<Props> {
   };
 
   render() {
-    const { structure, onReload } = this.props;
+    const { selectedDatabase, structure, onReload } = this.props;
 
     return (
       <Tree
         className={css.root}
         defaultExpandedKeys={['root', 'ads']}
-        selectable={false}
+        // selectable={false}
+        selectedKeys={Option.of(selectedDatabase)
+          .map(db => [db])
+          .orUndefined()}
         onClick={this.onNodeClick}
       >
         <Tree.TreeNode

@@ -16,12 +16,12 @@ interface Props extends SplitPaneProps {
 
 @observer
 export default class TabPage extends React.Component<Props> {
-  onContentChange = (content: string) => {
+  private onContentChange = (content: string) => {
     const { model } = this.props;
     model.changeField({ target: { name: 'content', value: content } });
   };
 
-  onDatabaseChange = (db: ServerStructure.Database) => {
+  private onDatabaseChange = (db: ServerStructure.Database) => {
     const { model } = this.props;
     model.changeField({ target: { name: 'currentDatabase', value: Option.of(db.name) } });
   };

@@ -36,6 +36,7 @@ export default class SignInStore extends ApiRequestableStore {
     this.selectedConnection = ConnectionModel.of(connection);
   }
 
+  // todo: fix if name already exists
   private getNewConnectionName = () => `CONNECTION ${this.connectionList.length + 1}`;
 
   @action

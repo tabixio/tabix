@@ -41,7 +41,7 @@ export default class DashboardStore extends ApiRequestableStore {
   ];
 
   @observable
-  activeTab: Option<TabModel> = None;
+  activeTab: Option<TabModel> = Option.of(this.tabs[0]);
 
   constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
     super(rootStore, uiStore);
@@ -64,6 +64,12 @@ export default class DashboardStore extends ApiRequestableStore {
     });
   }
 
+  @action
+  setActiveTab(id: string) {
+    this.activeTab = Option.of(this.tabs.find(_ => _.id === id));
+  }
+
+  // todo: fix if name already exists
   private getNewTabName = () => `SQL ${this.tabs.length + 1}`;
 
   @action
@@ -79,12 +85,11 @@ export default class DashboardStore extends ApiRequestableStore {
   }
 
   @action
-  deleteActiveTab = () => {
-    if (this.tabs.length <= 1 || this.activeTab.isEmpty()) return;
-
-    this.activeTab.forEach(({ id }) => {
-      this.tabs = this.tabs.filter(t => t.id !== id);
-      this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
-    });
+  removeTab = (id: string) => {
+    // if (this.tabs.length <= 1 || this.activeTab.isEmpty()) return;
+    // this.activeTab.forEach(({ id }) => {
+    this.tabs = this.tabs.filter(t => t.id !== id);
+    this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
+    // });
   };
 }
