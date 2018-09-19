@@ -6,7 +6,12 @@
       display: flex;
       align-items: center;
 
+      & .ant-tabs-nav-container {
+        /* flex-shrink: 0; */
+      }
+      
       & div.ant-tabs-extra-content {
+        /* flex-grow: 1; */
         order: 999;
         line-height: normal;
       }

@@ -1,11 +1,19 @@
 import React from 'react';
 import { Flex, FlexProps } from 'reflexy';
 import { Button, Select } from 'antd';
-import { ServerStructure } from 'services';
 import { SelectValue } from 'antd/lib/select';
+import { ServerStructure } from 'services';
+import ActionButton, { Props as ActionButtonProps } from './ActionButton';
 import css from './Toolbar.css';
 
-export interface Props {
+export enum ActionType {
+  Save = 1,
+  RunCurrent = 2,
+  RunAll = 3,
+  Fullscreen = 4,
+}
+
+export interface Props extends Pick<ActionButtonProps<ActionType>, 'onAction'> {
   databases: ReadonlyArray<ServerStructure.Database>;
   currentDatabase?: string;
   onDatabaseChange?: (db: ServerStructure.Database) => void;
@@ -22,7 +30,7 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
   };
 
   render() {
-    const { databases, currentDatabase, onDatabaseChange, ...rest } = this.props;
+    const { databases, currentDatabase, onDatabaseChange, onAction, ...rest } = this.props;
 
     return (
       <Flex alignItems="center" {...rest}>
@@ -30,13 +38,17 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
           <div className={css['space-h']} />
 
           <Button.Group>
-            <Button icon="forward">Run all ⇧ + ⌘ + ⏎</Button>
-            <Button icon="caret-right">Run current ⌘ + ⏎</Button>
+            <ActionButton icon="forward" actionType={ActionType.RunAll} onAction={onAction}>
+              Run all ⇧ + ⌘ + ⏎
+            </ActionButton>
+            <ActionButton icon="caret-right" actionType={ActionType.RunCurrent} onAction={onAction}>
+              Run current ⌘ + ⏎
+            </ActionButton>
           </Button.Group>
 
           <div className={css['space-h']} />
 
-          <Button icon="save" />
+          <ActionButton icon="save" actionType={ActionType.Save} onAction={onAction} />
 
           <div className={css['space-h']} />
 
@@ -53,7 +65,7 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
 
         <Flex grow justifyContent="flex-end">
           <div className={css['space-h']} />
-          <Button icon="fullscreen" />
+          <ActionButton icon="fullscreen" actionType={ActionType.Fullscreen} onAction={onAction} />
           <div className={css['space-h']} />
         </Flex>
       </Flex>

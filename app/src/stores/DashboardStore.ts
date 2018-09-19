@@ -1,13 +1,13 @@
 import { observable, action, runInAction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import uuid from 'uuid';
-import { UIStore } from '@vzh/mobx-stores';
 import { Api, ServerStructure } from 'services';
+import { DashboardUIStore } from 'stores';
 import { TabModel } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
-export default class DashboardStore extends ApiRequestableStore {
+export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
   serverStructure: Option<ServerStructure.Structure> = None;
 
@@ -43,7 +43,8 @@ export default class DashboardStore extends ApiRequestableStore {
   @observable
   activeTab: Option<TabModel> = Option.of(this.tabs[0]);
 
-  constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
+  // constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
+  constructor(rootStore: RootStore, uiStore: DashboardUIStore, initialState: any) {
     super(rootStore, uiStore);
     initialState && console.log(initialState);
   }
@@ -78,18 +79,23 @@ export default class DashboardStore extends ApiRequestableStore {
       id: uuid(),
       title: this.getNewTabName(),
       content: '',
-      currentDatabase: this.serverStructure.map(s => s.databases[0]).map(d => d.name),
+      currentDatabase: this.activeTab
+        .flatMap(t => t.currentDatabase)
+        .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name)),
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);
   }
 
-  @action
-  removeTab = (id: string) => {
+  @action.bound
+  removeTab(id: string) {
     // if (this.tabs.length <= 1 || this.activeTab.isEmpty()) return;
     // this.activeTab.forEach(({ id }) => {
     this.tabs = this.tabs.filter(t => t.id !== id);
     this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
     // });
-  };
+  }
+
+  @action.bound
+  saveTab() {}
 }

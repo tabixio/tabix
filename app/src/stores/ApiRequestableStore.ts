@@ -3,7 +3,9 @@ import { RequestableStore, UIStore } from '@vzh/mobx-stores';
 // import { ErrorResponse } from 'shared/types';
 import RootStore from './RootStore';
 
-export default class ApiRequestableStore extends RequestableStore<RootStore, UIStore<RootStore>> {
+export default class ApiRequestableStore<
+  UIS extends UIStore<RootStore> = UIStore<RootStore>
+> extends RequestableStore<RootStore, UIS> {
   // protected isErrorResponse(data: ErrorResponse | any): data is ErrorResponse {
   //   return data && data.error !== undefined;
   // }
