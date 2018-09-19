@@ -65,4 +65,8 @@ export default class AppStore extends ApiRequestableStore
   toJSON(): JSONModel<AppStoreModel> {
     return { connection: this.connection.orUndefined() };
   }
+
+  disposeStores() {
+    this.rootStore.dispose();
+  }
 }

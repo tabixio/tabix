@@ -15,7 +15,7 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   fontFamily: 'Menlo',
 };
 
-interface Props extends ToolbarProps {
+export interface Props extends ToolbarProps {
   content: string;
   onContentChange: (content: string) => void;
 }
@@ -133,6 +133,7 @@ export default class SqlEditor extends React.Component<Props & FlexProps> {
       onDatabaseChange,
       content,
       onContentChange,
+      onAction,
       className,
       ...rest
     } = this.props;
@@ -152,10 +153,11 @@ export default class SqlEditor extends React.Component<Props & FlexProps> {
         </Flex>
 
         <Toolbar
+          className={css.toolbar}
           databases={databases}
           currentDatabase={currentDatabase}
           onDatabaseChange={onDatabaseChange}
-          className={css.toolbar}
+          onAction={onAction}
         />
       </Flex>
     );
