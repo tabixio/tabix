@@ -1,18 +1,12 @@
 import { observable, reaction, IReactionDisposer, when, action } from 'mobx';
-import { UIStore } from '@vzh/mobx-stores';
+import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
+import { Option, None } from 'funfix-core';
+import { Tab, TabModel } from 'models';
 import RootStore from './RootStore';
-
-interface TabUIModel {
-  showSaveModal: boolean;
-}
-
-// interface TabsUIModel {
-//   [P: string]: TabUIModel;
-// }
 
 export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
-  tabViewState: TabUIModel = { showSaveModal: false };
+  editedTab: Option<ViewModelLike<TabModel> & Tab> = None;
 
   protected changeTabReaction?: IReactionDisposer;
 
@@ -34,19 +28,23 @@ export default class DashboardUIStore extends UIStore<RootStore> {
     );
   }
 
-  @action
   private resetTabViewState() {
-    console.log('***');
-    this.tabViewState = { showSaveModal: false };
+    // console.log('***', 'resetTabViewState');
+    this.editedTab.forEach(t => {
+      t.reset();
+    });
+    this.editedTab = None;
   }
 
   @action
   showSaveModal() {
-    this.tabViewState.showSaveModal = true;
+    this.rootStore.dashboardStore.activeTab.forEach(tab => {
+      this.editedTab = Option.of(createViewModel(tab));
+    });
   }
 
   @action.bound
   hideSaveModal() {
-    this.tabViewState.showSaveModal = false;
+    this.resetTabViewState();
   }
 }

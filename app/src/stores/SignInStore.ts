@@ -39,51 +39,57 @@ export default class SignInStore extends ApiRequestableStore {
   // todo: fix if name already exists
   private getNewConnectionName = () => `CONNECTION ${this.connectionList.length + 1}`;
 
-  @action
-  addNewConnection = () =>
+  @action.bound
+  addNewConnection() {
     this.request(async () => {
       const con = ConnectionModel.of({
         type: this.selectedConnection.type,
         connectionName: this.getNewConnectionName(),
       });
-      this.connectionList = this.connectionList.concat(con);
-      this.setSelectedConnection(con);
+      runInAction(() => {
+        this.connectionList = this.connectionList.concat(con);
+        this.setSelectedConnection(con);
+      });
       localStorage.saveConnections(this.connectionList);
     });
+  }
 
-  @action
-  deleteSelectedConnection = () => {
-    this.connectionList = this.connectionList.filter(
-      c => c.connectionName !== this.selectedConnection.connectionName
-    );
-    this.setSelectedConnection(
-      isDirectConnection(this.selectedConnection)
-        ? ConnectionModel.DirectEmpty
-        : ConnectionModel.ServerEmpty
-    );
-    localStorage.saveConnections(this.connectionList);
-  };
+  @action.bound
+  deleteSelectedConnection() {
+    this.request(async () => {
+      runInAction(() => {
+        this.connectionList = this.connectionList.filter(
+          c => c.connectionName !== this.selectedConnection.connectionName
+        );
+        this.setSelectedConnection(
+          isDirectConnection(this.selectedConnection)
+            ? ConnectionModel.DirectEmpty
+            : ConnectionModel.ServerEmpty
+        );
+      });
+      localStorage.saveConnections(this.connectionList);
+    });
+  }
 
-  @action
-  signIn = (history: History) =>
-    this.submit(this.selectedConnection, async () => {
+  @action.bound
+  async signIn(history: History) {
+    const r = await this.submit(this.selectedConnection, async () => {
       const api = new Api(this.selectedConnection.toJSON());
       await api.init();
       console.log(`Connection - OK, version:${api.getVersion()}`);
-      // обработка структуры происходит в loginMiddleware
       // return api.getDatabaseStructure();
       return api.provider.getConnection();
-    }).then(r =>
-      r.forEach(result => {
-        console.log('signIn', result);
+    });
 
+    r.forEach(result => {
+      runInAction(() => {
         this.rootStore.appStore.updateConnection(Option.of(result));
-        // this.rootStore.appStore.loadData();
+      });
 
-        const {
-          state: { from: path } = { from: routePaths.home.path },
-        } = history.location as FromLocationDescriptorObject;
-        history.push(path);
-      })
-    );
+      const {
+        state: { from: path } = { from: routePaths.home.path },
+      } = history.location as FromLocationDescriptorObject;
+      history.push(path);
+    });
+  }
 }

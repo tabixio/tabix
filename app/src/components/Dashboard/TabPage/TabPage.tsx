@@ -72,16 +72,24 @@ export default class TabPage extends React.Component<Props> {
           <Flex>123</Flex>
         </Splitter>
 
-        {store.uiStore.tabViewState.showSaveModal && (
-          <Modal
-            visible={store.uiStore.tabViewState.showSaveModal}
-            title="Save"
-            onOk={store.saveTab}
-            onCancel={store.uiStore.hideSaveModal}
-          >
-            <Input placeholder="New name" name="title" value={model.title} onChange={changeField} />
-          </Modal>
-        )}
+        {store.uiStore.editedTab
+          .filter(t => t.model === model)
+          .map(editedTab => (
+            <Modal
+              visible
+              title="Save"
+              onOk={store.saveEditedTab}
+              onCancel={store.uiStore.hideSaveModal}
+            >
+              <Input
+                placeholder="New name"
+                name="title"
+                value={editedTab.title}
+                onChange={editedTab.changeField}
+              />
+            </Modal>
+          ))
+          .orUndefined()}
       </React.Fragment>
     );
   }

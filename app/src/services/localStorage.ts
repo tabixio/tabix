@@ -1,9 +1,11 @@
 import { Option, None } from 'funfix-core';
+import { Tab } from 'models';
 import Connection from './Connection';
 
-const storageKey = 'tabix.connection';
-const connectionListKey = `${storageKey}.list`;
-const lastActiveKey = `${storageKey}.lastActive`;
+const storageKey = 'tabix';
+const connectionListKey = `${storageKey}.connection.list`;
+const lastActiveKey = `${storageKey}.connection.lastActive`;
+const tabsKey = `${storageKey}.tabs`;
 
 export function getConnections(): Connection[] {
   try {
@@ -44,6 +46,14 @@ export function saveLastActiveConnection(connection?: Connection) {
       return;
     }
     window.localStorage.setItem(lastActiveKey, JSON.stringify(connection));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function saveTab(tab: Tab) {
+  try {
+    window.localStorage.setItem(`${tabsKey}.${tab.id}`, JSON.stringify(tab));
   } catch (e) {
     console.error(e);
   }

@@ -1,7 +1,7 @@
 import { observable, action, runInAction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import uuid from 'uuid';
-import { Api, ServerStructure } from 'services';
+import { Api, ServerStructure, localStorage } from 'services';
 import { DashboardUIStore } from 'stores';
 import { TabModel } from 'models';
 import RootStore from './RootStore';
@@ -57,7 +57,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       return api.getDatabaseStructure();
     });
 
-    console.log(t.orUndefined());
+    // console.log(t.orUndefined());
     t.forEach(result => {
       runInAction(() => {
         this.serverStructure = Option.of(result);
@@ -89,13 +89,18 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   @action.bound
   removeTab(id: string) {
-    // if (this.tabs.length <= 1 || this.activeTab.isEmpty()) return;
-    // this.activeTab.forEach(({ id }) => {
     this.tabs = this.tabs.filter(t => t.id !== id);
     this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
-    // });
   }
 
   @action.bound
-  saveTab() {}
+  saveEditedTab() {
+    this.uiStore.editedTab.forEach(tab => {
+      this.request(async () => {
+        tab.submit();
+        localStorage.saveTab(tab.model);
+        this.uiStore.hideSaveModal();
+      });
+    });
+  }
 }
