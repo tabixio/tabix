@@ -1,7 +1,6 @@
 import path from 'path';
 import webpackMerge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import tsImportPlugin from 'ts-import-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import paths from '@vzh/configs/paths';
@@ -24,17 +23,9 @@ const config = webpackMerge(
         use: loaders.ts({
           tsconfig: path.join(paths.client.root, 'tsconfig.json'),
           forkedChecks: true,
-          getCustomTransformers: () => ({
-            before: [
-              tsImportPlugin({
-                libraryDirectory: 'es',
-                libraryName: 'antd',
-                style: 'css',
-              }),
-            ],
-          }),
+          getCustomTransformers: path.resolve('./webpack.ts-transformers.js'),
           compilerOptions: {
-            module: 'esnext',
+            module: 'es2015',
             resolveJsonModule: false,
           },
         }),
