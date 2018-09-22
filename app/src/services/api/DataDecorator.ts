@@ -1,6 +1,3 @@
-// @ts-ignore
-import { map, maxBy, isEmpty, is } from 'ramda';
-
 /* eslint-disable */
 
 export default class DataDecorator {
@@ -61,8 +58,10 @@ export default class DataDecorator {
     this.sort = false;
     this.sortOrder = false;
     // Если результат строка
-    if (!result.error && !is(Object, result.data)) {
-      if (is(String, result.data)) {
+    // if (!result.error && !is(Object, result.data)) {
+    if (!result.error && typeof result.data !== 'object') {
+      // if (is(String, result.data)) {
+      if (typeof result.data === 'string') {
         this.text = JSON.stringify(result.data);
       } else {
         this.text = result.data;
@@ -87,7 +86,8 @@ export default class DataDecorator {
         console.error('Error in prepareInt64', e);
       }
 
-      if (is(Object, this.meta)) {
+      // if (is(Object, this.meta)) {
+      if (typeof this.meta === 'object') {
         this.meta.prepareInt64Cols = this.prepareInt64Cols;
       }
     }
@@ -132,9 +132,12 @@ export default class DataDecorator {
         try {
           // @ts-ignore
           const comparator = o => {
-            if (!isEmpty(o[cell.name])) return parseInt(o[cell.name]);
+            // if (!isEmpty(o[cell.name])) return parseInt(o[cell.name]);
+            // o[cell.name] is string?
+            if (o[cell.name] != null && o[cell.name]) return parseInt(o[cell.name]); // refactor
           };
-          $v = maxBy(comparator, this.data)[cell.name];
+          // $v = maxBy(comparator, this.data)[cell.name];
+          $v = Math.max(this.data.map(comparator))[cell.name]; // refactor
         } catch (e) {
           console.error('prepareInt64,maxBy', e, 'in cell', cell, 'meta', this.meta);
         }
@@ -157,13 +160,13 @@ export default class DataDecorator {
     // console.log("$canConvert, convert to Int",$canConvert);
 
     // @ts-ignore
-    this.data = map(o => {
+    this.data.map(o => {
       // @ts-ignore
       $canConvert.forEach(cell => {
         o[cell] = parseInt(o[cell]);
       });
       return o;
-    }, this.data);
+    });
   }
 
   // @ts-ignore
@@ -243,7 +246,9 @@ export default class DataDecorator {
     // sortOrder : Boolean - defines the order of sorting (true for ascending, false for descending).
     this._sortBy = $coll;
     this._sortOrder = $order;
-    if (is(Number, $order)) {
+    // if (is(Number, $order)) {
+    if (typeof $order === 'number') {
+      // @ts-ignore
       this._sortOrder = !(parseInt($order) < 0);
     }
   }
