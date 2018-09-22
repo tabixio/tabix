@@ -5,20 +5,27 @@ import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 import ServerTitle, { ServerTitleProps } from './ServerTitle';
 import DbTitle from './DbTitle';
-import TableTitle, { TableActions } from './TableTitle';
+import TableTitle from './TableTitle';
+import { ContextMenuProps } from './TableTitle/ContextMenu';
 import ColumnTitle from './ColumnTitle';
 import css from './DbTree.css';
+
+export enum ColumnAction {
+  DoubleClick = 1,
+}
 
 interface Props extends Pick<ServerTitleProps, 'onReload'> {
   structure: ServerStructure.Structure;
   selectedDatabase?: string;
-  onColumnClick?: (column: ServerStructure.Column) => void;
+  onColumnAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
+  onTableAction?: ContextMenuProps['onContextMenuAction'];
 }
 
+/* eslint-disable react/jsx-wrap-multilines */
 export default class DbTree extends React.Component<Props> {
-  private onNodeClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-    const { onColumnClick } = this.props;
-    if (!onColumnClick) return;
+  private onNodeDoubleClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
+    const { onColumnAction } = this.props;
+    if (!onColumnAction) return;
 
     const key = node.props.eventKey;
     if (!key) return;
@@ -38,25 +45,20 @@ export default class DbTree extends React.Component<Props> {
     const column = table.columns.find(c => c.name === columnName);
     if (!column) return;
 
-    onColumnClick(column);
-  };
-
-  onTableAction = (action: TableActions) => {
-    console.log(action);
+    onColumnAction(ColumnAction.DoubleClick, column);
   };
 
   render() {
-    const { selectedDatabase, structure, onReload } = this.props;
+    const { selectedDatabase, structure, onReload, onTableAction } = this.props;
 
     return (
       <Tree
         className={css.root}
         defaultExpandedKeys={['root', 'ads']}
-        // selectable={false}
         selectedKeys={Option.of(selectedDatabase)
           .map(db => [db])
           .orUndefined()}
-        onClick={this.onNodeClick}
+        onDoubleClick={this.onNodeDoubleClick}
       >
         <Tree.TreeNode
           key="root"
@@ -65,19 +67,19 @@ export default class DbTree extends React.Component<Props> {
           {/* databases */}
           {structure.databases.map(d => (
             <Tree.TreeNode
-              key={d.name}
+              key={d.id}
               title={<DbTitle name={d.name} tableCount={d.tables.length} />}
             >
               {/* tables */}
               {d.tables.map(t => (
                 <Tree.TreeNode
-                  key={`${t.database}.${t.name}`}
-                  title={<TableTitle name={t.name} onAction={this.onTableAction} />}
+                  key={t.id}
+                  title={<TableTitle table={t} onContextMenuAction={onTableAction} />}
                 >
                   {/* columns */}
                   {t.columns.map(c => (
                     <Tree.TreeNode
-                      key={`${c.database}.${c.table}.${c.name}`}
+                      key={c.id}
                       title={<ColumnTitle name={c.name} type={c.type} />}
                       className={css.column}
                     />

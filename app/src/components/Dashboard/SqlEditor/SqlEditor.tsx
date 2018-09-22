@@ -15,13 +15,17 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   fontFamily: 'Menlo',
 };
 
-export interface Props extends ToolbarProps {
+type Monaco = typeof monacoEditor;
+export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
+
+export interface SqlEditorProps extends ToolbarProps {
   content: string;
   onContentChange: (content: string) => void;
+  editorRef?: (editor: CodeEditor) => void;
 }
 
-export default class SqlEditor extends React.Component<Props & FlexProps> {
-  editorWillMount = (monaco: typeof monacoEditor) => {
+export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
+  editorWillMount = (monaco: Monaco) => {
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
       monaco.languages.register({ id: 'clickhouse' });
@@ -44,10 +48,10 @@ export default class SqlEditor extends React.Component<Props & FlexProps> {
     }
   };
 
-  editorDidMount = (
-    editor: monacoEditor.editor.IStandaloneCodeEditor,
-    monaco: typeof monacoEditor
-  ) => {
+  editorDidMount = (editor: CodeEditor, monaco: Monaco) => {
+    const { editorRef } = this.props;
+    editorRef && editorRef(editor);
+
     const self = this;
     // editor._standaloneKeybindingService.addDynamicKeybinding("-actions.find")
     // editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_F, function() {});
@@ -76,7 +80,7 @@ export default class SqlEditor extends React.Component<Props & FlexProps> {
   executeCommand = (
     _typeCommand: string,
     editor: monacoEditor.editor.ICodeEditor,
-    _monaco: typeof monacoEditor
+    _monaco: Monaco
   ) => {
     // window.edit = editor; // debug
     // window.monaco = monaco; // debug
@@ -133,6 +137,7 @@ export default class SqlEditor extends React.Component<Props & FlexProps> {
       onDatabaseChange,
       content,
       onContentChange,
+      editorRef,
       onAction,
       className,
       ...rest

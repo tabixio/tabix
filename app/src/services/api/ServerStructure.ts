@@ -1,5 +1,6 @@
 namespace ServerStructure {
   export interface Column {
+    id: string;
     name: string;
     table: string;
     database: string;
@@ -13,6 +14,7 @@ namespace ServerStructure {
   }
 
   export interface Table {
+    id: string;
     name: string;
     database: string;
     engine: string;
@@ -20,6 +22,7 @@ namespace ServerStructure {
   }
 
   export interface Database {
+    id: string;
     name: string;
     tables: Table[];
   }
@@ -48,9 +51,10 @@ namespace ServerStructure {
       const column: Column = {
         ...col,
         defaultType: col.defaultKind && !col.defaultType ? col.defaultKind : col.defaultType,
+        id: `${col.database}.${col.table}.${col.name}`,
       };
 
-      if (!acc[col.database]) acc[col.database] = {};
+      acc[col.database] = acc[col.database] || {};
       acc[col.database][col.table] = acc[col.database][col.table] || [];
       acc[col.database][col.table].push(column);
 
@@ -61,6 +65,7 @@ namespace ServerStructure {
       const table: Table = {
         ...t,
         columns: dbTableColumns[t.database][t.name],
+        id: `${t.database}.${t.name}`,
       };
 
       acc[t.database] = acc[t.database] || [];
@@ -72,6 +77,7 @@ namespace ServerStructure {
     const dbList = databases.map(db => ({
       ...db,
       tables: dbTables[db.name],
+      id: db.name,
     }));
 
     const aceJSRules = {
