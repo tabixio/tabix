@@ -5,15 +5,15 @@ import ContextMenu, { ContextMenuProps } from './ContextMenu';
 import css from './TableTitle.css';
 
 interface Props extends ContextMenuProps {
-  name: string;
+  // name: string;
 }
 
-export default function TableTitle({ name, ...rest }: Props) {
+export default function TableTitle({ table, ...rest }: Props) {
   return (
-    <Dropdown overlay={<ContextMenu {...rest} />} trigger={['contextMenu']}>
+    <Dropdown overlay={<ContextMenu table={table} {...rest} />} trigger={['contextMenu']}>
       <Flex alignItems="center" hfill className={css.root}>
         <Icon type="table" theme="outlined" />
-        <div>{name}</div>
+        <div>{table.name}</div>
       </Flex>
     </Dropdown>
   );

@@ -12,36 +12,36 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   serverStructure: Option<ServerStructure.Structure> = None;
 
   @observable
-  tabs: TabModel[] = [
-    new TabModel({
-      id: '1',
-      title: 'SQL 1',
-      content: `@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...
-      ;;
-        SELECT
-        use_news_ctp,
-        round(use_news_ctp*1.9,2) as show_CTP
-        FROM
-        model.history_model_22_news
-        WHERE
-        event_date>=today()-1
-        AND 
-        news_id IN (4724145)
-        ORDER BY event_time desc
-        LIMIT 100
-       `,
-      currentDatabase: Some('ads'),
-    }),
-    new TabModel({
-      id: '2',
-      title: 'SQL 2',
-      content: '',
-      currentDatabase: Some('default'),
-    }),
-  ];
+  tabs: TabModel[] = [];
+  //   new TabModel({
+  //     id: '1',
+  //     title: 'SQL 1',
+  //     content: `@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...
+  //     ;;
+  //       SELECT
+  //       use_news_ctp,
+  //       round(use_news_ctp*1.9,2) as show_CTP
+  //       FROM
+  //       model.history_model_22_news
+  //       WHERE
+  //       event_date>=today()-1
+  //       AND
+  //       news_id IN (4724145)
+  //       ORDER BY event_time desc
+  //       LIMIT 100
+  //      `,
+  //     currentDatabase: Some('ads'),
+  //   }),
+  //   new TabModel({
+  //     id: '2',
+  //     title: 'SQL 2',
+  //     content: '',
+  //     currentDatabase: Some('default'),
+  //   }),
+  // ];
 
   @observable
-  activeTab: Option<TabModel> = Option.of(this.tabs[0]);
+  activeTab: Option<TabModel> = Option.of(this.tabs.length ? this.tabs[0] : undefined);
 
   // constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
   constructor(rootStore: RootStore, uiStore: DashboardUIStore, initialState: any) {
@@ -61,6 +61,9 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     t.forEach(result => {
       runInAction(() => {
         this.serverStructure = Option.of(result);
+        if (!this.tabs.length) {
+          this.addNewTab();
+        }
       });
     });
   }

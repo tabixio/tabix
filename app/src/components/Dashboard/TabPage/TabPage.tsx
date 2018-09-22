@@ -8,14 +8,14 @@ import { ChangeFieldHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import Splitter from 'components/Splitter';
 import { Tab } from 'models';
-// import SqlEditor, { Props as SqlEditorProps } from '../SqlEditor';
 import { DashboardStore } from 'stores';
-import SqlEditor from '../SqlEditor';
+import SqlEditor, { SqlEditorProps } from '../SqlEditor';
+// import SqlEditor from '../SqlEditor';
 import { ActionType } from '../SqlEditor/Toolbar';
 // import css from './Toolbar.css';
 
 // interface Props extends SplitPaneProps, Pick<SqlEditorProps, 'onAction'> {
-interface Props extends SplitPaneProps {
+interface Props extends SplitPaneProps, Pick<SqlEditorProps, 'editorRef'> {
   model: Tab;
   changeField: ChangeFieldHandler;
   databases: ReadonlyArray<ServerStructure.Database>;
@@ -54,7 +54,7 @@ export default class TabPage extends React.Component<Props> {
   };
 
   render() {
-    const { store, model, changeField, databases, ...rest } = this.props;
+    const { store, model, changeField, databases, editorRef, ...rest } = this.props;
 
     return (
       <React.Fragment>
@@ -66,6 +66,7 @@ export default class TabPage extends React.Component<Props> {
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onAction}
+            editorRef={editorRef}
             fill
           />
 
@@ -83,6 +84,7 @@ export default class TabPage extends React.Component<Props> {
             >
               <Input
                 placeholder="New name"
+                autoFocus
                 name="title"
                 value={editedTab.title}
                 onChange={editedTab.changeField}
