@@ -10,11 +10,8 @@ import Splitter from 'components/Splitter';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
 import SqlEditor, { SqlEditorProps } from '../SqlEditor';
-// import SqlEditor from '../SqlEditor';
 import { ActionType } from '../SqlEditor/Toolbar';
-// import css from './Toolbar.css';
 
-// interface Props extends SplitPaneProps, Pick<SqlEditorProps, 'onAction'> {
 interface Props extends SplitPaneProps, Pick<SqlEditorProps, 'editorRef'> {
   model: Tab;
   changeField: ChangeFieldHandler;

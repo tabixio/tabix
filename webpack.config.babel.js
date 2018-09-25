@@ -41,7 +41,7 @@ const config = webpackMerge(
         include: [path.join(paths.nodeModules.root, 'monaco-editor')],
         use: [
           appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
-          ...loaders.css({ modules: false, postcss: false }),
+          ...loaders.cssNodeModules({ modules: false, postcss: false }),
         ],
       },
     },
@@ -57,7 +57,7 @@ const config = webpackMerge(
         template: path.join(paths.client.assets, 'index.pug'),
         filename: 'index.html',
       }),
-      new MonacoWebpackPlugin(),
+      new MonacoWebpackPlugin({ output: 'workers', languages: [] }),
     ],
   }
 );

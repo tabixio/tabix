@@ -1,5 +1,5 @@
 /*
- * For forked process configuration use as module: getCustomTransformers: path.resolve('./webpack.ts-transformers.js')
+ * For forked process configuration use as module: getCustomTransformers: path.resolve('./webpack.ts-transformers.js').
  */
 
 const tsImportPluginFactory = require('ts-import-plugin');
