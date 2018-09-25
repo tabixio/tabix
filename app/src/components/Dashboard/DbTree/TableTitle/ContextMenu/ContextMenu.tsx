@@ -26,7 +26,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
 
   render() {
     return (
-      <Menu onClick={this.onItemClick}>
+      <Menu selectable={false} onClick={this.onItemClick}>
         <Menu.Item key={TableAction.OpenTable}>Open table</Menu.Item>
         <Menu.Item key={TableAction.CodeSelectFrom}>Code select from</Menu.Item>
         <Menu.Item key={TableAction.InsertTableName}>Insert table name</Menu.Item>
