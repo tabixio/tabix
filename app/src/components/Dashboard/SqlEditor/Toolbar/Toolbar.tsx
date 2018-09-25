@@ -19,6 +19,10 @@ export interface Props extends Pick<ActionButtonProps<ActionType>, 'onAction'> {
   onDatabaseChange?: (db: ServerStructure.Database) => void;
 }
 
+function SpaceH() {
+  return <div className={css['space-h']} />;
+}
+
 export default class Toolbar extends React.Component<Props & FlexProps> {
   private onDatabaseChange = (value: SelectValue) => {
     const { onDatabaseChange } = this.props;
@@ -35,7 +39,7 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
     return (
       <Flex alignItems="center" {...rest}>
         <Flex shrink={false}>
-          <div className={css['space-h']} />
+          <SpaceH />
 
           <Button.Group>
             <ActionButton icon="forward" actionType={ActionType.RunAll} onAction={onAction}>
@@ -46,13 +50,17 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
             </ActionButton>
           </Button.Group>
 
-          <div className={css['space-h']} />
+          <SpaceH />
 
           <ActionButton icon="save" actionType={ActionType.Save} onAction={onAction} />
 
-          <div className={css['space-h']} />
+          <SpaceH />
 
-          <Select value={currentDatabase} onChange={this.onDatabaseChange}>
+          <Select
+            dropdownMatchSelectWidth={false}
+            value={currentDatabase}
+            onChange={this.onDatabaseChange}
+          >
             {databases.map(db => (
               <Select.Option key={db.name} value={db.name}>
                 {db.name}
@@ -60,13 +68,13 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
             ))}
           </Select>
 
-          <div className={css['space-h']} />
+          <SpaceH />
         </Flex>
 
         <Flex grow justifyContent="flex-end">
-          <div className={css['space-h']} />
+          <SpaceH />
           <ActionButton icon="fullscreen" actionType={ActionType.Fullscreen} onAction={onAction} />
-          <div className={css['space-h']} />
+          <SpaceH />
         </Flex>
       </Flex>
     );
