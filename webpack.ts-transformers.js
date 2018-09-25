@@ -5,9 +5,10 @@
 const tsImportPluginFactory = require('ts-import-plugin');
 
 const antdTransformer = tsImportPluginFactory({
-  libraryDirectory: 'es',
   libraryName: 'antd',
-  style: 'css',
+  libraryDirectory: 'es',
+  // style: 'css',
+  style: true,
 });
 
 function getCustomTransformers() {
