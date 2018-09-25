@@ -1,13 +1,12 @@
 import path from 'path';
 import webpackMerge from 'webpack-merge';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import paths from '@vzh/configs/paths';
-import appEnv from '@vzh/configs/appEnv';
 import clientConfigTs, { baseDefaultRules } from '@vzh/configs/webpack/client.config.ts';
 import { defaultRules } from '@vzh/configs/webpack/client.config';
 import loaders from '@vzh/configs/webpack/loaders';
+import lessVars from './webpack.less-vars';
 
 const config = webpackMerge(
   clientConfigTs({
@@ -18,6 +17,8 @@ const config = webpackMerge(
     },
 
     rules: {
+      jsRule: {},
+
       tsRule: {
         ...baseDefaultRules.tsRule,
         use: loaders.ts({
@@ -33,24 +34,41 @@ const config = webpackMerge(
 
       cssNodeModulesRule: {
         ...defaultRules.cssNodeModulesRule,
-        exclude: [path.join(paths.nodeModules.root, 'monaco-editor')],
+        exclude: [
+          path.join(paths.nodeModules.root, 'monaco-editor'),
+          path.join(paths.nodeModules.root, 'antd'),
+        ],
+      },
+
+      antdCssRule: {
+        test: /\.less$/,
+        include: path.join(paths.nodeModules.root, 'antd'),
+        use: [
+          defaultRules.cssNodeModulesRule.use[0], // <-- style-loader
+          ...loaders.cssNodeModules({ modules: false, postcss: false }),
+          {
+            loader: 'less-loader',
+            options: {
+              javascriptEnabled: true,
+              modifyVars: lessVars,
+            },
+          },
+        ],
       },
 
       monacoCssRule: {
         ...defaultRules.cssNodeModulesRule,
-        include: [path.join(paths.nodeModules.root, 'monaco-editor')],
+        include: path.join(paths.nodeModules.root, 'monaco-editor'),
         use: [
-          appEnv.ifDevMode('style-loader', MiniCssExtractPlugin.loader),
+          defaultRules.cssNodeModulesRule.use[0], // <-- style-loader
           ...loaders.cssNodeModules({ modules: false, postcss: false }),
         ],
       },
+
+      pugRule: { test: /\.pug$/, use: { loader: 'pug-loader' } },
     },
   }),
   {
-    module: {
-      rules: [{ test: /\.pug$/, loader: 'pug-loader' }],
-    },
-
     plugins: [
       new HtmlWebpackPlugin({
         inject: false,

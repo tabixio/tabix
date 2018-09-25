@@ -1,8 +1,7 @@
 .tabs {
-  margin-bottom: 0;
-
   & :global {
     .ant-tabs-bar {
+      margin-bottom: 0;
       display: flex;
       align-items: center;
 
