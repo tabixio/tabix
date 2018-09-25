@@ -1,6 +1,5 @@
 {
   "extends": ["../node_modules/@vzh/configs/eslint/ts.react.eslintrc.json"],
   "rules": {
-    "react/sort-comp": "off"
   }
 }

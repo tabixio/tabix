@@ -19,7 +19,7 @@ function Page({ uiStore, ...rest }: Props) {
   // hide page loader while showing app loader to avoid double loaders
   // (!store.uiStore.loading || uiStore === store.uiStore);
   return (
-    <Layout className={css['root']}>
+    <Layout className={css.root}>
       {showLoader && <Loader />}
 
       <NavBar />
@@ -29,7 +29,7 @@ function Page({ uiStore, ...rest }: Props) {
         hfill
         grow
         shrink={false}
-        tagName="main"
+        component="main"
         className={css['main-container']}
         {...rest}
       />

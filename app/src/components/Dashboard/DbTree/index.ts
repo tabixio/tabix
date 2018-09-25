@@ -1,3 +1,3 @@
 export { default } from './DbTree';
-export * from './DbTree';
-export * from './TableTitle/ContextMenu';
+export { ColumnAction } from './DbTree';
+export { TableAction } from './TableTitle/ContextMenu';
