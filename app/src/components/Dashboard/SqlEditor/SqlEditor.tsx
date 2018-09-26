@@ -21,10 +21,15 @@ export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 export interface SqlEditorProps extends ToolbarProps {
   content: string;
   onContentChange: (content: string) => void;
-  editorRef?: (editor: CodeEditor) => void;
+  editorRef?: (editor?: CodeEditor) => void;
 }
 
 export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
+  componentWillUnmount() {
+    const { editorRef } = this.props;
+    editorRef && editorRef(undefined);
+  }
+
   editorWillMount = (monaco: Monaco) => {
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language

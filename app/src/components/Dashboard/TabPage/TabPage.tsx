@@ -6,15 +6,15 @@ import { Flex } from 'reflexy';
 import { Props as SplitPaneProps } from 'react-split-pane';
 import { ChangeFieldHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
-import Splitter from 'components/Splitter';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
-import SqlEditor, { SqlEditorProps } from '../SqlEditor';
+import Splitter from 'components/Splitter';
+import SqlEditor, { CodeEditor } from '../SqlEditor';
 import { ActionType } from '../SqlEditor/Toolbar';
 
-interface Props extends SplitPaneProps, Pick<SqlEditorProps, 'editorRef'> {
+interface Props extends SplitPaneProps {
   model: Tab;
-  changeField: ChangeFieldHandler;
+  changeField: ChangeFieldHandler<Tab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
 }
@@ -31,8 +31,12 @@ export default class TabPage extends React.Component<Props> {
     changeField({ name: 'currentDatabase', value: Option.of(db.name) });
   };
 
+  private setEditorRef = (editor?: CodeEditor) => {
+    const { changeField } = this.props;
+    changeField({ name: 'codeEditor', value: Option.of(editor) });
+  };
+
   private onAction = (action: ActionType) => {
-    // console.log(action);
     switch (action) {
       case ActionType.Save: {
         const { store } = this.props;
@@ -51,7 +55,7 @@ export default class TabPage extends React.Component<Props> {
   };
 
   render() {
-    const { store, model, changeField, databases, editorRef, ...rest } = this.props;
+    const { store, model, changeField, databases, ...rest } = this.props;
 
     return (
       <React.Fragment>
@@ -63,7 +67,7 @@ export default class TabPage extends React.Component<Props> {
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onAction}
-            editorRef={editorRef}
+            editorRef={this.setEditorRef}
             fill
           />
 
