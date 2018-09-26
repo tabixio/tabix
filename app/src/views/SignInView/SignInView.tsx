@@ -28,7 +28,6 @@ class SignInView extends React.Component<RoutedProps> {
   }
 
   private onSelectConnection = (connection: Connection) => {
-    // console.log(JSON.stringify(connection));
     const { store } = this.props;
     store.setSelectedConnection(connection);
   };
@@ -46,7 +45,6 @@ class SignInView extends React.Component<RoutedProps> {
   };
 
   render() {
-    // console.log(this.props);
     const { store } = this.props;
 
     return (

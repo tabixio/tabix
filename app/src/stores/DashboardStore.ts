@@ -57,7 +57,6 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       return api.getDatabaseStructure();
     });
 
-    // console.log(t.orUndefined());
     t.forEach(result => {
       runInAction(() => {
         this.serverStructure = Option.of(result);
@@ -85,6 +84,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       currentDatabase: this.activeTab
         .flatMap(t => t.currentDatabase)
         .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name)),
+      codeEditor: None,
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);

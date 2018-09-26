@@ -1,12 +1,12 @@
 import { observable, reaction, IReactionDisposer, when, action } from 'mobx';
-import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
 import { Option, None } from 'funfix-core';
-import { Tab, TabModel } from 'models';
+import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
+import { TabModel } from 'models';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
-  editedTab: Option<ViewModelLike<TabModel> & Tab> = None;
+  editedTab: Option<ViewModelLike<TabModel>> = None;
 
   protected changeTabReaction?: IReactionDisposer;
 
@@ -29,7 +29,6 @@ export default class DashboardUIStore extends UIStore<RootStore> {
   }
 
   private resetTabViewState() {
-    // console.log('***', 'resetTabViewState');
     this.editedTab.forEach(t => {
       t.reset();
     });
