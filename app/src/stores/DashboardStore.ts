@@ -1,6 +1,5 @@
 import { observable, action, runInAction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
-import uuid from 'uuid';
 import { Api, ServerStructure, localStorage } from 'services';
 import { DashboardUIStore } from 'stores';
 import { TabModel } from 'models';
@@ -12,33 +11,13 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   serverStructure: Option<ServerStructure.Structure> = None;
 
   @observable
-  tabs: TabModel[] = [];
-  //   new TabModel({
-  //     id: '1',
-  //     title: 'SQL 1',
-  //     content: `@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...
-  //     ;;
-  //       SELECT
-  //       use_news_ctp,
-  //       round(use_news_ctp*1.9,2) as show_CTP
-  //       FROM
-  //       model.history_model_22_news
-  //       WHERE
-  //       event_date>=today()-1
-  //       AND
-  //       news_id IN (4724145)
-  //       ORDER BY event_time desc
-  //       LIMIT 100
-  //      `,
-  //     currentDatabase: Some('ads'),
-  //   }),
-  //   new TabModel({
-  //     id: '2',
-  //     title: 'SQL 2',
-  //     content: '',
-  //     currentDatabase: Some('default'),
-  //   }),
-  // ];
+  tabs: TabModel[] = [
+    TabModel.from({
+      title: 'SQL 1',
+      content: `SELECT * from default.arrays_test_ints`,
+      currentDatabase: Some('default'),
+    }),
+  ];
 
   @observable
   activeTab: Option<TabModel> = Option.of(this.tabs.length ? this.tabs[0] : undefined);
@@ -77,14 +56,11 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   @action
   addNewTab() {
-    const newTab = new TabModel({
-      id: uuid(),
+    const newTab = TabModel.from({
       title: this.getNewTabName(),
-      content: '',
       currentDatabase: this.activeTab
         .flatMap(t => t.currentDatabase)
         .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name)),
-      codeEditor: None,
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);
@@ -104,6 +80,24 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
         localStorage.saveTab(tab.model);
         this.uiStore.hideSaveModal();
       });
+    });
+  }
+
+  execCode() {
+    // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
+
+    this.activeTab.forEach(async tab => {
+      const t = await this.request(async () => {
+        const api = new Api(this.rootStore.appStore.connection.get());
+        await api.init();
+        return api.fetch(tab.content, tab.currentDatabase.get(), undefined, undefined);
+      });
+
+      t.forEach(result =>
+        runInAction(() => {
+          tab.data = Option.of(result);
+        })
+      );
     });
   }
 }

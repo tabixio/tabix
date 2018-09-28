@@ -1,4 +1,23 @@
+import uuid from 'uuid';
 /* eslint-disable */
+
+export enum DataType {
+  String = 'String',
+  ArrayOfUInt8 = 'Array(UInt8)',
+}
+
+export interface ColumnMetadata {
+  name: string;
+  // type: DataType;
+  type: string;
+}
+
+export interface Metadata {
+  columns: ColumnMetadata[];
+  prepareInt64Cols?: any;
+}
+
+export type Row = Record<string, any> & { id: string | number };
 
 export default class DataDecorator {
   private _humanSortCols: any[] = [];
@@ -7,7 +26,7 @@ export default class DataDecorator {
 
   private _sortOrder = false;
 
-  private data: any;
+  readonly data: Row[];
 
   private text: any = false;
 
@@ -23,7 +42,7 @@ export default class DataDecorator {
   // @ts-ignore
   private sortOrder = false;
 
-  private meta: any;
+  readonly meta: Metadata;
 
   private prepareInt64Cols: any = {};
 
@@ -46,13 +65,17 @@ export default class DataDecorator {
 
   // @ts-ignore
   constructor(result, sourceType) {
+    console.log(result, sourceType);
+
     if (result.totals && result.data) {
       result.data.push(result.totals);
     }
+
+    this.data = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
+
     this._humanSortCols = [];
     this._sortBy = false;
     this._sortOrder = false;
-    this.data = result.data;
     this.text = false;
     this.progressQuery = '';
     this.sort = false;
@@ -75,7 +98,8 @@ export default class DataDecorator {
     // --------------------------------------------------
     this.sourceType = sourceType || 'ch';
 
-    this.meta = result.meta;
+    // this.meta = result.meta;
+    this.meta = { columns: result.meta };
     this.prepareInt64Cols = {};
 
     // prepare (Int64+UInt64)
@@ -123,21 +147,20 @@ export default class DataDecorator {
     if (!(Array.isArray(this.data) && this.data.length > 1)) return false;
 
     this.prepareInt64Cols = {};
-    // @ts-ignore
-    this.meta.forEach(cell => {
+    this.meta.columns.forEach(cell => {
       if (cell.type.includes('Int64') && !cell.type.includes('Array(')) {
         //  max value
 
         let $v = 0;
         try {
-          // @ts-ignore
-          const comparator = o => {
+          const comparator = (o: Row) => {
             // if (!isEmpty(o[cell.name])) return parseInt(o[cell.name]);
             // o[cell.name] is string?
             if (o[cell.name] != null && o[cell.name]) return parseInt(o[cell.name]); // refactor
+            return 0;
           };
           // $v = maxBy(comparator, this.data)[cell.name];
-          $v = Math.max(this.data.map(comparator))[cell.name]; // refactor
+          $v = Math.max(...this.data.map(comparator))[cell.name]; // refactor
         } catch (e) {
           console.error('prepareInt64,maxBy', e, 'in cell', cell, 'meta', this.meta);
         }
@@ -214,18 +237,17 @@ export default class DataDecorator {
     return this.error;
   }
 
-  // @ts-ignore
-  update(data) {
-    this.data = data;
-  }
+  // update(data) {
+  //   this.data = data;
+  // }
 
-  getData() {
-    return this.data;
-  }
+  // getData() {
+  //   return this.data;
+  // }
 
-  getMeta() {
-    return this.meta;
-  }
+  // getMeta() {
+  //   return this.meta;
+  // }
 
   toString() {
     return JSON.stringify(this.data);

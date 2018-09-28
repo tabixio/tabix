@@ -9,8 +9,9 @@ import { ServerStructure } from 'services';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
 import Splitter from 'components/Splitter';
-import SqlEditor, { CodeEditor } from '../SqlEditor';
-import { ActionType } from '../SqlEditor/Toolbar';
+import SqlEditor, { CodeEditor } from './SqlEditor';
+import { ActionType } from './SqlEditor/Toolbar';
+import DataTable from './DataTable';
 
 interface Props extends SplitPaneProps {
   model: Tab;
@@ -45,8 +46,11 @@ export default class TabPage extends React.Component<Props> {
       }
       case ActionType.Fullscreen:
         break;
-      case ActionType.RunCurrent:
+      case ActionType.RunCurrent: {
+        const { store } = this.props;
+        store.execCode();
         break;
+      }
       case ActionType.RunAll:
         break;
       default:
@@ -71,7 +75,7 @@ export default class TabPage extends React.Component<Props> {
             fill
           />
 
-          <Flex>123</Flex>
+          <Flex hfill>{model.data.map(data => <DataTable data={data} />).orUndefined()}</Flex>
         </Splitter>
 
         {store.uiStore.editedTab
