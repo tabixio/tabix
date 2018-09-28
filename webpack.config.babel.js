@@ -7,6 +7,8 @@ import clientConfigTs, { baseDefaultRules } from '@vzh/configs/webpack/client.co
 import { defaultRules } from '@vzh/configs/webpack/client.config';
 import loaders from '@vzh/configs/webpack/loaders';
 import lessVars from './webpack.less-vars';
+// import webpack from 'webpack';
+// import appEnv from '@vzh/configs/appEnv';
 
 const config = webpackMerge(
   clientConfigTs({
@@ -76,6 +78,7 @@ const config = webpackMerge(
         filename: 'index.html',
       }),
       new MonacoWebpackPlugin({ output: 'workers', languages: [] }),
+      // ...appEnv.ifDevMode([], [new webpack.HotModuleReplacementPlugin()]),
     ],
   }
 );

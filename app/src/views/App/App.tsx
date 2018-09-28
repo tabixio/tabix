@@ -27,9 +27,11 @@ class App extends React.Component<RoutedProps> {
     appRootElement.classList.toggle('loading', loading);
   }
 
-  protected loadingReaction: IReactionDisposer | null = null;
+  protected readonly loadingReaction: IReactionDisposer;
 
-  componentDidMount() {
+  constructor(props: Readonly<RoutedProps>) {
+    super(props);
+
     const { store } = this.props;
 
     this.loadingReaction = reaction(
@@ -41,7 +43,7 @@ class App extends React.Component<RoutedProps> {
   }
 
   componentWillUnmount() {
-    // this.loadingReaction && this.loadingReaction();
+    this.loadingReaction && this.loadingReaction();
     const { store } = this.props;
     store.disposeStores();
   }

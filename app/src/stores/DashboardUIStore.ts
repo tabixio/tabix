@@ -13,19 +13,16 @@ export default class DashboardUIStore extends UIStore<RootStore> {
   constructor(rootStore: RootStore) {
     super(rootStore);
 
-    when(
-      () => rootStore.dashboardStore !== undefined,
-      () => {
-        // reset tab view state
-        this.changeTabReaction = reaction(
-          () => rootStore.dashboardStore.activeTab,
-          tab => {
-            this.resetTabViewState();
-            return tab;
-          }
-        );
-      }
-    );
+    when(action(() => rootStore.dashboardStore !== undefined), () => {
+      // reset tab view state
+      this.changeTabReaction = reaction(
+        () => rootStore.dashboardStore.activeTab,
+        tab => {
+          this.resetTabViewState();
+          return tab;
+        }
+      );
+    });
   }
 
   private resetTabViewState() {
