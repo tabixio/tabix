@@ -8,6 +8,8 @@ import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
+  language: 'clickhouse',
+  theme: 'vs-dark',
   automaticLayout: true,
   selectOnLineNumbers: true,
   fontSize: 14,
@@ -30,7 +32,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     editorRef && editorRef(undefined);
   }
 
-  editorWillMount = (monaco: Monaco) => {
+  private onEditorWillMount = (monaco: Monaco) => {
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
       monaco.languages.register({ id: 'clickhouse' });
@@ -53,7 +55,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     }
   };
 
-  editorDidMount = (editor: CodeEditor, monaco: Monaco) => {
+  private onEditorDidMount = (editor: CodeEditor, monaco: Monaco) => {
     const { editorRef } = this.props;
     editorRef && editorRef(editor);
 
@@ -82,7 +84,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     editor.focus();
   };
 
-  executeCommand = (
+  private executeCommand = (
     _typeCommand: string,
     editor: monacoEditor.editor.ICodeEditor,
     _monaco: Monaco
@@ -152,11 +154,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       <Flex column className={classNames(css.root, className)} {...rest}>
         <Flex grow fill className={css.editor}>
           <MonacoEditor
-            language="clickhouse"
-            theme="vs-dark"
             options={monacoEditorOptions}
-            editorWillMount={this.editorWillMount}
-            editorDidMount={this.editorDidMount}
+            editorWillMount={this.onEditorWillMount}
+            editorDidMount={this.onEditorDidMount}
             value={content}
             onChange={onContentChange}
           />

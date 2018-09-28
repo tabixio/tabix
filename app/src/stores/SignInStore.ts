@@ -46,10 +46,8 @@ export default class SignInStore extends ApiRequestableStore {
         type: this.selectedConnection.type,
         connectionName: this.getNewConnectionName(),
       });
-      runInAction(() => {
-        this.connectionList = this.connectionList.concat(con);
-        this.setSelectedConnection(con);
-      });
+      this.connectionList = this.connectionList.concat(con);
+      this.setSelectedConnection(con);
       localStorage.saveConnections(this.connectionList);
     });
   }
@@ -57,16 +55,14 @@ export default class SignInStore extends ApiRequestableStore {
   @action.bound
   deleteSelectedConnection() {
     this.request(async () => {
-      runInAction(() => {
-        this.connectionList = this.connectionList.filter(
-          c => c.connectionName !== this.selectedConnection.connectionName
-        );
-        this.setSelectedConnection(
-          isDirectConnection(this.selectedConnection)
-            ? ConnectionModel.DirectEmpty
-            : ConnectionModel.ServerEmpty
-        );
-      });
+      this.connectionList = this.connectionList.filter(
+        c => c.connectionName !== this.selectedConnection.connectionName
+      );
+      this.setSelectedConnection(
+        isDirectConnection(this.selectedConnection)
+          ? ConnectionModel.DirectEmpty
+          : ConnectionModel.ServerEmpty
+      );
       localStorage.saveConnections(this.connectionList);
     });
   }

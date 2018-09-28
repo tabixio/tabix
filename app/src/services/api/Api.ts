@@ -103,7 +103,7 @@ export default class Api {
       throw new Error('Can`t fetch version server');
     }
     if (!this.isInitialized) {
-      this.isInitialized = await this.loadDatabaseStructure();
+      this.isInitialized = await this.loadDatabaseStructure(); // refactor
     }
     return this.isInitialized;
   }
