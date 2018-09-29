@@ -1,165 +1,79 @@
-import { ConnectionLike } from '../../Connection';
+import { ConnectionLike, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 
-/* eslint-disable */
-
-export default class CoreProvider<C extends ConnectionLike> {
-  // const CURRENT_BASE_KEY = 'currentBaseConfig';
-  // let _DatabaseStructure=new DatabaseStructure();
-  // let database = null;
-  // let connection = {};
-
-  // refactor
-  databaseStructure = new ServerStructure.Structure([], [], [], {});
-
+export default abstract class CoreProvider<C extends ConnectionLike> {
   readonly connection: C;
 
   constructor(connection: C) {
     this.connection = connection;
   }
 
-  render() {
-    //
-    return 123;
-  }
+  abstract getType(): ConnectionType;
 
-  setDatabase() {}
+  abstract query(
+    sql: string,
+    withDatabase?: string,
+    format?: string,
+    extendSettings?: any
+  ): Promise<any>;
 
-  getDatabase() {
-    return 'default';
-  }
+  abstract fastGetVersion(): Promise<string>;
 
-  // @ts-ignore
-  hashCode(s) {
-    // @ts-ignore
-    return s.split('').reduce((a, b) => {
-      a = (a << 5) - a + b.charCodeAt(0);
-      return a & a;
-    }, 0);
-  }
+  abstract getDatabaseStructure(): Promise<ServerStructure.Structure>;
 
-  makeQueryId() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 8; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text;
-  }
-
-  isAuthorized() {}
-
-  getConnection() {
-    return this.connection;
-  }
-
-  // getPassword() {
-  //   return this.connection.password;
+  // refactor: What fot this method??
+  // makeQueryId() {
+  //   let text = '';
+  //   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //   for (let i = 0; i < 8; i += 1)
+  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
+  //   return text;
   // }
 
-  // getLogin() {
-  //   return this.connection.login;
-  // }
-
-  // getHost() {
-  //   return this.connection.host;
-  // }
-
-  isTabixServer() {
-    return false;
-  }
-
-  // @ts-ignore
-  makeSqlQuery(sql, format) {
-    let query = '';
-
-    if (format !== false) {
-      format = format || ' FoRmAt JSON';
-      if (format == 'null') {
-        format = '';
-      }
-      query = `${sql}\n\n${format}`;
-    } else {
-      query = sql;
-    }
-    return query;
-  }
-
-  /**
-   * @param q
-   * @param url
-   * @returns {Promise<any>}
-   */
-  // @ts-ignore
-  xhr(q, url) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      url = `${url}&query=${q}`;
-      xhr.open('GET', url, true);
-      xhr.onload = function() {
-        if (this.status >= 200 && this.status <= 300) {
-          resolve(xhr.response);
-        } else {
-          reject(`Status ${this.status} ${xhr.statusText}`);
+  // refactor: use axios?
+  // For what this method?
+  request(request: Request | string, init?: RequestInit) {
+    return fetch(request, init)
+      .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (
+          contentType &&
+          contentType.includes('text/tab-separated-values') &&
+          response.status === 200 &&
+          response.statusText.toLowerCase() === 'ok'
+        ) {
+          // if insert
+          return Promise.resolve('OK');
         }
-      };
-
-      xhr.ontimeout = function() {
-        reject('Timeout');
-      };
-      xhr.onerror = function() {
-        console.warn(this);
-        reject(`Status ${this.status} ${this.statusText}`);
-      };
-      xhr.timeout = 1000;
-      xhr.send();
-    });
-  }
-
-  // @ts-ignore
-  request(q) {
-    return fetch(q)
-      .then(
-        // @ts-ignore
-        response => {
-          const contentType = response.headers.get('content-type');
-          if (
-            // @ts-ignore
-            contentType.includes('text/tab-separated-values') &&
-            response.status == 200 &&
-            response.statusText.toLowerCase() == 'ok'
-          ) {
-            // if insert
-            return 'OK';
-          }
-          if (
-            // @ts-ignore
-            contentType.includes('text/plain') &&
-            response.status == 200 &&
-            response.statusText.toLowerCase() == 'ok'
-          ) {
-            // if create table && drop table
-            return 'OK';
-          }
-          if (
-            contentType &&
-            contentType.includes('application/json') &&
-            response.status >= 200 &&
-            response.status < 300
-          ) {
-            return Promise.resolve(response);
-          }
-          return response.text().then(Promise.reject.bind(Promise));
+        if (
+          contentType &&
+          contentType.includes('text/plain') &&
+          response.status === 200 &&
+          response.statusText.toLowerCase() === 'ok'
+        ) {
+          // if create table && drop table
+          return Promise.resolve('OK');
         }
-      )
+        if (
+          contentType &&
+          contentType.includes('application/json') &&
+          response.status >= 200 &&
+          response.status < 300
+        ) {
+          // return Promise.resolve(response);
+          return response.json();
+        }
+        return response.text().then(Promise.reject.bind(Promise)); // refactor ???
+        // return response.text();
+      })
       .then(
-        // @ts-ignore
         response => {
           if (response === 'OK') {
             return 'OK';
           }
-          return response.json();
+          return response;
         },
-        // @ts-ignore
+        // refactor: use catch
         responseBody => Promise.reject(responseBody)
       );
   }

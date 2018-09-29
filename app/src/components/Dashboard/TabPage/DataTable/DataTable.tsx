@@ -17,7 +17,7 @@ export default class DataTable extends React.Component<Props> {
     console.log(data);
 
     return (
-      <Table style={{ width: '100%' }} size="small" rowKey="id" dataSource={data.data}>
+      <Table style={{ width: '100%' }} size="small" rowKey="id" dataSource={data.rows}>
         {data.meta.columns.map(col => (
           <TableColumn key={col.name} dataIndex={col.name} title={col.name} />
         ))}

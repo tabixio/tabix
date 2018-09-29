@@ -2,53 +2,48 @@ import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
 
-/* eslint-disable */
-
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   getType() {
     return ConnectionType.direct;
   }
 
-  // @ts-ignore
-  makeUrlRequest(withDatabase, extend_settings) {
-    let url = '';
-    const connection = this.getConnection();
-    let httpProto = '';
-    if (
-      !(connection.connectionUrl.indexOf('://') > 0 || connection.connectionUrl.indexOf('/') == 0)
-    ) {
-      httpProto = 'http://';
-    }
+  makeUrlRequest(withDatabase?: string, extendSettings?: any) {
+    // const httpProto =
+    //   this.connection.connectionUrl.indexOf('://') === 0 ||
+    //   this.connection.connectionUrl.indexOf('/') > 0
+    //     ? 'http://'
+    //     : '';
+
     // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
-    url = httpProto + connection.connectionUrl;
-    url += '/?';
-    url +=
-      'add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1&output_format_json_quote_denormals=1';
+    let url =
+      `${this.connection.connectionUrl}/?` +
+      `add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1&output_format_json_quote_denormals=1`;
     // max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
     // ------------
 
-    if (connection.password) {
-      url += `&user=${encodeURIComponent(connection.username)}&password=${encodeURIComponent(
-        connection.password
+    if (this.connection.password) {
+      url += `&user=${encodeURIComponent(this.connection.username)}&password=${encodeURIComponent(
+        this.connection.password
       )}`;
     } else {
-      url += `&user=${encodeURIComponent(connection.username)}`;
+      url += `&user=${encodeURIComponent(this.connection.username)}`;
     }
 
     if (withDatabase) {
-      url += `&database=${encodeURIComponent(this.getDatabase())}`;
+      url += `&database=${encodeURIComponent(withDatabase)}`;
     }
-    if (extend_settings) {
-      url += `&${extend_settings}`;
+    if (extendSettings) {
+      url += `&${extendSettings}`;
     }
 
-    if (connection.params) {
-      url += `&${connection.params}`;
+    if (this.connection.params) {
+      url += `&${this.connection.params}`;
     }
+
     return url;
   }
 
-  async loadDatabaseStructure() {
+  async getDatabaseStructure() {
     console.time('Load Database Structure!');
     // @ts-ignore
     const columns = await this.query('SELECT * FROM system.columns');
@@ -60,11 +55,11 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const dictionaries = await this.query(
       'SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names'
     );
-    // @ts-ignore
     const functions = await this.query('SELECT name,is_aggregate from system.functions');
     console.timeEnd('Load Database Structure!');
 
     const columnList = columns.data.map((c: any) => {
+      /* eslint-disable camelcase */
       const {
         data_compressed_bytes,
         data_uncompressed_bytes,
@@ -74,6 +69,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         marks_bytes,
         ...rest
       } = c;
+
       return {
         ...rest,
         dataCompressedBytes: +data_compressed_bytes,
@@ -83,23 +79,23 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         defaultType: default_type || '',
         marksBytes: +marks_bytes,
       } as ServerStructure.Column;
+      /* eslint-enable */
     });
+
     // @todo : put to cache ( in localStore )
-    this.databaseStructure = ServerStructure.from(
+    return ServerStructure.from(
       columnList,
       tables.data,
       databases.data,
       dictionaries.data,
       functions.data
     );
-    return true;
   }
 
-  // @ts-ignore
-  query(sql, withDatabase, format, extend_settings) {
-    const query = this.makeSqlQuery(sql, format);
-    const url = this.makeUrlRequest(withDatabase, extend_settings);
-    const myInit = {
+  query(sql: string, withDatabase?: string, format: string = 'FoRmAt JSON', extendSettings?: any) {
+    const query = format ? `${sql}\n${format}` : sql;
+    const url = this.makeUrlRequest(withDatabase, extendSettings);
+    const init: RequestInit = {
       mode: 'cors',
       method: 'post',
       headers: {
@@ -109,14 +105,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       body: query,
       // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
     };
-    // @ts-ignore
-    const myRequest = new Request(url, myInit);
-    return this.request(myRequest);
+    // return this.request(url, init);
+    return fetch(url, init).then(r => r.json());
   }
 
   fastGetVersion() {
-    const url = this.makeUrlRequest(false, false);
+    const url = this.makeUrlRequest();
     const query = 'SELECT version() as version';
-    return this.xhr(query, url);
+    return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
   }
 }

@@ -70,11 +70,8 @@ export default class SignInStore extends ApiRequestableStore {
   @action.bound
   async signIn(history: History) {
     const r = await this.submit(this.selectedConnection, async () => {
-      const api = new Api(this.selectedConnection.toJSON());
-      await api.init();
-      console.log(`Connection - OK, version:${api.getVersion()}`);
-      // return api.getDatabaseStructure();
-      return api.provider.getConnection();
+      const api = await Api.connect(this.selectedConnection.toJSON());
+      return api.provider.connection;
     });
 
     r.forEach(result => {
