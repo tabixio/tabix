@@ -1,4 +1,4 @@
-// import { languages } from 'monaco-editor';
+import { languages } from 'monaco-editor';
 // This config defines the editor's view.
 export const options = {
     lineNumbers: false,
@@ -268,7 +268,7 @@ export const languageDef = {
 };
 
 // This config defines the editor's behavior.
-export const configuration = {
+export const configuration: languages.LanguageConfiguration = {
     comments: {
         lineComment: '--',
         blockComment: ['/*', '*/'],
