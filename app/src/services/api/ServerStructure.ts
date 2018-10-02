@@ -38,6 +38,8 @@ namespace ServerStructure {
     }
   }
 
+  export const EMPTY: Structure = new Structure([], [], [], {});
+
   export function from(
     columns: Column[],
     tables: Table[],

@@ -3,6 +3,8 @@ import MonacoEditor from 'react-monaco-editor';
 import monacoEditor from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
+import { Omit } from 'typelevel-ts';
+import { ServerStructure } from 'services';
 import { languageDef, configuration } from './Clickhouse';
 import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
@@ -21,10 +23,11 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 type Monaco = typeof monacoEditor;
 export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 
-export interface SqlEditorProps extends ToolbarProps {
+export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
   content: string;
   onContentChange: (content: string) => void;
   editorRef?: (editor?: CodeEditor) => void;
+  serverStructure: ServerStructure.Structure;
 }
 
 export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
@@ -140,7 +143,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
   render() {
     const {
-      databases,
+      serverStructure,
       currentDatabase,
       onDatabaseChange,
       content,
@@ -165,7 +168,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
         <Toolbar
           className={css.toolbar}
-          databases={databases}
+          databases={serverStructure.databases}
           currentDatabase={currentDatabase}
           onDatabaseChange={onDatabaseChange}
           onAction={onAction}
