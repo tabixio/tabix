@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import { ConnectionType } from 'services/Connection';
 /* eslint-disable */
 
 export enum DataType {
@@ -20,66 +21,36 @@ export interface Metadata {
 export type Row = Record<string, any> & { id: string | number };
 
 export default class DataDecorator {
+  readonly meta: Metadata;
+  readonly rows: Row[];
+
   private _humanSortCols: any[] = [];
 
   private _sortBy = false;
 
   private _sortOrder = false;
 
-  readonly data: Row[];
-
   private text: any = false;
-
-  // @ts-ignore
-  private sourceType: any;
-
-  // @ts-ignore
-  private progressQuery = '';
-
-  // @ts-ignore
-  private sort = false;
-
-  // @ts-ignore
-  private sortOrder = false;
-
-  readonly meta: Metadata;
 
   private prepareInt64Cols: any = {};
 
-  private query: any;
-
   private error: any = false;
 
-  // @ts-ignore
-  private draw: any;
-
-  // @ts-ignore
-  private rows: any;
-
-  // @ts-ignore
-  private position: any;
-
-  // порядковый номер
-  // @ts-ignore
-  private countAll: any; // всего запросов в выполнении
-
-  // @ts-ignore
-  constructor(result, sourceType) {
-    console.log(result, sourceType);
-
+  constructor(result: any, _sourceType: ConnectionType) {
+    // console.log(result, sourceType);
     if (result.totals && result.data) {
       result.data.push(result.totals);
     }
 
-    this.data = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
+    this.rows = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
 
     this._humanSortCols = [];
     this._sortBy = false;
     this._sortOrder = false;
     this.text = false;
-    this.progressQuery = '';
-    this.sort = false;
-    this.sortOrder = false;
+    // this.progressQuery = '';
+    // this.sort = false;
+    // this.sortOrder = false;
     // Если результат строка
     // if (!result.error && !is(Object, result.data)) {
     if (!result.error && typeof result.data !== 'object') {
@@ -96,14 +67,14 @@ export default class DataDecorator {
         .replace(/>/g, '&gt;');
     }
     // --------------------------------------------------
-    this.sourceType = sourceType || 'ch';
+    // this.sourceType = sourceType || 'ch';
 
     // this.meta = result.meta;
     this.meta = { columns: result.meta };
     this.prepareInt64Cols = {};
 
     // prepare (Int64+UInt64)
-    if (this.data) {
+    if (this.rows) {
       try {
         this.prepareInt64();
       } catch (e) {
@@ -116,11 +87,11 @@ export default class DataDecorator {
       }
     }
 
-    if (result.query) {
-      this.query = result.query;
-    } else {
-      this.query = { index: 0, drawCommands: false };
-    }
+    // if (result.query) {
+    //   this.query = result.query;
+    // } else {
+    //   this.query = { index: 0, drawCommands: false };
+    // }
     if (result.error) {
       // XSS
       this.error = result.error
@@ -132,11 +103,11 @@ export default class DataDecorator {
     } else {
       this.error = false;
     }
-    this.draw = this.query.drawCommands;
-    this.rows = result.rows;
+    // this.draw = this.query.drawCommands;
+    // this.rows = result.rows;
 
-    this.position = this.query.index; // порядковый номер
-    this.countAll = result.countAllQuery; // всего запросов в выполнении
+    // this.position = this.query.index; // порядковый номер
+    // this.countAll = result.countAllQuery; // всего запросов в выполнении
   }
 
   // @ts-ignore
@@ -144,7 +115,7 @@ export default class DataDecorator {
     // @ts-ignore
     const $canConvert = [];
 
-    if (!(Array.isArray(this.data) && this.data.length > 1)) return false;
+    if (!(Array.isArray(this.rows) && this.rows.length > 1)) return false;
 
     this.prepareInt64Cols = {};
     this.meta.columns.forEach(cell => {
@@ -160,7 +131,7 @@ export default class DataDecorator {
             return 0;
           };
           // $v = maxBy(comparator, this.data)[cell.name];
-          $v = Math.max(...this.data.map(comparator))[cell.name]; // refactor
+          $v = Math.max(...this.rows.map(comparator))[cell.name]; // refactor
         } catch (e) {
           console.error('prepareInt64,maxBy', e, 'in cell', cell, 'meta', this.meta);
         }
@@ -183,7 +154,7 @@ export default class DataDecorator {
     // console.log("$canConvert, convert to Int",$canConvert);
 
     // @ts-ignore
-    this.data.map(o => {
+    this.rows.map(o => {
       // @ts-ignore
       $canConvert.forEach(cell => {
         o[cell] = parseInt(o[cell]);
@@ -250,7 +221,7 @@ export default class DataDecorator {
   // }
 
   toString() {
-    return JSON.stringify(this.data);
+    return JSON.stringify(this.rows);
   }
 
   getColumnsHumanSort() {

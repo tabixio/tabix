@@ -10,11 +10,12 @@ import css from './SqlEditor.css';
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   language: 'clickhouse',
   theme: 'vs-dark',
-  automaticLayout: true,
+  minimap: { enabled: false },
   selectOnLineNumbers: true,
-  fontSize: 14,
+  automaticLayout: true,
   formatOnPaste: true,
-  fontFamily: 'Menlo',
+  // fontFamily: 'Menlo',
+  // fontSize: 14,
 };
 
 type Monaco = typeof monacoEditor;

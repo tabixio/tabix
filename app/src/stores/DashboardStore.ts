@@ -31,19 +31,18 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   @action
   async loadData() {
     const t = await this.request(async () => {
-      const api = new Api(this.rootStore.appStore.connection.get());
-      await api.init();
-      return api.getDatabaseStructure();
+      const api = await Api.connect(this.rootStore.appStore.connection.get());
+      return api.loadDatabaseStructure();
     });
 
-    t.forEach(result => {
+    t.forEach(result =>
       runInAction(() => {
         this.serverStructure = Option.of(result);
         if (!this.tabs.length) {
           this.addNewTab();
         }
-      });
-    });
+      })
+    );
   }
 
   @action
@@ -88,9 +87,8 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
     this.activeTab.forEach(async tab => {
       const t = await this.request(async () => {
-        const api = new Api(this.rootStore.appStore.connection.get());
-        await api.init();
-        return api.fetch(tab.content, tab.currentDatabase.get(), undefined, undefined);
+        const api = await Api.connect(this.rootStore.appStore.connection.get());
+        return api.fetch(tab.content, tab.currentDatabase.get());
       });
 
       t.forEach(result =>
