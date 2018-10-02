@@ -1,6 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor, {CompletionItem, Position} from 'monaco-editor';
+import monacoEditor, {Position} from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -8,7 +8,7 @@ import { ServerStructure } from 'services';
 import { languageDef, configuration } from './Clickhouse';
 import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
-import {Structure} from "../../../../services/api/ServerStructure";
+// import {Column, Database, Structure, Table} from "../../../../services/api/ServerStructure";
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   language: 'clickhouse',
@@ -57,28 +57,16 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     }
   };
 
-  private updateServerStructure = (serverStructure:Structure,currentDataBaseName:string|undefined,monaco: Monaco) => {
+  private updateServerStructure = (serverStructure:ServerStructure.Structure,currentDataBaseName:string|undefined,monaco: Monaco) => {
 
       if (!serverStructure || !serverStructure.editorRules.builtinFunctions)
       {
           console.warn('serverStructure is not Init');
           return;
       }
-      let completionItems=[
-          //  https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.completionitem.html
-
-          { label: 'Server', kind: monaco.languages.CompletionItemKind.Text },
-          { label: 'Request', kind: monaco.languages.CompletionItemKind.Text },
-          { label: 'Response', kind: monaco.languages.CompletionItemKind.Text },
-          { label: 'Session', kind: monaco.languages.CompletionItemKind.Text },
-      ];
-      // database: "ads", name: "arrays_test", engine: "Memory", columns: Array(2),
-
-
-
+      let completionItems:Array< monacoEditor.languages.CompletionItem>=[];
       // Completion:Dictionaries
-
-      serverStructure.databases.forEach((db) => {
+      serverStructure.databases.forEach((db:ServerStructure.Database) => {
 
           // Completion:dbName
           completionItems.push( // interface CompletionItem
@@ -92,8 +80,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
           if (currentDataBaseName!==db.name) return;
           // Completion:Tables
-          db.tables.forEach((table)=>{
-              table.columns.forEach((col)=>{
+          db.tables.forEach((table:ServerStructure.Table)=>{
+              table.columns.forEach((col:ServerStructure.Column)=>{
                 // column
                   completionItems.push(
                       {
@@ -121,7 +109,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
           });
       });
       // Completion:Functions
-      serverStructure.editorRules.builtinFunctions.forEach((func) => {
+      serverStructure.editorRules.builtinFunctions.forEach((func:any) => {
           completionItems.push( // interface CompletionItem
               {
                   //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
@@ -409,7 +397,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       <Flex column className={classNames(css.root, className)} {...rest}>
         <Flex grow fill className={css.editor}>
           <MonacoEditor
-            serverStructure={serverStructure}
             options={monacoEditorOptions}
             editorWillMount={this.onEditorWillMount}
             editorDidMount={this.onEditorDidMount}
