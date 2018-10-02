@@ -1,6 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor, { Position} from 'monaco-editor';
+import monacoEditor, {CompletionItem, Position} from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -8,6 +8,7 @@ import { ServerStructure } from 'services';
 import { languageDef, configuration } from './Clickhouse';
 import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
+import {Structure} from "../../../../services/api/ServerStructure";
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   language: 'clickhouse',
@@ -38,8 +39,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
   private onEditorWillMount = (monaco: Monaco) => {
 
+
     // monaco.editor.defineTheme('cobalt', theme_cobalt);
     // monaco.editor.setTheme('cobalt');
+
+
 
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
@@ -48,21 +52,101 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       monaco.languages.setMonarchTokensProvider('clickhouse', languageDef as any);
       // Set the editing configuration for the language
       monaco.languages.setLanguageConfiguration('clickhouse', configuration);
-      monaco.languages.registerCompletionItemProvider('clickhouse', {
-        provideCompletionItems() {
-          return [
-            { label: 'Server', kind: monaco.languages.CompletionItemKind.Text },
-            { label: 'Request', kind: monaco.languages.CompletionItemKind.Text },
-            { label: 'Response', kind: monaco.languages.CompletionItemKind.Text },
-            { label: 'Session', kind: monaco.languages.CompletionItemKind.Text },
-          ];
-        },
-      });
       // registerCompletionItemProvider
-      console.log('monaco - register ClickHouse', languageDef);
+      console.log('monaco - register ClickHouse');
     }
   };
 
+  private updateServerStructure = (serverStructure:Structure,currentDataBaseName:string|undefined,monaco: Monaco) => {
+
+      if (!serverStructure || !serverStructure.editorRules.builtinFunctions)
+      {
+          console.warn('serverStructure is not Init');
+          return;
+      }
+      let completionItems=[
+          //  https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.completionitem.html
+
+          { label: 'Server', kind: monaco.languages.CompletionItemKind.Text },
+          { label: 'Request', kind: monaco.languages.CompletionItemKind.Text },
+          { label: 'Response', kind: monaco.languages.CompletionItemKind.Text },
+          { label: 'Session', kind: monaco.languages.CompletionItemKind.Text },
+      ];
+      // database: "ads", name: "arrays_test", engine: "Memory", columns: Array(2),
+
+
+
+      // Completion:Dictionaries
+
+      serverStructure.databases.forEach((db) => {
+
+          // Completion:dbName
+          completionItems.push( // interface CompletionItem
+              {
+                  label:db.name,
+                  insertText:db.name,
+                  kind: monaco.languages.CompletionItemKind.Reference,
+                  detail:`database`
+              },
+          );
+
+          if (currentDataBaseName!==db.name) return;
+          // Completion:Tables
+          db.tables.forEach((table)=>{
+              table.columns.forEach((col)=>{
+                // column
+                  completionItems.push(
+                      {
+
+                          label:col.name,
+                          insertText:col.name,
+                          kind: monaco.languages.CompletionItemKind.Unit,
+                          detail:`${col.database}.${col.table}:${col.type}`,
+                          documentation:`${col.id} , ${col.type} , `
+                      },
+                  );
+
+              });
+              // table
+              completionItems.push( // interface CompletionItem
+                  {
+
+                      label:table.name,
+                      insertText:`${table.database}.${table.insertName}`,
+                      kind: monaco.languages.CompletionItemKind.Interface,
+                      detail:`table:${table.engine}`,
+                      documentation:table.id
+                  },
+              );
+          });
+      });
+      // Completion:Functions
+      serverStructure.editorRules.builtinFunctions.forEach((func) => {
+          completionItems.push( // interface CompletionItem
+              {
+                  //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
+                  label:func.name,
+                  insertText:func.name+'()',
+                  kind: monaco.languages.CompletionItemKind.Function,
+                  detail:`function`
+              },
+          );
+      });
+
+
+      // console.warn('ServerStructure',serverStructure);
+      // console.warn('currentDataBaseName',currentDataBaseName);
+      // console.warn('monaco',monaco);
+
+      // Completion:register
+      monaco.languages.registerCompletionItemProvider('clickhouse', {
+          provideCompletionItems() {
+              return completionItems;
+          },
+      });
+
+      // ------------------------
+  };
   private onEditorDidMount = (editor: CodeEditor, monaco: Monaco) => {
     const { editorRef } = this.props;
     editorRef && editorRef(editor);
@@ -72,6 +156,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     const KM = monaco.KeyMod;
     const KC = monaco.KeyCode;
 
+    this.updateServerStructure(
+        this.props.serverStructure,
+        this.props.currentDatabase,
+        monaco
+    );
 
     // ======== Command-Enter ========
     editor.addAction({
@@ -314,10 +403,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       ...rest
     } = this.props;
 
-    return (
+
+
+      return (
       <Flex column className={classNames(css.root, className)} {...rest}>
         <Flex grow fill className={css.editor}>
           <MonacoEditor
+            serverStructure={serverStructure}
             options={monacoEditorOptions}
             editorWillMount={this.onEditorWillMount}
             editorDidMount={this.onEditorDidMount}
