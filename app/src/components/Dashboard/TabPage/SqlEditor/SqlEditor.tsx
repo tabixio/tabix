@@ -1,6 +1,6 @@
 import React from 'react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor from 'monaco-editor';
+import monacoEditor, { Position} from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { languageDef, configuration } from './Clickhouse';
@@ -33,6 +33,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
   }
 
   private onEditorWillMount = (monaco: Monaco) => {
+
+    // monaco.editor.defineTheme('cobalt', theme_cobalt);
+    // monaco.editor.setTheme('cobalt');
+
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
       monaco.languages.register({ id: 'clickhouse' });
@@ -60,12 +64,16 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     editorRef && editorRef(editor);
 
     const self = this;
-    // editor._standaloneKeybindingService.addDynamicKeybinding("-actions.find")
-    // editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_F, function() {});
+
+    const KM = monaco.KeyMod;
+    const KC = monaco.KeyCode;
+
+
+    // ======== Command-Enter ========
     editor.addAction({
       id: 'my-exec-code',
       label: 'Exec current code',
-      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+      keybindings: [KM.CtrlCmd | KC.Enter],
       // A precondition for this action.
       // precondition: undefined,
       // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
@@ -77,13 +85,158 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       // run:this.executeCommand
       run(editor) {
         self.executeCommand('current', editor, monaco);
-        // return null;
       },
     });
+    // ======== Shift-Command-Enter ========
+    editor.addAction({
+        id: 'my-exec-all',
+        label: 'Exec All',
+        keybindings: [ KM.Shift | KM.CtrlCmd | KC.Enter],
+        precondition: undefined,
+        keybindingContext: undefined,
+        contextMenuGroupId: 'navigation',
+        contextMenuOrder: 1.5,
+        run(editor) {
+            self.executeCommand('all',editor,monaco);
+        }
+    });
+    // ======== Command+Shift+- / Command+Shift+= ========
+    editor.addCommand(KM.chord(KM.Shift | KM.CtrlCmd | KC.US_MINUS,0),  function() {
+        editor.getAction('editor.foldAll').run();
+    },'');
+    editor.addCommand(KM.chord(KM.Shift | KM.CtrlCmd | KC.US_EQUAL,0), function() {
+        editor.getAction('editor.unfoldAll').run();
+    },'');
+    // ======== Shift-CtrlCmd-F ========
+    editor.addCommand(KM.chord(KM.Shift | KM.CtrlCmd | KC.KEY_F,0), function() {
+        editor.getAction("editor.action.formatDocument").run();
+    },'');
+    // ======== Cmd-Y ========
+    editor.addCommand(KM.chord( KM.CtrlCmd | KC.KEY_Y,0), function() {
+        editor.getAction("editor.action.deleteLines").run();
+    },'');
+
+    // @todo: Command-Shift-[NUM]
+    // for (let i = 0; i < 9; i++) {
+    //     editor.addCommand(monaco.KeyMod.chord( monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode['KEY_'+i]), function() {
+    //         console.warn('actionChangeTab',i);
+    //         self.actionChangeTab(i);
+    //     });
+    // }
+
+    // @todo:  Command-Left | Command-Right | Shift-Alt-Command-Right | Shift-Alt-Command-Right
+
 
     editor.focus();
   };
+  private splitByTokens = (
+      _monaco: Monaco,
+      editor: monacoEditor.editor.ICodeEditor,
+      text:string,
+      cursorPosition: Position,
+      spitToken:string
+  ) => {
+      const lenVV=2;
+      let splits : Array<object> =[];
 
+      let tokensList  : object =[];
+      let firstToken  : object ={
+          line:1,
+          offset:1,
+          type:false,
+      };
+      let prewToken : object ={
+          line:1,
+          offset:1,
+          type:false,
+          typeT:false,
+      };
+
+      let tokens = _monaco.editor.tokenize(text,'clickhouse');
+
+      tokens.forEach(
+          (lineTokens:any,line:number) => {
+
+          line=line+1;
+          lineTokens.forEach((token:monacoEditor.languages.IToken[])=> {
+              if (prewToken['type'])
+              {
+                  if (!Array.isArray(tokensList[prewToken['type']])) tokensList[prewToken['type']]=[];
+                  let ll_range=new _monaco.Range(
+                      prewToken['line'],
+                      prewToken['offset'],
+                      line,
+                      token['offset']+1
+                  );
+
+                  let tokenText= editor.getModel().getValueInRange(ll_range);
+                  tokenText=tokenText.trim();
+                  if (tokenText.length) {
+                      tokensList[prewToken['type']].push(
+                          tokenText
+                      );
+                  }
+              }
+
+              if (!firstToken) {
+                  token['line']=line;
+                  firstToken=token;
+              }
+              if (token['type']===spitToken) {
+                  splits.push({
+                      startLineNumber:firstToken['line'],
+                      startColumn:firstToken['offset'],
+                      endLineNumber:line,
+                      endColumn:1+token['offset'],
+                      tokens:tokensList
+                  });
+                  tokensList=[];
+                  firstToken['line']=line;
+                  firstToken['offset']=1+token['offset']+lenVV;
+              }
+              prewToken={
+                  type:token['type'],
+                  line:line,
+                  offset:1+token['offset'],
+              };
+          });
+      });
+
+
+      // push last or all
+      splits.push({
+          startLineNumber: firstToken['line'],
+          startColumn: firstToken['offset'],
+          endLineNumber: Number.MAX_VALUE,
+          endColumn: Number.MAX_VALUE,
+          tokens:tokensList
+      });
+
+      let list_query: Array<object> =[];
+
+      splits.forEach((splitRange)=>{
+          let range=new _monaco.Range(
+              splitRange['startLineNumber'],
+              splitRange['startColumn'],
+              splitRange['endLineNumber'],
+              splitRange['endColumn']
+          );
+          let text=editor.getModel().getValueInRange(range);
+          let inCursor=range.containsPosition(cursorPosition);
+          if (text.trim().length<1) return;
+          list_query.push(
+              {
+                  sql:text,
+                  range:range,
+                  inCursor:inCursor,
+                  tokens:splitRange['tokens']
+              }
+          );
+      });
+
+      return list_query;
+
+  };
   private executeCommand = (
     _typeCommand: string,
     editor: monacoEditor.editor.ICodeEditor,
@@ -92,6 +245,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     // window.edit = editor; // debug
     // window.monaco = monaco; // debug
 
+    const spliterToken='warn-token.sql';  // can change in future
     const position = editor.getPosition();
     const selectedText = editor.getModel().getValueInRange(editor.getSelection());
     const allValue = editor.getValue();
@@ -105,7 +259,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     }
     console.info(`%c ${sql}`, 'color: #bada55');
 
-    // let range=monaco.editor.Range()
+    let splits=this.splitByTokens(_monaco,editor,sql,position,spliterToken);
+
+    console.info('splits',_typeCommand,splits);
+
+    // inCursor=true:Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
+
+      // let range=monaco.editor.Range()
     // const tokens = monaco.editor.tokenize('select * from ;; select', 'clickhouse');
     // console.log(editor,tokens);
 
