@@ -7,7 +7,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return ConnectionType.direct;
   }
 
-  makeUrlRequest(withDatabase?: string, extendSettings?: any) {
+  private getRequestUrl(withDatabase?: string, extendSettings?: any): string {
     // const httpProto =
     //   this.connection.connectionUrl.indexOf('://') === 0 ||
     //   this.connection.connectionUrl.indexOf('/') > 0
@@ -94,7 +94,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
 
   query(sql: string, withDatabase?: string, format: string = 'FoRmAt JSON', extendSettings?: any) {
     const query = format ? `${sql}\n${format}` : sql;
-    const url = this.makeUrlRequest(withDatabase, extendSettings);
+    const url = this.getRequestUrl(withDatabase, extendSettings);
     const init: RequestInit = {
       mode: 'cors',
       method: 'post',
@@ -110,7 +110,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   }
 
   fastGetVersion() {
-    const url = this.makeUrlRequest();
+    const url = this.getRequestUrl();
     const query = 'SELECT version() as version';
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
   }

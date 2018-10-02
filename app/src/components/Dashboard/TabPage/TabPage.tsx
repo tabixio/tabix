@@ -67,7 +67,7 @@ export default class TabPage extends React.Component<Props> {
           <SqlEditor
             content={model.content}
             onContentChange={this.onContentChange}
-            databases={databases}
+            serverStructure={store.serverStructure.getOrElse(ServerStructure.EMPTY)}
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onAction}
