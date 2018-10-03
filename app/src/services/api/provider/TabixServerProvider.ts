@@ -3,7 +3,7 @@ import CoreProvider from './CoreProvider';
 
 export default class TabixServerProvider extends CoreProvider<ServerConnection> {
   getDatabaseStructure(): Promise<
-    import('/home/vladimir/dev/sources/tabixio/tabix/app/src/services/api/ServerStructure').default.Structure
+    import('/home/vladimir/dev/sources/tabixio/tabix/app/src/services/api/ServerStructure').default.Server
   > {
     throw new Error('Method not implemented.');
   }

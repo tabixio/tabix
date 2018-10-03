@@ -1,0 +1,13 @@
+.root {
+  & > :global(.anticon) {
+    margin-right: 0.5em;
+  }
+}
+
+.action {
+  margin-left: 0.75em;
+
+  &:not(:active):hover {
+    transform: scale(1.5);
+  }
+}

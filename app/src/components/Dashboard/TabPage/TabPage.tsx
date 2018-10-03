@@ -15,7 +15,7 @@ import DataTable from './DataTable';
 
 interface Props extends SplitPaneProps {
   model: Tab;
-  changeField: ChangeFieldHandler<Tab>;
+  changeTabModelField: ChangeFieldHandler<Tab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
 }
@@ -23,18 +23,18 @@ interface Props extends SplitPaneProps {
 @observer
 export default class TabPage extends React.Component<Props> {
   private onContentChange = (content: string) => {
-    const { changeField } = this.props;
-    changeField({ name: 'content', value: content });
+    const { changeTabModelField } = this.props;
+    changeTabModelField({ name: 'content', value: content });
   };
 
   private onDatabaseChange = (db: ServerStructure.Database) => {
-    const { changeField } = this.props;
-    changeField({ name: 'currentDatabase', value: Option.of(db.name) });
+    const { changeTabModelField } = this.props;
+    changeTabModelField({ name: 'currentDatabase', value: Option.of(db.name) });
   };
 
   private setEditorRef = (editor?: CodeEditor) => {
-    const { changeField } = this.props;
-    changeField({ name: 'codeEditor', value: Option.of(editor) });
+    const { changeTabModelField } = this.props;
+    changeTabModelField({ name: 'codeEditor', value: Option.of(editor) });
   };
 
   private onAction = (action: ActionType) => {
@@ -59,7 +59,7 @@ export default class TabPage extends React.Component<Props> {
   };
 
   render() {
-    const { store, model, changeField, databases, ...rest } = this.props;
+    const { store, model, changeTabModelField, databases, ...rest } = this.props;
 
     return (
       <React.Fragment>

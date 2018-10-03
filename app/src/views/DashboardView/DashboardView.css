@@ -1,3 +1,7 @@
+.sider-container {
+  overflow-x: hidden;
+}
+
 .tabs {
   & :global {
     .ant-tabs-bar {
@@ -8,7 +12,7 @@
       & .ant-tabs-nav-container {
         /* flex-shrink: 0; */
       }
-      
+
       & div.ant-tabs-extra-content {
         /* flex-grow: 1; */
         order: 999;

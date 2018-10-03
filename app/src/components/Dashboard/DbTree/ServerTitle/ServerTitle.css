@@ -1,9 +1,0 @@
-.root {
-  & > :global(.anticon) {
-    margin-right: 0.5em;
-  }
-}
-
-.action:not(:active):hover {
-  transform: scale(1.5);
-}

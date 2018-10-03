@@ -44,6 +44,7 @@ export default class Api {
 
   async fetch(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
     const data = await this.query(sql, withDatabase, format, extendSettings);
+    console.log(data);
     return new DataDecorator(data, this.provider.getType());
   }
 

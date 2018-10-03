@@ -16,7 +16,7 @@ namespace ServerStructure {
   export interface Table {
     id: string;
     name: string;
-    insertName:string,
+    insertName: string;
     database: string;
     engine: string;
     columns: Column[];
@@ -28,8 +28,10 @@ namespace ServerStructure {
     tables: Table[];
   }
 
-  export class Structure {
+  export class Server {
     constructor(
+      public readonly id: string,
+      public readonly name: string,
       public readonly databases: Database[],
       public readonly functions: any[],
       public readonly dictionaries: any[],
@@ -39,7 +41,7 @@ namespace ServerStructure {
     }
   }
 
-  export const EMPTY: Structure = new Structure([], [], [], {});
+  export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
 
   export function from(
     columns: Column[],
@@ -65,12 +67,14 @@ namespace ServerStructure {
     }, {});
 
     const dbTables = tables.reduce((acc, t) => {
-        let tableNameTrim:string=t.name;
-        if (tableNameTrim.indexOf('.') !== -1) {tableNameTrim='"'+tableNameTrim+'"';}
-        const table: Table = {
+      let tableNameTrim: string = t.name;
+      if (tableNameTrim.indexOf('.') !== -1) {
+        tableNameTrim = `"${tableNameTrim}"`;
+      }
+      const table: Table = {
         ...t,
         columns: dbTableColumns[t.database][t.name],
-        insertName:tableNameTrim,
+        insertName: tableNameTrim,
         id: `${t.database}.${t.name}`,
       };
 
@@ -167,9 +171,9 @@ namespace ServerStructure {
 
     console.log('DS init ... done');
 
-    editorRules.tables=dbTables;
+    editorRules.tables = dbTables;
 
-    return new Structure(dbList, functions, dictionaries, editorRules);
+    return new Server('root', 'Clickhouse Server', dbList, functions, dictionaries, editorRules);
   }
 }
 
