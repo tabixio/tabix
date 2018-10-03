@@ -56,7 +56,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
   };
 
   private updateServerStructure = (
-    serverStructure: ServerStructure.Structure,
+    serverStructure: ServerStructure.Server,
     currentDataBaseName: string | undefined,
     monaco: Monaco
   ) => {
@@ -227,26 +227,26 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     spitToken: string
   ) => {
     const lenVV = 2;
-    const splits: Array<object> = [];
+    const splits: any[] = [];
 
-    let tokensList: object = [];
-    let firstToken: object = {
+    let firstToken = {
       line: 1,
       offset: 1,
-      type: false,
+      type: '',
     };
-    let prewToken: object = {
+    let prewToken = {
       line: 1,
       offset: 1,
-      type: false,
+      type: '',
       typeT: false,
     };
+    let tokensList: any[] = [];
 
     const tokens = _monaco.editor.tokenize(text, 'clickhouse');
 
-    tokens.forEach((lineTokens: any, line: number) => {
-      line += 1;
-      lineTokens.forEach((token: monacoEditor.languages.IToken[]) => {
+    tokens.forEach((lineTokens, i) => {
+      const line = i + 1;
+      lineTokens.forEach(token => {
         if (prewToken.type) {
           if (!Array.isArray(tokensList[prewToken.type])) tokensList[prewToken.type] = [];
           const ll_range = new _monaco.Range(
@@ -264,7 +264,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         }
 
         if (!firstToken) {
-          token.line = line;
+          // @ts-ignore
+          token.line = line; // ???
+          // @ts-ignore
           firstToken = token;
         }
         if (token.type === spitToken) {
@@ -279,6 +281,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
           firstToken.line = line;
           firstToken.offset = 1 + token.offset + lenVV;
         }
+        // @ts-ignore
         prewToken = {
           type: token.type,
           line,
@@ -296,7 +299,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       tokens: tokensList,
     });
 
-    const list_query: Array<object> = [];
+    const listQuery: any[] = [];
 
     splits.forEach(splitRange => {
       const range = new _monaco.Range(
@@ -308,7 +311,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       const text = editor.getModel().getValueInRange(range);
       const inCursor = range.containsPosition(cursorPosition);
       if (text.trim().length < 1) return;
-      list_query.push({
+      listQuery.push({
         sql: text,
         range,
         inCursor,
@@ -316,7 +319,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       });
     });
 
-    return list_query;
+    return listQuery;
   };
 
   private executeCommand = (
