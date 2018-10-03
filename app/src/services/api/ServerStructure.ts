@@ -16,6 +16,7 @@ namespace ServerStructure {
   export interface Table {
     id: string;
     name: string;
+    insertName: string;
     database: string;
     engine: string;
     columns: Column[];
@@ -34,7 +35,7 @@ namespace ServerStructure {
       public readonly databases: Database[],
       public readonly functions: any[],
       public readonly dictionaries: any[],
-      public readonly aceJSRules: Record<string, any>
+      public readonly editorRules: Record<string, any>
     ) {
       return Object.freeze(this);
     }
@@ -66,9 +67,14 @@ namespace ServerStructure {
     }, {});
 
     const dbTables = tables.reduce((acc, t) => {
+      let tableNameTrim: string = t.name;
+      if (tableNameTrim.indexOf('.') !== -1) {
+        tableNameTrim = `"${tableNameTrim}"`;
+      }
       const table: Table = {
         ...t,
         columns: dbTableColumns[t.database][t.name],
+        insertName: tableNameTrim,
         id: `${t.database}.${t.name}`,
       };
 
@@ -84,17 +90,16 @@ namespace ServerStructure {
       id: db.name,
     }));
 
-    const aceJSRules = {
+    const editorRules = {
       builtinFunctions: [] as any[],
       lang: 'en',
       dictionaries: [] as any[],
-      fieldsList: [] as any[],
-      tables: [] as any[],
+      tables: {} as object,
     };
 
     // ------------------------------- builtinFunctions -----------------------------------
     functions.forEach(item => {
-      aceJSRules.builtinFunctions.push({
+      editorRules.builtinFunctions.push({
         name: item.name,
         isaggr: item.is_aggregate,
         score: 101,
@@ -110,7 +115,7 @@ namespace ServerStructure {
           comb: 'If',
           origin: item.name,
         };
-        aceJSRules.builtinFunctions.push(p);
+        editorRules.builtinFunctions.push(p);
 
         // Комбинатор -Array. Агрегатные функции для аргументов-массивов
         p = {
@@ -120,7 +125,7 @@ namespace ServerStructure {
           comb: 'Array',
           origin: item.name,
         };
-        aceJSRules.builtinFunctions.push(p);
+        editorRules.builtinFunctions.push(p);
 
         // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
         p = {
@@ -130,7 +135,7 @@ namespace ServerStructure {
           comb: 'State',
           origin: item.name,
         };
-        aceJSRules.builtinFunctions.push(p);
+        editorRules.builtinFunctions.push(p);
       }
     });
 
@@ -158,15 +163,17 @@ namespace ServerStructure {
       const dic = `dictGet${item['attribute.types']}('${item.name}','${
         item['attribute.names']
       }',to${item.key}( ${idField} ) ) AS ${item['attribute.names']},`;
-      aceJSRules.dictionaries.push({
+      editorRules.dictionaries.push({
         dic,
         title: `dic_${item.name}.${item['attribute.names']}`,
       });
     });
-    // aceJSRules.tables = this.getUniqueDatabaseTables();
+
     console.log('DS init ... done');
 
-    return new Server('root', 'Clickhouse Server', dbList, functions, dictionaries, aceJSRules);
+    editorRules.tables = dbTables;
+
+    return new Server('root', 'Clickhouse Server', dbList, functions, dictionaries, editorRules);
   }
 }
 

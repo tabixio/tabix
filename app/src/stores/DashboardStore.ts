@@ -18,7 +18,44 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   tabs: TabModel[] = [
     TabModel.from({
       title: 'SQL 1',
-      content: `SELECT * from default.arrays_test_ints`,
+      content: `SELECT 323;;73709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
+;;
+SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
+;;
+SELECT field2 , sin(number) as sin  FROM system.numbers
+sin( cos(DepTimeBlk) ) , bar(123)  -- support.function 
+var1 , var2 , var3          -- markup.heading
+ OriginWac,DepTimeBlk,DepTime,OriginAirportSeqID      -- variable.parameter
+true|false|NULL    -- const
+system.numbers_mt | system.numbers -- tables
+ReplicatedCollapsingMergeTree -- dataTypes
+SYSTEM RELOAD CONFIG -- doubleSysWord
+
+CREATE TABLE IF NOT EXISTS all_hits ON CLUSTER cluster (p Date, i Int32) ENGINE = Distributed(cluster, default, hits)
+DROP DATABASE IF EXISTS db ON CLUSTER cluster
+SHOW TEMPORARY TABLES FROM default LIKE 'pattern' INTO OUTFILE filename FORMAT JSON
+SELECT s, arr, a FROM arrays_test ARRAY JOIN arr AS a
+;;
+SELECT
+    domainWithoutWWW(URL) AS domain,
+    domainWithoutWWW(REFERRER_URL) AS referrer,
+    device_type,
+    count() cnt
+FROM hits
+GROUP BY domain, referrer, device_type
+ORDER BY cnt DESC
+LIMIT 5 BY domain, device_type
+LIMIT 100
+;;
+ 1, 18446744073709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
+;;
+1 + 2 * 3 + 4
+;;
+SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
+;;SELECT 1 as ping;;SELECT 2 as ping;;
+SELECT 3
+;; 
+SELECT * from default.arrays_test_ints`,
       currentDatabase: Some('default'),
     }),
   ];
