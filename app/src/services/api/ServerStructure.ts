@@ -27,8 +27,10 @@ namespace ServerStructure {
     tables: Table[];
   }
 
-  export class Structure {
+  export class Server {
     constructor(
+      public readonly id: string,
+      public readonly name: string,
       public readonly databases: Database[],
       public readonly functions: any[],
       public readonly dictionaries: any[],
@@ -38,7 +40,7 @@ namespace ServerStructure {
     }
   }
 
-  export const EMPTY: Structure = new Structure([], [], [], {});
+  export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
 
   export function from(
     columns: Column[],
@@ -164,7 +166,7 @@ namespace ServerStructure {
     // aceJSRules.tables = this.getUniqueDatabaseTables();
     console.log('DS init ... done');
 
-    return new Structure(dbList, functions, dictionaries, aceJSRules);
+    return new Server('root', 'Clickhouse Server', dbList, functions, dictionaries, aceJSRules);
   }
 }
 

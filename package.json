@@ -56,7 +56,7 @@
     "postcss-import": "^12.0.0",
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.1.0",
-    "postcss-preset-env": "^6.0.8",
+    "postcss-preset-env": "^6.0.10",
     "prettier": "^1.14.3",
     "prettier-stylelint": "^0.4.2",
     "pug": "^2.0.3",

@@ -2,10 +2,10 @@ import uuid from 'uuid';
 import { ConnectionType } from 'services/Connection';
 /* eslint-disable */
 
-export enum DataType {
-  String = 'String',
-  ArrayOfUInt8 = 'Array(UInt8)',
-}
+// export enum DataType {
+//   String = 'String',
+//   ArrayOfUInt8 = 'Array(UInt8)',
+// }
 
 export interface ColumnMetadata {
   name: string;
@@ -22,6 +22,7 @@ export type Row = Record<string, any> & { id: string | number };
 
 export default class DataDecorator {
   readonly meta: Metadata;
+
   readonly rows: Row[];
 
   private _humanSortCols: any[] = [];
@@ -113,7 +114,7 @@ export default class DataDecorator {
   // @ts-ignore
   prepareInt64() {
     // @ts-ignore
-    const $canConvert = [];
+    const $canConvert: any[] = [];
 
     if (!(Array.isArray(this.rows) && this.rows.length > 1)) return false;
 
@@ -153,9 +154,7 @@ export default class DataDecorator {
 
     // console.log("$canConvert, convert to Int",$canConvert);
 
-    // @ts-ignore
     this.rows.map(o => {
-      // @ts-ignore
       $canConvert.forEach(cell => {
         o[cell] = parseInt(o[cell]);
       });
@@ -163,8 +162,7 @@ export default class DataDecorator {
     });
   }
 
-  // @ts-ignore
-  isNormalInt64Col(coll) {
+  isNormalInt64Col(coll: any) {
     return this.prepareInt64Cols[coll];
   }
 

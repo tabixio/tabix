@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
 import monacoEditor from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
@@ -27,9 +28,10 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
   content: string;
   onContentChange: (content: string) => void;
   editorRef?: (editor?: CodeEditor) => void;
-  serverStructure: ServerStructure.Structure;
+  serverStructure: ServerStructure.Server;
 }
 
+@observer
 export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
   componentWillUnmount() {
     const { editorRef } = this.props;

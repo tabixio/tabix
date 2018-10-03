@@ -3,14 +3,15 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { observer } from 'mobx-react';
 import { Layout, Tabs } from 'antd';
 import { Flex } from 'reflexy';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject, ChangeFieldHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import Page from 'components/Page';
-import { DBTree, TabPage } from 'components/Dashboard';
+import { ServerStructureTree, TabPage } from 'components/Dashboard';
+import { TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
 // import { Range } from 'monaco-editor';
-import { TableAction, ColumnAction } from 'components/Dashboard/DbTree';
+import { TreeFilter } from 'models';
 import css from './DashboardView.css';
 
 interface InjectedProps {
@@ -24,8 +25,8 @@ type RoutedProps = Props & RouteComponentProps<any>;
 @observer
 class DashboardView extends React.Component<RoutedProps> {
   // private codeEditor?: CodeEditor;
-
-  componentWillMount() {
+  constructor(props: RoutedProps) {
+    super(props);
     this.load();
   }
 
@@ -72,29 +73,40 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
+  private filterTimeout: number = 0;
+
+  private onTreeFilterChange: ChangeFieldHandler<TreeFilter> = event => {
+    const { store } = this.props;
+    store.treeFilter.changeField(event);
+    if (this.filterTimeout) window.clearTimeout(this.filterTimeout);
+    this.filterTimeout = window.setTimeout(() => store.filterServerStructure(), 200);
+  };
+
   render() {
+    // console.log('*');
     const { store } = this.props;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
     return (
       <Page column={false} uiStore={store.uiStore}>
         <Splitter>
-          <Flex alignItems="stretch" vfill>
+          <Flex alignItems="stretch" vfill className={css['sider-container']}>
             <Layout>
               <Layout.Sider width="100%">
-                {store.serverStructure
-                  .map(s => (
-                    <DBTree
-                      selectedDatabase={store.activeTab
-                        .flatMap(t => t.currentDatabase)
-                        .orUndefined()}
-                      structure={s}
-                      onReload={this.load}
-                      onTableAction={this.onTableAction}
-                      onColumnAction={this.onColumnAction}
-                    />
-                  ))
-                  .orUndefined()}
+                <ServerStructureTree
+                  store={store.uiStore}
+                  // selectedIds={store.uiStore.treeSelectedKeys}
+                  structure={store.filteredServerStructure
+                    .orElse(store.serverStructure)
+                    .orUndefined()}
+                  onReload={this.load}
+                  onTableAction={this.onTableAction}
+                  onColumnAction={this.onColumnAction}
+                  treeFilter={store.treeFilter}
+                  onChangeTreeFilterField={this.onTreeFilterChange}
+                  // filteredIds={store.uiStore.treeExpandedKeys}
+                  // filteredIds={[]}
+                />
               </Layout.Sider>
             </Layout>
           </Flex>
@@ -111,7 +123,7 @@ class DashboardView extends React.Component<RoutedProps> {
                 <TabPage
                   store={store}
                   model={t}
-                  changeField={t.changeField}
+                  changeTabModelField={t.changeField}
                   databases={databases}
                 />
               </Tabs.TabPane>

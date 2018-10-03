@@ -1,6 +1,10 @@
 @value text-color from 'assets/styles/vars.css';
 
 .root {
+  * {
+    transition: 0ms !important;
+  }
+
   & :global(.anticon-caret-down) {
     color: text-color;
   }
@@ -24,7 +28,7 @@
     }
 
     & > :global(.ant-tree-node-content-wrapper) {
-    /* & > [class*='ant-tree-node-content-wrapper-'] { */
+      /* & > [class*='ant-tree-node-content-wrapper-'] { */
       flex-grow: 1;
       padding-right: 1em;
     }

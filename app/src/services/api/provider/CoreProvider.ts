@@ -19,7 +19,7 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract fastGetVersion(): Promise<string>;
 
-  abstract getDatabaseStructure(): Promise<ServerStructure.Structure>;
+  abstract getDatabaseStructure(): Promise<ServerStructure.Server>;
 
   // refactor: What fot this method??
   // makeQueryId() {
