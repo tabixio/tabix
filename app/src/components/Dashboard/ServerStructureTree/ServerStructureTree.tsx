@@ -110,10 +110,10 @@ export default class ServerStructureTree extends React.Component<Props> {
               key={structure.id}
               title={
                 <ServerTitle
-  title={structure.name}
-  onReload={onReload}
-  onCollapse={this.onCollapse}
-/>
+                  title={structure.name}
+                  onReload={onReload}
+                  onCollapse={this.onCollapse}
+                />
               }
             >
               {/* databases */}
