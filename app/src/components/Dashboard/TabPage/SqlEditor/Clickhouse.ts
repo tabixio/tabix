@@ -6,7 +6,7 @@ export const options = {
     readOnly: false,
     fontSize: 12,
 };
-//
+// https://bitwiser.in/monaco-themes/
 // https://microsoft.github.io/monaco-editor/monarch.html
 // https://github.com/Microsoft/monaco-editor/issues/74
 // Auto

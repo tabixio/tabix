@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor, { Position } from 'monaco-editor';
+import monacoEditor, { IDisposable, Position } from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -9,7 +9,6 @@ import { ServerStructure } from 'services';
 import { languageDef, configuration } from './Clickhouse';
 import Toolbar, { Props as ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
-// import {Column, Database, Structure, Table} from "../../../../services/api/ServerStructure";
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   language: 'clickhouse',
@@ -24,6 +23,13 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 
 type Monaco = typeof monacoEditor;
 export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
+export interface Query {
+  id: string;
+  tokens: any; //splitRange['tokens']
+  sql: string;
+  range: monacoEditor.IRange;
+  inCursor: boolean;
+}
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
   content: string;
@@ -36,12 +42,14 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
 export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
   componentWillUnmount() {
     const { editorRef } = this.props;
+
     editorRef && editorRef(undefined);
   }
 
   private onEditorWillMount = (monaco: Monaco) => {
     // monaco.editor.defineTheme('cobalt', theme_cobalt);
     // monaco.editor.setTheme('cobalt');
+    console.warn('onEditorWillMount');
 
     if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
       // Register a new language
@@ -51,20 +59,19 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       // Set the editing configuration for the language
       monaco.languages.setLanguageConfiguration('clickhouse', configuration);
       // registerCompletionItemProvider
-      console.log('monaco - register ClickHouse');
+      console.log('monaco - register ClickHouseLanguage');
     }
   };
 
-  private updateServerStructure = (
+  private updateEditorStructure = (
     serverStructure: ServerStructure.Server,
     currentDataBaseName: string | undefined,
     monaco: Monaco
-  ) => {
-    if (!serverStructure || !serverStructure.editorRules.builtinFunctions) {
-      console.warn('serverStructure is not Init');
-      return;
-    }
-    const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
+  ): IDisposable => {
+    let languageSettings: any = languageDef;
+    languageSettings.builtinFunctions = [];
+
+    let completionItems: Array<monacoEditor.languages.CompletionItem> = [];
     // Completion:Dictionaries
     serverStructure.databases.forEach((db: ServerStructure.Database) => {
       // Completion:dbName
@@ -106,6 +113,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     });
     // Completion:Functions
     serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
+      languageSettings.builtinFunctions.push(func.name);
       completionItems.push(
         // interface CompletionItem
         {
@@ -117,46 +125,29 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         }
       );
     });
-
-    // console.warn('ServerStructure',serverStructure);
-    // console.warn('currentDataBaseName',currentDataBaseName);
-    // console.warn('monaco',monaco);
+    // update languageDef
+    monaco.languages.setMonarchTokensProvider('clickhouse', languageSettings as any);
 
     // Completion:register
-    monaco.languages.registerCompletionItemProvider('clickhouse', {
+    return monaco.languages.registerCompletionItemProvider('clickhouse', {
       provideCompletionItems() {
         return completionItems;
       },
     });
-
-    // ------------------------
   };
-
-  private onEditorDidMount = (editor: CodeEditor, monaco: Monaco) => {
-    const { editorRef } = this.props;
-    editorRef && editorRef(editor);
-
+  private bindKeys = (editor: CodeEditor, monaco: Monaco) => {
     const self = this;
 
     const KM = monaco.KeyMod;
     const KC = monaco.KeyCode;
-
-    this.updateServerStructure(this.props.serverStructure, this.props.currentDatabase, monaco);
 
     // ======== Command-Enter ========
     editor.addAction({
       id: 'my-exec-code',
       label: 'Exec current code',
       keybindings: [KM.CtrlCmd | KC.Enter],
-      // A precondition for this action.
-      // precondition: undefined,
-      // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
-      // keybindingContext: null,
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,
-      // Method that will be executed when the action is triggered.
-      // @param editor The editor instance is passed in as a convinience
-      // run:this.executeCommand
       run(editor) {
         self.executeCommand('current', editor, monaco);
       },
@@ -217,6 +208,32 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     // @todo:  Command-Left | Command-Right | Shift-Alt-Command-Right | Shift-Alt-Command-Right
 
     editor.focus();
+  };
+
+  private onEditorDidMount = (editor: CodeEditor, monaco: Monaco) => {
+    console.warn('onEditorDidMount');
+    const { editorRef } = this.props;
+    editorRef && editorRef(editor);
+
+    // Bind keys to Editor
+    this.bindKeys(editor, monaco);
+
+    // @todo: need refactor & rewrite
+    // 1) Нужно наблюдать для каждой вкладки за обновлением serverStructure and currentDatabase -> если изменились для этого редактора нужно обновить Lang
+    // 2)
+    if (this.props.serverStructure && this.props.serverStructure.editorRules.builtinFunctions) {
+      //   console.info('self._mCompletionDisposable', self._mCompletionDisposable);
+      //   if (self._mCompletionDisposable) {
+      //     self._mCompletionDisposable.dispose();
+      //   }
+      //   // need hack !!! need rewrite / registerCompletionItemProvider returns an IDisposable with the dispose method which I can call on unmount
+      //   this._mCompletionDisposable = null; //:monaco.languages.IDisposable;
+      //
+      //     this._mCompletionDisposable =
+      this.updateEditorStructure(this.props.serverStructure, this.props.currentDatabase, monaco);
+    } else {
+      console.warn('serverStructure is not Init');
+    }
   };
 
   private splitByTokens = (
@@ -299,7 +316,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       tokens: tokensList,
     });
 
-    const listQuery: any[] = [];
+    const listQuery: Array<Query> = [];
 
     splits.forEach(splitRange => {
       const range = new _monaco.Range(
@@ -312,9 +329,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
       const inCursor = range.containsPosition(cursorPosition);
       if (text.trim().length < 1) return;
       listQuery.push({
+        id: '123',
         sql: text,
-        range,
-        inCursor,
+        range: range,
+        inCursor: inCursor,
         tokens: splitRange.tokens,
       });
     });
@@ -323,44 +341,34 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
   };
 
   private executeCommand = (
-    _typeCommand: string,
+    typeCommand: string,
     editor: monacoEditor.editor.ICodeEditor,
     _monaco: Monaco
   ) => {
-    // window.edit = editor; // debug
-    // window.monaco = monaco; // debug
-
     const spliterToken = 'warn-token.sql'; // can change in future
     const position = editor.getPosition();
     const selectedText = editor.getModel().getValueInRange(editor.getSelection());
     const allValue = editor.getValue();
-    console.log(`executeCommand running => ${position}`);
 
-    // console.info('!!!Text in selected!!!',selectedText);
-    // console.info('!!!allValue!!!',allValue);
     let sql = allValue;
     if (!(selectedText === '' || selectedText === null)) {
       sql = selectedText;
     }
+    // We split text to sql query by lang tokens
+    let listQuery = this.splitByTokens(_monaco, editor, sql, position, spliterToken);
+
+    console.info('splits', typeCommand, listQuery);
+
     console.info(`%c ${sql}`, 'color: #bada55');
 
-    const splits = this.splitByTokens(_monaco, editor, sql, position, spliterToken);
+    // Получили listQuery:Array<Query>
+    // В нем есть признак inCursor=[true/false]
+    // Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
 
-    console.info('splits', _typeCommand, splits);
+    // if (typeCommand == 'current' && splits.length>0) - находим запрос с inCursor=true ранаем
+    // if (typeCommand == 'all'     && splits.length>0) - выполняем все запросы последовательно
 
-    // inCursor=true:Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
-
-    // let range=monaco.editor.Range()
-    // const tokens = monaco.editor.tokenize('select * from ;; select', 'clickhouse');
-    // console.log(editor,tokens);
-
-    // Получить список всех -- WARN-Tokens
-    // let selectSql = editor.getSelectedText();
-    // let sql=tab.editor.getValue();
-    // if (!(selectSql === '' || selectSql === null)) { sql = selectSql;}
-    // .splitByTokens(sql, 'constant.character.escape', use_delimiter).forEach((item) => { })
-    // Если исполнить текущий - то дальше не парсим если уже есть один в списке
-    // if (type == 'current' && numquery>0) return;
+    // let SaveSql=subSql.trim();
     //   let drawCommand=[];
     //  let subSql = item.sql;
     //  Если комманда исполнить текущий и НЕ выделен текст -> пропускаем все пока не найдем подходящий
@@ -368,17 +376,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     //       let cursor = editor.selection.getCursor();
     //       let rg=item.range.compare(cursor.row, cursor.column);
     //       if (rg !== 0) return ;
-    // let SaveSql=subSql.trim();
+
     // определяем есть ли комманда DRAW .* - все что после нее есть JavaScript
     // вырезаем если комманда есть
     // let set_format = editor.session.$mode.findTokens(subSql, "storage", true);
     // let keyword = editor.session.$mode.findTokens(subSql, "keyword", true);
     // for  ['DROP', 'CREATE', 'ALTER'].indexOf(keyword.toUpperCase())
 
-    // console.log(' running => ' + editor.getPosition(),editor);
-    // console.log(this.monaco);
-    // let tokens=this.monaco.editor.tokenize('select * from ;; select','clickhouse');
-    // console.log(editor,tokens);
     return null;
   };
 
