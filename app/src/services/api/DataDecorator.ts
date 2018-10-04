@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+// import uuid from 'uuid';
 import { ConnectionType } from 'services/Connection';
 /* eslint-disable */
 
@@ -18,8 +18,9 @@ export interface Metadata {
   prepareInt64Cols?: any;
 }
 
-export type Row = Record<string, any> & { id: string | number };
+export type Row = Record<string, any>;// & { id: string | number };
 
+// todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
   readonly meta: Metadata;
 
@@ -43,7 +44,8 @@ export default class DataDecorator {
       result.data.push(result.totals);
     }
 
-    this.rows = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
+    // this.rows = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
+    this.rows = result.data;
 
     this._humanSortCols = [];
     this._sortBy = false;
