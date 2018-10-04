@@ -18,6 +18,11 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   tabs: TabModel[] = [
     TabModel.from({
       title: 'SQL 1',
+      content: 'select * from cities',
+      currentDatabase: Some('default'),
+    }),
+    TabModel.from({
+      title: 'SQL 2',
       content: `SELECT 323;;73709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
 ;;
 SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
