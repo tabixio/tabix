@@ -1,3 +1,3 @@
 {
-  "extends": ["./node_modules/@vzh/configs/eslint/common.eslintrc.json"]
+  "extends": ["./node_modules/@vzh/configs/eslint/common.eslintrc.js"]
 }
