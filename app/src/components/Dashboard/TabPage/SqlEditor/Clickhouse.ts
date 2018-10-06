@@ -20,6 +20,7 @@ import { languages } from 'monaco-editor';
 // https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/common/themes.ts#L13
 // This config defines how the language is displayed in the editor.
 // https://stackoverflow.com/questions/43014131/monaco-editor-match-an-arbitrary-number-of-arguments-on-the-same-row-using-a-r
+// https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
 
 export const languageDef = {
     base: 'sql',

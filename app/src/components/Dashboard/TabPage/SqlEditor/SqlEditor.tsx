@@ -27,9 +27,14 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
  * [-] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Подпиться на IModelTokensChangedEvent
+ * [-] https://github.com/Microsoft/monaco-editor/issues/593
  */
 type Monaco = typeof monacoEditor;
 export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
+export type ITextModel = monacoEditor.editor.ITextModel;
+export interface modelInstance {
+    currentDatabase: string;
+}
 export interface TabixCommand {
     type: string;
     text: string;
@@ -45,7 +50,7 @@ export interface Query {
     sql: string;
     sqlOriginal: string;
     isExecutable: boolean;
-    range: monacoEditor.IRange;
+    range: monacoEditor.Range;
     inCursor: boolean;
     inSelected: boolean;
     numQuery: number;
@@ -83,15 +88,18 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
         editorRef && editorRef(undefined);
     }
+    // componentWillReceiveProps(nextProps) {
+    // if (nextProps.serverStructure !== this.props.serverStructure) {
+    // this.updateEditorStructure(nextProps.serverStructure,nextProps.currentDatabase);
+    // console.warn('!serverStructure!!!',nextProps.serverStructure,nextProps.currentDatabase);
+    // }
+    // }
 
     private onEditorWillMount = (monaco: Monaco) => {
         monaco.editor.defineTheme('cobalt', theme_cobalt);
         monaco.editor.defineTheme('vs-dark', theme_vs_dark);
         monaco.editor.setTheme('cobalt');
-        // import('monaco/Сobalt.json')
-        //     .then(data => {
-        //         monaco.editor.defineTheme('cobalt', data);
-        //     });
+        monaco.editor.createModel('cobalt123');
 
         if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
             // Register a new language
@@ -169,10 +177,18 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         });
         // update languageDef
         monaco.languages.setMonarchTokensProvider('clickhouse', languageSettings as any);
-
+        // monaco.languages.registerCompletionItemProvider('javascript', {
+        //     triggerCharacters: ["."],
+        //     provideCompletionItems: function(model, position) {
+        //         return [...];
+        //     }
+        // });
         // Completion:register
         return monaco.languages.registerCompletionItemProvider('clickhouse', {
-            provideCompletionItems() {
+            provideCompletionItems(model: ITextModel) {
+                // @todo: тут получая model.id можно искать глобальный обьект Map
+                // @todo: https://github.com/Microsoft/monaco-editor/issues/593
+                console.log(model.id);
                 return completionItems;
             },
         });
@@ -256,6 +272,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         console.warn('onEditorDidMount');
         const { editorRef } = this.props;
         editorRef && editorRef(editor);
+        // Зная editorRef.getModel().id - можно узнать какой обьект связан [Tab]
+        console.log('modelId', editor.getModel().id);
 
         // Bind keys to Editor
         this.bindKeys(editor, monaco);
@@ -288,7 +306,14 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         return text.toLocaleLowerCase();
     };
-
+    /**
+     * tokenize all text in editor
+     *
+     *
+     * @param {Monaco} monaco
+     * @param {monacoEditor.editor.ICodeEditor} editor
+     * @returns {Array<Query>}
+     */
     private tokenizeEditor = (
         monaco: Monaco,
         editor: monacoEditor.editor.ICodeEditor
@@ -521,6 +546,14 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
         return listQuery;
     };
+    /**
+     * execute command
+     *
+     *
+     * @param {string} typeCommand
+     * @param {monacoEditor.editor.ICodeEditor} editor
+     * @param {Monaco} _monaco
+     */
     private executeCommand = (
         typeCommand: string,
         editor: monacoEditor.editor.ICodeEditor,
@@ -558,11 +591,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
 
             if (typeCommand == 'select') {
                 // Переписываем область / Достаем выделенную область
-                const intersect = query.range.intersectRanges(userSelection);
-                let sqlSelect=editor.getModel().getValueInRange(intersect);
-                query.sql=sqlSelect;
-                query.isFormatSet=false;
-                query.format="FORMAT JSON";
+                const intersect: IRange = query.range.intersectRanges(userSelection);
+                let sqlSelect = editor.getModel().getValueInRange(intersect);
+                query.sql = sqlSelect;
+                query.isFormatSet = false;
+                query.format = 'FORMAT JSON';
             }
 
             // insert TABIX_QUERY_ID
