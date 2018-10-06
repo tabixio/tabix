@@ -1,4 +1,3 @@
-import { observable } from 'mobx';
 import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 
@@ -46,25 +45,23 @@ export default class ServerStructureFilter {
       [] as ServerStructure.Database[]
     );
 
-  // exec(
-  //   serverStructure: Option<ServerStructure.Structure>
-  // ): Promise<Option<ServerStructure.Structure>> {
-  //   return new Promise(resolve => {
-  //     // console.time('filter exec');
-  //     const structure = serverStructure.map(ss => {
-  //       const databases = this.filterDatabases(ss.databases);
-  //       return { ...ss, databases };
-  //     });
-  //     // console.timeEnd('filter exec');
-  //     resolve(structure);
-  //   });
-  // }
-  exec(serverStructure: Option<ServerStructure.Server>): Option<ServerStructure.Server> {
-    return serverStructure.map(ss => {
-      const databases = this.filterDatabases(ss.databases);
-      return observable({ ...ss, databases });
+  exec(serverStructure: Option<ServerStructure.Server>): Promise<Option<ServerStructure.Server>> {
+    return new Promise(resolve => {
+      // console.time('filter exec');
+      const structure = serverStructure.map(ss => {
+        const databases = this.filterDatabases(ss.databases);
+        return { ...ss, databases };
+      });
+      // console.timeEnd('filter exec');
+      resolve(structure);
     });
   }
+  // exec(serverStructure: Option<ServerStructure.Server>): Option<ServerStructure.Server> {
+  //   return serverStructure.map(ss => {
+  //     const databases = this.filterDatabases(ss.databases);
+  //     return observable({ ...ss, databases });
+  //   });
+  // }
 }
 
 export interface FilterResult {

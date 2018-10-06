@@ -1,10 +1,10 @@
-import { observable, action, runInAction, reaction, transaction } from 'mobx';
+import { observable, action, runInAction, transaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import { Api, ServerStructure, localStorage } from 'services';
-import { DashboardUIStore } from 'stores';
 import { TabModel, TreeFilterModel } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
+import DashboardUIStore from './DashboardUIStore';
 import ServerStructureFilter from './ServerStructureFilter';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
@@ -71,19 +71,6 @@ SELECT * from default.arrays_test_ints`,
   @observable
   treeFilter: TreeFilterModel = TreeFilterModel.from();
 
-  private filterTimeout: number = 0;
-
-  protected treeFilterChangeReaction = reaction(
-    () => this.treeFilter.search,
-    search => {
-      if (this.filterTimeout) window.clearTimeout(this.filterTimeout);
-      // this.filterTimeout = window.setTimeout(() => this.filterServerStructure(search), 500);
-      console.log(search);
-      // this.filterServerStructure(search);
-    }
-  );
-
-  // constructor(rootStore: RootStore, uiStore: UIStore<RootStore>, initialState: any) {
   constructor(rootStore: RootStore, uiStore: DashboardUIStore, initialState: any) {
     super(rootStore, uiStore);
     initialState && console.log(initialState);
@@ -91,15 +78,6 @@ SELECT * from default.arrays_test_ints`,
 
   @action
   async loadData() {
-    // window.setInterval(
-    //   () =>
-    //     runInAction(() => {
-    //       if (this.treeFilter.search) this.treeFilter.search = '';
-    //       else this.treeFilter.search = 'a';
-    //     }),
-    //   2000
-    // );
-
     const t = await this.request(async () => {
       const api = await Api.connect(this.rootStore.appStore.connection.get());
       return api.loadDatabaseStructure();
@@ -109,10 +87,8 @@ SELECT * from default.arrays_test_ints`,
       runInAction(() =>
         transaction(() => {
           this.serverStructure = Option.of(result);
-          // this.serverStructure = this.serverStructure.map(ss => {
-          //   ss.databases.splice(-1);
-          //   return ss;
-          // });
+
+          // expand root node if not filtering and expanded keys is empty
           if (
             this.serverStructure.nonEmpty() &&
             !this.treeFilter.has &&
@@ -120,6 +96,7 @@ SELECT * from default.arrays_test_ints`,
           ) {
             this.uiStore.updateExpandedKeys(this.serverStructure.map(ss => [ss.id]).get());
           }
+
           if (!this.tabs.length) {
             this.addNewTab();
           }
@@ -129,16 +106,18 @@ SELECT * from default.arrays_test_ints`,
   }
 
   @action
-  filterServerStructure() {
-    if (!this.treeFilter.has) {
+  async filterServerStructure() {
+    if (!this.treeFilter.has || this.treeFilter.search.length < 3) {
       this.filteredServerStructure = None;
       return;
     }
 
-    const filtered = ServerStructureFilter.from(this.treeFilter.search).exec(this.serverStructure);
-    // runInAction(() => {
-    this.filteredServerStructure = filtered;
-    // });
+    const filtered = await ServerStructureFilter.from(this.treeFilter.search).exec(
+      this.serverStructure
+    );
+    runInAction(() => {
+      this.filteredServerStructure = filtered;
+    });
   }
 
   @action

@@ -78,12 +78,12 @@ class DashboardView extends React.Component<RoutedProps> {
   private onTreeFilterChange: ChangeFieldHandler<TreeFilter> = event => {
     const { store } = this.props;
     store.treeFilter.changeField(event);
+    // tree search
     if (this.filterTimeout) window.clearTimeout(this.filterTimeout);
-    this.filterTimeout = window.setTimeout(() => store.filterServerStructure(), 200);
+    this.filterTimeout = window.setTimeout(() => store.filterServerStructure(), 300);
   };
 
   render() {
-    // console.log('*');
     const { store } = this.props;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
@@ -95,7 +95,6 @@ class DashboardView extends React.Component<RoutedProps> {
               <Layout.Sider width="100%">
                 <ServerStructureTree
                   store={store.uiStore}
-                  // selectedIds={store.uiStore.treeSelectedKeys}
                   structure={store.filteredServerStructure
                     .orElse(store.serverStructure)
                     .orUndefined()}
@@ -104,8 +103,6 @@ class DashboardView extends React.Component<RoutedProps> {
                   onColumnAction={this.onColumnAction}
                   treeFilter={store.treeFilter}
                   onChangeTreeFilterField={this.onTreeFilterChange}
-                  // filteredIds={store.uiStore.treeExpandedKeys}
-                  // filteredIds={[]}
                 />
               </Layout.Sider>
             </Layout>

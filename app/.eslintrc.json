@@ -1,6 +1,7 @@
 {
-  "extends": ["../node_modules/@vzh/configs/eslint/ts.react.eslintrc.json"],
+  "extends": ["../node_modules/@vzh/configs/eslint/ts.react.eslintrc.js"],
   "rules": {
-    "react/jsx-wrap-multilines": "off"
+    "react/jsx-wrap-multilines": "off",
+    "import/no-cycle": "off"
   }
 }
