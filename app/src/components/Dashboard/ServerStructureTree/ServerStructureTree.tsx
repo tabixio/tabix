@@ -21,15 +21,12 @@ export enum ColumnAction {
 interface Props extends Pick<ServerTitleProps, 'onReload'> {
   store: DashboardUIStore;
   structure?: ServerStructure.Server;
-  // selectedIds?: string[];
   onColumnAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
   onTableAction?: ContextMenuProps['onContextMenuAction'];
   treeFilter: TreeFilter;
   onChangeTreeFilterField: ChangeFieldHandler<TreeFilter>;
-  // filteredIds: string[];
 }
 
-// @inject()
 @observer
 export default class ServerStructureTree extends React.Component<Props> {
   private onNodeDoubleClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
@@ -56,12 +53,7 @@ export default class ServerStructureTree extends React.Component<Props> {
     onColumnAction(ColumnAction.DoubleClick, column);
   };
 
-  private onChangeTreeFilterField: ChangeFieldHandler<TreeFilter> = event => {
-    this.props.onChangeTreeFilterField(event);
-  };
-
   private onExpand = (keys: string[]) => {
-    // console.log('onExpand', keys);
     const { store } = this.props;
     store.updateExpandedKeys(keys);
   };
@@ -73,16 +65,12 @@ export default class ServerStructureTree extends React.Component<Props> {
   render() {
     const {
       store,
-      // selectedIds,
       structure,
       onReload,
       onTableAction,
-      // onChangeTreeFilterField,
       treeFilter,
-      // filteredIds,
+      onChangeTreeFilterField,
     } = this.props;
-
-    // console.log(store.treeExpandedKeys);
 
     return (
       <Flex column>
@@ -90,16 +78,11 @@ export default class ServerStructureTree extends React.Component<Props> {
           placeholder="Search"
           name="search"
           value={treeFilter.search}
-          onChange={this.onChangeTreeFilterField}
+          onChange={onChangeTreeFilterField}
         />
 
         <Tree
-          // autoExpandParent
-          // expandedKeys={['ads']}
-          // defaultExpandedKeys={['root']}
-          // defaultExpandedKeys={filteredIds}
           expandedKeys={store.treeExpandedKeys}
-          // defaultExpandAll // very slowly on filtering
           onExpand={this.onExpand}
           selectedKeys={store.treeSelectedKeys}
           onDoubleClick={this.onNodeDoubleClick}
@@ -134,7 +117,6 @@ export default class ServerStructureTree extends React.Component<Props> {
                       {t.columns.map(c => (
                         <Tree.TreeNode
                           key={c.id}
-                          // isLeaf
                           title={<ColumnTitle name={c.name} type={c.type} />}
                           className={css.column}
                         />

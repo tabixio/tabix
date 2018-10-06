@@ -809,10 +809,10 @@
   resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.13.6.tgz#128d1685a7c34d31ed17010fc87d6a12c1de6976"
   integrity sha512-5Th3OsZ4gTRdr9Mho83BQ23cex4sRhOR4XTG+m+cJc0FhtUBK9Vn62hBJ+pnQYnSxoPOsKoAPOx6FcphxBC8ng==
 
-"@vzh/configs@^2.14.3":
-  version "2.14.3"
-  resolved "https://registry.yarnpkg.com/@vzh/configs/-/configs-2.14.3.tgz#dcbf01c87d3d95af8d552bd4e3035b96c35e30d1"
-  integrity sha512-P5j6GRifU9T8bpk/yvO73m2veV2RFcFoLutEOLvekwOqMEEj16j8LYmJ7yFiAIZQHpsT2+5GSZPMfzbwYGI0Ew==
+"@vzh/configs@^2.14.4":
+  version "2.14.4"
+  resolved "https://registry.yarnpkg.com/@vzh/configs/-/configs-2.14.4.tgz#d554e6a36651278817783177a3fc4e2cc9ccbcd2"
+  integrity sha512-ooRqfUOnKtjaXfBLIxrPGejMYb0Z0wz9OdvmQ2fZLPd5c5JcItHhpQdrgdCQrAxLl6W8rSlOOwjnxJseQCfrhQ==
 
 "@vzh/mobx-stores@^0.21.1":
   version "0.21.1"

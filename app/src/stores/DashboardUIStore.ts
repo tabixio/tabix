@@ -43,14 +43,10 @@ export default class DashboardUIStore extends UIStore<RootStore> {
 
   @computed
   get treeExpandedKeys() {
-    // console.log('treeExpandedKeys');
     if (!this.rootStore.dashboardStore.treeFilter.search) return this.expandedKeys;
 
     // console.time('treeExpandedKeys');
     const keys: string[] = this.expandedKeys.slice();
-    // const keys: string[] = this.rootStore.dashboardStore.serverStructure
-    //   .map(ss => [ss.id])
-    //   .getOrElse([]);
     this.rootStore.dashboardStore.filteredServerStructure.forEach(ss => {
       ss.databases.forEach(db => {
         if (db.tables.length) {
