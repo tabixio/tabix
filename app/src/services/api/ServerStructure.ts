@@ -1,7 +1,10 @@
 namespace ServerStructure {
-  export interface Column {
+  export interface Item {
     id: string;
     name: string;
+  }
+
+  export interface Column extends Item {
     table: string;
     database: string;
     type: string;
@@ -13,28 +16,24 @@ namespace ServerStructure {
     marksBytes: number;
   }
 
-  export interface Table {
-    id: string;
-    name: string;
+  export interface Table extends Item {
     insertName: string;
     database: string;
     engine: string;
-    columns: Column[];
+    columns: ReadonlyArray<Column>;
   }
 
-  export interface Database {
-    id: string;
-    name: string;
-    tables: Table[];
+  export interface Database extends Item {
+    tables: ReadonlyArray<Table>;
   }
 
-  export class Server {
+  export class Server implements Item {
     constructor(
       public readonly id: string,
       public readonly name: string,
-      public readonly databases: Database[],
-      public readonly functions: any[],
-      public readonly dictionaries: any[],
+      public readonly databases: ReadonlyArray<Database>,
+      public readonly functions: ReadonlyArray<any>,
+      public readonly dictionaries: ReadonlyArray<any>,
       public readonly editorRules: Record<string, any>
     ) {
       return Object.freeze(this);
@@ -44,14 +43,12 @@ namespace ServerStructure {
   export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
 
   export function from(
-    columns: Column[],
-    tables: Table[],
-    databases: Database[],
+    columns: ReadonlyArray<Column>,
+    tables: ReadonlyArray<Table>,
+    databases: ReadonlyArray<Database>,
     dictionaries: any[],
     functions: any[]
   ) {
-    console.log('Try init DS....');
-
     const dbTableColumns = columns.reduce((acc, col) => {
       const column: Column = {
         ...col,
@@ -168,8 +165,6 @@ namespace ServerStructure {
         title: `dic_${item.name}.${item['attribute.names']}`,
       });
     });
-
-    console.log('DS init ... done');
 
     editorRules.tables = dbTables;
 

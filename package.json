@@ -46,7 +46,7 @@
     "eslint-plugin-react": "^7.11.0",
     "eslint-plugin-typescript": "^0.12.0",
     "file-loader": "^2.0.0",
-    "fork-ts-checker-webpack-plugin": "^0.4.9",
+    "fork-ts-checker-webpack-plugin": "^0.4.10",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "@handsontable/react": "^1.1.0",
-    "@vzh/mobx-stores": "^0.21.1",
+    "@vzh/mobx-stores": "^0.22.0",
     "@vzh/react-auth": "^0.3.0",
     "antd": "^3.10.0",
     "classnames": "^2.2.6",

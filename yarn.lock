@@ -814,10 +814,10 @@
   resolved "https://registry.yarnpkg.com/@vzh/configs/-/configs-2.14.4.tgz#d554e6a36651278817783177a3fc4e2cc9ccbcd2"
   integrity sha512-ooRqfUOnKtjaXfBLIxrPGejMYb0Z0wz9OdvmQ2fZLPd5c5JcItHhpQdrgdCQrAxLl6W8rSlOOwjnxJseQCfrhQ==
 
-"@vzh/mobx-stores@^0.21.1":
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.21.1.tgz#e22afebe33a918e3a033e1a747eb001f77a323b4"
-  integrity sha512-soWUI44+fw1gFEOHiNrz1CBuAn7lLdpJjk6fzDA+db0P9qTYM9iMOi3CurNcA4Hoh7upX5mvwYdyV4FDfyReDw==
+"@vzh/mobx-stores@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.22.0.tgz#b05b1408fb5f5ca1b6f53aef1f2172f92e713687"
+  integrity sha512-tkifGyFDWWm1UwbaAy4JYt19Lfz7Lwp3ArjFJW5ghKKDxX+3+cNtOqLWUrCwPsNlAZCw9cLra7uWW72gPAn1Gw==
   dependencies:
     typelevel-ts "^0.3.2"
 
@@ -3866,10 +3866,10 @@ forever-agent@~0.6.1:
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
-fork-ts-checker-webpack-plugin@^0.4.9:
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.4.9.tgz#78607899d4411fdc6faeca5b4db7654c9d8d28a2"
-  integrity sha512-uoUSu2qo8GpoonMrKtPlpIqPfRTO0vVLA1Gh2bPaDSyZ2zoUukrXCc38pJtYYNVLpvlv+g0PNr/9SheFyVAR4w==
+fork-ts-checker-webpack-plugin@^0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.4.10.tgz#e96f87ea599af4501c1a69f44ecfb3163bbf30b9"
+  integrity sha512-8llkIUAM9o64ou6bhcCzKoyPd78GKSIuErmiyNX5tE7+RhdW8meCkVdXPP67diKYwvp7KjR1t7UvZckAHzN3pg==
   dependencies:
     babel-code-frame "^6.22.0"
     chalk "^2.4.1"
