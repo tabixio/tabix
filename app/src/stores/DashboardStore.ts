@@ -1,18 +1,18 @@
 import { observable, action, runInAction, transaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import { Api, ServerStructure, localStorage } from 'services';
-import { TabModel, TreeFilterModel } from 'models';
+import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
-import ServerStructureFilter from './ServerStructureFilter';
+import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
   serverStructure: Option<ServerStructure.Server> = None;
 
   @observable
-  filteredServerStructure: Option<ServerStructure.Server> = None;
+  filteredItems: FilterResult = [];
 
   @observable
   tabs: TabModel[] = [
@@ -68,9 +68,6 @@ SELECT * from default.arrays_test_ints`,
   @observable
   activeTab: Option<TabModel> = Option.of(this.tabs.length ? this.tabs[0] : undefined);
 
-  @observable
-  treeFilter: TreeFilterModel = TreeFilterModel.from();
-
   constructor(rootStore: RootStore, uiStore: DashboardUIStore, initialState: any) {
     super(rootStore, uiStore);
     initialState && console.log(initialState);
@@ -88,13 +85,9 @@ SELECT * from default.arrays_test_ints`,
         transaction(() => {
           this.serverStructure = Option.of(result);
 
-          // expand root node if not filtering and expanded keys is empty
-          if (
-            this.serverStructure.nonEmpty() &&
-            !this.treeFilter.has &&
-            !this.uiStore.treeExpandedKeys.length
-          ) {
-            this.uiStore.updateExpandedKeys(this.serverStructure.map(ss => [ss.id]).get());
+          // expand root node if expanded keys is empty
+          if (this.serverStructure.nonEmpty() && !this.uiStore.treeExpandedKeys.length) {
+            this.uiStore.updateTreeExpandedKeys(this.serverStructure.map(ss => [ss.id]).get());
           }
 
           if (!this.tabs.length) {
@@ -105,18 +98,16 @@ SELECT * from default.arrays_test_ints`,
     );
   }
 
-  @action
-  async filterServerStructure() {
-    if (!this.treeFilter.has || this.treeFilter.search.length < 3) {
-      this.filteredServerStructure = None;
+  @action.bound
+  async filterServerStructure(filter: TreeFilter) {
+    if (filter.search.length < MIN_SEARCH_LENGTH) {
+      this.filteredItems = [];
       return;
     }
 
-    const filtered = await ServerStructureFilter.from(this.treeFilter.search).exec(
-      this.serverStructure
-    );
+    const filtered = await ServerStructureFilter.from(filter).exec(this.serverStructure);
     runInAction(() => {
-      this.filteredServerStructure = filtered;
+      this.filteredItems = filtered;
     });
   }
 
@@ -166,11 +157,11 @@ SELECT * from default.arrays_test_ints`,
         return api.fetch(tab.content, tab.currentDatabase.get());
       });
 
-      t.forEach(result =>
-        runInAction(() => {
+      runInAction(() => {
+        t.forEach(result => {
           tab.data = Option.of(result);
-        })
-      );
+        });
+      });
     });
   }
 }

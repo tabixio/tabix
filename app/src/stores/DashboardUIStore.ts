@@ -1,12 +1,24 @@
 import { observable, reaction, IReactionDisposer, when, action, computed } from 'mobx';
 import { Option, None } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
-import { TabModel } from 'models';
+import { TabModel, TreeFilterModel } from 'models';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
   editedTab: Option<ViewModelLike<TabModel>> = None;
+
+  @observable
+  treeExpandedKeys: string[] = [];
+
+  @observable
+  treeHighlightedKey: Option<string> = None;
+
+  @observable
+  treeFilter: TreeFilterModel = TreeFilterModel.from();
+
+  @observable
+  isFiltering: boolean = false;
 
   protected changeTabReaction?: IReactionDisposer;
 
@@ -33,32 +45,19 @@ export default class DashboardUIStore extends UIStore<RootStore> {
       .orUndefined();
   }
 
-  @observable
-  private expandedKeys: string[] = [];
-
   @action
-  updateExpandedKeys(keys: string[]) {
-    this.expandedKeys = keys;
+  updateTreeHighlightedKey(key?: string) {
+    this.treeHighlightedKey = Option.of(key);
   }
 
-  @computed
-  get treeExpandedKeys() {
-    if (!this.rootStore.dashboardStore.treeFilter.search) return this.expandedKeys;
+  @action
+  updateTreeExpandedKeys(keys: string[]) {
+    this.treeExpandedKeys = keys;
+  }
 
-    // console.time('treeExpandedKeys');
-    const keys: string[] = this.expandedKeys.slice();
-    this.rootStore.dashboardStore.filteredServerStructure.forEach(ss => {
-      ss.databases.forEach(db => {
-        if (db.tables.length) {
-          keys.push(db.id);
-          db.tables.forEach(t => {
-            if (t.columns.length) keys.push(t.id);
-          });
-        }
-      });
-    });
-    // console.timeEnd('treeExpandedKeys');
-    return keys;
+  @action
+  updateFiltering(filtering: boolean) {
+    this.isFiltering = filtering;
   }
 
   private resetTabViewState() {

@@ -1,17 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Tree, Input } from 'antd';
+import { Tree } from 'antd';
 import { AntTreeNode } from 'antd/lib/tree';
-import { ServerStructure } from 'services';
+import { SelectValue } from 'antd/lib/select';
 import { Flex } from 'reflexy';
-import { ChangeFieldHandler } from '@vzh/mobx-stores';
+import { ServerStructure } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
+import { FilterResult } from 'stores/ServerStructureFilter';
 import ServerTitle, { ServerTitleProps } from './ServerTitle';
 import DbTitle from './DbTitle';
 import TableTitle from './TableTitle';
 import { ContextMenuProps } from './TableTitle/ContextMenu';
 import ColumnTitle from './ColumnTitle';
+import SearchInput from './SearchInput';
 import css from './ServerStructureTree.css';
 
 export enum ColumnAction {
@@ -23,8 +25,8 @@ interface Props extends Pick<ServerTitleProps, 'onReload'> {
   structure?: ServerStructure.Server;
   onColumnAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
   onTableAction?: ContextMenuProps['onContextMenuAction'];
-  treeFilter: TreeFilter;
-  onChangeTreeFilterField: ChangeFieldHandler<TreeFilter>;
+  filterServerStructure: (filter: TreeFilter) => Promise<void>;
+  filteredItems: FilterResult;
 }
 
 @observer
@@ -53,14 +55,45 @@ export default class ServerStructureTree extends React.Component<Props> {
     onColumnAction(ColumnAction.DoubleClick, column);
   };
 
-  private onExpand = (keys: string[]) => {
+  private expand = (keys: string[]) => {
     const { store } = this.props;
-    store.updateExpandedKeys(keys);
+    store.updateTreeExpandedKeys(keys);
   };
 
-  private onCollapse = () => {
-    this.onExpand([]);
+  private collapse = () => this.expand([]);
+
+  private expandParentsOf = (key: string) => {
+    const { structure, store } = this.props;
+    if (!structure) return;
+
+    const [dbName, tableName, columnName] = key.split('.');
+    const expandedKeys = new Set(store.treeExpandedKeys);
+
+    if (dbName) expandedKeys.add(structure.id);
+
+    const db = tableName && structure.databases.find(d => d.name === dbName);
+    if (db) expandedKeys.add(db.id);
+
+    const table = db && columnName && db.tables.find(t => t.name === tableName);
+    if (table) expandedKeys.add(table.id);
+
+    this.expand(Array.from(expandedKeys));
   };
+
+  private updateHighlightedNode = (key: SelectValue) => {
+    const { filteredItems } = this.props;
+    const item = filteredItems.find(i => i.id === key);
+    if (!item) return;
+
+    // const { store, filterServerStructure } = this.props;
+    // filterServerStructure({ search: '' }); // clear filtered results
+    const { store } = this.props;
+    store.updateTreeHighlightedKey(item.id);
+    this.expandParentsOf(item.id); // add parents of highlighted node to expanded nodes
+  };
+
+  private highlightTreeNode = ({ props: { eventKey } }: AntTreeNode) =>
+    !!(eventKey && this.props.store.treeHighlightedKey.contains(eventKey));
 
   render() {
     const {
@@ -68,22 +101,24 @@ export default class ServerStructureTree extends React.Component<Props> {
       structure,
       onReload,
       onTableAction,
-      treeFilter,
-      onChangeTreeFilterField,
+      filteredItems,
+      filterServerStructure,
     } = this.props;
 
     return (
       <Flex column>
-        <Input.Search
-          placeholder="Search"
-          name="search"
-          value={treeFilter.search}
-          onChange={onChangeTreeFilterField}
+        <SearchInput
+          store={store}
+          filteredItems={filteredItems}
+          filterServerStructure={filterServerStructure}
+          onSelect={this.updateHighlightedNode}
         />
 
         <Tree
+          autoExpandParent={false}
           expandedKeys={store.treeExpandedKeys}
-          onExpand={this.onExpand}
+          onExpand={this.expand}
+          filterTreeNode={this.highlightTreeNode}
           selectedKeys={store.treeSelectedKeys}
           onDoubleClick={this.onNodeDoubleClick}
           className={css.root}
@@ -95,7 +130,7 @@ export default class ServerStructureTree extends React.Component<Props> {
                 <ServerTitle
                   title={structure.name}
                   onReload={onReload}
-                  onCollapse={this.onCollapse}
+                  onCollapse={this.collapse}
                 />
               }
             >

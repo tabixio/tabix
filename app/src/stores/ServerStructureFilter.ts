@@ -1,70 +1,48 @@
 import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
+import { TreeFilter } from 'models';
+
+export type FilterResult = Array<
+  ServerStructure.Column | ServerStructure.Table | ServerStructure.Database
+>;
 
 export default class ServerStructureFilter {
-  static from(searchText: string): ServerStructureFilter {
-    return new ServerStructureFilter(searchText.toLowerCase());
+  static from(filter: TreeFilter): ServerStructureFilter {
+    return new ServerStructureFilter(filter);
   }
 
-  private constructor(private readonly searchText: string) {}
+  private constructor(private readonly filter: TreeFilter) {}
 
-  private filterColumns = (columns: ServerStructure.Column[]) =>
-    columns.reduce(
-      (colAcc, col) => {
-        if (col.name.toLowerCase().includes(this.searchText)) colAcc.push(col);
-        return colAcc;
-      },
-      [] as ServerStructure.Column[]
-    );
-
-  private filterTables = (tables: ServerStructure.Table[]) =>
-    tables.reduce(
-      (tAcc, t) => {
-        const columns = this.filterColumns(t.columns);
-
-        // check name only if columns is empty
-        const matched = columns.length > 0 || t.name.toLowerCase().includes(this.searchText);
-        if (matched) tAcc.push({ ...t, columns });
-
-        return tAcc;
-      },
-      [] as ServerStructure.Table[]
-    );
-
-  private filterDatabases = (databases: ServerStructure.Database[]) =>
-    databases.reduce(
-      (dbAcc, db) => {
-        const tables = this.filterTables(db.tables);
-
-        // check name only if tables is empty
-        const matched = tables.length > 0 || db.name.toLowerCase().includes(this.searchText);
-        if (matched) dbAcc.push({ ...db, tables });
-
-        return dbAcc;
-      },
-      [] as ServerStructure.Database[]
-    );
-
-  exec(serverStructure: Option<ServerStructure.Server>): Promise<Option<ServerStructure.Server>> {
-    return new Promise(resolve => {
-      // console.time('filter exec');
-      const structure = serverStructure.map(ss => {
-        const databases = this.filterDatabases(ss.databases);
-        return { ...ss, databases };
-      });
-      // console.timeEnd('filter exec');
-      resolve(structure);
+  private filterColumns(result: FilterResult, columns: ReadonlyArray<ServerStructure.Column>) {
+    columns.forEach(col => {
+      if (col.name.toLowerCase().includes(this.filter.search)) result.push(col);
     });
   }
-  // exec(serverStructure: Option<ServerStructure.Server>): Option<ServerStructure.Server> {
-  //   return serverStructure.map(ss => {
-  //     const databases = this.filterDatabases(ss.databases);
-  //     return observable({ ...ss, databases });
-  //   });
-  // }
-}
 
-export interface FilterResult {
-  serverStructure: Option<ServerStructure.Server>;
-  keys: string[];
+  private filterTables(result: FilterResult, tables: ReadonlyArray<ServerStructure.Table>) {
+    tables.forEach(t => {
+      if (t.name.toLowerCase().includes(this.filter.search)) result.push(t);
+      this.filterColumns(result, t.columns);
+    });
+  }
+
+  private filterDatabases(
+    result: FilterResult,
+    databases: ReadonlyArray<ServerStructure.Database>
+  ) {
+    databases.forEach(db => {
+      if (db.name.toLowerCase().includes(this.filter.search)) result.push(db);
+      this.filterTables(result, db.tables);
+    });
+  }
+
+  exec(serverStructure: Option<ServerStructure.Server>): Promise<FilterResult> {
+    return new Promise(resolve => {
+      const result: FilterResult = [];
+      serverStructure.forEach(ss => {
+        this.filterDatabases(result, ss.databases);
+      });
+      resolve(result);
+    });
+  }
 }

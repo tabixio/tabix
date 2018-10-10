@@ -4,7 +4,7 @@ import { Modal, Input } from 'antd';
 import { Option } from 'funfix-core';
 import { Flex } from 'reflexy';
 import { Props as SplitPaneProps } from 'react-split-pane';
-import { ChangeFieldHandler } from '@vzh/mobx-stores';
+import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
@@ -15,7 +15,7 @@ import DataTable from './DataTable';
 
 interface Props extends SplitPaneProps {
   model: Tab;
-  changeTabModelField: ChangeFieldHandler<Tab>;
+  onTabModelFieldChange: FieldChangeHandler<Tab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
 }
@@ -23,18 +23,18 @@ interface Props extends SplitPaneProps {
 @observer
 export default class TabPage extends React.Component<Props> {
   private onContentChange = (content: string) => {
-    const { changeTabModelField } = this.props;
-    changeTabModelField({ name: 'content', value: content });
+    const { onTabModelFieldChange } = this.props;
+    onTabModelFieldChange({ name: 'content', value: content });
   };
 
   private onDatabaseChange = (db: ServerStructure.Database) => {
-    const { changeTabModelField } = this.props;
-    changeTabModelField({ name: 'currentDatabase', value: Option.of(db.name) });
+    const { onTabModelFieldChange } = this.props;
+    onTabModelFieldChange({ name: 'currentDatabase', value: Option.of(db.name) });
   };
 
   private setEditorRef = (editor?: CodeEditor) => {
-    const { changeTabModelField } = this.props;
-    changeTabModelField({ name: 'codeEditor', value: Option.of(editor) });
+    const { onTabModelFieldChange } = this.props;
+    onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
   };
 
   private onAction = (action: ActionType) => {
@@ -59,7 +59,7 @@ export default class TabPage extends React.Component<Props> {
   };
 
   render() {
-    const { store, model, changeTabModelField, databases, ...rest } = this.props;
+    const { store, model, onTabModelFieldChange, databases, ...rest } = this.props;
 
     return (
       <React.Fragment>

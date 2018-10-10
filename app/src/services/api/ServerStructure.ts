@@ -1,7 +1,10 @@
 namespace ServerStructure {
-  export interface Column {
+  export interface Item {
     id: string;
     name: string;
+  }
+
+  export interface Column extends Item {
     table: string;
     database: string;
     type: string;
@@ -13,45 +16,63 @@ namespace ServerStructure {
     marksBytes: number;
   }
 
-  export interface Table {
-    id: string;
-    name: string;
+  export interface Table extends Item {
     insertName: string;
     database: string;
     engine: string;
-    columns: Column[];
+    columns: ReadonlyArray<Column>;
   }
 
-  export interface Database {
-    id: string;
-    name: string;
-    tables: Table[];
+  export interface Database extends Item {
+    tables: ReadonlyArray<Table>;
   }
 
-  export class Server {
+  export class Server implements Item {
     constructor(
       public readonly id: string,
       public readonly name: string,
-      public readonly databases: Database[],
-      public readonly functions: any[],
-      public readonly dictionaries: any[],
+      public readonly databases: ReadonlyArray<Database>,
+      public readonly functions: ReadonlyArray<any>,
+      public readonly dictionaries: ReadonlyArray<any>,
       public readonly editorRules: Record<string, any>
     ) {
       return Object.freeze(this);
     }
   }
 
+  // export enum ItemType {
+  //   Database,
+  //   Table,
+  //   Column,
+  // }
+
+  // export function getItemType(item: Table | Column | Database): ItemType {
+  //   if ((item as Table).database) return ItemType.Table;
+  //   if ((item as Column).table) return ItemType.Column;
+  //   return ItemType.Database;
+  // }
+
+  export function isDatabase(item: Table | Column | Database): item is Database {
+    return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
+  }
+
+  export function isTable(item: Table | Column | Database): item is Table {
+    return !!(item as Table).database && !!(item as Table).columns;
+  }
+
+  export function isColumn(item: Table | Column | Database): item is Column {
+    return !!(item as Column).table && !!(item as Column).database;
+  }
+
   export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
 
   export function from(
-    columns: Column[],
-    tables: Table[],
-    databases: Database[],
+    columns: ReadonlyArray<Column>,
+    tables: ReadonlyArray<Table>,
+    databases: ReadonlyArray<Database>,
     dictionaries: any[],
     functions: any[]
   ) {
-    console.log('Try init DS....');
-
     const dbTableColumns = columns.reduce((acc, col) => {
       const column: Column = {
         ...col,
@@ -168,8 +189,6 @@ namespace ServerStructure {
         title: `dic_${item.name}.${item['attribute.names']}`,
       });
     });
-
-    console.log('DS init ... done');
 
     editorRules.tables = dbTables;
 
