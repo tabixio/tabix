@@ -40,6 +40,30 @@ namespace ServerStructure {
     }
   }
 
+  // export enum ItemType {
+  //   Database,
+  //   Table,
+  //   Column,
+  // }
+
+  // export function getItemType(item: Table | Column | Database): ItemType {
+  //   if ((item as Table).database) return ItemType.Table;
+  //   if ((item as Column).table) return ItemType.Column;
+  //   return ItemType.Database;
+  // }
+
+  export function isDatabase(item: Table | Column | Database): item is Database {
+    return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
+  }
+
+  export function isTable(item: Table | Column | Database): item is Table {
+    return !!(item as Table).database && !!(item as Table).columns;
+  }
+
+  export function isColumn(item: Table | Column | Database): item is Column {
+    return !!(item as Column).table && !!(item as Column).database;
+  }
+
   export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
 
   export function from(
