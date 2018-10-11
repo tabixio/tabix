@@ -1,8 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Modal, Input } from 'antd';
+import { Modal, Input, Tabs } from 'antd';
 import { Option } from 'funfix-core';
-import { Flex } from 'reflexy';
 import { Props as SplitPaneProps } from 'react-split-pane';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
@@ -12,6 +11,7 @@ import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import DataTable from './DataTable';
+import css from './TabPage.css';
 
 interface Props extends SplitPaneProps {
   model: Tab;
@@ -75,7 +75,14 @@ export default class TabPage extends React.Component<Props> {
             fill
           />
 
-          <Flex hfill>{model.data.map(data => <DataTable data={data} />).orUndefined()}</Flex>
+          <Tabs size="small" animated={false} className={css.tabs}>
+            <Tabs.TabPane key="table" tab="Table view">
+              {model.data.map(data => <DataTable data={data} />).orUndefined()}
+            </Tabs.TabPane>
+            <Tabs.TabPane key="draw" tab="Draw view">
+              123
+            </Tabs.TabPane>
+          </Tabs>
         </Splitter>
 
         {store.uiStore.editedTab

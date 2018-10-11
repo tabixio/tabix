@@ -101,7 +101,7 @@ class DashboardView extends React.Component<RoutedProps> {
             onChange={this.onTabChange}
           >
             {store.tabs.map(t => (
-              <Tabs.TabPane key={t.id} closable tab={t.title} className={css.tabpane}>
+              <Tabs.TabPane key={t.id} closable tab={t.title}>
                 <TabPage
                   store={store}
                   model={t}
