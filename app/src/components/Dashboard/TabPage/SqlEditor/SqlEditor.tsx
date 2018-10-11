@@ -1,7 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor, { IDisposable, IRange, Position, Selection } from 'monaco-editor';
+import monacoEditor, {
+    CompletionItemProvider,
+    IDisposable,
+    IRange,
+    Position,
+    Selection,
+} from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -62,16 +68,8 @@ export interface Query {
     isFormatSet: boolean;
     variables: Array<Variable> | null;
 }
-export interface ExecuteQuery {
-    id: string;
-    index: number;
-    tokens: any;
-
-    sql: string;
-    originalSql: string;
-
-    range: monacoEditor.IRange;
-    inCursor: boolean;
+export interface MapModel {
+    currentDatabase: string | undefined;
 }
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
@@ -95,11 +93,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     // }
     // }
 
+    private editorMapModel = new Map<monacoEditor.IModel, MapModel>();
+    private completionItemsDisposable: IDisposable | null = null;
+
     private onEditorWillMount = (monaco: Monaco) => {
         monaco.editor.defineTheme('cobalt', theme_cobalt);
         monaco.editor.defineTheme('vs-dark', theme_vs_dark);
         monaco.editor.setTheme('cobalt');
-        monaco.editor.createModel('cobalt123');
 
         if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
             // Register a new language
@@ -109,8 +109,21 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
             // Set the editing configuration for the language
             monaco.languages.setLanguageConfiguration('clickhouse', configuration);
             // registerCompletionItemProvider
+            this.completionItemsDisposable = monaco.languages.registerCompletionItemProvider(
+                'clickhouse',
+                { provideCompletionItems: this.providerCompletionItems }
+            );
             console.log('monaco - register ClickHouseLanguage');
         }
+    };
+    public providerCompletionItems = (model: ITextModel): CompletionItemProvider => {
+        let completionItems: Array<monacoEditor.languages.CompletionItem> = [];
+
+        let map: MapModel | undefined = this.editorMapModel.get(model);
+
+        console.log('call.providerCompletionItems', model.id, map);
+
+        return completionItems;
     };
 
     private updateEditorStructure = (
@@ -118,6 +131,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         currentDataBaseName: string | undefined,
         monaco: Monaco
     ): IDisposable => {
+        console.info('call.updateEditorStructure');
         let languageSettings: any = languageDef;
         languageSettings.builtinFunctions = [];
 
@@ -184,14 +198,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         //     }
         // });
         // Completion:register
-        return monaco.languages.registerCompletionItemProvider('clickhouse', {
-            provideCompletionItems(model: ITextModel) {
-                // @todo: тут получая model.id можно искать глобальный обьект Map
-                // @todo: https://github.com/Microsoft/monaco-editor/issues/593
-                console.log(model.id);
-                return completionItems;
-            },
-        });
+
+        // });
     };
     private bindKeys = (editor: CodeEditor, monaco: Monaco) => {
         const self = this;
@@ -274,30 +282,34 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         editorRef && editorRef(editor);
         // Зная editorRef.getModel().id - можно узнать какой обьект связан [Tab]
         console.log('modelId', editor.getModel().id);
-
+        // -----------------------------------------
+        // @todo: Нужно наблюдать для каждой вкладки за обновлением serverStructure and currentDatabase -> если изменились для этого редактора нужно обновить [editorMapModel.currentDatabase]
+        this.editorMapModel.set(editor.getModel(), {
+            currentDatabase: this.props.currentDatabase,
+        });
         // Bind keys to Editor
         this.bindKeys(editor, monaco);
+        // -----------------------------------------
 
-        // @todo: need refactor & rewrite
-        // 1) Нужно наблюдать для каждой вкладки за обновлением serverStructure and currentDatabase -> если изменились для этого редактора нужно обновить Lang
-        // 2)
-        if (this.props.serverStructure && this.props.serverStructure.editorRules.builtinFunctions) {
-            //   console.info('self._mCompletionDisposable', self._mCompletionDisposable);
-            //   if (self._mCompletionDisposable) {
-            //     self._mCompletionDisposable.dispose();
-            //   }
-            //   // need hack !!! need rewrite / registerCompletionItemProvider returns an IDisposable with the dispose method which I can call on unmount
-            //   this._mCompletionDisposable = null; //:monaco.languages.IDisposable;
-            //
-            //     this._mCompletionDisposable =
-            this.updateEditorStructure(
-                this.props.serverStructure,
-                this.props.currentDatabase,
-                monaco
-            );
-        } else {
-            console.warn('serverStructure is not Init');
-        }
+        //
+        //
+        // if (this.props.serverStructure && this.props.serverStructure.editorRules.builtinFunctions) {
+        //     //   console.info('self._mCompletionDisposable', self._mCompletionDisposable);
+        //     //   if (self._mCompletionDisposable) {
+        //     //     self._mCompletionDisposable.dispose();
+        //     //   }
+        //     //   // need hack !!! need rewrite / registerCompletionItemProvider returns an IDisposable with the dispose method which I can call on unmount
+        //     //   this._mCompletionDisposable = null; //:monaco.languages.IDisposable;
+        //     //
+        //     //     this._mCompletionDisposable =
+        //     this.updateEditorStructure(
+        //         this.props.serverStructure,
+        //         this.props.currentDatabase,
+        //         monaco
+        //     );
+        // } else {
+        //     console.warn('serverStructure is not Init');
+        // }
     };
     private makeQueryId = (): string => {
         let text: string = '';
