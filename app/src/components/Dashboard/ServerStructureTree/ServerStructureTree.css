@@ -5,6 +5,7 @@
     transition: 0ms !important;
   } */
 
+
   & :global(.anticon-caret-down) {
     color: text-color;
   }
@@ -21,16 +22,17 @@
   & li[class*='ant-tree-treenode-switcher-'] {
     display: flex;
     flex-wrap: wrap;
+    padding-top:1px;
 
     & > :global(.ant-tree-child-tree) {
       width: 100%;
-      padding-right: 0.5em;
+      padding-right: 0.0em;
     }
 
     & > :global(.ant-tree-node-content-wrapper) {
       /* & > [class*='ant-tree-node-content-wrapper-'] { */
       flex-grow: 1;
-      padding-right: 1em;
+      padding-right: 0.3em;
     }
   }
 
