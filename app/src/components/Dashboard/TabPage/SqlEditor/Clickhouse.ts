@@ -21,6 +21,8 @@ import { languages } from 'monaco-editor';
 // This config defines how the language is displayed in the editor.
 // https://stackoverflow.com/questions/43014131/monaco-editor-match-an-arbitrary-number-of-arguments-on-the-same-row-using-a-r
 // https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
+// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
+// https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
 
 export const languageDef = {
     base: 'sql',
@@ -32,7 +34,12 @@ export const languageDef = {
         { open: '[', close: ']', token: 'delimiter.square' },
         { open: '(', close: ')', token: 'delimiter.parenthesis' },
     ],
+    keywordsDouble: [
 
+    ],
+    tabixCommands:[
+
+    ],
     keywords: [
         'SELECT',
         'CASE',
@@ -184,11 +191,6 @@ export const languageDef = {
         'FREETEXT',
         'IS',
         'NULL',
-        // Pivoting
-        'PIVOT',
-        'UNPIVOT',
-        // Merging
-        'MATCHED',
     ],
     builtinFunctions: [
         // Aggregate
@@ -356,6 +358,7 @@ export const configuration: languages.LanguageConfiguration = {
         { open: '(', close: ')' },
         { open: '"', close: '"' },
         { open: "'", close: "'" },
+        { open: "`", close: "`" },
     ],
     surroundingPairs: [
         { open: '{', close: '}' },
@@ -363,6 +366,7 @@ export const configuration: languages.LanguageConfiguration = {
         { open: '(', close: ')' },
         { open: '"', close: '"' },
         { open: "'", close: "'" },
+        { open: "`", close: "`" },
     ],
     // wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 };

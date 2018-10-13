@@ -23,7 +23,18 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     }),
     TabModel.from({
       title: 'SQL 2',
-      content: `SELECT 323;;73709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
+      content: `CREATE TABLE data (ts DATETIME,id VARCHAR,version UInt64, v0 Nullable(DOUBLE), v1 Nullable(DOUBLE)) ENGINE=Null
+CREATE MATERIALIZED VIEW dataAgg ENGINE=AggregatingMergeTree PARTITION BY toStartOfDay(ts) ORDER BY (ts,id) AS SELECT ts, id, maxState(version) as version, anyLastState(v0) as v0, anyLastState(v1) as v1 FROM (select * from data order by version) GROUP BY ts,id;
+
+insert into data values(toDateTime('2018-10-11 08:00:00'),'id1',0,0.0,null);
+insert into data values(toDateTime('2018-10-11 08:00:00'), 'id1',3,3.0,3.0);
+insert into data values(toDateTime('2018-10-11 08:00:00'),'id1',1,1.0,1.0);
+insert into data values(toDateTime('2018-10-11 08:00:00'),'id1',2,2.0,2.0);
+
+select ts,id,maxMerge(version),anyLastMerge(v0),anyLastMerge(v1) from (select * from dataAgg order by version) group by ts,id;
+;;
+
+SELECT 323;;73709551615, 0xDEADBEEF, 01, 0.1, 1e100, -1e-100, inf, nan
 ;;
 SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
 ;;
