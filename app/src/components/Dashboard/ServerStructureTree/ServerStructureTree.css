@@ -1,43 +1,45 @@
 @value text-color from 'assets/styles/vars.css';
 
 .root {
-  /* * {
+    /* * {
     transition: 0ms !important;
   } */
 
-
-  & :global(.anticon-caret-down) {
-    color: text-color;
-  }
-
-  & li :global(.ant-tree-node-content-wrapper) {
-    color: text-color;
-    padding: 0 0.25em;
-
-    &:hover {
-      color: inherit;
-    }
-  }
-
-  & li[class*='ant-tree-treenode-switcher-'] {
-    display: flex;
-    flex-wrap: wrap;
-    padding-top:1px;
-
-    & > :global(.ant-tree-child-tree) {
-      width: 100%;
-      padding-right: 0.0em;
+    & :global(.anticon-caret-down) {
+        color: text-color;
     }
 
-    & > :global(.ant-tree-node-content-wrapper) {
-      /* & > [class*='ant-tree-node-content-wrapper-'] { */
-      flex-grow: 1;
-      padding-right: 0.3em;
-    }
-  }
+    & li :global(.ant-tree-node-content-wrapper) {
+        color: text-color;
+        padding: 0 0.25em;
 
-  & li.column {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
+        &:hover {
+            color: inherit;
+        }
+    }
+
+    & li[class*='ant-tree-treenode-switcher-'] {
+        display: flex;
+        flex-wrap: wrap;
+        padding-top: 1px;
+
+        & > :global(.ant-tree-child-tree) {
+            width: 100%;
+            padding-right: 0em;
+        }
+
+        & > :global(.ant-tree-switcher) {
+            width: 12px;
+        }
+        & > :global(.ant-tree-node-content-wrapper) {
+            /* & > [class*='ant-tree-node-content-wrapper-'] { */
+            flex-grow: 1;
+            padding-right: 0.3em;
+        }
+    }
+
+    & li.column {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
 }
