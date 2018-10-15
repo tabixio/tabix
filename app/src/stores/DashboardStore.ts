@@ -2,6 +2,7 @@ import { observable, action, runInAction, transaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import { Api, ServerStructure, localStorage } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
+import { Query } from 'components/Dashboard';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
@@ -159,18 +160,21 @@ SELECT * from default.arrays_test_ints`,
     });
   }
 
-  execCode() {
+  execQueries(queries: Query[]) {
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
+    if (!queries.length) return;
 
     this.activeTab.forEach(async tab => {
       const t = await this.request(async () => {
         const api = await Api.connect(this.rootStore.appStore.connection.get());
-        return api.fetch(tab.content, tab.currentDatabase.get());
+        // return api.fetch(tab.content, tab.currentDatabase.get());
+        return Promise.all(queries.map(q => api.fetch(q.sql, tab.currentDatabase.get())));
       });
 
       runInAction(() => {
         t.forEach(result => {
-          tab.data = Option.of(result);
+          // tab.data = Option.of(result);
+          tab.data = result;
         });
       });
     });

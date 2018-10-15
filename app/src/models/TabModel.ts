@@ -2,9 +2,9 @@ import { observable } from 'mobx';
 import { StoreModel } from '@vzh/mobx-stores';
 import { Option, None } from 'funfix-core';
 import uuid from 'uuid';
+import { Omit } from 'typelevel-ts';
 import { CodeEditor } from 'components/Dashboard';
 import DataDecorator from 'services/api/DataDecorator';
-import { Omit } from 'typelevel-ts';
 
 export interface Tab {
   id: string;
@@ -12,7 +12,7 @@ export interface Tab {
   content: string;
   currentDatabase: Option<string>;
   codeEditor: Option<CodeEditor>;
-  data: Option<DataDecorator>;
+  data: DataDecorator[];
 }
 
 export default class TabModel extends StoreModel<Tab> implements Tab {
@@ -22,7 +22,6 @@ export default class TabModel extends StoreModel<Tab> implements Tab {
     content = '',
     currentDatabase,
     codeEditor = None,
-    data = None,
   }: Omit<Tab, 'id' | 'content' | 'codeEditor' | 'data'> & Partial<Tab>): TabModel {
     return new TabModel({
       id,
@@ -30,7 +29,7 @@ export default class TabModel extends StoreModel<Tab> implements Tab {
       content,
       currentDatabase,
       codeEditor,
-      data,
+      data: [],
     });
   }
 
@@ -47,7 +46,7 @@ export default class TabModel extends StoreModel<Tab> implements Tab {
   currentDatabase: Option<string>;
 
   @observable
-  data: Option<DataDecorator>;
+  data: DataDecorator[];
 
   codeEditor: Option<CodeEditor>;
 

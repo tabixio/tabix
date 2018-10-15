@@ -11,6 +11,7 @@ import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import DataTable from './DataTable';
+import Draw from './Draw';
 import css from './TabPage.css';
 
 interface Props extends SplitPaneProps {
@@ -37,7 +38,7 @@ export default class TabPage extends React.Component<Props> {
     onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
   };
 
-  private onAction = (action: ActionType) => {
+  private onAction = (action: ActionType, eventData?: any) => {
     switch (action) {
       case ActionType.Save: {
         const { store } = this.props;
@@ -48,7 +49,7 @@ export default class TabPage extends React.Component<Props> {
         break;
       case ActionType.RunCurrent: {
         const { store } = this.props;
-        store.execCode();
+        store.execQueries(eventData);
         break;
       }
       case ActionType.RunAll:
@@ -75,12 +76,18 @@ export default class TabPage extends React.Component<Props> {
             fill
           />
 
-          <Tabs size="small" animated={false} className={css.tabs}>
+          <Tabs size="small" animated={false} activeKey="draw" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              {model.data.map(data => <DataTable data={data} />).orUndefined()}
+              {/* {model.data.map(data => <DataTable data={data} />).orUndefined()} */}
+              {model.data.map(data => (
+                <DataTable data={data} />
+              ))}
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
-              123
+              {/* {model.data.map(data => <Draw data={data} />).orUndefined()} */}
+              {model.data.map(data => (
+                <Draw data={data} />
+              ))}
             </Tabs.TabPane>
           </Tabs>
         </Splitter>

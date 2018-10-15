@@ -27,10 +27,10 @@ const config = webpackMerge(
           tsconfig: path.join(paths.client.root, 'tsconfig.json'),
           forkedChecks: true,
           getCustomTransformers: path.resolve('./webpack.ts-transformers.js'),
-          compilerOptions: {
-            module: 'es2015',
-            resolveJsonModule: false,
-          },
+          // compilerOptions: {
+          // module: 'es2015',
+          // resolveJsonModule: false,
+          // },
         }),
       },
 

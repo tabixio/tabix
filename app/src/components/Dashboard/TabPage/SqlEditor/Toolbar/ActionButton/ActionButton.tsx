@@ -4,7 +4,8 @@ import { ButtonProps } from 'antd/lib/button';
 
 export interface Props<A> {
   actionType: A;
-  onAction: (action: A, event: React.MouseEvent<HTMLElement>) => void;
+  // onAction: (action: A, event: React.MouseEvent<HTMLElement>) => void;
+  onAction: (action: A, eventData?: any) => void;
 }
 
 export default class ActionButton<A> extends React.Component<Props<A> & ButtonProps> {
