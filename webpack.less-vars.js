@@ -14,9 +14,8 @@ export default {
   '@text-color ': 'fade(#fff, 80%)',
   '@primary-1': 'fade(#000, 15%)',
   '@text-color-secondary ': 'fade(#fff, 65%)',
-  '@layout-header-background':'#404041'
+  '@layout-header-background': '#404041',
 };
 // @tabs-highlight-color: @primary-color;
 // @tabs-hover-color: @primary-5;
 // @tabs-active-color: @primary-7;
-
