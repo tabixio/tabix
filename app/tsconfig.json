@@ -1,6 +1,7 @@
 {
   "extends": "../node_modules/@vzh/configs/ts/dev.tsconfig.json",
   "compilerOptions": {
+    "module": "esnext",
     "outDir": "../dist",
     "baseUrl": "./src",
     "typeRoots": [
