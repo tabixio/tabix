@@ -1,6 +1,6 @@
 import { editor } from 'monaco-editor';
 
-export const theme_vs_dark: editor.IStandaloneThemeData = {
+export const themeVsDark: editor.IStandaloneThemeData = {
     base: 'vs-dark',
     inherit: false,
     rules: [

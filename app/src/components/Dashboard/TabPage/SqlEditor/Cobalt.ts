@@ -1,5 +1,5 @@
 import { editor } from 'monaco-editor';
-export const theme_cobalt: editor.IStandaloneThemeData = {
+export const themeCobalt: editor.IStandaloneThemeData = {
     base: 'vs-dark',
     inherit: true,
     rules: [
@@ -43,6 +43,10 @@ export const theme_cobalt: editor.IStandaloneThemeData = {
         {
             foreground: 'cccccc',
             token: 'variable',
+        },
+        {
+            foreground: 'edef7d',
+            token: 'predefined.sql',
         },
         {
             foreground: 'ff80e1',
@@ -92,6 +96,10 @@ export const theme_cobalt: editor.IStandaloneThemeData = {
         {
             foreground: 'edef7d',
             token: 'string variable',
+        },
+        {
+            foreground: '3AD900',
+            token: 'string.sql',
         },
         {
             foreground: 'ffb054',
@@ -243,6 +251,11 @@ export const theme_cobalt: editor.IStandaloneThemeData = {
             background: '001221',
             fontStyle: 'bold',
             token: 'markup.heading',
+        },{
+            foreground: 'eb939a',
+            background: '130d26',
+            fontStyle: 'bold',
+            token: 'warn-token.sql',
         },
     ],
     colors: {

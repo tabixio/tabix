@@ -3,10 +3,11 @@
 
 body {
   /* font-family: 'Proxima Nova', sans-serif; */
-  font-size: 16px;
+  font-size: 13px;
   /* line-height: 1.15; */
   /* color: font-color; */
   /* fill: font-color; */
+  -webkit-font-smoothing:antialiased;
 }
 
 :global(#appLoader) {

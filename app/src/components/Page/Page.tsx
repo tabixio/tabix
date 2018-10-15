@@ -6,8 +6,8 @@ import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import { observer } from 'mobx-react';
 import { IReactionDisposer, reaction } from 'mobx';
-import NavBar from './NavBar';
-import PageFooter from './PageFooter';
+// import NavBar from './NavBar';
+// import PageFooter from './PageFooter';
 import css from './Page.css';
 
 export interface Props extends FlexProps {
@@ -54,7 +54,7 @@ class Page extends React.Component<Props> {
       <Layout className={css.root}>
         {showLoader && <Loader />}
 
-        <NavBar />
+        {/*<NavBar />*/}
 
         <Flex
           column
@@ -66,7 +66,7 @@ class Page extends React.Component<Props> {
           {...rest}
         />
 
-        <PageFooter />
+        {/*<PageFooter />*/}
       </Layout>
     );
   }
