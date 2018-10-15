@@ -11,6 +11,7 @@ import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import DataTable from './DataTable';
+import Draw from './Draw';
 import css from './TabPage.css';
 
 interface Props extends SplitPaneProps {
@@ -75,12 +76,12 @@ export default class TabPage extends React.Component<Props> {
             fill
           />
 
-          <Tabs size="small" animated={false} className={css.tabs}>
+          <Tabs size="small" animated={false} activeKey="draw" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
               {model.data.map(data => <DataTable data={data} />).orUndefined()}
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
-              123
+              {model.data.map(data => <Draw data={data} />).orUndefined()}
             </Tabs.TabPane>
           </Tabs>
         </Splitter>
