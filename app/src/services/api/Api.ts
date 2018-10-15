@@ -3,6 +3,7 @@ import CoreProvider from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import TabixServerProvider from './provider/TabixServerProvider';
 import DataDecorator from './DataDecorator';
+import {Query} from './Query';
 
 export default class Api {
   static async connect(connection: Connection): Promise<Api> {
@@ -38,23 +39,29 @@ export default class Api {
   //   return this.provider.fastGetVersion();
   // }
 
-  async query(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
-    return this.provider.query(sql, withDatabase, format, extendSettings);
+    async query(sql: Query | string, withDatabase?: string, format?: string, extendSettings?: any) {
+        if ((<Query>sql).sql === undefined) {
+            return this.provider.queryString(
+                // @ts-ignore
+                sql,
+                withDatabase,
+                format,
+                extendSettings
+            );
+        } else {
+            return this.provider.query(
+                // @ts-ignore
+                sql
+            );
+        }
   }
 
-  async fetch(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
-    const data = await this.query(sql, withDatabase, format, extendSettings);
-    // console.log(data);
+    async fetch(query: Query) {
+        const data = await this.query(query);
     return new DataDecorator(data, this.provider.getType());
   }
 
   async loadDatabaseStructure() {
     return this.provider.getDatabaseStructure();
-  }
-
-  test() {
-    return this.fetch(
-      'select number,sin(number) as sin,cos(number) as cos FROM system.numbers LIMIT 100'
-    );
   }
 }

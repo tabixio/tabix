@@ -2,11 +2,11 @@ import { observable, action, runInAction, transaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import { Api, ServerStructure, localStorage } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
-import { Query } from 'components/Dashboard';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
 import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
+import {Query} from '../services/api/Query';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
@@ -163,12 +163,12 @@ SELECT * from default.arrays_test_ints`,
   execQueries(queries: Query[]) {
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
     if (!queries.length) return;
-
+      console.log('execQueries');
     this.activeTab.forEach(async tab => {
       const t = await this.request(async () => {
         const api = await Api.connect(this.rootStore.appStore.connection.get());
         // return api.fetch(tab.content, tab.currentDatabase.get());
-        return Promise.all(queries.map(q => api.fetch(q.sql, tab.currentDatabase.get())));
+          return Promise.all(queries.map(q => api.fetch(q)));
       });
 
       runInAction(() => {

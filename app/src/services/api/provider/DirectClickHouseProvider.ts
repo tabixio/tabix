@@ -1,6 +1,7 @@
 import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
+import {Query} from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   getType() {
@@ -46,16 +47,16 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   async getDatabaseStructure() {
     console.time('Load Database Structure!');
     // @ts-ignore
-    const columns = await this.query('SELECT * FROM system.columns');
+      const columns = await this.queryString('SELECT * FROM system.columns');
     // @ts-ignore
-    const tables = await this.query('SELECT database,name,engine FROM system.tables');
+      const tables = await this.queryString('SELECT database,name,engine FROM system.tables');
     // @ts-ignore
-    const databases = await this.query('SELECT name FROM system.databases');
+      const databases = await this.queryString('SELECT name FROM system.databases');
     // @ts-ignore
-    const dictionaries = await this.query(
+      const dictionaries = await this.queryString(
       'SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names'
     );
-    const functions = await this.query('SELECT name,is_aggregate from system.functions');
+      const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
     console.timeEnd('Load Database Structure!');
 
     const columnList = columns.data.map((c: any) => {
@@ -92,7 +93,12 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     );
   }
 
-  query(sql: string, withDatabase?: string, format: string = 'FoRmAt JSON', extendSettings?: any) {
+    queryString(
+        sql: string,
+        withDatabase?: string,
+        format: string = 'FoRmAt JSON',
+        extendSettings?: any
+    ) {
     const query = format ? `${sql}\n${format}` : sql;
     const url = this.getRequestUrl(withDatabase, extendSettings);
     const init: RequestInit = {
@@ -105,9 +111,23 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       body: query,
       // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
     };
-    // return this.request(url, init);
     return fetch(url, init).then(r => r.json());
-  }
+    }
+
+    query(q: Query) {
+        const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
+        const init: RequestInit = {
+            mode: 'cors',
+            method: 'post',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept-Encoding': 'gzip',
+            },
+            body: q.sql,
+            // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+        };
+        return fetch(url, init).then(r => r.json());
+    }
 
   fastGetVersion() {
     const url = this.getRequestUrl();

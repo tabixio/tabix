@@ -18,11 +18,12 @@ import { themeCobalt } from './Cobalt';
 import { themeVsDark } from './Vsdark';
 import Toolbar, { Props as ToolbarProps, ActionType } from './Toolbar';
 import css from './SqlEditor.css';
+import {Query} from '../../../../services/api/Query';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
     language: 'clickhouse',
     theme: 'cobalt',
-    minimap: { enabled: false },
+    minimap: {enabled: false},
     selectOnLineNumbers: true,
     automaticLayout: true,
     formatOnPaste: true,
@@ -45,36 +46,9 @@ export type IReadOnlyModel = monacoEditor.editor.IReadOnlyModel;
 // export interface modelInstance {
 //   currentDatabase: string;
 // }
-export interface TabixCommand {
-    type: string;
-    text: string;
-}
-
-export interface Variable {
-    name: string;
-    value: string;
-}
 export interface monacoGlobalDisposable {
     completionProvider: IDisposable | null;
     tokensProvider: IDisposable | null;
-}
-export interface Query {
-    id: string;
-    tokens: any; // splitRange['tokens']
-    sql: string;
-    sqlOriginal: string;
-    isExecutable: boolean;
-    range: monacoEditor.Range;
-    inCursor: boolean;
-    inSelected: boolean;
-    numQuery: number;
-    numCommand: number;
-    commands: Array<TabixCommand>;
-    showProgressQuery: string;
-    isOperationCAD: boolean; // CreateAlterDrop
-    format: string;
-    isFormatSet: boolean;
-    variables: Array<Variable> | null;
 }
 // export interface MapModel {
 //   currentDatabase: string | undefined;
@@ -134,12 +108,29 @@ function providerCompletionItems(model: IReadOnlyModel): CompletionItemProvider 
 
 @observer
 export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
+    get parseEditorText(): (
+        typeCommand: 'select' | 'current' | 'all',
+        editor: monacoEditor.editor.ICodeEditor,
+        monaco: Monaco
+    ) => Array<Query> {
+        return this._parseEditorText;
+    }
+
+    set parseEditorText(
+        value: (
+            typeCommand: 'select' | 'current' | 'all',
+            editor: monacoEditor.editor.ICodeEditor,
+            monaco: Monaco
+        ) => Array<Query>
+    ) {
+        this._parseEditorText = value;
+    }
   private isInitGlobalEditorStructure: boolean = false;
   // private completionItemsDisposable:IDisposable|null = null;
   private editor?: CodeEditor;
 
     componentWillUnmount() {
-      this.setEditorRef(undefined);
+        this.setEditorRef(undefined);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -150,9 +141,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     }
 
     private setEditorRef = (editor?: CodeEditor) => {
-      this.editor = editor;
-      const { editorRef } = this.props;
-      editorRef && editorRef(editor);
+        this.editor = editor;
+        const {editorRef} = this.props;
+        editorRef && editorRef(editor);
     };
 
     private onEditorWillMount = (monaco: Monaco) => {
@@ -160,7 +151,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         monaco.editor.defineTheme('vs-dark', themeVsDark);
         monaco.editor.setTheme('cobalt');
 
-        if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
+        if (!monaco.languages.getLanguages().some(({id}) => id === 'clickhouse')) {
             // Register a new language
             monaco.languages.register({
                 id: 'clickhouse',
@@ -266,14 +257,15 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         }
         // Запоминаем путь к IDispose() интерфейсу
         // update MonarchTokens
-        window['monacoGlobalProvider'][
-            'tokensProvider'
-        ] = monaco.languages.setMonarchTokensProvider('clickhouse', languageSettings as any);
+        window['monacoGlobalProvider']['tokensProvider'] = monaco.languages.setMonarchTokensProvider(
+            'clickhouse',
+            languageSettings as any
+        );
         // update Completion
         window['monacoGlobalProvider'][
             'completionProvider'
-        ] = monaco.languages.registerCompletionItemProvider('clickhouse', {
-            provideCompletionItems: function() {
+            ] = monaco.languages.registerCompletionItemProvider('clickhouse', {
+            provideCompletionItems: function () {
                 return completionItems;
             },
         });
@@ -293,10 +285,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
             contextMenuGroupId: 'navigation',
             contextMenuOrder: 1.5,
             run(_editor) {
-              // self.parseEditorText('current', editor, monaco);
-              // self.onAction(ActionType.RunCurrent);
-              const queries = self.parseEditorText('current', editor, monaco);
-              self.props.onAction(ActionType.RunCurrent, queries);
+                // self.parseEditorText('current', editor, monaco);
+                // self.onAction(ActionType.RunCurrent);
+                const queries = self._parseEditorText('current', editor, monaco);
+                self.props.onAction(ActionType.RunCurrent, queries);
             },
         });
         // ======== Shift-Command-Enter ========
@@ -309,10 +301,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
             contextMenuGroupId: 'navigation',
             contextMenuOrder: 1.5,
             run(_editor) {
-              // self.parseEditorText('all', editor, monaco);
-              // self.onAction(ActionType.RunAll);
-              const queries = self.parseEditorText('all', editor, monaco);
-              self.props.onAction(ActionType.RunAll, queries);
+                // self.parseEditorText('all', editor, monaco);
+                // self.onAction(ActionType.RunAll);
+                const queries = self._parseEditorText('all', editor, monaco);
+                self.props.onAction(ActionType.RunAll, queries);
             },
         });
         // ======== Command+Shift+- / Command+Shift+= ========
@@ -361,13 +353,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     };
 
     private onEditorDidMount = (editor: CodeEditor, monaco: Monaco) => {
-      this.setEditorRef(editor)
+        this.setEditorRef(editor);
 
         // Save current component instance to map
         const modelUri = editor.getModel().uri;
         modelMap.set(modelUri, this);
         // Replace model uri when changed
-        editor.onDidChangeModel(({ newModelUrl, oldModelUrl }) => {
+        editor.onDidChangeModel(({newModelUrl, oldModelUrl}) => {
             modelMap.delete(oldModelUrl);
             modelMap.set(newModelUrl, this);
         });
@@ -566,9 +558,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
                             if (['SELECT'].indexOf(oToken.text.toUpperCase()) != -1) {
                                 findSelectQuery = true;
                             }
-                            if (
-                                ['DROP', 'CREATE', 'ALTER'].indexOf(oToken.text.toUpperCase()) != -1
-                            ) {
+                            if (['DROP', 'CREATE', 'ALTER'].indexOf(oToken.text.toUpperCase()) != -1) {
                                 isOperationCAD = true;
                                 findSelectQuery = false;
                             }
@@ -598,6 +588,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
                     variables: null,
                     format,
                     isFormatSet,
+                    extendSettings: '',
+                    currentDatabase: '',
                     commands: [],
                 };
             } else {
@@ -643,12 +635,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
      * @param {string} typeCommand
      * @param {monacoEditor.editor.ICodeEditor} editor
      * @param {Monaco} monaco
+     * @return Array<Query>
      */
-    private parseEditorText = (
+    protected _parseEditorText = (
         typeCommand: 'select' | 'current' | 'all',
         editor: monacoEditor.editor.ICodeEditor,
         monaco: Monaco
-    ) => {
+    ): Array<Query> => {
         console.info(`%c------------>>> executeCommand >>>--------------`, 'color: red');
         // is user select text? yes - overwrite typeCommand
         const userSelection: IRange = editor.getSelection();
@@ -695,6 +688,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
                 // Если у запроса НЕ указан формат
                 query.sql = `${query.sql} ${query.format}`;
             }
+
+            query.currentDatabase = this.props.currentDatabase;
+
             queryExecList.push(query);
         });
 
@@ -704,25 +700,23 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
         });
 
         return queryExecList;
-        // const position = editor.getPosition();
-        // const allValue = editor.getValue();
     };
 
     private onAction = (action: ActionType, eventData?: any) => {
-      const { onAction } = this.props;
-      switch (action) {
-        case ActionType.RunCurrent: {
-          this.editor && this.editor.getAction('my-exec-code').run();
-          break;
+        const {onAction} = this.props;
+        switch (action) {
+            case ActionType.RunCurrent: {
+                this.editor && this.editor.getAction('my-exec-code').run();
+                break;
+            }
+            case ActionType.RunAll: {
+                this.editor && this.editor.getAction('my-exec-all').run();
+                break;
+            }
+            default:
+                onAction(action, eventData);
+                break;
         }
-        case ActionType.RunAll: {
-          this.editor && this.editor.getAction('my-exec-all').run();
-          break;
-        }
-        default:
-          onAction(action, eventData);
-          break;
-      }
     };
 
     render() {

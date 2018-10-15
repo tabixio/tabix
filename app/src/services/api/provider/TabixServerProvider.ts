@@ -1,10 +1,9 @@
 import { ServerConnection, ConnectionType } from '../../Connection';
 import CoreProvider from './CoreProvider';
+import {Query} from '../Query';
 
 export default class TabixServerProvider extends CoreProvider<ServerConnection> {
-  getDatabaseStructure(): Promise<
-    import('/home/vladimir/dev/sources/tabixio/tabix/app/src/services/api/ServerStructure').default.Server
-  > {
+    getDatabaseStructure(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
@@ -12,15 +11,19 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
     throw new Error('Method not implemented.');
   }
 
-  query(
-    // @ts-ignore
-    sql: string,
-    // @ts-ignore
-    withDatabase?: string | undefined,
-    // @ts-ignore
-    format?: string | undefined,
-    // @ts-ignore
-    extendSettings?: any
+    queryString(
+        // @ts-ignore
+        sql: string, // @ts-ignore
+        withDatabase?: string | undefined, // @ts-ignore
+        format?: string | undefined, // @ts-ignore
+        extendSettings?: any
+    ): Promise<any> {
+        throw new Error('Method not implemented.');
+    }
+
+    query(
+        // @ts-ignore
+        q: Query
   ): Promise<any> {
     throw new Error('Method not implemented.');
   }
