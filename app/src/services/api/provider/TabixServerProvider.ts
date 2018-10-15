@@ -13,9 +13,12 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
 
     queryString(
         // @ts-ignore
-        sql: string, // @ts-ignore
-        withDatabase?: string | undefined, // @ts-ignore
-        format?: string | undefined, // @ts-ignore
+        sql: string,
+        // @ts-ignore
+        withDatabase?: string | undefined,
+        // @ts-ignore
+        format?: string | undefined,
+        // @ts-ignore
         extendSettings?: any
     ): Promise<any> {
         throw new Error('Method not implemented.');
