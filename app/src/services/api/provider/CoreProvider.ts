@@ -24,15 +24,6 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract getDatabaseStructure(): Promise<ServerStructure.Server>;
 
-  // refactor: What fot this method??
-  // makeQueryId() {
-  //   let text = '';
-  //   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //   for (let i = 0; i < 8; i += 1)
-  //     text += possible.charAt(Math.floor(Math.random() * possible.length));
-  //   return text;
-  // }
-
   // refactor: use axios?
   // For what this method?
   request(request: Request | string, init?: RequestInit) {

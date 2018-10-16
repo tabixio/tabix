@@ -18,7 +18,7 @@ export interface Metadata {
   prepareInt64Cols?: any;
 }
 
-export type Row = Record<string, any>;// & { id: string | number };
+export type Row = Record<string, any>; // & { id: string | number };
 
 // todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
