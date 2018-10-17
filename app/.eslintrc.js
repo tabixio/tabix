@@ -1,5 +1,3 @@
-const paths = require('@vzh/configs/paths').default;
-
 // module.exports = {
 //   extends: require.resolve('@vzh/configs/eslint/ts.react.eslintrc.js'),
 // };
@@ -11,33 +9,12 @@ module.exports = {
 
   parser: 'typescript-eslint-parser',
 
-  plugins: ['typescript', 'import', 'prettier'],
-
-  env: {
-    node: true,
-    es6: true,
-    browser: true,
-  },
+  plugins: ['import', 'prettier', 'typescript'],
 
   settings: {
-    'import/parsers': {
-      'typescript-eslint-parser': ['.ts', '.tsx'],
-    },
-
     'import/resolver': {
       webpack: {
-        config: 'webpack.client.config.babel.js',
-      },
-
-      node: {
-        extensions: ['.js', '.ts', '.tsx'],
-
-        moduleDirectory: [
-          'node_modules',
-          paths.client.sources,
-          paths.server.sources,
-          paths.shared.sources,
-        ],
+        config: 'webpack.config.babel.js',
       },
     },
   },
@@ -47,6 +24,7 @@ module.exports = {
     'no-console': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/no-cycle': 'off',
     // jsx
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
