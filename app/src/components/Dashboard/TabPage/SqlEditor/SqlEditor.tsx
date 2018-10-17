@@ -1,14 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import monacoEditor, {
-  CompletionItemProvider,
-  IDisposable,
-  IRange,
-  Position,
-  Selection,
-  Uri,
-} from 'monaco-editor';
+import monacoEditor, { IDisposable, IRange, Position, Selection, Uri } from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -54,7 +47,7 @@ export interface monacoGlobalDisposable {
 //   currentDatabase: string | undefined;
 // }
 
-export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
+export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
   editorRef?: (editor?: CodeEditor) => void;
@@ -63,7 +56,9 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'> {
 
 const modelMap = new WeakMap<Uri, SqlEditor>();
 
-function providerCompletionItems(model: IReadOnlyModel): CompletionItemProvider {
+function providerCompletionItems(
+  model: IReadOnlyModel
+): Array<monacoEditor.languages.CompletionItem> {
   const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
 
   // const map: MapModel | undefined = this.editorMapModel.get(model);
@@ -107,7 +102,7 @@ function providerCompletionItems(model: IReadOnlyModel): CompletionItemProvider 
 }
 
 @observer
-export default class SqlEditor extends React.Component<SqlEditorProps & FlexProps> {
+export default class SqlEditor extends React.Component<SqlEditorProps> {
   get parseEditorText(): (
     typeCommand: 'select' | 'current' | 'all',
     editor: monacoEditor.editor.ICodeEditor,
@@ -125,7 +120,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
   ) {
     this._parseEditorText = value;
   }
+
   private isInitGlobalEditorStructure: boolean = false;
+
   // private completionItemsDisposable:IDisposable|null = null;
   private editor?: CodeEditor;
 
@@ -133,10 +130,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     this.setEditorRef(undefined);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: SqlEditorProps) {
     if (nextProps && nextProps.serverStructure !== this.props.serverStructure) {
       // @todo: где тут взять глобальный monaco?
-      this.updateGlobalEditorStructure(nextProps.serverStructure, monaco);
+      // this.updateGlobalEditorStructure(nextProps.serverStructure, monaco);
+      this.updateGlobalEditorStructure(nextProps.serverStructure, undefined as any);
     }
   }
 
@@ -241,34 +239,35 @@ export default class SqlEditor extends React.Component<SqlEditorProps & FlexProp
     // Видимо это нужно в rootScope вынести ?
     // window - это быстро костылик ) monaco - региструется глобавльно
 
-    if (!window['monacoGlobalProvider']) {
-      window['monacoGlobalProvider'] = {
+    if (!window.monacoGlobalProvider) {
+      window.monacoGlobalProvider = {
         completionProvider: null,
         tokensProvider: null,
       };
     } else {
       // Если
-      if (window['monacoGlobalProvider']['tokensProvider']) {
-        window['monacoGlobalProvider']['tokensProvider'].dispose();
+      if (window.monacoGlobalProvider.tokensProvider) {
+        window.monacoGlobalProvider.tokensProvider.dispose();
       }
-      if (window['monacoGlobalProvider']['completionProvider']) {
-        window['monacoGlobalProvider']['completionProvider'].dispose();
+      if (window.monacoGlobalProvider.completionProvider) {
+        window.monacoGlobalProvider.completionProvider.dispose();
       }
     }
     // Запоминаем путь к IDispose() интерфейсу
     // update MonarchTokens
-    window['monacoGlobalProvider']['tokensProvider'] = monaco.languages.setMonarchTokensProvider(
+    window.monacoGlobalProvider.tokensProvider = monaco.languages.setMonarchTokensProvider(
       'clickhouse',
       languageSettings as any
     );
     // update Completion
-    window['monacoGlobalProvider'][
-      'completionProvider'
-    ] = monaco.languages.registerCompletionItemProvider('clickhouse', {
-      provideCompletionItems: function() {
-        return completionItems;
-      },
-    });
+    window.monacoGlobalProvider.completionProvider = monaco.languages.registerCompletionItemProvider(
+      'clickhouse',
+      {
+        provideCompletionItems() {
+          return completionItems;
+        },
+      }
+    );
   };
 
   private bindKeys = (editor: CodeEditor, monaco: Monaco) => {
