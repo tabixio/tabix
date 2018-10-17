@@ -9,7 +9,7 @@ module.exports = {
 
   parser: 'typescript-eslint-parser',
 
-  plugins: ['import', 'prettier', 'typescript'],
+  plugins: ['typescript'],
 
   settings: {
     'import/resolver': {
@@ -43,5 +43,6 @@ module.exports = {
     'class-methods-use-this': 'off',
     // tsx
     'react/jsx-filename-extension': ['error', { extensions: ['.ts', '.tsx'] }],
+    'react/jsx-wrap-multilines': 'off',
   },
 };
