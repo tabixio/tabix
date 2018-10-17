@@ -25,7 +25,7 @@
 
         & > :global(.ant-tree-child-tree) {
             width: 100%;
-            padding-right: 0em;
+            padding-right: 0;
         }
 
         & > :global(.ant-tree-switcher) {
