@@ -1,6 +1,6 @@
 import { ConnectionLike, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
-import {Query} from '../Query';
+import { Query } from '../Query';
 
 export default abstract class CoreProvider<C extends ConnectionLike> {
   readonly connection: C;
@@ -11,14 +11,14 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract getType(): ConnectionType;
 
-    abstract queryString(
+  abstract queryString(
     sql: string,
     withDatabase?: string,
     format?: string,
     extendSettings?: any
   ): Promise<any>;
 
-    abstract query(query: Query): Promise<any>;
+  abstract query(query: Query): Promise<any>;
 
   abstract fastGetVersion(): Promise<string>;
 

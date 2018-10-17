@@ -1,5 +1,6 @@
 // import uuid from 'uuid';
 import { ConnectionType } from 'services/Connection';
+import { Query } from './Query';
 /* eslint-disable */
 
 // export enum DataType {
@@ -38,7 +39,7 @@ export default class DataDecorator {
 
   private error: any = false;
 
-  constructor(result: any, _sourceType: ConnectionType) {
+  constructor(result: any, query : Query, _sourceType: ConnectionType) {
     // console.log(result, sourceType);
     if (result.totals && result.data) {
       result.data.push(result.totals);

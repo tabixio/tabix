@@ -6,7 +6,7 @@ import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
 import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
-import {Query} from '../services/api/Query';
+import { Query } from '../services/api/Query';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
@@ -19,7 +19,16 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   tabs: TabModel[] = [
     TabModel.from({
       title: 'SQL 1',
-      content: 'select * from cities',
+      content: `select * from cities
+;;
+SELECT * FROM system.tables FORMAT TSV
+;;
+SELECT 33 FORMAT JSON 
+;;
+SELECT 44 
+;;
+SELECT 55
+`,
       currentDatabase: Some('default'),
     }),
     TabModel.from({
@@ -162,13 +171,23 @@ SELECT * from default.arrays_test_ints`,
 
   execQueries(queries: Query[]) {
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
+
+    const extendSettings = {
+      max_execution_time: 200, // ToDo:Read from Store.User.Tabix.Settings
+      max_result_rows: 20000, // ToDo:Read from Store.User.Tabix.Settings
+    };
+
     if (!queries.length) return;
-      console.log('execQueries');
     this.activeTab.forEach(async tab => {
       const t = await this.request(async () => {
         const api = await Api.connect(this.rootStore.appStore.connection.get());
         // return api.fetch(tab.content, tab.currentDatabase.get());
-          return Promise.all(queries.map(q => api.fetch(q)));
+        return Promise.all(
+          queries.map(q => {
+            q.extendSettings = extendSettings;
+            return api.fetch(q);
+          })
+        );
       });
 
       runInAction(() => {

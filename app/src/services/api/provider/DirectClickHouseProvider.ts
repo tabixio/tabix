@@ -1,11 +1,61 @@
 import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
-import {Query} from '../Query';
+import { Query } from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   getType() {
     return ConnectionType.direct;
+  }
+
+  private getRequestInit(query: string): RequestInit {
+    const init: RequestInit = {
+      mode: 'cors',
+      method: 'post',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Encoding': 'gzip',
+      },
+      body: query,
+      // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+    };
+    return init;
+  }
+
+  private getPresetSettings(extendSettings: any, urlParams: string | undefined): object {
+    // Doc
+    // ClickHouse/dbms/src/Interpreters/Settings.h :
+    // https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
+    const defaultState = {
+      output_format_json_quote_denormals: 1,
+      output_format_json_quote_64bit_integers: 1,
+      log_queries: 1,
+      add_http_cors_header: 1,
+      result_overflow_mode: 'throw',
+      timeout_overflow_mode: 'throw',
+
+      // max_block_size:200,
+      // send_progress_in_http_headers:1,
+      // http_headers_progress_interval_ms:500
+    };
+
+    if (typeof urlParams === 'string' && urlParams) {
+      const hashes = urlParams.slice(urlParams.indexOf('?') + 1).split('&');
+
+      hashes.map(hash => {
+        const [key, val] = hash.split('=');
+        defaultState[key] = decodeURIComponent(val);
+        return true;
+      });
+    }
+    console.info('extendSettings', extendSettings);
+    if (typeof extendSettings === 'object') {
+      return {
+        ...defaultState,
+        ...extendSettings,
+      };
+    }
+    return defaultState;
   }
 
   private getRequestUrl(withDatabase?: string, extendSettings?: any): string {
@@ -15,12 +65,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     //     ? 'http://'
     //     : '';
 
-    // ClickHouse/dbms/src/Interpreters/Settings.h : https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
-    let url =
-      `${this.connection.connectionUrl}/?` +
-      `add_http_cors_header=1&log_queries=1&output_format_json_quote_64bit_integers=1&output_format_json_quote_denormals=1`;
-    // max_block_size=1&send_progress_in_http_headers=1&http_headers_progress_interval_ms=500
-    // ------------
+    let url = `${this.connection.connectionUrl}/?`;
+
+    const settings: object = this.getPresetSettings(extendSettings, this.connection.params);
+
+    url += Object.entries(settings)
+      .map(([key, val]) => `${key}=${val}`)
+      .join('&');
 
     if (this.connection.password) {
       url += `&user=${encodeURIComponent(this.connection.username)}&password=${encodeURIComponent(
@@ -33,13 +84,6 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     if (withDatabase) {
       url += `&database=${encodeURIComponent(withDatabase)}`;
     }
-    if (extendSettings) {
-      url += `&${extendSettings}`;
-    }
-
-    if (this.connection.params) {
-      url += `&${this.connection.params}`;
-    }
 
     return url;
   }
@@ -47,16 +91,16 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   async getDatabaseStructure() {
     console.time('Load Database Structure!');
     // @ts-ignore
-      const columns = await this.queryString('SELECT * FROM system.columns');
+    const columns = await this.queryString('SELECT * FROM system.columns');
     // @ts-ignore
-      const tables = await this.queryString('SELECT database,name,engine FROM system.tables');
+    const tables = await this.queryString('SELECT database,name,engine FROM system.tables');
     // @ts-ignore
-      const databases = await this.queryString('SELECT name FROM system.databases');
+    const databases = await this.queryString('SELECT name FROM system.databases');
     // @ts-ignore
-      const dictionaries = await this.queryString(
+    const dictionaries = await this.queryString(
       'SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names'
     );
-      const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
+    const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
     console.timeEnd('Load Database Structure!');
 
     const columnList = columns.data.map((c: any) => {
@@ -93,41 +137,22 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     );
   }
 
-    queryString(
-        sql: string,
-        withDatabase?: string,
-        format: string = 'FoRmAt JSON',
-        extendSettings?: any
-    ) {
-    const query = format ? `${sql}\n${format}` : sql;
+  queryString(
+    sql: string,
+    withDatabase?: string,
+    format: string = 'FoRmAt JSON',
+    extendSettings?: any
+  ) {
+    const init: RequestInit = this.getRequestInit(format ? `${sql}\n${format}` : sql);
     const url = this.getRequestUrl(withDatabase, extendSettings);
-    const init: RequestInit = {
-      mode: 'cors',
-      method: 'post',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Encoding': 'gzip',
-      },
-      body: query,
-      // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
-    };
     return fetch(url, init).then(r => r.json());
-    }
+  }
 
-    query(q: Query) {
-        const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
-        const init: RequestInit = {
-            mode: 'cors',
-            method: 'post',
-            headers: {
-                'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Accept-Encoding': 'gzip',
-            },
-            body: q.sql,
-            // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
-        };
-        return fetch(url, init).then(r => r.json());
-    }
+  query(q: Query) {
+    const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
+    const init: RequestInit = this.getRequestInit(q.sql);
+    return this.request(url, init).then(r => r);
+  }
 
   fastGetVersion() {
     const url = this.getRequestUrl();
