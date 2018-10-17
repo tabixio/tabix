@@ -31,12 +31,24 @@ interface Props extends Pick<ServerTitleProps, 'onReload'> {
 
 @observer
 export default class ServerStructureTree extends React.Component<Props> {
-  private onNodeDoubleClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-    const { onColumnAction, structure } = this.props;
-    if (!onColumnAction || !structure) return;
-
+  private onNodeDoubleClick = (_event: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
     const key = node.props.eventKey;
     if (!key) return;
+
+    // Expand node.
+    if (node.props.children) {
+      const { store } = this.props;
+      const expandedKeys = node.props.expanded
+        ? store.treeExpandedKeys.filter(k => k !== key)
+        : store.treeExpandedKeys.concat(key);
+      this.expand(expandedKeys);
+      return;
+    }
+
+    // Try invoke onColumnAction.
+
+    const { onColumnAction, structure } = this.props;
+    if (!onColumnAction || !structure) return;
 
     const names = key.split('.');
     if (names.length !== 3) return;
@@ -138,14 +150,12 @@ export default class ServerStructureTree extends React.Component<Props> {
               {structure.databases.map(d => (
                 <Tree.TreeNode
                   key={d.id}
-                  isLeaf={!d.tables.length}
                   title={<DbTitle name={d.name} tableCount={d.tables.length} />}
                 >
                   {/* tables */}
                   {d.tables.map(t => (
                     <Tree.TreeNode
                       key={t.id}
-                      isLeaf={!t.columns.length}
                       title={<TableTitle table={t} onContextMenuAction={onTableAction} />}
                     >
                       {/* columns */}

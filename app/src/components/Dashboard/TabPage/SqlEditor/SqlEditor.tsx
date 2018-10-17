@@ -133,8 +133,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   componentWillReceiveProps(nextProps: SqlEditorProps) {
     if (nextProps && nextProps.serverStructure !== this.props.serverStructure) {
       // @todo: где тут взять глобальный monaco?
-      // this.updateGlobalEditorStructure(nextProps.serverStructure, monaco);
-      this.updateGlobalEditorStructure(nextProps.serverStructure, undefined as any);
+      this.updateGlobalEditorStructure(nextProps.serverStructure, window.monaco);
     }
   }
 
