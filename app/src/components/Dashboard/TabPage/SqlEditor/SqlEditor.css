@@ -1,13 +1,3 @@
-.root {
-  :global {
-    /* tweek autosize when use horizontal split panes */
-    & .monaco-editor,
-    & .overflow-guard {
-      width: 100% !important;
-    }
-  }
-}
-
 .editor {
   height: calc(100% - 32px - 1em);
 }
