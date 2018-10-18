@@ -75,8 +75,8 @@ class DashboardView extends React.Component<RoutedProps> {
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
     return (
-      <Page column={false} uiStore={store.uiStore}>
-        <Splitter>
+      <Page column={false} uiStore={store.uiStore} className={css.root}>
+        <Splitter primary="second" minSize="calc(100% - 250px)" defaultSize="calc(100% - 300px)">
           <Flex alignItems="stretch" vfill className={css['sider-container']}>
             <Layout>
               <Layout.Sider width="100%">

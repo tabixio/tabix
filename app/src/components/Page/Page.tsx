@@ -1,11 +1,12 @@
 import React from 'react';
 import { Layout, notification } from 'antd';
 import { Flex, FlexProps } from 'reflexy';
+import classNames from 'classnames';
+import { IReactionDisposer, reaction } from 'mobx';
+import { observer } from 'mobx-react';
 import { UIStore } from '@vzh/mobx-stores';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
-import { observer } from 'mobx-react';
-import { IReactionDisposer, reaction } from 'mobx';
 // import NavBar from './NavBar';
 // import PageFooter from './PageFooter';
 import css from './Page.css';
@@ -46,7 +47,7 @@ class Page extends React.Component<Props> {
   }
 
   render() {
-    const { uiStore, ...rest } = this.props;
+    const { uiStore, className, ...rest } = this.props;
     const showLoader = uiStore && uiStore.loading;
     // hide page loader while showing app loader to avoid double loaders
     // (!store.uiStore.loading || uiStore === store.uiStore);
@@ -54,7 +55,7 @@ class Page extends React.Component<Props> {
       <Layout className={css.root}>
         {showLoader && <Loader />}
 
-        {/*<NavBar />*/}
+        {/* <NavBar /> */}
 
         <Flex
           column
@@ -62,11 +63,11 @@ class Page extends React.Component<Props> {
           grow
           shrink={false}
           component="main"
-          className={css['main-container']}
+          className={classNames(css['main-container'], className)}
           {...rest}
         />
 
-        {/*<PageFooter />*/}
+        {/* <PageFooter /> */}
       </Layout>
     );
   }
