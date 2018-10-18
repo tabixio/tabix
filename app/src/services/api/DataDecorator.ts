@@ -39,7 +39,7 @@ export default class DataDecorator {
 
   private error: any = false;
 
-  constructor(result: any, query : Query, _sourceType: ConnectionType) {
+  constructor(result: any, _query : Query, _sourceType: ConnectionType) {
     // console.log(result, sourceType);
     if (result.totals && result.data) {
       result.data.push(result.totals);
@@ -179,16 +179,16 @@ export default class DataDecorator {
   static convertArrayToDataProvider(data, sourceType) {
     const result = {
       data,
-      meta: [],
+      meta: [] as any[],
       error: false,
       query: { drawCommands: false },
       rows: data.length,
       position: 0,
       countAll: 0,
     };
+    result.meta = Object.keys(data[0]).map(key => ({ name: key, type: 'string' }));
     // @ts-ignore
-    Object.keys(data[0]).map(key => result.meta.push({ name: key, type: 'string' }));
-    return new DataDecorator(result, sourceType);
+    return new DataDecorator(result, sourceType, );
   }
 
   isText() {
