@@ -45,7 +45,8 @@ export default class Api {
 
   async fetch(query: Query) {
     const data = await this.provider.query(query);
-    return new DataDecorator(data, query, this.provider.getType());
+    // , this.provider.getType()
+    return new DataDecorator(data, query);
   }
 
   async loadDatabaseStructure() {
