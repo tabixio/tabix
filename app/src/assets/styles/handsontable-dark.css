@@ -1,0 +1,99 @@
+:global {
+  .handsontable-dark {
+    color: rgba(255, 255, 255, 1.0);
+  }
+  .handsontable-dark .handsontable th,
+  .handsontable-dark .handsontable td {
+    border-right: 1px solid #636363;
+    border-bottom: 1px solid #636363;
+    background-color: #424242;
+  }
+
+  .handsontable-dark .handsontable th:last-child {
+    border-right: 1px solid #636363;
+    border-bottom: 1px solid #636363;
+  }
+  .handsontable-dark .handsontable th:first-child,
+  .handsontable-dark .handsontable td:first-of-type,
+  .handsontable-dark .handsontable .htNoFrame + th,
+  .handsontable-dark .handsontable .htNoFrame + td {
+    border-left: 1px solid #636363;
+  }
+
+  .handsontable-dark .handsontable.htRowHeaders thead tr th:nth-child(2) {
+    border-left: 1px solid #636363;
+  }
+
+  .handsontable-dark .handsontable tr:first-child th,
+  .handsontable-dark .handsontable tr:first-child td {
+    border-top: 1px solid #636363;
+  }
+
+  .handsontable-dark .handsontable th {
+    background-color: #303030;
+    color: #bbb;
+  }
+
+  .handsontable-dark .handsontable tr {
+    background-color: #303030;
+    color: #bbb;
+  }
+
+  .handsontable-dark .handsontable th.active {
+    background-color: #525252;
+  }
+
+  /* selection */
+  .handsontable-dark .handsontable tbody th.ht__highlight,
+  .handsontable-dark .handsontable thead th.ht__highlight {
+    background-color: #303030;
+  }
+  .handsontable-dark .handsontable.ht__selection--columns thead th.ht__highlight,
+  .handsontable-dark .handsontable.ht__selection--rows tbody th.ht__highlight {
+    background-color: #8eb0e7;
+    color: #fff;
+  }
+
+  .handsontable .currentRowWhite {
+    background: rgba(76, 76, 76, 0.2) !important;
+    /*color: rgb(250, 250, 250)*/
+  }
+  .handsontable .currentRowDark {
+    background: rgba(76, 76, 76, 0.8) !important;
+    /*color: rgb(250, 250, 250)*/
+  }
+
+
+  .handsontable-dark .manualColumnResizer {
+    /*background: #2293ee !important;*/
+  }
+
+
+  .htContextMenu table.htCore {
+    border: 1px dotted #636363;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+  }
+
+  .htContextMenu table tbody tr td.current,
+  .htContextMenu table tbody tr td.zeroclipboard-is-hover {
+    background-color: #8eb0e7;
+    color: #fff;
+  }
+
+  .htContextMenu table tbody tr td {
+    border: 2px crimson solid;
+    border-right: 1px solid #636363;
+    border-bottom: 1px solid #636363;
+    background-color: #424242;
+    color: #fff;
+  }
+
+  .htContextMenu table tbody tr td.htDisabled:hover {
+    background: #636363;
+    color: #999;
+  }
+
+
+
+}
