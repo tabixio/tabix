@@ -38,10 +38,10 @@ export default class Api {
   // async fastGetVersion() {
   //   return this.provider.fastGetVersion();
   // }
-
-  async query(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
-    return this.provider.queryString(sql, withDatabase, format, extendSettings);
-  }
+  //
+  // async query(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
+  //   return this.provider.queryString(sql, withDatabase, format, extendSettings);
+  // }
 
   async fetch(query: Query) {
     const data = await this.provider.query(query);

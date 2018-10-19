@@ -33,6 +33,8 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       add_http_cors_header: 1,
       result_overflow_mode: 'throw',
       timeout_overflow_mode: 'throw',
+      max_execution_time: 10,
+      max_result_rows: 90000,
 
       // max_block_size:200,
       // send_progress_in_http_headers:1,
@@ -69,6 +71,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
 
     const settings: object = this.getPresetSettings(extendSettings, this.connection.params);
 
+    console.table(settings);
     url += Object.entries(settings)
       .map(([key, val]) => `${key}=${val}`)
       .join('&');
@@ -137,7 +140,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     );
   }
 
-  queryString(
+  private queryString(
     sql: string,
     withDatabase?: string,
     format: string = 'FoRmAt JSON',

@@ -11,12 +11,12 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract getType(): ConnectionType;
 
-  abstract queryString(
-    sql: string,
-    withDatabase?: string,
-    format?: string,
-    extendSettings?: any
-  ): Promise<any>;
+  // abstract queryString(
+  //   sql: string,
+  //   withDatabase?: string,
+  //   format?: string,
+  //   extendSettings?: any
+  // ): Promise<any>;
 
   abstract query(query: Query): Promise<any>;
 

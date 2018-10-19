@@ -173,8 +173,8 @@ SELECT * from default.arrays_test_ints`,
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
 
     const extendSettings = {
-      max_execution_time: 200, // ToDo:Read from Store.User.Tabix.Settings
-      max_result_rows: 20000, // ToDo:Read from Store.User.Tabix.Settings
+      max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings
+      max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
     if (!queries.length) return;
