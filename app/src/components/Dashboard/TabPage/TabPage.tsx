@@ -76,7 +76,7 @@ export default class TabPage extends React.Component<Props> {
             fill
           />
 
-          <Tabs size="small" animated={false} defaultActiveKey="draw" className={css.tabs}>
+          <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
               {/* {model.data.map(data => <DataTable data={data} />).orUndefined()} */}
               {model.data.map(data => (
