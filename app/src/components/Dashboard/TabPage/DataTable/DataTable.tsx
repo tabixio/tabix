@@ -1,10 +1,11 @@
 import React, { RefObject } from 'react';
 import { observer } from 'mobx-react';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
-import 'handsontable/dist/handsontable.full.css';
-import './handsontable.dark.css';
+import Handsontable, { contextMenu } from 'handsontable';
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
+import { contextMenuItems } from './handsontable/ContextMenuItems';
+import 'handsontable/dist/handsontable.full.css';
+import './handsontable/dark.css';
 import css from './DataTable.css';
 
 interface Props {
@@ -21,17 +22,16 @@ export default class DataTable extends React.Component<Props> {
     // Handsontable.plugins.registerPlugin();
   }
 
+  protected gethotInstance = (): Handsontable => {
+    if (!this.hotRef || !this.hotRef.current) throw new Error('Not found Handsontable Instance');
+    return this.hotRef.current.hotInstance;
+  };
+
   componentDidMount() {
-    if (this.hotRef && this.hotRef.current) {
-      const hotInstance: Handsontable = this.hotRef.current.hotInstance;
-      console.info('hotInstance.countCols:', hotInstance.countCols());
-      if (hotInstance) {
-        console.info('hotInstance', hotInstance, hotInstance.countRows());
-      }
-    }
+    console.info('Inst', this.gethotInstance());
   }
 
-  getFormatForColumn(cell: ColumnMetadata) {
+  private getFormatForColumn(cell: ColumnMetadata) {
     // @todo cell: ColumnMetadata
 
     let c: any = {};
@@ -47,7 +47,43 @@ export default class DataTable extends React.Component<Props> {
     };
 
     if (cell.useHumanSort) {
-      // c.sortFunction=function (sortOrder) {....}
+      c.sortFunction = function(sortOrder: any) {
+        // Handsontable's object iteration helper
+        const unitsRatios = {
+          TiB: 1024 * 1024 * 1024 * 1024,
+          GiB: 1024 * 1024 * 1024,
+          MiB: 1024 * 1024,
+          KiB: 1024,
+          B: 1,
+        };
+        const parseUnit = function(value: any, unit: string, ratio: number) {
+          let v = value;
+          if (typeof v === 'undefined') return value;
+          if (isNaN(v) && v.indexOf(` ${unit}`) > -1) {
+            v = parseFloat(v.replace(unit, '')) * ratio;
+          }
+          return v;
+        };
+
+        return function(a: any, b: any) {
+          let newA = a[1];
+          let newB = b[1];
+          const e = function(val: any, prop: any) {
+            newA = parseUnit(newA, prop, val);
+            newB = parseUnit(newB, prop, val);
+          };
+
+          Handsontable.helper.objectEach(unitsRatios, e);
+
+          if (newA < newB) {
+            return sortOrder ? -1 : 1;
+          }
+          if (newA > newB) {
+            return sortOrder ? 1 : -1;
+          }
+          return 0;
+        };
+      };
     }
 
     if (cell.type.includes('Int64')) {
@@ -90,6 +126,46 @@ export default class DataTable extends React.Component<Props> {
     return c;
   }
 
+  private getColumnSorting(columns: ColumnMetadata[]) {
+    let res: boolean | object;
+    res = true;
+    columns.forEach(col => {
+      if (col.forceSort) {
+        res = {
+          sortOrder: col.forceSortOrder,
+          column: col.forceSort,
+        };
+      }
+    });
+    return res;
+  }
+
+  private callContextMenu(key: string, options: contextMenu.Options) {
+    console.info('CALL', key, options, this);
+  }
+
+  private fetchContextMenu(): contextMenu.Settings {
+    const items: Object = contextMenuItems;
+    Object.keys(items).forEach(key => {
+      const value = items[key];
+      if (value && value.submenu && value.submenu.items && Array.isArray(value.submenu.items)) {
+        // eslint-disable-next-line no-restricted-syntax,guard-for-in
+        for (const i in value.submenu.items) {
+          if (!items[key].submenu.items[i].key) items[key].submenu.items[i].key = `${key}:${i}`;
+          items[key].submenu.items[i].callback = this.callContextMenu;
+        }
+      } else if (value.key) {
+        items[key].callback = this.callContextMenu;
+      }
+    });
+    return {
+      callback: function sd() {
+        return null;
+      },
+      items,
+    };
+  }
+
   render() {
     const { data } = this.props;
     // console.log(data);
@@ -107,10 +183,12 @@ export default class DataTable extends React.Component<Props> {
           allowEmpty
           allowInsertColumn={false}
           allowInsertRow={false}
-          columnSorting
-          contextMenu
+          columnSorting={this.getColumnSorting(data.meta.columns)}
+          contextMenu={this.fetchContextMenu()}
           manualColumnMove
           manualColumnResize
+          manualColumnFreeze
+          mergeCells
           manualRowResize
           stretchH="all"
           observeChanges={false} /* =<!memory leak if true! */

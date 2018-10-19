@@ -123,9 +123,9 @@ export default class DataDecorator {
       return e;
     });
 
-    console.warn(this.rows);
-    console.warn(searchUnSafe);
-    console.warn(this.meta.columns);
+    // console.warn(this.rows);
+    // console.warn(searchUnSafe);
+    // console.warn(this.meta.columns);
     return false;
   }
   //
