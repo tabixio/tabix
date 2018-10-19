@@ -1,7 +1,5 @@
 Global todo:
 
-[ ] В глобавльном handsontable-dark.css и/или локальном DataTable.css - не переопределяются CSS: для .htContextMenu
-
 [ ] execQueries каждый раз вызывает Api.init, Api можно сделать глобальным обьектам - он не изменен без смены Connection
 
 [ ] Перед каждым запросом - execQueries нужно очищать HotTable, крайне желательно через unmount

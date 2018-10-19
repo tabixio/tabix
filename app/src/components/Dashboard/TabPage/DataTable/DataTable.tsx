@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
+import './handsontable.dark.css';
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
 import css from './DataTable.css';
 

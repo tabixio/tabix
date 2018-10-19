@@ -1,6 +1,6 @@
 @import 'normalize.css';
 @import './reset-defaults.css';
-@import 'handsontable-dark.css';
+
 body {
   /* font-family: 'Proxima Nova', sans-serif; */
   font-size: 13px;
