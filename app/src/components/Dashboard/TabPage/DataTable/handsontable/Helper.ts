@@ -141,10 +141,6 @@ export default class HotTableHelper {
         value === '-inf' ||
         value === 'nan'
       ) {
-        // SELECT  inf, nan
-
-        console.log('value', value);
-
         TD = HotTableHelper.cellWarning(TD);
       } else {
         isNumericRenderer = true;
