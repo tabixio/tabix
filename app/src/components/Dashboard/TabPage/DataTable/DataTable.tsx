@@ -51,7 +51,11 @@ export default class DataTable extends React.Component<Props> {
   }
 
   private callContextMenu(key: string, options: contextMenu.Options) {
-    console.info('CALL', key, options, this);
+    // Local call from Handsontable instance
+    // @ts-ignore: TS2322: Type 'this' is not assignable to type 'Handsontable'.
+    const ht: Handsontable = this;
+    console.info('CALL', key, options, ht);
+    HotTableHelper.getSelectedArea(ht);
   }
 
   private fetchContextMenu(): contextMenu.Settings {
@@ -61,7 +65,6 @@ export default class DataTable extends React.Component<Props> {
       if (value && value.submenu && value.submenu.items && Array.isArray(value.submenu.items)) {
         // eslint-disable-next-line no-restricted-syntax,guard-for-in
         for (const i in value.submenu.items) {
-          if (!items[key].submenu.items[i].key) items[key].submenu.items[i].key = `${key}:${i}`;
           items[key].submenu.items[i].callback = this.callContextMenu;
         }
       } else if (value.key) {
