@@ -729,6 +729,11 @@
   dependencies:
     "@types/babel-types" "*"
 
+"@types/chroma-js@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-1.4.0.tgz#1d215474b54e227bd0204572c0483b98593eabd0"
+  integrity sha512-pY0EVvIUizkmvSZo9c74hska0Gv1vXzdGCQ8FoBBNpV8jtMUstu55VVa+AKtaQyUZOPRBralYzzqFRXVk4Iznw==
+
 "@types/classnames@^2.2.6":
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.6.tgz#dbe8a666156d556ed018e15a4c65f08937c3f628"
@@ -1979,6 +1984,11 @@ chownr@^1.0.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.1.tgz#54726b8b8fff4df053c42187e801fb4412df1494"
   integrity sha512-j38EvO5+LHX84jlo6h4UzmOwi0UgW61WRyPtJz4qaadK5eY3BTS5TY/S1Stc3Uk2lIM6TPevAlULiEJwie860g==
+
+chroma-js@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-1.4.0.tgz#695c52e7c97617e5f687db31913503d410481ae4"
+  integrity sha512-5vBYGJkhSnK2SRZ0XkxwTL+TSRyP7PHIxjeg+1uce5qpNDRLLwAXcF12kIztas/BYakWPQhchzV4TKkiwKNd8Q==
 
 chrome-trace-event@^1.0.0:
   version "1.0.0"
