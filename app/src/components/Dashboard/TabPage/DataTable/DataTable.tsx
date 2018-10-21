@@ -103,7 +103,6 @@ export default class DataTable extends React.Component<Props> {
 
   render() {
     const { data } = this.props;
-    console.table(data.rows);
     // @todo : Error  HotTable in columnSorting
     // var showSortIndicator = pluginSettingsForColumn.indicator;
     // Uncaught (in promise) TypeError: Cannot read property 'indicator' of undefined
