@@ -36,6 +36,8 @@ export default class DataTable extends React.Component<Props> {
     return HotTableHelper.getFormatForColumn(cell);
   }
 
+  // @todo : Error  HotTable in columnSorting, try repeat in clear project and public issue
+  // @ts-ignore: TS6133: 'getColumnSorting' is declared but its value is never read.
   private getColumnSorting(columns: ColumnMetadata[]) {
     const res = {
       sortEmptyCells: true,
