@@ -1,15 +1,7 @@
 import Handsontable from 'handsontable';
 import { ColumnMetadata } from '../../../../../services/api/DataDecorator';
+import HotTableManipulations from './Manipulations';
 // import ColumnSorting = Handsontable.plugins.ColumnSorting;
-
-// interfaces
-export interface Selection {
-  fromRow: number;
-  toRow: number;
-  toCol: number;
-  fromCol: number;
-  isSelected: boolean;
-}
 
 export default class HotTableHelper {
   public static getFormatForColumn(cell: ColumnMetadata) {
@@ -23,7 +15,13 @@ export default class HotTableHelper {
       data: cell.name,
       title: cell.name,
       renderer: HotTableHelper.hotRendererCell,
+      columnSorting: {
+        indicator: true, // disable indicator for the first column,
+        sortEmptyCells: true,
+        headerAction: true, // clicks on the first column won't sort
+      },
     };
+    // renderer: HotTableHelper.hotRendererCell,
 
     if (cell.useHumanSort) {
       c.sortFunction = function(sortOrder: any) {
@@ -120,8 +118,9 @@ export default class HotTableHelper {
     _col: number,
     _prop: string | number,
     _value: any,
-    cellProperties: any // is not type :gridSettings
+    cellProperties: any
   ): HTMLElement {
+    // is not type :gridSettings
     let TD = _TD;
     let isNumericRenderer: boolean = false;
     let value = _value;
@@ -181,7 +180,6 @@ export default class HotTableHelper {
       //
       // }
     }
-
     // backgroundColor & color per cell
     if (cellProperties.backgroundColor) {
       TD.style.backgroundColor = cellProperties.backgroundColor;
@@ -193,35 +191,20 @@ export default class HotTableHelper {
     return TD;
   }
 
-  public static getSelectedArea(ht: Handsontable, selectFull: boolean = false): Selection {
-    // @ts-ignore: TS2322
-    const select: Handsontable.wot.CellRange | undefined = ht.getSelectedRangeLast();
-    let fromCol: number = -1;
-    let toCol: number = -1;
-    let fromRow: number = -1;
-    let toRow: number = -1;
-    let isSelected = false;
-    console.log('select.RAnge:', select);
-
-    if (select) {
-      isSelected = true;
-      fromCol = Math.min(select.from.col, select.to.col);
-      toCol = Math.max(select.from.col, select.to.col);
-      fromRow = Math.min(select.from.row, select.to.row);
-      toRow = Math.max(select.from.row, select.to.row);
-    } else if (selectFull) {
-      fromRow = 0;
-      fromCol = 0;
-      toRow = ht.countRows();
-      toCol = ht.countCols();
+  public static isFormatColl(_ht: Handsontable, _needFormat: string) {
+    const needFormat = _needFormat.toLowerCase();
+    const select = HotTableManipulations.getSelectedArea(_ht);
+    const { columns } = _ht.getSettings();
+    if (!columns) {
+      return false;
     }
+    for (let col = select.fromCol; col <= select.toCol; col += 1) {
+      if (!columns[col].type.toLowerCase().includes(needFormat)) return false;
+    }
+    return true;
+  }
 
-    return {
-      fromRow,
-      toRow,
-      toCol,
-      fromCol,
-      isSelected,
-    };
+  public static manipulations(_ht: Handsontable, keyCall: string, _options: any) {
+    HotTableManipulations.call(_ht, keyCall, _options);
   }
 }

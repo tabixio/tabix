@@ -6,7 +6,6 @@ export const contextMenuItems = {
         {
           name: 'Reset',
           key: 'columnFormat:reset',
-          filter: 'all',
         },
         {
           name: 'Money',
@@ -35,18 +34,13 @@ export const contextMenuItems = {
         //   name: 'Date',
         // },
         {
-          name: 'Float',
-          key: 'columnFormat:float',
+          name: 'Float [3]',
+          key: 'columnFormat:float3',
           filter: 'numeric',
         },
         {
-          name: 'Heatmaps',
-          key: 'columnFormat:heatmaps',
-          filter: 'numeric',
-        },
-        {
-          name: 'Negative & Positive',
-          key: 'columnFormat:positive',
+          name: 'Float [7]',
+          key: 'columnFormat:float7',
           filter: 'numeric',
         },
       ],
@@ -80,9 +74,26 @@ export const contextMenuItems = {
           name: 'Orange color',
           key: 'styleCell:Orange',
         },
+        // {
+        //   name: 'Random color',
+        //   key: 'styleCell:Random',
+        // },
+      ],
+    },
+  },
+  highlightColumn: {
+    name: 'Highlight column',
+    submenu: {
+      items: [
         {
-          name: 'Random color',
-          key: 'styleCell:Random',
+          name: 'Heatmaps',
+          key: 'highlightColumn:heatmaps',
+          filter: 'numeric',
+        },
+        {
+          name: 'Negative & Positive',
+          key: 'highlightColumn:positive',
+          filter: 'numeric',
         },
       ],
     },
@@ -93,28 +104,39 @@ export const contextMenuItems = {
     submenu: {
       items: [
         {
-          name: 'Redmine Markdown (select)',
-          key: 'copyTo:RedmineSelect',
+          name: 'Redmine Markdown',
+          key: 'copyTo:RedmineMarkdown',
         },
         {
-          name: 'Redmine Markdown (full)',
-          key: 'copyTo:RedmineFull',
+          name: 'Github/Tg Markdown',
+          key: 'copyTo:GitMarkdown',
         },
         {
           name: 'WHERE col1 IN (val,val),col2 IN ...',
-          key: 'copyTo:Where',
+          key: 'copyTo:SQLWhere',
         },
         {
           name: 'Create Table ...',
-          key: 'copyTo:Create',
+          key: 'copyTo:SQLCreate',
         },
       ],
     },
   },
   hsep3: '---------',
   transform: {
-    name: 'Transpose full table',
-    key: 'Transpose',
+    name: 'Transform',
+    submenu: {
+      items: [
+        {
+          name: 'Transpose table',
+          key: 'transform:Transpose',
+        },
+        {
+          name: 'Minimize columns',
+          key: 'transform:MinimizeCols',
+        },
+      ],
+    },
   },
   calculate: {
     name: 'Calc Avg & Sum & Median',
