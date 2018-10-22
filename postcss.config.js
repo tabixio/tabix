@@ -1,3 +1,13 @@
-const postcssConfig = require('@vzh/configs/css/postcssConfig').default;
-
-module.exports = postcssConfig();
+module.exports = {
+  plugins: {
+    'postcss-import': {},
+    'postcss-icss-values': {},
+    'postcss-nested': {},
+    'postcss-preset-env': {
+      stage: 2,
+      features: {
+        autoprefixer: true,
+      },
+    },
+  },
+};

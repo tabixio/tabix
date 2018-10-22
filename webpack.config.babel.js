@@ -1,53 +1,93 @@
 import path from 'path';
-import webpackMerge from 'webpack-merge';
+import webpack from 'webpack';
+import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
-import paths from '@vzh/configs/paths';
-import clientConfigTs, { baseDefaultRules } from '@vzh/configs/webpack/client.config.ts';
-import { defaultRules } from '@vzh/configs/webpack/client.config';
-import loaders from '@vzh/configs/webpack/loaders';
 import lessVars from './webpack.less-vars';
-// import webpack from 'webpack';
-// import appEnv from '@vzh/configs/appEnv';
 
-const config = webpackMerge(
-  clientConfigTs({
-    rhl: false,
+const baseDir = process.cwd();
 
-    entry: {
-      app: ['./index'],
-    },
+export default {
+  target: 'web',
+  context: path.resolve(baseDir, 'app/src'),
 
-    rules: {
-      jsRule: {},
+  entry: {
+    app: ['./index'],
+  },
 
-      tsRule: {
-        ...baseDefaultRules.tsRule,
-        use: loaders.ts({
-          tsconfig: path.join(paths.client.root, 'tsconfig.json'),
-          forkedChecks: true,
-          getCustomTransformers: path.resolve('./webpack.ts-transformers.js'),
-          // compilerOptions: {
-          // module: 'es2015',
-          // resolveJsonModule: false,
-          // },
-        }),
+  output: {
+    path: path.resolve(baseDir, 'dist'),
+    publicPath: '/',
+    filename: path.join('js', `[name].js?[hash:5]`),
+  },
+
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
+  },
+
+  mode: 'development',
+
+  devtool: 'cheap-module-eval-source-map',
+
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        include: [path.resolve(baseDir, 'app/src')],
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: path.resolve(baseDir, 'app/tsconfig.json'),
+            transpileOnly: true,
+            happyPackMode: false,
+            getCustomTransformers: path.resolve('./webpack.ts-transformers.js'),
+          },
+        },
       },
 
-      cssNodeModulesRule: {
-        ...defaultRules.cssNodeModulesRule,
-        exclude: [
-          path.join(paths.nodeModules.root, 'monaco-editor'),
-          path.join(paths.nodeModules.root, 'antd'),
+      {
+        test: /\.css$/,
+        include: [path.resolve(baseDir, 'app/src')],
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]--[hash:5]',
+              importLoaders: 1,
+            },
+          },
+          'postcss-loader',
         ],
       },
 
-      antdCssRule: {
-        test: /\.less$/,
-        include: path.join(paths.nodeModules.root, 'antd'),
+      {
+        test: /\.css$/,
+        include: [path.resolve(baseDir, 'node_modules')],
+        exclude: [
+          path.join(baseDir, 'node_modules', 'monaco-editor'),
+          path.join(baseDir, 'node_modules', 'antd'),
+        ],
         use: [
-          defaultRules.cssNodeModulesRule.use[0], // <-- style-loader
-          ...loaders.cssNodeModules({ modules: false, postcss: false }),
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[local]',
+            },
+          },
+        ],
+      },
+
+      {
+        test: /\.less$/,
+        include: [path.resolve(baseDir, 'node_modules', 'antd')],
+        use: [
+          'style-loader',
+          'css-loader',
           {
             loader: 'less-loader',
             options: {
@@ -58,31 +98,54 @@ const config = webpackMerge(
         ],
       },
 
-      monacoCssRule: {
-        ...defaultRules.cssNodeModulesRule,
-        include: path.join(paths.nodeModules.root, 'monaco-editor'),
-        use: [
-          defaultRules.cssNodeModulesRule.use[0], // <-- style-loader
-          ...loaders.cssNodeModules({ modules: false, postcss: false }),
-        ],
+      {
+        test: /\.css$/,
+        include: [path.resolve(baseDir, 'node_modules', 'monaco-editor')],
+        use: ['style-loader', 'css-loader'],
       },
 
-      pugRule: { test: /\.pug$/, use: { loader: 'pug-loader' } },
-    },
-  }),
-  {
-    plugins: [
-      new HtmlWebpackPlugin({
-        inject: false,
-        template: path.join(paths.client.assets, 'index.pug'),
-        filename: 'index.html',
-      }),
-      new MonacoWebpackPlugin({ output: 'workers', languages: [] }),
-      // ...appEnv.ifDevMode([], [new webpack.HotModuleReplacementPlugin()]),
+      { test: /\.pug$/, use: { loader: 'pug-loader' } },
+
+      {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
+        include: [path.resolve(baseDir, 'app/src/assets'), path.resolve(baseDir, 'node_modules')],
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 1024,
+            fallback: 'file-loader',
+            name: `assets/[name].[ext]?[hash:base64:5]`,
+          },
+        },
+      },
     ],
-  }
-);
+  },
 
-// console.log(JSON.stringify(config));
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
 
-export default config;
+    new ForkTsCheckerPlugin({
+      tsconfig: path.resolve(baseDir, 'app/tsconfig.json'),
+      checkSyntacticErrors: false,
+      memoryLimit: 1024,
+    }),
+
+    new HtmlWebpackPlugin({
+      inject: false,
+      template: path.join(baseDir, 'app/src/assets', 'index.pug'),
+      filename: 'index.html',
+    }),
+    new MonacoWebpackPlugin({ output: 'workers', languages: [] }),
+  ],
+
+  devServer: {
+    contentBase: path.resolve(baseDir, 'app/public'),
+    publicPath: '/',
+    historyApiFallback: true,
+    host: '0.0.0.0',
+    port: 9000,
+    hotOnly: true,
+    noInfo: false,
+    stats: 'minimal',
+  },
+};

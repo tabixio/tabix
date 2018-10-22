@@ -1,13 +1,24 @@
 {
-  "extends": "../node_modules/@vzh/configs/ts/dev.tsconfig.json",
   "compilerOptions": {
+    "target": "es2015",
     "module": "esnext",
+    "moduleResolution": "node",
     "outDir": "../dist",
     "baseUrl": "./src",
-    "typeRoots": [
-      "./types",
-      "../node_modules/@types"
-    ]
+    "typeRoots": ["./types", "../node_modules/@types"],
+
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "jsx": "react",
+
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
   "files": ["./src/index.tsx"]
 }

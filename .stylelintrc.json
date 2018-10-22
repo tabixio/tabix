@@ -1,3 +1,16 @@
 {
-  "extends": ["@vzh/configs/css/stylelintrc.json"]
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-css-modules",
+    "prettier-stylelint",
+    "stylelint-config-prettier"
+  ],
+  "plugins": ["stylelint-scss"],
+  "defaultSeverity": "error",
+  "rules": {
+    "comment-empty-line-before": null,
+    "comment-whitespace-inside": null,
+    "no-descending-specificity": null
+  },
+  "ignoreFiles": ["node_modules/**", "dist/**"]
 }
