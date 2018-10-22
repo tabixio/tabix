@@ -19,7 +19,22 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   tabs: TabModel[] = [
     TabModel.from({
       title: 'SQL 1',
-      content: `select * from cities
+      content: `
+SELECT toInt64(9007199254740900+number) as bkig FROM  numbers(4) ORDER BY number DESC 
+;;
+SELECT 
+toFloat32(sin(rand())) as xF32,
+toFloat64(sin(rand())) as xF64,
+now(),
+toInt64(9007199254740982+number) as gran,
+toInt64(11117311154531369000+number) as singun,
+toUInt64(11117311154531369000+number) as nunun,
+toInt16(now()+number) as xInt16,
+toInt32(now()+number) as xInt32,
+toInt64(now()+number) as xInt64
+FROM  numbers(10) ORDER BY number DESC
+;;
+select * from cities
 ;;
 SELECT * FROM system.tables FORMAT TSV
 ;;
@@ -28,6 +43,11 @@ SELECT 33 FORMAT JSON
 SELECT 44 
 ;;
 SELECT 55
+;;
+select number,sin(number) as sin,cos(number) as cos FROM  numbers(123) ORDER BY number DESC
+;;
+SELECT * FROM system.tables
+
 `,
       currentDatabase: Some('default'),
     }),
@@ -173,8 +193,8 @@ SELECT * from default.arrays_test_ints`,
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
 
     const extendSettings = {
-      max_execution_time: 200, // ToDo:Read from Store.User.Tabix.Settings
-      max_result_rows: 20000, // ToDo:Read from Store.User.Tabix.Settings
+      max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings
+      max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
     if (!queries.length) return;

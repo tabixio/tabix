@@ -7,7 +7,7 @@ body {
   /* line-height: 1.15; */
   /* color: font-color; */
   /* fill: font-color; */
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing: antialiased;
 }
 
 :global(#appLoader) {
