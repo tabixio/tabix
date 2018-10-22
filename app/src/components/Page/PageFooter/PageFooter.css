@@ -1,6 +1,0 @@
-@value bg-color, text-color from 'assets/styles/vars.css';
-
-.root {
-  background-color: bg-color;
-  color: text-color;
-}

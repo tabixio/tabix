@@ -1,13 +1,15 @@
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { observer } from 'mobx-react';
-import { Layout, Tabs } from 'antd';
+import { Layout } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
+import { routePaths } from 'routes';
 import Page from 'components/Page';
-import { ServerStructureTree, TabPage } from 'components/Dashboard';
+import { ServerStructureTree, TabPage, Tabs } from 'components/Dashboard';
+import { ActionType } from 'components/Dashboard/Tabs';
 import { TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
 import css from './DashboardView.css';
@@ -70,13 +72,25 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
+  private onMenuAction = (action: ActionType) => {
+    switch (action) {
+      case ActionType.SignOut: {
+        const { history } = this.props;
+        history.push(routePaths.signOut.path);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   render() {
     const { store } = this.props;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
     return (
       <Page column={false} uiStore={store.uiStore} className={css.root}>
-        <Splitter primary="second" minSize="calc(100% - 250px)" defaultSize="calc(100% - 300px)">
+        <Splitter primary="second" minSize="calc(100vw - 250px)" defaultSize="calc(100vw - 300px)">
           <Flex alignItems="stretch" vfill className={css['sider-container']}>
             <Layout>
               <Layout.Sider width="100%">
@@ -94,11 +108,10 @@ class DashboardView extends React.Component<RoutedProps> {
           </Flex>
 
           <Tabs
-            type="editable-card"
-            className={css.tabs}
             activeKey={store.activeTab.map(_ => _.id).orUndefined()}
             onEdit={this.onEditTabs}
             onChange={this.onTabChange}
+            onMenuAction={this.onMenuAction}
           >
             {store.tabs.map(t => (
               <Tabs.TabPane key={t.id} closable tab={t.title}>

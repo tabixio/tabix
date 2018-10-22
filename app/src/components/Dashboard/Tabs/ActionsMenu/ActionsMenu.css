@@ -1,0 +1,13 @@
+.root {
+  padding: 0 1em;
+}
+
+.actions {
+  cursor: pointer;
+
+  :global {
+    .anticon:not(:first-of-type) {
+      margin-left: 0.75em;
+    }
+  }
+}

@@ -5,10 +5,10 @@ import { ServerStructure } from 'services';
 
 export enum TableAction {
   OpenTable = 1,
-  CodeSelectFrom = 2,
-  InsertTableName = 3,
-  MakeSQLDescribe = 4,
-  MakeSQLDropTable = 5,
+  CodeSelectFrom,
+  InsertTableName,
+  MakeSQLDescribe,
+  MakeSQLDropTable,
 }
 
 export interface ContextMenuProps {
@@ -17,11 +17,9 @@ export interface ContextMenuProps {
 }
 
 export default class ContextMenu extends React.Component<ContextMenuProps> {
-  private onItemClick = (param: ClickParam) => {
+  private onItemClick = ({ key }: ClickParam) => {
     const { onContextMenuAction, table } = this.props;
-    onContextMenuAction &&
-      TableAction[param.key] &&
-      onContextMenuAction(+param.key as TableAction, table);
+    onContextMenuAction && TableAction[key] && onContextMenuAction(+key as TableAction, table);
   };
 
   render() {

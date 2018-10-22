@@ -7,8 +7,6 @@ import { observer } from 'mobx-react';
 import { UIStore } from '@vzh/mobx-stores';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
-// import NavBar from './NavBar';
-// import PageFooter from './PageFooter';
 import css from './Page.css';
 
 export interface Props extends FlexProps {
@@ -23,7 +21,10 @@ class Page extends React.Component<Props> {
     super(props);
 
     this.notificationReaction = reaction(
-      () => this.props.uiStore && this.props.uiStore.notifications,
+      () => {
+        const { uiStore } = this.props;
+        return uiStore && uiStore.notifications;
+      },
       list =>
         list &&
         list.forEach(n => {
@@ -34,7 +35,8 @@ class Page extends React.Component<Props> {
             description: '',
             duration: 0,
             onClose: () => {
-              this.props.uiStore && this.props.uiStore.closeNotification(n.id);
+              const { uiStore } = this.props;
+              uiStore && uiStore.closeNotification(n.id);
             },
           });
         }),
@@ -55,8 +57,6 @@ class Page extends React.Component<Props> {
       <Layout className={css.root}>
         {showLoader && <Loader />}
 
-        {/* <NavBar /> */}
-
         <Flex
           column
           hfill
@@ -66,8 +66,6 @@ class Page extends React.Component<Props> {
           className={classNames(css['main-container'], className)}
           {...rest}
         />
-
-        {/* <PageFooter /> */}
       </Layout>
     );
   }
