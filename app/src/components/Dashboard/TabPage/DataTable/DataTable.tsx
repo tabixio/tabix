@@ -36,17 +36,18 @@ export default class DataTable extends React.Component<Props> {
     return HotTableHelper.getFormatForColumn(cell);
   }
 
-  // @todo : Error  HotTable in columnSorting, try repeat in clear project and public issue
   // @ts-ignore: TS6133: 'getColumnSorting' is declared but its value is never read.
-  private getColumnSorting(columns: ColumnMetadata[]) {
+  private getColumnSorting(_columns: ColumnMetadata[]) {
+    // @Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
+
+    // For forceSortOrder
     const res = {
       sortEmptyCells: true,
       indicator: false,
       headerAction: true,
       initialConfig: {},
-      ss: new Date().toString(),
     };
-    columns.forEach(col => {
+    _columns.forEach(col => {
       if (col.forceSort) {
         res.initialConfig = {
           sortOrder: col.forceSortOrder,
@@ -54,7 +55,8 @@ export default class DataTable extends React.Component<Props> {
         };
       }
     });
-    return res;
+    // return res;
+    return true;
   }
 
   private callContextMenu(key: string, options: any) {
@@ -103,11 +105,10 @@ export default class DataTable extends React.Component<Props> {
 
   render() {
     const { data } = this.props;
-    // @todo : Error  HotTable in columnSorting
+    // @todo : Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
     // var showSortIndicator = pluginSettingsForColumn.indicator;
     // Uncaught (in promise) TypeError: Cannot read property 'indicator' of undefined
     // at ColumnSorting.onAfterGetColHeader (handsontable.js?0977:42068)
-    // https://codepen.io/anon/pen/KGBVvV
 
     // todo: refactor with DataDecorator?
     const isDark: boolean = true;
@@ -122,8 +123,9 @@ export default class DataTable extends React.Component<Props> {
           allowEmpty
           allowInsertColumn={false}
           allowInsertRow={false}
-          // columnSorting={this.getColumnSorting(data.meta.columns)}
+          columnSorting={this.getColumnSorting(data.meta.columns)}
           contextMenu={this.fetchContextMenu()}
+          sortIndicator
           manualColumnMove
           manualColumnResize
           manualColumnFreeze

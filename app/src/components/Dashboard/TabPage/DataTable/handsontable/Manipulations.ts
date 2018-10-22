@@ -135,9 +135,22 @@ export default class HotTableManipulations {
       {
         columns,
       },
-      true
+      false
     );
-    ht.render();
+  }
+
+  private static MinimizeCols(ht: Handsontable) {
+    const { columns } = ht.getSettings();
+    const selection = HotTableManipulations.getSelectedArea(ht, true);
+    for (let col = selection.fromCol; col <= selection.toCol; col += 1) {
+      if (columns && columns[col]) columns[col].width = 10;
+    }
+    ht.updateSettings(
+      {
+        columns,
+      },
+      false
+    );
   }
 
   private static TransposeTable(ht: Handsontable) {
@@ -191,6 +204,9 @@ export default class HotTableManipulations {
     console.info(`applyTranspose ${_command}`);
     if (_command === 'Transpose') {
       HotTableManipulations.TransposeTable(ht);
+    }
+    if (_command === 'MinimizeCols') {
+      HotTableManipulations.MinimizeCols(ht);
     }
   }
 
