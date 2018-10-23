@@ -16,21 +16,4 @@ node_modules/
 .history/
 
 # Remove after prepare project
-app/src/api/
-app/src/components/Ace/
 app/src/components/Handsontable/
-app/src/components/Layout/
-app/src/components/Login/
-app/src/components/Service/
-app/src/components/Shared/
-app/src/constants/
-app/src/containers/
-app/src/helpers/
-app/src/libs/
-app/src/reducers/
-app/src/selectors/
-app/src/middlewares/
-app/src/store/
-app/src/stories/
-app/src/styles/
-app/src/App.jsx
