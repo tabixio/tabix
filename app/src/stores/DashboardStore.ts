@@ -1,6 +1,7 @@
 import { observable, action, runInAction, transaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
-import { Api, ServerStructure, localStorage } from 'services';
+import { withRequest } from '@vzh/mobx-stores';
+import { ServerStructure, localStorage } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
@@ -114,29 +115,24 @@ SELECT * from default.arrays_test_ints`,
     initialState && console.log(initialState);
   }
 
-  @action
+  @withRequest
   async loadData() {
-    const t = await this.request(async () => {
-      const api = await Api.connect(this.rootStore.appStore.connection.get());
-      return api.loadDatabaseStructure();
+    const structure = await this.api.loadDatabaseStructure();
+
+    transaction(() => {
+      runInAction(() => {
+        this.serverStructure = Option.of(structure);
+      });
+
+      // expand root node if expanded keys is empty
+      if (this.serverStructure.nonEmpty() && !this.uiStore.treeExpandedKeys.length) {
+        this.uiStore.updateTreeExpandedKeys(this.serverStructure.map(ss => [ss.id]).get());
+      }
+
+      if (!this.tabs.length) {
+        this.addNewTab();
+      }
     });
-
-    t.forEach(result =>
-      runInAction(() =>
-        transaction(() => {
-          this.serverStructure = Option.of(result);
-
-          // expand root node if expanded keys is empty
-          if (this.serverStructure.nonEmpty() && !this.uiStore.treeExpandedKeys.length) {
-            this.uiStore.updateTreeExpandedKeys(this.serverStructure.map(ss => [ss.id]).get());
-          }
-
-          if (!this.tabs.length) {
-            this.addNewTab();
-          }
-        })
-      )
-    );
   }
 
   @action.bound
@@ -178,37 +174,34 @@ SELECT * from default.arrays_test_ints`,
     this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
   }
 
-  @action.bound
-  saveEditedTab() {
+  @withRequest.bound
+  async saveEditedTab() {
     this.uiStore.editedTab.forEach(tab => {
-      this.request(async () => {
-        tab.submit();
-        localStorage.saveTab(tab.model);
-        this.uiStore.hideSaveModal();
-      });
+      tab.submit();
+      localStorage.saveTab(tab.model);
+      this.uiStore.hideSaveModal();
     });
   }
 
   execQueries(queries: Query[]) {
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
+    if (!queries.length) return;
 
     const extendSettings = {
       max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings
       max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
-    if (!queries.length) return;
     this.activeTab.forEach(async tab => {
-      const t = await this.request(async () => {
-        const api = await Api.connect(this.rootStore.appStore.connection.get());
+      const t = await this.request(async () =>
         // return api.fetch(tab.content, tab.currentDatabase.get());
-        return Promise.all(
+        Promise.all(
           queries.map(q => {
             q.extendSettings = extendSettings;
-            return api.fetch(q);
+            return this.api.fetch(q);
           })
-        );
-      });
+        )
+      );
 
       runInAction(() => {
         t.forEach(result => {

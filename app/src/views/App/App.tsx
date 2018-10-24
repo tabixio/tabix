@@ -8,6 +8,7 @@ import { typedInject } from '@vzh/mobx-stores';
 import 'assets/styles/global.css';
 import { AppStore, Stores } from 'stores';
 import { routePaths } from 'routes';
+import { Connection } from 'services';
 import DashboardView from 'views/DashboardView';
 import SignInView from 'views/SignInView';
 import SignOut from 'components/SignOut';
@@ -16,7 +17,9 @@ export interface InjectedProps {
   store: AppStore;
 }
 
-export interface Props extends InjectedProps {}
+export interface Props extends InjectedProps {
+  connection?: Connection;
+}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
@@ -32,14 +35,14 @@ class App extends React.Component<RoutedProps> {
   constructor(props: Readonly<RoutedProps>) {
     super(props);
 
-    const { store } = this.props;
+    const { store, connection } = this.props;
 
     this.loadingReaction = reaction(
       () => store.uiStore.loading,
       loading => App.toggleAppLoader(loading)
     );
 
-    // store.loadData();
+    connection && store.initApi(connection);
   }
 
   componentWillUnmount() {
@@ -51,13 +54,10 @@ class App extends React.Component<RoutedProps> {
   render() {
     const { store } = this.props;
 
-    /* if (
-      store.uiStore.loading ||
-      (store.isLoggedIn && !store.isProfileLoaded && !store.uiStore.hasError)
-    ) {
+    if (store.uiStore.loading) {
       // Show loader in html until app data will be loaded.
       return null;
-    } */
+    }
 
     // if (store.uiStore.hasError) {
     //   return <AppError error={store.uiStore.notifications[0].text} />;
@@ -82,7 +82,6 @@ class App extends React.Component<RoutedProps> {
           <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
 
           <Redirect to={routePaths.home.path} />
-          {/* <Route component={NotFoundView} /> */}
         </Switch>
       </AuthorizationProvider>
     );
