@@ -1,49 +1,24 @@
 import { History } from 'history';
 import { computed, observable, action } from 'mobx';
 import { None, Option } from 'funfix-core';
-import { Omit } from 'typelevel-ts';
-import { UIStore, SerializableModel, JSONModel, JSONObjectModel } from '@vzh/mobx-stores';
-import { Connection, localStorage } from 'services';
+import { withRequest, UIStore, RequestableStore } from '@vzh/mobx-stores';
+import { Connection, localStorage, Api } from 'services';
 import { routePaths } from 'routes';
-import ApiRequestableStore from './ApiRequestableStore';
-import RootStore from './RootStore';
+import { RootStore } from 'stores';
 
-export type AppStoreModel = Omit<AppStore, 'uiStore' | 'isLoggedIn'>;
-
-export default class AppStore extends ApiRequestableStore
-  implements SerializableModel<AppStoreModel> {
-  jsonModel: AppStoreModel = this;
-
-  constructor(
-    rootStore: RootStore,
-    uiStore: UIStore<RootStore>,
-    initialState?: JSONObjectModel<AppStoreModel>
-  ) {
-    super(rootStore, uiStore);
-    if (initialState) {
-      this.connection = Option.of(initialState.connection);
-    }
-  }
-
+export default class AppStore extends RequestableStore<RootStore, UIStore<RootStore>> {
   @observable
-  connection: Option<Connection> = None;
+  api: Option<Api> = None;
 
   @computed
   get isLoggedIn(): boolean {
-    return this.connection.nonEmpty();
+    return this.api.nonEmpty();
   }
 
   isAuthorized = () => this.isLoggedIn;
 
-  @action
-  updateConnection(connection: Option<Connection>) {
-    if (this.connection.equals(connection)) return;
-    this.clearAuth();
-    this.connection = connection;
-    connection.forEach(this.apply);
-  }
-
-  private apply(connection: Connection) {
+  private apply(api: Api) {
+    const { connection } = api.provider;
     localStorage.saveLastActiveConnection(connection);
     const connections = localStorage.getConnections();
     if (!connections.find(c => c.connectionName === connection.connectionName)) {
@@ -52,18 +27,28 @@ export default class AppStore extends ApiRequestableStore
   }
 
   private clearAuth() {
-    this.connection = None;
+    this.api = None;
     localStorage.saveLastActiveConnection(undefined);
   }
 
-  logout(history: History) {
-    this.request(async () => this.updateConnection(None)).then(r =>
-      r.forEach(() => history.replace(routePaths.home.path))
-    );
+  @action
+  updateApi(api: Option<Api>) {
+    if (this.api.equals(api)) return;
+    this.clearAuth();
+    this.api = api;
+    api.forEach(this.apply);
   }
 
-  toJSON(): JSONModel<AppStoreModel> {
-    return { connection: this.connection.orUndefined() };
+  @withRequest
+  async logout(history: History) {
+    this.updateApi(None);
+    history.replace(routePaths.home.path);
+  }
+
+  @withRequest
+  async initApi(connection: Connection) {
+    const api = await Api.connect(connection);
+    this.api = Option.of(api);
   }
 
   disposeStores() {
