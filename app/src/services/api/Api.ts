@@ -7,41 +7,21 @@ import { Query } from './Query';
 
 export default class Api {
   static async connect(connection: Connection): Promise<Api> {
-    const api = new Api(connection);
-    await api.init();
-    return api;
-  }
-
-  readonly provider: CoreProvider<Connection>;
-
-  private version?: string;
-
-  private constructor(connection: Connection) {
-    this.provider = isDirectConnection(connection)
+    const provider = isDirectConnection(connection)
       ? new DirectClickHouseProvider(connection)
       : new TabixServerProvider(connection);
+
+    const version = await provider.fastGetVersion();
+    if (!version) throw new Error('Can`t fetch version server');
+    console.log(`Connection - OK, version: ${version}`);
+
+    return new Api(provider, version);
   }
 
-  getVersion() {
-    return this.version;
-  }
-
-  // refactor
-  private async init() {
-    this.version = await this.provider.fastGetVersion();
-    if (!this.version) {
-      throw new Error('Can`t fetch version server');
-    }
-    console.log(`Connection - OK, version: ${this.version}`);
-  }
-
-  // async fastGetVersion() {
-  //   return this.provider.fastGetVersion();
-  // }
-  //
-  // async query(sql: string, withDatabase?: string, format?: string, extendSettings?: any) {
-  //   return this.provider.queryString(sql, withDatabase, format, extendSettings);
-  // }
+  private constructor(
+    public readonly provider: CoreProvider<Connection>,
+    public readonly version: string
+  ) {}
 
   async fetch(query: Query) {
     const data = await this.provider.query(query);
@@ -49,7 +29,5 @@ export default class Api {
     return new DataDecorator(data, query);
   }
 
-  async loadDatabaseStructure() {
-    return this.provider.getDatabaseStructure();
-  }
+  loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
 }

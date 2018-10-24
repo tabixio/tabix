@@ -19,9 +19,9 @@ export default class RootStore extends DisposableStore {
     super();
     console.log('initialState', initialState);
 
-    this.appStore = new AppStore(this, new UIStore(this), initialState.appStore);
+    this.appStore = new AppStore(this, new UIStore(this));
 
-    this.signInStore = new SignInStore(this, new UIStore(this), initialState.signInStore);
+    this.signInStore = new SignInStore(this, new UIStore(this));
 
     // this.dashboardStore = new DashboardStore(this, new UIStore(this), initialState.dashboardStore);
     this.dashboardStore = new DashboardStore(
