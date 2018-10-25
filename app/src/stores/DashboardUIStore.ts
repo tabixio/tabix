@@ -20,14 +20,14 @@ export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
   isFiltering: boolean = false;
 
-  protected changeTabReaction?: IReactionDisposer;
+  protected changeActiveTabReaction?: IReactionDisposer;
 
   constructor(rootStore: RootStore) {
     super(rootStore);
 
     when(action(() => rootStore.dashboardStore !== undefined), () => {
       // reset tab view state
-      this.changeTabReaction = reaction(
+      this.changeActiveTabReaction = reaction(
         () => rootStore.dashboardStore.activeTab,
         tab => {
           this.resetTabViewState();

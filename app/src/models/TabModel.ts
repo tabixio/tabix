@@ -1,5 +1,11 @@
 import { observable } from 'mobx';
-import { StoreModel } from '@vzh/mobx-stores';
+import {
+  StoreModel,
+  SerializableModel,
+  JSONObjectModel,
+  serialize,
+  JSONModel,
+} from '@vzh/mobx-stores';
 import { Option, None } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
@@ -15,20 +21,22 @@ export interface Tab {
   data: DataDecorator[];
 }
 
-export default class TabModel extends StoreModel<Tab> implements Tab {
+export interface TabJsonModel extends Omit<Tab, 'codeEditor' | 'data'> {}
+
+export default class TabModel extends StoreModel<Tab>
+  implements Tab, SerializableModel<TabJsonModel> {
   static from({
     id = uuid(),
     title,
     content = '',
     currentDatabase,
-    codeEditor = None,
-  }: Omit<Tab, 'id' | 'content' | 'codeEditor' | 'data'> & Partial<Tab>): TabModel {
+  }: Partial<JSONModel<TabJsonModel>> & Pick<JSONModel<TabJsonModel>, 'title'>): TabModel {
     return new TabModel({
       id,
       title,
       content,
-      currentDatabase,
-      codeEditor,
+      currentDatabase: Option.of(currentDatabase),
+      codeEditor: None,
       data: [],
     });
   }
@@ -58,5 +66,10 @@ export default class TabModel extends StoreModel<Tab> implements Tab {
     this.currentDatabase = currentDatabase;
     this.data = data;
     this.codeEditor = codeEditor;
+  }
+
+  toJSON(): JSONObjectModel<TabJsonModel> {
+    const { codeEditor, data, ...jsonModel } = this as any;
+    return serialize(jsonModel);
   }
 }
