@@ -23,11 +23,6 @@ export default class RootStore extends DisposableStore {
 
     this.signInStore = new SignInStore(this, new UIStore(this));
 
-    // this.dashboardStore = new DashboardStore(this, new UIStore(this), initialState.dashboardStore);
-    this.dashboardStore = new DashboardStore(
-      this,
-      new DashboardUIStore(this),
-      initialState.dashboardStore
-    );
+    this.dashboardStore = new DashboardStore(this, new DashboardUIStore(this));
   }
 }

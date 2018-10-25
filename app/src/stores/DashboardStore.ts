@@ -1,13 +1,12 @@
-import { observable, action, runInAction, transaction } from 'mobx';
+import { observable, action, runInAction, transaction, IReactionDisposer, reaction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
-import { ServerStructure, localStorage } from 'services';
+import { ServerStructure, localStorage, Query } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
 import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
-import { Query } from '../services/api/Query';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
@@ -17,7 +16,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   filteredItems: FilterResult = [];
 
   @observable
-  tabs: TabModel[] = [
+  tabs: ReadonlyArray<TabModel> = [
     TabModel.from({
       title: 'SQL 1',
       content: `
@@ -50,7 +49,7 @@ select number,sin(number) as sin,cos(number) as cos FROM  numbers(123) ORDER BY 
 SELECT * FROM system.tables
 
 `,
-      currentDatabase: Some('default'),
+      currentDatabase: 'default',
     }),
     TabModel.from({
       title: 'SQL 2',
@@ -103,16 +102,41 @@ SELECT arrayFilter(x -> x LIKE '%World%', ['Hello', 'abc World']) AS res
 SELECT 3
 ;; 
 SELECT * from default.arrays_test_ints`,
-      currentDatabase: Some('default'),
+      currentDatabase: 'default',
     }),
   ];
 
   @observable
-  activeTab: Option<TabModel> = Option.of(this.tabs.length ? this.tabs[0] : undefined);
+  activeTab: Option<TabModel> = None;
 
-  constructor(rootStore: RootStore, uiStore: DashboardUIStore, initialState: any) {
+  protected changeTabsReaction?: IReactionDisposer;
+
+  protected changeActiveTabReaction?: IReactionDisposer;
+
+  constructor(rootStore: RootStore, uiStore: DashboardUIStore) {
     super(rootStore, uiStore);
-    initialState && console.log(initialState);
+
+    this.startReactions();
+  }
+
+  private startReactions() {
+    window.setInterval(() => {
+      localStorage.saveTabs(this.tabs);
+    }, 30000);
+
+    this.changeTabsReaction = reaction(
+      () => this.tabs,
+      tabs => {
+        localStorage.saveTabs(tabs);
+      }
+    );
+
+    this.changeActiveTabReaction = reaction(
+      () => this.activeTab,
+      tab => {
+        localStorage.saveActiveTabId(tab.map(t => t.id).orUndefined());
+      }
+    );
   }
 
   @withRequest
@@ -122,6 +146,17 @@ SELECT * from default.arrays_test_ints`,
     transaction(() => {
       runInAction(() => {
         this.serverStructure = Option.of(structure);
+
+        // load saved tabs
+        localStorage.getTabs().forEach(tabs => {
+          this.tabs = tabs.map(TabModel.from);
+        });
+
+        // load saved active tab id
+        this.activeTab = localStorage
+          .getActiveTabId()
+          .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
+          .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
       });
 
       // expand root node if expanded keys is empty
@@ -162,7 +197,8 @@ SELECT * from default.arrays_test_ints`,
       title: this.getNewTabName(),
       currentDatabase: this.activeTab
         .flatMap(t => t.currentDatabase)
-        .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name)),
+        .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name))
+        .orUndefined(),
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);
