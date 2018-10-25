@@ -93,11 +93,13 @@ export function saveTabs(tabs: ReadonlyArray<Tab>) {
 export function getTabs(): Try<JSONModel<ReadonlyArray<TabJsonModel>>> {
   return Try.of(() => {
     const ids: string[] = JSON.parse(window.localStorage.getItem(`${tabsKey}.ids`) || '');
-    const tabs: JSONModel<TabJsonModel[]> = ids.map(id => {
-      // refactor: maybe error if id is not exist.
-      const value = window.localStorage.getItem(`${tabsKey}.${id}`);
-      return value ? JSON.parse(value) : undefined;
-    });
+    const tabs = ids.reduce(
+      (acc, id) => {
+        const value = window.localStorage.getItem(`${tabsKey}.${id}`);
+        return value ? acc.concat(JSON.parse(value)) : acc;
+      },
+      [] as JSONModel<TabJsonModel[]>
+    );
     return tabs;
   });
 }
