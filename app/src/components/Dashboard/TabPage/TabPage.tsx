@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Modal, Input, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { Option } from 'funfix-core';
 import { Props as SplitPaneProps } from 'react-split-pane';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
@@ -10,6 +10,7 @@ import { DashboardStore } from 'stores';
 import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
+import SaveModal from './SaveModal';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import css from './TabPage.css';
@@ -42,6 +43,7 @@ export default class TabPage extends React.Component<Props> {
     switch (action) {
       case ActionType.Save: {
         const { store } = this.props;
+
         store.uiStore.showSaveModal();
         break;
       }
@@ -95,20 +97,13 @@ export default class TabPage extends React.Component<Props> {
         {store.uiStore.editedTab
           .filter(t => t.model === model)
           .map(editedTab => (
-            <Modal
-              visible
-              title="Save"
-              onOk={store.saveEditedTab}
+            <SaveModal
+              fieldName="title"
+              fieldValue={editedTab.title}
+              onFieldChange={editedTab.changeField}
+              onSave={store.saveEditedTab}
               onCancel={store.uiStore.hideSaveModal}
-            >
-              <Input
-                placeholder="New name"
-                autoFocus
-                name="title"
-                value={editedTab.title}
-                onChange={editedTab.changeField}
-              />
-            </Modal>
+            />
           ))
           .orUndefined()}
       </React.Fragment>

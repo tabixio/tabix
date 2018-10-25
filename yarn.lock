@@ -809,10 +809,10 @@
   resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.13.6.tgz#128d1685a7c34d31ed17010fc87d6a12c1de6976"
   integrity sha512-5Th3OsZ4gTRdr9Mho83BQ23cex4sRhOR4XTG+m+cJc0FhtUBK9Vn62hBJ+pnQYnSxoPOsKoAPOx6FcphxBC8ng==
 
-"@vzh/mobx-stores@^0.27.0":
-  version "0.27.0"
-  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.27.0.tgz#ba9b7cf65b1a4b24ea0bc4fca717d55148588b60"
-  integrity sha512-SitSlA3AbidsgDlDe414cdDR0F51/bqd5vGkFJPSspxcPs7GsMdM9d61dP/rR91KG7KeEU7IjCrs6GWiLBVmww==
+"@vzh/mobx-stores@^0.27.1":
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.27.1.tgz#a04e649f4f5d73874d8d0279b7e842984ace2cea"
+  integrity sha512-vr5Yof2u+yD/2cchRRk5IFM9sAmkiYvM0NYQgEPkMUlTKc7G5s6h4r/GC1nYvRJSVO5Cj+jNLtJxDLDMWwVkgw==
   dependencies:
     typelevel-ts "^0.3.2"
 
@@ -3720,10 +3720,10 @@ forever-agent@~0.6.1:
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
-fork-ts-checker-webpack-plugin@^0.4.10:
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.4.10.tgz#e96f87ea599af4501c1a69f44ecfb3163bbf30b9"
-  integrity sha512-8llkIUAM9o64ou6bhcCzKoyPd78GKSIuErmiyNX5tE7+RhdW8meCkVdXPP67diKYwvp7KjR1t7UvZckAHzN3pg==
+fork-ts-checker-webpack-plugin@^0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.4.11.tgz#cd36fd4306a74abce5c83f4f5d68164bf0ebe57f"
+  integrity sha512-ddbXTSQn8TOS0LWwOKR7tArUPHkoPkOuePu8AVodnOmmlgdwbHX8Vaae7OVnn1+K/L1X0i/wzROUrZ6GhaI+QA==
   dependencies:
     babel-code-frame "^6.22.0"
     chalk "^2.4.1"
@@ -7854,10 +7854,10 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-monaco-editor@^0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.19.0.tgz#e3b720056ed2ee34a0ae430bfd780fbf944712f8"
-  integrity sha512-RfDpp6gJTQeoh2xLe57q/kPVhS+VBkfJWw7K/tRTM7WRyFkckaVKW8MS4G413nZGOxK/0GvoY8dtdrG8CIUfgw==
+react-monaco-editor@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/react-monaco-editor/-/react-monaco-editor-0.20.0.tgz#ce31dcc326c5898c7c659285d499cdd042d97775"
+  integrity sha512-tOngNHhOgP4o4bE2CYIA1LrAWUXA04bJqy5CMmCmMptBp4YjANSvQilz0UySad+M858G6XhI18LzdksE77ZJ2w==
   dependencies:
     "@types/react" "*"
     monaco-editor "^0.14.2"
