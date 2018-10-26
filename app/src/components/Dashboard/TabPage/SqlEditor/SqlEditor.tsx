@@ -113,6 +113,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   componentWillUnmount() {
     this.setEditorRef(undefined);
+    if (this.props && this.props.serverStructure) {
+      this.updateGlobalEditorStructure(this.props.serverStructure);
+    }
   }
 
   componentWillReceiveProps(nextProps: SqlEditorProps) {
@@ -150,12 +153,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       });
       console.log('monaco - register ClickHouseLanguage');
     }
+    if (this.props.serverStructure) {
+      this.updateGlobalEditorStructure(this.props.serverStructure);
+    }
   };
 
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
     if (!ServerStructure) return;
-
-    console.info('call.updateEditorStructure');
     const languageSettings: any = languageDef;
     languageSettings.builtinFunctions = [];
     // languageSettings.keywords
@@ -234,6 +238,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
     // Запоминаем путь к IDispose() интерфейсу
     // update MonarchTokens
+
     window.monacoGlobalProvider.tokensProvider = globalMonaco.languages.setMonarchTokensProvider(
       'clickhouse',
       languageSettings as any
@@ -278,7 +283,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       keybindingContext: undefined,
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,
-      run(_editor) {
+      run(editor) {
         // self.parseEditorText('all', editor, monaco);
         // self.onAction(ActionType.RunAll);
         const queries = self._parseEditorText('all', editor);
