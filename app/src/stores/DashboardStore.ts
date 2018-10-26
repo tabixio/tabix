@@ -63,9 +63,14 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
         this.serverStructure = Option.of(structure);
 
         // load saved tabs
-        localStorage.getTabs().forEach(tabs => {
-          this.tabs = tabs.map(TabModel.from);
-        });
+        localStorage.getTabs().fold(
+          ex => {
+            console.error(ex);
+          },
+          tabs => {
+            this.tabs = tabs.map(TabModel.from);
+          }
+        );
 
         // todo: remove after testing
         if (!this.tabs.length) this.tabs = tabModels;
