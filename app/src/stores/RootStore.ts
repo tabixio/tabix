@@ -1,5 +1,6 @@
-import { observable } from 'mobx';
-import { UIStore, JSONModel, DisposableStore } from '@vzh/mobx-stores';
+import { observable, action } from 'mobx';
+import { UIStore, DisposableStore } from '@vzh/mobx-stores';
+import { Connection } from 'services';
 import AppStore from './AppStore';
 import SignInStore from './SignInStore';
 import DashboardStore from './DashboardStore';
@@ -7,22 +8,30 @@ import DashboardUIStore from './DashboardUIStore';
 
 export default class RootStore extends DisposableStore {
   @observable
-  readonly appStore: AppStore;
+  appStore: AppStore;
 
   @observable
-  readonly signInStore: SignInStore;
+  signInStore: SignInStore;
 
   @observable
-  readonly dashboardStore: DashboardStore;
+  dashboardStore: DashboardStore;
 
-  constructor(initialState: Partial<JSONModel<RootStore>> = {}) {
+  constructor() {
     super();
-    console.log('initialState', initialState);
-
     this.appStore = new AppStore(this, new UIStore(this));
 
     this.signInStore = new SignInStore(this, new UIStore(this));
 
     this.dashboardStore = new DashboardStore(this, new DashboardUIStore(this));
+  }
+
+  // refactor: temporary for HMR
+  @action
+  updateChildStores(rootStore: RootStore, connection?: Connection) {
+    this.dispose();
+    this.appStore = rootStore.appStore;
+    this.signInStore = rootStore.signInStore;
+    this.dashboardStore = rootStore.dashboardStore;
+    connection && this.appStore.initApi(connection);
   }
 }

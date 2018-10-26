@@ -21,16 +21,16 @@ export interface Tab {
   data: DataDecorator[];
 }
 
-export interface TabJsonModel extends Omit<Tab, 'codeEditor' | 'data'> {}
+export interface TabJsonEntity extends Omit<Tab, 'codeEditor' | 'data'> {}
 
 export default class TabModel extends StoreModel<Tab>
-  implements Tab, SerializableModel<TabJsonModel> {
+  implements Tab, SerializableModel<TabJsonEntity> {
   static from({
     id = uuid(),
     title,
     content = '',
     currentDatabase,
-  }: Partial<JSONModel<TabJsonModel>> & Pick<JSONModel<TabJsonModel>, 'title'>): TabModel {
+  }: Partial<JSONModel<TabJsonEntity>> & Pick<JSONModel<TabJsonEntity>, 'title'>): TabModel {
     return new TabModel({
       id,
       title,
@@ -68,7 +68,7 @@ export default class TabModel extends StoreModel<Tab>
     this.codeEditor = codeEditor;
   }
 
-  toJSON(): JSONObjectModel<TabJsonModel> {
+  toJSON(): JSONObjectModel<TabJsonEntity> {
     const { codeEditor, data, ...jsonModel } = this as any;
     return serialize(jsonModel);
   }

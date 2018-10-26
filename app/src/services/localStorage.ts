@@ -1,5 +1,5 @@
 import { Option, None, Try } from 'funfix-core';
-import { Tab, TabJsonModel } from 'models';
+import { Tab, TabJsonEntity } from 'models';
 import { JSONModel } from '@vzh/mobx-stores';
 import Connection from './Connection';
 
@@ -7,6 +7,8 @@ const storageKey = 'tabix';
 const connectionListKey = `${storageKey}.connection.list`;
 const lastActiveKey = `${storageKey}.connection.lastActive`;
 const tabsKey = `${storageKey}.tabs`;
+const tabsActiveKey = `${tabsKey}.active`;
+const tabsIdsKey = `${tabsKey}.ids`;
 
 export function getConnections(): Connection[] {
   try {
@@ -62,8 +64,8 @@ export function saveTab(tab: Tab) {
 
 export function saveActiveTabId(id?: string) {
   try {
-    if (!id) window.localStorage.removeItem(`${tabsKey}.active`);
-    else window.localStorage.setItem(`${tabsKey}.active`, JSON.stringify(id));
+    if (!id) window.localStorage.removeItem(tabsActiveKey);
+    else window.localStorage.setItem(tabsActiveKey, JSON.stringify(id));
   } catch (e) {
     console.error(e);
   }
@@ -71,7 +73,7 @@ export function saveActiveTabId(id?: string) {
 
 export function getActiveTabId(): Option<string> {
   try {
-    const value = window.localStorage.getItem(`${tabsKey}.active`);
+    const value = window.localStorage.getItem(tabsActiveKey);
     return Option.of(value ? JSON.parse(value) : undefined);
   } catch (e) {
     console.error(e);
@@ -79,26 +81,36 @@ export function getActiveTabId(): Option<string> {
   }
 }
 
+function removeAllTabs() {
+  for (let i = 0; i < window.localStorage.length; i += 1) {
+    const key = window.localStorage.key(i) || '';
+    if (key.startsWith(tabsKey) && key !== tabsActiveKey) {
+      window.localStorage.removeItem(key);
+    }
+  }
+}
+
 export function saveTabs(tabs: ReadonlyArray<Tab>) {
   try {
+    removeAllTabs();
     tabs.forEach(saveTab);
     const ids = tabs.map(t => t.id);
-    window.localStorage.setItem(`${tabsKey}.ids`, JSON.stringify(ids));
+    window.localStorage.setItem(tabsIdsKey, JSON.stringify(ids));
     console.log('Tabs saved at', new Date().toISOString());
   } catch (e) {
     console.error(e);
   }
 }
 
-export function getTabs(): Try<JSONModel<ReadonlyArray<TabJsonModel>>> {
+export function getTabs(): Try<JSONModel<ReadonlyArray<TabJsonEntity>>> {
   return Try.of(() => {
-    const ids: string[] = JSON.parse(window.localStorage.getItem(`${tabsKey}.ids`) || '');
+    const ids: string[] = JSON.parse(window.localStorage.getItem(tabsIdsKey) || '');
     const tabs = ids.reduce(
       (acc, id) => {
         const value = window.localStorage.getItem(`${tabsKey}.${id}`);
         return value ? acc.concat(JSON.parse(value)) : acc;
       },
-      [] as JSONModel<TabJsonModel[]>
+      [] as JSONModel<TabJsonEntity[]>
     );
     return tabs;
   });

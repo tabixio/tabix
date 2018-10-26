@@ -31,10 +31,18 @@ const connection = localStorage.getLastActiveConnection();
 render(appRootElement, App, { connection: connection.orUndefined() }, rootStore);
 
 if (module.hot) {
-  module.hot.accept(['views/App'], () => {
+  module.hot.accept('views/App', () => {
     import('views/App').then(({ default: NextApp }) =>
       render(appRootElement, NextApp, { connection: connection.orUndefined() }, rootStore)
     );
+  });
+
+  module.hot.accept('stores', () => {
+    import('stores').then(({ initStores: nextInitStores }) => {
+      const nextStore = nextInitStores();
+      rootStore.updateChildStores(nextStore, connection.orUndefined());
+      render(appRootElement, App, { connection: connection.orUndefined() }, rootStore);
+    });
   });
 
   module.hot.accept(err => {
