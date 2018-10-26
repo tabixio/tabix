@@ -6,7 +6,6 @@ import HotTableManipulations from './Manipulations';
 export default class HotTableHelper {
   public static getFormatForColumn(cell: ColumnMetadata) {
     let c: any = {};
-
     c = {
       type: 'text',
       width: 100,
@@ -24,7 +23,7 @@ export default class HotTableHelper {
     // renderer: HotTableHelper.hotRendererCell,
 
     if (cell.useHumanSort) {
-      c.sortFunction = function(sortOrder: any) {
+      c.sortFunction = function sort(sortOrder: any) {
         // Handsontable's object iteration helper
         const unitsRatios = {
           TiB: 1024 * 1024 * 1024 * 1024,
@@ -33,7 +32,7 @@ export default class HotTableHelper {
           KiB: 1024,
           B: 1,
         };
-        const parseUnit = function(value: any, unit: string, ratio: number) {
+        const parseUnit = function parseUnit(value: any, unit: string, ratio: number) {
           let v = value;
           if (typeof v === 'undefined') return value;
           if (isNaN(v) && v.indexOf(` ${unit}`) > -1) {
@@ -42,10 +41,10 @@ export default class HotTableHelper {
           return v;
         };
 
-        return function(a: any, b: any) {
+        return function s(a: any, b: any) {
           let newA = a[1];
           let newB = b[1];
-          const e = function(val: any, prop: any) {
+          const e = function sa(val: any, prop: any) {
             newA = parseUnit(newA, prop, val);
             newB = parseUnit(newB, prop, val);
           };
@@ -204,7 +203,7 @@ export default class HotTableHelper {
     return true;
   }
 
-  public static manipulations(_ht: Handsontable, keyCall: string, _options: any) {
-    HotTableManipulations.call(_ht, keyCall, _options);
+  public static manipulations(_ht: Handsontable, keyCall: string, _options: any): any {
+    return HotTableManipulations.call(_ht, keyCall, _options);
   }
 }

@@ -11,23 +11,24 @@ export interface Selection {
 }
 
 export default class HotTableManipulations {
-  public static call(_ht: Handsontable, keyCall: string, _options: any) {
+  public static call(_ht: Handsontable, keyCall: string, _options: any): any {
     const prefix = 'apply';
     const all = Object.getOwnPropertyNames(HotTableManipulations).filter(
       prop => typeof HotTableManipulations[prop] === 'function'
     );
 
     const [func, params] = keyCall.split(':');
-    if (!func) return;
-    if (!params) return;
+    if (!func) return false;
+    if (!params) return false;
 
     // capitalizeFirstLetter
     const callFunction = `${prefix}${func.charAt(0).toUpperCase()}${func.slice(1)}`;
 
     console.log('Call', callFunction, params);
     if (all.indexOf(callFunction) !== -1) {
-      HotTableManipulations[callFunction](_ht, params, _options);
+      return HotTableManipulations[callFunction](_ht, params, _options);
     }
+    return false;
   }
 
   public static getSelectedArea(ht: Handsontable, selectFull: boolean = false): Selection {
@@ -194,9 +195,81 @@ export default class HotTableManipulations {
     );
   }
 
+  private static textSQLCreateTable(ht: Handsontable): string {
+    const s = HotTableManipulations.getSelectedArea(ht);
+    const keys = [];
+    const { columns } = ht.getSettings();
+    for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
+      if (columns) keys.push(`\t ${ht.colToProp(col)} ${columns[col].typeOriginal}`);
+    }
+    return `\nCREATE TABLE x (\n ${keys.join(',\n')}\n)\nENGINE = TinyLog\n;;\n`;
+  }
+
+  private static textMarkdown(ht: Handsontable, _command: string): string {
+    const s = HotTableManipulations.getSelectedArea(ht);
+    const isGit: boolean = _command === 'GitHubMarkdown';
+    // Markdown
+    let outText = '';
+    let cols = [];
+    const colsGit = [];
+    for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
+      cols.push(ht.colToProp(col));
+      colsGit.push('-------------');
+    }
+    if (isGit) outText = ` ${cols.join(' | ')} \n ${colsGit.join(' | ')}  \n`;
+    else outText = `| ${cols.join(' | ')} |\n`;
+    cols = [];
+    for (let row: number = s.fromRow; row <= s.toRow; row += 1) {
+      for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
+        cols.push(ht.getDataAtCell(row, col));
+      }
+
+      if (isGit) outText = `${outText} ${cols.join(' | ')} \n`;
+      else outText = `${outText}| ${cols.join(' | ')} |\n`;
+      cols = [];
+    }
+    return outText;
+  }
+
   // @ts-ignore: TS6133: 'applyCopyTo' is declared but its value is never read.
-  private static applyCopyTo(ht: Handsontable, _command: string): void {
-    console.info(`applyCopyTo ${_command}`);
+  private static applyInsertTo(ht: Handsontable, _command: string): string {
+    // SQLWhere,ColumnsNames
+    const s = HotTableManipulations.getSelectedArea(ht);
+    const { columns } = ht.getSettings();
+    if (!columns) return '';
+    const outText = [];
+    const usedCols = [];
+    for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
+      const rr = [];
+      for (let row: number = s.fromRow; row <= s.toRow; row += 1) {
+        rr.push(ht.getDataAtCell(row, col));
+      }
+      const unique = rr.filter((v, i, a) => a.indexOf(v) === i);
+      const collName = ht.colToProp(col);
+      usedCols.push(collName);
+      // get Type of column
+      const typeColumn = columns[col].type.toLowerCase();
+      if (typeColumn.includes('numeric')) {
+        // if is number columns
+        outText.push(`${collName} IN ( ${unique.join(' , ')} ) `);
+      } else {
+        // other cols as text
+        outText.push(`${collName} IN ( "${unique.join('" , "')}" ) `);
+      }
+    }
+    if (_command === 'ColumnsNames') {
+      return `${usedCols.join(' , ')}\n`;
+    }
+    return `\n${outText.join('\n\tAND\n')}\n`;
+  }
+
+  // @ts-ignore: TS6133: 'applyCopyTo' is declared but its value is never read.
+  private static applyCopyTo(ht: Handsontable, _command: string): string {
+    // RedmineMarkdown,GitMarkdown,SQLCreate
+    if (_command === 'SQLCreate') return HotTableManipulations.textSQLCreateTable(ht);
+    if (_command === 'RedmineMarkdown' || _command === 'GitHubMarkdown')
+      return HotTableManipulations.textMarkdown(ht, _command);
+    return '';
   }
 
   // @ts-ignore: TS6133: 'applyTransform' is declared but its value is never read.

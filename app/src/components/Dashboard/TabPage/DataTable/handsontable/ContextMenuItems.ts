@@ -1,146 +1,133 @@
-export const contextMenuItems = {
+const contextMenuItems = {
   columnFormat: {
     name: 'Column format',
     submenu: {
-      items: [
-        {
-          name: 'Reset',
-          key: 'columnFormat:reset',
-        },
-        {
-          name: 'Money',
-          key: 'columnFormat:money',
-          filter: 'numeric',
-        },
-        {
-          name: 'Bytes',
-          key: 'columnFormat:bytes',
-          filter: 'numeric',
-        },
-        {
-          name: 'Human',
-          key: 'columnFormat:human',
-          filter: 'numeric',
-        },
-        {
-          name: 'Percentages',
-          key: 'columnFormat:percentages',
-          filter: 'numeric',
-        },
-        // {
-        //   name: 'Time',
-        // },
-        // {
-        //   name: 'Date',
-        // },
-        {
-          name: 'Float [3]',
-          key: 'columnFormat:float3',
-          filter: 'numeric',
-        },
-        {
-          name: 'Float [7]',
-          key: 'columnFormat:float7',
-          filter: 'numeric',
-        },
-      ],
+      reset: {
+        name: 'Reset',
+        key: 'reset',
+      },
+      money: {
+        name: 'Money',
+        filter: 'numeric',
+      },
+      bytes: {
+        name: 'Bytes',
+        filter: 'numeric',
+      },
+      human: {
+        name: 'Human',
+        filter: 'numeric',
+      },
+      percentages: {
+        name: 'Percentages',
+        filter: 'numeric',
+      },
+      timeonly: {
+        name: 'Time',
+        filter: 'time',
+      },
+      dateonly: {
+        name: 'Date',
+        filter: 'date',
+      },
+      float3: {
+        name: 'Float [3]',
+        filter: 'numeric',
+      },
+      float7: {
+        name: 'Float [7]',
+        filter: 'numeric',
+      },
     },
   },
   styleCell: {
     name: 'Style cell',
     submenu: {
-      items: [
-        {
-          name: 'Reset',
-          key: 'styleCell:Reset',
-        },
-        {
-          name: 'Bold',
-          key: 'styleCell:Bold',
-        },
-        {
-          name: 'Red color',
-          key: 'styleCell:Red',
-        },
-        {
-          name: 'Green color',
-          key: 'styleCell:Green',
-        },
-        {
-          name: 'Yellow color',
-          key: 'styleCell:Yellow',
-        },
-        {
-          name: 'Orange color',
-          key: 'styleCell:Orange',
-        },
-        // {
-        //   name: 'Random color',
-        //   key: 'styleCell:Random',
-        // },
-      ],
+      Reset: {
+        name: 'Reset',
+      },
+      Bold: {
+        name: 'Bold',
+      },
+      Red: {
+        name: 'Red color',
+      },
+      Green: {
+        name: 'Green color',
+      },
+      Yellow: {
+        name: 'Yellow color',
+      },
+      Orange: {
+        name: 'Orange color',
+      },
     },
   },
   highlightColumn: {
     name: 'Highlight column',
     submenu: {
-      items: [
-        {
-          name: 'Heatmaps',
-          key: 'highlightColumn:heatmaps',
-          filter: 'numeric',
-        },
-        {
-          name: 'Negative & Positive',
-          key: 'highlightColumn:positive',
-          filter: 'numeric',
-        },
-      ],
+      heatmaps: {
+        name: 'Heatmaps',
+        filter: 'numeric',
+      },
+      positive: {
+        name: 'Negative & Positive',
+        filter: 'numeric',
+      },
     },
   },
   hsep1: '---------',
   copyTo: {
     name: 'To Clipboard',
     submenu: {
-      items: [
-        {
-          name: 'Redmine Markdown',
-          key: 'copyTo:RedmineMarkdown',
-        },
-        {
-          name: 'Github/Tg Markdown',
-          key: 'copyTo:GitMarkdown',
-        },
-        {
-          name: 'WHERE col1 IN (val,val),col2 IN ...',
-          key: 'copyTo:SQLWhere',
-        },
-        {
-          name: 'Create Table ...',
-          key: 'copyTo:SQLCreate',
-        },
-      ],
+      RedmineMarkdown: {
+        name: 'Redmine Markdown',
+        result: 'clipboard',
+      },
+      GitHubMarkdown: {
+        name: 'GitHub Markdown',
+        result: 'clipboard',
+      },
+      // GitMarkdown: {
+      //   name: 'Github/Tg Markdown',
+      //   result: 'clipboard',
+      // },
+      SQLCreate: {
+        name: 'Create Table ...',
+        result: 'clipboard',
+      },
+    },
+  },
+  insertTo: {
+    name: 'Insert SQL',
+    submenu: {
+      SQLWhere: {
+        name: 'WHERE col1 IN (val,val) AND col2 IN ...',
+        result: 'insert',
+      },
+      ColumnsNames: {
+        name: 'Columns names',
+        result: 'insert',
+      },
     },
   },
   hsep3: '---------',
   transform: {
     name: 'Transform',
     submenu: {
-      items: [
-        {
-          name: 'Transpose table',
-          key: 'transform:Transpose',
-        },
-        {
-          name: 'Minimize columns',
-          key: 'transform:MinimizeCols',
-        },
-      ],
+      Transpose: {
+        name: 'Transpose table',
+      },
+      MinimizeCols: {
+        name: 'Minimize columns',
+      },
     },
   },
   calculate: {
     name: 'Calc Avg & Sum & Median',
     key: 'CalcAvgSum',
+    filter: 'numeric',
+    result: 'show',
   },
   hsep4: '---------',
   copy: {},
@@ -151,7 +138,6 @@ export const contextMenuItems = {
   unfreeze_column: {},
   remove_col: {},
   mergeCells: {},
-
   alignment: {},
 
   // -------------------- column Show Hide --------------------------------------------------------------------
@@ -173,3 +159,4 @@ export const contextMenuItems = {
   // },
   //
 };
+export default contextMenuItems;

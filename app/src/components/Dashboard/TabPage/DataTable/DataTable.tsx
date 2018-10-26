@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { HotTable } from '@handsontable/react';
 import Handsontable, { contextMenu } from 'handsontable';
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
-import { contextMenuItems } from './handsontable/ContextMenuItems';
+import contextMenuItems from './handsontable/ContextMenuItems';
 import HotTableHelper from './handsontable/Helper';
 import 'handsontable/dist/handsontable.full.css';
 import './handsontable/dark.css';
@@ -59,47 +59,114 @@ export default class DataTable extends React.Component<Props> {
     return true;
   }
 
-  private callContextMenu(key: string, options: any) {
-    // Local call from Handsontable instance
-    // @ts-ignore: TS2322: Type 'this' is not assignable to type 'Handsontable'.
-    const ht: Handsontable = this;
-    HotTableHelper.manipulations(ht, key, options);
-    ht.render();
+  private pushToClipboardText(text: string) {
+    // @todo : Reweire to react code
 
-    /*
-    * Todo :
-    * - To Clipboard, function callback ?<DataTable>?
-    * - Transpose
-    * - CalcAvgSum
-    * -
-    *
-    * */
+    // const textarea = React.createElement(
+    //   'textarea',
+    //   { value: text, type: 'url', autoFocus: true },
+    //   'body'
+    // );
+
+    // const textarea: HTMLElement = document.createElement('textarea');
+    // if (textarea.style) {
+    //   textarea.style.width = 0;
+    //   textarea.style.height = 0;
+    //   textarea.style.border = 0;
+    //   textarea.style.position = 'absolute';
+    //   textarea.style.top = 0;
+    // }
+    // document.body.append(textarea);
+    // textarea.value = outText;
+    // textarea.focus();
+    // textarea.select();
+    // try {
+    //   const successful = document.execCommand('copy');
+    // } catch (err) {
+    //   console.log('Oops, unable to copy');
+    // }
+    // document.body.removeChild(textarea);
+    console.log(text);
+  }
+
+  private onCallContextMenu(_ht: Handsontable, item: any, key: string, options: any) {
+    // console.log('callContextMenu', _ht, item, key, options);
+    const result = HotTableHelper.manipulations(_ht, key, options);
+    _ht.render();
+    if (!result) return false;
+    if (item.result === 'insert') {
+      // to insert result to editor ( where cursor )
+      console.log('insert result:');
+      console.info(`%c${result}`, 'color: #bada55');
+    }
+    if (item.result === 'show') {
+      // to show result in elements
+      console.log('show result:');
+      console.info(`%c${result}`, 'color: #bada55');
+    }
+
+    if (item.result === 'clipboard') {
+      // to clipboard text
+      console.log('to Clipboard result:');
+      console.info(`%c${result}`, 'color: #bada55');
+      this.pushToClipboardText(result);
+    }
+    return true;
+  }
+
+  private onCheckDisabledContextMenu(_ht: Handsontable, filter: any) {
+    if (typeof filter !== 'string') return false;
+    return !HotTableHelper.isFormatColl(_ht, filter);
+  }
+
+  private processContextMenuItems(items: any, parentId: string = '') {
+    const self = this;
+    Object.entries(items).map(([idItem, valObject]) => {
+      const value: any = valObject;
+      // if object is empty or string - skip
+      if (!value) return value;
+      if (typeof value !== 'object') return value;
+      if (!value.name) return value;
+      // Item have name, need check key or subItems;
+      const { key, filter } = value;
+      if (key) {
+        value.key = `${idItem}:${key}`;
+      } else if (parentId) {
+        value.key = `${parentId}:${idItem}`;
+      }
+      // item filter:->onCheckDisabledContextMenu()
+      if (filter) {
+        value.disabled = function() {
+          return self.onCheckDisabledContextMenu(this, filter);
+        };
+        delete value.filter;
+      }
+      // item submenu:->recursive()
+      if (value.submenu) {
+        value.submenu = {
+          items: Object.values(this.processContextMenuItems(value.submenu, idItem)),
+        };
+        return value;
+      }
+      // item without submenu -> add callback
+      value.callback = function(callkey: string, options: any) {
+        return self.onCallContextMenu(this, valObject, callkey, options);
+      };
+      return value;
+    });
+    return items;
   }
 
   private fetchContextMenu(): contextMenu.Settings {
-    const items: Object = contextMenuItems;
-    Object.keys(items).forEach(key => {
-      const value = items[key];
-      if (value && value.submenu && value.submenu.items && Array.isArray(value.submenu.items)) {
-        // eslint-disable-next-line no-restricted-syntax,guard-for-in
-        for (const i in value.submenu.items) {
-          items[key].submenu.items[i].callback = this.callContextMenu;
-          const { filter } = items[key].submenu.items[i];
-          if (filter) {
-            items[key].submenu.items[i].disabled = function() {
-              return !HotTableHelper.isFormatColl(this, filter);
-            };
-          }
-        }
-      } else if (value.key) {
-        items[key].callback = this.callContextMenu;
-      }
-    });
+    // @todo : refactor , need clone object
+    let items = JSON.parse(JSON.stringify(contextMenuItems));
+    // let items = Object.assign({}, contextMenuItems); let items={...contextMenuItems}
+    items = this.processContextMenuItems(items);
     return {
+      items,
       callback: function sd() {
         return null;
       },
-      items,
     };
   }
 
