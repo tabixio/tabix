@@ -8,6 +8,7 @@ import { Omit } from 'typelevel-ts';
 import { ServerStructure } from 'services';
 import { languageDef, configuration } from './monaco/language/Clickhouse';
 import { themeCobalt } from './monaco/theme/Cobalt';
+import { themeDarcula } from './monaco/theme/Darcula';
 import { themeVsDark } from './monaco/theme/Vsdark';
 import Toolbar, { Props as ToolbarProps, ActionType } from './Toolbar';
 import css from './SqlEditor.css';
@@ -131,6 +132,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   };
 
   private onEditorWillMount = (monaco: Monaco) => {
+    monaco.editor.defineTheme('darcula', themeDarcula);
     monaco.editor.defineTheme('cobalt', themeCobalt);
     monaco.editor.defineTheme('vs-dark', themeVsDark);
     monaco.editor.setTheme('cobalt');
