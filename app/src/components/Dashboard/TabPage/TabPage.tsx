@@ -82,13 +82,13 @@ export default class TabPage extends React.Component<Props> {
             <Tabs.TabPane key="table" tab="Table view">
               {/* {model.data.map(data => <DataTable data={data} />).orUndefined()} */}
               {model.data.map(data => (
-                <DataTable data={data} />
+                <DataTable data={data} key={1} />
               ))}
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
               {/* {model.data.map(data => <Draw data={data} />).orUndefined()} */}
               {model.data.map(data => (
-                <Draw data={data} />
+                <Draw data={data} key={2} />
               ))}
             </Tabs.TabPane>
           </Tabs>
