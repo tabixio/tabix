@@ -60,13 +60,10 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   }
 
   private getRequestUrl(withDatabase?: string, extendSettings?: any): string {
-    // const httpProto =
-    //   this.connection.connectionUrl.indexOf('://') === 0 ||
-    //   this.connection.connectionUrl.indexOf('/') > 0
-    //     ? 'http://'
-    //     : '';
+    const httpProto = this.connection.connectionUrl.indexOf('//') === -1 ? 'http://' : '';
+    // this.connection.connectionUrl.indexOf('/') > 0
 
-    let url = `${this.connection.connectionUrl}/?`;
+    let url = `${httpProto}${this.connection.connectionUrl}/?`;
 
     const settings: object = this.getPresetSettings(extendSettings, this.connection.params);
 
