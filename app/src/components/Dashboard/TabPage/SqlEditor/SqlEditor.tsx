@@ -30,6 +30,10 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 
 /**
  * Global todo:
+ * [-] Локальный ItemProvider, подсовывать fields
+ * [-] Определение баз.таблиц в редакторе между запросами
+ * [-] ORDER BY подсветка
+ * [-] Автокомплит на глобавльные keywords
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
  * [-] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Подпиться на IModelTokensChangedEvent
@@ -55,7 +59,30 @@ function providerCompletionItems(
   // const map: MapModel | undefined = this.editorMapModel.get(model);
   // console.log('call.providerCompletionItems', model.id, map);
   const sqlEditor = modelMap.get(model.uri);
-  console.log('call.providerCompletionItems', sqlEditor && sqlEditor.props.currentDatabase);
+
+  // console.log('call.providerCompletionItems', model.uri, sqlEditor.props);
+  if (!(sqlEditor && sqlEditor.props.currentDatabase)) {
+    console.warn('sqlEditor.props.currentDatabase is empty');
+    return completionItems;
+  }
+  const selectDB: string = sqlEditor.props.currentDatabase;
+
+  sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
+    // Completion:Tables
+    if (db.name !== selectDB) return;
+    db.tables.forEach((table: ServerStructure.Table) => {
+      table.columns.forEach((column: ServerStructure.Column) => {
+        // console.log('call.providerCompletionItems', selectDB, column);
+        completionItems.push({
+          label: column.name,
+          insertText: `${column.name}`,
+          kind: globalMonaco.languages.CompletionItemKind.Reference,
+          detail: `${column.type} in ${column.table}`,
+          // documentation: table.id,
+        });
+      });
+    });
+  });
 
   // const textUntilPosition = model.getValueInRange({
   //     startLineNumber: position.lineNumber,
@@ -164,13 +191,15 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     if (!ServerStructure) return;
     const languageSettings: any = languageDef;
     languageSettings.builtinFunctions = [];
-    // languageSettings.keywords
-    // languageSettings.typeKeywords
-    // languageSettings.drawCommands
-    //
 
     const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
 
+    // Load to completionItems default languageSettings
+    // languageSettings.keywords
+    // languageSettings.typeKeywords
+    // languageSettings.drawCommands
+
+    // ----- push to completionItems: databases and tables
     serverStructure.databases.forEach((db: ServerStructure.Database) => {
       // Completion:dbName
       completionItems.push({
@@ -198,32 +227,36 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
           documentation: table.id,
         });
 
-        // language.settings.tables
-        // languageSettings.tables.push(`${table.database}.${table.insertName}`);
-        // languageSettings.tables.push(`${table.insertName}`);
-        // languageSettings.tables.push(`${db.name}`);
+        // highlight tables and databases
+        languageSettings.tables.push(`${table.database}.${table.insertName}`);
+        languageSettings.tables.push(`${table.insertName}`);
+        languageSettings.tables.push(`${db.name}`);
+
+        table.columns.forEach((column: ServerStructure.Column) => {
+          // col highlingts
+          languageSettings.fields.push(`${table.insertName}.${column.name}`);
+          languageSettings.fields.push(`${column.name}`);
+        });
       });
     });
-    // Completion:Functions
+    // ----- push to completionItems:Functions
     serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
       languageSettings.builtinFunctions.push(func.name);
-      completionItems.push(
-        // interface CompletionItem
-        {
-          //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
-          label: func.name,
-          insertText: `${func.name}()`,
-          kind: globalMonaco.languages.CompletionItemKind.Function,
-          detail: `function`,
-        }
-      );
+      // completionItems.push(
+      //   // interface CompletionItem
+      //   {
+      //     //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
+      //     label: func.name,
+      //     insertText: `${func.name}()`,
+      //     kind: globalMonaco.languages.CompletionItemKind.Function,
+      //     detail: `function`,
+      //   }
+      // );
     });
+    // ----- push to completionItems: Dictionaries
     // @todo: Completion:Dictionaries, need load Dictionaries
 
-    // @todo: Need refactor, когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
-    // Видимо это нужно в rootScope вынести ?
-    // window - это быстро костылик ) monaco - региструется глобавльно
-
+    // когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
     if (!window.monacoGlobalProvider) {
       window.monacoGlobalProvider = {
         completionProvider: null,
@@ -342,6 +375,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     // Save current component instance to map
     const modelUri = editor.getModel().uri;
+    console.log('modelUri', modelUri);
     modelMap.set(modelUri, this);
     // Replace model uri when changed
     editor.onDidChangeModel(({ newModelUrl, oldModelUrl }) => {
