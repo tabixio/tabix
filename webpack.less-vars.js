@@ -13,8 +13,11 @@ export default {
   '@heading-color': 'fade(#fff, 85%)',
   '@text-color ': 'fade(#fff, 80%)',
   '@primary-1': 'fade(#000, 15%)',
+  '@primary-2': '#404040',
   '@text-color-secondary ': 'fade(#fff, 65%)',
   '@layout-header-background': '#404041',
+  '@tree-directory-selected-bg': '#404041',
+  '@tree-directory-selected-color': '#362EC8',
 };
 // @tabs-highlight-color: @primary-color;
 // @tabs-hover-color: @primary-5;

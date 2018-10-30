@@ -35,6 +35,8 @@ export const languageDef = {
     { open: '(', close: ')', token: 'delimiter.parenthesis' },
   ],
   keywordsDouble: [],
+  fields: [],
+  tables: [],
   tabixCommands: [],
   keywords: [
     'SELECT',
@@ -191,20 +193,6 @@ export const languageDef = {
   builtinFunctions: [
     // Aggregate
     'AVG',
-    'CHECKSUM_AGG',
-    'COUNT',
-    'COUNT_BIG',
-    'GROUPING',
-    'GROUPING_ID',
-    'MAX',
-    'MIN',
-    'SUM',
-    'STDEV',
-    'STDEVP',
-    'VAR',
-    'VARP',
-    // Analytic
-    'CUME_DIST',
   ],
   //
   // formatResult: [
@@ -243,6 +231,8 @@ export const languageDef = {
         {
           cases: {
             '@typeKeywords': 'keyword.type',
+            '@tables': 'attribute.name',
+            '@fields': 'attribute.value',
             '@keywords': 'keyword',
             '@operators': 'operator',
             '@builtinVariables': 'predefined',
