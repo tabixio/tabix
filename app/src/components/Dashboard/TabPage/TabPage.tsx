@@ -11,6 +11,7 @@ import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import SaveModal from './SaveModal';
+import GridLayout from './GridLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import css from './TabPage.css';
@@ -61,6 +62,8 @@ export default class TabPage extends React.Component<Props> {
     }
   };
 
+  private data = [1, 2, 3, 4, 5];
+
   render() {
     const { store, model, onTabModelFieldChange, databases, ...rest } = this.props;
 
@@ -80,15 +83,19 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              {/* {model.data.map(data => <DataTable data={data} />).orUndefined()} */}
-              {model.data.map(data => (
-                <DataTable data={data} />
-              ))}
+              <GridLayout items={this.data}>
+                {this.data.map(item => (
+                  <div key={item}>{item}</div>
+                ))}
+                {/* {model.data.map((data, i) => (
+                  <DataTable key={i} data={data} />
+                ))} */}
+              </GridLayout>
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
               {/* {model.data.map(data => <Draw data={data} />).orUndefined()} */}
-              {model.data.map(data => (
-                <Draw data={data} />
+              {model.data.map((data, i) => (
+                <Draw key={i} data={data} />
               ))}
             </Tabs.TabPane>
           </Tabs>
