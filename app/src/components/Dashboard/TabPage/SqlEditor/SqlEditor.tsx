@@ -248,7 +248,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
           {
             //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
             label: func.name,
-            insertText: `${func.name}(ti`,
+            insertText: `${func.name}(`,
             kind: globalMonaco.languages.CompletionItemKind.Method,
             detail: `function`,
           }
