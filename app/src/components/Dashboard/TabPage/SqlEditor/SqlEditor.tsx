@@ -240,22 +240,30 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       });
     });
     // ----- push to completionItems:Functions
-    serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
-      languageSettings.builtinFunctions.push(func.name);
-      // completionItems.push(
-      //   // interface CompletionItem
-      //   {
-      //     //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
-      //     label: func.name,
-      //     insertText: `${func.name}()`,
-      //     kind: globalMonaco.languages.CompletionItemKind.Function,
-      //     detail: `function`,
-      //   }
-      // );
-    });
-    // ----- push to completionItems: Dictionaries
-    // @todo: Completion:Dictionaries, need load Dictionaries
-
+    if (serverStructure.editorRules) {
+      serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
+        languageSettings.builtinFunctions.push(func.name);
+        completionItems.push(
+          // interface CompletionItem
+          {
+            //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
+            label: func.name,
+            insertText: `${func.name}(`,
+            kind: globalMonaco.languages.CompletionItemKind.Method,
+            detail: `function`,
+          }
+        );
+      });
+      // ----- push to completionItems: Dictionaries
+      serverStructure.editorRules.dictionaries.forEach((dic: any) => {
+        completionItems.push({
+          label: dic.title,
+          insertText: `${dic.dic}`,
+          kind: globalMonaco.languages.CompletionItemKind.Snippet,
+          detail: `${dic.dic}`,
+        });
+      });
+    }
     // когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
     if (!window.monacoGlobalProvider) {
       window.monacoGlobalProvider = {
@@ -375,7 +383,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     // Save current component instance to map
     const modelUri = editor.getModel().uri;
-    console.log('modelUri', modelUri);
     modelMap.set(modelUri, this);
     // Replace model uri when changed
     editor.onDidChangeModel(({ newModelUrl, oldModelUrl }) => {
@@ -386,14 +393,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     editor.onDidDispose(() => {
       modelMap.delete(modelUri);
     });
-
-    // Зная editorRef.getModel().id - можно узнать какой обьект связан [Tab]
-    // console.log('modelId', editor.getModel().id);
-    // -----------------------------------------
-    // Нужно наблюдать для каждой вкладки за обновлением serverStructure and currentDatabase -> если изменились для этого редактора нужно обновить [editorMapModel.currentDatabase]
-    // this.editorMapModel.set(editor.getModel(), {
-    //     currentDatabase: this.props.currentDatabase,
-    // });
     // Bind keys to Editor
     this.bindKeys(editor);
   };
