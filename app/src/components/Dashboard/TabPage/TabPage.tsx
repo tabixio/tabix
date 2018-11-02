@@ -11,6 +11,7 @@ import Splitter from 'components/Splitter';
 import SqlEditor, { CodeEditor } from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import SaveModal from './SaveModal';
+import GridLayout from './GridLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import css from './TabPage.css';
@@ -20,6 +21,7 @@ interface Props extends SplitPaneProps {
   onTabModelFieldChange: FieldChangeHandler<Tab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
+  width?: number;
 }
 
 @observer
@@ -62,7 +64,8 @@ export default class TabPage extends React.Component<Props> {
   };
 
   render() {
-    const { store, model, onTabModelFieldChange, databases, ...rest } = this.props;
+    const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
+    const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
 
     return (
       <React.Fragment>
@@ -80,15 +83,18 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              {/* {model.data.map(data => <DataTable data={data} />).orUndefined()} */}
-              {model.data.map(data => (
-                <DataTable data={data} key={1} />
-              ))}
+              <GridLayout cols={4} itemWidth={4} items={dataList} width={width}>
+                {dataList.map((data, i) => (
+                  <div key={i} style={{ paddingRight: '2em' }}>
+                    <DataTable data={data} fill />
+                  </div>
+                ))}
+              </GridLayout>
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
               {/* {model.data.map(data => <Draw data={data} />).orUndefined()} */}
-              {model.data.map(data => (
-                <Draw data={data} key={2} />
+              {model.data.map((data, i) => (
+                <Draw key={i} data={data} />
               ))}
             </Tabs.TabPane>
           </Tabs>

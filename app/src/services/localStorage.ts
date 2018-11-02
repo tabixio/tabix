@@ -104,7 +104,8 @@ export function saveTabs(tabs: ReadonlyArray<Tab>) {
 
 export function getTabs(): Try<JSONModel<ReadonlyArray<TabJsonEntity>>> {
   return Try.of(() => {
-    const ids: string[] = JSON.parse(window.localStorage.getItem(tabsIdsKey) || '');
+    const idsJson = window.localStorage.getItem(tabsIdsKey);
+    const ids: string[] = idsJson ? JSON.parse(idsJson) : [];
     const tabs = ids.reduce(
       (acc, id) => {
         const value = window.localStorage.getItem(`${tabsKey}.${id}`);
