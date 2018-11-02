@@ -21,6 +21,7 @@ interface Props extends SplitPaneProps {
   onTabModelFieldChange: FieldChangeHandler<Tab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
+  width?: number;
 }
 
 @observer
@@ -62,10 +63,9 @@ export default class TabPage extends React.Component<Props> {
     }
   };
 
-  private data = [1, 2, 3, 4, 5];
-
   render() {
-    const { store, model, onTabModelFieldChange, databases, ...rest } = this.props;
+    const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
+    const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
 
     return (
       <React.Fragment>
@@ -83,13 +83,12 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              <GridLayout items={this.data}>
-                {this.data.map(item => (
-                  <div key={item}>{item}</div>
+              <GridLayout cols={4} itemWidth={4} items={dataList} width={width}>
+                {dataList.map((data, i) => (
+                  <div key={i} style={{ paddingRight: '2em' }}>
+                    <DataTable data={data} fill />
+                  </div>
                 ))}
-                {/* {model.data.map((data, i) => (
-                  <DataTable key={i} data={data} />
-                ))} */}
               </GridLayout>
             </Tabs.TabPane>
             <Tabs.TabPane key="draw" tab="Draw view">
