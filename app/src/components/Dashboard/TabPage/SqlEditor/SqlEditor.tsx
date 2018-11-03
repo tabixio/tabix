@@ -569,10 +569,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
               isFormatSet = true;
               format = oToken.text.trim();
             }
-            if (oToken.type === 'keyword.sql') {
+            if (oToken.type === 'keyword.other.DML.sql') {
               if (['SELECT'].indexOf(oToken.text.toUpperCase()) !== -1) {
                 findSelectQuery = true;
               }
+            }
+            if (oToken.type === 'keyword.sql') {
               if (['DROP', 'CREATE', 'ALTER'].indexOf(oToken.text.toUpperCase()) !== -1) {
                 isOperationCAD = true;
                 findSelectQuery = false;
@@ -712,6 +714,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     // Запросы которые необходимо отправть
     queryExecList.forEach((query: Query) => {
+      console.log(query);
       console.info(`%c${query.sql}`, 'color: #bada55');
     });
 
