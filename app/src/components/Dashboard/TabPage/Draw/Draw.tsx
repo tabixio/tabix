@@ -11,7 +11,7 @@ interface Props {
 export default class Draw extends React.Component<Props> {
   render() {
     const { data } = this.props;
-    console.log(data.rows);
+    // console.log(data.rows);
 
     // const dataset = data.meta.columns.map(c => ({ data: c.name, title: c.name }));
     const options = {

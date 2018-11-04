@@ -85,17 +85,21 @@ export default class TabPage extends React.Component<Props> {
             <Tabs.TabPane key="table" tab="Table view">
               <GridLayout cols={4} itemWidth={4} items={dataList} width={width}>
                 {dataList.map((data, i) => (
-                  <div key={i} style={{ paddingRight: '2em' }}>
+                  <div key={i} className={css['grid-item']}>
                     <DataTable data={data} fill />
                   </div>
                 ))}
               </GridLayout>
             </Tabs.TabPane>
+
             <Tabs.TabPane key="draw" tab="Draw view">
-              {/* {model.data.map(data => <Draw data={data} />).orUndefined()} */}
-              {model.data.map((data, i) => (
-                <Draw key={i} data={data} />
-              ))}
+              <GridLayout cols={4} itemWidth={4} items={dataList} width={width}>
+                {dataList.map((data, i) => (
+                  <div key={i} className={css['grid-item']}>
+                    <Draw data={data} />
+                  </div>
+                ))}
+              </GridLayout>
             </Tabs.TabPane>
           </Tabs>
         </Splitter>

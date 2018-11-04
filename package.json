@@ -27,7 +27,7 @@
     "@types/react": "16.4.18",
     "@types/react-dom": "^16.0.9",
     "@types/react-grid-layout": "^0.16.5",
-    "@types/react-router": "^4.0.32",
+    "@types/react-router": "^4.4.0",
     "@types/react-router-dom": "^4.3.1",
     "@types/uuid": "^3.4.4",
     "@types/webpack-env": "^1.13.6",
@@ -78,7 +78,7 @@
     "@handsontable/react": "^2.0.0",
     "@vzh/mobx-stores": "^0.28.0",
     "@vzh/react-auth": "^0.3.0",
-    "antd": "^3.10.3",
+    "antd": "^3.10.4",
     "chroma-js": "^1.4.0",
     "classnames": "^2.2.6",
     "echarts": "^4.2.0-rc.2",
@@ -99,9 +99,10 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-split-pane": "^0.1.84",
-    "reflexy": "^1.19.5",
+    "reflexy": "^1.20.0",
+    "size-sensor": "^0.2.2",
     "typelevel-ts": "^0.3.2",
     "uuid": "^3.3.2",
-    "valtors": "^1.4.1"
+    "valtors": "^1.5.0"
   }
 }

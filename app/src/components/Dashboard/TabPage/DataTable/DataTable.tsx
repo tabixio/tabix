@@ -5,6 +5,7 @@ import Handsontable, { contextMenu } from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
+import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
 import contextMenuItems from './handsontable/ContextMenuItems';
 import HotTableHelper from './handsontable/Helper';
@@ -17,17 +18,20 @@ interface Props {
 
 @observer
 export default class DataTable extends React.Component<Props & FlexProps> {
+  private readonly rootRef = React.createRef<HTMLDivElement>();
+
   private readonly hotTableRef = React.createRef<HotTable>();
 
-  // protected gethotInstance = (): Handsontable => {
-  //   if (!this.hotTableRef || !this.hotTableRef.current)
-  //     throw new Error('Not found Handsontable Instance');
-  //   return this.hotTableRef.current.hotInstance;
-  // };
+  componentDidMount() {
+    const { current: hotTable } = this.hotTableRef;
+    sizeSensor.bind(this.rootRef.current, () => {
+      hotTable && hotTable.hotInstance.updateSettings({}, false);
+    });
+  }
 
-  // componentDidMount() {
-  //   console.info('Inst', this.gethotInstance());
-  // }
+  componentWillUnmount() {
+    sizeSensor.clear(this.rootRef.current);
+  }
 
   private getFormatForColumn(cell: ColumnMetadata) {
     return HotTableHelper.getFormatForColumn(cell);
@@ -179,7 +183,7 @@ export default class DataTable extends React.Component<Props & FlexProps> {
     const columns = data.meta.columns.map(c => this.getFormatForColumn(c));
 
     return (
-      <Flex className={classNames(css.root, className)} {...flexProps}>
+      <Flex componentRef={this.rootRef} className={classNames(css.root, className)} {...flexProps}>
         <HotTable
           className={isDark ? 'handsontable-dark' : ''}
           rowHeaders
@@ -210,7 +214,7 @@ export default class DataTable extends React.Component<Props & FlexProps> {
           // currentColClassName="currentCol"
           // sortIndicator
           // fixedRowsTop={1}
-          // renderAllRows={false}
+          renderAllRows={false}
           // visibleRows={1000}
           // contextMenu={contextMenu}
           // columnsMenu={columnsMenu}

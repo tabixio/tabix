@@ -1,9 +1,4 @@
 .root {
-  /* min-height: 200px; */
-  /* height: calc(100vh - 64px - 56px - 32px); */
-  /* height: 100%; */
-  /* width: 100%; */
-  /* overflow: auto; */
   overflow-x: auto;
   overflow-y: hidden;
   font-size: 12px;
