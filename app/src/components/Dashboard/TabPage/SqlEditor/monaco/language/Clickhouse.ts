@@ -34,70 +34,66 @@ export const languageDef = {
     { open: '[', close: ']', token: 'delimiter.square' },
     { open: '(', close: ')', token: 'delimiter.parenthesis' },
   ],
-  keywordsDouble: [],
   fields: [],
   tables: [],
   tabixCommands: [],
   keywords: [
-    'SELECT',
-    'CASE',
-    'THEN',
-    'DISTINCT',
-    'INSERT',
-    'UPDATE',
-    'DELETE',
-    'WHERE',
-    'AND',
-    'OR',
-    'OFFSET',
-    'HAVING',
-    'AS',
-    'FROM',
-    'WHEN',
-    'ELSE',
-    'USING',
-    'END',
-    'TYPE',
-    'LEFT',
-    'RIGHT',
-    'JOIN',
-    'ON',
-    'OUTER',
-    'DESC',
-    'ASC',
-    'UNION',
-    'CREATE',
-    'TABLE',
-    'PRIMARY',
-    'KEY FOREIGN',
-    'NOT',
-    'REFERENCES',
-    'INNER',
-    'CROSS',
-    'NATURAL',
-    'DATABASE',
-    'DROP',
-    'GRANT',
-    'ARRAY JOIN',
-    'ANY',
-    'BETWEEN',
-    'ENGINE',
-    'ATTACH',
-    'DETACH',
-    'CAST',
-    'WITH',
-    'BIT_AND',
-    'BIT_OR',
-    'TO',
-    'BIT_XOR',
-    'DESCRIBE',
-    'OPTIMIZE',
-    'PREWHERE',
-    'TOTALS',
-    'DATABASES',
-    'PROCESSLIST',
-    'SHOW',
-    'IF',
+    // 'SELECT',
+    // 'CASE',
+    // 'THEN',
+    // 'INSERT',
+    // 'UPDATE',
+    // 'DELETE',
+    // 'WHERE',
+    // 'OFFSET',
+    // 'HAVING',
+    // 'AS',
+    // 'FROM',
+    // 'WHEN',
+    // 'ELSE',
+    // 'USING',
+    // 'END',
+    // 'TYPE',
+    // 'LEFT',
+    // 'RIGHT',
+    // 'JOIN',
+    // 'ON',
+    // 'OUTER',
+    // 'DESC',
+    // 'ASC',
+    // 'UNION',
+    // 'CREATE',
+    // 'TABLE',
+    // 'PRIMARY',
+    // 'KEY FOREIGN',
+    // 'NOT',
+    // 'REFERENCES',
+    // 'INNER',
+    // 'CROSS',
+    // 'NATURAL',
+    // 'DATABASE',
+    // 'DROP',
+    // 'GRANT',
+    // 'ARRAY JOIN',
+    // 'ANY',
+    // 'BETWEEN',
+    // 'ENGINE',
+    // 'ATTACH',
+    // 'DETACH',
+    // 'CAST',
+    // 'WITH',
+    // 'BIT_AND',
+    // 'BIT_OR',
+    // 'TO',
+    // 'BIT_XOR',
+    // 'DESCRIBE',
+    // 'OPTIMIZE',
+    // 'PREWHERE',
+    // 'TOTALS',
+    // 'DATABASES',
+    // 'PROCESSLIST',
+    // 'SHOW',
+    // 'IF',
 
     // FORM
     'FORMAT JSON',
@@ -210,6 +206,21 @@ export const languageDef = {
   //     'FORMAT CSVWithNames',
   // ],
 
+  /**
+   * @todo :
+   * Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
+   * SYSTEM FLUSH LOGS
+   * LIMIT n BY columns
+   * WITH TOTALS
+   * [GLOBAL] ANY|ALL INNER|LEFT JOIN
+   * CREATE DATABASE ... IF NOT EXISTS
+   * DROP TABLE IF EXISTS
+   * ALTER UPDATE
+   * TRUNCATE TABLE
+   * Добавлен тип данных DECIMAL(digits, scale)
+   * Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
+   *
+   */
   builtinVariables: ['true', 'false', 'NULL'],
   pseudoColumns: ['$ROWGUID', '$PARTITION'],
   drawCommands: ['DRAW_CHART', 'DRAW_BAR', '$ROWGUID', '$PARTITION'],
@@ -218,6 +229,7 @@ export const languageDef = {
       { include: '@comments' },
       { include: '@whitespace' },
       { include: '@keywordsDouble' },
+      { include: '@keywordsDML' },
       { include: '@pseudoColumns' },
       { include: '@numbers' },
       { include: '@strings' },
@@ -242,6 +254,7 @@ export const languageDef = {
           },
         },
       ],
+      // ['/[!<>]?=|<>|<|>/', 'keyword.operator.comparison.sql'],
       [/[<>=!%&+\-*/|~^]/, 'operator'],
     ],
     whitespace: [[/\s+/, 'white']],
@@ -254,6 +267,45 @@ export const languageDef = {
       [/\*\//, { token: 'comment.quote', next: '@pop' }],
       [/./, 'comment'],
     ],
+    keywordsDML: [
+      [
+        '\\b(select(\\s+distinct)?|insert\\s+(ignore\\s+)?into|' +
+          'update|delete|from|set|where|group\\sby|' +
+          'or|like|and|union(\\s+all)?|having|order\\sby|limit|LIMIT\\W+\\d+\\W+BY\\W+|' +
+          '(GLOBAL)?\\s+(ANY|ALL)?\\s+(INNER|LEFT)\\s+join|' +
+          '(ANY|ALL)?\\s+(INNER|LEFT)\\s+join|' +
+          '(INNER|LEFT)\\s+join|' +
+          '(left|right)(\\s+outer)?\\s+join|' +
+          'ARRAY\\W+JOIN |' +
+          'PREWHERE|' +
+          'JOIN|' +
+          'SAMPLE|' +
+          'INTO\\W+OUTFILE|' +
+          'WITH\\W+TOTALS|' +
+          'WITH\\W+CUBE|' +
+          'natural(\\s+(left|right)(\\s+outer)?)?\\s+join)' +
+          '\\b',
+        {
+          cases: {
+            '@default': 'keyword.other.DML',
+          },
+        },
+      ],
+      ['\\bAS\\b', { cases: { '@default': 'keyword.other.alias.sql' } }],
+      ['\\b(DESC|ASC)\\b', { cases: { '@default': 'keyword.other.order.sql' } }],
+      // "keyword.other.object-comments.sql"=>"(?i:^\\s*(comment\\s+on\\s+(table|column|aggregate|constraint|database|domain|function|index|operator|rule|schema|sequence|trigger|type|view))\\s+.*?\\s+(is)\\s+)"
+    ],
+    // "captures": {
+    //   "1": {
+    //     "name": "constant.other.database-name.sql"
+    //   },
+    //   "2": {
+    //     "name": "constant.other.table-name.sql"
+    //   }
+    // },
+    // "match": "(\\w+?)\\.(\\w+)"
+    // "match": "((?<!@)@)\\b(\\w+)\\b",
+    // "name": "text.variable"
     keywordsDouble: [
       [
         'INSERT\\W+INTO|RENAME\\W+TABLE|IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS',
