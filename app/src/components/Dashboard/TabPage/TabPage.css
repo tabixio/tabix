@@ -1,3 +1,7 @@
 .tabs {
   width: 100%;
 }
+
+.grid-item {
+  padding: 0 1.5em 1.5em 0;
+}

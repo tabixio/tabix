@@ -23,6 +23,7 @@ export interface Props extends InjectedProps {}
 type RoutedProps = Props & RouteComponentProps<any>;
 
 interface State {
+  /** Needed for resizing GridLayout */
   primaryPaneSize?: number;
 }
 
