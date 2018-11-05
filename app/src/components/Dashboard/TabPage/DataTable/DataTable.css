@@ -1,9 +1,6 @@
-.table {
-  height: calc(100vh - 64px - 56px - 32px);
-  width: 100%;
+.root {
   overflow-x: auto;
   overflow-y: hidden;
-  min-height: 200px;
   font-size: 12px;
   font-family: Menlo, Inconsolata, Courier New, monospace, Helvetica, arial;
 }

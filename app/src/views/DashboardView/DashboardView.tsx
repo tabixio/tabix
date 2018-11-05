@@ -22,8 +22,17 @@ export interface Props extends InjectedProps {}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
+interface State {
+  /** Needed for resizing GridLayout */
+  primaryPaneSize?: number;
+}
+
 @observer
-class DashboardView extends React.Component<RoutedProps> {
+class DashboardView extends React.Component<RoutedProps, State> {
+  state = {
+    primaryPaneSize: undefined,
+  };
+
   constructor(props: RoutedProps) {
     super(props);
     this.load();
@@ -84,13 +93,24 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
+  private onSplitterResize = (newSize: number) => {
+    this.setState({ primaryPaneSize: newSize });
+  };
+
   render() {
     const { store } = this.props;
+    const { primaryPaneSize } = this.state;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
 
     return (
       <Page column={false} uiStore={store.uiStore} className={css.root}>
-        <Splitter primary="second" minSize="calc(100vw - 250px)" defaultSize="calc(100vw - 300px)">
+        <Splitter
+          primary="second"
+          minSize="calc(100vw - 250px)"
+          defaultSize="calc(100vw - 300px)"
+          size={primaryPaneSize}
+          onChange={this.onSplitterResize}
+        >
           <Flex alignItems="stretch" vfill className={css['sider-container']}>
             <Layout>
               <Layout.Sider width="100%">
@@ -120,6 +140,7 @@ class DashboardView extends React.Component<RoutedProps> {
                   model={t}
                   onTabModelFieldChange={t.changeField}
                   databases={databases}
+                  width={primaryPaneSize}
                 />
               </Tabs.TabPane>
             ))}

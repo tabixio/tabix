@@ -287,7 +287,7 @@ export const languageDef = {
           '\\b',
         {
           cases: {
-            '@default': 'keyword.other.DML.sql',
+            '@default': 'keyword.other.DML',
           },
         },
       ],

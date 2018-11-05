@@ -1,11 +1,14 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { HotTable } from '@handsontable/react';
 import Handsontable, { contextMenu } from 'handsontable';
+import 'handsontable/dist/handsontable.full.css';
+import { Flex, FlexProps } from 'reflexy';
+import classNames from 'classnames';
+import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
 import contextMenuItems from './handsontable/ContextMenuItems';
 import HotTableHelper from './handsontable/Helper';
-import 'handsontable/dist/handsontable.full.css';
 import './handsontable/dark.css';
 import css from './DataTable.css';
 
@@ -14,22 +17,20 @@ interface Props {
 }
 
 @observer
-export default class DataTable extends React.Component<Props> {
-  protected hotRef: RefObject<HotTable>;
+export default class DataTable extends React.Component<Props & FlexProps> {
+  private readonly rootRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: Readonly<Props>) {
-    super(props);
-    this.hotRef = React.createRef();
-    // Handsontable.plugins.registerPlugin();
-  }
-
-  protected gethotInstance = (): Handsontable => {
-    if (!this.hotRef || !this.hotRef.current) throw new Error('Not found Handsontable Instance');
-    return this.hotRef.current.hotInstance;
-  };
+  private readonly hotTableRef = React.createRef<HotTable>();
 
   componentDidMount() {
-    console.info('Inst', this.gethotInstance());
+    const { current: hotTable } = this.hotTableRef;
+    sizeSensor.bind(this.rootRef.current, () => {
+      hotTable && hotTable.hotInstance.updateSettings({}, false);
+    });
+  }
+
+  componentWillUnmount() {
+    sizeSensor.clear(this.rootRef.current);
   }
 
   private getFormatForColumn(cell: ColumnMetadata) {
@@ -171,7 +172,7 @@ export default class DataTable extends React.Component<Props> {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, className, ...flexProps } = this.props;
     // @todo : Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
     // var showSortIndicator = pluginSettingsForColumn.indicator;
     // Uncaught (in promise) TypeError: Cannot read property 'indicator' of undefined
@@ -180,8 +181,9 @@ export default class DataTable extends React.Component<Props> {
     // todo: refactor with DataDecorator?
     const isDark: boolean = true;
     const columns = data.meta.columns.map(c => this.getFormatForColumn(c));
+
     return (
-      <div className={css.table}>
+      <Flex componentRef={this.rootRef} className={classNames(css.root, className)} {...flexProps}>
         <HotTable
           className={isDark ? 'handsontable-dark' : ''}
           rowHeaders
@@ -207,17 +209,17 @@ export default class DataTable extends React.Component<Props> {
           viewportColumnRenderingOffset="auto"
           wordWrap={false}
           autoColumnSize={{ samplingRatio: 23 }}
-          ref={this.hotRef}
+          ref={this.hotTableRef}
           // currentRowClassName="currentRowDark"
           // currentColClassName="currentCol"
           // sortIndicator
           // fixedRowsTop={1}
-          // renderAllRows={false}
+          renderAllRows={false}
           // visibleRows={1000}
           // contextMenu={contextMenu}
           // columnsMenu={columnsMenu}
         />
-      </div>
+      </Flex>
     );
   }
 }
