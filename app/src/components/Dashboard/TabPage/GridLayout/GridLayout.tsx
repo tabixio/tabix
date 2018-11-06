@@ -9,6 +9,7 @@ interface Props {
   items: any[];
   cols: number;
   itemWidth: number;
+  itemHeight: number;
   width?: number;
 }
 
@@ -20,12 +21,12 @@ interface State {
 export default class GridLayout extends React.Component<Props, State> {
   static rowHeight: number = 50;
 
-  static calculateLayout({ items, cols, itemWidth }: Props): State['layout'] {
+  static calculateLayout({ items, cols, itemWidth, itemHeight }: Props): State['layout'] {
     return items.map<ReactGridLayout.Layout>((_, i) => ({
       x: (i * itemWidth) % cols,
       y: 0,
       w: itemWidth,
-      h: 4,
+      h: itemHeight,
       minH: 2,
       i: i.toString(),
     }));
