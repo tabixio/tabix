@@ -29,14 +29,13 @@ import { languages } from 'monaco-editor';
  * [+] Локальный ItemProvider, подсовывать fields
  * [+] ORDER BY подсветка
  * [+] Автокомплит на глобавльные keywords
+ * [+] SYSTEM FLUSH LOGS
+ * [+] Allow completion providers for specific instances
+ * [+] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
- * [-] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Подпиться на IModelTokensChangedEvent
  * [-] Определение баз.таблиц в редакторе между запросами
- * [-] https://github.com/Microsoft/monaco-editor/issues/593
- * [-] codeActionsOnSave & codeActionsOnSaveTimeout // ICodeActionsOnSaveOptions
  * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
- * [-] SYSTEM FLUSH LOGS
  * [-] LIMIT n BY columns
  * [-] WITH TOTALS
  * [-] [GLOBAL] ANY|ALL INNER|LEFT JOIN
@@ -143,6 +142,7 @@ export const languageDef = {
     'SYSTEM SHUTDOWN',
     'SYSTEM KILL',
     'CLEAR COLUMN IN PARTITION',
+    'SYSTEM FLUSH LOGS',
   ],
   typeKeywords: [
     'date',
@@ -326,7 +326,7 @@ export const languageDef = {
           'SYSTEM\\W+DROP\\W+DNS\\W+CACHE|' +
           'SYSTEM\\W+SHUTDOWN|' +
           'SYSTEM\\W+KILL|' +
-          'CLEAR\\W+COLUMN\\W+IN\\W+PARTITION',
+          'CLEAR\\W+COLUMN\\W+IN\\W+PARTITION|SYSTEM\\W+FLUSH\\W+LOGS',
         {
           cases: {
             '@default': 'keyword',
