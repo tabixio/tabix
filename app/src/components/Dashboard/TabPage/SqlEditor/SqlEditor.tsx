@@ -25,7 +25,7 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   formatOnPaste: true,
   fontFamily: 'Monaco,Menlo,Ubuntu Mono,Consolas,"source-code-pro","monospace"',
   fontSize: 14,
-  fontLigatures: true,
+  // fontLigatures: true,
   // autoIndent: false,// Enable auto indentation adjustment. Defaults to false.
   fontWeight: 'lighter',
   emptySelectionClipboard: true,
@@ -33,23 +33,11 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   showFoldingControls: 'always',
   smoothScrolling: true,
   parameterHints: true,
-  quickSuggestionsDelay: 500,
-  renderWhitespace: 'boundary',
+  // quickSuggestionsDelay: 500,
+  // renderWhitespace: 'boundary',
   scrollBeyondLastLine: false,
-  // @todo: codeActionsOnSave & codeActionsOnSaveTimeout // ICodeActionsOnSaveOptions
 };
 
-/**
- * Global todo:
- * [-] Локальный ItemProvider, подсовывать fields
- * [-] Определение баз.таблиц в редакторе между запросами
- * [-] ORDER BY подсветка
- * [-] Автокомплит на глобавльные keywords
- * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
- * [-] Выполнять updateEditorStructure после инициализации данных от сервера
- * [-] Подпиться на IModelTokensChangedEvent
- * [-] https://github.com/Microsoft/monaco-editor/issues/593
- */
 type Monaco = typeof monacoEditor;
 export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 export type IReadOnlyModel = monacoEditor.editor.IReadOnlyModel;
@@ -205,11 +193,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
 
-    // Load to completionItems default languageSettings
-    // languageSettings.keywords
-    // languageSettings.typeKeywords
-    // languageSettings.drawCommands
-
     // ----- push to completionItems: databases and tables
     serverStructure.databases.forEach((db: ServerStructure.Database) => {
       // Completion:dbName
@@ -261,6 +244,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
             label: func.name,
             insertText: `${func.name}(`,
             kind: globalMonaco.languages.CompletionItemKind.Method,
+            sortText: `function:${func.name}`,
             detail: `function`,
           }
         );
@@ -290,6 +274,35 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         window.monacoGlobalProvider.completionProvider.dispose();
       }
     }
+    // Load to completionItems default languageSettings
+
+    const keywords=[...languageSettings.keywordsGlobal,...languageSettings.keywords];
+    keywords.forEach((word: string) => {
+      completionItems.push({
+        label: word.toLowerCase(),
+        sortText: `a ${word}`,
+        kind: globalMonaco.languages.CompletionItemKind.Keyword,
+      });
+    });
+    languageSettings.drawCommands.forEach((word: string) => {
+      completionItems.push({
+        label: word,
+        kind: globalMonaco.languages.CompletionItemKind.Color,
+      });
+    });
+    languageSettings.typeKeywords.forEach((word: string) => {
+      completionItems.push({
+        label: word,
+        kind: globalMonaco.languages.CompletionItemKind.Property,
+      });
+    });
+    languageSettings.builtinVariables.forEach((word: string) => {
+      completionItems.push({
+        label: word,
+        kind: globalMonaco.languages.CompletionItemKind.Variable,
+      });
+    });
+
     // Запоминаем путь к IDispose() интерфейсу
     // update MonarchTokens
 

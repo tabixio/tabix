@@ -24,6 +24,30 @@ import { languages } from 'monaco-editor';
 // https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
 // https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
 
+/**
+ * Global todo:
+ * [+] Локальный ItemProvider, подсовывать fields
+ * [+] ORDER BY подсветка
+ * [+] Автокомплит на глобавльные keywords
+ * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
+ * [-] Выполнять updateEditorStructure после инициализации данных от сервера
+ * [-] Подпиться на IModelTokensChangedEvent
+ * [-] Определение баз.таблиц в редакторе между запросами
+ * [-] https://github.com/Microsoft/monaco-editor/issues/593
+ * [-] codeActionsOnSave & codeActionsOnSaveTimeout // ICodeActionsOnSaveOptions
+ * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
+ * [-] SYSTEM FLUSH LOGS
+ * [-] LIMIT n BY columns
+ * [-] WITH TOTALS
+ * [-] [GLOBAL] ANY|ALL INNER|LEFT JOIN
+ * [-] CREATE DATABASE ... IF NOT EXISTS
+ * [-] DROP TABLE IF EXISTS
+ * [-] ALTER UPDATE
+ * [-] TRUNCATE TABLE
+ * [-] Добавлен тип данных DECIMAL(digits, scale)
+ * [-] Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
+ */
+
 export const languageDef = {
   base: 'sql',
   defaultToken: '',
@@ -37,64 +61,65 @@ export const languageDef = {
   fields: [],
   tables: [],
   tabixCommands: [],
+  keywordsGlobal: [
+    'SELECT',
+    'CASE',
+    'THEN',
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'WHERE',
+    'OFFSET',
+    'HAVING',
+    'AS',
+    'FROM',
+    'WHEN',
+    'ELSE',
+    'USING',
+    'END',
+    'TYPE',
+    'LEFT',
+    'RIGHT',
+    'JOIN',
+    'ON',
+    'OUTER',
+    'DESC',
+    'ASC',
+    'UNION',
+    'CREATE',
+    'TABLE',
+    'PRIMARY',
+    'KEY FOREIGN',
+    'NOT',
+    'REFERENCES',
+    'INNER',
+    'CROSS',
+    'NATURAL',
+    'DATABASE',
+    'DROP',
+    'GRANT',
+    'ARRAY JOIN',
+    'ANY',
+    'BETWEEN',
+    'ENGINE',
+    'ATTACH',
+    'DETACH',
+    'CAST',
+    'WITH',
+    'BIT_AND',
+    'BIT_OR',
+    'TO',
+    'BIT_XOR',
+    'DESCRIBE',
+    'OPTIMIZE',
+    'PREWHERE',
+    'TOTALS',
+    'DATABASES',
+    'PROCESSLIST',
+    'SHOW',
+    'IF',
+  ],
   keywords: [
-    // 'SELECT',
-    // 'CASE',
-    // 'THEN',
-    // 'INSERT',
-    // 'UPDATE',
-    // 'DELETE',
-    // 'WHERE',
-    // 'OFFSET',
-    // 'HAVING',
-    // 'AS',
-    // 'FROM',
-    // 'WHEN',
-    // 'ELSE',
-    // 'USING',
-    // 'END',
-    // 'TYPE',
-    // 'LEFT',
-    // 'RIGHT',
-    // 'JOIN',
-    // 'ON',
-    // 'OUTER',
-    // 'DESC',
-    // 'ASC',
-    // 'UNION',
-    // 'CREATE',
-    // 'TABLE',
-    // 'PRIMARY',
-    // 'KEY FOREIGN',
-    // 'NOT',
-    // 'REFERENCES',
-    // 'INNER',
-    // 'CROSS',
-    // 'NATURAL',
-    // 'DATABASE',
-    // 'DROP',
-    // 'GRANT',
-    // 'ARRAY JOIN',
-    // 'ANY',
-    // 'BETWEEN',
-    // 'ENGINE',
-    // 'ATTACH',
-    // 'DETACH',
-    // 'CAST',
-    // 'WITH',
-    // 'BIT_AND',
-    // 'BIT_OR',
-    // 'TO',
-    // 'BIT_XOR',
-    // 'DESCRIBE',
-    // 'OPTIMIZE',
-    // 'PREWHERE',
-    // 'TOTALS',
-    // 'DATABASES',
-    // 'PROCESSLIST',
-    // 'SHOW',
-    // 'IF',
-
     // FORM
     'FORMAT JSON',
     'FORMAT JSONCompact',
@@ -184,7 +209,6 @@ export const languageDef = {
     'CONTAINS',
     'FREETEXT',
     'IS',
-    'NULL',
   ],
   builtinFunctions: [
     // Aggregate
@@ -205,25 +229,9 @@ export const languageDef = {
   //     'FORMAT CSV',
   //     'FORMAT CSVWithNames',
   // ],
-
-  /**
-   * @todo :
-   * Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
-   * SYSTEM FLUSH LOGS
-   * LIMIT n BY columns
-   * WITH TOTALS
-   * [GLOBAL] ANY|ALL INNER|LEFT JOIN
-   * CREATE DATABASE ... IF NOT EXISTS
-   * DROP TABLE IF EXISTS
-   * ALTER UPDATE
-   * TRUNCATE TABLE
-   * Добавлен тип данных DECIMAL(digits, scale)
-   * Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
-   *
-   */
   builtinVariables: ['true', 'false', 'NULL'],
   pseudoColumns: ['$ROWGUID', '$PARTITION'],
-  drawCommands: ['DRAW_CHART', 'DRAW_BAR', '$ROWGUID', '$PARTITION'],
+  drawCommands: ['DRAW_CHART', 'DRAW_BAR'],
   tokenizer: {
     root: [
       { include: '@comments' },
@@ -246,6 +254,7 @@ export const languageDef = {
             '@tables': 'attribute.name',
             '@fields': 'attribute.value',
             '@keywords': 'keyword',
+            '@keywordsGlobal': 'keyword',
             '@operators': 'operator',
             '@builtinVariables': 'predefined',
             '@builtinFunctions': 'predefined',
@@ -308,7 +317,16 @@ export const languageDef = {
     // "name": "text.variable"
     keywordsDouble: [
       [
-        'INSERT\\W+INTO|RENAME\\W+TABLE|IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS',
+        'INSERT\\W+INTO|RENAME\\W+TABLE|IF\\W+NOT\\W+EXISTS|IF\\W+EXISTS|' +
+          'SYSTEM\\W+RELOAD\\W+CONFIG|' +
+          'DROP\\W+TEMPORARY\\W+TABLE|' +
+          'EXISTS\\W+TEMPORARY\\W+TABLE|' +
+          'SYSTEM\\W+RELOAD\\W+DICTIONARY|' +
+          'SYSTEM\\W+RELOAD\\W+DICTIONARIES|' +
+          'SYSTEM\\W+DROP\\W+DNS\\W+CACHE|' +
+          'SYSTEM\\W+SHUTDOWN|' +
+          'SYSTEM\\W+KILL|' +
+          'CLEAR\\W+COLUMN\\W+IN\\W+PARTITION',
         {
           cases: {
             '@default': 'keyword',
