@@ -98,7 +98,7 @@ namespace ServerStructure {
       if (!(!dbTableColumns[t.database] || !dbTableColumns[t.database][t.name])) {
         const table: Table = {
           ...t,
-          columns: dbTableColumns[t.database][t.name],
+          columns: dbTableColumns[t.database][t.name] || [],
           insertName: tableNameTrim,
           id: `${t.database}.${t.name}`,
         };
@@ -110,7 +110,7 @@ namespace ServerStructure {
 
     const dbList = databases.map(db => ({
       ...db,
-      tables: dbTables[db.name],
+      tables: dbTables[db.name] || [],
       id: db.name,
     }));
 
