@@ -92,16 +92,19 @@ namespace ServerStructure {
       if (tableNameTrim.indexOf('.') !== -1) {
         tableNameTrim = `"${tableNameTrim}"`;
       }
-      const table: Table = {
-        ...t,
-        columns: dbTableColumns[t.database][t.name],
-        insertName: tableNameTrim,
-        id: `${t.database}.${t.name}`,
-      };
 
       acc[t.database] = acc[t.database] || [];
-      acc[t.database].push(table);
 
+      if (!(!dbTableColumns[t.database] || !dbTableColumns[t.database][t.name])) {
+        const table: Table = {
+          ...t,
+          columns: dbTableColumns[t.database][t.name],
+          insertName: tableNameTrim,
+          id: `${t.database}.${t.name}`,
+        };
+
+        acc[t.database].push(table);
+      }
       return acc;
     }, {});
 
