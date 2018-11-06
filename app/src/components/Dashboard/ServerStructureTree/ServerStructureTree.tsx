@@ -133,6 +133,7 @@ export default class ServerStructureTree extends React.Component<Props> {
           filterTreeNode={this.highlightTreeNode}
           selectedKeys={store.treeSelectedKeys}
           onDoubleClick={this.onNodeDoubleClick}
+          onClick={this.onNodeDoubleClick}
           className={css.root}
         >
           {structure && (
