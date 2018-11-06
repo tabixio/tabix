@@ -93,7 +93,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
     }
   };
 
-  private onSplitterResize = (newSize: number) => {
+  private onSplitterResizeFinished = (newSize: number) => {
     this.setState({ primaryPaneSize: newSize });
   };
 
@@ -110,7 +110,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
           maxSize={-300}
           defaultSize="calc(100vw - 325px)"
           size={primaryPaneSize}
-          onChange={this.onSplitterResize}
+          onDragFinished={this.onSplitterResizeFinished}
         >
           <Flex alignItems="stretch" vfill className={css['sider-container']}>
             <Layout>

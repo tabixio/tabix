@@ -16,16 +16,28 @@ interface Props {
   data: DataDecorator;
 }
 
+interface State {
+  width?: number;
+}
+
 @observer
-export default class DataTable extends React.Component<Props & FlexProps> {
+export default class DataTable extends React.Component<Props & FlexProps, State> {
   private readonly rootRef = React.createRef<HTMLDivElement>();
 
-  private readonly hotTableRef = React.createRef<HotTable>();
+  state: State = {
+    width: undefined,
+  };
 
   componentDidMount() {
-    const { current: hotTable } = this.hotTableRef;
-    sizeSensor.bind(this.rootRef.current, () => {
-      hotTable && hotTable.hotInstance.updateSettings({}, false);
+    sizeSensor.bind(this.rootRef.current, el => {
+      // Use callback only when parent resizing finished,
+      // so callback will called only when resize finished.
+      // Otherwise performance issue of hottable update.
+      const width = el ? el.clientWidth : this.state.width;
+      if (width && width !== this.state.width) {
+        // For update hottable when resizing
+        this.setState({ width });
+      }
     });
   }
 
@@ -201,15 +213,14 @@ export default class DataTable extends React.Component<Props & FlexProps> {
           mergeCells
           manualRowResize
           stretchH="all"
+          // colWidths={100}
           // observeChanges={false} /* =<!memory leak if true! */
           // observeDOMVisibility
-          colWidths={100}
           fillHandle={false}
           customBorders
           viewportColumnRenderingOffset="auto"
           wordWrap={false}
           autoColumnSize={{ samplingRatio: 23 }}
-          ref={this.hotTableRef}
           // currentRowClassName="currentRowDark"
           // currentColClassName="currentCol"
           // sortIndicator
