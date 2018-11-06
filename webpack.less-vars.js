@@ -18,6 +18,7 @@ export default {
   '@layout-header-background': '#404041',
   '@tree-directory-selected-bg': '#404041',
   '@tree-directory-selected-color': '#362EC8',
+  '@popover-bg': '#483d8b',
 };
 // @tabs-highlight-color: @primary-color;
 // @tabs-hover-color: @primary-5;
