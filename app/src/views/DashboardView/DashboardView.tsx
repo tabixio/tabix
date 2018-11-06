@@ -106,8 +106,9 @@ class DashboardView extends React.Component<RoutedProps, State> {
       <Page column={false} uiStore={store.uiStore} className={css.root}>
         <Splitter
           primary="second"
-          minSize="calc(100vw - 250px)"
-          defaultSize="calc(100vw - 300px)"
+          minSize={550}
+          maxSize={-300}
+          defaultSize="calc(100vw - 325px)"
           size={primaryPaneSize}
           onChange={this.onSplitterResize}
         >
