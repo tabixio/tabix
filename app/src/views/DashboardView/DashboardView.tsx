@@ -112,9 +112,9 @@ class DashboardView extends React.Component<RoutedProps, State> {
           size={primaryPaneSize}
           onDragFinished={this.onSplitterResizeFinished}
         >
-          <Flex alignItems="stretch" vfill className={css['sider-container']}>
+          <Flex alignItems="flex-start" vfill className={css['sider-container']}>
             <Layout>
-              <Layout.Sider width="100%">
+              <Layout.Sider width="100%" className={css['sider-tree']}>
                 <ServerStructureTree
                   store={store.uiStore}
                   structure={store.serverStructure.orUndefined()}

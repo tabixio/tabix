@@ -1,7 +1,12 @@
 .root {
-  padding: 0.0em;
+  padding: 0em;
 }
 
+.sider-tree {
+  background: unset !important;
+}
 .sider-container {
-  overflow-x: hidden;
+  overflow-x: scroll;
+  overflow-y: auto;
+  max-height: 100vh;
 }
