@@ -19,13 +19,24 @@ const globalMonaco: Monaco = window.monaco;
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
   language: 'clickhouse',
   theme: 'cobalt',
-  minimap: { enabled: false },
+  minimap: { enabled: true, maxColumn: 60 },
   selectOnLineNumbers: true,
-  automaticLayout: true,
+  automaticLayout: true, // Enable that the editor will install an interval to check if its container dom node size has changed. Enabling this might have a severe performance impact. Defaults to false.
   formatOnPaste: true,
   fontFamily: 'Monaco,Menlo,Ubuntu Mono,Consolas,"source-code-pro","monospace"',
   fontSize: 14,
+  fontLigatures: true,
+  // autoIndent: false,// Enable auto indentation adjustment. Defaults to false.
   fontWeight: 'lighter',
+  emptySelectionClipboard: true,
+  formatOnType: true,
+  showFoldingControls: 'always',
+  smoothScrolling: true,
+  parameterHints: true,
+  quickSuggestionsDelay: 500,
+  renderWhitespace: 'boundary',
+  scrollBeyondLastLine: false,
+  // @todo: codeActionsOnSave & codeActionsOnSaveTimeout // ICodeActionsOnSaveOptions
 };
 
 /**
