@@ -9,12 +9,13 @@ import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import css from './Page.css';
 
-export interface Props extends FlexProps {
+interface Props extends FlexProps {
   uiStore?: UIStore<RootStore>;
   children?: React.ReactNode;
 }
 
-class Page extends React.Component<Props> {
+@observer
+export default class Page extends React.Component<Props> {
   private readonly notificationReaction: IReactionDisposer;
 
   constructor(props: Props) {
@@ -62,7 +63,7 @@ class Page extends React.Component<Props> {
           hfill
           grow
           shrink={false}
-          component="main"
+          component={<main />}
           className={classNames(css['main-container'], className)}
           {...rest}
         />
@@ -70,5 +71,3 @@ class Page extends React.Component<Props> {
     );
   }
 }
-
-export default observer(Page);
