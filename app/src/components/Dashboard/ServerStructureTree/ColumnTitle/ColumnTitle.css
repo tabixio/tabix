@@ -1,8 +1,11 @@
 .name {
   padding-left: 0.25em;
+  font-family: Monaco, Menlo, Ubuntu Mono, Consolas, 'source-code-pro', 'monospace';
+  font-size: 90%;
 }
 
 .type {
   font-family: monospace;
-  font-size: 70%;
+  font-size: 75%;
+  color: silver;
 }
