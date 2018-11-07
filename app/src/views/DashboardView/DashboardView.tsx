@@ -45,6 +45,8 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private insertText(text: string) {
     const { store } = this.props;
+    // @todo : Move to EditorCode insertMethod(`typeInsertEnum`,`text`);
+    // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
     store.activeTab.flatMap(t => t.codeEditor).forEach(editor => {
       editor.focus();
       editor.trigger('keyboard', 'type', { text });
