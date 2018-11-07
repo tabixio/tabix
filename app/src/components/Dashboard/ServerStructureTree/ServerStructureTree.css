@@ -5,7 +5,6 @@
     transition: 0ms !important;
   } */
 
-
   & :global(.anticon-caret-down) {
     color: text-color;
   }
@@ -33,7 +32,7 @@
       width: 12px;
     }
     & > :global(.ant-tree-node-selected) {
-      color:link-color;
+      color: link-color;
     }
     & > :global(.ant-tree-node-content-wrapper) {
       /* & > [class*='ant-tree-node-content-wrapper-'] { */
@@ -45,5 +44,6 @@
   & li.column {
     padding-top: 0;
     padding-bottom: 0;
+    flex-wrap: nowrap;
   }
 }

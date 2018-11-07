@@ -9,6 +9,7 @@
 
       & .ant-tabs-nav-container {
         /* flex-shrink: 0; */
+        /*height: unset !important; */
       }
 
       & div.ant-tabs-extra-content {
@@ -29,9 +30,15 @@
       & .ant-tabs-tab {
         color: silver;
         background: unset !important;
+        /* border-right: deeppink 1px dotted !important;
+        border-left: unset !important;
+        border-bottom: unset !important;
+        border-top: unset !important;*/
         border: unset !important;
         padding: 0 8px;
         margin-right: 0;
+        /* line-height: unset !important; */
+        border-radius: unset !important;
       }
     }
 

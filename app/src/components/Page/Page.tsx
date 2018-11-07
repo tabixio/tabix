@@ -34,7 +34,11 @@ export default class Page extends React.Component<Props> {
             type: n.type,
             message: n.text,
             description: '',
-            duration: 0,
+            style: {
+              width: 600,
+              marginLeft: 335 - 600,
+            },
+            // duration: 30,
             onClose: () => {
               const { uiStore } = this.props;
               uiStore && uiStore.closeNotification(n.id);
