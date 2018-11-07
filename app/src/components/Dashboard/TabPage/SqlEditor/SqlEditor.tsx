@@ -141,6 +141,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   componentWillUnmount() {
     this.setEditorRef(undefined);
     if (this.props && this.props.serverStructure) {
+      // refactor: Why update monaco on editor unmount? Maybe update on mount and activate?
       this.updateGlobalEditorStructure(this.props.serverStructure);
     }
   }

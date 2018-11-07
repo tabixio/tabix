@@ -14,14 +14,14 @@ body {
   padding: 0;
 }
 
-body * {
+/* body * {
   font: inherit;
   color: inherit;
-}
+} */
 
-body svg {
-  /* fill: inherit; */
-}
+/* body svg { */
+/* fill: inherit; */
+/* } */
 
 input::placeholder {
   color: inherit;
