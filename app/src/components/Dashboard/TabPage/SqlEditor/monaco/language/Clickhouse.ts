@@ -58,6 +58,7 @@ export const languageDef = {
     { open: '(', close: ')', token: 'delimiter.parenthesis' },
   ],
   fields: [],
+  dbtables: [],
   tables: [],
   tabixCommands: [],
   keywordsGlobal: [
@@ -247,14 +248,23 @@ export const languageDef = {
       [/[;,.]/, 'delimiter'],
       [/[()]/, '@brackets'],
       [
+        /\b(\w+\.`?\w+`?)+\b/,
+        {
+          cases: {
+            '@dbtables': 'keyword.dbtable',
+            '@default': 'identifier',
+          },
+        },
+      ],
+      [
         /[\w@#$]+/,
         {
           cases: {
             '@typeKeywords': 'keyword.type',
-            '@tables': 'attribute.name',
-            '@fields': 'attribute.value',
+            '@fields': 'metatag',
             '@keywords': 'keyword',
             '@keywordsGlobal': 'keyword',
+            '@tables': 'keyword.table',
             '@operators': 'operator',
             '@builtinVariables': 'predefined',
             '@builtinFunctions': 'predefined',

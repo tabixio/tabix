@@ -47,28 +47,69 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexPro
   editorRef?: (editor?: CodeEditor) => void;
   serverStructure: ServerStructure.Server;
 }
+export interface DatabaseTables {
+  table: string;
+  db: string;
+}
 
 const modelMap = new WeakMap<Uri, SqlEditor>();
 
 function providerCompletionItems(
-  model: IReadOnlyModel
+  model: IReadOnlyModel,
+  position: Position
 ): Array<monacoEditor.languages.CompletionItem> {
   const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
-
-  // const map: MapModel | undefined = this.editorMapModel.get(model);
-  // console.log('call.providerCompletionItems', model.id, map);
   const sqlEditor = modelMap.get(model.uri);
-
-  // console.log('call.providerCompletionItems', model.uri, sqlEditor.props);
-  if (!(sqlEditor && sqlEditor.props.currentDatabase)) {
-    console.warn('sqlEditor.props.currentDatabase is empty');
+  if (
+    !(
+      sqlEditor &&
+      sqlEditor.props &&
+      sqlEditor.props.currentDatabase &&
+      sqlEditor.props.serverStructure
+    )
+  ) {
+    console.error('sqlEditor.props.currentDatabase is empty');
+    console.warn('sqlEditor', sqlEditor);
     return completionItems;
   }
   const selectDB: string = sqlEditor.props.currentDatabase;
+  let currentListTables: Array<DatabaseTables> = [];
+  const queryes: Array<Query> = sqlEditor.tokenizeModel(model, position);
 
+  if (queryes && queryes.length) {
+    // find inCursor=true, fetch all tokens - find  type: "keyword.dbtable.sql" => push to currentListTables
+    currentListTables = [];
+    queryes.forEach((query: Query) => {
+      if (!query.inCursor) return;
+      // @ts-ignore
+      query.tokens.forEach(oToken => {
+        if (['keyword.dbtable.sql', 'keyword.table.sql'].indexOf(oToken.type) !== -1) {
+          let [db, table] = oToken.text
+            .toUpperCase()
+            .trim()
+            .split('.') // @todo : need regexp
+            // @ts-ignore
+            .map(x => x.trim().replace('`', ''));
+
+          if (!table && db) {
+            table = db;
+            db = '';
+          }
+
+          currentListTables.push({ db, table });
+        }
+      });
+    });
+  }
+  // console.log('queryes', queryes);console.log(query.tokens);
+  if (currentListTables.length) console.log('Find database & tables', currentListTables);
+  // add items
   sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
     // Completion:Tables
-    if (db.name !== selectDB) return;
+    if (!currentListTables.length && db.name !== selectDB) return;
+
+    // for (currentListTables in o ) { if not find return};
+
     db.tables.forEach((table: ServerStructure.Table) => {
       table.columns.forEach((column: ServerStructure.Column) => {
         // console.log('call.providerCompletionItems', selectDB, column);
@@ -89,7 +130,6 @@ function providerCompletionItems(
   //     endLineNumber: position.lineNumber,
   //     endColumn: position.column
   // });
-  //
   // const [keyword, value] = textUntilPosition.split(':').map(x => x.trim());
   // const suggestions = keywords.get(keyword);
   //
@@ -114,7 +154,6 @@ function providerCompletionItems(
   //     documentation: property.description,
   //     insertText: `${property.name}: `
   // }));
-  //
   return completionItems;
 }
 
@@ -223,7 +262,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         });
 
         // highlight tables and databases
-        languageSettings.tables.push(`${table.database}.${table.insertName}`);
+        languageSettings.dbtables.push(`${table.database}\.${table.insertName}`);
+        languageSettings.dbtables.push(`${table.database}\.\`${table.insertName}`);
         languageSettings.tables.push(`${table.insertName}`);
         languageSettings.tables.push(`${db.name}`);
 
@@ -277,7 +317,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
     // Load to completionItems default languageSettings
 
-    const keywords=[...languageSettings.keywordsGlobal,...languageSettings.keywords];
+    const keywords = [...languageSettings.keywordsGlobal, ...languageSettings.keywords];
     keywords.forEach((word: string) => {
       completionItems.push({
         label: word.toLowerCase(),
@@ -432,13 +472,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   /**
    * tokenize all text in editor
-   *
-   *
-   * @param {Monaco} monaco
-   * @param {monacoEditor.editor.ICodeEditor} editor
-   * @returns {Array<Query>}
    */
-  private tokenizeEditor = (editor: monacoEditor.editor.ICodeEditor): Array<Query> => {
+  public tokenizeModel = (
+    model: monacoEditor.editor.ITextModel,
+    cursorPosition?: Position | undefined,
+    selection?: Selection | undefined
+  ): Array<Query> => {
     //
 
     /**
@@ -447,17 +486,18 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
      * 1) Токинизируем, с разбивкой на ключевые составляющие которые нужны: KeyWords[SELECT,DELETE], TabixCommands
      * 2) Определяем выделенную область после токинизации
      * 3) Определяем какой текст выполнять
-     *
-     *
      */
+
+    if (!cursorPosition) {
+      cursorPosition = new Position(0, 0);
+    }
+
     const splitterQueryToken = 'warn-token.sql'; // Токен разбития на запросы
     const splitterTabixToken = 'tabix.sql'; // Токен разбития на запросы
     let countTabixCommandsInQuery: number = 0; // Кол-во tabix комманд запросе
 
-    const cursorPosition: Position = editor.getPosition(); // Позиция курсора
-    const selection: Selection = editor.getSelection(); // Выбранная область
     let tokensList: any[] = [];
-    const tokens = globalMonaco.editor.tokenize(editor.getValue(), 'clickhouse'); // ВЕСЬ текст редактора
+    const tokens = globalMonaco.editor.tokenize(model.getValue(), 'clickhouse'); // ВЕСЬ текст редактора
     let countQuery: number = 0; // Кол-во запросов в тексте
     const splits: any[] = [];
     let splitToken = {
@@ -487,13 +527,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
             token.offset + 1 // ? + 1
           );
 
-          const tokenText = editor.getModel().getValueInRange(tokenRange); // Тут нужно выбирать из запроса
+          const tokenText = model.getValueInRange(tokenRange); // Тут нужно выбирать из запроса
           const fetchToken = {
             ...previousToken,
             text: tokenText,
             range: tokenRange,
-            inCursor: tokenRange.containsPosition(cursorPosition),
-            inSelected: tokenRange.containsRange(selection),
+            inCursor: cursorPosition && tokenRange.containsPosition(cursorPosition),
+            inSelected: selection && tokenRange.containsRange(selection),
           };
 
           tokensList.push(fetchToken);
@@ -564,17 +604,20 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         splitRange.endColumn
       );
 
-      const text = editor.getModel().getValueInRange(range);
-      const inCursor = range.containsPosition(cursorPosition);
-      let inSelected = selection.containsRange(range);
-      if (range.containsPosition(selection.getEndPosition())) {
-        inSelected = true;
-      }
-      if (range.containsPosition(selection.getStartPosition())) {
-        inSelected = true;
-      }
-      if (range.containsPosition(selection.getPosition())) {
-        inSelected = true;
+      const text = model.getValueInRange(range);
+
+      const inCursor = cursorPosition && range.containsPosition(cursorPosition);
+      let inSelected = selection && selection.containsRange(range);
+      if (selection) {
+        if (range.containsPosition(selection.getEndPosition())) {
+          inSelected = true;
+        }
+        if (range.containsPosition(selection.getStartPosition())) {
+          inSelected = true;
+        }
+        if (range.containsPosition(selection.getPosition())) {
+          inSelected = true;
+        }
       }
 
       if (splitRange.numCommand === 0) {
@@ -644,7 +687,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         if (splitRange.tokens) {
           // @ts-ignore
           splitRange.tokens.forEach(oToken => {
-            if (oToken.type === 'tabix.sql') {
+            if (oToken.type === splitterTabixToken) {
               typeOfCommand = oToken.text;
             }
           });
@@ -686,7 +729,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     console.info(`%c------------>>> executeCommand >>>--------------`, 'color: red');
     // is user select text? yes - overwrite typeCommand
     let typeCommand = _typeCommand;
-    const userSelection: IRange = editor.getSelection();
+    // Fetch positions & selections
+    const cursorPosition: Position = editor.getPosition(); // Позиция курсора
+    const userSelection: Selection = editor.getSelection(); // Выбранная область
     const selectedText = editor.getModel().getValueInRange(userSelection);
     if (selectedText && selectedText.trim()) {
       if (typeCommand === 'current') {
@@ -695,10 +740,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
 
     // Split all editor text to sql query, by tokens, result is queryParseList:Array<Query>
-    const queryParseList = this.tokenizeEditor(editor);
 
-    // console.info('Result tokenizeEditor');
-    // console.table(queryParseList);
+    const queryParseList = this.tokenizeModel(editor.getModel(), cursorPosition, userSelection);
 
     const queryExecList: Array<Query> = [];
 

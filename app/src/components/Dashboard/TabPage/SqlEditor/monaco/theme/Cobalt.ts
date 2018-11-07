@@ -258,6 +258,15 @@ export const themeCobalt: editor.IStandaloneThemeData = {
       fontStyle: 'bold',
       token: 'warn-token.sql',
     },
+    {
+      foreground: '628759',
+      fontStyle: 'bold',
+      token: 'keyword.dbtable',
+    },
+    {
+      foreground: '628759',
+      token: 'keyword.table',
+    },
   ],
   colors: {
     'editor.foreground': '#FFFFFF',
