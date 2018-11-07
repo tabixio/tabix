@@ -105,7 +105,6 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
   private onCallContextMenu(_ht: Handsontable, item: any, key: string, options: any) {
     // console.log('callContextMenu', _ht, item, key, options);
     const result = HotTableHelper.manipulations(_ht, key, options);
-    _ht.render();
     if (!result) return false;
     if (item.result === 'insert') {
       // to insert result to editor ( where cursor )
@@ -196,40 +195,42 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
 
     return (
       <Flex componentRef={this.rootRef} className={classNames(css.root, className)} {...flexProps}>
-        <HotTable
-          className={isDark ? 'handsontable-dark' : ''}
-          rowHeaders
-          columns={columns}
-          data={data.rows}
-          allowEmpty
-          allowInsertColumn={false}
-          allowInsertRow={false}
-          columnSorting={this.getColumnSorting(data.meta.columns)}
-          contextMenu={this.fetchContextMenu()}
-          sortIndicator
-          manualColumnMove
-          manualColumnResize
-          manualColumnFreeze
-          mergeCells
-          manualRowResize
-          stretchH="all"
-          // colWidths={100}
-          // observeChanges={false} /* =<!memory leak if true! */
-          // observeDOMVisibility
-          fillHandle={false}
-          customBorders
-          viewportColumnRenderingOffset="auto"
-          wordWrap={false}
-          autoColumnSize={{ samplingRatio: 23 }}
-          // currentRowClassName="currentRowDark"
-          // currentColClassName="currentCol"
-          // sortIndicator
-          // fixedRowsTop={1}
-          renderAllRows={false}
-          // visibleRows={1000}
-          // contextMenu={contextMenu}
-          // columnsMenu={columnsMenu}
-        />
+        <div className={css.node}>
+          <HotTable
+            className={isDark ? 'handsontable-dark' : ''}
+            rowHeaders
+            columns={columns}
+            data={data.rows}
+            allowEmpty
+            allowInsertColumn={false}
+            allowInsertRow={false}
+            columnSorting={this.getColumnSorting(data.meta.columns)}
+            contextMenu={this.fetchContextMenu()}
+            sortIndicator
+            manualColumnMove
+            manualColumnResize
+            manualColumnFreeze
+            mergeCells
+            manualRowResize
+            stretchH="all"
+            // colWidths={100}
+            observeChanges={false} /* =<!memory leak if true! */
+            observeDOMVisibility
+            fillHandle={false}
+            customBorders
+            viewportColumnRenderingOffset="auto"
+            wordWrap={false}
+            autoColumnSize={{ samplingRatio: 23 }}
+            // currentRowClassName="currentRowDark"
+            // currentColClassName="currentCol"
+            // sortIndicator
+            // fixedRowsTop={1}
+            renderAllRows={false}
+            // visibleRows={1000}
+            // contextMenu={contextMenu}
+            // columnsMenu={columnsMenu}
+          />
+        </div>
       </Flex>
     );
   }

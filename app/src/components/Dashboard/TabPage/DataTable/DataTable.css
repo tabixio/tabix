@@ -1,6 +1,9 @@
 .root {
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   font-size: 12px;
   font-family: Menlo, Inconsolata, Courier New, monospace, Helvetica, arial;
+}
+.node {
+  /*border: 0px solid salmon;*/
 }
