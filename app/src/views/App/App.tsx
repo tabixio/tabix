@@ -9,6 +9,7 @@ import 'assets/styles/global.css';
 import { AppStore, Stores } from 'stores';
 import { routePaths } from 'routes';
 import { Connection } from 'services';
+import AppErrorBoundary from 'components/AppErrorBoundary';
 import DashboardView from 'views/DashboardView';
 import SignInView from 'views/SignInView';
 import SignOut from 'components/SignOut';
@@ -59,31 +60,31 @@ class App extends React.Component<RoutedProps> {
       return null;
     }
 
-    // if (store.uiStore.hasError) {
-    //   return <AppError error={store.uiStore.notifications[0].text} />;
-    // }
+    const error = store.uiStore.hasError ? store.uiStore.notifications[0].text : '';
 
     return (
-      <AuthorizationProvider
-        isLoggedIn={store.isLoggedIn}
-        isAuthorized={store.isAuthorized}
-        redirectTo={routePaths.signIn.path}
-        notLoggedInRedirectTo={routePaths.home.path}
-      >
-        <Switch>
-          <LoggedInRoute exact path={routePaths.home.path}>
-            <Redirect to={routePaths.dashboard.path} />
-          </LoggedInRoute>
+      <AppErrorBoundary error={error}>
+        <AuthorizationProvider
+          isLoggedIn={store.isLoggedIn}
+          isAuthorized={store.isAuthorized}
+          redirectTo={routePaths.signIn.path}
+          notLoggedInRedirectTo={routePaths.home.path}
+        >
+          <Switch>
+            <LoggedInRoute exact path={routePaths.home.path}>
+              <Redirect to={routePaths.dashboard.path} />
+            </LoggedInRoute>
 
-          <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
+            <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
 
-          <LoggedInRoute exact path={routePaths.signOut.path} component={SignOut} />
+            <LoggedInRoute exact path={routePaths.signOut.path} component={SignOut} />
 
-          <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
+            <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
 
-          <Redirect to={routePaths.home.path} />
-        </Switch>
-      </AuthorizationProvider>
+            <Redirect to={routePaths.home.path} />
+          </Switch>
+        </AuthorizationProvider>
+      </AppErrorBoundary>
     );
   }
 }
