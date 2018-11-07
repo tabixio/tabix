@@ -65,7 +65,8 @@ export default class TabPage extends React.Component<Props> {
 
   render() {
     const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
-    const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
+    // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
+    const dataList = model.data;
 
     return (
       <React.Fragment>
@@ -83,7 +84,7 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              <GridLayout cols={4} itemWidth={4} itemHeight={4} items={dataList} width={width}>
+              <GridLayout cols={4} itemWidth={4} itemHeight={14} items={dataList} width={width}>
                 {dataList.map((data, i) => (
                   <div key={i} className={css['grid-item']}>
                     <DataTable data={data} fill />
