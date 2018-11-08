@@ -529,12 +529,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
               format = oToken.text.trim();
             }
             if (oToken.type === 'keyword.other.DML.sql') {
-              if (['SELECT'].indexOf(oToken.text.toUpperCase()) !== -1) {
+              if (['SELECT'].indexOf(oToken.text.toUpperCase().trim()) !== -1) {
                 findSelectQuery = true;
               }
             }
             if (oToken.type === 'keyword.sql') {
-              if (['DROP', 'CREATE', 'ALTER'].indexOf(oToken.text.toUpperCase()) !== -1) {
+              if (['DROP', 'CREATE', 'ALTER'].indexOf(oToken.text.toUpperCase().trim()) !== -1) {
                 isOperationCAD = true;
                 findSelectQuery = false;
               }
