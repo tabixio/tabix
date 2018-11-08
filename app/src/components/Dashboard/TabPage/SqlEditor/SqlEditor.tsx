@@ -46,11 +46,6 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexPro
   serverStructure: ServerStructure.Server;
 }
 
-export interface DatabaseTables {
-  table: string;
-  db: string;
-}
-
 const globalMonaco: Monaco = window.monaco;
 
 @observer
