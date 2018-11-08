@@ -62,24 +62,28 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       runInAction(() => {
         this.serverStructure = Option.of(structure);
 
-        // load saved tabs
-        localStorage.getTabs().fold(
-          ex => {
-            console.error(ex);
-          },
-          tabs => {
-            this.tabs = tabs.map(TabModel.from);
-          }
-        );
+        // load saved tabs if empty
+        if (!this.tabs.length) {
+          localStorage.getTabs().fold(
+            ex => {
+              console.error(ex);
+            },
+            tabs => {
+              this.tabs = tabs.map(TabModel.from);
+            }
+          );
+        }
 
         // todo: remove after testing
         if (!this.tabs.length) this.tabs = tabModels;
 
-        // load saved active tab id
-        this.activeTab = localStorage
-          .getActiveTabId()
-          .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
-          .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
+        // load saved active tab id if none
+        if (this.activeTab.isEmpty()) {
+          this.activeTab = localStorage
+            .getActiveTabId()
+            .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
+            .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
+        }
       });
 
       // expand root node if expanded keys is empty
