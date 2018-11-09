@@ -29,7 +29,7 @@ interface State {
 
 @observer
 class DashboardView extends React.Component<RoutedProps, State> {
-  state = {
+  state: State = {
     primaryPaneSize: undefined,
   };
 
@@ -43,20 +43,15 @@ class DashboardView extends React.Component<RoutedProps, State> {
     store.loadData();
   };
 
-  private insertText(text: string) {
+  private insertTextToEditor(text: string) {
     const { store } = this.props;
-    // @todo : Move to EditorCode insertMethod(`typeInsertEnum`,`text`);
-    // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
-    store.activeTab.flatMap(t => t.codeEditor).forEach(editor => {
-      editor.focus();
-      editor.trigger('keyboard', 'type', { text });
-    });
+    store.activeTab.flatMap(t => t.codeEditor).forEach(editor => editor.insertText(text, ''));
   }
 
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
     switch (action) {
       case TableAction.InsertTableName:
-        this.insertText(table.name);
+        this.insertTextToEditor(table.name);
         break;
       default:
         break;
@@ -65,7 +60,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private onColumnAction = (action: ColumnAction, column: ServerStructure.Column) => {
     if (action === ColumnAction.DoubleClick) {
-      this.insertText(column.name);
+      this.insertTextToEditor(column.name);
     }
   };
 

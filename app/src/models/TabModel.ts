@@ -9,15 +9,15 @@ import {
 import { Option, None } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
-import { CodeEditor } from 'components/Dashboard';
 import DataDecorator from 'services/api/DataDecorator';
+import SqlEditor from 'components/Dashboard/TabPage/SqlEditor';
 
 export interface Tab {
   id: string;
   title: string;
   content: string;
   currentDatabase: Option<string>;
-  codeEditor: Option<CodeEditor>;
+  codeEditor: Option<SqlEditor>;
   data: DataDecorator[];
 }
 
@@ -56,7 +56,7 @@ export default class TabModel extends StoreModel<Tab>
   @observable
   data: DataDecorator[];
 
-  codeEditor: Option<CodeEditor>;
+  codeEditor: Option<SqlEditor>;
 
   protected constructor({ id, title, content, currentDatabase, data, codeEditor }: Tab) {
     super();

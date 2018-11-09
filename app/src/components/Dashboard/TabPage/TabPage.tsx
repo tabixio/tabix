@@ -8,7 +8,7 @@ import { ServerStructure } from 'services';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
 import Splitter from 'components/Splitter';
-import SqlEditor, { CodeEditor } from './SqlEditor';
+import SqlEditor from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import SaveModal from './SaveModal';
 import GridLayout from './GridLayout';
@@ -27,25 +27,21 @@ interface Props extends SplitPaneProps {
 @observer
 export default class TabPage extends React.Component<Props> {
   private onContentChange = (content: string) => {
-    const { onTabModelFieldChange } = this.props;
-    onTabModelFieldChange({ name: 'content', value: content });
+    this.props.onTabModelFieldChange({ name: 'content', value: content });
   };
 
   private onDatabaseChange = (db: ServerStructure.Database) => {
-    const { onTabModelFieldChange } = this.props;
-    onTabModelFieldChange({ name: 'currentDatabase', value: Option.of(db.name) });
+    this.props.onTabModelFieldChange({ name: 'currentDatabase', value: Option.of(db.name) });
   };
 
-  private setEditorRef = (editor?: CodeEditor) => {
-    const { onTabModelFieldChange } = this.props;
-    onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
+  private setEditorRef = (editor: SqlEditor | null) => {
+    this.props.onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
   };
 
   private onAction = (action: ActionType, eventData?: any) => {
     switch (action) {
       case ActionType.Save: {
         const { store } = this.props;
-
         store.uiStore.showSaveModal();
         break;
       }
@@ -78,7 +74,7 @@ export default class TabPage extends React.Component<Props> {
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onAction}
-            editorRef={this.setEditorRef}
+            ref={this.setEditorRef}
             fill
           />
 
