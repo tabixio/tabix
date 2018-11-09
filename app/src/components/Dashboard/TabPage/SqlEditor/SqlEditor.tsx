@@ -37,12 +37,11 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 };
 
 type Monaco = typeof monacoEditor;
-export type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
+type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
-  editorRef?: (editor?: CodeEditor) => void;
   serverStructure: ServerStructure.Server;
 }
 
@@ -82,10 +81,17 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   }
 
+  public insertText(text: string, mode: any) {
+    // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
+    console.log(text, mode);
+    if (!this.editor) return;
+
+    this.editor.focus();
+    this.editor.trigger('keyboard', 'type', { text });
+  }
+
   private setEditorRef = (editor?: CodeEditor) => {
     this.editor = editor;
-    const { editorRef } = this.props;
-    editorRef && editorRef(editor);
   };
 
   private onEditorWillMount = (monaco: Monaco) => {
@@ -704,7 +710,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       onDatabaseChange,
       content,
       onContentChange,
-      editorRef,
       onAction,
       className,
       ...rest

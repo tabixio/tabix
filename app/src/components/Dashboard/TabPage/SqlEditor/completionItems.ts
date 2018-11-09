@@ -1,7 +1,6 @@
 import monacoEditor, { Position, Uri } from 'monaco-editor';
 import { ServerStructure, Query } from 'services';
 import SqlEditor from 'components/Dashboard/TabPage/SqlEditor';
-// import { DatabaseTables } from 'components/Dashboard/TabPage/SqlEditor/SqlEditor';
 
 type IReadOnlyModel = monacoEditor.editor.IReadOnlyModel;
 type Monaco = typeof monacoEditor;

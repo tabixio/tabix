@@ -4,6 +4,7 @@ import { Tree } from 'antd';
 import { AntTreeNode } from 'antd/lib/tree';
 import { SelectValue } from 'antd/lib/select';
 import { Flex } from 'reflexy';
+import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
@@ -31,7 +32,7 @@ interface Props extends Pick<ServerTitleProps, 'onReload'> {
 
 @observer
 export default class ServerStructureTree extends React.Component<Props> {
-  private onNodeDoubleClick = (_event: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
+  private onNodeDoubleClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
     const key = node.props.eventKey;
     if (!key) return;
 
@@ -55,16 +56,10 @@ export default class ServerStructureTree extends React.Component<Props> {
 
     const [dbName, tableName, columnName] = names;
 
-    const db = structure.databases.find(d => d.name === dbName);
-    if (!db) return;
-
-    const table = db.tables.find(t => t.name === tableName);
-    if (!table) return;
-
-    const column = table.columns.find(c => c.name === columnName);
-    if (!column) return;
-
-    onColumnAction(ColumnAction.DoubleClick, column);
+    Option.of(structure.databases.find(d => d.name === dbName))
+      .flatMap(db => Option.of(db.tables.find(t => t.name === tableName)))
+      .flatMap(table => Option.of(table.columns.find(c => c.name === columnName)))
+      .forEach(onColumnAction.bind(undefined, ColumnAction.DoubleClick));
   };
 
   private expand = (keys: string[]) => {
@@ -132,7 +127,6 @@ export default class ServerStructureTree extends React.Component<Props> {
           onExpand={this.expand}
           filterTreeNode={this.highlightTreeNode}
           selectedKeys={store.treeSelectedKeys}
-          onDoubleClick={this.onNodeDoubleClick}
           onClick={this.onNodeDoubleClick}
           className={css.root}
         >
