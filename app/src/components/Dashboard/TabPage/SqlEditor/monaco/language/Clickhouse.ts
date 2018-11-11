@@ -310,6 +310,12 @@ export const languageDef = {
           },
         },
       ],
+      [
+        '\\bcreate(\\sMATERIALIZED)?\\s+(database|view)(\\s+if\\s+not\\s+exists)?',
+        { cases: { '@default': 'keyword.other.create.sql' } },
+      ],
+      // "match": "(?i:^\\s*(create(?:\\s+or\\s+replace)?)\\s+(aggregate|conversion|database|domain|function|group|(unique\\s+)?index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view)\\s+)(['\"`]?)(\\w+)\\4",
+      // "name": "meta.create.sql"
       ['\\bAS\\b', { cases: { '@default': 'keyword.other.alias.sql' } }],
       ['\\b(DESC|ASC)\\b', { cases: { '@default': 'keyword.other.order.sql' } }],
       // "keyword.other.object-comments.sql"=>"(?i:^\\s*(comment\\s+on\\s+(table|column|aggregate|constraint|database|domain|function|index|operator|rule|schema|sequence|trigger|type|view))\\s+.*?\\s+(is)\\s+)"
