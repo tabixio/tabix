@@ -248,7 +248,7 @@ export const languageDef = {
       [/[;,.]/, 'delimiter'],
       [/[()]/, '@brackets'],
       [
-        /\b(\w+\.`?\w+`?)+\b/,
+        /\b(\w+\.[`"][\w.]+["`])|\b(\w+\.\w+)\b/,
         {
           cases: {
             '@dbtables': 'keyword.dbtable',

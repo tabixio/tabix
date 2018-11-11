@@ -160,7 +160,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
         // highlight tables and databases
         languageSettings.dbtables.push(`${table.database}\.${table.insertName}`);
-        languageSettings.dbtables.push(`${table.database}\.\`${table.insertName}`);
+        languageSettings.dbtables.push(`${table.database}\.${table.insertName.replace(/"/g, '`')}`);
         languageSettings.tables.push(`${table.insertName}`);
         languageSettings.tables.push(`${db.name}`);
 
