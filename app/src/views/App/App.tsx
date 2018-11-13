@@ -71,15 +71,15 @@ class App extends React.Component<RoutedProps> {
           notLoggedInRedirectTo={routePaths.home.path}
         >
           <Switch>
-            <LoggedInRoute exact path={routePaths.home.path}>
-              <Redirect to={routePaths.dashboard.path} />
-            </LoggedInRoute>
-
             <NotLoggedInRoute exact path={routePaths.signIn.path} component={SignInView} />
 
             <LoggedInRoute exact path={routePaths.signOut.path} component={SignOut} />
 
-            <LoggedInRoute path={routePaths.dashboard.path} component={DashboardView} />
+            <LoggedInRoute exact path={routePaths.dashboard.path} component={DashboardView} />
+
+            <LoggedInRoute exact path={routePaths.home.path}>
+              <Redirect to={routePaths.dashboard.path} />
+            </LoggedInRoute>
 
             <Redirect to={routePaths.home.path} />
           </Switch>

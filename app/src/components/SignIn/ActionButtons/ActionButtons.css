@@ -1,5 +1,13 @@
 .root {
-  button + button {
+  button {
+    width: 100%;
+    display: block !important;
+  }
+
+  button + button,
+  button + span {
     margin-left: 1em;
+    display: block !important;
+    width: 100%;
   }
 }

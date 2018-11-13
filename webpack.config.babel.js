@@ -56,6 +56,7 @@ export default {
             options: {
               modules: true,
               localIdentName: '[name]__[local]--[hash:5]',
+              sourceMap: true,
               importLoaders: 1,
             },
           },
@@ -66,17 +67,13 @@ export default {
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'node_modules')],
-        exclude: [
-          path.join(baseDir, 'node_modules', 'monaco-editor'),
-          path.join(baseDir, 'node_modules', 'antd'),
-        ],
+        exclude: [path.join(baseDir, 'node_modules', 'antd')],
         use: [
           'style-loader',
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[local]',
+              sourceMap: true,
             },
           },
         ],
@@ -87,7 +84,12 @@ export default {
         include: [path.resolve(baseDir, 'node_modules', 'antd')],
         use: [
           'style-loader',
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
           {
             loader: 'less-loader',
             options: {
@@ -96,12 +98,6 @@ export default {
             },
           },
         ],
-      },
-
-      {
-        test: /\.css$/,
-        include: [path.resolve(baseDir, 'node_modules', 'monaco-editor')],
-        use: ['style-loader', 'css-loader'],
       },
 
       { test: /\.pug$/, use: { loader: 'pug-loader' } },

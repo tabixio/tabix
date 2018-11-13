@@ -18,7 +18,7 @@ export default function ActionButtons({
 }: ActionButtonsProps) {
   return (
     <Flex className={css.root}>
-      <Button block type="primary" htmlType="submit" onClick={onSignIn} disabled={!signInEnabled}>
+      <Button type="primary" htmlType="submit" onClick={onSignIn} disabled={!signInEnabled}>
         SIGN IN
       </Button>
 
@@ -28,7 +28,7 @@ export default function ActionButtons({
         okText="Yes"
         cancelText="No"
       >
-        <Button block type="danger" disabled={!deleteEnabled}>
+        <Button type="danger" disabled={!deleteEnabled}>
           DELETE
         </Button>
       </Popconfirm>

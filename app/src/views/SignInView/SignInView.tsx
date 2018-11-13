@@ -22,7 +22,7 @@ type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
 class SignInView extends React.Component<RoutedProps> {
-  componentWillMount() {
+  componentDidMount() {
     const { store } = this.props;
     store.loadConnections();
   }

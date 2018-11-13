@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { typedInject } from '@vzh/mobx-stores';
 import { AppStore, Stores } from 'stores';
@@ -9,7 +10,10 @@ interface InjectedProps {
 type Props = InjectedProps & RouteComponentProps<any>;
 
 function SignOut({ store, history }: Props) {
-  store.logout(history);
+  useEffect(() => {
+    store.logout(history);
+  }, []);
+
   return null;
 }
 

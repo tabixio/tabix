@@ -1,5 +1,5 @@
 import { History } from 'history';
-import { observable, action } from 'mobx';
+import { observable, action, transaction } from 'mobx';
 import { Option } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
 import { FromLocationDescriptorObject } from '@vzh/react-auth';
@@ -16,6 +16,7 @@ export default class SignInStore extends ApiRequestableStore {
   connectionList: ReadonlyArray<ConnectionModel> = [];
 
   @withRequest
+  @action
   async loadConnections() {
     const list = localStorage.getConnections();
     this.connectionList = list.map(ConnectionModel.of);
@@ -36,37 +37,39 @@ export default class SignInStore extends ApiRequestableStore {
       type: this.selectedConnection.type,
       connectionName: this.getNewConnectionName(),
     });
-    this.connectionList = this.connectionList.concat(con);
-    this.setSelectedConnection(con);
+    transaction(() => {
+      this.connectionList = this.connectionList.concat(con);
+      this.setSelectedConnection(con);
+    });
     localStorage.saveConnections(this.connectionList);
   }
 
   @withRequest.bound
   @action
   async deleteSelectedConnection() {
-    this.connectionList = this.connectionList.filter(
-      c => c.connectionName !== this.selectedConnection.connectionName
-    );
-    this.setSelectedConnection(
-      isDirectConnection(this.selectedConnection)
-        ? ConnectionModel.DirectEmpty
-        : ConnectionModel.ServerEmpty
-    );
+    transaction(() => {
+      this.connectionList = this.connectionList.filter(
+        c => c.connectionName !== this.selectedConnection.connectionName
+      );
+      this.setSelectedConnection(
+        isDirectConnection(this.selectedConnection)
+          ? ConnectionModel.DirectEmpty
+          : ConnectionModel.ServerEmpty
+      );
+    });
     localStorage.saveConnections(this.connectionList);
   }
 
-  @action.bound
-  async signIn(history: History) {
-    const r = await this.submit(this.selectedConnection, async () => {
+  signIn(history: History) {
+    return this.submit(this.selectedConnection, async () => {
       const api = await Api.connect(this.selectedConnection.toJSON());
-      this.rootStore.appStore.updateApi(Option.of(api));
-    });
-
-    r.forEach(() => {
-      const {
-        state: { from: path } = { from: routePaths.home.path },
-      } = history.location as FromLocationDescriptorObject;
-      history.push(path);
+      transaction(() => {
+        this.rootStore.appStore.updateApi(Option.of(api));
+        const {
+          state: { from: path } = { from: routePaths.home.path },
+        } = history.location as FromLocationDescriptorObject;
+        history.push(path);
+      });
     });
   }
 }
