@@ -8,7 +8,7 @@ import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import { routePaths } from 'routes';
 import Page from 'components/Page';
-import { ServerStructureTree, TabPage, Tabs } from 'components/Dashboard';
+import { ServerStructureTree, TabPage, Tabs, NavPrompt } from 'components/Dashboard';
 import { ActionType } from 'components/Dashboard/Tabs';
 import { TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
@@ -33,8 +33,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
     primaryPaneSize: undefined,
   };
 
-  constructor(props: RoutedProps) {
-    super(props);
+  componentDidMount() {
     this.load();
   }
 
@@ -98,9 +97,12 @@ class DashboardView extends React.Component<RoutedProps, State> {
     const { store } = this.props;
     const { primaryPaneSize } = this.state;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
+    const isBlocking = store.activeTab.map(t => !!t.content).getOrElse(false);
 
     return (
       <Page column={false} uiStore={store.uiStore} className={css.root}>
+        <NavPrompt when={isBlocking} message="Do you want to leave this page?" />
+
         <Splitter
           primary="second"
           minSize={550}

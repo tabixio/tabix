@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { supportsHistory } from 'history/DOMUtils';
 import { Provider } from 'mobx-react';
 import { initStores } from 'stores';
 import { localStorage } from 'services';
@@ -14,10 +15,9 @@ function render(
   appProps: AppProps,
   store: ReturnType<typeof initStores>
 ) {
-  const supportsHistory = 'pushState' in window.history;
   ReactDOM.render(
     <Provider store={store}>
-      <BrowserRouter forceRefresh={!supportsHistory}>
+      <BrowserRouter forceRefresh={!supportsHistory()}>
         <Component {...appProps} />
       </BrowserRouter>
     </Provider>,
