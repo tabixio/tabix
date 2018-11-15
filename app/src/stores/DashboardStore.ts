@@ -1,6 +1,7 @@
 import { observable, action, runInAction, transaction, IReactionDisposer, reaction } from 'mobx';
-import { Option, None, Some } from 'funfix-core';
+import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
+import uuid from 'uuid';
 import { ServerStructure, localStorage, Query } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
@@ -146,7 +147,8 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     });
   }
 
-  execQueries(queries: Query[]) {
+  @withRequest
+  async execQueries(queries: Query[]) {
     // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
     if (!queries.length) return;
 
@@ -155,24 +157,25 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
-    this.activeTab.forEach(async tab => {
-      const t = await this.request(async () =>
-        // return api.fetch(tab.content, tab.currentDatabase.get());
-        Promise.all(
-          queries.map(q => {
+    await this.activeTab
+      .map(async tab => {
+        const results = await Promise.all(
+          queries.map(async q => {
             q.extendSettings = extendSettings;
-            return this.api.fetch(q);
+            const id = uuid();
+            try {
+              const fetchResult = await this.api.fetch(q);
+              return { id, result: Try.success(fetchResult) };
+            } catch (ex) {
+              return { id, result: Try.failure(ex) };
+            }
           })
-        )
-      );
-
-      runInAction(() => {
-        t.forEach(result => {
-          // tab.data = Option.of(result);
-          tab.data = result;
+        );
+        runInAction(() => {
+          tab.queriesResult = results;
         });
-      });
-    });
+      })
+      .getOrElse(Promise.resolve());
   }
 
   dispose() {

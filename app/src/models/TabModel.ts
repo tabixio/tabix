@@ -6,7 +6,7 @@ import {
   serialize,
   JSONModel,
 } from '@vzh/mobx-stores';
-import { Option, None } from 'funfix-core';
+import { Option, None, Try } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
 import DataDecorator from 'services/api/DataDecorator';
@@ -18,10 +18,15 @@ export interface Tab {
   content: string;
   currentDatabase: Option<string>;
   codeEditor: Option<SqlEditor>;
-  data: DataDecorator[];
+  queriesResult: QueryResult[];
 }
 
 export interface TabJsonEntity extends Omit<Tab, 'codeEditor' | 'data'> {}
+
+export interface QueryResult {
+  id: string;
+  result: Try<DataDecorator>;
+}
 
 export default class TabModel extends StoreModel<Tab>
   implements Tab, SerializableModel<TabJsonEntity> {
@@ -37,7 +42,7 @@ export default class TabModel extends StoreModel<Tab>
       content,
       currentDatabase: Option.of(currentDatabase),
       codeEditor: None,
-      data: [],
+      queriesResult: [],
     });
   }
 
@@ -54,17 +59,17 @@ export default class TabModel extends StoreModel<Tab>
   currentDatabase: Option<string>;
 
   @observable
-  data: DataDecorator[];
+  queriesResult: QueryResult[];
 
   codeEditor: Option<SqlEditor>;
 
-  protected constructor({ id, title, content, currentDatabase, data, codeEditor }: Tab) {
+  protected constructor({ id, title, content, currentDatabase, queriesResult, codeEditor }: Tab) {
     super();
     this.id = id;
     this.title = title;
     this.content = content;
     this.currentDatabase = currentDatabase;
-    this.data = data;
+    this.queriesResult = queriesResult;
     this.codeEditor = codeEditor;
   }
 

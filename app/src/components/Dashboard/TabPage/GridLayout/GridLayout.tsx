@@ -1,67 +1,85 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import { Omit } from 'typelevel-ts';
+import { Childrenable } from 'reflexy';
 
 const ReactGridLayoutFilled = WidthProvider(ReactGridLayout);
 
-interface Props {
+export type ItemLayoutProps = Omit<GridLayoutProps, 'items' | 'getItemLayout' | 'width'>;
+
+export interface GridLayoutProps extends Childrenable {
   items: any[];
   cols: number;
   itemWidth: number;
   itemHeight: number;
+  rowHeight?: number;
   width?: number;
+  getItemLayout?: (index: number, item: any, props: ItemLayoutProps) => ReactGridLayout.Layout;
 }
 
-interface State {
-  items: any[];
-  layout: ReactGridLayout.Layout[];
+export function getItemLayoutDefault(
+  index: number,
+  _item: any,
+  { itemWidth, itemHeight, cols }: ItemLayoutProps
+): ReactGridLayout.Layout {
+  return {
+    x: (index * itemWidth) % cols,
+    y: 0,
+    w: itemWidth,
+    h: itemHeight,
+    minH: 2,
+    i: index.toString(),
+  };
 }
 
-export default class GridLayout extends React.Component<Props, State> {
-  static rowHeight: number = 50;
+function calculateLayout({
+  items,
+  cols,
+  itemWidth,
+  itemHeight,
+  getItemLayout = getItemLayoutDefault,
+}: GridLayoutProps): ReactGridLayout.Layout[] {
+  return items.map<ReactGridLayout.Layout>((item, i) =>
+    getItemLayout(i, item, { itemHeight, itemWidth, cols })
+  );
+}
 
-  static calculateLayout({ items, cols, itemWidth, itemHeight }: Props): State['layout'] {
-    return items.map<ReactGridLayout.Layout>((_, i) => ({
-      x: (i * itemWidth) % cols,
-      y: 0,
-      w: itemWidth,
-      h: itemHeight,
-      minH: 2,
-      i: i.toString(),
-    }));
-  }
+export default function GridLayout(props: GridLayoutProps) {
+  const {
+    width,
+    rowHeight = 50,
+    children,
+    items,
+    cols,
+    itemHeight,
+    itemWidth,
+    getItemLayout,
+  } = props;
 
-  static getDerivedStateFromProps(
-    nextProps: Readonly<Props>,
-    prevState: State
-  ): Partial<State> | null {
-    if (nextProps.items !== prevState.items) {
-      return { items: nextProps.items, layout: GridLayout.calculateLayout(nextProps) };
-    }
+  if (!items.length) return null;
 
-    return null;
-  }
+  const layout = useMemo(() => calculateLayout(props), [
+    cols,
+    items,
+    itemHeight,
+    itemWidth,
+    getItemLayout,
+  ]);
 
-  state = { items: [], layout: [] };
+  // refactor: detect initial width through props
+  const Layout = width ? ReactGridLayout : ReactGridLayoutFilled;
 
-  render() {
-    const { layout } = this.state;
-    const { cols, width, children } = this.props;
-
-    // refactor: detect initial width through props
-    const Layout = width ? ReactGridLayout : ReactGridLayoutFilled;
-
-    return (
-      <Layout
-        layout={layout}
-        cols={cols}
-        width={width}
-        rowHeight={GridLayout.rowHeight}
-        containerPadding={[0, 0]}
-      >
-        {children}
-      </Layout>
-    );
-  }
+  return (
+    <Layout
+      layout={layout}
+      cols={cols}
+      width={width}
+      rowHeight={rowHeight}
+      containerPadding={[0, 0]}
+    >
+      {children}
+    </Layout>
+  );
 }
