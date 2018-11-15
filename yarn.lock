@@ -3853,10 +3853,10 @@ handle-thing@^1.2.5:
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-1.2.5.tgz#fd7aad726bf1a5fd16dfc29b2f7a6601d27139c4"
   integrity sha1-/Xqtcmvxpf0W38KbL3pmAdJxOcQ=
 
-handsontable@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-5.0.2.tgz#dcfb4341afe64c98bbbf779be40f69721e3e2c2c"
-  integrity sha512-gPhSb62UTJH/snr68TGLZRi1zhop89kTSijUdRL6ROtRjk1VNpBOo2EoFtBR9ubW7lSoq6ZztOuur9BjOIugmA==
+handsontable@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-6.2.0.tgz#54c0ac3ea58c8366b63b03ce57484132a8aa8ea5"
+  integrity sha512-4YmxstOauFqLzap+1sfrvK8JrJk9XjWDe4XgU0Rrd8KgvTUIqoU5h5J/2Ft+aWtMVZk8GZ3eFAM3FxTWHXOKMw==
   dependencies:
     moment "2.20.1"
     numbro "^2.0.6"
