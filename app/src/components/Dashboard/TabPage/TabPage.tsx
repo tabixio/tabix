@@ -4,14 +4,15 @@ import { Tabs } from 'antd';
 import { Option } from 'funfix-core';
 import { Props as SplitPaneProps } from 'react-split-pane';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
-import { ServerStructure } from 'services';
 import { Tab } from 'models';
 import { DashboardStore } from 'stores';
+import { ServerStructure } from 'services';
+import DataDecorator from 'services/api/DataDecorator';
 import Splitter from 'components/Splitter';
 import SqlEditor from './SqlEditor';
 import { ActionType } from './SqlEditor/Toolbar';
 import SaveModal from './SaveModal';
-import GridLayout from './GridLayout';
+import DataItemsLayout from './DataItemsLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import css from './TabPage.css';
@@ -47,22 +48,25 @@ export default class TabPage extends React.Component<Props> {
       }
       case ActionType.Fullscreen:
         break;
-      case ActionType.RunCurrent: {
+      case ActionType.RunCurrent:
+      case ActionType.RunAll: {
         const { store } = this.props;
         store.execQueries(eventData);
         break;
       }
-      case ActionType.RunAll:
-        break;
       default:
         break;
     }
   };
 
+  private renderTable = (data: DataDecorator) => <DataTable data={data} fill />;
+
+  private renderDraw = (data: DataDecorator) => <Draw data={data} />;
+
   render() {
     const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
     // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
-    const dataList = model.data;
+    const resultList = model.queriesResult;
 
     return (
       <React.Fragment>
@@ -80,23 +84,25 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
-              <GridLayout cols={4} itemWidth={4} itemHeight={14} items={dataList} width={width}>
-                {dataList.map((data, i) => (
-                  <div key={i} className={css['grid-item']}>
-                    <DataTable data={data} fill />
-                  </div>
-                ))}
-              </GridLayout>
+              <DataItemsLayout
+                cols={4}
+                itemWidth={4}
+                itemHeight={14}
+                items={resultList}
+                width={width}
+                renderItem={this.renderTable}
+              />
             </Tabs.TabPane>
 
             <Tabs.TabPane key="draw" tab="Draw view">
-              <GridLayout cols={4} itemWidth={4} itemHeight={5} items={dataList} width={width}>
-                {dataList.map((data, i) => (
-                  <div key={i} className={css['grid-item']}>
-                    <Draw data={data} />
-                  </div>
-                ))}
-              </GridLayout>
+              <DataItemsLayout
+                cols={4}
+                itemWidth={4}
+                itemHeight={6}
+                items={resultList}
+                width={width}
+                renderItem={this.renderDraw}
+              />
             </Tabs.TabPane>
           </Tabs>
         </Splitter>
