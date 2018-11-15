@@ -34,7 +34,7 @@ import { languages } from 'monaco-editor';
  * [+] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
  * [-] Подпиться на IModelTokensChangedEvent
- * [-] Определение баз.таблиц в редакторе между запросами
+ * [+] Определение баз.таблиц в редакторе между запросами
  * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
  * [-] LIMIT n BY columns
  * [-] WITH TOTALS

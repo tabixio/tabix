@@ -147,10 +147,6 @@ export const themeCobalt: editor.IStandaloneThemeData = {
     },
     {
       foreground: '9effff',
-      token: 'meta.tag',
-    },
-    {
-      foreground: '9effff',
       token: 'meta.tag entity',
     },
     {
@@ -266,6 +262,14 @@ export const themeCobalt: editor.IStandaloneThemeData = {
     {
       foreground: '628759',
       token: 'keyword.table',
+    },
+    {
+      foreground: 'f8f8f8', // fields
+      token: 'metatag',
+    },
+    {
+      foreground: '5BB498',
+      token: 'number',
     },
   ],
   colors: {
