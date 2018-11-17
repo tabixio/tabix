@@ -20,17 +20,24 @@ function getItemLayout(
     i: item.id,
   };
 }
-
 export default function DataItemsLayout({ items, renderItem, ...rest }: Props) {
+  // private renderText = (text: string) => <div className={css.error}>{text}</div>;
+
   return (
     <GridLayout items={items} getItemLayout={getItemLayout} {...rest}>
       {items.map(item => (
         <div key={item.id} className={css['grid-item']}>
           {item.result.fold(
             ex => (
-              <div className={css.error}>{ex}</div>
+              <textarea className={css.error} value={String(ex)} />
             ),
-            data => renderItem(data)
+            data => {
+              if (!data.isResultText) {
+                return renderItem(data);
+              }
+              // Example query: SELECT * FROM system.tables format Vertical
+              return <textarea className={css.text} value={data.text} />;
+            }
           )}
         </div>
       ))}

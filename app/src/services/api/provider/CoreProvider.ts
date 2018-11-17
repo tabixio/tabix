@@ -32,21 +32,15 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
         const contentType = response.headers.get('content-type');
         if (
           contentType &&
-          contentType.includes('text/tab-separated-values') &&
           response.status === 200 &&
-          response.statusText.toLowerCase() === 'ok'
-        ) {
-          // if insert
-          return Promise.resolve('OK');
-        }
-        if (
-          contentType &&
-          contentType.includes('text/plain') &&
-          response.status === 200 &&
-          response.statusText.toLowerCase() === 'ok'
+          response.statusText.toLowerCase() === 'ok' &&
+          (contentType.includes('text/plain') ||
+            contentType.includes('application/xml') ||
+            contentType.includes('text/csv') ||
+            contentType.includes('text/tab-separated-values'))
         ) {
           // if create table && drop table
-          return Promise.resolve('OK');
+          return Promise.resolve(response.text());
         }
         if (
           contentType &&
@@ -62,7 +56,7 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
       })
       .then(
         response => {
-          if (response === 'OK') {
+          if (response === 'OK' || !response) {
             return 'OK';
           }
           return response;

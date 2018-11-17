@@ -350,7 +350,7 @@ export const languageDef = {
         },
       ],
       [
-        'FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+TSV|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated',
+        'FORMAT\\W+XML|FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+Pretty(CompactNoEscapes|Space|SpaceNoEscape|NoEscapes|CompactMonoBlock|Compact)?|FORMAT\\W+TSV|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated',
         {
           cases: {
             '@default': 'storage',
