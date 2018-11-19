@@ -15,6 +15,7 @@ import SaveModal from './SaveModal';
 import DataItemsLayout from './DataItemsLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
+import Progress from './Progress';
 import css from './TabPage.css';
 
 interface Props extends SplitPaneProps {
@@ -83,6 +84,10 @@ export default class TabPage extends React.Component<Props> {
 
           <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
             <Tabs.TabPane key="table" tab="Table view">
+              {!!store.uiStore.executingQueries.length && (
+                <Progress queries={store.uiStore.executingQueries} />
+              )}
+
               <DataItemsLayout
                 cols={4}
                 itemWidth={4}
@@ -94,6 +99,10 @@ export default class TabPage extends React.Component<Props> {
             </Tabs.TabPane>
 
             <Tabs.TabPane key="draw" tab="Draw view">
+              {!!store.uiStore.executingQueries.length && (
+                <Progress queries={store.uiStore.executingQueries} />
+              )}
+
               <DataItemsLayout
                 cols={4}
                 itemWidth={4}
