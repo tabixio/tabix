@@ -84,7 +84,7 @@
     "echarts": "^4.2.0-rc.2",
     "echarts-for-react": "^2.0.15-beta.0",
     "funfix-core": "^7.0.1",
-    "handsontable": "5.0.2",
+    "handsontable": "6.2.0",
     "history": "^4.7.2",
     "mobx": "^5.6.0",
     "mobx-react": "^5.3.6",

@@ -34,7 +34,7 @@ import { languages } from 'monaco-editor';
  * [+] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
  * [-] Подпиться на IModelTokensChangedEvent
- * [-] Определение баз.таблиц в редакторе между запросами
+ * [+] Определение баз.таблиц в редакторе между запросами
  * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
  * [-] LIMIT n BY columns
  * [-] WITH TOTALS
@@ -350,7 +350,7 @@ export const languageDef = {
         },
       ],
       [
-        'FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+TSV|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated',
+        'FORMAT\\W+XML|FORMAT\\W+Vertical|FORMAT\\W+JSONCompact|FORMAT\\W+Pretty(CompactNoEscapes|Space|SpaceNoEscape|NoEscapes|CompactMonoBlock|Compact)?|FORMAT\\W+TSV|FORMAT\\W+JSONEachRow|FORMAT\\W+TSKV|FORMAT\\W+TabSeparatedWithNames|FORMAT\\W+TabSeparatedWithNamesAndTypes|FORMAT\\W+TabSeparatedRaw|FORMAT\\W+BlockTabSeparated|FORMAT\\W+CSVWithNames|FORMAT\\W+CSV|FORMAT\\W+JSON|FORMAT\\W+TabSeparated',
         {
           cases: {
             '@default': 'storage',

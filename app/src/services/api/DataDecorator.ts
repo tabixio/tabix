@@ -45,18 +45,18 @@ export default class DataDecorator {
     }
     // ----------------------------------------------------------------------------------------------------
     // Если результат строка
-    if (typeof result.data !== 'object') {
-      let text = '';
-      if (result.error) {
-        text = result.error;
-        this.error = true;
-      } else if (typeof result.data === 'string') {
-        text = JSON.stringify(result.data);
-      } else {
-        text = result.data;
-      }
+    if (typeof result !== 'object') {
+      // let text = '';
+      // if (result.error) {
+      //   text = result.error;
+      //   this.error = true;
+      // } else if (typeof result.data === 'string') {
+      //   text = JSON.stringify(result.data);
+      // } else {
+      //   text = result.data;
+      // }
       // XSS
-      this.text = text
+      this.text = result // JSON.stringify(result)
         .replace('<br/>', '\n')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

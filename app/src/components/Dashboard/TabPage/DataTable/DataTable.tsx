@@ -202,31 +202,32 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
             columns={columns}
             data={data.rows}
             allowEmpty
+            autoRowSize={false}
+            autoColumnSize={false}
+            // autoColumnSize={{ samplingRatio: 23 }}
             allowInsertColumn={false}
             allowInsertRow={false}
             columnSorting={this.getColumnSorting(data.meta.columns)}
             contextMenu={this.fetchContextMenu()}
-            sortIndicator
             manualColumnMove
             manualColumnResize
             manualColumnFreeze
             mergeCells
-            manualRowResize
+            // manualRowResize
             stretchH="all"
-            // colWidths={100}
+            colWidths={100}
             observeChanges={false} /* =<!memory leak if true! */
             observeDOMVisibility
             fillHandle={false}
             customBorders
             viewportColumnRenderingOffset="auto"
             wordWrap={false}
-            autoColumnSize={{ samplingRatio: 23 }}
             // currentRowClassName="currentRowDark"
             // currentColClassName="currentCol"
             // sortIndicator
             // fixedRowsTop={1}
             renderAllRows={false}
-            // visibleRows={1000}
+            visibleRows={40}
             // contextMenu={contextMenu}
             // columnsMenu={columnsMenu}
           />

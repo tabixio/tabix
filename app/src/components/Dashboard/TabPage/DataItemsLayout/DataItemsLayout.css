@@ -1,8 +1,17 @@
 .grid-item {
   padding: 0 1.5em 1.5em 0;
 }
-
+.text {
+  white-space: pre;
+  padding-top: 1em;
+  width: 100%;
+  height: 100%;
+  background: unset !important;
+}
 .error {
+  background: unset !important;
   padding: 1em 0;
   color: tomato;
+  width: 100%;
+  height: 100%;
 }

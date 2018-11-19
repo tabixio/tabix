@@ -67,7 +67,6 @@ export default class TabPage extends React.Component<Props> {
     const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
     // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
     const resultList = model.queriesResult;
-
     return (
       <React.Fragment>
         <Splitter split="horizontal" minSize={100} defaultSize={350} {...rest}>
