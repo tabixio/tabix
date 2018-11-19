@@ -1,7 +1,6 @@
 import { observable, action, runInAction, transaction, IReactionDisposer, reaction } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
-import uuid from 'uuid';
 import { ServerStructure, localStorage, Query } from 'services';
 import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
@@ -147,9 +146,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     });
   }
 
-  @withRequest
   async execQueries(queries: Query[]) {
-    // if (this.activeTab.isEmpty() || this.activeTab.get().currentDatabase.isEmpty()) return; // ??
     if (!queries.length) return;
 
     const extendSettings = {
@@ -162,12 +159,21 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
         const results = await Promise.all(
           queries.map(async q => {
             q.extendSettings = extendSettings;
-            const id = uuid();
+            runInAction(() => {
+              this.uiStore.executingQueries = this.uiStore.executingQueries.concat(q);
+            });
+
             try {
               const fetchResult = await this.api.fetch(q);
-              return { id, result: Try.success(fetchResult) };
+              return { id: q.id, result: Try.success(fetchResult) };
             } catch (ex) {
-              return { id, result: Try.failure(ex) };
+              return { id: q.id, result: Try.failure(ex) };
+            } finally {
+              runInAction(() => {
+                this.uiStore.executingQueries = this.uiStore.executingQueries.filter(
+                  eq => eq.id !== q.id
+                );
+              });
             }
           })
         );

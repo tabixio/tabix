@@ -2,6 +2,7 @@ import { observable, reaction, IReactionDisposer, when, action, computed } from 
 import { Option, None } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
 import { TabModel, TreeFilterModel } from 'models';
+import { Query } from 'services';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
@@ -19,6 +20,9 @@ export default class DashboardUIStore extends UIStore<RootStore> {
 
   @observable
   isFiltering: boolean = false;
+
+  @observable
+  executingQueries: ReadonlyArray<Query> = [];
 
   protected changeActiveTabReaction?: IReactionDisposer;
 
