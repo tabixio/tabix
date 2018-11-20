@@ -6,9 +6,16 @@ import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
+import { TabType, isTabOfType, EditorTabModel, ProcessesTabModel } from 'models';
 import { routePaths } from 'routes';
 import Page from 'components/Page';
-import { ServerStructureTree, EditorTabPage, Tabs, NavPrompt } from 'components/Dashboard';
+import {
+  ServerStructureTree,
+  EditorTabPage,
+  Tabs,
+  NavPrompt,
+  ProcessesTabPage,
+} from 'components/Dashboard';
 import { ActionType } from 'components/Dashboard/Tabs';
 import { ServerAction, TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
@@ -44,7 +51,10 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private insertTextToEditor(text: string) {
     const { store } = this.props;
-    store.activeTab.flatMap(t => t.codeEditor).forEach(editor => editor.insertText(text, ''));
+    store
+      .activeTabOfType<EditorTabModel>()
+      .flatMap(t => t.codeEditor)
+      .forEach(editor => editor.insertText(text, ''));
   }
 
   private onServerAction = (action: ServerAction, server: ServerStructure.Server) => {
@@ -83,7 +93,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
     if (action === 'remove' && typeof eventOrKey === 'string') {
       store.removeTab(eventOrKey);
     } else if (action === 'add') {
-      store.addNewTab();
+      store.addNewEditorTab();
     }
   };
 
@@ -107,7 +117,10 @@ class DashboardView extends React.Component<RoutedProps, State> {
     const { store } = this.props;
     const { primaryPaneSize } = this.state;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
-    const isBlocking = store.activeTab.map(t => !!t.content).getOrElse(false);
+    const isBlocking = store
+      .activeTabOfType<EditorTabModel>()
+      .map(t => !!t.content)
+      .getOrElse(false);
 
     return (
       <Page column={false} uiStore={store.uiStore} className={css.root}>
@@ -146,13 +159,17 @@ class DashboardView extends React.Component<RoutedProps, State> {
           >
             {store.tabs.map(t => (
               <Tabs.TabPane key={t.id} closable tab={t.title}>
-                <EditorTabPage
-                  store={store}
-                  model={t}
-                  onTabModelFieldChange={t.changeField}
-                  databases={databases}
-                  width={primaryPaneSize}
-                />
+                {isTabOfType<EditorTabModel>(t, TabType.Editor) && (
+                  <EditorTabPage
+                    store={store}
+                    model={t}
+                    onTabModelFieldChange={t.changeField}
+                    databases={databases}
+                    width={primaryPaneSize}
+                  />
+                )}
+
+                {isTabOfType<ProcessesTabModel>(t, TabType.Processes) && <ProcessesTabPage />}
               </Tabs.TabPane>
             ))}
           </Tabs>

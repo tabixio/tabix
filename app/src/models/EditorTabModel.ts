@@ -1,17 +1,11 @@
 import { observable } from 'mobx';
-import {
-  StoreModel,
-  SerializableModel,
-  JSONObjectModel,
-  serialize,
-  JSONModel,
-} from '@vzh/mobx-stores';
+import { SerializableModel, JSONObjectModel, serialize, JSONModel } from '@vzh/mobx-stores';
 import { Option, None, Try } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
 import DataDecorator from 'services/api/DataDecorator';
 import SqlEditor from 'components/Dashboard/EditorTabPage/SqlEditor'; // refactor: use interface of sqleditor and not ref to component type?
-import Tab, { TabType } from './Tab';
+import TabModel, { Tab, TabType } from './TabModel';
 
 export interface EditorTab extends Tab {
   readonly type: TabType.Editor;
@@ -28,8 +22,8 @@ export interface QueryResult {
   result: Try<DataDecorator>;
 }
 
-export default class EditorTabModel extends StoreModel<EditorTab>
-  implements Tab, SerializableModel<EditorTabJsonEntity> {
+export default class EditorTabModel extends TabModel<EditorTab>
+  implements EditorTab, SerializableModel<EditorTabJsonEntity> {
   static from({
     id = uuid(),
     title,
@@ -48,14 +42,6 @@ export default class EditorTabModel extends StoreModel<EditorTab>
     });
   }
 
-  readonly type: TabType.Editor;
-
-  @observable
-  id: string;
-
-  @observable
-  title: string;
-
   @observable
   content: string;
 
@@ -67,23 +53,12 @@ export default class EditorTabModel extends StoreModel<EditorTab>
 
   codeEditor: Option<SqlEditor>;
 
-  protected constructor({
-    type,
-    id,
-    title,
-    content,
-    currentDatabase,
-    queriesResult,
-    codeEditor,
-  }: EditorTab) {
-    super();
-    this.type = type;
-    this.id = id;
-    this.title = title;
-    this.content = content;
-    this.currentDatabase = currentDatabase;
-    this.queriesResult = queriesResult;
-    this.codeEditor = codeEditor;
+  protected constructor(data: EditorTab) {
+    super(data);
+    this.content = data.content;
+    this.currentDatabase = data.currentDatabase;
+    this.queriesResult = data.queriesResult;
+    this.codeEditor = data.codeEditor;
   }
 
   toJSON(): JSONObjectModel<EditorTabJsonEntity> {

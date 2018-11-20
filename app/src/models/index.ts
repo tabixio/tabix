@@ -1,8 +1,10 @@
 export { default as ConnectionModel } from './ConnectionModel';
 export * from './ConnectionModel';
-export { default as Tab } from './Tab';
-export * from './Tab';
-export { default as TabEditorModel } from './EditorTabModel';
+export { default as TabModel } from './TabModel';
+export * from './TabModel';
+export { default as EditorTabModel } from './EditorTabModel';
 export * from './EditorTabModel';
+export { default as ProcessesTabModel } from './ProcessesTabModel';
+export * from './ProcessesTabModel';
 export { default as TreeFilterModel } from './TreeFilterModel';
 export * from './TreeFilterModel';
