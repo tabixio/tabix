@@ -1,13 +1,13 @@
 import { observable, reaction, IReactionDisposer, when, action, computed } from 'mobx';
 import { Option, None } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
-import { TabEditorModel, TreeFilterModel } from 'models';
+import { EditorTabModel, TreeFilterModel } from 'models';
 import { Query } from 'services';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
-  editedTab: Option<ViewModelLike<TabEditorModel>> = None;
+  editedTab: Option<ViewModelLike<EditorTabModel>> = None;
 
   @observable
   treeExpandedKeys: string[] = [];
@@ -43,7 +43,8 @@ export default class DashboardUIStore extends UIStore<RootStore> {
 
   @computed
   get treeSelectedKeys() {
-    return this.rootStore.dashboardStore.activeTab
+    return this.rootStore.dashboardStore
+      .activeTabOfType<EditorTabModel>()
       .flatMap(t => t.currentDatabase)
       .map(db => [db])
       .orUndefined();
@@ -73,7 +74,7 @@ export default class DashboardUIStore extends UIStore<RootStore> {
 
   @action
   showSaveModal() {
-    this.rootStore.dashboardStore.activeTab.forEach(tab => {
+    this.rootStore.dashboardStore.activeTabOfType<EditorTabModel>().forEach(tab => {
       this.editedTab = Option.of(createViewModel(tab));
     });
   }
