@@ -2,7 +2,7 @@ import { observable, action, runInAction, transaction, IReactionDisposer, reacti
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
 import { ServerStructure, localStorage, Query } from 'services';
-import { TabModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
+import { TabEditorModel, TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
@@ -17,10 +17,10 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   filteredItems: FilterResult = [];
 
   @observable
-  tabs: ReadonlyArray<TabModel> = [];
+  tabs: ReadonlyArray<TabEditorModel> = [];
 
   @observable
-  activeTab: Option<TabModel> = None;
+  activeTab: Option<TabEditorModel> = None;
 
   protected autosaveTimer?: number;
 
@@ -30,7 +30,6 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   constructor(rootStore: RootStore, uiStore: DashboardUIStore) {
     super(rootStore, uiStore);
-
     this.startReactions();
   }
 
@@ -69,7 +68,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
               console.error(ex);
             },
             tabs => {
-              this.tabs = tabs.map(TabModel.from);
+              this.tabs = tabs.map(TabEditorModel.from);
             }
           );
         }
@@ -120,7 +119,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   @action
   addNewTab() {
-    const newTab = TabModel.from({
+    const newTab = TabEditorModel.from({
       title: this.getNewTabName(),
       currentDatabase: this.activeTab
         .flatMap(t => t.currentDatabase)

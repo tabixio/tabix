@@ -5,4 +5,10 @@ export default {
   signOut: { path: '/signout' },
 
   dashboard: { path: '/dashboard' },
+  // processes: { path: '/processes' },
+  // metrics: { path: '/metrics' },
+  // overview: {
+  //   server: { path: '/overview/server' },
+  //   db: { path: '/overview/db' },
+  // },
 };

@@ -9,10 +9,9 @@ import { ServerStructure } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
 import { FilterResult } from 'stores/ServerStructureFilter';
-import ServerTitle, { ServerTitleProps } from './ServerTitle';
+import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
 import DbTitle from './DbTitle';
-import TableTitle from './TableTitle';
-import { ContextMenuProps } from './TableTitle/ContextMenu';
+import TableTitle, { TableContextMenuProps } from './TableTitle';
 import ColumnTitle from './ColumnTitle';
 import SearchInput from './SearchInput';
 import css from './ServerStructureTree.css';
@@ -25,14 +24,15 @@ interface Props extends Pick<ServerTitleProps, 'onReload'> {
   store: DashboardUIStore;
   structure?: ServerStructure.Server;
   onColumnAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
-  onTableAction?: ContextMenuProps['onContextMenuAction'];
+  onServerAction?: ServerContextMenuProps['onContextMenuAction'];
+  onTableAction?: TableContextMenuProps['onContextMenuAction'];
   filterServerStructure: (filter: TreeFilter) => Promise<void>;
   filteredItems: FilterResult;
 }
 
 @observer
 export default class ServerStructureTree extends React.Component<Props> {
-  private onNodeDoubleClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
+  private onNodeClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
     const key = node.props.eventKey;
     if (!key) return;
 
@@ -107,6 +107,7 @@ export default class ServerStructureTree extends React.Component<Props> {
       store,
       structure,
       onReload,
+      onServerAction,
       onTableAction,
       filteredItems,
       filterServerStructure,
@@ -127,7 +128,7 @@ export default class ServerStructureTree extends React.Component<Props> {
           onExpand={this.expand}
           filterTreeNode={this.highlightTreeNode}
           selectedKeys={store.treeSelectedKeys}
-          onClick={this.onNodeDoubleClick}
+          onClick={this.onNodeClick}
           className={css.root}
         >
           {structure && (
@@ -138,6 +139,8 @@ export default class ServerStructureTree extends React.Component<Props> {
                   title={structure.name}
                   onReload={onReload}
                   onCollapse={this.collapse}
+                  server={structure}
+                  onContextMenuAction={onServerAction}
                 />
               }
             >

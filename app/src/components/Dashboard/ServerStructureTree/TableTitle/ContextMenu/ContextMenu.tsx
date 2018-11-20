@@ -11,13 +11,17 @@ export enum TableAction {
   MakeSQLDropTable,
 }
 
+export const ContextMenuProps = {};
+
 export interface ContextMenuProps {
   table: ServerStructure.Table;
   onContextMenuAction?: (action: TableAction, table: ServerStructure.Table) => void;
 }
 
 export default class ContextMenu extends React.Component<ContextMenuProps> {
-  private onItemClick = ({ key }: ClickParam) => {
+  private onItemClick = ({ key, domEvent }: ClickParam) => {
+    domEvent.preventDefault();
+    domEvent.stopPropagation();
     const { onContextMenuAction, table } = this.props;
     onContextMenuAction && TableAction[key] && onContextMenuAction(+key as TableAction, table);
   };

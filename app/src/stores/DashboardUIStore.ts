@@ -1,13 +1,13 @@
 import { observable, reaction, IReactionDisposer, when, action, computed } from 'mobx';
 import { Option, None } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
-import { TabModel, TreeFilterModel } from 'models';
+import { TabEditorModel, TreeFilterModel } from 'models';
 import { Query } from 'services';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
-  editedTab: Option<ViewModelLike<TabModel>> = None;
+  editedTab: Option<ViewModelLike<TabEditorModel>> = None;
 
   @observable
   treeExpandedKeys: string[] = [];
