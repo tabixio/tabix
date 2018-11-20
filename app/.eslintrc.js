@@ -21,6 +21,7 @@ module.exports = {
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'import/no-cycle': 'off',
+    'import/export': 'off',
     // jsx
     'react/sort-comp': 'off',
     'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],

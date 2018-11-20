@@ -8,9 +8,9 @@ import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
 import { routePaths } from 'routes';
 import Page from 'components/Page';
-import { ServerStructureTree, TabPage, Tabs, NavPrompt } from 'components/Dashboard';
+import { ServerStructureTree, EditorTabPage, Tabs, NavPrompt } from 'components/Dashboard';
 import { ActionType } from 'components/Dashboard/Tabs';
-import { TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
+import { ServerAction, TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
 import css from './DashboardView.css';
 
@@ -46,6 +46,16 @@ class DashboardView extends React.Component<RoutedProps, State> {
     const { store } = this.props;
     store.activeTab.flatMap(t => t.codeEditor).forEach(editor => editor.insertText(text, ''));
   }
+
+  private onServerAction = (action: ServerAction, server: ServerStructure.Server) => {
+    switch (action) {
+      case ServerAction.OpenProcesses:
+        console.log(server.name);
+        break;
+      default:
+        break;
+    }
+  };
 
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
     switch (action) {
@@ -118,6 +128,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
                   store={store.uiStore}
                   structure={store.serverStructure.orUndefined()}
                   onReload={this.load}
+                  onServerAction={this.onServerAction}
                   onTableAction={this.onTableAction}
                   onColumnAction={this.onColumnAction}
                   filterServerStructure={store.filterServerStructure}
@@ -135,7 +146,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
           >
             {store.tabs.map(t => (
               <Tabs.TabPane key={t.id} closable tab={t.title}>
-                <TabPage
+                <EditorTabPage
                   store={store}
                   model={t}
                   onTabModelFieldChange={t.changeField}

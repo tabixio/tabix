@@ -4,7 +4,7 @@ import { Tabs } from 'antd';
 import { Option } from 'funfix-core';
 import { Props as SplitPaneProps } from 'react-split-pane';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
-import { Tab } from 'models';
+import { EditorTab } from 'models';
 import { DashboardStore } from 'stores';
 import { ServerStructure } from 'services';
 import DataDecorator from 'services/api/DataDecorator';
@@ -16,18 +16,18 @@ import DataItemsLayout from './DataItemsLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import Progress from './Progress';
-import css from './TabPage.css';
+import css from './EditorTabPage.css';
 
 interface Props extends SplitPaneProps {
-  model: Tab;
-  onTabModelFieldChange: FieldChangeHandler<Tab>;
+  model: EditorTab;
+  onTabModelFieldChange: FieldChangeHandler<EditorTab>;
   databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
   width?: number;
 }
 
 @observer
-export default class TabPage extends React.Component<Props> {
+export default class EditorTabPage extends React.Component<Props> {
   private onContentChange = (content: string) => {
     this.props.onTabModelFieldChange({ name: 'content', value: content });
   };

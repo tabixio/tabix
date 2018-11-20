@@ -1,7 +1,7 @@
-import { TabModel } from 'models';
+import { TabEditorModel } from 'models';
 
-const tabs: ReadonlyArray<TabModel> = [
-  TabModel.from({
+const tabs: ReadonlyArray<TabEditorModel> = [
+  TabEditorModel.from({
     title: 'SQL 1',
     content: `
 SELECT toInt64(9007199254740900+number) as bkig FROM  numbers(4) ORDER BY number DESC 
@@ -35,7 +35,7 @@ SELECT * FROM system.tables
 `,
     currentDatabase: 'default',
   }),
-  TabModel.from({
+  TabEditorModel.from({
     title: 'SQL 2',
     content: `CREATE TABLE data (ts DATETIME,id VARCHAR,version UInt64, v0 Nullable(DOUBLE), v1 Nullable(DOUBLE)) ENGINE=Null
 CREATE MATERIALIZED VIEW dataAgg ENGINE=AggregatingMergeTree PARTITION BY toStartOfDay(ts) ORDER BY (ts,id) AS SELECT ts, id, maxState(version) as version, anyLastState(v0) as v0, anyLastState(v1) as v1 FROM (select * from data order by version) GROUP BY ts,id;

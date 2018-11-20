@@ -1,3 +1,4 @@
 export { default } from './ServerStructureTree';
-export { ColumnAction } from './ServerStructureTree';
+export { ServerAction } from './ServerTitle/ContextMenu';
 export { TableAction } from './TableTitle/ContextMenu';
+export { ColumnAction } from './ServerStructureTree';
