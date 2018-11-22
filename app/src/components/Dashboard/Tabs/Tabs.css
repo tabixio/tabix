@@ -30,12 +30,12 @@
       & .ant-tabs-tab {
         color: silver;
         background: unset !important;
-        /* border-right: deeppink 1px dotted !important;
+        border-right: silver 1px solid !important;
         border-left: unset !important;
         border-bottom: unset !important;
-        border-top: unset !important;*/
-        border: unset !important;
-        padding: 0 8px;
+        border-top: unset !important;
+        /* border: unset !important;*/
+        padding: 0 8px 2px;
         margin-right: 0;
         /* line-height: unset !important; */
         border-radius: unset !important;
