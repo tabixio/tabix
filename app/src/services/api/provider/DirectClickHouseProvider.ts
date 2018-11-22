@@ -90,7 +90,9 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     // @ts-ignore
     const columns = await this.queryString('SELECT * FROM system.columns');
     // @ts-ignore
-    const tables = await this.queryString('SELECT database,name,engine FROM system.tables');
+    const tables = await this.queryString(
+      'SELECT database,name,engine,size FROM system.tables ANY LEFT JOIN ( SELECT database,table as name,formatReadableSize(sum(bytes)) as size FROM system.parts  GROUP BY database,name ) USING (database,name)'
+    );
     // @ts-ignore
     const databases = await this.queryString('SELECT name FROM system.databases');
     // @ts-ignore

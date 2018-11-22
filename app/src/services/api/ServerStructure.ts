@@ -20,6 +20,7 @@ namespace ServerStructure {
     insertName: string;
     database: string;
     engine: string;
+    size: string;
     columns: ReadonlyArray<Column>;
   }
 
