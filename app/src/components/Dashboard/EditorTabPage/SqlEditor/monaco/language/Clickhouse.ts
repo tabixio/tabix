@@ -45,6 +45,7 @@ import { languages } from 'monaco-editor';
  * [-] TRUNCATE TABLE
  * [-] Добавлен тип данных DECIMAL(digits, scale)
  * [-] Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
+ * [-] Order By COLLATE "LAST" : "FIRST"
  */
 
 export const languageDef = {
