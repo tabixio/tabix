@@ -1,34 +1,35 @@
 import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
-import { Layout } from 'antd';
+import { Icon, Layout } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
-import { Stores, DashboardStore } from 'stores';
+import { DashboardStore, Stores } from 'stores';
 import {
-  TabType,
-  isTabOfType,
-  EditorTabModel,
-  ProcessesTabModel,
-  MetricsTabModel,
   DbOverviewTab,
+  EditorTabModel,
+  isTabOfType,
+  MetricsTabModel,
+  ProcessesTabModel,
   ServerOverviewTab,
+  Tab,
+  TabType,
 } from 'models';
 import { routePaths } from 'routes';
 import Page from 'components/Page';
 import {
-  ServerStructureTree,
+  DbOverviewTabPage,
   EditorTabPage,
-  Tabs,
+  MetricsTabPage,
   NavPrompt,
   ProcessesTabPage,
-  MetricsTabPage,
   ServerOverviewTabPage,
-  DbOverviewTabPage,
+  ServerStructureTree,
+  Tabs,
 } from 'components/Dashboard';
 import { ActionType } from 'components/Dashboard/Tabs';
-import { ServerAction, TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
+import { ColumnAction, ServerAction, TableAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
 import css from './DashboardView.css';
 
@@ -132,7 +133,15 @@ class DashboardView extends React.Component<RoutedProps, State> {
         break;
     }
   };
+  private getTabIcon = (tab: Tab): string => {
+    let icon = 'code';
+    if (tab.type === TabType.Processes) icon = 'hdd';
+    if (tab.type === TabType.Metrics) icon = 'line-chart';
+    if (tab.type === TabType.DbOverview) icon = 'radar-chart';
+    if (tab.type === TabType.ServerOverview) icon = 'database';
 
+    return icon;
+  };
   private onSplitterResizeFinished = (newSize: number) => {
     this.setState({ primaryPaneSize: newSize });
   };
@@ -182,7 +191,16 @@ class DashboardView extends React.Component<RoutedProps, State> {
             onMenuAction={this.onMenuAction}
           >
             {store.tabs.map(t => (
-              <Tabs.TabPane key={t.id} closable tab={t.title}>
+              <Tabs.TabPane
+                key={t.id}
+                closable
+                tab={
+                  <span>
+                    <Icon type={this.getTabIcon(t)} />
+                    {t.title}
+                  </span>
+                }
+              >
                 {isTabOfType<EditorTabModel>(t, TabType.Editor) && (
                   <EditorTabPage
                     store={store}
