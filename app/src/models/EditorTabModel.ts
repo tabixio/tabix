@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { SerializableModel, JSONObjectModel, serialize, JSONModel } from '@vzh/mobx-stores';
+import { SerializableModel, serialize, JSONModel } from '@vzh/mobx-stores';
 import { Option, None, Try } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
@@ -7,20 +7,19 @@ import DataDecorator from 'services/api/DataDecorator';
 import SqlEditor from 'components/Dashboard/EditorTabPage/SqlEditor'; // refactor: use interface of sqleditor and not ref to component type?
 import TabModel, { Tab, TabType } from './TabModel';
 
-export interface EditorTab extends Tab {
-  readonly type: TabType.Editor;
+export interface QueryResult {
+  id: string;
+  result: Try<DataDecorator>;
+}
+
+export interface EditorTab extends Tab<TabType.Editor> {
   content: string;
   currentDatabase: Option<string>;
   codeEditor: Option<SqlEditor>;
   queriesResult: QueryResult[];
 }
 
-export interface EditorTabJsonEntity extends Omit<EditorTab, 'codeEditor' | 'data'> {}
-
-export interface QueryResult {
-  id: string;
-  result: Try<DataDecorator>;
-}
+export interface EditorTabJsonEntity extends Omit<EditorTab, 'codeEditor' | 'queriesResult'> {}
 
 export default class EditorTabModel extends TabModel<EditorTab>
   implements EditorTab, SerializableModel<EditorTabJsonEntity> {
@@ -61,8 +60,8 @@ export default class EditorTabModel extends TabModel<EditorTab>
     this.codeEditor = data.codeEditor;
   }
 
-  toJSON(): JSONObjectModel<EditorTabJsonEntity> {
-    const { codeEditor, data, ...jsonModel } = this as any;
+  toJSON(this: EditorTabModel): JSONModel<EditorTabJsonEntity> {
+    const { codeEditor, queriesResult, ...jsonModel } = this;
     return serialize(jsonModel);
   }
 }
