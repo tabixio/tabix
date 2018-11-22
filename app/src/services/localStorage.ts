@@ -1,5 +1,5 @@
 import { Option, None, Try } from 'funfix-core';
-import { Tab, EditorTabJsonEntity } from 'models';
+import { Tab } from 'models';
 import { JSONModel } from '@vzh/mobx-stores';
 import Connection from './Connection';
 
@@ -102,7 +102,7 @@ export function saveTabs(tabs: ReadonlyArray<Tab>) {
   }
 }
 
-export function getTabs(): Try<JSONModel<ReadonlyArray<EditorTabJsonEntity>>> {
+export function getTabs(): Try<JSONModel<ReadonlyArray<Tab>>> {
   return Try.of(() => {
     const idsJson = window.localStorage.getItem(tabsIdsKey);
     const ids: string[] = idsJson ? JSON.parse(idsJson) : [];
@@ -111,7 +111,7 @@ export function getTabs(): Try<JSONModel<ReadonlyArray<EditorTabJsonEntity>>> {
         const value = window.localStorage.getItem(`${tabsKey}.${id}`);
         return value ? acc.concat(JSON.parse(value)) : acc;
       },
-      [] as JSONModel<EditorTabJsonEntity[]>
+      [] as JSONModel<Tab[]>
     );
     return tabs;
   });

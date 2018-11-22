@@ -3550,18 +3550,16 @@ forever-agent@~0.6.1:
   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
   integrity sha1-+8cfDEGt6zf5bFd60e1C2P2sypE=
 
-fork-ts-checker-webpack-plugin@^0.4.15:
-  version "0.4.15"
-  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.4.15.tgz#7cd9f94f3dd58cd1fe8f953f876e72090eda3f6d"
-  integrity sha512-qNYuygh2GxXehBvQZ5rI5YlQFn+7ZV6kmkyD9Sgs33dWl73NZdUOB5aCp8v0EXJn176AhPrZP8YCMT3h01fs+g==
+fork-ts-checker-webpack-plugin@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/fork-ts-checker-webpack-plugin/-/fork-ts-checker-webpack-plugin-0.5.0.tgz#39de03c2579368806478024cbce6ac7f5346d590"
+  integrity sha512-F8Xh0YBJEi1U0EGaYkTfc7IjDgQvBazGwBkoVytvcEIBeLHcqxYtwh5FkFcQdTsKZLWHGgtSJ78C3//RhpWFGw==
   dependencies:
     babel-code-frame "^6.22.0"
     chalk "^2.4.1"
     chokidar "^2.0.4"
-    lodash "^4.17.11"
     micromatch "^3.1.10"
     minimatch "^3.0.4"
-    resolve "^1.5.0"
     tapable "^1.0.0"
 
 form-data@~2.3.2:
@@ -5552,13 +5550,12 @@ mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   dependencies:
     minimist "0.0.8"
 
-mobx-react@^5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.4.0.tgz#25540c57a92b078d0955d08166fcc39c88b0f89e"
-  integrity sha512-IHX/PmHDH4UHHLavIZnL6XxGEafMq9bzDodWSx3dwnZp4WhX0yyhktzieFClKIxCef+jQIpwDk2KrUXg+vW+SQ==
+mobx-react@^5.4.2:
+  version "5.4.2"
+  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.4.2.tgz#53db594dbb44752c15b53c355babaa94a6af5934"
+  integrity sha512-alSN0KDAAOb1OkYujfoJjjk0JWxWRKO4sLGB4hN2CuvaJMrlj7bhGQe7CBMJvEFNjtJRbhJcquYVjQ3rrH2zQQ==
   dependencies:
     hoist-non-react-statics "^3.0.0"
-    react-is "^16.3.2"
     react-lifecycles-compat "^3.0.2"
 
 mobx-utils@^5.1.0:
@@ -9376,6 +9373,11 @@ typelevel-ts@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/typelevel-ts/-/typelevel-ts-0.3.2.tgz#af03275e232278f6d5f6216d0f7f302a8ed924fa"
   integrity sha512-jT+j42FvdVuvN6RX04/fxjjtzyZZ7Ilj0kIZAx0NwN2Shzv72peeu+kPGw4DG9DUXE+dHIRYfhs7eqE5f2nQPQ==
+
+typelevel-ts@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/typelevel-ts/-/typelevel-ts-0.3.3.tgz#ebb9aa520975ab1dc758a522350fc906f0781282"
+  integrity sha512-8u0gOUw8Min5otRzwEdkD3YUNDjGr68/jH6b1SNmEP2P/95GYMYeJ3FxzExbj2coJo5WR2SerujqLxkgNG61jg==
 
 typescript-eslint-parser@^21.0.1:
   version "21.0.1"

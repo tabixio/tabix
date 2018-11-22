@@ -2,7 +2,20 @@ import { observable, action, runInAction, transaction, IReactionDisposer, reacti
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
 import { ServerStructure, localStorage, Query } from 'services';
-import { EditorTabModel, TreeFilter, MIN_SEARCH_LENGTH, TabModel, Tab, isTabOfType } from 'models';
+import {
+  EditorTabModel,
+  TreeFilter,
+  MIN_SEARCH_LENGTH,
+  TabModel,
+  Tab,
+  isTabOfType,
+  ProcessesTabModel,
+  TabType,
+  createTabFrom,
+  MetricsTabModel,
+  ServerOverviewTabModel,
+  DbOverviewTabModel,
+} from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
@@ -48,13 +61,14 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     this.changeActiveTabReaction = reaction(
       () => this.activeTab,
       tab => {
+        this.uiStore.resetTabViewState();
         localStorage.saveActiveTabId(tab.map(t => t.id).orUndefined());
       }
     );
   }
 
-  activeTabOfType<T extends TabModel<Tab>>(): Option<T> {
-    return this.activeTab.flatMap(t => (isTabOfType<T>(t, t.type) ? Some(t) : None));
+  activeTabOfType<T extends TabModel<Tab>>(type: T['type']): Option<T> {
+    return this.activeTab.flatMap(t => (isTabOfType<T>(t, type) ? Some(t) : None));
   }
 
   @withRequest
@@ -72,7 +86,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
               console.error(ex);
             },
             tabs => {
-              this.tabs = tabs.map(EditorTabModel.from);
+              this.tabs = tabs.map(createTabFrom);
             }
           );
         }
@@ -95,7 +109,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       }
 
       if (!this.tabs.length) {
-        this.addNewEditorTab();
+        this.openNewEditorTab();
       }
     });
   }
@@ -122,16 +136,48 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   private getNewTabName = () => `SQL ${this.tabs.length + 1}`;
 
   @action
-  addNewEditorTab() {
+  openNewEditorTab() {
     const newTab = EditorTabModel.from({
       title: this.getNewTabName(),
-      currentDatabase: this.activeTabOfType<EditorTabModel>()
+      currentDatabase: this.activeTabOfType<EditorTabModel>(TabType.Editor)
         .flatMap(t => t.currentDatabase)
         .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name))
         .orUndefined(),
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);
+  }
+
+  @action
+  private openTab<T extends TabModel<any>>(type: T['type'], factory: () => T) {
+    if (this.activeTab.map(_ => _.type === type).getOrElse(false)) return;
+
+    let tab = this.tabs.find(_ => _.type === type);
+    if (!tab) {
+      tab = factory();
+      this.tabs = this.tabs.concat(tab);
+    }
+    this.activeTab = Some(tab);
+  }
+
+  @action
+  openProcessesTab() {
+    this.openTab(TabType.Processes, () => ProcessesTabModel.from({}));
+  }
+
+  @action
+  openMetricsTab() {
+    this.openTab(TabType.Metrics, () => MetricsTabModel.from({}));
+  }
+
+  @action
+  openServerOverviewTab() {
+    this.openTab(TabType.ServerOverview, () => ServerOverviewTabModel.from({}));
+  }
+
+  @action
+  openDbOverviewTab() {
+    this.openTab(TabType.DbOverview, () => DbOverviewTabModel.from({}));
   }
 
   @action.bound
@@ -157,7 +203,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
-    await this.activeTabOfType<EditorTabModel>()
+    await this.activeTabOfType<EditorTabModel>(TabType.Editor)
       .map(async tab => {
         const results = await Promise.all(
           queries.map(async q => {

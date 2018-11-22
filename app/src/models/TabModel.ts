@@ -3,10 +3,10 @@ import { observable } from 'mobx';
 
 export enum TabType {
   Editor = 'Editor',
-  Custom = 'Custom',
   Processes = 'Processes',
   Metrics = 'Metrics',
   ServerOverview = 'ServerOverview',
+  DbOverview = 'DbOverview',
 }
 
 export interface Tab<T extends TabType = TabType> {
@@ -21,7 +21,7 @@ export function isTabOfType<T extends Tab>(tab: Tab, type: T['type']): tab is T 
   return tab.type === type;
 }
 
-export default class TabModel<T extends Tab> extends StoreModel<T> implements Tab {
+export default abstract class TabModel<T extends Tab> extends StoreModel<T> implements Tab {
   readonly type: T['type'];
 
   @observable

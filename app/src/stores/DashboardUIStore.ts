@@ -1,7 +1,7 @@
-import { observable, reaction, IReactionDisposer, when, action, computed } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { Option, None } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike } from '@vzh/mobx-stores';
-import { EditorTabModel, TreeFilterModel } from 'models';
+import { EditorTabModel, TreeFilterModel, TabType } from 'models';
 import { Query } from 'services';
 import RootStore from './RootStore';
 
@@ -24,27 +24,10 @@ export default class DashboardUIStore extends UIStore<RootStore> {
   @observable
   executingQueries: ReadonlyArray<Query> = [];
 
-  protected changeActiveTabReaction?: IReactionDisposer;
-
-  constructor(rootStore: RootStore) {
-    super(rootStore);
-
-    when(action(() => rootStore.dashboardStore !== undefined), () => {
-      // reset tab view state
-      this.changeActiveTabReaction = reaction(
-        () => rootStore.dashboardStore.activeTab,
-        tab => {
-          this.resetTabViewState();
-          return tab;
-        }
-      );
-    });
-  }
-
   @computed
   get treeSelectedKeys() {
     return this.rootStore.dashboardStore
-      .activeTabOfType<EditorTabModel>()
+      .activeTabOfType<EditorTabModel>(TabType.Editor)
       .flatMap(t => t.currentDatabase)
       .map(db => [db])
       .orUndefined();
@@ -65,7 +48,8 @@ export default class DashboardUIStore extends UIStore<RootStore> {
     this.isFiltering = filtering;
   }
 
-  private resetTabViewState() {
+  resetTabViewState() {
+    if (this.editedTab.isEmpty()) return;
     this.editedTab.forEach(t => {
       t.reset();
     });
@@ -74,7 +58,7 @@ export default class DashboardUIStore extends UIStore<RootStore> {
 
   @action
   showSaveModal() {
-    this.rootStore.dashboardStore.activeTabOfType<EditorTabModel>().forEach(tab => {
+    this.rootStore.dashboardStore.activeTabOfType<EditorTabModel>(TabType.Editor).forEach(tab => {
       this.editedTab = Option.of(createViewModel(tab));
     });
   }

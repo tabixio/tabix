@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Icon, Dropdown } from 'antd';
 import { Flex } from 'reflexy';
 import ContextMenu, { ContextMenuProps } from './ContextMenu';
@@ -17,11 +17,23 @@ export default function ServerTitle({
   server,
   onContextMenuAction,
 }: ServerTitleProps) {
+  const [visible, setVisible] = useState<boolean | undefined>(false);
+
+  const onAction = useCallback<NonNullable<ContextMenuProps['onContextMenuAction']>>(
+    (action, srv) => {
+      setVisible(false);
+      onContextMenuAction && onContextMenuAction(action, srv);
+    },
+    []
+  );
+
   return (
     <Flex alignItems="center" hfill>
       <Dropdown
-        overlay={<ContextMenu server={server} onContextMenuAction={onContextMenuAction} />}
+        overlay={<ContextMenu server={server} onContextMenuAction={onAction} />}
         trigger={['contextMenu']}
+        visible={visible}
+        onVisibleChange={setVisible}
       >
         <Flex grow alignItems="center" className={css.dropdown}>
           <Icon type="home" theme="outlined" />
