@@ -6,7 +6,15 @@ import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { Stores, DashboardStore } from 'stores';
-import { TabType, isTabOfType, EditorTabModel, ProcessesTabModel } from 'models';
+import {
+  TabType,
+  isTabOfType,
+  EditorTabModel,
+  ProcessesTabModel,
+  MetricsTabModel,
+  DbOverviewTab,
+  ServerOverviewTab,
+} from 'models';
 import { routePaths } from 'routes';
 import Page from 'components/Page';
 import {
@@ -15,6 +23,9 @@ import {
   Tabs,
   NavPrompt,
   ProcessesTabPage,
+  MetricsTabPage,
+  ServerOverviewTabPage,
+  DbOverviewTabPage,
 } from 'components/Dashboard';
 import { ActionType } from 'components/Dashboard/Tabs';
 import { ServerAction, TableAction, ColumnAction } from 'components/Dashboard/ServerStructureTree';
@@ -52,16 +63,29 @@ class DashboardView extends React.Component<RoutedProps, State> {
   private insertTextToEditor(text: string) {
     const { store } = this.props;
     store
-      .activeTabOfType<EditorTabModel>()
+      .activeTabOfType<EditorTabModel>(TabType.Editor)
       .flatMap(t => t.codeEditor)
       .forEach(editor => editor.insertText(text, ''));
   }
 
-  private onServerAction = (action: ServerAction, server: ServerStructure.Server) => {
+  private onServerAction = (action: ServerAction) => {
     switch (action) {
-      case ServerAction.OpenProcesses:
-        console.log(server.name);
+      case ServerAction.OpenProcesses: {
+        this.props.store.openProcessesTab();
         break;
+      }
+      case ServerAction.OpenMetrics: {
+        this.props.store.openMetricsTab();
+        break;
+      }
+      case ServerAction.OpenServerOverview: {
+        this.props.store.openServerOverviewTab();
+        break;
+      }
+      case ServerAction.OpenDbOverview: {
+        this.props.store.openDbOverviewTab();
+        break;
+      }
       default:
         break;
     }
@@ -93,7 +117,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
     if (action === 'remove' && typeof eventOrKey === 'string') {
       store.removeTab(eventOrKey);
     } else if (action === 'add') {
-      store.addNewEditorTab();
+      store.openNewEditorTab();
     }
   };
 
@@ -118,7 +142,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
     const { primaryPaneSize } = this.state;
     const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
     const isBlocking = store
-      .activeTabOfType<EditorTabModel>()
+      .activeTabOfType<EditorTabModel>(TabType.Editor)
       .map(t => !!t.content)
       .getOrElse(false);
 
@@ -170,6 +194,14 @@ class DashboardView extends React.Component<RoutedProps, State> {
                 )}
 
                 {isTabOfType<ProcessesTabModel>(t, TabType.Processes) && <ProcessesTabPage />}
+
+                {isTabOfType<MetricsTabModel>(t, TabType.Metrics) && <MetricsTabPage />}
+
+                {isTabOfType<ServerOverviewTab>(t, TabType.ServerOverview) && (
+                  <ServerOverviewTabPage />
+                )}
+
+                {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
               </Tabs.TabPane>
             ))}
           </Tabs>
