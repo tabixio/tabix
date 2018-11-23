@@ -42,21 +42,33 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
           <SpaceH />
 
           <Button.Group>
-            <ActionButton icon="forward" actionType={ActionType.RunAll} onAction={onAction}>
-              Run all ⇧ + ⌘ + ⏎
-            </ActionButton>
-            <ActionButton icon="caret-right" actionType={ActionType.RunCurrent} onAction={onAction}>
+            <ActionButton
+              icon="caret-right"
+              size="small"
+              actionType={ActionType.RunCurrent}
+              onAction={onAction}
+            >
               Run current ⌘ + ⏎
+            </ActionButton>
+
+            <ActionButton
+              icon="forward"
+              size="small"
+              actionType={ActionType.RunAll}
+              onAction={onAction}
+            >
+              Run all ⇧ + ⌘ + ⏎
             </ActionButton>
           </Button.Group>
 
           <SpaceH />
 
-          <ActionButton icon="save" actionType={ActionType.Save} onAction={onAction} />
+          <ActionButton icon="save" size="small" actionType={ActionType.Save} onAction={onAction} />
 
           <SpaceH />
 
           <Select
+            size="small"
             dropdownMatchSelectWidth={false}
             value={currentDatabase}
             onChange={this.onDatabaseChange}
@@ -73,7 +85,12 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
 
         <Flex grow justifyContent="flex-end">
           <SpaceH />
-          <ActionButton icon="fullscreen" actionType={ActionType.Fullscreen} onAction={onAction} />
+          <ActionButton
+            size="small"
+            icon="fullscreen"
+            actionType={ActionType.Fullscreen}
+            onAction={onAction}
+          />
           <SpaceH />
         </Flex>
       </Flex>
