@@ -15,12 +15,13 @@ export default class SqlHistoryTabModel extends TabModel<SqlHistoryTab>
 
   static from({
     title = 'SqlHistory',
-  }: Pick<JSONModel<Partial<SqlHistoryTab>>, 'title'>): SqlHistoryTabModel {
+    queries = ['sql1', 'sql2', 'sql3', 'sql4'],
+  }: Pick<JSONModel<Partial<SqlHistoryTab>>, 'title' | 'queries'>): SqlHistoryTabModel {
     return new SqlHistoryTabModel({
       type: TabType.SqlHistory,
       id: this.tabId,
       title,
-      queries: ['sql1', 'sql2', 'sql3', 'sql4'],
+      queries,
     });
   }
 

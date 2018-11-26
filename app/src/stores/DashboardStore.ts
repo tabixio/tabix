@@ -1,7 +1,7 @@
 import { observable, action, runInAction, transaction, IReactionDisposer, reaction } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
-import { ServerStructure, localStorage, Query } from 'services';
+import { ServerStructure, localStorage, sqlHistoryStorage, Query } from 'services';
 import {
   EditorTabModel,
   TreeFilter,
@@ -203,6 +203,11 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   async execQueries(queries: Query[]) {
     if (!queries.length) return;
+
+    // Save history
+    sqlHistoryStorage.addItems(queries.map(_ => _.sqlOriginal)).then(list => {
+      console.log(list);
+    });
 
     const extendSettings = {
       max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings

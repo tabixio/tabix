@@ -86,6 +86,7 @@
     "funfix-core": "^7.0.1",
     "handsontable": "6.2.0",
     "history": "^4.7.2",
+    "localforage": "^1.7.3",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",
     "mobx-utils": "^5.1.0",
