@@ -1,9 +1,9 @@
 import { History } from 'history';
-import { observable, action, transaction } from 'mobx';
+import { observable, action, transaction, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
 import { FromLocationDescriptorObject } from '@vzh/react-auth';
-import { Connection, localStorage, Api, isDirectConnection } from 'services';
+import { Connection, Api, isDirectConnection, connectionsStorage } from 'services';
 import { ConnectionModel } from 'models';
 import { routePaths } from 'routes';
 import ApiRequestableStore from './ApiRequestableStore';
@@ -16,10 +16,11 @@ export default class SignInStore extends ApiRequestableStore {
   connectionList: ReadonlyArray<ConnectionModel> = [];
 
   @withRequest
-  @action
   async loadConnections() {
-    const list = localStorage.getConnections();
-    this.connectionList = list.map(ConnectionModel.of);
+    const list = await connectionsStorage.get();
+    runInAction(() => {
+      this.connectionList = list.map(ConnectionModel.of);
+    });
   }
 
   @action
@@ -41,7 +42,7 @@ export default class SignInStore extends ApiRequestableStore {
       this.connectionList = this.connectionList.concat(con);
       this.setSelectedConnection(con);
     });
-    localStorage.saveConnections(this.connectionList);
+    await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
   }
 
   @withRequest.bound
@@ -57,7 +58,7 @@ export default class SignInStore extends ApiRequestableStore {
           : ConnectionModel.ServerEmpty
       );
     });
-    localStorage.saveConnections(this.connectionList);
+    await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
   }
 
   signIn(history: History) {
