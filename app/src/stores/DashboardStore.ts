@@ -150,7 +150,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   }
 
   @action
-  private openTab<T extends TabModel<any>>(type: T['type'], factory: () => T) {
+  private openSpecialTab<T extends TabModel<any>>(type: T['type'], factory: () => T) {
     if (this.activeTab.map(_ => _.type === type).getOrElse(false)) return;
 
     let tab = this.tabs.find(_ => _.type === type);
@@ -163,27 +163,27 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   @action
   openProcessesTab() {
-    this.openTab(TabType.Processes, () => ProcessesTabModel.from({}));
+    this.openSpecialTab(TabType.Processes, () => ProcessesTabModel.from({}));
   }
 
   @action
   openMetricsTab() {
-    this.openTab(TabType.Metrics, () => MetricsTabModel.from({}));
+    this.openSpecialTab(TabType.Metrics, () => MetricsTabModel.from({}));
   }
 
   @action
   openServerOverviewTab() {
-    this.openTab(TabType.ServerOverview, () => ServerOverviewTabModel.from({}));
+    this.openSpecialTab(TabType.ServerOverview, () => ServerOverviewTabModel.from({}));
   }
 
   @action
   openDbOverviewTab() {
-    this.openTab(TabType.DbOverview, () => DbOverviewTabModel.from({}));
+    this.openSpecialTab(TabType.DbOverview, () => DbOverviewTabModel.from({}));
   }
 
   @action
   openSqlHistoryTab() {
-    this.openTab(TabType.SqlHistory, () => SqlHistoryTabModel.from({}));
+    this.openSpecialTab(TabType.SqlHistory, () => SqlHistoryTabModel.from({}));
   }
 
   @action.bound
@@ -205,9 +205,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     if (!queries.length) return;
 
     // Save history
-    sqlHistoryStorage.addItems(queries.map(_ => _.sqlOriginal)).then(list => {
-      console.log(list);
-    });
+    sqlHistoryStorage.addItems(queries.map(_ => _.sqlOriginal));
 
     const extendSettings = {
       max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings

@@ -5,6 +5,7 @@ import AppStore from './AppStore';
 import SignInStore from './SignInStore';
 import DashboardStore from './DashboardStore';
 import DashboardUIStore from './DashboardUIStore';
+import SqlHistoryStore from './SqlHistoryStore';
 
 export default class RootStore extends DisposableStore {
   @observable
@@ -16,13 +17,15 @@ export default class RootStore extends DisposableStore {
   @observable
   dashboardStore: DashboardStore;
 
+  @observable
+  sqlHistoryStore: SqlHistoryStore;
+
   constructor() {
     super();
     this.appStore = new AppStore(this, new UIStore(this));
-
     this.signInStore = new SignInStore(this, new UIStore(this));
-
     this.dashboardStore = new DashboardStore(this, new DashboardUIStore(this));
+    this.sqlHistoryStore = new SqlHistoryStore(this, new UIStore(this));
   }
 
   // refactor: temporary for HMR
@@ -32,6 +35,7 @@ export default class RootStore extends DisposableStore {
     this.appStore = rootStore.appStore;
     this.signInStore = rootStore.signInStore;
     this.dashboardStore = rootStore.dashboardStore;
+    this.sqlHistoryStore = rootStore.sqlHistoryStore;
     connection && this.appStore.initApi(connection);
   }
 }

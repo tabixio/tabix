@@ -1,19 +1,14 @@
-import { SerializableModel, JSONObjectModel, serialize, JSONModel } from '@vzh/mobx-stores';
+import { JSONModel } from '@vzh/mobx-stores';
 import TabModel, { Tab, TabType } from './TabModel';
 
 export interface DbOverviewTab extends Tab<TabType.DbOverview> {}
 
-export default class DbOverviewTabModel extends TabModel<DbOverviewTab>
-  implements DbOverviewTab, SerializableModel<DbOverviewTab> {
+export default class DbOverviewTabModel extends TabModel<DbOverviewTab> implements DbOverviewTab {
   private static tabId = 'DbOverviewTabId';
 
   static from({
     title = 'DbOverview',
   }: Pick<JSONModel<Partial<DbOverviewTab>>, 'title'>): DbOverviewTabModel {
     return new DbOverviewTabModel({ type: TabType.DbOverview, id: this.tabId, title });
-  }
-
-  toJSON(): JSONObjectModel<DbOverviewTab> {
-    return serialize(this);
   }
 }
