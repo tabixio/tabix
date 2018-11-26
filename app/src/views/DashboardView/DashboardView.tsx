@@ -6,6 +6,7 @@ import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
 import { DashboardStore, Stores } from 'stores';
+import { routePaths } from 'routes';
 import {
   DbOverviewTab,
   EditorTabModel,
@@ -15,9 +16,8 @@ import {
   ServerOverviewTab,
   Tab,
   TabType,
+  SqlHistoryTab,
 } from 'models';
-import { routePaths } from 'routes';
-import Page from 'components/Page';
 import {
   DbOverviewTabPage,
   EditorTabPage,
@@ -27,7 +27,9 @@ import {
   ServerOverviewTabPage,
   ServerStructureTree,
   Tabs,
+  SqlHistoryTabPage,
 } from 'components/Dashboard';
+import Page from 'components/Page';
 import { ActionType } from 'components/Dashboard/Tabs';
 import { ColumnAction, ServerAction, TableAction } from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
@@ -87,6 +89,10 @@ class DashboardView extends React.Component<RoutedProps, State> {
         this.props.store.openDbOverviewTab();
         break;
       }
+      case ServerAction.OpenSqlHistory: {
+        this.props.store.openSqlHistoryTab();
+        break;
+      }
       default:
         break;
     }
@@ -133,6 +139,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
         break;
     }
   };
+
   private getTabIcon = (tab: Tab): string => {
     let icon = 'code';
     if (tab.type === TabType.Processes) icon = 'hdd';
@@ -142,6 +149,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
     return icon;
   };
+
   private onSplitterResizeFinished = (newSize: number) => {
     this.setState({ primaryPaneSize: newSize });
   };
@@ -149,7 +157,6 @@ class DashboardView extends React.Component<RoutedProps, State> {
   render() {
     const { store } = this.props;
     const { primaryPaneSize } = this.state;
-    const databases = store.serverStructure.map(_ => _.databases).getOrElse([]);
     const isBlocking = store
       .activeTabOfType<EditorTabModel>(TabType.Editor)
       .map(t => !!t.content)
@@ -206,7 +213,6 @@ class DashboardView extends React.Component<RoutedProps, State> {
                     store={store}
                     model={t}
                     onTabModelFieldChange={t.changeField}
-                    databases={databases}
                     width={primaryPaneSize}
                   />
                 )}
@@ -220,6 +226,10 @@ class DashboardView extends React.Component<RoutedProps, State> {
                 )}
 
                 {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
+
+                {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
+                  <SqlHistoryTabPage model={t} />
+                )}
               </Tabs.TabPane>
             ))}
           </Tabs>

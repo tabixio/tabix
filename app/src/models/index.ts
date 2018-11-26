@@ -14,4 +14,6 @@ export { default as ServerOverviewTabModel } from './ServerOverviewTabModel';
 export * from './ServerOverviewTabModel';
 export { default as DbOverviewTabModel } from './DbOverviewTabModel';
 export * from './DbOverviewTabModel';
+export { default as SqlHistoryTabModel } from './SqlHistoryTabModel';
+export * from './SqlHistoryTabModel';
 export { default as createTabFrom } from './createTabFrom';

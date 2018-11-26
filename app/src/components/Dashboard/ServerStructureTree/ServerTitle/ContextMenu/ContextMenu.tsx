@@ -8,6 +8,7 @@ export enum ServerAction {
   OpenMetrics,
   OpenDbOverview,
   OpenServerOverview,
+  OpenSqlHistory,
 }
 
 export const ContextMenuProps = {};
@@ -30,6 +31,7 @@ export default function ContextMenu({ onContextMenuAction, server }: ContextMenu
       <Menu.Item key={ServerAction.OpenDbOverview}>Обзор базы данных</Menu.Item>
       <Menu.Item key={ServerAction.OpenServerOverview}>Обзор сервера</Menu.Item>
       <Menu.Item key={ServerAction.OpenMetrics}>Метрики сервера</Menu.Item>
+      <Menu.Item key={ServerAction.OpenSqlHistory}>История sql запросов</Menu.Item>
     </Menu>
   );
 }

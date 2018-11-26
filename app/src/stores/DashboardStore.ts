@@ -15,6 +15,7 @@ import {
   MetricsTabModel,
   ServerOverviewTabModel,
   DbOverviewTabModel,
+  SqlHistoryTabModel,
 } from 'models';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
@@ -178,6 +179,11 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   @action
   openDbOverviewTab() {
     this.openTab(TabType.DbOverview, () => DbOverviewTabModel.from({}));
+  }
+
+  @action
+  openSqlHistoryTab() {
+    this.openTab(TabType.SqlHistory, () => SqlHistoryTabModel.from({}));
   }
 
   @action.bound
