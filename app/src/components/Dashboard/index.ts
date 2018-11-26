@@ -7,3 +7,4 @@ export { default as ProcessesTabPage } from './ProcessesTabPage';
 export { default as MetricsTabPage } from './MetricsTabPage';
 export { default as ServerOverviewTabPage } from './ServerOverviewTabPage';
 export { default as DbOverviewTabPage } from './DbOverviewTabPage';
+export { default as SqlHistoryTabPage } from './SqlHistoryTabPage';

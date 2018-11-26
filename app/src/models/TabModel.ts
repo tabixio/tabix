@@ -7,6 +7,7 @@ export enum TabType {
   Metrics = 'Metrics',
   ServerOverview = 'ServerOverview',
   DbOverview = 'DbOverview',
+  SqlHistory = 'SqlHistory',
 }
 
 export interface Tab<T extends TabType = TabType> {

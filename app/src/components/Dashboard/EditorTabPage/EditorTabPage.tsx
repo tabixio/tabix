@@ -2,7 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Tabs } from 'antd';
 import { Option } from 'funfix-core';
-import { Props as SplitPaneProps } from 'react-split-pane';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { EditorTab } from 'models';
 import { DashboardStore } from 'stores';
@@ -18,10 +17,9 @@ import Draw from './Draw';
 import Progress from './Progress';
 import css from './EditorTabPage.css';
 
-interface Props extends SplitPaneProps {
+interface Props {
   model: EditorTab;
   onTabModelFieldChange: FieldChangeHandler<EditorTab>;
-  databases: ReadonlyArray<ServerStructure.Database>;
   store: DashboardStore;
   width?: number;
 }
@@ -65,12 +63,12 @@ export default class EditorTabPage extends React.Component<Props> {
   private renderDraw = (data: DataDecorator) => <Draw data={data} />;
 
   render() {
-    const { store, model, onTabModelFieldChange, databases, width, ...rest } = this.props;
+    const { store, model, width } = this.props;
     // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
     const resultList = model.queriesResult;
     return (
       <React.Fragment>
-        <Splitter split="horizontal" minSize={100} defaultSize={350} {...rest}>
+        <Splitter split="horizontal" minSize={100} defaultSize={350}>
           <SqlEditor
             content={model.content}
             onContentChange={this.onContentChange}
