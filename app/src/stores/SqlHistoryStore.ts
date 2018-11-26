@@ -1,0 +1,17 @@
+import { observable, runInAction } from 'mobx';
+import { withRequest } from '@vzh/mobx-stores';
+import { sqlHistoryStorage } from 'services';
+import ApiRequestableStore from './ApiRequestableStore';
+
+export default class SqlHistoryStore extends ApiRequestableStore {
+  @observable
+  history: ReadonlyArray<string> = [];
+
+  @withRequest
+  async loadData() {
+    const items = await sqlHistoryStorage.getItems();
+    runInAction(() => {
+      this.history = items.reverse();
+    });
+  }
+}

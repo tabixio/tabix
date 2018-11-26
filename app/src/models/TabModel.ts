@@ -1,4 +1,4 @@
-import { StoreModel } from '@vzh/mobx-stores';
+import { StoreModel, SerializableModel, JSONModel, serialize } from '@vzh/mobx-stores';
 import { observable } from 'mobx';
 
 export enum TabType {
@@ -22,7 +22,8 @@ export function isTabOfType<T extends Tab>(tab: Tab, type: T['type']): tab is T 
   return tab.type === type;
 }
 
-export default abstract class TabModel<T extends Tab> extends StoreModel<T> implements Tab {
+export default abstract class TabModel<T extends Tab> extends StoreModel<T>
+  implements Tab, SerializableModel<Tab> {
   readonly type: T['type'];
 
   @observable
@@ -36,5 +37,9 @@ export default abstract class TabModel<T extends Tab> extends StoreModel<T> impl
     this.type = type;
     this.id = id;
     this.title = title;
+  }
+
+  toJSON(): JSONModel<Tab> {
+    return serialize<Tab>(this);
   }
 }

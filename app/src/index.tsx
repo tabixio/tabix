@@ -25,9 +25,8 @@ function render(
   );
 }
 
-const rootStore = initStores();
-
 (async () => {
+  const rootStore = initStores();
   const connection = await connectionsStorage.getLastActiveConnection();
 
   render(appRootElement, App, { connection: connection.orUndefined() }, rootStore);
