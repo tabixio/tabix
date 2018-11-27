@@ -157,4 +157,21 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const query = 'SELECT version() as version';
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
   }
+
+  async getTableColumns(database: string, tablename: string) {
+    const columns = await this.queryString(
+      `SELECT * FROM system.columns WHERE database='${database}' AND table='${tablename}'`
+    );
+    return columns;
+  }
+
+  async makeTableDescribe(_database: string, _tablename: string) {
+    // @ts-ignore
+    const dat = await this.queryString(`SHOW CREATE TABLE ${_database}.${_tablename}`);
+    let sql = '';
+    if (dat && dat.data && dat.data[0] && dat.data[0].statement) {
+      sql = dat.data[0].statement;
+    }
+    return sql;
+  }
 }

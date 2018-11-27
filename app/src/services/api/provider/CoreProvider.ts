@@ -20,6 +20,10 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract query(query: Query): Promise<any>;
 
+  abstract getTableColumns(_database: string, _tablename: string): Promise<any>;
+
+  abstract makeTableDescribe(_database: string, _tablename: string): Promise<string>;
+
   abstract fastGetVersion(): Promise<string>;
 
   abstract getDatabaseStructure(): Promise<ServerStructure.Server>;

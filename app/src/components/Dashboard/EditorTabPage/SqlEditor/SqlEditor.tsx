@@ -81,13 +81,38 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   }
 
-  public insertText(text: string, mode: any) {
+  public insertText(textToInsert: string, mode: any) {
     // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
-    console.log(text, mode);
+    console.log(textToInsert, mode);
     if (!this.editor) return;
+    // method 1:
+    // const position: Position = this.editor.getPosition(); // Get current mouse position
+    // const text = this.editor.getValue();
+    // const splitedText = text.split('\n');
+    // const lineContent = splitedText[position.lineNumber - 1]; // Get selected line content
+    //
+    // splitedText[position.lineNumber - 1] = [
+    //   lineContent.slice(0, position.column - 1),
+    //   textToInsert,
+    //   lineContent.slice(position.column - 1),
+    // ].join(''); // Append the text exactly at the selected position (position.column -1)
+    //
+    // this.editor.setValue(splitedText.join('\n')); // Save the value back to the Editor
 
+    // method 2
+    // // this.editor.trigger('keyboard', 'type', { text });
+
+    const line = this.editor.getPosition();
+    const range = new globalMonaco.Range(
+      line.lineNumber,
+      line.column + 1,
+      line.lineNumber,
+      line.column + 1
+    );
+    const id = { major: 1, minor: 1 };
+    const op = { identifier: id, range: range, text: textToInsert, forceMoveMarkers: true };
+    this.editor.executeEdits('my-source', [op]);
     this.editor.focus();
-    this.editor.trigger('keyboard', 'type', { text });
   }
 
   private setEditorRef = (editor?: CodeEditor) => {

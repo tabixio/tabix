@@ -29,5 +29,11 @@ export default class Api {
     return new DataDecorator(data, query);
   }
 
+  getTableColumns = async (database: string, tablename: string) =>
+    this.provider.getTableColumns(database, tablename);
+
+  makeTableDescribe = async (database: string, tablename: string) =>
+    this.provider.makeTableDescribe(database, tablename);
+
   loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
 }

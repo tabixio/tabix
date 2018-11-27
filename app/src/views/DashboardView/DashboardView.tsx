@@ -63,12 +63,12 @@ class DashboardView extends React.Component<RoutedProps, State> {
     store.loadData();
   };
 
-  private insertTextToEditor(text: string) {
+  private insertTextToEditor(text: string, typeInsert: string = 'sql') {
     const { store } = this.props;
     store
       .activeTabOfType<EditorTabModel>(TabType.Editor)
       .flatMap(t => t.codeEditor)
-      .forEach(editor => editor.insertText(text, ''));
+      .forEach(editor => editor.insertText(text, typeInsert));
   }
 
   private onServerAction = (action: ServerAction) => {
@@ -98,10 +98,44 @@ class DashboardView extends React.Component<RoutedProps, State> {
     }
   };
 
+  private makeCodeSelectFrom = (table: ServerStructure.Table) => {
+    this.props.store.getTableColumns(table.database, table.name).then(cols => {
+      let tableName: string = table.name;
+      const fields: Array<string> = [];
+      const where: Array<string> = [];
+
+      cols.data.forEach((item: any) => {
+        if (!item) return;
+        fields.push(item.name);
+        if (item.type === 'Date') {
+          where.push(`${item.name}=today()`);
+        }
+      });
+      if (tableName.indexOf('.') !== -1) tableName = `"${tableName}"`;
+
+      let sql = `\nSELECT\n\t${fields.join(',\n\t')}\nFROM\n\t${table.database}.${tableName}\n`;
+      if (where.length) {
+        sql = `${sql}\nWHERE\n\t${where.join('\n AND \n')}`;
+      }
+      sql = `${sql}\nLIMIT 100\n\n`;
+      this.insertTextToEditor(sql, 'sql');
+    });
+  };
+
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
+    // https://github.com/tabixio/tabix/blob/master/src/app/base/sidebar.js#L233
+
     switch (action) {
+      case TableAction.CodeSelectFrom:
+        this.makeCodeSelectFrom(table);
+        break;
+      case TableAction.MakeSQLDescribe:
+        this.props.store.getTableSQLDescribe(table.database, table.name).then(sql => {
+          this.insertTextToEditor(sql, 'sql');
+        });
+        break;
       case TableAction.InsertTableName:
-        this.insertTextToEditor(table.name);
+        this.insertTextToEditor(table.name, 'table');
         break;
       default:
         break;
@@ -110,7 +144,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private onColumnAction = (action: ColumnAction, column: ServerStructure.Column) => {
     if (action === ColumnAction.DoubleClick) {
-      this.insertTextToEditor(column.name);
+      this.insertTextToEditor(column.name, 'column');
     }
   };
 
