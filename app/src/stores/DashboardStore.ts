@@ -1,7 +1,7 @@
 import { observable, action, runInAction, transaction, IReactionDisposer, reaction } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
-import { ServerStructure, localStorage, sqlHistoryStorage, Query } from 'services';
+import { ServerStructure, tabsStorage, sqlHistoryStorage, Query } from 'services';
 import {
   EditorTabModel,
   TreeFilter,
@@ -49,13 +49,13 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
 
   private startReactions() {
     this.autosaveTimer = window.setInterval(() => {
-      localStorage.saveTabs(this.tabs);
+      tabsStorage.saveTabs(this.tabs.map(_ => _.toJSON()));
     }, 30000);
 
     this.changeTabsReaction = reaction(
       () => this.tabs,
       tabs => {
-        localStorage.saveTabs(tabs);
+        tabsStorage.saveTabs(tabs.map(_ => _.toJSON()));
       }
     );
 
@@ -63,7 +63,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
       () => this.activeTab,
       tab => {
         this.uiStore.resetTabViewState();
-        localStorage.saveActiveTabId(tab.map(t => t.id).orUndefined());
+        tabsStorage.saveActiveTabId(tab.map(t => t.id).orUndefined());
       }
     );
   }
@@ -75,30 +75,20 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   @withRequest
   async loadData() {
     const structure = await this.api.loadDatabaseStructure();
+    // load saved tabs if empty
+    const tabs = !this.tabs.length ? (await tabsStorage.getTabs()).map(createTabFrom) : this.tabs;
+    // load saved active tab id if none
+    const activeTabId = this.activeTab.isEmpty() ? await tabsStorage.getActiveTabId() : None;
 
     transaction(() => {
       runInAction(() => {
         this.serverStructure = Option.of(structure);
-
-        // load saved tabs if empty
-        if (!this.tabs.length) {
-          localStorage.getTabs().fold(
-            ex => {
-              console.error(ex);
-            },
-            tabs => {
-              this.tabs = tabs.map(createTabFrom);
-            }
-          );
-        }
-
+        this.tabs = tabs;
         // todo: remove after testing
         if (!this.tabs.length) this.tabs = tabModels;
 
-        // load saved active tab id if none
         if (this.activeTab.isEmpty()) {
-          this.activeTab = localStorage
-            .getActiveTabId()
+          this.activeTab = activeTabId
             .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
             .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
         }
@@ -197,7 +187,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   async saveEditedTab() {
     this.uiStore.editedTab.forEach(tab => {
       tab.submit();
-      localStorage.saveTab(tab.model);
+      tabsStorage.saveTab(tab.model.toJSON());
       this.uiStore.hideSaveModal();
     });
   }

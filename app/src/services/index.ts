@@ -1,8 +1,9 @@
-import * as localStorage from './localStorage';
 import * as connectionsStorage from './connectionsStorage';
 import * as sqlHistoryStorage from './sqlHistoryStorage';
+import * as tabsStorage from './tabsStorage';
 
-export { localStorage, connectionsStorage, sqlHistoryStorage };
+export { connectionsStorage, sqlHistoryStorage, tabsStorage };
+
 export { default as Connection } from './Connection';
 export * from './Connection';
 export { default as Api } from './api/Api';
