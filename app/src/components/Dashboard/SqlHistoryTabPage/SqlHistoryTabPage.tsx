@@ -2,18 +2,23 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { typedInject } from '@vzh/mobx-stores';
 import { List } from 'antd';
+import { PaginationConfig } from 'antd/lib/table';
 import { SqlHistoryStore, Stores } from 'stores';
 import { eventBus, EventType } from 'services/sqlHistoryStorage';
+import ListItem, { ListItemProps } from './ListItem';
+import css from './SqlHistoryTabPage.css';
+
+const paginationConfig: PaginationConfig = {
+  pageSize: 5,
+  hideOnSinglePage: true,
+  size: 'small',
+};
 
 interface InjectedProps {
   store: SqlHistoryStore;
 }
 
-interface Props extends InjectedProps {}
-
-function renderItem(item: any) {
-  return <List.Item>{item}</List.Item>;
-}
+interface Props extends InjectedProps, Pick<ListItemProps, 'onEdit'> {}
 
 @observer
 class SqlHistoryTabPage extends React.Component<Props> {
@@ -30,12 +35,18 @@ class SqlHistoryTabPage extends React.Component<Props> {
     this.props.store.loadData();
   };
 
+  private renderItem = (item: string) => <ListItem content={item} onEdit={this.props.onEdit} />;
+
   render() {
     const { store } = this.props;
 
     return (
-      <div>
-        <List bordered dataSource={store.history} renderItem={renderItem} />
+      <div className={css.root}>
+        <List
+          dataSource={store.history}
+          renderItem={this.renderItem}
+          pagination={paginationConfig}
+        />
       </div>
     );
   }
