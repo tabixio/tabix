@@ -137,9 +137,10 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
   private getNewTabName = () => `SQL ${this.tabs.length + 1}`;
 
   @action
-  openNewEditorTab() {
+  openNewEditorTab = (content?: string) => {
     const newTab = EditorTabModel.from({
       title: this.getNewTabName(),
+      content,
       currentDatabase: this.activeTabOfType<EditorTabModel>(TabType.Editor)
         .flatMap(t => t.currentDatabase)
         .orElse(this.serverStructure.map(s => s.databases[0]).map(d => d.name))
@@ -147,7 +148,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     });
     this.tabs = this.tabs.concat(newTab);
     this.activeTab = Some(newTab);
-  }
+  };
 
   @action
   private openSpecialTab<T extends TabModel<any>>(type: T['type'], factory: () => T) {

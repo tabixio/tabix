@@ -261,7 +261,9 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
                 {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
 
-                {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && <SqlHistoryTabPage />}
+                {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
+                  <SqlHistoryTabPage onEdit={store.openNewEditorTab} />
+                )}
               </Tabs.TabPane>
             ))}
           </Tabs>
