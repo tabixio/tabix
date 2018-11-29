@@ -1,0 +1,11 @@
+.root {
+  :global {
+    .ant-list {
+      padding: 0.5em;
+    }
+
+    .ant-list-item {
+      padding: 1em;
+    }
+  }
+}

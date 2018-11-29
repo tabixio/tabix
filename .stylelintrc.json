@@ -1,15 +1,10 @@
 {
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-css-modules",
-    "prettier-stylelint",
-    "stylelint-config-prettier"
-  ],
-  "plugins": ["stylelint-scss"],
+  "extends": ["stylelint-config-standard", "stylelint-config-css-modules"],
+  "plugins": ["stylelint-prettier"],
   "defaultSeverity": "error",
   "rules": {
+    "prettier/prettier": true,
     "comment-empty-line-before": null,
-    "comment-whitespace-inside": null,
     "no-descending-specificity": null
   },
   "ignoreFiles": ["node_modules/**", "dist/**"]
