@@ -17,6 +17,7 @@ export interface EditorTab extends Tab<TabType.Editor> {
   currentDatabase: Option<string>;
   codeEditor: Option<SqlEditor>;
   queriesResult: QueryResult[];
+  pinnedResult: boolean;
 }
 
 export interface EditorTabJsonEntity extends Omit<EditorTab, 'codeEditor' | 'queriesResult'> {}
@@ -28,6 +29,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
     title,
     content = '',
     currentDatabase,
+    pinnedResult = false,
   }: Partial<JSONModel<EditorTabJsonEntity>> &
     Pick<JSONModel<EditorTabJsonEntity>, 'title'>): EditorTabModel {
     return new EditorTabModel({
@@ -38,6 +40,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
       currentDatabase: Option.of(currentDatabase),
       codeEditor: None,
       queriesResult: [],
+      pinnedResult,
     });
   }
 
@@ -47,17 +50,21 @@ export default class EditorTabModel extends TabModel<EditorTab>
   @observable
   currentDatabase: Option<string>;
 
+  codeEditor: Option<SqlEditor>;
+
   @observable
   queriesResult: QueryResult[];
 
-  codeEditor: Option<SqlEditor>;
+  @observable
+  pinnedResult: boolean;
 
   protected constructor(data: EditorTab) {
     super(data);
     this.content = data.content;
     this.currentDatabase = data.currentDatabase;
-    this.queriesResult = data.queriesResult;
     this.codeEditor = data.codeEditor;
+    this.queriesResult = data.queriesResult;
+    this.pinnedResult = data.pinnedResult;
   }
 
   toJSON(this: EditorTabModel): JSONModel<EditorTabJsonEntity> {

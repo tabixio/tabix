@@ -1,0 +1,14 @@
+.root {
+  padding: 0 1em;
+
+  :global {
+    .anticon {
+      cursor: pointer;
+      font-size: 1.25em;
+
+      &:not(:first-of-type) {
+        margin-left: 0.75em;
+      }
+    }
+  }
+}
