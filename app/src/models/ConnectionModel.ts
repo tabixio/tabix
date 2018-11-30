@@ -26,7 +26,6 @@ export abstract class BaseConnectionModel<T extends Connection> extends Validabl
   @observable
   username: string = '';
 
-  @required()
   @observable
   password: string = '';
 

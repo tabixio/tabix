@@ -53,7 +53,7 @@ export default class DirectSignInForm extends React.Component<Props> {
           />
         </Form.Item>
 
-        <Form.Item validateStatus={error2status(errors.password.error.nonEmpty())}>
+        <Form.Item>
           <Input
             name="password"
             type="password"

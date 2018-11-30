@@ -87,20 +87,22 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   }
 
   async getDatabaseStructure() {
-    // @ts-ignore
-    const columns = await this.queryString('SELECT * FROM system.columns');
-    // @ts-ignore
+    const limitClusters = 50;
+    const limitColumns = 4000;
+    const limitTables = 2000;
+
+    const columns = await this.queryString(`SELECT * FROM system.columns LIMIT ${limitColumns}`);
     const tables = await this.queryString(
-      'SELECT database,name,engine,size FROM system.tables ANY LEFT JOIN ( SELECT database,table as name,formatReadableSize(sum(bytes)) as size FROM system.parts  GROUP BY database,name ) USING (database,name)'
+      `SELECT database,name,engine,size FROM system.tables ANY LEFT JOIN ( SELECT database,table as name,formatReadableSize(sum(bytes)) as size FROM system.parts  GROUP BY database,name ) USING (database,name) LIMIT ${limitTables}`
     );
-    // @ts-ignore
-    const databases = await this.queryString('SELECT name FROM system.databases');
-    // @ts-ignore
+    const databases = await this.queryString(`SELECT name FROM system.databases`);
     const dictionaries = await this.queryString(
-      'SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names'
+      `SELECT name,key,attribute.names,attribute.types FROM system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names`
     );
     const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
-
+    const clusters = await this.queryString(
+      `SELECT host_address,port FROM system.clusters GROUP BY host_address,port LIMIT ${limitClusters}`
+    );
     const columnList = columns.data.map((c: any) => {
       /* eslint-disable camelcase */
       const {
@@ -131,7 +133,8 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       tables.data,
       databases.data,
       dictionaries.data,
-      functions.data
+      functions.data,
+      clusters.data
     );
   }
 
