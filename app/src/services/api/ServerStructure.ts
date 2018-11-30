@@ -33,6 +33,7 @@ namespace ServerStructure {
       public readonly id: string,
       public readonly name: string,
       public readonly databases: ReadonlyArray<Database>,
+      public readonly clusters: ReadonlyArray<any>,
       public readonly functions: ReadonlyArray<any>,
       public readonly dictionaries: ReadonlyArray<any>,
       public readonly editorRules: Record<string, any>
@@ -65,14 +66,15 @@ namespace ServerStructure {
     return !!(item as Column).table && !!(item as Column).database;
   }
 
-  export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], {});
+  export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], [], {});
 
   export function from(
     columns: ReadonlyArray<Column>,
     tables: ReadonlyArray<Table>,
     databases: ReadonlyArray<Database>,
     dictionaries: any[],
-    functions: any[]
+    functions: any[],
+    clusters: any[]
   ) {
     const dbTableColumns = columns.reduce((acc, col) => {
       const column: Column = {
@@ -196,7 +198,15 @@ namespace ServerStructure {
 
     editorRules.tables = dbTables;
 
-    return new Server('root', 'Clickhouse Server', dbList, functions, dictionaries, editorRules);
+    return new Server(
+      'root',
+      'Clickhouse Server',
+      dbList,
+      clusters,
+      functions,
+      dictionaries,
+      editorRules
+    );
   }
 }
 
