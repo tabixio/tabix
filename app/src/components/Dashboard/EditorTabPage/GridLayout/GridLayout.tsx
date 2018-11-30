@@ -16,6 +16,7 @@ export interface GridLayoutProps extends Childrenable {
   itemHeight: number;
   rowHeight?: number;
   width?: number;
+  locked?: boolean;
   getItemLayout?: (index: number, item: any, props: ItemLayoutProps) => ReactGridLayout.Layout;
 }
 
@@ -55,6 +56,7 @@ export default function GridLayout(props: GridLayoutProps) {
     cols,
     itemHeight,
     itemWidth,
+    locked,
     getItemLayout,
   } = props;
 
@@ -78,6 +80,9 @@ export default function GridLayout(props: GridLayoutProps) {
       width={width}
       rowHeight={rowHeight}
       containerPadding={[0, 0]}
+      isDraggable={!locked}
+      isResizable={!locked}
+      isRearrangeable={!locked}
     >
       {children}
     </Layout>

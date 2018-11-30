@@ -1,49 +1,31 @@
 .root {
   :global {
     & .ant-tabs-bar {
-      border-bottom: unset !important;
+      border-bottom: unset;
       margin-bottom: 0;
       display: flex;
       align-items: center;
       flex-grow: 0;
 
-      & .ant-tabs-nav-container {
-        /* flex-shrink: 0; */
-        /*height: unset !important; */
-      }
-
       & div.ant-tabs-extra-content {
         flex-grow: 1;
         order: 999;
-        /* line-height: normal; */
-
-        /* display: flex; */
-        /* height: 100%; */
 
         & > span {
           display: flex;
           align-items: center;
-          /* height: 100%; */
         }
       }
 
       & .ant-tabs-tab {
         color: silver;
         background: unset !important;
+        border: unset !important;
         border-right: silver 1px solid !important;
-        border-left: unset !important;
-        border-bottom: unset !important;
-        border-top: unset !important;
-        /* border: unset !important;*/
         padding: 0 8px 2px;
         margin-right: 0;
-        /* line-height: unset !important; */
         border-radius: unset !important;
       }
-    }
-
-    & .ant-tabs-content {
-      /* height: calc(100% - 40px); */
     }
   }
 }

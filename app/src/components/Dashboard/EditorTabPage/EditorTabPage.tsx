@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Tabs } from 'antd';
 import { Option } from 'funfix-core';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { EditorTab } from 'models';
@@ -9,13 +8,14 @@ import { ServerStructure } from 'services';
 import DataDecorator from 'services/api/DataDecorator';
 import Splitter from 'components/Splitter';
 import SqlEditor from './SqlEditor';
-import { ActionType } from './SqlEditor/Toolbar';
+import { ActionType as EditorActionType } from './SqlEditor/Toolbar';
 import SaveModal from './SaveModal';
+import Tabs from './Tabs';
+import { ActionType as ResultActionType } from './Tabs/Actions';
 import DataItemsLayout from './DataItemsLayout';
 import DataTable from './DataTable';
 import Draw from './Draw';
 import Progress from './Progress';
-import css from './EditorTabPage.css';
 
 interface Props {
   model: EditorTab;
@@ -38,19 +38,31 @@ export default class EditorTabPage extends React.Component<Props> {
     this.props.onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
   };
 
-  private onAction = (action: ActionType, eventData?: any) => {
+  private onEditorAction = (action: EditorActionType, eventData?: any) => {
     switch (action) {
-      case ActionType.Save: {
+      case EditorActionType.Save: {
         const { store } = this.props;
         store.uiStore.showSaveModal();
         break;
       }
-      case ActionType.Fullscreen:
+      case EditorActionType.Fullscreen:
         break;
-      case ActionType.RunCurrent:
-      case ActionType.RunAll: {
+      case EditorActionType.RunCurrent:
+      case EditorActionType.RunAll: {
         const { store } = this.props;
         store.execQueries(eventData);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  private onResultAction = (action: ResultActionType) => {
+    switch (action) {
+      case ResultActionType.TogglePin: {
+        const { onTabModelFieldChange, model } = this.props;
+        onTabModelFieldChange({ name: 'pinnedResult', value: !model.pinnedResult });
         break;
       }
       default:
@@ -66,6 +78,7 @@ export default class EditorTabPage extends React.Component<Props> {
     const { store, model, width } = this.props;
     // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
     const resultList = model.queriesResult;
+
     return (
       <React.Fragment>
         <Splitter split="horizontal" minSize={100} defaultSize={350}>
@@ -75,12 +88,12 @@ export default class EditorTabPage extends React.Component<Props> {
             serverStructure={store.serverStructure.getOrElse(ServerStructure.EMPTY)}
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
-            onAction={this.onAction}
+            onAction={this.onEditorAction}
             ref={this.setEditorRef}
             fill
           />
 
-          <Tabs size="small" animated={false} defaultActiveKey="table" className={css.tabs}>
+          <Tabs defaultActiveKey="table" pinned={model.pinnedResult} onAction={this.onResultAction}>
             <Tabs.TabPane key="table" tab="Table view">
               {!!store.uiStore.executingQueries.length && (
                 <Progress queries={store.uiStore.executingQueries} />
@@ -93,6 +106,7 @@ export default class EditorTabPage extends React.Component<Props> {
                 items={resultList}
                 width={width}
                 renderItem={this.renderTable}
+                locked={model.pinnedResult}
               />
             </Tabs.TabPane>
 

@@ -21,8 +21,6 @@ function getItemLayout(
   };
 }
 export default function DataItemsLayout({ items, renderItem, ...rest }: Props) {
-  // private renderText = (text: string) => <div className={css.error}>{text}</div>;
-
   return (
     <GridLayout items={items} getItemLayout={getItemLayout} {...rest}>
       {items.map(item => (
