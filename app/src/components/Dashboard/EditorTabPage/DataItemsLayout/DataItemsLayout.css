@@ -1,6 +1,8 @@
 .grid-item {
-  padding: 0 1.5em 1.5em 0;
+  padding: 0 0.2em 0.2em 0;
+  transform: unset !important;
 }
+
 .text {
   white-space: pre;
   padding-top: 1em;
@@ -8,6 +10,7 @@
   height: 100%;
   background: unset !important;
 }
+
 .error {
   background: unset !important;
   padding: 1em 0;
