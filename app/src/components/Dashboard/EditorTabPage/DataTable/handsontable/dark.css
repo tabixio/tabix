@@ -2,6 +2,7 @@
   .handsontable-dark {
     color: rgba(255, 255, 255, 1);
   }
+
   .handsontable-dark .handsontable th,
   .handsontable-dark .handsontable td {
     border-right: 1px solid #636363;
@@ -13,6 +14,7 @@
     border-right: 1px solid #636363;
     border-bottom: 1px solid #636363;
   }
+
   .handsontable-dark .handsontable th:first-child,
   .handsontable-dark .handsontable td:first-of-type,
   .handsontable-dark .handsontable .htNoFrame + th,
@@ -48,6 +50,7 @@
   .handsontable-dark .handsontable thead th.ht__highlight {
     background-color: #303030;
   }
+
   .handsontable-dark .handsontable.ht__selection--columns thead th.ht__highlight,
   .handsontable-dark .handsontable.ht__selection--rows tbody th.ht__highlight {
     background-color: #8eb0e7;
@@ -56,15 +59,16 @@
 
   .handsontable .currentRowWhite {
     background: rgba(76, 76, 76, 0.2) !important;
-    /*color: rgb(250, 250, 250)*/
+    /* color: rgb(250, 250, 250) */
   }
+
   .handsontable .currentRowDark {
     background: rgba(76, 76, 76, 0.8) !important;
-    /*color: rgb(250, 250, 250)*/
+    /* color: rgb(250, 250, 250) */
   }
 
   .handsontable-dark .manualColumnResizer {
-    /*background: #2293ee !important;*/
+    background: #2293ee !important;
   }
 
   .htContextMenu table.htCore {
@@ -95,9 +99,11 @@
   .htContextMenu table.htCore {
     background-color: #424242;
   }
+
   .htContextMenu {
     background-color: #424242;
   }
+
   .htContextMenu table.htCore {
     border: 1px dotted #636363;
     border-bottom-width: 2px;
@@ -131,17 +137,19 @@
   */
   .handsontable .currentRowWhite {
     background: rgba(76, 76, 76, 0.2) !important;
-    /*color: rgb(250, 250, 250)*/
+    /* color: rgb(250, 250, 250) */
   }
+
   .handsontable .currentRowDark {
     background: rgba(76, 76, 76, 0.8) !important;
-    /*color: rgb(250, 250, 250)*/
+    /* color: rgb(250, 250, 250) */
   }
 
   .htCellBold {
     font-weight: 800;
     letter-spacing: 1px;
   }
+
   .htCellRed {
     color: #ff6347;
   }
@@ -153,6 +161,7 @@
   .htCellOrange {
     color: Orange;
   }
+
   .htCellGreen {
     color: #4caf50;
   }
@@ -173,8 +182,9 @@
     margin: 3px 1px 0 5px;
     float: right;
   }
-  .handsontable .DropMenuButton:before {
-    content: '\25BC\ '; /* 'BLACK DOWN-POINTING TRIANGLE'*/
+
+  .handsontable .DropMenuButton::before {
+    content: '\25BC\ '; /* 'BLACK DOWN-POINTING TRIANGLE' */
   }
 
   .handsontable .DropMenuButton:hover {
@@ -197,7 +207,7 @@
   }
 
   .htDropMenu table.htCore {
-    /*border: 1px solid #bbb;*/
+    /* border: 1px solid #bbb; */
     border-bottom-width: 2px;
     border-right-width: 2px;
   }

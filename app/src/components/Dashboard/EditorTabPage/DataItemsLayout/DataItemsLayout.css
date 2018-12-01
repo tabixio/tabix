@@ -1,6 +1,6 @@
 .grid-item {
   padding: 0 0.2em 0.2em 0;
-  transform: unset !important;
+  /* transform: unset !important; Fix HOTTable but drop Grid */
 }
 
 .text {
