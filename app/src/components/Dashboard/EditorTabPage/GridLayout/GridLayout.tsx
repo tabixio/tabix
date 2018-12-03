@@ -9,15 +9,15 @@ const ReactGridLayoutFilled = WidthProvider(ReactGridLayout);
 
 export type ItemLayoutProps = Omit<GridLayoutProps, 'items' | 'getItemLayout' | 'width'>;
 
-export interface GridLayoutProps extends Childrenable {
-  items: any[];
+export interface GridLayoutProps<Item = any> extends Childrenable {
+  items: ReadonlyArray<Item>;
   cols: number;
   itemWidth: number;
   itemHeight: number;
   rowHeight?: number;
   width?: number;
   locked?: boolean;
-  getItemLayout?: (index: number, item: any, props: ItemLayoutProps) => ReactGridLayout.Layout;
+  getItemLayout?: (index: number, item: Item, props: ItemLayoutProps) => ReactGridLayout.Layout;
 }
 
 export function getItemLayoutDefault(

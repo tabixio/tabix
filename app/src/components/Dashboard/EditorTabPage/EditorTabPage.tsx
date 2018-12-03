@@ -76,8 +76,7 @@ export default class EditorTabPage extends React.Component<Props> {
 
   render() {
     const { store, model, width } = this.props;
-    // const dataList = model.data.concat(model.data); // fixme: remove after testing grid layout
-    const resultList = model.queriesResult;
+    const resultList = model.queriesResult.map(r => r.list).getOrElse([]);
 
     return (
       <React.Fragment>
@@ -89,6 +88,7 @@ export default class EditorTabPage extends React.Component<Props> {
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onEditorAction}
+            stats={model.queriesResult.map(_ => _.totalStats).orUndefined()}
             ref={this.setEditorRef}
             fill
           />

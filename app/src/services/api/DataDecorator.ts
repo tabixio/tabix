@@ -15,11 +15,17 @@ export interface ColumnMetadata {
   forceSortOrder: boolean;
 }
 
-export interface Metadata {
-  columns: ColumnMetadata[];
+interface Metadata {
+  columns: ReadonlyArray<ColumnMetadata>;
 }
 
-export type Row = Record<string, any>; // & { id: string | number };
+export interface Statistics {
+  bytesRead: number;
+  timeElapsed: number;
+  rowsRead: number;
+}
+
+export type Row = Record<string, any>;
 
 // todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
@@ -28,6 +34,8 @@ export default class DataDecorator {
   readonly rows: Row[];
 
   readonly query: Query;
+
+  readonly stats: Statistics;
 
   readonly text: string = '';
 
@@ -43,6 +51,14 @@ export default class DataDecorator {
     if (result.totals && result.data) {
       result.data.push(result.totals);
     }
+
+    const stats = result.statistics || {};
+    this.stats = {
+      timeElapsed: stats.elapsed || 0,
+      rowsRead: stats.rows_read || 0,
+      bytesRead: stats.bytes_read || 0,
+    };
+
     // ----------------------------------------------------------------------------------------------------
     // Если результат строка
     if (typeof result !== 'object') {

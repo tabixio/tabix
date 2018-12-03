@@ -4,8 +4,7 @@ import DataDecorator from 'services/api/DataDecorator';
 import GridLayout, { GridLayoutProps, ItemLayoutProps, getItemLayoutDefault } from '../GridLayout';
 import css from './DataItemsLayout.css';
 
-interface Props extends GridLayoutProps {
-  items: QueryResult[];
+interface Props extends GridLayoutProps<QueryResult> {
   renderItem: (data: DataDecorator) => React.ReactNode;
 }
 

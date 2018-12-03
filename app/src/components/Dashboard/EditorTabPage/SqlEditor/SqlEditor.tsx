@@ -49,21 +49,21 @@ const globalMonaco: Monaco = window.monaco;
 
 @observer
 export default class SqlEditor extends React.Component<SqlEditorProps> {
-  get parseEditorText(): (
-    typeCommand: 'select' | 'current' | 'all',
-    editor: monacoEditor.editor.ICodeEditor
-  ) => Array<Query> {
-    return this._parseEditorText;
-  }
+  // get parseEditorText(): (
+  //   typeCommand: 'select' | 'current' | 'all',
+  //   editor: monacoEditor.editor.ICodeEditor
+  // ) => Array<Query> {
+  //   return this._parseEditorText;
+  // }
 
-  set parseEditorText(
-    value: (
-      typeCommand: 'select' | 'current' | 'all',
-      editor: monacoEditor.editor.ICodeEditor
-    ) => Array<Query>
-  ) {
-    this._parseEditorText = value;
-  }
+  // set parseEditorText(
+  //   value: (
+  //     typeCommand: 'select' | 'current' | 'all',
+  //     editor: monacoEditor.editor.ICodeEditor
+  //   ) => Array<Query>
+  // ) {
+  //   this._parseEditorText = value;
+  // }
 
   private editor?: CodeEditor;
 
@@ -110,7 +110,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       line.column + 1
     );
     const id = { major: 1, minor: 1 };
-    const op = { identifier: id, range: range, text: textToInsert, forceMoveMarkers: true };
+    const op = { identifier: id, range, text: textToInsert, forceMoveMarkers: true };
     this.editor.executeEdits('my-source', [op]);
     this.editor.focus();
   }
@@ -184,8 +184,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         });
 
         // highlight tables and databases
-        languageSettings.dbtables.push(`${table.database}\.${table.insertName}`);
-        languageSettings.dbtables.push(`${table.database}\.${table.insertName.replace(/"/g, '`')}`);
+        languageSettings.dbtables.push(`${table.database}.${table.insertName}`);
+        languageSettings.dbtables.push(`${table.database}.${table.insertName.replace(/"/g, '`')}`);
         languageSettings.tables.push(`${table.insertName}`);
         languageSettings.tables.push(`${db.name}`);
 
@@ -284,28 +284,28 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     );
   };
 
-  private bindKeys = (editor: CodeEditor) => {
+  private bindKeys = (codeEditor: CodeEditor) => {
     const self = this;
 
     const KM = globalMonaco.KeyMod;
     const KC = globalMonaco.KeyCode;
 
     // ======== Command-Enter ========
-    editor.addAction({
+    codeEditor.addAction({
       id: 'my-exec-code',
       label: 'Exec current code',
       keybindings: [KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,
-      run(_editor) {
+      run(editor) {
         // self.parseEditorText('current', editor, monaco);
         // self.onAction(ActionType.RunCurrent);
-        const queries = self._parseEditorText('current', editor);
+        const queries = self.parseEditorText('current', editor);
         self.props.onAction(ActionType.RunCurrent, queries);
       },
     });
     // ======== Shift-Command-Enter ========
-    editor.addAction({
+    codeEditor.addAction({
       id: 'my-exec-all',
       label: 'Exec All',
       keybindings: [KM.Shift | KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
@@ -316,38 +316,38 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       run(editor) {
         // self.parseEditorText('all', editor, monaco);
         // self.onAction(ActionType.RunAll);
-        const queries = self._parseEditorText('all', editor);
+        const queries = self.parseEditorText('all', editor);
         self.props.onAction(ActionType.RunAll, queries);
       },
     });
     // ======== Command+Shift+- / Command+Shift+= ========
-    editor.addCommand(
+    codeEditor.addCommand(
       KM.chord(KM.Shift | KM.CtrlCmd | KC.US_MINUS, 0), // eslint-disable-line no-bitwise
       () => {
-        editor.getAction('editor.foldAll').run();
+        codeEditor.getAction('editor.foldAll').run();
       },
       ''
     );
-    editor.addCommand(
+    codeEditor.addCommand(
       KM.chord(KM.Shift | KM.CtrlCmd | KC.US_EQUAL, 0), // eslint-disable-line no-bitwise
       () => {
-        editor.getAction('editor.unfoldAll').run();
+        codeEditor.getAction('editor.unfoldAll').run();
       },
       ''
     );
     // ======== Shift-CtrlCmd-F ========
-    editor.addCommand(
+    codeEditor.addCommand(
       KM.chord(KM.Shift | KM.CtrlCmd | KC.KEY_F, 0), // eslint-disable-line no-bitwise
       () => {
-        editor.getAction('editor.action.formatDocument').run();
+        codeEditor.getAction('editor.action.formatDocument').run();
       },
       ''
     );
     // ======== Cmd-Y ========
-    editor.addCommand(
+    codeEditor.addCommand(
       KM.chord(KM.CtrlCmd | KC.KEY_Y, 0), // eslint-disable-line no-bitwise
       () => {
-        editor.getAction('editor.action.deleteLines').run();
+        codeEditor.getAction('editor.action.deleteLines').run();
       },
       ''
     );
@@ -362,7 +362,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     // @todo:  Command-Left | Command-Right | Shift-Alt-Command-Right | Shift-Alt-Command-Right
 
-    editor.focus();
+    codeEditor.focus();
   };
 
   private onEditorDidMount = (editor: CodeEditor) => {
@@ -397,7 +397,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    */
   public tokenizeModel = (
     model: monacoEditor.editor.ITextModel,
-    cursorPosition?: Position | undefined,
+    cursorPos?: Position | undefined,
     selection?: Selection | undefined
   ): Array<Query> => {
     //
@@ -410,9 +410,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
      * 3) Определяем какой текст выполнять
      */
 
-    if (!cursorPosition) {
-      cursorPosition = new Position(0, 0);
-    }
+    const cursorPosition = cursorPos || new Position(0, 0);
 
     const splitterQueryToken = 'warn-token.sql'; // Токен разбития на запросы
     const splitterTabixToken = 'tabix.sql'; // Токен разбития на запросы
@@ -644,7 +642,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    * @param {monacoEditor.editor.ICodeEditor} editor
    * @return Array<Query>
    */
-  protected _parseEditorText = (
+  protected parseEditorText = (
     _typeCommand: 'select' | 'current' | 'all',
     editor: monacoEditor.editor.ICodeEditor
   ): Array<Query> => {
@@ -736,6 +734,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       content,
       onContentChange,
       onAction,
+      stats,
       className,
       ...rest
     } = this.props;
@@ -758,6 +757,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
           currentDatabase={currentDatabase}
           onDatabaseChange={onDatabaseChange}
           onAction={this.onAction}
+          stats={stats}
         />
       </Flex>
     );
