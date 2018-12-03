@@ -50,7 +50,7 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
   }
 
   // @ts-ignore: TS6133: 'getColumnSorting' is declared but its value is never read.
-  private getColumnSorting(_columns: ColumnMetadata[]) {
+  private getColumnSorting(_columns: ReadonlyArray<ColumnMetadata>) {
     // @Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
 
     // For forceSortOrder

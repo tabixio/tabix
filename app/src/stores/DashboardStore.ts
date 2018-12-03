@@ -17,11 +17,12 @@ import {
   DbOverviewTabModel,
   SqlHistoryTabModel,
 } from 'models';
+import { Statistics } from 'services/api/DataDecorator';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
 import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
-import tabModels from './tabModels.tmp';
+// import tabModels from './tabModels.tmp';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
@@ -85,7 +86,7 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
         this.serverStructure = Option.of(structure);
         this.tabs = tabs;
         // todo: remove after testing
-        if (!this.tabs.length) this.tabs = tabModels;
+        // if (!this.tabs.length) this.tabs = tabModels;
 
         if (this.activeTab.isEmpty()) {
           this.activeTab = activeTabId
@@ -214,10 +215,14 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
     };
 
     await this.activeTabOfType<EditorTabModel>(TabType.Editor)
-      .map(async tab => {
+      .map(async t => {
+        const tab = t;
+
         const results = await Promise.all(
-          queries.map(async q => {
+          queries.map(async query => {
+            const q = query;
             q.extendSettings = extendSettings;
+
             runInAction(() => {
               this.uiStore.executingQueries = this.uiStore.executingQueries.concat(q);
             });
@@ -236,8 +241,26 @@ export default class DashboardStore extends ApiRequestableStore<DashboardUIStore
             }
           })
         );
+
+        const stats = results.reduce(
+          (acc, i) => {
+            i.result
+              .map(d => d.stats)
+              .forEach(s => {
+                acc.timeElapsed += s.timeElapsed;
+                acc.rowsRead += s.rowsRead;
+                acc.bytesRead += s.bytesRead;
+              });
+            return acc;
+          },
+          { timeElapsed: 0, rowsRead: 0, bytesRead: 0 } as Statistics
+        );
+
         runInAction(() => {
-          tab.queriesResult = results;
+          tab.queriesResult = Some({
+            list: results,
+            totalStats: stats,
+          });
         });
       })
       .getOrElse(Promise.resolve());

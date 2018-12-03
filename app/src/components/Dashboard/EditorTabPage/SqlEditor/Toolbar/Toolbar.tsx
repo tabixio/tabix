@@ -3,7 +3,9 @@ import { Flex, FlexProps } from 'reflexy';
 import { Button, Select } from 'antd';
 import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
+import { Statistics } from 'services/api/DataDecorator';
 import ActionButton, { Props as ActionButtonProps } from './ActionButton';
+import RequestStats from './RequestStats';
 import css from './Toolbar.css';
 
 export enum ActionType {
@@ -17,6 +19,7 @@ export interface Props extends Pick<ActionButtonProps<ActionType>, 'onAction'> {
   databases: ReadonlyArray<ServerStructure.Database>;
   currentDatabase?: string;
   onDatabaseChange?: (db: ServerStructure.Database) => void;
+  stats?: Statistics;
 }
 
 function SpaceH() {
@@ -34,7 +37,7 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
   };
 
   render() {
-    const { databases, currentDatabase, onDatabaseChange, onAction, ...rest } = this.props;
+    const { databases, currentDatabase, onDatabaseChange, onAction, stats, ...rest } = this.props;
 
     return (
       <Flex alignItems="center" {...rest}>
@@ -84,6 +87,13 @@ export default class Toolbar extends React.Component<Props & FlexProps> {
         </Flex>
 
         <Flex grow justifyContent="flex-end">
+          {stats && (
+            <>
+              <SpaceH />
+              <RequestStats {...stats} />
+            </>
+          )}
+
           <SpaceH />
           <ActionButton
             size="small"

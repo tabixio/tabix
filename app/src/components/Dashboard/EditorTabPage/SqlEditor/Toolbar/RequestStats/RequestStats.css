@@ -1,0 +1,25 @@
+.root {
+  & > div:not(:first-of-type)::before {
+    content: '|';
+    padding-right: 1ch;
+    margin-left: 1ch;
+  }
+}
+
+.time::after,
+.rows::after,
+.bytes::after {
+  margin-left: 1ex;
+}
+
+.time::after {
+  content: 'sec.';
+}
+
+.rows::after {
+  content: 'rows';
+}
+
+.bytes::after {
+  content: 'bytes';
+}

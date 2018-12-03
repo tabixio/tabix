@@ -3,7 +3,7 @@ import { SerializableModel, serialize, JSONModel } from '@vzh/mobx-stores';
 import { Option, None, Try } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';
-import DataDecorator from 'services/api/DataDecorator';
+import DataDecorator, { Statistics } from 'services/api/DataDecorator';
 import SqlEditor from 'components/Dashboard/EditorTabPage/SqlEditor'; // refactor: use interface of sqleditor and not ref to component type?
 import TabModel, { Tab, TabType } from './TabModel';
 
@@ -12,11 +12,16 @@ export interface QueryResult {
   result: Try<DataDecorator>;
 }
 
+export interface QueryResultList {
+  readonly list: ReadonlyArray<QueryResult>;
+  readonly totalStats: Statistics;
+}
+
 export interface EditorTab extends Tab<TabType.Editor> {
   content: string;
   currentDatabase: Option<string>;
   codeEditor: Option<SqlEditor>;
-  queriesResult: QueryResult[];
+  queriesResult: Option<QueryResultList>;
   pinnedResult: boolean;
 }
 
@@ -39,7 +44,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
       content,
       currentDatabase: Option.of(currentDatabase),
       codeEditor: None,
-      queriesResult: [],
+      queriesResult: None,
       pinnedResult,
     });
   }
@@ -53,7 +58,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
   codeEditor: Option<SqlEditor>;
 
   @observable
-  queriesResult: QueryResult[];
+  queriesResult: Option<QueryResultList>;
 
   @observable
   pinnedResult: boolean;
