@@ -4,3 +4,6 @@ interface Window {
   monaco: any;
   monacoGlobalProvider: any;
 }
+
+// fixme: remove after antd fix imports in TextArea
+interface ResizeObserver {}

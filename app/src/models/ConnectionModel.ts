@@ -9,7 +9,7 @@ import {
   ServerConnection,
   isDirectConnection,
   ConnectionType,
-  PartialConnection,
+  ConnectionInit,
 } from 'services';
 
 export abstract class BaseConnectionModel<T extends Connection> extends ValidableStoreModel<T>
@@ -34,7 +34,7 @@ export abstract class BaseConnectionModel<T extends Connection> extends Validabl
 
 export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
   implements DirectConnection {
-  type: ConnectionType.direct = ConnectionType.direct;
+  type: ConnectionType.Direct = ConnectionType.Direct;
 
   @observable
   params?: string;
@@ -76,7 +76,7 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
 
 export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
   implements ServerConnection {
-  type: ConnectionType.server = ConnectionType.server;
+  type: ConnectionType.Server = ConnectionType.Server;
 
   @observable
   configKey?: string;
@@ -118,10 +118,10 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
 
 const ConnectionModel = {
   // Can edited and saved
-  DirectEmpty: new DirectConnectionModel({ type: ConnectionType.direct }),
-  ServerEmpty: new ServerConnectionModel({ type: ConnectionType.server }),
+  DirectEmpty: new DirectConnectionModel({ type: ConnectionType.Direct }),
+  ServerEmpty: new ServerConnectionModel({ type: ConnectionType.Server }),
 
-  of(connection: PartialConnection) {
+  of(connection: ConnectionInit) {
     if ((connection as ConnectionModel).changeField) {
       return connection as ConnectionModel;
     }
