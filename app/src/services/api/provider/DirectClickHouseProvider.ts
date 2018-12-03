@@ -5,7 +5,7 @@ import { Query } from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   getType() {
-    return ConnectionType.direct;
+    return ConnectionType.Direct;
   }
 
   private getRequestInit(query: string): RequestInit {

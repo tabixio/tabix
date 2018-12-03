@@ -34,7 +34,7 @@ class SignInView extends React.Component<RoutedProps> {
 
   private onChangeTab = (key: string) => {
     const con =
-      key === ConnectionType.direct ? ConnectionModel.DirectEmpty : ConnectionModel.ServerEmpty;
+      key === ConnectionType.Direct ? ConnectionModel.DirectEmpty : ConnectionModel.ServerEmpty;
     const { store } = this.props;
     store.setSelectedConnection(con);
   };
@@ -76,13 +76,13 @@ class SignInView extends React.Component<RoutedProps> {
               type="line"
               activeKey={
                 isDirectConnection(store.selectedConnection)
-                  ? ConnectionType.direct
-                  : ConnectionType.server
+                  ? ConnectionType.Direct
+                  : ConnectionType.Server
               }
               onChange={this.onChangeTab}
               className={css.form}
             >
-              <Tabs.TabPane tab="DIRECT CH" key={ConnectionType.direct}>
+              <Tabs.TabPane tab="DIRECT CH" key={ConnectionType.Direct}>
                 {isDirectConnection(store.selectedConnection) && (
                   <DirectSignInForm
                     model={store.selectedConnection}
@@ -92,7 +92,7 @@ class SignInView extends React.Component<RoutedProps> {
                   />
                 )}
               </Tabs.TabPane>
-              <Tabs.TabPane tab="TABIX.SERVER" key={ConnectionType.server}>
+              <Tabs.TabPane tab="TABIX.SERVER" key={ConnectionType.Server}>
                 {!isDirectConnection(store.selectedConnection) && (
                   <ServerSignInForm
                     model={store.selectedConnection}
