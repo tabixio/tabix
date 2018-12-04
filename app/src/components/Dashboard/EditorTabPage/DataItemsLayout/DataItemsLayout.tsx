@@ -15,7 +15,7 @@ function getItemLayout(
 ): ReactGridLayout.Layout {
   return {
     ...getItemLayoutDefault(index, item, props),
-    h: item.result.map(() => props.itemHeight).getOrElse(2),
+    h: item.result.map(() => props.itemHeight).getOrElse(2), // if result has error
     i: item.id,
   };
 }

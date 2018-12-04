@@ -36,8 +36,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
     "@types/chroma-js": "^1.4.0",
     "@types/classnames": "^2.2.6",
@@ -87,7 +87,7 @@
     "ts-import-plugin": "^1.5.5",
     "ts-loader": "^5.3.1",
     "typescript": "^3.2.1",
-    "typescript-eslint-parser": "^21.0.1",
+    "typescript-eslint-parser": "^21.0.2",
     "url-loader": "^1.1.2",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2",
@@ -106,7 +106,7 @@
     "handsontable": "6.2.0",
     "history": "^4.7.2",
     "localforage": "^1.7.3",
-    "mobx": "^5.6.0",
+    "mobx": "^5.7.0",
     "mobx-react": "^5.4.2",
     "mobx-utils": "^5.1.0",
     "monaco-editor": "^0.14.3",
