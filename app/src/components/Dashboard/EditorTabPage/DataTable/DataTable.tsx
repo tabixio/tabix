@@ -26,6 +26,8 @@ interface State {
 export default class DataTable extends React.Component<Props & FlexProps, State> {
   private readonly rootRef = React.createRef<HTMLDivElement>();
 
+  private tableRef = React.createRef<HotTable>();
+
   state: State = {
     width: undefined,
   };
@@ -201,8 +203,6 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
       rowHeaders: true,
     });
   };
-
-  private tableRef = React.createRef<HotTable>();
 
   render() {
     const { data, className, ...flexProps } = this.props;
