@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
+import { Icon } from 'antd';
 import { HotTable } from '@handsontable/react';
 import Handsontable, { contextMenu } from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
@@ -9,6 +10,7 @@ import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already
 import DataDecorator, { ColumnMetadata } from 'services/api/DataDecorator';
 import contextMenuItems from './handsontable/ContextMenuItems';
 import HotTableHelper from './handsontable/Helper';
+import RequestStats from '../RequestStats';
 import './handsontable/dark.css';
 import css from './DataTable.css';
 
@@ -182,6 +184,26 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
     };
   }
 
+  private onExportToExcel = () => {
+    if (!this.tableRef.current) return;
+    // Supports in PRO version.
+    const exportPlugin = this.tableRef.current.hotInstance.getPlugin('exportFile');
+    exportPlugin.downloadFile('csv', {
+      bom: false,
+      columnDelimiter: ',',
+      columnHeaders: false,
+      exportHiddenColumns: true,
+      exportHiddenRows: true,
+      fileExtension: 'csv',
+      filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+      mimeType: 'text/csv',
+      rowDelimiter: '\r\n',
+      rowHeaders: true,
+    });
+  };
+
+  private tableRef = React.createRef<HotTable>();
+
   render() {
     const { data, className, ...flexProps } = this.props;
     // @todo : Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
@@ -194,44 +216,53 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
     const columns = data.meta.columns.map(c => this.getFormatForColumn(c));
 
     return (
-      <Flex componentRef={this.rootRef} className={classNames(css.root, className)} {...flexProps}>
-        <div className={css.node}>
-          <HotTable
-            className={isDark ? 'handsontable-dark' : ''}
-            rowHeaders
-            columns={columns}
-            data={data.rows}
-            allowEmpty
-            autoRowSize={false}
-            autoColumnSize={false}
-            // autoColumnSize={{ samplingRatio: 23 }}
-            allowInsertColumn={false}
-            allowInsertRow={false}
-            columnSorting={this.getColumnSorting(data.meta.columns)}
-            contextMenu={this.fetchContextMenu()}
-            manualColumnMove
-            manualColumnResize
-            manualColumnFreeze
-            mergeCells
-            // manualRowResize
-            stretchH="all"
-            colWidths={100}
-            observeChanges={false} /* =<!memory leak if true! */
-            observeDOMVisibility
-            fillHandle={false}
-            customBorders
-            viewportColumnRenderingOffset="auto"
-            wordWrap={false}
-            // currentRowClassName="currentRowDark"
-            // currentColClassName="currentCol"
-            // sortIndicator
-            // fixedRowsTop={1}
-            renderAllRows={false}
-            visibleRows={40}
-            // contextMenu={contextMenu}
-            // columnsMenu={columnsMenu}
-          />
-        </div>
+      <Flex
+        componentRef={this.rootRef}
+        column
+        className={classNames(css.root, className)}
+        {...flexProps}
+      >
+        <Flex shrink={false} justifyContent="flex-end" className={css.bar}>
+          <RequestStats {...data.stats} className={css.stats} />
+          <Icon type="file-excel" title="Export to Excel" onClick={this.onExportToExcel} />
+        </Flex>
+
+        <HotTable
+          ref={this.tableRef}
+          className={isDark ? 'handsontable-dark' : ''}
+          rowHeaders
+          columns={columns}
+          data={data.rows}
+          allowEmpty
+          autoRowSize={false}
+          autoColumnSize={false}
+          // autoColumnSize={{ samplingRatio: 23 }}
+          allowInsertColumn={false}
+          allowInsertRow={false}
+          columnSorting={this.getColumnSorting(data.meta.columns)}
+          contextMenu={this.fetchContextMenu()}
+          manualColumnMove
+          manualColumnResize
+          manualColumnFreeze
+          mergeCells
+          // manualRowResize
+          stretchH="all"
+          colWidths={100}
+          observeChanges={false} /* =<!memory leak if true! */
+          observeDOMVisibility
+          fillHandle={false}
+          customBorders
+          viewportColumnRenderingOffset="auto"
+          wordWrap={false}
+          // currentRowClassName="currentRowDark"
+          // currentColClassName="currentCol"
+          // sortIndicator
+          // fixedRowsTop={1}
+          renderAllRows={false}
+          visibleRows={40}
+          // contextMenu={contextMenu}
+          // columnsMenu={columnsMenu}
+        />
       </Flex>
     );
   }

@@ -5,7 +5,7 @@ import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
 import { Statistics } from 'services/api/DataDecorator';
 import ActionButton, { Props as ActionButtonProps } from './ActionButton';
-import RequestStats from './RequestStats';
+import RequestStats from '../../RequestStats';
 import css from './Toolbar.css';
 
 export enum ActionType {
