@@ -1,19 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Tree } from 'antd';
-import { AntTreeNode } from 'antd/lib/tree';
+import Tree, { Node } from 'react-virtualized-tree';
+import 'react-virtualized/styles.css';
+import 'react-virtualized-tree/lib/main.css';
+// import 'material-icons/css/material-icons.css';
 import { SelectValue } from 'antd/lib/select';
 import { Flex } from 'reflexy';
-import { Option } from 'funfix-core';
 import { ServerStructure } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
 import { FilterResult } from 'stores/ServerStructureFilter';
-import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
-import DbTitle from './DbTitle';
-import TableTitle, { TableContextMenuProps } from './TableTitle';
-import ColumnTitle from './ColumnTitle';
+import { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
+import { TableContextMenuProps } from './TableTitle';
 import SearchInput from './SearchInput';
+import { renderNode, defaultRenderers } from './renderers';
 import css from './ServerStructureTree.css';
 
 export enum ColumnAction {
@@ -30,44 +30,49 @@ interface Props extends Pick<ServerTitleProps, 'onReload'> {
   filteredItems: FilterResult;
 }
 
+interface State {
+  nodes: Node[];
+  structure?: ServerStructure.Server;
+}
+
 @observer
-export default class ServerStructureTree extends React.Component<Props> {
-  private onNodeClick = (_: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-    const key = node.props.eventKey;
-    if (!key) return;
-
-    // Expand node.
-    if (node.props.children) {
-      const { store } = this.props;
-      const expandedKeys = node.props.expanded
-        ? store.treeExpandedKeys.filter(k => k !== key)
-        : store.treeExpandedKeys.concat(key);
-      this.expand(expandedKeys);
-      return;
-    }
-
-    // Try invoke onColumnAction.
-
-    const { onColumnAction, structure } = this.props;
-    if (!onColumnAction || !structure) return;
-
-    const names = key.split('.');
-    if (names.length !== 3) return;
-
-    const [dbName, tableName, columnName] = names;
-
-    Option.of(structure.databases.find(d => d.name === dbName))
-      .flatMap(db => Option.of(db.tables.find(t => t.name === tableName)))
-      .flatMap(table => Option.of(table.columns.find(c => c.name === columnName)))
-      .forEach(onColumnAction.bind(undefined, ColumnAction.DoubleClick));
+export default class ServerStructureTree extends React.Component<Props, State> {
+  state: State = {
+    nodes: [],
+    structure: undefined,
   };
+
+  static getDerivedStateFromProps(
+    { structure }: Readonly<Props>,
+    prevState: State
+  ): Partial<State> | null {
+    if (prevState.structure !== structure) {
+      console.log('*** generate nodes ***', !!structure);
+
+      const nodes: Node[] =
+        (structure && [
+          {
+            ...structure,
+            state: { expanded: true },
+            children: structure.databases.map<Node>(d => ({
+              ...d,
+              children: d.tables.map<Node>(t => ({
+                ...t,
+                children: t.columns.map<Node>(c => ({ ...c })),
+              })),
+            })),
+          },
+        ]) ||
+        [];
+      return { structure, nodes };
+    }
+    return null;
+  }
 
   private expand = (keys: string[]) => {
     const { store } = this.props;
     store.updateTreeExpandedKeys(keys);
   };
-
-  private collapse = () => this.expand([]);
 
   private expandParentsOf = (key: string) => {
     const { structure, store } = this.props;
@@ -99,22 +104,26 @@ export default class ServerStructureTree extends React.Component<Props> {
     this.expandParentsOf(item.id); // add parents of highlighted node to expanded nodes
   };
 
-  private highlightTreeNode = ({ props: { eventKey } }: AntTreeNode) =>
-    !!(eventKey && this.props.store.treeHighlightedKey.contains(eventKey));
+  private onChange = (nodes: Node[]) => {
+    console.log('onChange', nodes);
+    this.setState({ nodes });
+  };
 
   render() {
     const {
       store,
-      structure,
-      onReload,
-      onServerAction,
-      onTableAction,
+      // structure,
+      // onReload,
+      // onServerAction,
+      // onTableAction,
       filteredItems,
       filterServerStructure,
     } = this.props;
 
+    console.log('render');
+
     return (
-      <Flex column>
+      <Flex column fill className={css.root}>
         <SearchInput
           store={store}
           filteredItems={filteredItems}
@@ -122,55 +131,12 @@ export default class ServerStructureTree extends React.Component<Props> {
           onSelect={this.updateHighlightedNode}
         />
 
-        <Tree
-          autoExpandParent={false}
-          expandedKeys={store.treeExpandedKeys}
-          onExpand={this.expand}
-          filterTreeNode={this.highlightTreeNode}
-          selectedKeys={store.treeSelectedKeys}
-          onClick={this.onNodeClick}
-          className={css.root}
-        >
-          {structure && (
-            <Tree.TreeNode
-              key={structure.id}
-              title={
-                <ServerTitle
-                  title={structure.name}
-                  onReload={onReload}
-                  onCollapse={this.collapse}
-                  server={structure}
-                  onContextMenuAction={onServerAction}
-                />
-              }
-            >
-              {/* databases */}
-              {structure.databases.map(d => (
-                <Tree.TreeNode
-                  key={d.id}
-                  title={<DbTitle name={d.name} tableCount={d.tables.length} />}
-                >
-                  {/* tables */}
-                  {d.tables.map(t => (
-                    <Tree.TreeNode
-                      key={t.id}
-                      title={<TableTitle table={t} onContextMenuAction={onTableAction} />}
-                    >
-                      {/* columns */}
-                      {t.columns.map(c => (
-                        <Tree.TreeNode
-                          key={c.id}
-                          title={<ColumnTitle name={c.name} type={c.type} />}
-                          className={css.column}
-                        />
-                      ))}
-                    </Tree.TreeNode>
-                  ))}
-                </Tree.TreeNode>
-              ))}
-            </Tree.TreeNode>
-          )}
-        </Tree>
+        <Flex grow className={css.tree}>
+          {/* <Tree nodes={store.treeNodes} onChange={this.onChange}> */}
+          <Tree nodeMarginLeft={14} nodes={this.state.nodes} onChange={this.onChange}>
+            {renderNode.bind(this, defaultRenderers)}
+          </Tree>
+        </Flex>
       </Flex>
     );
   }

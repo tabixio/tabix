@@ -1,12 +1,16 @@
 .root {
-  padding: 0em;
+  padding: 0;
 }
 
-.sider-tree {
-  background: unset !important;
-}
 .sider-container {
   overflow-x: scroll;
   overflow-y: auto;
   max-height: 100vh;
+  /* width: 100%; */
+
+  /* for tree */
+  & > :global(.ant-layout) {
+    height: 100%;
+    /* width: 100%; */
+  }
 }
