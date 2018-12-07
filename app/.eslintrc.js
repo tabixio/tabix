@@ -28,6 +28,8 @@ module.exports = {
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
     'jsx-a11y/label-has-for': [2, { allowChildren: true }],
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
     // ts
     'no-undef': 'off',
     'no-unused-vars': 'off',
@@ -41,5 +43,6 @@ module.exports = {
     // tsx
     'react/jsx-filename-extension': ['error', { extensions: ['.ts', '.tsx'] }],
     'react/jsx-wrap-multilines': 'off',
+    'react/prop-types': 'off',
   },
 };

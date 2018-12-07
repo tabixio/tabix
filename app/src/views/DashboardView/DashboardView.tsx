@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
-import { Icon, Layout } from 'antd';
+import { Icon } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
@@ -209,20 +209,16 @@ class DashboardView extends React.Component<RoutedProps, State> {
           onDragFinished={this.onSplitterResizeFinished}
         >
           <Flex alignItems="flex-start" vfill className={css['sider-container']}>
-            <Layout>
-              <Layout.Sider width="100%" className={css['sider-tree']}>
-                <ServerStructureTree
-                  store={store.uiStore}
-                  structure={store.serverStructure.orUndefined()}
-                  onReload={this.load}
-                  onServerAction={this.onServerAction}
-                  onTableAction={this.onTableAction}
-                  onColumnAction={this.onColumnAction}
-                  filterServerStructure={store.filterServerStructure}
-                  filteredItems={store.filteredItems}
-                />
-              </Layout.Sider>
-            </Layout>
+            <ServerStructureTree
+              store={store.uiStore}
+              structure={store.serverStructure.orUndefined()}
+              onReload={this.load}
+              onServerAction={this.onServerAction}
+              onTableAction={this.onTableAction}
+              onColumnAction={this.onColumnAction}
+              filterServerStructure={store.filterServerStructure}
+              filteredItems={store.filteredItems}
+            />
           </Flex>
 
           <Tabs
