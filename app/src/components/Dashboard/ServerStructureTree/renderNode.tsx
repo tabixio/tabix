@@ -3,18 +3,38 @@ import { RendererProps, selectors, FlattenedNode } from 'react-virtualized-tree'
 import classNames from 'classnames';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
-import ServerTitle from './ServerTitle';
+import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
 import DbTitle from './DbTitle';
+import TableTitle, { TableContextMenuProps } from './TableTitle';
+import ColumnTitle, { ColumnTitleProps } from './ColumnTitle';
 import css from './ServerStructureTree.css';
-import TableTitle from './TableTitle';
-import ColumnTitle from './ColumnTitle';
+
+export interface NodeActions extends Pick<ServerTitleProps, 'onReload'> {
+  onColumnAction?: ColumnTitleProps['onAction'];
+  onServerAction?: ServerContextMenuProps['onContextMenuAction'];
+  onTableAction?: TableContextMenuProps['onContextMenuAction'];
+}
+
+type RenderNodeProps = RendererProps<any> & NodeActions;
 
 type Renderer = (props: RendererProps<any>) => JSX.Element | null;
 
-export function NodeRenderer({ node }: RendererProps<any>) {
-  // console.log(node.parents);
+export function NodeRenderer({
+  node,
+  onReload,
+  onServerAction,
+  onTableAction,
+  onColumnAction,
+}: RenderNodeProps) {
   if (!node.parents.length) {
-    return <ServerTitle title={node.name} server={node as any} />;
+    return (
+      <ServerTitle
+        title={node.name}
+        server={node as any}
+        onReload={onReload}
+        onContextMenuAction={onServerAction}
+      />
+    );
   }
 
   const typeNode = node as FlattenedNode &
@@ -25,17 +45,10 @@ export function NodeRenderer({ node }: RendererProps<any>) {
   }
 
   if (ServerStructure.isTable(typeNode)) {
-    return <TableTitle table={typeNode} />;
+    return <TableTitle table={typeNode} onContextMenuAction={onTableAction} />;
   }
 
-  return <ColumnTitle name={typeNode.name} type={typeNode.type} />;
-
-  // return (
-  //   <span>
-  //     {name}
-  //     {children}
-  //   </span>
-  // );
+  return <ColumnTitle column={typeNode} onAction={onColumnAction} />;
 }
 
 export function ExpandableRenderer({ node, onChange, children }: RendererProps<any>) {
@@ -61,23 +74,10 @@ export function ExpandableRenderer({ node, onChange, children }: RendererProps<a
   );
 }
 
-export function renderNode(
+export default function renderNode(
   renderers: Renderer[],
-  props: RendererProps<any>
+  props: RenderNodeProps
 ): React.ReactElement<any> {
-  // console.log('render node', props.node.name);
-  /* const nextProps = props.iconsClassNameMap
-    ? props
-    : {
-        ...props,
-        iconsClassNameMap: {
-          expanded: 'anticon anticon-caret-down',
-          collapsed: 'anticon anticon-caret-right',
-          // expanded: css['arrow-down'],
-          // collapsed: css['arrow-right'],
-          lastChild: '',
-        },
-      }; */
   const [nextRenderer, ...restRenderers] = renderers;
   const children = restRenderers.length === 0 ? [] : renderNode(restRenderers, props);
   return React.createElement(nextRenderer, props, children);

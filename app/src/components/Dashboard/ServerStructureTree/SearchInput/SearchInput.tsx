@@ -16,8 +16,6 @@ interface Props extends Pick<AutoCompleteProps, 'onSelect'> {
   filteredItems: FilterResult;
 }
 
-/* eslint-disable no-nested-ternary */
-
 @observer
 export default class SearchInput extends React.Component<Props> {
   private filterTimeout: number = 0;
@@ -49,7 +47,7 @@ export default class SearchInput extends React.Component<Props> {
 
     return filteredItems.map(i => {
       const title =
-        (ServerStructure.isColumn(i) && <ColumnTitle name={i.name} type={i.type} />) ||
+        (ServerStructure.isColumn(i) && <ColumnTitle column={i} />) ||
         (ServerStructure.isTable(i) && <TableTitle table={i} />) ||
         (ServerStructure.isDatabase(i) && <DbTitle name={i.name} tableCount={i.tables.length} />) ||
         i.name;
@@ -62,17 +60,16 @@ export default class SearchInput extends React.Component<Props> {
     });
   };
 
-  render() {
-    const { store, onSelect } = this.props;
+  private getNotFoundContent() {
+    const { store } = this.props;
+    if (store.treeFilter.search.length === 0) return undefined;
+    if (store.treeFilter.search.length < MIN_SEARCH_LENGTH) return 'Type more symbols to search';
+    if (store.isFiltering) return 'Filtering...';
+    return 'Not found';
+  }
 
-    const notFoundContent =
-      store.treeFilter.search.length === 0
-        ? undefined
-        : store.treeFilter.search.length < MIN_SEARCH_LENGTH
-          ? 'Type more symbols to search'
-          : store.isFiltering
-            ? 'Filtering...'
-            : 'Not found';
+  render() {
+    const { onSelect } = this.props;
 
     return (
       <AutoComplete
@@ -81,7 +78,7 @@ export default class SearchInput extends React.Component<Props> {
         onSearch={this.search}
         onSelect={onSelect}
         placeholder="Search"
-        notFoundContent={notFoundContent}
+        notFoundContent={this.getNotFoundContent()}
       >
         <Input.Search />
       </AutoComplete>

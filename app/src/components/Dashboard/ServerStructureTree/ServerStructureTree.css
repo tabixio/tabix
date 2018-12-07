@@ -6,6 +6,23 @@
   /* * */
 }
 
+.tree {
+  & > div:first-of-type {
+    /* width: 100% !important; */
+    /* height: 100% !important; */
+  }
+
+  :global {
+    & .ReactVirtualized__Grid {
+      padding: 0.25em;
+
+      & div.tree-node[style] {
+        /* width: 80%; */
+      }
+    }
+  }
+}
+
 .expandable {
   position: relative;
   cursor: pointer;
@@ -33,12 +50,4 @@
     border-bottom-color: inherit;
     border-bottom-width: 0;
   }
-}
-
-.tree {
-  /* :global {
-    & .tree-node {
-      margin-left: 1em;
-    }
-  } */
 }
