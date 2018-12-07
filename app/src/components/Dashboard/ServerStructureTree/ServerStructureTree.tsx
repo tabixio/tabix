@@ -1,31 +1,21 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import Tree, { Node } from 'react-virtualized-tree';
-import 'react-virtualized/styles.css';
-import 'react-virtualized-tree/lib/main.css';
-// import 'material-icons/css/material-icons.css';
+// import 'react-virtualized/styles.css';
+// import 'react-virtualized-tree/lib/main.css';
 import { SelectValue } from 'antd/lib/select';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
 import { FilterResult } from 'stores/ServerStructureFilter';
-import { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
-import { TableContextMenuProps } from './TableTitle';
 import SearchInput from './SearchInput';
-import { renderNode, defaultRenderers } from './renderers';
+import renderNode, { defaultRenderers, NodeActions } from './renderNode';
 import css from './ServerStructureTree.css';
 
-export enum ColumnAction {
-  DoubleClick = 1,
-}
-
-interface Props extends Pick<ServerTitleProps, 'onReload'> {
+interface Props extends NodeActions {
   store: DashboardUIStore;
   structure?: ServerStructure.Server;
-  onColumnAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
-  onServerAction?: ServerContextMenuProps['onContextMenuAction'];
-  onTableAction?: TableContextMenuProps['onContextMenuAction'];
   filterServerStructure: (filter: TreeFilter) => Promise<void>;
   filteredItems: FilterResult;
 }
@@ -110,15 +100,7 @@ export default class ServerStructureTree extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      store,
-      // structure,
-      // onReload,
-      // onServerAction,
-      // onTableAction,
-      filteredItems,
-      filterServerStructure,
-    } = this.props;
+    const { store, structure, filteredItems, filterServerStructure, ...rest } = this.props;
 
     console.log('render');
 
@@ -134,7 +116,7 @@ export default class ServerStructureTree extends React.Component<Props, State> {
         <Flex grow className={css.tree}>
           {/* <Tree nodes={store.treeNodes} onChange={this.onChange}> */}
           <Tree nodeMarginLeft={14} nodes={this.state.nodes} onChange={this.onChange}>
-            {renderNode.bind(this, defaultRenderers)}
+            {props => renderNode(defaultRenderers, { ...props, ...rest })}
           </Tree>
         </Flex>
       </Flex>

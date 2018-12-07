@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Flex } from 'reflexy';
+import { ServerStructure } from 'services';
 import css from './ColumnTitle.css';
 
-interface Props {
-  name: string;
-  type: string;
+export enum ColumnAction {
+  DoubleClick = 1,
 }
 
-export default function ColumnTitle({ name, type }: Props) {
+export interface ColumnTitleProps {
+  column: ServerStructure.Column;
+  onAction?: (action: ColumnAction, column: ServerStructure.Column) => void;
+}
+
+export default function ColumnTitle({ column, onAction }: ColumnTitleProps) {
+  const handleDoubleClick = useCallback(
+    () => onAction && onAction(ColumnAction.DoubleClick, column),
+    [column, onAction]
+  );
+
   return (
-    <Flex alignItems="center" hfill>
-      <div className={css.name}>{name}</div>
+    <Flex alignItems="center" hfill onDoubleClick={handleDoubleClick}>
+      <div className={css.name}>{column.name}</div>
       <Flex grow justifyContent="flex-end" className={css.type}>
-        {type}
+        {column.type}
       </Flex>
     </Flex>
   );
