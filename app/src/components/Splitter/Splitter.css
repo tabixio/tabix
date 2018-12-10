@@ -1,4 +1,4 @@
-@value bg-color, bg-color-dd, text-color, text-color-50 from 'assets/styles/vars.css';
+@value bg-color, bg-color-dd, text-color, text-color-50 from '~assets/styles/vars.css';
 
 :global {
   :local(.root) {

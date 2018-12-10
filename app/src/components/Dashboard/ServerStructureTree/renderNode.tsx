@@ -19,6 +19,15 @@ type RenderNodeProps = RendererProps<any> & NodeActions;
 
 type Renderer = (props: RendererProps<any>) => JSX.Element | null;
 
+export function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
+  const selected: boolean = state && state.selected;
+  return (
+    <Flex hfill className={classNames(selected && css.selectable)}>
+      {children}
+    </Flex>
+  );
+}
+
 export function NodeRenderer({
   node,
   onReload,
@@ -83,4 +92,4 @@ export default function renderNode(
   return React.createElement(nextRenderer, props, children);
 }
 
-export const defaultRenderers: Renderer[] = [ExpandableRenderer, NodeRenderer];
+export const defaultRenderers: Renderer[] = [ExpandableRenderer, SelectableRenderer, NodeRenderer];

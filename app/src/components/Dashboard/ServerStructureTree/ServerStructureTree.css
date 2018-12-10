@@ -1,6 +1,4 @@
-/* @import 'https://fonts.googleapis.com/icon?family=Material+Icons'; */
-
-@value text-color,link-color  from 'assets/styles/vars.css';
+@value text-color, link-color from '~assets/styles/vars.css';
 
 .root {
   /* * */
@@ -21,6 +19,11 @@
       }
     }
   }
+}
+
+.selectable {
+  user-select: none;
+  background-color: aquamarine;
 }
 
 .expandable {
