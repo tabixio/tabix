@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { UIStore, DisposableStore } from '@vzh/mobx-stores';
+import { UIStore, BaseRootStore } from '@vzh/mobx-stores';
 import { Connection } from 'services';
 import AppStore from './AppStore';
 import SignInStore from './SignInStore';
@@ -7,7 +7,7 @@ import DashboardStore from './DashboardStore';
 import DashboardUIStore from './DashboardUIStore';
 import SqlHistoryStore from './SqlHistoryStore';
 
-export default class RootStore extends DisposableStore {
+export default class RootStore extends BaseRootStore {
   @observable
   appStore: AppStore;
 
@@ -26,6 +26,7 @@ export default class RootStore extends DisposableStore {
     this.signInStore = new SignInStore(this, new UIStore(this));
     this.dashboardStore = new DashboardStore(this, new DashboardUIStore(this));
     this.sqlHistoryStore = new SqlHistoryStore(this, new UIStore(this));
+    this.initialize();
   }
 
   // refactor: temporary for HMR

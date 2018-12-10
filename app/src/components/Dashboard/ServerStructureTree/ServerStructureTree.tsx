@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import Tree, { Node } from 'react-virtualized-tree';
+import Tree, { Node, Extensions } from 'react-virtualized-tree';
 // import 'react-virtualized/styles.css';
 // import 'react-virtualized-tree/lib/main.css';
 import { SelectValue } from 'antd/lib/select';
@@ -21,43 +21,50 @@ interface Props extends NodeActions {
 }
 
 interface State {
-  nodes: Node[];
-  structure?: ServerStructure.Server;
+  // nodes: Node[];
+  // structure?: ServerStructure.Server;
 }
 
 @observer
 export default class ServerStructureTree extends React.Component<Props, State> {
   state: State = {
-    nodes: [],
-    structure: undefined,
+    // nodes: [],
+    // structure: undefined,
   };
 
-  static getDerivedStateFromProps(
-    { structure }: Readonly<Props>,
-    prevState: State
-  ): Partial<State> | null {
-    if (prevState.structure !== structure) {
-      console.log('*** generate nodes ***', !!structure);
+  // static getDerivedStateFromProps(
+  //   { structure, store }: Readonly<Props>,
+  //   prevState: State
+  // ): Partial<State> | null {
+  //   if (prevState.structure !== structure) {
+  //     console.log('*** generate nodes ***', !!structure);
 
-      const nodes: Node[] =
-        (structure && [
-          {
-            ...structure,
-            state: { expanded: true },
-            children: structure.databases.map<Node>(d => ({
-              ...d,
-              children: d.tables.map<Node>(t => ({
-                ...t,
-                children: t.columns.map<Node>(c => ({ ...c })),
-              })),
-            })),
-          },
-        ]) ||
-        [];
-      return { structure, nodes };
-    }
-    return null;
-  }
+  //     const selectedKeys = store.getTreeSelectedKeys();
+
+  //     const nodes: Node[] =
+  //       (structure && [
+  //         {
+  //           ...structure,
+  //           state: { expanded: true },
+  //           children: structure.databases.map<Node>(d => ({
+  //             ...d,
+  //             state: { selected: selectedKeys.includes(d.id) },
+  //             children: d.tables.map<Node>(t => ({
+  //               ...t,
+  //               state: { selected: selectedKeys.includes(t.id) },
+  //               children: t.columns.map<Node>(c => ({
+  //                 ...c,
+  //                 state: { selected: selectedKeys.includes(c.id) },
+  //               })),
+  //             })),
+  //           })),
+  //         },
+  //       ]) ||
+  //       [];
+  //     return { structure, nodes };
+  //   }
+  //   return null;
+  // }
 
   private expand = (keys: string[]) => {
     const { store } = this.props;
@@ -95,13 +102,22 @@ export default class ServerStructureTree extends React.Component<Props, State> {
   };
 
   private onChange = (nodes: Node[]) => {
-    console.log('onChange', nodes);
-    this.setState({ nodes });
+    // console.log('onChange', nodes === this.state.nodes);
+    // this.setState({ nodes });
+    this.props.store.updateTreeNodes(nodes);
+  };
+
+  private extensions: Extensions = {
+    updateTypeHandlers: {
+      // 2: (nodes, node) => {
+      //   console.log(node);
+      //   return nodes;
+      // },
+    },
   };
 
   render() {
     const { store, structure, filteredItems, filterServerStructure, ...rest } = this.props;
-
     console.log('render');
 
     return (
@@ -114,8 +130,13 @@ export default class ServerStructureTree extends React.Component<Props, State> {
         />
 
         <Flex grow className={css.tree}>
-          {/* <Tree nodes={store.treeNodes} onChange={this.onChange}> */}
-          <Tree nodeMarginLeft={14} nodes={this.state.nodes} onChange={this.onChange}>
+          <Tree
+            nodeMarginLeft={14}
+            // nodes={this.state.nodes}
+            nodes={store.treeNodes}
+            onChange={this.onChange}
+            extensions={this.extensions}
+          >
             {props => renderNode(defaultRenderers, { ...props, ...rest })}
           </Tree>
         </Flex>
