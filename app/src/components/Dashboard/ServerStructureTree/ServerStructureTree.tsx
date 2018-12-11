@@ -1,16 +1,15 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import Tree, { Node, Extensions } from 'react-virtualized-tree';
+import Tree from 'react-virtualized-tree';
 // import 'react-virtualized/styles.css';
 // import 'react-virtualized-tree/lib/main.css';
 import { SelectValue } from 'antd/lib/select';
 import { Flex } from 'reflexy';
-import { ServerStructure } from 'services';
+import { ServerStructure, FilterResult } from 'services';
 import { TreeFilter } from 'models';
 import { DashboardUIStore } from 'stores';
-import { FilterResult } from 'stores/ServerStructureFilter';
 import SearchInput from './SearchInput';
-import renderNode, { defaultRenderers, NodeActions } from './renderNode';
+import renderNode, { defaultRenderers, NodeActions, TypedNode } from './renderNode';
 import css from './ServerStructureTree.css';
 
 interface Props extends NodeActions {
@@ -20,52 +19,8 @@ interface Props extends NodeActions {
   filteredItems: FilterResult;
 }
 
-interface State {
-  // nodes: Node[];
-  // structure?: ServerStructure.Server;
-}
-
 @observer
-export default class ServerStructureTree extends React.Component<Props, State> {
-  state: State = {
-    // nodes: [],
-    // structure: undefined,
-  };
-
-  // static getDerivedStateFromProps(
-  //   { structure, store }: Readonly<Props>,
-  //   prevState: State
-  // ): Partial<State> | null {
-  //   if (prevState.structure !== structure) {
-  //     console.log('*** generate nodes ***', !!structure);
-
-  //     const selectedKeys = store.getTreeSelectedKeys();
-
-  //     const nodes: Node[] =
-  //       (structure && [
-  //         {
-  //           ...structure,
-  //           state: { expanded: true },
-  //           children: structure.databases.map<Node>(d => ({
-  //             ...d,
-  //             state: { selected: selectedKeys.includes(d.id) },
-  //             children: d.tables.map<Node>(t => ({
-  //               ...t,
-  //               state: { selected: selectedKeys.includes(t.id) },
-  //               children: t.columns.map<Node>(c => ({
-  //                 ...c,
-  //                 state: { selected: selectedKeys.includes(c.id) },
-  //               })),
-  //             })),
-  //           })),
-  //         },
-  //       ]) ||
-  //       [];
-  //     return { structure, nodes };
-  //   }
-  //   return null;
-  // }
-
+export default class ServerStructureTree extends React.Component<Props> {
   private expand = (keys: string[]) => {
     const { store } = this.props;
     store.updateTreeExpandedKeys(keys);
@@ -101,23 +56,8 @@ export default class ServerStructureTree extends React.Component<Props, State> {
     this.expandParentsOf(item.id); // add parents of highlighted node to expanded nodes
   };
 
-  private onChange = (nodes: Node[]) => {
-    // console.log('onChange', nodes === this.state.nodes);
-    // this.setState({ nodes });
-    this.props.store.updateTreeNodes(nodes);
-  };
-
-  private extensions: Extensions = {
-    updateTypeHandlers: {
-      // 2: (nodes, node) => {
-      //   console.log(node);
-      //   return nodes;
-      // },
-    },
-  };
-
   render() {
-    const { store, structure, filteredItems, filterServerStructure, ...rest } = this.props;
+    const { store, structure, filteredItems, filterServerStructure, ...actions } = this.props;
     console.log('render');
 
     return (
@@ -130,14 +70,15 @@ export default class ServerStructureTree extends React.Component<Props, State> {
         />
 
         <Flex grow className={css.tree}>
-          <Tree
-            nodeMarginLeft={14}
-            // nodes={this.state.nodes}
-            nodes={store.treeNodes}
-            onChange={this.onChange}
-            extensions={this.extensions}
-          >
-            {props => renderNode(defaultRenderers, { ...props, ...rest })}
+          <Tree nodeMarginLeft={0} nodes={store.treeNodes} onChange={store.updateTreeNodes as any}>
+            {({ node, ...rest }) =>
+              renderNode(defaultRenderers, {
+                node: node as TypedNode,
+                onCollapse: store.collapseAll,
+                ...rest,
+                ...actions,
+              })
+            }
           </Tree>
         </Flex>
       </Flex>

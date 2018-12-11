@@ -15,61 +15,92 @@ export interface NodeActions extends Pick<ServerTitleProps, 'onReload'> {
   onTableAction?: TableContextMenuProps['onContextMenuAction'];
 }
 
-type RenderNodeProps = RendererProps<any> & NodeActions;
+export type TypedNode = FlattenedNode &
+  (
+    | ServerStructure.Server
+    | ServerStructure.Database
+    | ServerStructure.Table
+    | ServerStructure.Column);
 
-type Renderer = (props: RendererProps<any>) => JSX.Element | null;
+type NodeRendererProps = RendererProps<any> & { node: TypedNode };
+
+type RenderNodeProps = NodeRendererProps & NodeActions & Pick<ServerTitleProps, 'onCollapse'>;
+
+type Renderer = (props: RenderNodeProps) => JSX.Element | null;
 
 export function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
   const selected: boolean = state && state.selected;
   return (
-    <Flex hfill className={classNames(selected && css.selectable)}>
+    <Flex hfill className={classNames(css.selectable, selected && css.selected)}>
       {children}
     </Flex>
   );
 }
 
+// function collapseAll(node: Node, {onChange}: RendererProps<any>) {
+//   const isExpanded = node.state && node.state.expanded;
+//   onChange(selectors.updateNode(node, { expanded: !isExpanded }));
+//   node.children && node.children.forEach(collapseAll);
+// }
+
 export function NodeRenderer({
   node,
+  // onChange,
   onReload,
+  // onCollapse,
   onServerAction,
   onTableAction,
   onColumnAction,
 }: RenderNodeProps) {
-  if (!node.parents.length) {
+  // const i = Date.now();
+  // console.log(i);
+
+  // const collapse = useCallback(
+  //   () => {
+  //     console.log(i);
+  //     // onCollapse && onCollapse();
+  //   },
+  //   [onCollapse]
+  // );
+
+  if (ServerStructure.isServer(node)) {
     return (
       <ServerTitle
         title={node.name}
-        server={node as any}
+        server={node}
         onReload={onReload}
+        // onCollapse={collapse}
         onContextMenuAction={onServerAction}
       />
     );
   }
 
-  const typeNode = node as FlattenedNode &
-    (ServerStructure.Database | ServerStructure.Table | ServerStructure.Column);
-
-  if (ServerStructure.isDatabase(typeNode)) {
-    return <DbTitle name={typeNode.name} tableCount={typeNode.tables.length} />;
+  if (ServerStructure.isDatabase(node)) {
+    return <DbTitle name={node.name} tableCount={node.tables.length} />;
   }
 
-  if (ServerStructure.isTable(typeNode)) {
-    return <TableTitle table={typeNode} onContextMenuAction={onTableAction} />;
+  if (ServerStructure.isTable(node)) {
+    return <TableTitle table={node} onContextMenuAction={onTableAction} />;
   }
 
-  return <ColumnTitle column={typeNode} onAction={onColumnAction} />;
+  return <ColumnTitle column={node} onAction={onColumnAction} />;
 }
 
-export function ExpandableRenderer({ node, onChange, children }: RendererProps<any>) {
+export function ExpandableRenderer({ node, onChange, children }: RenderNodeProps) {
   const toggle = useCallback(() => {
-    const { isExpanded } = selectors.getNodeRenderOptions(node);
+    const isExpanded = node.state && node.state.expanded;
     onChange(selectors.updateNode(node, { expanded: !isExpanded }));
   }, []);
 
   const { hasChildren, isExpanded } = selectors.getNodeRenderOptions(node);
 
   return (
-    <Flex wrap={false} alignItems="center" onDoubleClick={toggle}>
+    <Flex
+      wrap={false}
+      alignItems="center"
+      onDoubleClick={toggle}
+      style={{ paddingLeft: `calc(${node.deepness} * 1em)` }}
+    >
       <i
         className={classNames(
           css.expandable,

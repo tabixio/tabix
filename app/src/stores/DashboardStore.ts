@@ -21,7 +21,7 @@ import { Statistics } from 'services/api/DataDecorator';
 import RootStore from './RootStore';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
-import ServerStructureFilter, { FilterResult } from './ServerStructureFilter';
+import ServerStructureFilter, { FilterResult } from '../services/ServerStructureFilter';
 // import tabModels from './tabModels.tmp';
 
 export default class DashboardStore extends ApiRequestableStore<DashboardUIStore> {
