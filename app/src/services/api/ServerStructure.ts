@@ -54,15 +54,19 @@ namespace ServerStructure {
   //   return ItemType.Database;
   // }
 
-  export function isDatabase(item: Table | Column | Database): item is Database {
+  export function isServer(item: Server | Table | Column | Database): item is Server {
+    return !!(item as Server).databases;
+  }
+
+  export function isDatabase(item: Server | Table | Column | Database): item is Database {
     return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
   }
 
-  export function isTable(item: Table | Column | Database): item is Table {
+  export function isTable(item: Server | Table | Column | Database): item is Table {
     return !!(item as Table).database && !!(item as Table).columns;
   }
 
-  export function isColumn(item: Table | Column | Database): item is Column {
+  export function isColumn(item: Server | Table | Column | Database): item is Column {
     return !!(item as Column).table && !!(item as Column).database;
   }
 

@@ -1,11 +1,18 @@
 import { observable, action, IReactionDisposer, reaction } from 'mobx';
-import { Option, None } from 'funfix-core';
+import { Option, None, Some } from 'funfix-core';
 import { UIStore, createViewModel, ViewModelLike, Initializable } from '@vzh/mobx-stores';
 import { Node } from 'react-virtualized-tree';
 import { EditorTabModel, TreeFilterModel, TabType } from 'models';
-import { Query } from 'services';
+import { Query, ServerStructure } from 'services';
 import RootStore from './RootStore';
 import DashboardStore from './DashboardStore';
+
+export type TypedNode = Node &
+  (
+    | ServerStructure.Server
+    | ServerStructure.Database
+    | ServerStructure.Table
+    | ServerStructure.Column);
 
 export default class DashboardUIStore extends UIStore<RootStore> implements Initializable {
   @observable
@@ -27,7 +34,7 @@ export default class DashboardUIStore extends UIStore<RootStore> implements Init
   executingQueries: ReadonlyArray<Query> = [];
 
   @observable
-  treeNodes: Node[] = [];
+  treeNodes: TypedNode[] = [];
 
   protected changeStructureReaction?: IReactionDisposer;
 
@@ -39,21 +46,47 @@ export default class DashboardUIStore extends UIStore<RootStore> implements Init
       structure => this.generateNodes(structure)
     );
 
+    // Keep ref to last selected node for quick replace selected state of prev selected node.
+    let selectedNode: TypedNode | undefined;
+
     this.changeCurrentDatabaseReaction = reaction(
       () =>
         this.rootStore.dashboardStore
           .activeTabOfType<EditorTabModel>(TabType.Editor)
           .flatMap(t => t.currentDatabase),
-      db => {
-        console.log(db);
-        return db;
+      dbName => {
+        dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
+          if (selectedNode) selectedNode.state = { ...selectedNode.state, selected: false };
+          selectedNode = n;
+          selectedNode.state = { ...selectedNode.state, selected: true };
+        });
       }
     );
   }
 
+  private findDbNode(nodes: TypedNode[], name: string): Option<TypedNode> {
+    for (let i = 0; i < nodes.length; i += 1) {
+      const n = nodes[i];
+      if (ServerStructure.isDatabase(n) && n.name === name) return Some(n);
+      if (ServerStructure.isServer(n)) return this.findDbNode(n.children as TypedNode[], name);
+    }
+    return None;
+  }
+
+  @action.bound
+  collapseAll(parentNode: Node) {
+    const node = parentNode;
+    const isExpanded = node.state && node.state.expanded;
+    // console.log(node.name, isExpanded);
+    if (isExpanded) {
+      node.state = { ...node.state, expanded: false };
+    }
+    node.children && node.children.forEach(this.collapseAll);
+  }
+
   private generateNodes(structure: DashboardStore['serverStructure']) {
     console.log('*** generate nodes ***');
-    const selectedKeys = this.getTreeSelectedKeys();
+    // const selectedKeys = this.getTreeSelectedKeys();
 
     const nodes = structure
       .map(s => [
@@ -62,13 +95,13 @@ export default class DashboardUIStore extends UIStore<RootStore> implements Init
           state: { expanded: true },
           children: s.databases.map<Node>(d => ({
             ...d,
-            state: { selected: selectedKeys.includes(d.id) },
+            // state: { selected: selectedKeys.includes(d.id) },
             children: d.tables.map<Node>(t => ({
               ...t,
-              state: { selected: selectedKeys.includes(t.id) },
+              // state: { selected: selectedKeys.includes(t.id) },
               children: t.columns.map<Node>(c => ({
                 ...c,
-                state: { selected: selectedKeys.includes(c.id) },
+                // state: { selected: selectedKeys.includes(c.id) },
               })),
             })),
           })),
@@ -79,18 +112,18 @@ export default class DashboardUIStore extends UIStore<RootStore> implements Init
     this.updateTreeNodes(nodes);
   }
 
-  @action
-  updateTreeNodes(nodes: Node[]) {
+  @action.bound
+  updateTreeNodes(nodes: TypedNode[]) {
     this.treeNodes = nodes;
   }
 
-  getTreeSelectedKeys(): ReadonlyArray<string> {
-    return this.rootStore.dashboardStore
-      .activeTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.currentDatabase)
-      .map(db => [db])
-      .getOrElse([]);
-  }
+  // getTreeSelectedKeys(): ReadonlyArray<string> {
+  //   return this.rootStore.dashboardStore
+  //     .activeTabOfType<EditorTabModel>(TabType.Editor)
+  //     .flatMap(t => t.currentDatabase)
+  //     .map(db => [db])
+  //     .getOrElse([]);
+  // }
 
   @action
   updateTreeHighlightedKey(key?: string) {

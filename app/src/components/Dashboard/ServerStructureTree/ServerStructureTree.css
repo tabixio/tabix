@@ -12,6 +12,7 @@
 
   :global {
     & .ReactVirtualized__Grid {
+      outline: none;
       padding: 0.25em;
 
       & div.tree-node[style] {
@@ -23,7 +24,10 @@
 
 .selectable {
   user-select: none;
-  background-color: aquamarine;
+
+  &.selected {
+    background-color: aquamarine;
+  }
 }
 
 .expandable {

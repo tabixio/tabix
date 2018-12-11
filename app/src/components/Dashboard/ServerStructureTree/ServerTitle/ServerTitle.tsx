@@ -7,7 +7,7 @@ import css from './ServerTitle.css';
 export interface ServerTitleProps extends ContextMenuProps {
   title: string;
   onReload?: () => void;
-  onCollapse?: () => void;
+  onCollapse?: (server: ServerTitleProps['server']) => void;
 }
 
 export default function ServerTitle({
@@ -24,8 +24,9 @@ export default function ServerTitle({
       setVisible(false);
       onContextMenuAction && onContextMenuAction(action, srv);
     },
-    []
+    [onContextMenuAction]
   );
+  const collapse = useCallback(() => onCollapse && onCollapse(server), [onCollapse, server]);
 
   return (
     <Flex alignItems="center" hfill>
@@ -53,7 +54,7 @@ export default function ServerTitle({
           type="switcher"
           theme="outlined"
           title="Collapse"
-          onClick={onCollapse}
+          onClick={collapse}
           className={css.action}
         />
       </Flex>

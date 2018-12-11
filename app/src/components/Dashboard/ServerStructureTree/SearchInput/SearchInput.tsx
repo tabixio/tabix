@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { AutoComplete, Input } from 'antd';
 import { AutoCompleteProps } from 'antd/lib/auto-complete';
 import { ServerStructure } from 'services';
-import { FilterResult } from 'stores/ServerStructureFilter';
+import { FilterResult } from 'services/ServerStructureFilter';
 import { DashboardUIStore } from 'stores';
 import { TreeFilter, MIN_SEARCH_LENGTH } from 'models';
 import DbTitle from '../DbTitle';

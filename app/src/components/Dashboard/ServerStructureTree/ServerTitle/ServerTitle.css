@@ -6,6 +6,7 @@
 
 .action {
   margin-left: 0.75em;
+  cursor: pointer;
 
   &:not(:active):hover {
     transform: scale(1.5);
