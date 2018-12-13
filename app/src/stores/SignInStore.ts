@@ -1,5 +1,5 @@
 import { History } from 'history';
-import { observable, action, transaction, runInAction } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
 import { withRequest } from '@vzh/mobx-stores';
 import { FromLocationDescriptorObject } from '@vzh/react-auth';
@@ -38,39 +38,33 @@ export default class SignInStore extends ApiRequestableStore {
       type: this.selectedConnection.type,
       connectionName: this.getNewConnectionName(),
     });
-    transaction(() => {
-      this.connectionList = this.connectionList.concat(con);
-      this.setSelectedConnection(con);
-    });
+    this.connectionList = this.connectionList.concat(con);
+    this.setSelectedConnection(con);
     await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
   }
 
   @withRequest.bound
   @action
   async deleteSelectedConnection() {
-    transaction(() => {
-      this.connectionList = this.connectionList.filter(
-        c => c.connectionName !== this.selectedConnection.connectionName
-      );
-      this.setSelectedConnection(
-        isDirectConnection(this.selectedConnection)
-          ? ConnectionModel.DirectEmpty
-          : ConnectionModel.ServerEmpty
-      );
-    });
+    this.connectionList = this.connectionList.filter(
+      c => c.connectionName !== this.selectedConnection.connectionName
+    );
+    this.setSelectedConnection(
+      isDirectConnection(this.selectedConnection)
+        ? ConnectionModel.DirectEmpty
+        : ConnectionModel.ServerEmpty
+    );
     await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
   }
 
   signIn(history: History) {
     return this.submit(this.selectedConnection, async () => {
       const api = await Api.connect(this.selectedConnection.toJSON());
-      transaction(() => {
-        this.rootStore.appStore.updateApi(Option.of(api));
-        const {
-          state: { from: path } = { from: routePaths.home.path },
-        } = history.location as FromLocationDescriptorObject;
-        history.push(path);
-      });
+      this.rootStore.appStore.updateApi(Option.of(api));
+      const {
+        state: { from: path } = { from: routePaths.home.path },
+      } = history.location as FromLocationDescriptorObject;
+      history.push(path);
     });
   }
 }

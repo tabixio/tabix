@@ -42,18 +42,6 @@ namespace ServerStructure {
     }
   }
 
-  // export enum ItemType {
-  //   Database,
-  //   Table,
-  //   Column,
-  // }
-
-  // export function getItemType(item: Table | Column | Database): ItemType {
-  //   if ((item as Table).database) return ItemType.Table;
-  //   if ((item as Column).table) return ItemType.Column;
-  //   return ItemType.Database;
-  // }
-
   export function isServer(item: Server | Table | Column | Database): item is Server {
     return !!(item as Server).databases;
   }
@@ -70,7 +58,7 @@ namespace ServerStructure {
     return !!(item as Column).table && !!(item as Column).database;
   }
 
-  export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], [], {});
+  // export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], [], {});
 
   export function from(
     columns: ReadonlyArray<Column>,

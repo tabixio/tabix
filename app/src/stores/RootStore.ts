@@ -6,6 +6,8 @@ import SignInStore from './SignInStore';
 import DashboardStore from './DashboardStore';
 import DashboardUIStore from './DashboardUIStore';
 import SqlHistoryStore from './SqlHistoryStore';
+import TreeStore from './TreeStore';
+import TabsStore from './TabsStore';
 
 export default class RootStore extends BaseRootStore {
   @observable
@@ -13,6 +15,12 @@ export default class RootStore extends BaseRootStore {
 
   @observable
   signInStore: SignInStore;
+
+  @observable
+  treeStore: TreeStore;
+
+  @observable
+  tabsStore: TabsStore;
 
   @observable
   dashboardStore: DashboardStore;
@@ -24,7 +32,10 @@ export default class RootStore extends BaseRootStore {
     super();
     this.appStore = new AppStore(this, new UIStore(this));
     this.signInStore = new SignInStore(this, new UIStore(this));
-    this.dashboardStore = new DashboardStore(this, new DashboardUIStore(this));
+    const dashboardUIStore = new DashboardUIStore(this);
+    this.treeStore = new TreeStore(this, dashboardUIStore);
+    this.tabsStore = new TabsStore(this, dashboardUIStore);
+    this.dashboardStore = new DashboardStore(this, dashboardUIStore);
     this.sqlHistoryStore = new SqlHistoryStore(this, new UIStore(this));
     this.initialize();
   }
@@ -35,6 +46,8 @@ export default class RootStore extends BaseRootStore {
     this.dispose();
     this.appStore = rootStore.appStore;
     this.signInStore = rootStore.signInStore;
+    this.treeStore = rootStore.treeStore;
+    this.tabsStore = rootStore.tabsStore;
     this.dashboardStore = rootStore.dashboardStore;
     this.sqlHistoryStore = rootStore.sqlHistoryStore;
     connection && this.appStore.initApi(connection);

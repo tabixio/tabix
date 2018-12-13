@@ -42,7 +42,7 @@ type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
-  serverStructure: ServerStructure.Server;
+  serverStructure?: ServerStructure.Server;
 }
 
 const globalMonaco: Monaco = window.monaco;
@@ -69,15 +69,15 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   componentWillUnmount() {
     this.setEditorRef(undefined);
-    if (this.props && this.props.serverStructure) {
+    if (this.props.serverStructure) {
       // refactor: Why update monaco on editor unmount? Maybe update on mount and activate?
       this.updateGlobalEditorStructure(this.props.serverStructure);
     }
   }
 
-  componentWillReceiveProps(nextProps: SqlEditorProps) {
-    if (nextProps && nextProps.serverStructure !== this.props.serverStructure) {
-      this.updateGlobalEditorStructure(nextProps.serverStructure);
+  componentWillReceiveProps({ serverStructure }: SqlEditorProps) {
+    if (serverStructure && serverStructure !== this.props.serverStructure) {
+      this.updateGlobalEditorStructure(serverStructure);
     }
   }
 
@@ -149,7 +149,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   };
 
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
-    if (!ServerStructure) return;
+    // if (!serverStructure) return;
     const languageSettings: any = languageDef;
     languageSettings.builtinFunctions = [];
 
@@ -753,7 +753,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
         <Toolbar
           className={css.toolbar}
-          databases={serverStructure.databases}
+          databases={serverStructure ? serverStructure.databases : []}
           currentDatabase={currentDatabase}
           onDatabaseChange={onDatabaseChange}
           onAction={this.onAction}
