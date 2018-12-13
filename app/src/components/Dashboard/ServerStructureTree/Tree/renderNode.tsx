@@ -1,35 +1,31 @@
 import React, { useCallback } from 'react';
-import { RendererProps, selectors, FlattenedNode } from 'react-virtualized-tree';
+import { RendererProps, selectors } from 'react-virtualized-tree';
 import classNames from 'classnames';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
-import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from './ServerTitle';
-import DbTitle from './DbTitle';
-import TableTitle, { TableContextMenuProps } from './TableTitle';
-import ColumnTitle, { ColumnTitleProps } from './ColumnTitle';
-import css from './ServerStructureTree.css';
+import { TypedNode } from 'stores/TreeStore';
+import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from '../ServerTitle';
+import DbTitle from '../DbTitle';
+import TableTitle, { TableContextMenuProps } from '../TableTitle';
+import ColumnTitle, { ColumnTitleProps } from '../ColumnTitle';
+import css from './Tree.css';
 
-export interface NodeActions extends Pick<ServerTitleProps, 'onReload'> {
+export interface NodeActions {
   onColumnAction?: ColumnTitleProps['onAction'];
   onServerAction?: ServerContextMenuProps['onContextMenuAction'];
   onTableAction?: TableContextMenuProps['onContextMenuAction'];
 }
 
-export type TypedNode = FlattenedNode &
-  (
-    | ServerStructure.Server
-    | ServerStructure.Database
-    | ServerStructure.Table
-    | ServerStructure.Column);
+export interface TreeActions extends Pick<ServerTitleProps, 'onReload' | 'onCollapse'> {}
 
 type NodeRendererProps = RendererProps<any> & { node: TypedNode };
 
-type RenderNodeProps = NodeRendererProps & NodeActions & Pick<ServerTitleProps, 'onCollapse'>;
+type RenderNodeProps = NodeRendererProps & NodeActions & TreeActions;
 
 type Renderer = (props: RenderNodeProps) => JSX.Element | null;
 
-export function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
-  const selected: boolean = state && state.selected;
+function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
+  const selected: boolean = !!state && state.selected;
   return (
     <Flex hfill className={classNames(css.selectable, selected && css.selected)}>
       {children}
@@ -37,39 +33,21 @@ export function SelectableRenderer({ node: { state }, children }: RenderNodeProp
   );
 }
 
-// function collapseAll(node: Node, {onChange}: RendererProps<any>) {
-//   const isExpanded = node.state && node.state.expanded;
-//   onChange(selectors.updateNode(node, { expanded: !isExpanded }));
-//   node.children && node.children.forEach(collapseAll);
-// }
-
-export function NodeRenderer({
+function NodeRenderer({
   node,
-  // onChange,
   onReload,
-  // onCollapse,
+  onCollapse,
   onServerAction,
   onTableAction,
   onColumnAction,
 }: RenderNodeProps) {
-  // const i = Date.now();
-  // console.log(i);
-
-  // const collapse = useCallback(
-  //   () => {
-  //     console.log(i);
-  //     // onCollapse && onCollapse();
-  //   },
-  //   [onCollapse]
-  // );
-
   if (ServerStructure.isServer(node)) {
     return (
       <ServerTitle
         title={node.name}
         server={node}
         onReload={onReload}
-        // onCollapse={collapse}
+        onCollapse={onCollapse}
         onContextMenuAction={onServerAction}
       />
     );
@@ -86,7 +64,7 @@ export function NodeRenderer({
   return <ColumnTitle column={node} onAction={onColumnAction} />;
 }
 
-export function ExpandableRenderer({ node, onChange, children }: RenderNodeProps) {
+function ExpandableRenderer({ node, onChange, children }: RenderNodeProps) {
   const toggle = useCallback(() => {
     const isExpanded = node.state && node.state.expanded;
     onChange(selectors.updateNode(node, { expanded: !isExpanded }));

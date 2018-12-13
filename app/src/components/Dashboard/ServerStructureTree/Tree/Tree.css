@@ -1,10 +1,4 @@
-@value text-color, link-color from '~assets/styles/vars.css';
-
 .root {
-  /* * */
-}
-
-.tree {
   & > div:first-of-type {
     /* width: 100% !important; */
     /* height: 100% !important; */

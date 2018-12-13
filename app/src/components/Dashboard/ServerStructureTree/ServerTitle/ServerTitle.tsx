@@ -27,6 +27,10 @@ export default function ServerTitle({
     [onContextMenuAction]
   );
   const collapse = useCallback(() => onCollapse && onCollapse(server), [onCollapse, server]);
+  const preventPropagation = useCallback(
+    (event: React.SyntheticEvent<any>) => event.stopPropagation(),
+    []
+  );
 
   return (
     <Flex alignItems="center" hfill>
@@ -42,7 +46,7 @@ export default function ServerTitle({
         </Flex>
       </Dropdown>
 
-      <Flex justifyContent="flex-end">
+      <Flex justifyContent="flex-end" onDoubleClick={preventPropagation}>
         <Icon
           type="reload"
           theme="outlined"

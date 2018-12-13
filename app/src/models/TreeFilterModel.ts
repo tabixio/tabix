@@ -1,22 +1,27 @@
 import { observable } from 'mobx';
 import { StoreModel } from '@vzh/mobx-stores';
 
-export const MIN_SEARCH_LENGTH = 2;
-
 export interface TreeFilter {
-  search: string;
+  text: string;
+  isFiltering: boolean;
 }
 
 export default class TreeFilterModel extends StoreModel<TreeFilter> implements TreeFilter {
-  static from({ search }: Partial<TreeFilter> = {}): TreeFilterModel {
-    return new TreeFilterModel({ search: search || '' });
+  static MIN_SEARCH_LENGTH = 2;
+
+  static from({ text: search }: Partial<TreeFilter> = {}): TreeFilterModel {
+    return new TreeFilterModel({ text: search || '', isFiltering: false });
   }
 
   @observable
-  search: string;
+  text: string;
 
-  private constructor({ search }: TreeFilter) {
+  @observable
+  isFiltering: boolean;
+
+  private constructor({ text: search, isFiltering }: TreeFilter) {
     super();
-    this.search = search;
+    this.text = search;
+    this.isFiltering = isFiltering;
   }
 }

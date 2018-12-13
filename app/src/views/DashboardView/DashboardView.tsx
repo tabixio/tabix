@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
-import { DashboardStore, Stores } from 'stores';
+import { Stores, TabsStore, TreeStore } from 'stores';
 import { routePaths } from 'routes';
 import {
   DbOverviewTab,
@@ -36,7 +36,8 @@ import Splitter from 'components/Splitter';
 import css from './DashboardView.css';
 
 interface InjectedProps {
-  store: DashboardStore;
+  treeStore: TreeStore;
+  tabsStore: TabsStore;
 }
 
 export interface Props extends InjectedProps {}
@@ -55,42 +56,37 @@ class DashboardView extends React.Component<RoutedProps, State> {
   };
 
   componentDidMount() {
-    this.load();
+    this.props.tabsStore.loadData();
   }
 
-  private load = () => {
-    const { store } = this.props;
-    store.loadData();
-  };
-
-  private insertTextToEditor(text: string, typeInsert: string = 'sql') {
-    const { store } = this.props;
-    store
-      .activeTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.codeEditor)
-      .forEach(editor => editor.insertText(text, typeInsert));
-  }
+  // private insertTextToEditor(text: string, typeInsert: string = 'sql') {
+  //   const { store } = this.props;
+  //   store
+  //     .activeTabOfType<EditorTabModel>(TabType.Editor)
+  //     .flatMap(t => t.codeEditor)
+  //     .forEach(editor => editor.insertText(text, typeInsert));
+  // }
 
   private onServerAction = (action: ServerAction) => {
     switch (action) {
       case ServerAction.OpenProcesses: {
-        this.props.store.openProcessesTab();
+        this.props.tabsStore.openProcessesTab();
         break;
       }
       case ServerAction.OpenMetrics: {
-        this.props.store.openMetricsTab();
+        this.props.tabsStore.openMetricsTab();
         break;
       }
       case ServerAction.OpenServerOverview: {
-        this.props.store.openServerOverviewTab();
+        this.props.tabsStore.openServerOverviewTab();
         break;
       }
       case ServerAction.OpenDbOverview: {
-        this.props.store.openDbOverviewTab();
+        this.props.tabsStore.openDbOverviewTab();
         break;
       }
       case ServerAction.OpenSqlHistory: {
-        this.props.store.openSqlHistoryTab();
+        this.props.tabsStore.openSqlHistoryTab();
         break;
       }
       default:
@@ -98,28 +94,26 @@ class DashboardView extends React.Component<RoutedProps, State> {
     }
   };
 
-  private makeCodeSelectFrom = (table: ServerStructure.Table) => {
-    this.props.store.getTableColumns(table.database, table.name).then(cols => {
-      let tableName: string = table.name;
-      const fields: Array<string> = [];
-      const where: Array<string> = [];
-
-      cols.data.forEach((item: any) => {
-        if (!item) return;
-        fields.push(item.name);
-        if (item.type === 'Date') {
-          where.push(`${item.name}=today()`);
-        }
-      });
-      if (tableName.indexOf('.') !== -1) tableName = `"${tableName}"`;
-
-      let sql = `\nSELECT\n\t${fields.join(',\n\t')}\nFROM\n\t${table.database}.${tableName}\n`;
-      if (where.length) {
-        sql = `${sql}\nWHERE\n\t${where.join('\n AND \n')}`;
-      }
-      sql = `${sql}\nLIMIT 100\n\n`;
-      this.insertTextToEditor(sql, 'sql');
-    });
+  private makeCodeSelectFrom = (_table: ServerStructure.Table) => {
+    // this.props.tabsStore.getTableColumns(table.database, table.name).then(cols => {
+    //   let tableName: string = table.name;
+    //   const fields: Array<string> = [];
+    //   const where: Array<string> = [];
+    //   cols.data.forEach((item: any) => {
+    //     if (!item) return;
+    //     fields.push(item.name);
+    //     if (item.type === 'Date') {
+    //       where.push(`${item.name}=today()`);
+    //     }
+    //   });
+    //   if (tableName.indexOf('.') !== -1) tableName = `"${tableName}"`;
+    //   let sql = `\nSELECT\n\t${fields.join(',\n\t')}\nFROM\n\t${table.database}.${tableName}\n`;
+    //   if (where.length) {
+    //     sql = `${sql}\nWHERE\n\t${where.join('\n AND \n')}`;
+    //   }
+    //   sql = `${sql}\nLIMIT 100\n\n`;
+    //   this.props.tabsStore.insertTextToEditor(sql, 'sql');
+    // });
   };
 
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
@@ -130,12 +124,12 @@ class DashboardView extends React.Component<RoutedProps, State> {
         this.makeCodeSelectFrom(table);
         break;
       case TableAction.MakeSQLDescribe:
-        this.props.store.getTableSQLDescribe(table.database, table.name).then(sql => {
-          this.insertTextToEditor(sql, 'sql');
-        });
+        // this.props.tabsStore.getTableSQLDescribe(table.database, table.name).then(sql => {
+        //   this.insertTextToEditor(sql, 'sql');
+        // });
         break;
       case TableAction.InsertTableName:
-        this.insertTextToEditor(table.name, 'table');
+        this.props.tabsStore.insertTextToEditor(table.name, 'table');
         break;
       default:
         break;
@@ -144,17 +138,12 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private onColumnAction = (action: ColumnAction, column: ServerStructure.Column) => {
     if (action === ColumnAction.DoubleClick) {
-      this.insertTextToEditor(column.name, 'column');
+      this.props.tabsStore.insertTextToEditor(column.name, 'column');
     }
   };
 
-  private onTabChange = (id: string) => {
-    const { store } = this.props;
-    store.setActiveTab(id);
-  };
-
   private onEditTabs = (eventOrKey: string | React.MouseEvent<any>, action: 'remove' | 'add') => {
-    const { store } = this.props;
+    const { tabsStore: store } = this.props;
     if (action === 'remove' && typeof eventOrKey === 'string') {
       store.removeTab(eventOrKey);
     } else if (action === 'add') {
@@ -189,15 +178,15 @@ class DashboardView extends React.Component<RoutedProps, State> {
   };
 
   render() {
-    const { store } = this.props;
+    const { tabsStore, treeStore } = this.props;
     const { primaryPaneSize } = this.state;
-    const isBlocking = store
+    const isBlocking = tabsStore
       .activeTabOfType<EditorTabModel>(TabType.Editor)
       .map(t => !!t.content)
       .getOrElse(false);
 
     return (
-      <Page column={false} uiStore={store.uiStore} className={css.root}>
+      <Page column={false} uiStore={tabsStore.uiStore} className={css.root}>
         <NavPrompt when={isBlocking} message="Do you want to leave this page?" />
 
         <Splitter
@@ -210,24 +199,19 @@ class DashboardView extends React.Component<RoutedProps, State> {
         >
           <Flex alignItems="flex-start" vfill className={css['sider-container']}>
             <ServerStructureTree
-              store={store.uiStore}
-              structure={store.serverStructure.orUndefined()}
-              onReload={this.load}
               onServerAction={this.onServerAction}
               onTableAction={this.onTableAction}
               onColumnAction={this.onColumnAction}
-              filterServerStructure={store.filterServerStructure}
-              filteredItems={store.filteredItems}
             />
           </Flex>
 
           <Tabs
-            activeKey={store.activeTab.map(_ => _.id).orUndefined()}
+            activeKey={tabsStore.activeTab.map(_ => _.id).orUndefined()}
             onEdit={this.onEditTabs}
-            onChange={this.onTabChange}
+            onChange={tabsStore.setActiveTab}
             onMenuAction={this.onMenuAction}
           >
-            {store.tabs.map(t => (
+            {tabsStore.tabs.map(t => (
               <Tabs.TabPane
                 key={t.id}
                 closable
@@ -240,9 +224,10 @@ class DashboardView extends React.Component<RoutedProps, State> {
               >
                 {isTabOfType<EditorTabModel>(t, TabType.Editor) && (
                   <EditorTabPage
-                    store={store}
+                    store={tabsStore}
+                    serverStructure={treeStore.serverStructure.orUndefined()}
                     model={t}
-                    onTabModelFieldChange={t.changeField}
+                    onModelFieldChange={t.changeField}
                     width={primaryPaneSize}
                   />
                 )}
@@ -258,7 +243,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
                 {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
 
                 {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
-                  <SqlHistoryTabPage onEdit={store.openNewEditorTab} />
+                  <SqlHistoryTabPage onEdit={tabsStore.openNewEditorTab} />
                 )}
               </Tabs.TabPane>
             ))}
@@ -270,7 +255,8 @@ class DashboardView extends React.Component<RoutedProps, State> {
 }
 
 export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.dashboardStore }))(
-    DashboardView
-  )
+  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({
+    tabsStore: store.tabsStore,
+    treeStore: store.treeStore,
+  }))(DashboardView)
 );

@@ -1,5 +1,5 @@
 import { History } from 'history';
-import { computed, observable, transaction, action, runInAction } from 'mobx';
+import { computed, observable, action, runInAction } from 'mobx';
 import { None, Option } from 'funfix-core';
 import { withRequest, UIStore, RequestableStore } from '@vzh/mobx-stores';
 import { Connection, connectionsStorage, Api } from 'services';
@@ -34,7 +34,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   @action
   async updateApi(api: Option<Api>) {
     if (this.api.equals(api)) return;
-    transaction(async () => {
+    runInAction(async () => {
       await this.clearAuth();
       runInAction(() => {
         this.api = api;
@@ -45,10 +45,8 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
 
   @withRequest
   async logout(history: History) {
-    transaction(async () => {
-      await this.updateApi(None);
-      history.replace(routePaths.home.path);
-    });
+    await this.updateApi(None);
+    history.replace(routePaths.home.path);
   }
 
   @withRequest

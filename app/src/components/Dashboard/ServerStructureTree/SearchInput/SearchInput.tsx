@@ -2,18 +2,19 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { AutoComplete, Input } from 'antd';
 import { AutoCompleteProps } from 'antd/lib/auto-complete';
+import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
-import { FilterResult } from 'services/ServerStructureFilter';
-import { DashboardUIStore } from 'stores';
-import { TreeFilter, MIN_SEARCH_LENGTH } from 'models';
+import { FilteredNodes } from 'stores/TreeStore';
+import { TreeFilter, TreeFilterModel } from 'models';
 import DbTitle from '../DbTitle';
 import TableTitle from '../TableTitle';
 import ColumnTitle from '../ColumnTitle';
 
 interface Props extends Pick<AutoCompleteProps, 'onSelect'> {
-  store: DashboardUIStore;
-  filterServerStructure: (filter: TreeFilter) => Promise<void>;
-  filteredItems: FilterResult;
+  model: TreeFilter;
+  onModelFieldChange: FieldChangeHandler<TreeFilter>;
+  doFilter: () => Promise<void>;
+  filteredItems: FilteredNodes;
 }
 
 @observer
@@ -21,22 +22,22 @@ export default class SearchInput extends React.Component<Props> {
   private filterTimeout: number = 0;
 
   private search = (value: string) => {
-    const { store, filterServerStructure } = this.props;
+    const { onModelFieldChange, doFilter } = this.props;
 
-    store.treeFilter.changeField({ name: 'search', value });
-    store.updateTreeHighlightedKey(undefined); // remove highlighted node when search value changed
+    onModelFieldChange({ name: 'text', value });
+    // store.updateTreeHighlightedKey(undefined); // remove highlighted node when search value changed
 
-    if (!value) {
-      filterServerStructure({ search: value }); // clear filtered results
-      return;
-    }
+    // if (!value) {
+    //   doFilter({ search: value }); // clear filtered results
+    //   return;
+    // }
 
-    store.updateFiltering(true);
+    onModelFieldChange({ name: 'isFiltering', value: true });
     if (this.filterTimeout) window.clearTimeout(this.filterTimeout);
     this.filterTimeout = window.setTimeout(
       () =>
-        filterServerStructure(store.treeFilter).finally(() => {
-          store.updateFiltering(false);
+        doFilter().finally(() => {
+          onModelFieldChange({ name: 'isFiltering', value: false });
         }),
       300
     );
@@ -61,10 +62,10 @@ export default class SearchInput extends React.Component<Props> {
   };
 
   private getNotFoundContent() {
-    const { store } = this.props;
-    if (store.treeFilter.search.length === 0) return undefined;
-    if (store.treeFilter.search.length < MIN_SEARCH_LENGTH) return 'Type more symbols to search';
-    if (store.isFiltering) return 'Filtering...';
+    const { model } = this.props;
+    if (model.text.length === 0) return undefined;
+    if (model.text.length < TreeFilterModel.MIN_SEARCH_LENGTH) return 'Type more symbols to search';
+    if (model.isFiltering) return 'Filtering...';
     return 'Not found';
   }
 

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Option } from 'funfix-core';
 import { FieldChangeHandler } from '@vzh/mobx-stores';
 import { EditorTab } from 'models';
-import { DashboardStore } from 'stores';
+import { TabsStore } from 'stores';
 import { ServerStructure } from 'services';
 import DataDecorator from 'services/api/DataDecorator';
 import Splitter from 'components/Splitter';
@@ -18,31 +18,32 @@ import Draw from './Draw';
 import Progress from './Progress';
 
 interface Props {
+  store: TabsStore;
+  serverStructure?: ServerStructure.Server;
   model: EditorTab;
-  onTabModelFieldChange: FieldChangeHandler<EditorTab>;
-  store: DashboardStore;
+  onModelFieldChange: FieldChangeHandler<EditorTab>;
   width?: number;
 }
 
 @observer
 export default class EditorTabPage extends React.Component<Props> {
   private onContentChange = (content: string) => {
-    this.props.onTabModelFieldChange({ name: 'content', value: content });
+    this.props.onModelFieldChange({ name: 'content', value: content });
   };
 
   private onDatabaseChange = (db: ServerStructure.Database) => {
-    this.props.onTabModelFieldChange({ name: 'currentDatabase', value: Option.of(db.name) });
+    this.props.onModelFieldChange({ name: 'currentDatabase', value: Option.of(db.name) });
   };
 
   private setEditorRef = (editor: SqlEditor | null) => {
-    this.props.onTabModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
+    this.props.onModelFieldChange({ name: 'codeEditor', value: Option.of(editor) });
   };
 
   private onEditorAction = (action: EditorActionType, eventData?: any) => {
     switch (action) {
       case EditorActionType.Save: {
         const { store } = this.props;
-        store.uiStore.showSaveModal();
+        store.showSaveModal();
         break;
       }
       case EditorActionType.Fullscreen:
@@ -61,7 +62,7 @@ export default class EditorTabPage extends React.Component<Props> {
   private onResultAction = (action: ResultActionType) => {
     switch (action) {
       case ResultActionType.TogglePin: {
-        const { onTabModelFieldChange, model } = this.props;
+        const { onModelFieldChange: onTabModelFieldChange, model } = this.props;
         onTabModelFieldChange({ name: 'pinnedResult', value: !model.pinnedResult });
         break;
       }
@@ -75,7 +76,7 @@ export default class EditorTabPage extends React.Component<Props> {
   private renderDraw = (data: DataDecorator) => <Draw data={data} />;
 
   render() {
-    const { store, model, width } = this.props;
+    const { store, serverStructure, model, width } = this.props;
     const resultList = model.queriesResult.map(r => r.list).getOrElse([]);
 
     return (
@@ -84,7 +85,7 @@ export default class EditorTabPage extends React.Component<Props> {
           <SqlEditor
             content={model.content}
             onContentChange={this.onContentChange}
-            serverStructure={store.serverStructure.getOrElse(ServerStructure.EMPTY)}
+            serverStructure={serverStructure}
             currentDatabase={model.currentDatabase.orUndefined()}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onEditorAction}
@@ -127,7 +128,7 @@ export default class EditorTabPage extends React.Component<Props> {
           </Tabs>
         </Splitter>
 
-        {store.uiStore.editedTab
+        {store.editedTab
           .filter(t => t.model === model)
           .map(editedTab => (
             <SaveModal
@@ -135,7 +136,7 @@ export default class EditorTabPage extends React.Component<Props> {
               fieldValue={editedTab.title}
               onFieldChange={editedTab.changeField}
               onSave={store.saveEditedTab}
-              onCancel={store.uiStore.hideSaveModal}
+              onCancel={store.hideSaveModal}
             />
           ))
           .orUndefined()}
