@@ -1,7 +1,7 @@
 import { observable, action, runInAction, IReactionDisposer, reaction } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest, Initializable, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
-import { tabsStorage, sqlHistoryStorage, Query } from 'services';
+import { tabsStorage, sqlHistoryStorage, Query, ServerStructure } from 'services';
 import {
   EditorTabModel,
   TabModel,
@@ -15,8 +15,9 @@ import {
   DbOverviewTabModel,
   SqlHistoryTabModel,
 } from 'models';
-import { DashboardUIStore } from 'stores';
 import { Statistics } from 'services/api/DataDecorator';
+import { TextInsertType } from 'components/Dashboard';
+import DashboardUIStore from './DashboardUIStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
 export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
@@ -30,7 +31,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
   @observable
   editedTab: Option<ViewModelLike<EditorTabModel>> = None;
 
-  protected autosaveTimer?: number;
+  private autosaveTimer?: number;
 
   protected changeTabsReaction?: IReactionDisposer;
 
@@ -147,15 +148,41 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
   }
 
   @action.bound
-  insertTextToEditor(text: string, typeInsert: string = 'sql') {
+  insertTextToEditor(text: string, insertType: TextInsertType = TextInsertType.Sql) {
     this.activeTabOfType<EditorTabModel>(TabType.Editor)
       .flatMap(t => t.codeEditor)
-      .forEach(editor => editor.insertText(text, typeInsert));
+      .forEach(editor => editor.insertText(text, insertType));
   }
 
-  async insertTableSQLDescribe(database: string, tablename: string) {
-    const text = await this.api.makeTableDescribe(database, tablename);
+  async insertTableSQLDescribe(table: ServerStructure.Table) {
+    const text = await this.api.makeTableDescribe(table.database, table.name);
     this.insertTextToEditor(text);
+  }
+
+  async insertSelectFrom(table: ServerStructure.Table) {
+    const cols = await this.api.getTableColumns(table.database, table.name);
+
+    const fields: Array<string> = [];
+    const where: Array<string> = [];
+
+    cols.data.forEach((item: any) => {
+      if (!item) return;
+      fields.push(item.name);
+      if (item.type === 'Date') {
+        where.push(`${item.name}=today()`);
+      }
+    });
+
+    const tableName = table.name.includes('.') ? `"${table.name}"` : table.name;
+    const db = table.database;
+    const selectFields = fields.join(',\n\t');
+    const sqlTemplate = `\nSELECT\n\t${selectFields}\nFROM\n\t${db}.${tableName}\n%WHERE%\nLIMIT 100\n\n`;
+    const sql = sqlTemplate.replace(
+      '%WHERE%',
+      where.length ? `\nWHERE\n\t${where.join('\n AND \n')}` : ''
+    );
+
+    this.insertTextToEditor(sql, TextInsertType.Sql);
   }
 
   @withRequest.bound

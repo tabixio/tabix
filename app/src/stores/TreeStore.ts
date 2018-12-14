@@ -6,6 +6,7 @@ import { Node } from 'react-virtualized-tree';
 import { EditorTabModel, TreeFilterModel, TabType } from 'models';
 import { ServerStructure } from 'services';
 import ApiRequestableStore from './ApiRequestableStore';
+import DashboardUIStore from './DashboardUIStore';
 
 export type TypedNode = Overwrite<Node, { children?: TypedNode[] }> &
   (
@@ -18,22 +19,13 @@ export type FilteredNodes = Array<
   ServerStructure.Database | ServerStructure.Table | ServerStructure.Column
 >;
 
-export default class TreeStore extends ApiRequestableStore implements Initializable {
-  // private unfilteredNodes: TypedNode[] = [];
-
+export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
+  implements Initializable {
   @observable
   serverStructure: Option<ServerStructure.Server> = None;
 
   @observable
   treeNodes: TypedNode[] = [];
-
-  // // remove
-  // @observable
-  // treeExpandedKeys: string[] = [];
-
-  // // remove ?
-  // @observable
-  // treeHighlightedKey: Option<string> = None;
 
   @observable
   treeFilter: TreeFilterModel = TreeFilterModel.from();
@@ -41,12 +33,15 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
   @observable
   filteredNodes: FilteredNodes = [];
 
+  private lastHighlightedId?: string;
+
   protected changeCurrentDatabaseReaction?: IReactionDisposer;
 
-  init() {
-    // Keep ref to last selected node for quick replace selected state of prev selected node.
-    let selectedNode: TypedNode | undefined;
+  protected changeTreeFilterReaction?: IReactionDisposer;
 
+  init() {
+    let lastSelectedId: string | undefined;
+    // todo: select node correctly
     this.changeCurrentDatabaseReaction = reaction(
       () =>
         this.rootStore.tabsStore
@@ -54,10 +49,21 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
           .flatMap(t => t.currentDatabase),
       dbName => {
         dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
-          if (selectedNode) selectedNode.state = { ...selectedNode.state, selected: false };
-          selectedNode = n;
-          selectedNode.state = { ...selectedNode.state, selected: true };
+          lastSelectedId && this.updateState(lastSelectedId, { selected: false });
+
+          const node = n;
+          node.state = { ...node.state, selected: true };
+          lastSelectedId = node.id;
         });
+      }
+    );
+
+    this.changeTreeFilterReaction = reaction(
+      () => this.treeFilter.text,
+      () => {
+        if (!this.lastHighlightedId) return;
+        this.updateState(this.lastHighlightedId, { highlighted: false });
+        this.lastHighlightedId = undefined;
       }
     );
   }
@@ -66,7 +72,7 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
     for (let i = 0; i < nodes.length; i += 1) {
       const n = nodes[i];
       if (ServerStructure.isDatabase(n) && n.name === name) return Some(n);
-      if (ServerStructure.isServer(n)) return this.findDbNode(n.children as TypedNode[], name);
+      if (ServerStructure.isServer(n) && n.children) return this.findDbNode(n.children, name);
     }
     return None;
   }
@@ -96,8 +102,10 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
   }
 
   private generateNodes(server: ServerStructure.Server) {
-    console.log('*** generate nodes ***');
-    // const selectedKeys = this.getTreeSelectedKeys();
+    const activeTabDb = this.rootStore.tabsStore
+      .activeTabOfType<EditorTabModel>(TabType.Editor)
+      .flatMap(t => t.currentDatabase)
+      .orUndefined();
 
     this.treeNodes = [
       {
@@ -105,14 +113,10 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
         state: { expanded: true },
         children: server.databases.map<TypedNode>(d => ({
           ...d,
-          // state: { selected: selectedKeys.includes(d.id) },
+          state: activeTabDb === d.name ? { selected: true } : undefined,
           children: d.tables.map<TypedNode>(t => ({
             ...t,
-            // state: { selected: selectedKeys.includes(t.id) },
-            children: t.columns.map<TypedNode>(c => ({
-              ...c,
-              // state: { selected: selectedKeys.includes(c.id) },
-            })),
+            children: t.columns.map<TypedNode>(c => ({ ...c })),
           })),
         })),
       },
@@ -147,21 +151,50 @@ export default class TreeStore extends ApiRequestableStore implements Initializa
     });
   }
 
-  // getTreeSelectedKeys(): ReadonlyArray<string> {
-  //   return this.rootStore.dashboardStore
-  //     .activeTabOfType<EditorTabModel>(TabType.Editor)
-  //     .flatMap(t => t.currentDatabase)
-  //     .map(db => [db])
-  //     .getOrElse([]);
-  // }
+  private findNode(id: string, nodes: TypedNode[]): Option<TypedNode> {
+    for (let i = 0; i < nodes.length; i += 1) {
+      const n = nodes[i];
+      if (n.id === id) return Some(n);
+      if (n.children) {
+        const maybe = this.findNode(id, n.children);
+        if (maybe.nonEmpty()) return maybe;
+      }
+    }
+    return None;
+  }
 
-  // @action
-  // updateTreeHighlightedKey(key?: string) {
-  //   this.treeHighlightedKey = Option.of(key);
-  // }
+  private updateState(id: string, state: object) {
+    this.findNode(id, this.treeNodes).forEach(n => {
+      const node = n;
+      node.state = { ...node.state, ...state };
+    });
+  }
 
-  // @action
-  // updateTreeExpandedKeys(keys: string[]) {
-  //   this.treeExpandedKeys = keys;
-  // }
+  @action
+  highlightFilteredNode(id: string) {
+    this.filteredNodes = [];
+    this.lastHighlightedId && this.updateState(this.lastHighlightedId, { highlighted: false });
+    this.expandParentsOf(id, this.treeNodes);
+    this.lastHighlightedId = id;
+  }
+
+  private expandParentsOf(id: string, nodes: TypedNode[]): Option<TypedNode> {
+    for (let i = 0; i < nodes.length; i += 1) {
+      const n = nodes[i];
+
+      if (n.id === id) {
+        n.state = { ...n.state, highlighted: true };
+        return Some(n);
+      }
+
+      if (n.children) {
+        const maybe = this.expandParentsOf(id, n.children);
+        if (maybe.nonEmpty()) {
+          n.state = { ...n.state, expanded: true };
+          return maybe;
+        }
+      }
+    }
+    return None;
+  }
 }

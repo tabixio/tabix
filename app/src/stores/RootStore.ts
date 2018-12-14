@@ -3,7 +3,6 @@ import { UIStore, BaseRootStore } from '@vzh/mobx-stores';
 import { Connection } from 'services';
 import AppStore from './AppStore';
 import SignInStore from './SignInStore';
-import DashboardStore from './DashboardStore';
 import DashboardUIStore from './DashboardUIStore';
 import SqlHistoryStore from './SqlHistoryStore';
 import TreeStore from './TreeStore';
@@ -23,9 +22,6 @@ export default class RootStore extends BaseRootStore {
   tabsStore: TabsStore;
 
   @observable
-  dashboardStore: DashboardStore;
-
-  @observable
   sqlHistoryStore: SqlHistoryStore;
 
   constructor() {
@@ -35,7 +31,6 @@ export default class RootStore extends BaseRootStore {
     const dashboardUIStore = new DashboardUIStore(this);
     this.treeStore = new TreeStore(this, dashboardUIStore);
     this.tabsStore = new TabsStore(this, dashboardUIStore);
-    this.dashboardStore = new DashboardStore(this, dashboardUIStore);
     this.sqlHistoryStore = new SqlHistoryStore(this, new UIStore(this));
     this.initialize();
   }
@@ -48,7 +43,6 @@ export default class RootStore extends BaseRootStore {
     this.signInStore = rootStore.signInStore;
     this.treeStore = rootStore.treeStore;
     this.tabsStore = rootStore.tabsStore;
-    this.dashboardStore = rootStore.dashboardStore;
     this.sqlHistoryStore = rootStore.sqlHistoryStore;
     connection && this.appStore.initApi(connection);
   }

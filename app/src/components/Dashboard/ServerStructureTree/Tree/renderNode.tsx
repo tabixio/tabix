@@ -26,8 +26,16 @@ type Renderer = (props: RenderNodeProps) => JSX.Element | null;
 
 function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
   const selected: boolean = !!state && state.selected;
+  const highlighted: boolean = !!state && state.highlighted;
   return (
-    <Flex hfill className={classNames(css.selectable, selected && css.selected)}>
+    <Flex
+      hfill
+      className={classNames(
+        css.selectable,
+        selected && css.selected,
+        highlighted && css.highlighted
+      )}
+    >
       {children}
     </Flex>
   );
