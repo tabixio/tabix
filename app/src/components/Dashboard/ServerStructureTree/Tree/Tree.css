@@ -1,17 +1,8 @@
 .root {
-  & > div:first-of-type {
-    /* width: 100% !important; */
-    /* height: 100% !important; */
-  }
-
   :global {
     & .ReactVirtualized__Grid {
       outline: none;
       padding: 0.25em;
-
-      & div.tree-node[style] {
-        /* width: 80%; */
-      }
     }
   }
 }
@@ -21,6 +12,10 @@
 
   &.selected {
     background-color: aquamarine;
+  }
+
+  &.highlighted {
+    background-color: burlywood;
   }
 }
 

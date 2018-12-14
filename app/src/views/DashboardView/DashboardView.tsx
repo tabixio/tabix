@@ -28,6 +28,7 @@ import {
   ServerStructureTree,
   Tabs,
   SqlHistoryTabPage,
+  TextInsertType,
 } from 'components/Dashboard';
 import Page from 'components/Page';
 import { ActionType } from 'components/Dashboard/Tabs';
@@ -44,28 +45,11 @@ export interface Props extends InjectedProps {}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
-interface State {
-  /** Needed for resizing GridLayout */
-  primaryPaneSize?: number;
-}
-
 @observer
-class DashboardView extends React.Component<RoutedProps, State> {
-  state: State = {
-    primaryPaneSize: undefined,
-  };
-
+class DashboardView extends React.Component<RoutedProps> {
   componentDidMount() {
     this.props.tabsStore.loadData();
   }
-
-  // private insertTextToEditor(text: string, typeInsert: string = 'sql') {
-  //   const { store } = this.props;
-  //   store
-  //     .activeTabOfType<EditorTabModel>(TabType.Editor)
-  //     .flatMap(t => t.codeEditor)
-  //     .forEach(editor => editor.insertText(text, typeInsert));
-  // }
 
   private onServerAction = (action: ServerAction) => {
     switch (action) {
@@ -94,42 +78,17 @@ class DashboardView extends React.Component<RoutedProps, State> {
     }
   };
 
-  private makeCodeSelectFrom = (_table: ServerStructure.Table) => {
-    // this.props.tabsStore.getTableColumns(table.database, table.name).then(cols => {
-    //   let tableName: string = table.name;
-    //   const fields: Array<string> = [];
-    //   const where: Array<string> = [];
-    //   cols.data.forEach((item: any) => {
-    //     if (!item) return;
-    //     fields.push(item.name);
-    //     if (item.type === 'Date') {
-    //       where.push(`${item.name}=today()`);
-    //     }
-    //   });
-    //   if (tableName.indexOf('.') !== -1) tableName = `"${tableName}"`;
-    //   let sql = `\nSELECT\n\t${fields.join(',\n\t')}\nFROM\n\t${table.database}.${tableName}\n`;
-    //   if (where.length) {
-    //     sql = `${sql}\nWHERE\n\t${where.join('\n AND \n')}`;
-    //   }
-    //   sql = `${sql}\nLIMIT 100\n\n`;
-    //   this.props.tabsStore.insertTextToEditor(sql, 'sql');
-    // });
-  };
-
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
     // https://github.com/tabixio/tabix/blob/master/src/app/base/sidebar.js#L233
-
     switch (action) {
       case TableAction.CodeSelectFrom:
-        this.makeCodeSelectFrom(table);
+        this.props.tabsStore.insertSelectFrom(table);
         break;
       case TableAction.MakeSQLDescribe:
-        // this.props.tabsStore.getTableSQLDescribe(table.database, table.name).then(sql => {
-        //   this.insertTextToEditor(sql, 'sql');
-        // });
+        this.props.tabsStore.insertTableSQLDescribe(table);
         break;
       case TableAction.InsertTableName:
-        this.props.tabsStore.insertTextToEditor(table.name, 'table');
+        this.props.tabsStore.insertTextToEditor(table.name, TextInsertType.Table);
         break;
       default:
         break;
@@ -138,7 +97,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
 
   private onColumnAction = (action: ColumnAction, column: ServerStructure.Column) => {
     if (action === ColumnAction.DoubleClick) {
-      this.props.tabsStore.insertTextToEditor(column.name, 'column');
+      this.props.tabsStore.insertTextToEditor(column.name, TextInsertType.Column);
     }
   };
 
@@ -173,13 +132,9 @@ class DashboardView extends React.Component<RoutedProps, State> {
     return icon;
   };
 
-  private onSplitterResizeFinished = (newSize: number) => {
-    this.setState({ primaryPaneSize: newSize });
-  };
-
   render() {
     const { tabsStore, treeStore } = this.props;
-    const { primaryPaneSize } = this.state;
+    const { uiStore } = tabsStore;
     const isBlocking = tabsStore
       .activeTabOfType<EditorTabModel>(TabType.Editor)
       .map(t => !!t.content)
@@ -194,8 +149,8 @@ class DashboardView extends React.Component<RoutedProps, State> {
           minSize={550}
           maxSize={-300}
           defaultSize="calc(100vw - 325px)"
-          size={primaryPaneSize}
-          onDragFinished={this.onSplitterResizeFinished}
+          size={uiStore.primaryPaneSize}
+          onDragFinished={uiStore.updatePrimaryPaneSize}
         >
           <Flex alignItems="flex-start" vfill className={css['sider-container']}>
             <ServerStructureTree
@@ -228,7 +183,7 @@ class DashboardView extends React.Component<RoutedProps, State> {
                     serverStructure={treeStore.serverStructure.orUndefined()}
                     model={t}
                     onModelFieldChange={t.changeField}
-                    width={primaryPaneSize}
+                    width={uiStore.primaryPaneSize}
                   />
                 )}
 

@@ -13,8 +13,6 @@ export interface TreeProps extends NodeActions, TreeActions {
 }
 
 function Tree({ nodes, onChange, onCollapse, ...actions }: TreeProps) {
-  console.log('render tree');
-
   return (
     <Flex grow className={css.root}>
       <VirtualizedTree nodeMarginLeft={0} nodes={nodes} onChange={onChange as any}>

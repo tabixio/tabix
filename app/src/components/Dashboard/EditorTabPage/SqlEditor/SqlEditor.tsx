@@ -39,6 +39,12 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 type Monaco = typeof monacoEditor;
 type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
 
+export enum TextInsertType {
+  Sql = 'sql',
+  Table = 'table',
+  Column = 'column',
+}
+
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
@@ -81,7 +87,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   }
 
-  public insertText(textToInsert: string, mode: any) {
+  public insertText(textToInsert: string, mode: TextInsertType) {
     // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
     console.log(textToInsert, mode);
     if (!this.editor) return;

@@ -25,8 +25,6 @@ export default class SearchInput extends React.Component<Props> {
     const { onModelFieldChange, doFilter } = this.props;
 
     onModelFieldChange({ name: 'text', value });
-    // store.updateTreeHighlightedKey(undefined); // remove highlighted node when search value changed
-
     // if (!value) {
     //   doFilter({ search: value }); // clear filtered results
     //   return;

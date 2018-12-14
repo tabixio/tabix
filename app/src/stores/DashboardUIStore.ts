@@ -1,26 +1,18 @@
-import { observable } from 'mobx';
-// import { Option, None } from 'funfix-core';
+import { observable, action } from 'mobx';
 import { UIStore } from '@vzh/mobx-stores';
 import { Query } from 'services';
 import RootStore from './RootStore';
 
 export default class DashboardUIStore extends UIStore<RootStore> {
-  // // remove
-  // @observable
-  // treeExpandedKeys: string[] = [];
-
-  // // remove ?
-  // @observable
-  // treeHighlightedKey: Option<string> = None;
-
-  // @observable
-  // isTreeFiltering: boolean = false;
+  /** Needed for resizing GridLayout */
+  @observable
+  primaryPaneSize?: number;
 
   @observable
   executingQueries: ReadonlyArray<Query> = [];
 
-  // @action
-  // updateFiltering(filtering: boolean) {
-  //   this.isTreeFiltering = filtering;
-  // }
+  @action.bound
+  updatePrimaryPaneSize(size: number) {
+    this.primaryPaneSize = size;
+  }
 }
