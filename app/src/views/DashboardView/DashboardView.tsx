@@ -136,7 +136,7 @@ class DashboardView extends React.Component<RoutedProps> {
     const { tabsStore, treeStore } = this.props;
     const { uiStore } = tabsStore;
     const isBlocking = tabsStore
-      .activeTabOfType<EditorTabModel>(TabType.Editor)
+      .getActiveTabOfType<EditorTabModel>(TabType.Editor)
       .map(t => !!t.content)
       .getOrElse(false);
 

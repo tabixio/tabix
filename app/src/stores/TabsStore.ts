@@ -56,8 +56,14 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
     );
   }
 
-  activeTabOfType<T extends TabModel<Tab>>(type: T['type']): Option<T> {
+  getActiveTabOfType<T extends TabModel<Tab>>(type: T['type']): Option<T> {
     return this.activeTab.flatMap(t => (isTabOfType<T>(t, type) ? Some(t) : None));
+  }
+
+  getActiveEditorDatabase(): Option<string> {
+    return this.rootStore.tabsStore
+      .getActiveTabOfType<EditorTabModel>(TabType.Editor)
+      .flatMap(t => t.currentDatabase);
   }
 
   @withRequest
@@ -95,8 +101,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
     const newTab = EditorTabModel.from({
       title: this.getNewTabName(),
       content,
-      currentDatabase: this.activeTabOfType<EditorTabModel>(TabType.Editor)
-        .flatMap(t => t.currentDatabase)
+      currentDatabase: this.getActiveEditorDatabase()
         .orElse(this.rootStore.treeStore.serverStructure.map(s => s.databases[0]).map(d => d.name))
         .orUndefined(),
     });
@@ -149,7 +154,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
 
   @action.bound
   insertTextToEditor(text: string, insertType: TextInsertType = TextInsertType.Sql) {
-    this.activeTabOfType<EditorTabModel>(TabType.Editor)
+    this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
       .flatMap(t => t.codeEditor)
       .forEach(editor => editor.insertText(text, insertType));
   }
@@ -202,7 +207,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
 
   @action
   showSaveModal() {
-    this.activeTabOfType<EditorTabModel>(TabType.Editor).forEach(tab => {
+    this.getActiveTabOfType<EditorTabModel>(TabType.Editor).forEach(tab => {
       this.editedTab = Option.of(createViewModel(tab));
     });
   }
@@ -223,7 +228,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
       max_result_rows: 50000, // ToDo:Read from Store.User.Tabix.Settings
     };
 
-    await this.activeTabOfType<EditorTabModel>(TabType.Editor)
+    await this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
       .map(async t => {
         const tab = t;
 

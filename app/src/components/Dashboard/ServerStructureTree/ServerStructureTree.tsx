@@ -22,7 +22,7 @@ class ServerStructureTree extends React.Component<Props> {
 
   private highlightNode = (key: SelectValue) => {
     const { store } = this.props;
-    store.highlightFilteredNode(key.toString());
+    store.highlightNode(key.toString());
   };
 
   render() {
@@ -39,6 +39,7 @@ class ServerStructureTree extends React.Component<Props> {
         />
 
         <Tree
+          highlightedId={store.highlightedId}
           nodes={store.treeNodes}
           onChange={store.updateTreeNodes}
           onCollapse={store.collapseAll}
