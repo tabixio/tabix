@@ -36,7 +36,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.2.0",
+    "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.0",
     "@babel/register": "^7.0.0",
     "@types/chroma-js": "^1.4.0",
@@ -72,7 +72,7 @@
     "postcss-icss-values": "^2.0.2",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
-    "postcss-nested": "^4.1.0",
+    "postcss-nested": "^4.1.1",
     "postcss-preset-env": "^6.5.0",
     "prettier": "^1.15.3",
     "pug": "^2.0.3",
@@ -94,7 +94,7 @@
   },
   "dependencies": {
     "@handsontable/react": "^2.1.0",
-    "@vzh/mobx-stores": "^0.31.0",
+    "@vzh/mobx-stores": "^0.31.3",
     "@vzh/react-auth": "^0.3.1",
     "antd": "^3.11.2",
     "chroma-js": "^1.4.1",

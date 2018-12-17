@@ -3,7 +3,7 @@ import { Option, None, Some } from 'funfix-core';
 import { Overwrite } from 'typelevel-ts';
 import { Initializable, withRequest } from '@vzh/mobx-stores';
 import { Node } from 'react-virtualized-tree';
-import { EditorTabModel, TreeFilterModel, TabType } from 'models';
+import { TreeFilterModel, EditorTab } from 'models';
 import { ServerStructure } from 'services';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
@@ -33,37 +33,27 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
   @observable
   filteredNodes: FilteredNodes = [];
 
-  private lastHighlightedId?: string;
+  @observable
+  highlightedId?: string;
+
+  private lastSelectedId?: string;
 
   protected changeCurrentDatabaseReaction?: IReactionDisposer;
 
   protected changeTreeFilterReaction?: IReactionDisposer;
 
   init() {
-    let lastSelectedId: string | undefined;
-    // todo: select node correctly
     this.changeCurrentDatabaseReaction = reaction(
-      () =>
-        this.rootStore.tabsStore
-          .activeTabOfType<EditorTabModel>(TabType.Editor)
-          .flatMap(t => t.currentDatabase),
-      dbName => {
-        dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
-          lastSelectedId && this.updateState(lastSelectedId, { selected: false });
-
-          const node = n;
-          node.state = { ...node.state, selected: true };
-          lastSelectedId = node.id;
-        });
-      }
+      () => this.rootStore.tabsStore.getActiveEditorDatabase(),
+      this.selectDbNode
     );
 
     this.changeTreeFilterReaction = reaction(
       () => this.treeFilter.text,
       () => {
-        if (!this.lastHighlightedId) return;
-        this.updateState(this.lastHighlightedId, { highlighted: false });
-        this.lastHighlightedId = undefined;
+        if (!this.highlightedId) return;
+        this.updateState(this.highlightedId, { highlighted: false });
+        this.highlightedId = undefined;
       }
     );
   }
@@ -75,6 +65,17 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
       if (ServerStructure.isServer(n) && n.children) return this.findDbNode(n.children, name);
     }
     return None;
+  }
+
+  @action.bound
+  selectDbNode(dbName: EditorTab['currentDatabase']) {
+    dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
+      this.lastSelectedId && this.updateState(this.lastSelectedId, { selected: false });
+
+      const node = n;
+      node.state = { ...node.state, selected: true };
+      this.lastSelectedId = node.id;
+    });
   }
 
   @withRequest.bound
@@ -102,25 +103,21 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
   }
 
   private generateNodes(server: ServerStructure.Server) {
-    const activeTabDb = this.rootStore.tabsStore
-      .activeTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.currentDatabase)
-      .orUndefined();
-
     this.treeNodes = [
       {
         ...server,
         state: { expanded: true },
-        children: server.databases.map<TypedNode>(d => ({
+        children: server.databases.map(d => ({
           ...d,
-          state: activeTabDb === d.name ? { selected: true } : undefined,
-          children: d.tables.map<TypedNode>(t => ({
+          children: d.tables.map(t => ({
             ...t,
-            children: t.columns.map<TypedNode>(c => ({ ...c })),
+            children: t.columns.map(c => ({ ...c })),
           })),
         })),
       },
     ];
+
+    this.selectDbNode(this.rootStore.tabsStore.getActiveEditorDatabase());
   }
 
   @action.bound
@@ -171,14 +168,14 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
   }
 
   @action
-  highlightFilteredNode(id: string) {
+  highlightNode(id: string) {
     this.filteredNodes = [];
-    this.lastHighlightedId && this.updateState(this.lastHighlightedId, { highlighted: false });
-    this.expandParentsOf(id, this.treeNodes);
-    this.lastHighlightedId = id;
+    this.highlightedId && this.updateState(this.highlightedId, { highlighted: false });
+    this.highlightAndExpandParentsOf(id, this.treeNodes);
+    this.highlightedId = id;
   }
 
-  private expandParentsOf(id: string, nodes: TypedNode[]): Option<TypedNode> {
+  private highlightAndExpandParentsOf(id: string, nodes: TypedNode[]): Option<TypedNode> {
     for (let i = 0; i < nodes.length; i += 1) {
       const n = nodes[i];
 
@@ -188,7 +185,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
       }
 
       if (n.children) {
-        const maybe = this.expandParentsOf(id, n.children);
+        const maybe = this.highlightAndExpandParentsOf(id, n.children);
         if (maybe.nonEmpty()) {
           n.state = { ...n.state, expanded: true };
           return maybe;
