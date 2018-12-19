@@ -1,9 +1,9 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Flex } from 'reflexy';
-import { SelectValue } from 'antd/lib/select';
 import { typedInject } from '@vzh/mobx-stores';
 import { Stores, TreeStore } from 'stores';
+import { TypedNode } from 'stores/TreeStore';
 import SearchInput from './SearchInput';
 import Tree, { NodeActions } from './Tree';
 
@@ -20,9 +20,10 @@ class ServerStructureTree extends React.Component<Props> {
     store.loadData();
   }
 
-  private highlightNode = (key: SelectValue) => {
+  private highlightNode = (node: TypedNode) => {
     const { store } = this.props;
-    store.highlightNode(key.toString());
+    // refactor: dont use id, instead use whole node?
+    store.highlightNode(node.id);
   };
 
   render() {

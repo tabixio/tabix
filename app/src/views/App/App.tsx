@@ -31,11 +31,9 @@ class App extends React.Component<RoutedProps> {
     appRootElement.classList.toggle('loading', loading);
   }
 
-  protected readonly loadingReaction: IReactionDisposer;
+  protected loadingReaction?: IReactionDisposer;
 
-  constructor(props: Readonly<RoutedProps>) {
-    super(props);
-
+  componentDidMount() {
     const { store, connection } = this.props;
 
     this.loadingReaction = reaction(

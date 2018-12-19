@@ -5,8 +5,8 @@ import { Icon } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from '@vzh/mobx-stores';
 import { ServerStructure } from 'services';
-import { Stores, TabsStore, TreeStore } from 'stores';
 import { routePaths } from 'routes';
+import { Stores, TabsStore, TreeStore } from 'stores';
 import {
   DbOverviewTab,
   EditorTabModel,
@@ -28,8 +28,8 @@ import {
   ServerStructureTree,
   Tabs,
   SqlHistoryTabPage,
-  TextInsertType,
 } from 'components/Dashboard';
+import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import Page from 'components/Page';
 import { ActionType } from 'components/Dashboard/Tabs';
 import { ColumnAction, ServerAction, TableAction } from 'components/Dashboard/ServerStructureTree';

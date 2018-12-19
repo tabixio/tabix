@@ -16,7 +16,7 @@ import {
   SqlHistoryTabModel,
 } from 'models';
 import { Statistics } from 'services/api/DataDecorator';
-import { TextInsertType } from 'components/Dashboard';
+import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import DashboardUIStore from './DashboardUIStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
@@ -68,6 +68,8 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
 
   @withRequest
   async loadData() {
+    if (this.tabs.length) return;
+
     // load saved tabs if empty
     const tabs = !this.tabs.length ? (await tabsStorage.getTabs()).map(createTabFrom) : this.tabs;
     // load saved active tab id if none
