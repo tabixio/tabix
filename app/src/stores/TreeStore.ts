@@ -80,6 +80,8 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
 
   @withRequest.bound
   async loadData() {
+    if (this.treeNodes.length) return;
+
     const structure = await this.api.loadDatabaseStructure();
     runInAction(() => {
       this.serverStructure = Some(structure);

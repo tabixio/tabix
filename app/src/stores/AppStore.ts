@@ -4,7 +4,7 @@ import { None, Option } from 'funfix-core';
 import { withRequest, UIStore, RequestableStore } from '@vzh/mobx-stores';
 import { Connection, connectionsStorage, Api } from 'services';
 import { routePaths } from 'routes';
-import { RootStore } from 'stores';
+import RootStore from './RootStore';
 
 export default class AppStore extends RequestableStore<RootStore, UIStore<RootStore>> {
   @observable
@@ -52,7 +52,9 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   @withRequest
   async initApi(connection: Connection) {
     const api = await Api.connect(connection);
-    this.api = Option.of(api);
+    runInAction(() => {
+      this.api = Option.of(api);
+    });
   }
 
   disposeStores() {

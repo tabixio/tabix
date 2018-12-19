@@ -6,6 +6,7 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
 import { ServerStructure, Query } from 'services';
+import { TextInsertType } from './types';
 import { languageDef, configuration } from './monaco/language/Clickhouse';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import { themeDarcula } from './monaco/theme/Darcula';
@@ -38,12 +39,6 @@ const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
 
 type Monaco = typeof monacoEditor;
 type CodeEditor = monacoEditor.editor.IStandaloneCodeEditor;
-
-export enum TextInsertType {
-  Sql = 'sql',
-  Table = 'table',
-  Column = 'column',
-}
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
