@@ -11,7 +11,7 @@ import { languageDef, configuration } from './monaco/language/Clickhouse';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import { themeDarcula } from './monaco/theme/Darcula';
 import { themeVsDark } from './monaco/theme/Vsdark';
-import Toolbar, { Props as ToolbarProps, ActionType } from './Toolbar';
+import Toolbar, { ToolbarProps, ActionType } from './Toolbar';
 import { globalEditorsMap, getCompletionItems } from './completionItems';
 import css from './SqlEditor.css';
 

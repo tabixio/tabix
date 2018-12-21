@@ -50,7 +50,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   }
 
   @withRequest
-  async initApi(connection: Connection) {
+  async init(connection: Connection) {
     const api = await Api.connect(connection);
     runInAction(() => {
       this.api = Option.of(api);

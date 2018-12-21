@@ -69,9 +69,9 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
 
   @action.bound
   selectDbNode(dbName: EditorTab['currentDatabase']) {
-    dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
-      this.lastSelectedId && this.updateState(this.lastSelectedId, { selected: false });
+    this.lastSelectedId && this.updateState(this.lastSelectedId, { selected: false });
 
+    dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
       const node = n;
       node.state = { ...node.state, selected: true };
       this.lastSelectedId = node.id;
@@ -80,8 +80,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
 
   @withRequest.bound
   async loadData() {
-    if (this.treeNodes.length) return;
-
+    // if (this.treeNodes.length) return;
     const structure = await this.api.loadDatabaseStructure();
     runInAction(() => {
       this.serverStructure = Some(structure);
@@ -128,9 +127,10 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
   }
 
   private filterNodes(searchText: string, nodes: TypedNode[]): FilteredNodes {
+    const text = searchText.toLowerCase();
     return nodes.reduce<FilteredNodes>((acc, n) => {
-      if (!ServerStructure.isServer(n) && n.name.toLowerCase().includes(searchText)) acc.push(n);
-      const children = n.children && this.filterNodes(searchText, n.children);
+      if (!ServerStructure.isServer(n) && n.name.toLowerCase().includes(text)) acc.push(n);
+      const children = n.children && this.filterNodes(text, n.children);
       if (children && children.length) acc.push(...children);
       return acc;
     }, []);
@@ -169,6 +169,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
     });
   }
 
+  // Use id instead of node because treeNodes updated on every manipulation of nodes (expand, collapse)
   @action
   highlightNode(id: string) {
     this.filteredNodes = [];

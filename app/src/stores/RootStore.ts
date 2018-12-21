@@ -37,13 +37,13 @@ export default class RootStore extends BaseRootStore {
 
   // refactor: temporary for HMR
   @action
-  updateChildStores(rootStore: RootStore, connection?: Connection) {
+  updateChildStores(nextRootStore: RootStore, connection?: Connection) {
     this.dispose();
-    this.appStore = rootStore.appStore;
-    this.signInStore = rootStore.signInStore;
-    this.treeStore = rootStore.treeStore;
-    this.tabsStore = rootStore.tabsStore;
-    this.sqlHistoryStore = rootStore.sqlHistoryStore;
-    connection && this.appStore.initApi(connection);
+    this.appStore = nextRootStore.appStore;
+    this.signInStore = nextRootStore.signInStore;
+    this.treeStore = nextRootStore.treeStore;
+    this.tabsStore = nextRootStore.tabsStore;
+    this.sqlHistoryStore = nextRootStore.sqlHistoryStore;
+    connection && !this.appStore.isLoggedIn && this.appStore.init(connection);
   }
 }

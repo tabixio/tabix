@@ -15,9 +15,9 @@ export enum ActionType {
   Fullscreen = 4,
 }
 
-export interface Props extends Pick<ActionButtonProps<ActionType>, 'onAction'> {
+export interface ToolbarProps extends Pick<ActionButtonProps<ActionType>, 'onAction'> {
   databases: ReadonlyArray<ServerStructure.Database>;
-  currentDatabase?: string;
+  currentDatabase: string;
   onDatabaseChange?: (db: ServerStructure.Database) => void;
   stats?: Statistics;
 }
@@ -26,7 +26,7 @@ function SpaceH() {
   return <div className={css['space-h']} />;
 }
 
-export default class Toolbar extends React.Component<Props & FlexProps> {
+export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
   private onDatabaseChange = (value: SelectValue) => {
     const { onDatabaseChange } = this.props;
     if (!onDatabaseChange) return;

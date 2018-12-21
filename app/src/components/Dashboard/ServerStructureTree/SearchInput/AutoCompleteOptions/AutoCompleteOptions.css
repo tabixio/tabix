@@ -1,0 +1,15 @@
+.root {
+  width: 100%;
+  top: 100%;
+  left: 0;
+
+  :global {
+    & .ReactVirtualized__Grid {
+      outline: none;
+    }
+  }
+}
+
+.menu {
+  user-select: none;
+}
