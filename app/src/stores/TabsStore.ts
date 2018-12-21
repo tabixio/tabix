@@ -1,4 +1,4 @@
-import { observable, action, runInAction, IReactionDisposer, reaction } from 'mobx';
+import { observable, action, runInAction, IReactionDisposer, reaction, when } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest, Initializable, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
 import { tabsStorage, sqlHistoryStorage, Query, ServerStructure } from 'services';
@@ -68,8 +68,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
 
   @withRequest
   async loadData() {
-    if (this.tabs.length) return;
-
+    // if (this.tabs.length) return;
     // load saved tabs if empty
     const tabs = !this.tabs.length ? (await tabsStorage.getTabs()).map(createTabFrom) : this.tabs;
     // load saved active tab id if none
@@ -83,11 +82,20 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
           .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
           .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
       }
-
-      if (this.tabs.length === 0) {
-        this.openNewEditorTab();
-      }
     });
+
+    // To fix creating a tab when serverStructure is not loaded yet.
+    if (this.tabs.length === 0) {
+      when(
+        () => this.rootStore.treeStore.serverStructure.nonEmpty(),
+        () => {
+          // Check again
+          if (this.tabs.length === 0) {
+            this.openNewEditorTab();
+          }
+        }
+      );
+    }
   }
 
   @action.bound

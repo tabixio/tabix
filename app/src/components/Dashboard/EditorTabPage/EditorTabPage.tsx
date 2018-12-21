@@ -86,7 +86,7 @@ export default class EditorTabPage extends React.Component<Props> {
             content={model.content}
             onContentChange={this.onContentChange}
             serverStructure={serverStructure}
-            currentDatabase={model.currentDatabase.orUndefined()}
+            currentDatabase={model.currentDatabase.getOrElse('')}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onEditorAction}
             stats={model.queriesResult.map(_ => _.totalStats).orUndefined()}

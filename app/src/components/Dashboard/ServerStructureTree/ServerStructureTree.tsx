@@ -22,7 +22,6 @@ class ServerStructureTree extends React.Component<Props> {
 
   private highlightNode = (node: TypedNode) => {
     const { store } = this.props;
-    // refactor: dont use id, instead use whole node?
     store.highlightNode(node.id);
   };
 
@@ -34,7 +33,7 @@ class ServerStructureTree extends React.Component<Props> {
         <SearchInput
           model={store.treeFilter}
           onModelFieldChange={store.treeFilter.changeField}
-          filteredItems={store.filteredNodes}
+          items={store.filteredNodes}
           doFilter={store.filter}
           onSelect={this.highlightNode}
         />
