@@ -41,7 +41,7 @@ class App extends React.Component<RoutedProps> {
       loading => App.toggleAppLoader(loading)
     );
 
-    connection && !store.isLoggedIn && store.init(connection);
+    connection && !store.isLoggedIn && store.initApi(connection);
   }
 
   componentWillUnmount() {

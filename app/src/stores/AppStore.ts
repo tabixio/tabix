@@ -50,13 +50,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   }
 
   @withRequest
-  async init(connection: Connection) {
-    // TypeError: Cannot read property 'type' of undefined at isDirectConnection
-    // if (!connection) {
-    //   this.clearAuth();
-    //   await this.updateApi(None);
-    //   return;
-    // }
+  async initApi(connection: Connection) {
     const api = await Api.connect(connection);
     runInAction(() => {
       this.api = Option.of(api);

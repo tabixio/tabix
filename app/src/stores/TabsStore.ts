@@ -1,6 +1,6 @@
 import { observable, action, runInAction, IReactionDisposer, reaction, when } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
-import { withRequest, Initializable, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
+import { withRequest, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
 import { tabsStorage, sqlHistoryStorage, Query, ServerStructure } from 'services';
 import {
   EditorTabModel,
@@ -20,8 +20,7 @@ import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import DashboardUIStore from './DashboardUIStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
-export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
-  implements Initializable {
+export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
   tabs: ReadonlyArray<TabModel<Tab>> = [];
 
@@ -37,7 +36,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore>
 
   protected changeActiveTabReaction?: IReactionDisposer;
 
-  init() {
+  protected initialize() {
     this.autosaveTimer = window.setInterval(() => {
       tabsStorage.saveTabs(this.tabs.map(_ => _.toJSON()));
     }, 30000);

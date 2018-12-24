@@ -1,15 +1,13 @@
 import { observable, action, IReactionDisposer, reaction, runInAction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
-import { Overwrite } from 'typelevel-ts';
-import { Initializable, withRequest } from '@vzh/mobx-stores';
+import { withRequest } from '@vzh/mobx-stores';
 import { Node } from 'react-virtualized-tree';
 import { TreeFilterModel, EditorTab } from 'models';
 import { ServerStructure } from 'services';
 import ApiRequestableStore from './ApiRequestableStore';
 import DashboardUIStore from './DashboardUIStore';
 
-export type TypedNode = Overwrite<Node, { children?: TypedNode[] }> &
-  (
+export type TypedNode = Node & { children?: TypedNode[] } & (
     | ServerStructure.Server
     | ServerStructure.Database
     | ServerStructure.Table
@@ -19,8 +17,7 @@ export type FilteredNodes = Array<
   ServerStructure.Database | ServerStructure.Table | ServerStructure.Column
 >;
 
-export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
-  implements Initializable {
+export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
   @observable
   serverStructure: Option<ServerStructure.Server> = None;
 
@@ -42,7 +39,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore>
 
   protected changeTreeFilterReaction?: IReactionDisposer;
 
-  init() {
+  protected initialize() {
     this.changeCurrentDatabaseReaction = reaction(
       () => this.rootStore.tabsStore.getActiveEditorDatabase(),
       this.selectDbNode
