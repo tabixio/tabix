@@ -44,6 +44,6 @@ export default class RootStore extends BaseRootStore {
     this.treeStore = nextRootStore.treeStore;
     this.tabsStore = nextRootStore.tabsStore;
     this.sqlHistoryStore = nextRootStore.sqlHistoryStore;
-    connection && !this.appStore.isLoggedIn && this.appStore.init(connection);
+    connection && !this.appStore.isLoggedIn && this.appStore.initApi(connection);
   }
 }
