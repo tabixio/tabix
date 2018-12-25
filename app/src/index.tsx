@@ -13,7 +13,8 @@ function render(
   container: HTMLElement,
   Component: React.ComponentType<AppProps>,
   appProps: AppProps,
-  store: ReturnType<typeof initStores>
+  store: ReturnType<typeof initStores>,
+  cb?: () => void
 ) {
   ReactDOM.render(
     <Provider store={store}>
@@ -21,7 +22,8 @@ function render(
         <Component {...appProps} />
       </BrowserRouter>
     </Provider>,
-    container
+    container,
+    cb
   );
 }
 
@@ -33,9 +35,15 @@ function render(
 
   if (module.hot) {
     module.hot.accept('views/App', () => {
-      import('views/App').then(({ default: NextApp }) =>
-        render(appRootElement, NextApp, { connection: connection.orUndefined() }, rootStore)
-      );
+      import('views/App').then(({ default: NextApp }) => {
+        render(
+          appRootElement,
+          NextApp,
+          { connection: connection.orUndefined() },
+          rootStore,
+          rootStore.reinitialize
+        );
+      });
     });
 
     module.hot.accept('stores', () => {
