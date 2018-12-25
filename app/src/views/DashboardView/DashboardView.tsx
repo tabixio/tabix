@@ -141,7 +141,7 @@ class DashboardView extends React.Component<RoutedProps> {
       .getOrElse(false);
 
     return (
-      <Page column={false} uiStore={tabsStore.uiStore} className={css.root}>
+      <Page column={false} uiStore={tabsStore.uiStore}>
         <NavPrompt when={isBlocking} message="Do you want to leave this page?" />
 
         <Splitter
