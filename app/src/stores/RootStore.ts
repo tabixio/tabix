@@ -35,6 +35,14 @@ export default class RootStore extends BaseRootStore {
     this.initialize();
   }
 
+  // After hot update and rerender App will dispose all stores,
+  // so we need to reinitialize them in order to work all mobx reactions.
+  @action.bound
+  reinitialize() {
+    this.dispose();
+    this.initialize();
+  }
+
   // refactor: temporary for HMR
   @action
   updateChildStores(nextRootStore: RootStore, connection?: Connection) {
