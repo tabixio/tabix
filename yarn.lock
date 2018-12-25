@@ -1091,10 +1091,10 @@ ant-design-palettes@^1.1.3:
   dependencies:
     tinycolor2 "^1.4.1"
 
-antd@^3.11.5:
-  version "3.11.5"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-3.11.5.tgz#70a22c902fa765293113f4a25f7c8a1c642ab175"
-  integrity sha512-+uJJ1S8FrlTImwRzYvhRFvf72K5ft0OV2adxhxaKx1x5r/JHzEKLjMSkwLqIEswS0iUMkMnp1VUNvUN1PFiJrw==
+antd@^3.11.6:
+  version "3.11.6"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-3.11.6.tgz#bc69434c59025edf65ad077ad2d4d3ce646b2a64"
+  integrity sha512-7JrL5IWH6qLLa8u8H9na0DCTkVzbE3Nyg+QC71FJEEO9hJXsAqybcj3GU+HYe/Zsa2ndlN9TMFlPZoYWX1Rz8w==
   dependencies:
     "@ant-design/icons" "~1.1.15"
     "@ant-design/icons-react" "~1.1.2"
@@ -1849,10 +1849,10 @@ chownr@^1.1.1:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.1.tgz#54726b8b8fff4df053c42187e801fb4412df1494"
   integrity sha512-j38EvO5+LHX84jlo6h4UzmOwi0UgW61WRyPtJz4qaadK5eY3BTS5TY/S1Stc3Uk2lIM6TPevAlULiEJwie860g==
 
-chroma-js@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-1.4.1.tgz#eb2d9c4d1ff24616be84b35119f4d26f8205f134"
-  integrity sha512-jTwQiT859RTFN/vIf7s+Vl/Z2LcMrvMv3WUFmd/4u76AdlFC0NTNgqEEFPcRiHmAswPsMiQEDZLM8vX8qXpZNQ==
+chroma-js@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-2.0.2.tgz#507bfe0e22da9c30673ffc4532c8ca6b4f2926db"
+  integrity sha512-VtDXaYcaDr45wheOXasIs4S4IWEjpqh74UfQA0TwoLuBR7TG12ztmjj9JqTIe1sgzVTMDNwSPEJYcw/jYK2TSw==
 
 chrome-trace-event@^1.0.0:
   version "1.0.0"
