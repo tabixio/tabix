@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
+import { Childrenable } from 'reflexy';
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
+import { Omit } from 'typelevel-ts';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { Omit } from 'typelevel-ts';
-import { Childrenable } from 'reflexy';
 
 const ReactGridLayoutFilled = WidthProvider(ReactGridLayout);
 
