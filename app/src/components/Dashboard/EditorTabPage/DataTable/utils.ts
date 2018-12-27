@@ -1,4 +1,4 @@
-import Handsontable from 'handsontable';
+import Handsontable, { contextMenu } from 'handsontable';
 import { ColumnMetadata } from 'services/api/DataDecorator';
 import * as manipulations from './manipulations';
 // import ColumnSorting = Handsontable.plugins.ColumnSorting;
@@ -213,23 +213,21 @@ export function getColumnSorting(columns: ReadonlyArray<ColumnMetadata>) {
   return true;
 }
 
-export function manipulate(ht: Handsontable, key: string, options: any): any {
-  console.log('call', key);
-
+export function manipulate(ht: Handsontable, key: string, options: contextMenu.Options): any {
   const prefix = 'apply';
   const all = Object.getOwnPropertyNames(manipulations).filter(
     prop => typeof manipulations[prop] === 'function'
   );
 
   const [func, params] = key.split(':');
-  if (!func || !params) return false;
+  if (!func) return false;
 
   // capitalizeFirstLetter
   const callFunction = `${prefix}${func.charAt(0).toUpperCase()}${func.slice(1)}`;
 
   console.log('Call', callFunction, params);
   if (all.indexOf(callFunction) !== -1) {
-    return manipulations[callFunction](ht, params, options);
+    return manipulations[callFunction](ht, params || func, options);
   }
   return false;
 }

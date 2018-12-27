@@ -83,6 +83,7 @@ export default function GridLayout(props: GridLayoutProps) {
       isDraggable={!locked}
       isResizable={!locked}
       isRearrangeable={!locked}
+      useCSSTransforms={false}
     >
       {children}
     </Layout>

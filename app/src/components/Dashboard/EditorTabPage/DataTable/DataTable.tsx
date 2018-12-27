@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Icon } from 'antd';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
+import Handsontable, { contextMenu } from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import './dark.css';
 import { Flex, FlexProps } from 'reflexy';
@@ -11,11 +11,12 @@ import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already
 import DataDecorator from 'services/api/DataDecorator';
 import RequestStats from '../RequestStats';
 import { manipulate, getFormatForColumn, getColumnSorting } from './utils';
-import { ContextMenuItem, createContextMenu } from './contextMenuItems';
+import { ContextMenuItem, createContextMenu, ContextMenuActionType } from './contextMenuItems';
 import css from './DataTable.css';
 
-interface Props {
+export interface DataTableProps {
   data: DataDecorator;
+  onAction: (action: ContextMenuActionType, data: any) => void;
 }
 
 interface State {
@@ -55,7 +56,7 @@ const hotTableSettings: Handsontable.DefaultSettings = {
 };
 
 @observer
-export default class DataTable extends React.Component<Props & FlexProps, State> {
+export default class DataTable extends React.Component<DataTableProps & FlexProps, State> {
   private readonly rootRef = React.createRef<HTMLDivElement>();
 
   private tableRef = React.createRef<HotTable>();
@@ -81,58 +82,20 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
     sizeSensor.clear(this.rootRef.current);
   }
 
-  private pushToClipboardText(text: string) {
-    // @todo : Reweire to react code
+  private onCallContextMenu = (
+    ht: Handsontable,
+    item: ContextMenuItem,
+    key: string,
+    options: contextMenu.Options
+  ) => {
+    if (!item.action) return false;
 
-    // const textarea = React.createElement(
-    //   'textarea',
-    //   { value: text, type: 'url', autoFocus: true },
-    //   'body'
-    // );
-
-    // const textarea: HTMLElement = document.createElement('textarea');
-    // if (textarea.style) {
-    //   textarea.style.width = 0;
-    //   textarea.style.height = 0;
-    //   textarea.style.border = 0;
-    //   textarea.style.position = 'absolute';
-    //   textarea.style.top = 0;
-    // }
-    // document.body.append(textarea);
-    // textarea.value = outText;
-    // textarea.focus();
-    // textarea.select();
-    // try {
-    //   const successful = document.execCommand('copy');
-    // } catch (err) {
-    //   console.log('Oops, unable to copy');
-    // }
-    // document.body.removeChild(textarea);
-    console.log(text);
-  }
-
-  private onCallContextMenu(ht: Handsontable, item: ContextMenuItem, key: string, options: any) {
-    // console.log('callContextMenu', ht, item, key, options);
     const result = manipulate(ht, key, options);
     if (!result) return false;
-    if (item.result === 'insert') {
-      // to insert result to editor ( where cursor )
-      console.log('insert result:');
-      console.info(`%c${result}`, 'color: #bada55');
-    }
-    if (item.result === 'show') {
-      // to show result in elements
-      console.log('show result:');
-      console.info(`%c${result}`, 'color: #bada55');
-    }
-    if (item.result === 'clipboard') {
-      // to clipboard text
-      console.log('to Clipboard result:');
-      console.info(`%c${result}`, 'color: #bada55');
-      this.pushToClipboardText(result);
-    }
+
+    this.props.onAction(item.action, result);
     return true;
-  }
+  };
 
   private onExportToExcel = () => {
     const hotTable = this.tableRef.current && this.tableRef.current.hotInstance;
@@ -154,7 +117,7 @@ export default class DataTable extends React.Component<Props & FlexProps, State>
   };
 
   render() {
-    const { data, className, ...flexProps } = this.props;
+    const { data, onAction, className, ...flexProps } = this.props;
     // @todo : Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
     // var showSortIndicator = pluginSettingsForColumn.indicator;
     // Uncaught (in promise) TypeError: Cannot read property 'indicator' of undefined

@@ -6,19 +6,19 @@ export interface ItemCallback {
   (table: Handsontable, item: ContextMenuItem, key: string, options: contextMenu.Options): void;
 }
 
+export enum ContextMenuActionType {
+  Show = 'Show',
+  Clipboard = 'Clipboard',
+  Insert = 'Insert',
+}
+
 export interface ContextMenuItem {
   key: string;
   name: string;
   filter?: 'numeric' | 'time' | 'date';
-  result?: 'show' | 'clipboard' | 'insert';
+  action?: ContextMenuActionType;
   submenu?: { items: ReadonlyArray<ContextMenuItem> };
   callback?: contextMenu.Settings['callback'];
-  // callback?: (
-  //   this: Handsontable,
-  //   item: ContextMenuItem,
-  //   key: string,
-  //   options: contextMenu.Options
-  // ) => void;
   disabled?: (this: Handsontable) => void;
 }
 
@@ -134,17 +134,17 @@ export const defaultContextMenuItems = Object.freeze({
         {
           key: 'redminemarkdown',
           name: 'Redmine Markdown',
-          result: 'clipboard',
+          action: ContextMenuActionType.Clipboard,
         },
         {
           key: 'githubmarkdown',
           name: 'GitHub Markdown',
-          result: 'clipboard',
+          action: ContextMenuActionType.Clipboard,
         },
         {
           key: 'createtable',
           name: 'Create Table ...',
-          result: 'clipboard',
+          action: ContextMenuActionType.Clipboard,
         },
       ],
     },
@@ -156,12 +156,12 @@ export const defaultContextMenuItems = Object.freeze({
         {
           key: 'where',
           name: 'WHERE col1 IN (val,val) AND col2 IN ...',
-          result: 'insert',
+          action: ContextMenuActionType.Insert,
         },
         {
           key: 'columns',
           name: 'Columns names',
-          result: 'insert',
+          action: ContextMenuActionType.Insert,
         },
       ],
     },
@@ -182,13 +182,12 @@ export const defaultContextMenuItems = Object.freeze({
       ],
     },
   },
-  calculate: {
+  calcAvgSum: {
     name: 'Calc Avg & Sum & Median',
-    key: 'CalcAvgSum',
     filter: 'numeric',
-    result: 'show',
+    action: ContextMenuActionType.Show,
   },
-  hsep4: '---------',
+  // hsep4: '---------',
   // copy: {},
   // undo: {},
   // make_read_only: {},
