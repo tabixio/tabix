@@ -23,9 +23,11 @@ export interface EditorTab extends Tab<TabType.Editor> {
   codeEditor: Option<SqlEditor>;
   queriesResult: Option<QueryResultList>;
   pinnedResult: boolean;
+  tableData: Option<string>;
 }
 
-export interface EditorTabJsonEntity extends Omit<EditorTab, 'codeEditor' | 'queriesResult'> {}
+export interface EditorTabJsonEntity
+  extends Omit<EditorTab, 'codeEditor' | 'queriesResult' | 'tableData'> {}
 
 export default class EditorTabModel extends TabModel<EditorTab>
   implements EditorTab, SerializableModel<EditorTabJsonEntity> {
@@ -46,6 +48,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
       codeEditor: None,
       queriesResult: None,
       pinnedResult,
+      tableData: None,
     });
   }
 
@@ -63,6 +66,9 @@ export default class EditorTabModel extends TabModel<EditorTab>
   @observable
   pinnedResult: boolean;
 
+  @observable
+  tableData: Option<string>;
+
   protected constructor(data: EditorTab) {
     super(data);
     this.content = data.content;
@@ -70,6 +76,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
     this.codeEditor = data.codeEditor;
     this.queriesResult = data.queriesResult;
     this.pinnedResult = data.pinnedResult;
+    this.tableData = data.tableData;
   }
 
   toJSON(this: EditorTabModel): JSONModel<EditorTabJsonEntity> {

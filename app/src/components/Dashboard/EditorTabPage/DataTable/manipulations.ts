@@ -294,3 +294,7 @@ export function applyHighlightColumn(ht: Handsontable, command: string): void {
   }
   ht.render();
 }
+
+export function applyCalcAvgSum(_ht: Handsontable, _command: string): string {
+  return JSON.stringify({ col1: 1, col2: 2, col3: 3 });
+}

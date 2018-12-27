@@ -9,11 +9,13 @@ import DataDecorator from 'services/api/DataDecorator';
 import Splitter from 'components/Splitter';
 import SqlEditor from './SqlEditor';
 import { ActionType as EditorActionType } from './SqlEditor/Toolbar';
+import { TextInsertType } from './SqlEditor/types';
 import SaveModal from './SaveModal';
 import Tabs from './Tabs';
 import { ActionType as ResultActionType } from './Tabs/Actions';
 import DataItemsLayout from './DataItemsLayout';
-import DataTable from './DataTable';
+import DataTable, { DataTableProps } from './DataTable';
+import { ContextMenuActionType } from './DataTable/contextMenuItems';
 import Draw from './Draw';
 import Progress from './Progress';
 
@@ -71,7 +73,62 @@ export default class EditorTabPage extends React.Component<Props> {
     }
   };
 
-  private renderTable = (data: DataDecorator) => <DataTable data={data} fill />;
+  private copyToClipboard(text: string) {
+    // @todo : Reweire to react code
+
+    // const textarea = React.createElement(
+    //   'textarea',
+    //   { value: text, type: 'url', autoFocus: true },
+    //   'body'
+    // );
+
+    // const textarea: HTMLElement = document.createElement('textarea');
+    // if (textarea.style) {
+    //   textarea.style.width = 0;
+    //   textarea.style.height = 0;
+    //   textarea.style.border = 0;
+    //   textarea.style.position = 'absolute';
+    //   textarea.style.top = 0;
+    // }
+    // document.body.append(textarea);
+    // textarea.value = outText;
+    // textarea.focus();
+    // textarea.select();
+    // try {
+    //   const successful = document.execCommand('copy');
+    // } catch (err) {
+    //   console.log('Oops, unable to copy');
+    // }
+    // document.body.removeChild(textarea);
+    console.log(text);
+  }
+
+  private onDataTableAction: DataTableProps['onAction'] = (action, data) => {
+    if (action === ContextMenuActionType.Insert) {
+      // to insert result to editor ( where cursor )
+      console.log('insert result:');
+      console.info(`%c${data}`, 'color: #bada55');
+      const { model } = this.props;
+      model.codeEditor.forEach(editor => editor.insertText(data, TextInsertType.Sql));
+    }
+    if (action === ContextMenuActionType.Show) {
+      // to show result in elements
+      console.log('show result:');
+      console.info(`%c${data}`, 'color: #bada55');
+      const { onModelFieldChange } = this.props;
+      onModelFieldChange({ name: 'tableData', value: Option.of(data) });
+    }
+    if (action === ContextMenuActionType.Clipboard) {
+      // to clipboard text
+      console.log('to Clipboard result:');
+      console.info(`%c${data}`, 'color: #bada55');
+      this.copyToClipboard(data);
+    }
+  };
+
+  private renderTable = (data: DataDecorator) => (
+    <DataTable data={data} onAction={this.onDataTableAction} fill />
+  );
 
   private renderDraw = (data: DataDecorator) => <Draw data={data} />;
 
@@ -94,38 +151,46 @@ export default class EditorTabPage extends React.Component<Props> {
             fill
           />
 
-          <Tabs defaultActiveKey="table" pinned={model.pinnedResult} onAction={this.onResultAction}>
-            <Tabs.TabPane key="table" tab="Table view">
-              {!!store.uiStore.executingQueries.length && (
-                <Progress queries={store.uiStore.executingQueries} />
-              )}
+          <div>
+            {model.tableData.map(data => <div>{data}</div>).orUndefined()}
 
-              <DataItemsLayout
-                cols={4}
-                itemWidth={4}
-                itemHeight={14}
-                items={resultList}
-                width={width}
-                renderItem={this.renderTable}
-                locked={model.pinnedResult}
-              />
-            </Tabs.TabPane>
+            <Tabs
+              defaultActiveKey="table"
+              pinned={model.pinnedResult}
+              onAction={this.onResultAction}
+            >
+              <Tabs.TabPane key="table" tab="Table view">
+                {!!store.uiStore.executingQueries.length && (
+                  <Progress queries={store.uiStore.executingQueries} />
+                )}
 
-            <Tabs.TabPane key="draw" tab="Draw view">
-              {!!store.uiStore.executingQueries.length && (
-                <Progress queries={store.uiStore.executingQueries} />
-              )}
+                <DataItemsLayout
+                  cols={4}
+                  itemWidth={4}
+                  itemHeight={14}
+                  items={resultList}
+                  width={width}
+                  renderItem={this.renderTable}
+                  locked={model.pinnedResult}
+                />
+              </Tabs.TabPane>
 
-              <DataItemsLayout
-                cols={4}
-                itemWidth={4}
-                itemHeight={6}
-                items={resultList}
-                width={width}
-                renderItem={this.renderDraw}
-              />
-            </Tabs.TabPane>
-          </Tabs>
+              <Tabs.TabPane key="draw" tab="Draw view">
+                {!!store.uiStore.executingQueries.length && (
+                  <Progress queries={store.uiStore.executingQueries} />
+                )}
+
+                <DataItemsLayout
+                  cols={4}
+                  itemWidth={4}
+                  itemHeight={6}
+                  items={resultList}
+                  width={width}
+                  renderItem={this.renderDraw}
+                />
+              </Tabs.TabPane>
+            </Tabs>
+          </div>
         </Splitter>
 
         {store.editedTab
