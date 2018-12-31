@@ -11,11 +11,9 @@ import SqlEditor from './SqlEditor';
 import { ActionType as EditorActionType } from './SqlEditor/Toolbar';
 import { TextInsertType } from './SqlEditor/types';
 import SaveModal from './SaveModal';
-import Tabs from './Tabs';
-import { ActionType as ResultActionType } from './Tabs/Actions';
+import Tabs, { ResultTabActionType } from './Tabs';
 import DataItemsLayout from './DataItemsLayout';
-import DataTable, { DataTableProps } from './DataTable';
-import { ContextMenuActionType } from './DataTable/contextMenuItems';
+import DataTable, { DataTableProps, ResultTableActionType } from './DataTable';
 import Draw from './Draw';
 import Progress from './Progress';
 
@@ -61,9 +59,9 @@ export default class EditorTabPage extends React.Component<Props> {
     }
   };
 
-  private onResultAction = (action: ResultActionType) => {
+  private onResultTabAction = (action: ResultTabActionType) => {
     switch (action) {
-      case ResultActionType.TogglePin: {
+      case ResultTabActionType.TogglePin: {
         const { onModelFieldChange: onTabModelFieldChange, model } = this.props;
         onTabModelFieldChange({ name: 'pinnedResult', value: !model.pinnedResult });
         break;
@@ -104,21 +102,21 @@ export default class EditorTabPage extends React.Component<Props> {
   }
 
   private onDataTableAction: DataTableProps['onAction'] = (action, data) => {
-    if (action === ContextMenuActionType.Insert) {
+    if (action === ResultTableActionType.Insert) {
       // to insert result to editor ( where cursor )
       console.log('insert result:');
       console.info(`%c${data}`, 'color: #bada55');
       const { model } = this.props;
       model.codeEditor.forEach(editor => editor.insertText(data, TextInsertType.Sql));
     }
-    if (action === ContextMenuActionType.Show) {
+    if (action === ResultTableActionType.Show) {
       // to show result in elements
       console.log('show result:');
       console.info(`%c${data}`, 'color: #bada55');
       const { onModelFieldChange } = this.props;
       onModelFieldChange({ name: 'tableData', value: Option.of(data) });
     }
-    if (action === ContextMenuActionType.Clipboard) {
+    if (action === ResultTableActionType.Clipboard) {
       // to clipboard text
       console.log('to Clipboard result:');
       console.info(`%c${data}`, 'color: #bada55');
@@ -157,7 +155,7 @@ export default class EditorTabPage extends React.Component<Props> {
             <Tabs
               defaultActiveKey="table"
               pinned={model.pinnedResult}
-              onAction={this.onResultAction}
+              onAction={this.onResultTabAction}
             >
               <Tabs.TabPane key="table" tab="Table view">
                 {!!store.uiStore.executingQueries.length && (
