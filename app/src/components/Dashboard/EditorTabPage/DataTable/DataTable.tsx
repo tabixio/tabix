@@ -10,13 +10,18 @@ import classNames from 'classnames';
 import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator from 'services/api/DataDecorator';
 import RequestStats from '../RequestStats';
-import { manipulate, getFormatForColumn, getColumnSorting } from './utils';
-import { ContextMenuItem, createContextMenu, ContextMenuActionType } from './contextMenuItems';
+import { getFormatForColumn, getColumnSorting } from './utils';
+import {
+  ContextMenuItem,
+  createContextMenu,
+  ResultActionType,
+  isSubmenu,
+} from './contextMenuItems';
 import css from './DataTable.css';
 
 export interface DataTableProps {
   data: DataDecorator;
-  onAction: (action: ContextMenuActionType, data: any) => void;
+  onAction: (action: ResultActionType, data: any) => void;
 }
 
 interface State {
@@ -82,18 +87,21 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     sizeSensor.clear(this.rootRef.current);
   }
 
-  private onCallContextMenu = (
+  private onContextMenuItemClick = (
     ht: Handsontable,
     item: ContextMenuItem,
-    key: string,
     options: contextMenu.Options
   ) => {
-    if (!item.action) return false;
+    if (typeof item === 'string') return false;
+    if (isSubmenu(item)) return false;
 
-    const result = manipulate(ht, key, options);
-    if (!result) return false;
+    const result = item.action(ht, options);
+    const { onAction } = this.props;
 
-    this.props.onAction(item.action, result);
+    if (onAction && item.resultAction && typeof result === 'string') {
+      onAction(item.resultAction, result);
+    }
+
     return true;
   };
 
@@ -144,7 +152,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
           columns={columns}
           data={data.rows}
           columnSorting={getColumnSorting(data.meta.columns)}
-          contextMenu={createContextMenu(this.onCallContextMenu)}
+          contextMenu={createContextMenu(this.onContextMenuItemClick)}
         />
       </Flex>
     );

@@ -9,6 +9,8 @@ export interface Selection {
   isSelected: boolean;
 }
 
+/* eslint-disable no-param-reassign */
+
 export function getSelectedArea(ht: Handsontable, selectFull: boolean = false): Selection {
   const select: Handsontable.wot.CellRange | undefined = ht.getSelectedRangeLast();
   let fromCol: number = -1;
@@ -39,12 +41,13 @@ export function getSelectedArea(ht: Handsontable, selectFull: boolean = false): 
   };
 }
 
-export function applyStyleCell(ht: Handsontable, style: string): void {
+export function formatCells(className: string, ht: Handsontable): void {
   const s = getSelectedArea(ht, true);
   for (let row = s.fromRow; row <= s.toRow; row += 1) {
     for (let col = s.fromCol; col <= s.toCol; col += 1) {
       const cellMeta = ht.getCellMeta(row, col);
-      const cl = `htCell${style}`;
+      // const cl = `htCell${style}`;
+      const cl = className;
       if (
         !cellMeta.className ||
         (cellMeta.className &&
@@ -59,71 +62,73 @@ export function applyStyleCell(ht: Handsontable, style: string): void {
   ht.render();
 }
 
-export function applyColumnFormat(ht: Handsontable, format: string): void {
+export function formatColumns(format: (column: any) => void, ht: Handsontable): void {
   const selection = getSelectedArea(ht, true);
   const { columns } = ht.getSettings();
   if (!columns) return;
   for (let col = selection.fromCol; col <= selection.toCol; col += 1) {
-    // console.log(`makeFormat for coll =${col}  ${format}`);
     // http://numbrojs.com/old-format.html
     // https://handsontable.com/docs/6.1.0/Options.html#numericFormat
-    switch (format.toLocaleLowerCase()) {
-      case 'reset':
-        columns[col].numericFormat = undefined;
-        columns[col].renderDateFormat = false;
-        break;
-      case 'money':
-        columns[col].numericFormat = { pattern: '$0,0.00' };
-        break;
-      case 'human':
-        columns[col].numericFormat = { pattern: '5a' };
-        break;
-      case 'bytes':
-        columns[col].numericFormat = { pattern: '0.0b' };
-        break;
-      case 'percentages':
-        columns[col].numericFormat = { pattern: '(0.00 %)' };
-        break;
-      // case 'time':
-      //   columns[col].renderDateFormat = 'HH:mm:ss';
-      //   break;
-      // case 'date':
-      //   columns[col].renderDateFormat = 'YYYY-MM-DD';
-      //   break;
-      // case 'datetime':
-      //   columns[col].renderDateFormat = 'YYYY-MM-DD HH:mm:ss';
-      //   break;
-      // case 'dateloc':
-      //   columns[col].renderDateFormat = 'LLLL';
-      //   break;
-      case 'float7':
-        columns[col].numericFormat = { pattern: '0.[0000000]' };
-        break;
-      case 'float3':
-        columns[col].numericFormat = { pattern: '0.[000]' };
-        break;
-      default:
-        break;
-    }
+    format(columns[col]);
   }
   ht.updateSettings({ columns }, false);
 }
 
-function minimizeCols(ht: Handsontable) {
+export function resetColumnFormat(column: any) {
+  column.numericFormat = undefined;
+  column.renderDateFormat = false;
+}
+
+export function moneyColumnFormat(column: any) {
+  column.numericFormat = { pattern: '$0,0.00' };
+}
+
+export function humanColumnFormat(column: any) {
+  column.numericFormat = { pattern: '5a' };
+}
+
+export function bytesColumnFormat(column: any) {
+  column.numericFormat = { pattern: '0.0b' };
+}
+
+export function percentagesColumnFormat(column: any) {
+  column.numericFormat = { pattern: '(0.00 %)' };
+}
+
+export function timeColumnFormat(column: any) {
+  column.renderDateFormat = 'HH:mm:ss';
+}
+
+export function dateColumnFormat(column: any) {
+  column.renderDateFormat = 'YYYY-MM-DD';
+}
+
+export function datetimeColumnFormat(column: any) {
+  column.renderDateFormat = 'YYYY-MM-DD HH:mm:ss';
+}
+
+export function datelocColumnFormat(column: any) {
+  column.renderDateFormat = 'LLLL';
+}
+
+export function float7ColumnFormat(column: any) {
+  column.numericFormat = { pattern: '0.[0000000]' };
+}
+
+export function float3ColumnFormat(column: any) {
+  column.numericFormat = { pattern: '0.[000]' };
+}
+
+export function minimizeCols(ht: Handsontable) {
   const { columns } = ht.getSettings();
   const selection = getSelectedArea(ht, true);
   for (let col = selection.fromCol; col <= selection.toCol; col += 1) {
     if (columns && columns[col]) columns[col].width = 10;
   }
-  ht.updateSettings(
-    {
-      columns,
-    },
-    false
-  );
+  ht.updateSettings({ columns }, false);
 }
 
-function transposeTable(ht: Handsontable) {
+export function transposeTable(ht: Handsontable) {
   const cols = [];
   const matrix = ht.getSourceData();
   let rownum = 1;
@@ -154,17 +159,10 @@ function transposeTable(ht: Handsontable) {
     columns.push(c);
     colHeaders.push(col);
   }
-  ht.updateSettings(
-    {
-      columns,
-      colHeaders,
-      data: data.data,
-    },
-    false
-  );
+  ht.updateSettings({ columns, colHeaders, data: data.data }, false);
 }
 
-function textSQLCreateTable(ht: Handsontable): string {
+export function copyAsSQLCreateTable(ht: Handsontable): string {
   const s = getSelectedArea(ht);
   const keys = [];
   const { columns } = ht.getSettings();
@@ -174,9 +172,9 @@ function textSQLCreateTable(ht: Handsontable): string {
   return `\nCREATE TABLE x (\n ${keys.join(',\n')}\n)\nENGINE = TinyLog\n;;\n`;
 }
 
-function textMarkdown(ht: Handsontable, command: string): string {
+export function copyAsMarkdown(type: 'GitHub' | 'Redmine', ht: Handsontable): string {
   const s = getSelectedArea(ht);
-  const isGit: boolean = command === 'GitHubMarkdown';
+  const isGit: boolean = type === 'GitHub';
   // Markdown
   let outText = '';
   let cols = [];
@@ -200,13 +198,11 @@ function textMarkdown(ht: Handsontable, command: string): string {
   return outText;
 }
 
-export function applyInsertTo(ht: Handsontable, command: string): string {
-  // SQLWhere,ColumnsNames
+export function copyAsSQLWhere(ht: Handsontable): string {
   const s = getSelectedArea(ht);
   const { columns } = ht.getSettings();
   if (!columns) return '';
   const outText = [];
-  const usedCols = [];
   for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
     const rr = [];
     for (let row: number = s.fromRow; row <= s.toRow; row += 1) {
@@ -214,7 +210,6 @@ export function applyInsertTo(ht: Handsontable, command: string): string {
     }
     const unique = rr.filter((v, i, a) => a.indexOf(v) === i);
     const collName = ht.colToProp(col);
-    usedCols.push(collName);
     // get Type of column
     const typeColumn = columns[col].type.toLowerCase();
     if (typeColumn.includes('numeric')) {
@@ -225,31 +220,22 @@ export function applyInsertTo(ht: Handsontable, command: string): string {
       outText.push(`${collName} IN ( "${unique.join('" , "')}" ) `);
     }
   }
-  if (command === 'ColumnsNames') {
-    return `${usedCols.join(' , ')}\n`;
-  }
   return `\n${outText.join('\n\tAND\n')}\n`;
 }
 
-export function applyCopyTo(ht: Handsontable, command: string): string {
-  // RedmineMarkdown,GitMarkdown,SQLCreate
-  if (command === 'SQLCreate') return textSQLCreateTable(ht);
-  if (command === 'RedmineMarkdown' || command === 'GitHubMarkdown')
-    return textMarkdown(ht, command);
-  return '';
+export function copyAsSQLColumns(ht: Handsontable): string {
+  const s = getSelectedArea(ht);
+  const { columns } = ht.getSettings();
+  if (!columns) return '';
+  const usedCols = [];
+  for (let col: number = s.fromCol; col <= s.toCol; col += 1) {
+    const collName = ht.colToProp(col);
+    usedCols.push(collName);
+  }
+  return `${usedCols.join(' , ')}\n`;
 }
 
-export function applyTransform(ht: Handsontable, _command: string): void {
-  console.info(`applyTranspose ${_command}`);
-  if (_command === 'Transpose') {
-    transposeTable(ht);
-  }
-  if (_command === 'MinimizeCols') {
-    minimizeCols(ht);
-  }
-}
-
-export function applyHighlightColumn(ht: Handsontable, command: string): void {
+export function highlightColumn(command: 'heatmaps' | 'positive', ht: Handsontable): void {
   // Colors for data scientists. Generate and refine palettes of optimally distinct colors.
   // http://tools.medialab.sciences-po.fr/iwanthue/
   const selection = getSelectedArea(ht, true);
@@ -295,6 +281,6 @@ export function applyHighlightColumn(ht: Handsontable, command: string): void {
   ht.render();
 }
 
-export function applyCalcAvgSum(_ht: Handsontable, _command: string): string {
+export function calcAvgSum(_ht: Handsontable): string {
   return JSON.stringify({ col1: 1, col2: 2, col3: 3 });
 }

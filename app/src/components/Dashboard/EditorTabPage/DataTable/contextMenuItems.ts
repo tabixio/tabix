@@ -1,264 +1,303 @@
-import { Omit } from 'typelevel-ts';
 import { contextMenu } from 'handsontable';
-import { isDisabledFilterItem } from './utils';
+import {
+  formatColumns,
+  resetColumnFormat,
+  moneyColumnFormat,
+  bytesColumnFormat,
+  humanColumnFormat,
+  percentagesColumnFormat,
+  timeColumnFormat,
+  dateColumnFormat,
+  float3ColumnFormat,
+  float7ColumnFormat,
+  formatCells,
+  highlightColumn,
+  copyAsSQLCreateTable,
+  copyAsMarkdown,
+  copyAsSQLWhere,
+  copyAsSQLColumns,
+  calcAvgSum,
+  transposeTable,
+  minimizeCols,
+  getSelectedArea,
+} from './manipulations';
 
 export interface ItemCallback {
-  (table: Handsontable, item: ContextMenuItem, key: string, options: contextMenu.Options): void;
+  (table: Handsontable, item: ContextMenuItem, options: contextMenu.Options): void;
 }
 
-export enum ContextMenuActionType {
+export interface ItemAction {
+  (table: Handsontable, options: contextMenu.Options): string | void;
+}
+
+export enum ResultActionType {
   Show = 'Show',
   Clipboard = 'Clipboard',
   Insert = 'Insert',
 }
 
-export interface ContextMenuItem {
+export type CellDataType = 'numeric' | 'time' | 'date';
+
+export type DisplayFormat = 'reset' | 'money' | 'human';
+
+interface ContextMenuItemBase {
   key: string;
   name: string;
-  filter?: 'numeric' | 'time' | 'date';
-  action?: ContextMenuActionType;
-  submenu?: { items: ReadonlyArray<ContextMenuItem> };
-  callback?: contextMenu.Settings['callback'];
   disabled?: (this: Handsontable) => void;
 }
 
-export interface ContextMenuItems {
-  [P: string]: Omit<ContextMenuItem, 'key'> | string;
+interface ContextMenuItemAction extends ContextMenuItemBase {
+  action: ItemAction;
+  resultAction?: ResultActionType;
+  callback?: contextMenu.Settings['callback'];
 }
 
-export const defaultContextMenuItems = Object.freeze({
-  columnFormat: {
+interface ContextMenuItemSubmenu extends ContextMenuItemBase {
+  submenu: { items: ReadonlyArray<ContextMenuItem> };
+}
+
+export type ContextMenuItem = ContextMenuItemAction | ContextMenuItemSubmenu | string;
+
+function createDisabledChecker(filter: CellDataType) {
+  return function check(this: Handsontable): boolean {
+    const select = getSelectedArea(this);
+    const { columns } = this.getSettings();
+    if (!columns) return true;
+
+    for (let col = select.fromCol; col <= select.toCol; col += 1) {
+      if (!columns[col].type.toLowerCase().includes(filter)) return true;
+    }
+
+    return false;
+  };
+}
+
+export const defaultContextMenuItems: ReadonlyArray<ContextMenuItem> = [
+  {
+    key: 'formatColumns',
     name: 'Column format',
     submenu: {
       items: [
         {
-          key: 'reset',
+          key: `formatColumns:${formatColumns.name}-${resetColumnFormat.name}`,
           name: 'Reset',
+          action: formatColumns.bind(undefined, resetColumnFormat),
         },
         {
-          key: 'money',
+          key: `formatColumns:${formatColumns.name}-${moneyColumnFormat.name}`,
           name: 'Money',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, moneyColumnFormat),
         },
         {
-          key: 'bytes',
+          key: `formatColumns:${formatColumns.name}-${bytesColumnFormat.name}`,
           name: 'Bytes',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, bytesColumnFormat),
         },
         {
-          key: 'human',
+          key: `formatColumns:${formatColumns.name}-${humanColumnFormat.name}`,
           name: 'Human',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, humanColumnFormat),
         },
         {
-          key: 'percentages',
+          key: `formatColumns:${formatColumns.name}-${percentagesColumnFormat.name}`,
           name: 'Percentages',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, percentagesColumnFormat),
         },
         {
-          key: 'time',
+          key: `formatColumns:${formatColumns.name}-${timeColumnFormat.name}`,
           name: 'Time',
-          filter: 'time',
+          disabled: createDisabledChecker('time'),
+          action: formatColumns.bind(undefined, timeColumnFormat),
         },
         {
-          key: 'date',
+          key: `formatColumns:${formatColumns.name}-${dateColumnFormat.name}`,
           name: 'Date',
-          filter: 'date',
+          disabled: createDisabledChecker('date'),
+          action: formatColumns.bind(undefined, dateColumnFormat),
         },
         {
-          key: 'float3',
+          key: `formatColumns:${formatColumns.name}-${float3ColumnFormat.name}`,
           name: 'Float [3]',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, float3ColumnFormat),
         },
         {
-          key: 'float7',
+          key: `formatColumns:${formatColumns.name}-${float7ColumnFormat.name}`,
           name: 'Float [7]',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: formatColumns.bind(undefined, float7ColumnFormat),
         },
       ],
     },
   },
-  styleCell: {
+  {
+    key: 'formatCell',
     name: 'Style cell',
     submenu: {
       items: [
         {
-          key: 'reset',
+          key: `formatCell:${formatCells.name}-htCellReset`,
           name: 'Reset',
+          action: formatCells.bind(undefined, 'htCellReset'),
         },
         {
-          key: 'bold',
+          key: `formatCell:${formatCells.name}-htCellBold`,
           name: 'Bold',
+          action: formatCells.bind(undefined, 'htCellBold'),
         },
         {
-          key: 'redcolor',
+          key: `formatCell:${formatCells.name}-htCellRed`,
           name: 'Red color',
+          action: formatCells.bind(undefined, 'htCellRed'),
         },
         {
-          key: 'greencolor',
+          key: `formatCell:${formatCells.name}-htCellGreen`,
           name: 'Green color',
+          action: formatCells.bind(undefined, 'htCellGreen'),
         },
         {
-          key: 'yellowcolor',
+          key: `formatCell:${formatCells.name}-htCellYellow`,
           name: 'Yellow color',
+          action: formatCells.bind(undefined, 'htCellYellow'),
         },
         {
-          key: 'orangecolor',
+          key: `formatCell:${formatCells.name}-htCellOrange`,
           name: 'Orange color',
+          action: formatCells.bind(undefined, 'htCellOrange'),
         },
       ],
     },
   },
-  highlightColumn: {
+  {
+    key: 'highlightColumn',
     name: 'Highlight column',
     submenu: {
       items: [
         {
-          key: 'heatmaps',
+          key: `highlightColumn:${highlightColumn.name}-heatmaps`,
           name: 'Heatmaps',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: highlightColumn.bind(undefined, 'heatmaps'),
         },
         {
-          key: 'negativepositive',
+          key: `highlightColumn:${highlightColumn.name}-positive`,
           name: 'Negative & Positive',
-          filter: 'numeric',
+          disabled: createDisabledChecker('numeric'),
+          action: highlightColumn.bind(undefined, 'positive'),
         },
       ],
     },
   },
-  hsep1: '---------',
-  copyTo: {
+  '---------',
+  {
+    key: 'clipboard',
     name: 'To Clipboard',
     submenu: {
       items: [
         {
-          key: 'redminemarkdown',
+          key: `clipboard:${copyAsMarkdown.name}-Redmine`,
           name: 'Redmine Markdown',
-          action: ContextMenuActionType.Clipboard,
+          action: copyAsMarkdown.bind(undefined, 'Redmine'),
+          resultAction: ResultActionType.Clipboard,
         },
         {
-          key: 'githubmarkdown',
+          key: `clipboard:${copyAsMarkdown.name}-GitHub`,
           name: 'GitHub Markdown',
-          action: ContextMenuActionType.Clipboard,
+          action: copyAsMarkdown.bind(undefined, 'GitHub'),
+          resultAction: ResultActionType.Clipboard,
         },
         {
-          key: 'createtable',
+          key: `clipboard:${copyAsSQLCreateTable.name}`,
           name: 'Create Table ...',
-          action: ContextMenuActionType.Clipboard,
+          action: copyAsSQLCreateTable,
+          resultAction: ResultActionType.Clipboard,
         },
       ],
     },
   },
-  insertTo: {
+  {
+    key: 'insertsql',
     name: 'Insert SQL',
     submenu: {
       items: [
         {
-          key: 'where',
+          key: `insertsql:${copyAsSQLWhere.name}`,
           name: 'WHERE col1 IN (val,val) AND col2 IN ...',
-          action: ContextMenuActionType.Insert,
+          action: copyAsSQLWhere,
+          resultAction: ResultActionType.Insert,
         },
         {
-          key: 'columns',
+          key: `insertsql:${copyAsSQLColumns.name}`,
           name: 'Columns names',
-          action: ContextMenuActionType.Insert,
+          action: copyAsSQLColumns,
+          resultAction: ResultActionType.Insert,
         },
       ],
     },
   },
-  hsep3: '---------',
-  transform: {
+  '---------',
+  {
+    key: 'transform',
     name: 'Transform',
     submenu: {
       items: [
         {
-          key: 'transposetable',
+          key: `transform:${transposeTable.name}`,
           name: 'Transpose table',
+          action: transposeTable,
         },
         {
-          key: 'minimizecolumns',
+          key: `transform:${minimizeCols.name}`,
           name: 'Minimize columns',
+          action: minimizeCols,
         },
       ],
     },
   },
-  calcAvgSum: {
+  {
+    key: `${calcAvgSum.name}`,
     name: 'Calc Avg & Sum & Median',
-    filter: 'numeric',
-    action: ContextMenuActionType.Show,
+    disabled: createDisabledChecker('numeric'),
+    action: calcAvgSum,
+    resultAction: ResultActionType.Show,
   },
-  // hsep4: '---------',
-  // copy: {},
-  // undo: {},
-  // make_read_only: {},
-  // borders: {},
-  // freeze_column: {},
-  // unfreeze_column: {},
-  // remove_col: {},
-  // mergeCells: {},
-  // alignment: {},
+];
 
-  // -------------------- column Show Hide --------------------------------------------------------------------
-  //
-  // "columnshowhide": {
-  //     name: 'ShowHide Columns',
-  //     submenu: {
-  //         items: [
-  //             {
-  //                 name: "Hide this column",
-  //                 callback: function (key, options,pf) {
-  //                     // HandsTable.makeStyle(this,'Normal');;
-  //                     console.log("Hide this column");
-  //                 },
-  //                 key:"columnshowhide:1"
-  //             }//Money
-  //         ]//items
-  //     },//submenu
-  // },
-  //
-} as ContextMenuItems);
+export function isSubmenu(item: ContextMenuItem): item is ContextMenuItemSubmenu {
+  return !!(item as ContextMenuItemSubmenu).submenu;
+}
 
 function createContextMenuItems(
-  item: ContextMenuItem,
-  itemCallback: ItemCallback,
-  parent?: ContextMenuItem
-) {
-  const { filter, ...value } = item;
-  if (parent) {
-    value.key = `${parent.key}:${value.key}`;
-  }
-  if (filter) {
-    value.disabled = function disable() {
-      return isDisabledFilterItem(this, filter);
+  items: ReadonlyArray<ContextMenuItem>,
+  itemCallback: ItemCallback
+): ReadonlyArray<ContextMenuItem> {
+  return items.map<ContextMenuItem>(item => {
+    if (typeof item === 'string') return item;
+
+    if (isSubmenu(item)) {
+      return {
+        ...item,
+        submenu: {
+          items: createContextMenuItems(item.submenu.items, itemCallback),
+        },
+      };
+    }
+
+    return {
+      ...item,
+      callback: function cb(this: Handsontable, _key, options) {
+        itemCallback(this, item, options);
+      },
     };
-  }
-  if (value.submenu) {
-    value.submenu = {
-      items: value.submenu.items.map(it => createContextMenuItems(it, itemCallback, value)),
-    };
-  } else {
-    // item without submenu -> add callback
-    value.callback = function cb(this: Handsontable, key, options) {
-      itemCallback(this, value, key, options);
-    };
-  }
-  return value;
+  });
 }
 
 export function createContextMenu(itemCallback: ItemCallback): contextMenu.Settings {
-  const items = Object.entries(defaultContextMenuItems).reduce(
-    (acc, [key, value]) => {
-      if (typeof value !== 'object') {
-        acc[key] = value;
-        return acc;
-      }
-      const item: ContextMenuItem = { ...value, key };
-      acc[key] = createContextMenuItems(item, itemCallback);
-      return acc;
-    },
-    {} as ContextMenuItems
-  );
-
+  const items = createContextMenuItems(defaultContextMenuItems, itemCallback);
   return {
     items,
     callback: function cb() {

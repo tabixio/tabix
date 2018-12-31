@@ -1,6 +1,5 @@
-import Handsontable, { contextMenu } from 'handsontable';
+import Handsontable from 'handsontable';
 import { ColumnMetadata } from 'services/api/DataDecorator';
-import * as manipulations from './manipulations';
 // import ColumnSorting = Handsontable.plugins.ColumnSorting;
 
 function cellWarning(_TD: HTMLElement): HTMLElement {
@@ -173,24 +172,6 @@ export function getFormatForColumn(cell: ColumnMetadata) {
   return c;
 }
 
-function isFormatColl(ht: Handsontable, format: string) {
-  const needFormat = format.toLowerCase();
-  const select = manipulations.getSelectedArea(ht);
-  const { columns } = ht.getSettings();
-  if (!columns) {
-    return false;
-  }
-  for (let col = select.fromCol; col <= select.toCol; col += 1) {
-    if (!columns[col].type.toLowerCase().includes(needFormat)) return false;
-  }
-  return true;
-}
-
-export function isDisabledFilterItem(ht: Handsontable, filter: any) {
-  if (typeof filter !== 'string') return false;
-  return !isFormatColl(ht, filter);
-}
-
 export function getColumnSorting(columns: ReadonlyArray<ColumnMetadata>) {
   // @Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
 
@@ -211,23 +192,4 @@ export function getColumnSorting(columns: ReadonlyArray<ColumnMetadata>) {
   });
   // return res;
   return true;
-}
-
-export function manipulate(ht: Handsontable, key: string, options: contextMenu.Options): any {
-  const prefix = 'apply';
-  const all = Object.getOwnPropertyNames(manipulations).filter(
-    prop => typeof manipulations[prop] === 'function'
-  );
-
-  const [func, params] = key.split(':');
-  if (!func) return false;
-
-  // capitalizeFirstLetter
-  const callFunction = `${prefix}${func.charAt(0).toUpperCase()}${func.slice(1)}`;
-
-  console.log('Call', callFunction, params);
-  if (all.indexOf(callFunction) !== -1) {
-    return manipulations[callFunction](ht, params || func, options);
-  }
-  return false;
 }
