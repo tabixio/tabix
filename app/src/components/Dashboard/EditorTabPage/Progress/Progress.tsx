@@ -16,7 +16,7 @@ export default function Progress({ queries }: Props) {
 
       <div className={css['query-list']}>
         {queries.map(q => (
-          <div key={q.id}>{q.sqlOriginal}</div>
+          <div key={q.id}>{q.showProgressQuery}</div>
         ))}
       </div>
     </div>

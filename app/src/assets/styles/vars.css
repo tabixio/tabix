@@ -3,3 +3,5 @@
 @value text-color: #ffffff;
 @value text-color-50: #ffffff50;
 @value link-color: #1DA57A;
+@value font-size: 12px;
+@value font-family: Menlo, Inconsolata, Courier New, monospace, Helvetica, arial, sans-serif;

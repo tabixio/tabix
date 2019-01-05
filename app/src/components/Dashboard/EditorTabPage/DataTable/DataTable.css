@@ -1,8 +1,11 @@
+@value font-size,font-family from '~assets/styles/vars.css';
+
 .root {
   overflow-x: hidden;
   overflow-y: hidden;
-  font-size: 12px;
-  font-family: Menlo, Inconsolata, Courier New, monospace, Helvetica, arial;
+  font-size: font-size;
+  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+  font-family: font-family;
 }
 
 .bar {
