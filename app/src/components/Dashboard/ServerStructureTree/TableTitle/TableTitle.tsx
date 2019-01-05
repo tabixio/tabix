@@ -36,7 +36,7 @@ export default class TableTitle extends React.Component<Props> {
   render() {
     const { table, onContextMenuAction, ...rest } = this.props;
     return (
-      <Tooltip title={`${table.engine} ${table.size}`} mouseEnterDelay={1} placement="right">
+      <Tooltip title={`${table.engine} ${table.size}`} placement="right">
         <Dropdown
           overlay={
             <ContextMenu table={table} onContextMenuAction={this.onContextMenuAction} {...rest} />

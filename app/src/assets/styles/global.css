@@ -24,3 +24,7 @@ body {
 :global(#root:not(:empty):not(.loading)) + :global(#appLoader) {
   display: none;
 }
+
+:global(.ant-tooltip-inner) {
+  white-space: pre;
+}

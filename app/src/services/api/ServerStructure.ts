@@ -69,8 +69,15 @@ namespace ServerStructure {
     clusters: any[]
   ) {
     const dbTableColumns = columns.reduce((acc, col) => {
+      const pcol = col;
+      if (col.type) {
+        if (col.type.toLowerCase().indexOf('enum') !== -1) {
+          const t = col.type.split(',');
+          pcol.type = t.join(',\n');
+        }
+      }
       const column: Column = {
-        ...col,
+        ...pcol,
         defaultType: col.defaultKind && !col.defaultType ? col.defaultKind : col.defaultType,
         id: `${col.database}.${col.table}.${col.name}`,
       };
