@@ -84,6 +84,7 @@ function ExpandableRenderer({ node, onChange, children }: RenderNodeProps) {
     <Flex
       wrap={false}
       alignItems="center"
+      onClick={toggle}
       onDoubleClick={toggle}
       style={{ paddingLeft: `calc(${node.deepness} * 1em)` }}
     >
