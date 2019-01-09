@@ -74,7 +74,7 @@ function hotRendererCell(
   return TD;
 }
 
-export function getFormatForColumn(cell: ColumnMetadata) {
+export default function getFormatForColumn(cell: ColumnMetadata) {
   let c: any = {};
   c = {
     type: 'text',
@@ -91,9 +91,10 @@ export function getFormatForColumn(cell: ColumnMetadata) {
     },
   };
   // renderer: HotTableHelper.hotRendererCell,
+  // Sort https://handsontable.com/docs/6.2.2/ColumnSorting.html
 
   if (cell.useHumanSort) {
-    c.sortFunction = function sort(sortOrder: any) {
+    c.columnSorting.compareFunctionFactory = function sort(sortOrder: any, _columnMeta: any) {
       // Handsontable's object iteration helper
       const unitsRatios = {
         TiB: 1024 * 1024 * 1024 * 1024,
@@ -112,13 +113,12 @@ export function getFormatForColumn(cell: ColumnMetadata) {
       };
 
       return function s(a: any, b: any) {
-        let newA = a[1];
-        let newB = b[1];
+        let newA = a;
+        let newB = b;
         const e = function sa(val: any, prop: any) {
           newA = parseUnit(newA, prop, val);
           newB = parseUnit(newB, prop, val);
         };
-
         Handsontable.helper.objectEach(unitsRatios, e);
 
         if (newA < newB) {
@@ -170,26 +170,4 @@ export function getFormatForColumn(cell: ColumnMetadata) {
       break;
   }
   return c;
-}
-
-export function getColumnSorting(columns: ReadonlyArray<ColumnMetadata>) {
-  // @Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
-
-  // For forceSortOrder
-  const res = {
-    sortEmptyCells: true,
-    indicator: false,
-    headerAction: true,
-    initialConfig: {},
-  };
-  columns.forEach(col => {
-    if (col.forceSort) {
-      res.initialConfig = {
-        sortOrder: col.forceSortOrder,
-        column: col.forceSort,
-      };
-    }
-  });
-  // return res;
-  return true;
 }

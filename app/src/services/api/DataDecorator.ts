@@ -33,7 +33,7 @@ export default class DataDecorator {
 
   readonly rows: Row[];
 
-  readonly query: Query;
+  readonly query: Query | undefined;
 
   readonly stats: Statistics;
 
@@ -43,7 +43,7 @@ export default class DataDecorator {
 
   readonly error: boolean = false;
 
-  constructor(result: any, _query: Query) {
+  constructor(result: any, _query: Query | undefined) {
     this.query = _query;
     this.rows = [];
     this.meta = { columns: [] };

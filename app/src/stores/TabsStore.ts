@@ -173,6 +173,10 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
     this.insertTextToEditor(text);
   }
 
+  async getProcessLists(isOnlySelect: boolean, isCluster: boolean) {
+    return this.api.getProcessLists(isOnlySelect, isCluster);
+  }
+
   async insertSelectFrom(table: ServerStructure.Table) {
     const cols = await this.api.getTableColumns(table.database, table.name);
 

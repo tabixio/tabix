@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator from 'services/api/DataDecorator';
 import RequestStats from '../RequestStats';
-import { getFormatForColumn, getColumnSorting } from './utils';
+import getFormatForColumn from './utils';
 import {
   ContextMenuItem,
   createContextMenu,
@@ -56,6 +56,7 @@ const hotTableSettings: Handsontable.DefaultSettings = {
   // fixedRowsTop: 1,
   renderAllRows: false,
   visibleRows: 40,
+  columnSorting: true,
   // contextMenu: contextMenu,
   // columnsMenu: columnsMenu,
 };
@@ -126,11 +127,6 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
 
   render() {
     const { data, onAction, className, ...flexProps } = this.props;
-    // @todo : Error in handsontable:columnSorting, use handsontable@5.0.2, check new version 6.2...
-    // var showSortIndicator = pluginSettingsForColumn.indicator;
-    // Uncaught (in promise) TypeError: Cannot read property 'indicator' of undefined
-    // at ColumnSorting.onAfterGetColHeader (handsontable.js?0977:42068)
-
     // todo: refactor with DataDecorator?
     const columns = data.meta.columns.map(getFormatForColumn);
 
@@ -151,7 +147,6 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
           settings={hotTableSettings}
           columns={columns}
           data={data.rows}
-          columnSorting={getColumnSorting(data.meta.columns)}
           contextMenu={createContextMenu(this.onContextMenuItemClick)}
         />
       </Flex>

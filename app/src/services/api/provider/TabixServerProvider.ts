@@ -35,6 +35,10 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
     throw new Error('Method not implemented.');
   }
 
+  getProcessLists(_isOnlySelect: boolean, _isCluster: boolean): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
+
   getTableColumns(_database: string, _tablename: string): Promise<any> {
     throw new Error('Method not implemented.');
   }

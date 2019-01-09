@@ -4,6 +4,11 @@ namespace ServerStructure {
     name: string;
   }
 
+  export interface Cluster {
+    hostAddress: string;
+    port: string;
+  }
+
   export interface Column extends Item {
     table: string;
     database: string;
@@ -33,7 +38,7 @@ namespace ServerStructure {
       public readonly id: string,
       public readonly name: string,
       public readonly databases: ReadonlyArray<Database>,
-      public readonly clusters: ReadonlyArray<any>,
+      public readonly clusters: ReadonlyArray<Cluster>,
       public readonly functions: ReadonlyArray<any>,
       public readonly dictionaries: ReadonlyArray<any>,
       public readonly editorRules: Record<string, any>

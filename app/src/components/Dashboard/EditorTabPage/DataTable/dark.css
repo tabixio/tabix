@@ -57,9 +57,11 @@
     color: #fff;
   }
 
+  /*
   .handsontable-dark .manualColumnResizer {
     background: #2293ee !important;
   }
+  */
 
   .htContextMenu table.htCore {
     border: 1px dotted #636363;

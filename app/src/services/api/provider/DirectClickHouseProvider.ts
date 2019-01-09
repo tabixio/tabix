@@ -4,6 +4,8 @@ import CoreProvider from './CoreProvider';
 import { Query } from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
+  private clusters: ReadonlyArray<ServerStructure.Cluster> | undefined;
+
   getType() {
     return ConnectionType.Direct;
   }
@@ -101,7 +103,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     );
     const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
     const clusters = await this.queryString(
-      `SELECT host_address,port FROM system.clusters GROUP BY host_address,port LIMIT ${limitClusters}`
+      `SELECT host_address as hostAddress,port FROM system.clusters GROUP BY host_address,port LIMIT ${limitClusters}`
     );
     const columnList = columns.data.map((c: any) => {
       /* eslint-disable camelcase */
@@ -126,6 +128,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       } as ServerStructure.Column;
       /* eslint-enable */
     });
+    this.clusters = clusters.data;
 
     // @todo : put to cache ( in localStore )
     return ServerStructure.from(
@@ -159,6 +162,50 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const url = this.getRequestUrl();
     const query = 'SELECT version() as version';
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
+  }
+
+  private makeSQLProcessLists(
+    isOnlySELECT: boolean,
+    isCluster: boolean,
+    clusterList: Array<string>
+  ): string {
+    let sql = `SELECT  now() as dt, query,  1 as count,
+                toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
+                round(elapsed,1) as elapsed ,
+                formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
+                formatReadableSize(memory_usage) as memory_usage,
+                formatReadableSize(read_bytes) as bytes_read,
+                formatReadableSize(written_bytes) as bytes_written,  
+                * ,     
+                cityHash64(query) as hash,  
+                hostName()`;
+    if (isCluster && clusterList.length) {
+      sql = `${sql} FROM remote('${clusterList.join(',')}',system.processes, '${
+        this.connection.username
+      }','${this.connection.password}')`;
+    } else {
+      sql = `${sql} FROM system.processes `;
+    }
+    // исключить запрос
+    sql = `${sql} /* 12XQWE-3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'`;
+    if (isOnlySELECT) {
+      sql = `${sql} AND read_rows>0`;
+    }
+    return sql;
+  }
+
+  async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<any> {
+    const clusterList: Array<string> = [];
+    if (this.clusters) {
+      this.clusters.map(c => {
+        clusterList.push(`${c.hostAddress}:${c.port}`);
+        return c;
+      });
+    }
+    const sql = this.makeSQLProcessLists(isOnlySelect, isCluster, clusterList);
+    // console.log('clusterList',sql);
+    const result = await this.queryString(sql);
+    return result;
   }
 
   async getTableColumns(database: string, tablename: string) {
