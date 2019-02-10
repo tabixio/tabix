@@ -11,7 +11,7 @@
   user-select: none;
 
   &.selected {
-    background-color: aquamarine;
+    background-color: #0d293e;
   }
 
   &.highlighted {
