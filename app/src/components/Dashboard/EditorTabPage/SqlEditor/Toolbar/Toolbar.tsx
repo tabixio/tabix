@@ -1,9 +1,10 @@
 import React from 'react';
 import { Flex, FlexProps } from 'reflexy';
-import { Button, Select } from 'antd';
+import { Select, Menu, Icon, Dropdown } from 'antd';
 import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
 import { Statistics } from 'services/api/DataDecorator';
+import { ClickParam } from 'antd/lib/menu';
 import ActionButton, { Props as ActionButtonProps } from './ActionButton';
 import RequestStats from '../../RequestStats';
 import css from './Toolbar.css';
@@ -39,30 +40,43 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
   render() {
     const { databases, currentDatabase, onDatabaseChange, onAction, stats, ...rest } = this.props;
 
+    const onActionMenuClick = (click: ClickParam) => {
+      onAction(parseInt(click.key, 0), click.domEvent);
+    };
+    const onActionRunRunCurrent = (event: React.MouseEvent<HTMLElement>) => {
+      console.log('onClickRunCurrent');
+      onAction(ActionType.RunCurrent, event);
+    };
+
+    const menu = (
+      <Menu onClick={onActionMenuClick}>
+        <Menu.Item key={ActionType.RunAll}>
+          <Icon type="forward" />
+          Run all ⇧ + ⌘ + ⏎
+        </Menu.Item>
+      </Menu>
+    );
+
+    /*
+    *
+        <Menu.Item key="112">
+          <Icon type="user" />
+          2nd menu item
+        </Menu.Item>
+        <Menu.Item key="113">
+          <Icon type="user" />
+          3rd item
+        </Menu.Item>
+    * */
+
     return (
       <Flex alignItems="center" {...rest}>
         <Flex shrink={false}>
           <SpaceH />
-
-          <Button.Group>
-            <ActionButton
-              icon="caret-right"
-              size="small"
-              actionType={ActionType.RunCurrent}
-              onAction={onAction}
-            >
-              Run current ⌘ + ⏎
-            </ActionButton>
-
-            <ActionButton
-              icon="forward"
-              size="small"
-              actionType={ActionType.RunAll}
-              onAction={onAction}
-            >
-              Run all ⇧ + ⌘ + ⏎
-            </ActionButton>
-          </Button.Group>
+          <Dropdown.Button size="small" onClick={onActionRunRunCurrent} overlay={menu}>
+            <Icon type="caret-right" />
+            Run current ⌘ + ⏎
+          </Dropdown.Button>
 
           <SpaceH />
 
