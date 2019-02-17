@@ -44,38 +44,30 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
       onAction(parseInt(click.key, 0), click.domEvent);
     };
     const onActionRunRunCurrent = (event: React.MouseEvent<HTMLElement>) => {
-      console.log('onClickRunCurrent');
       onAction(ActionType.RunCurrent, event);
     };
 
     const menu = (
       <Menu onClick={onActionMenuClick}>
+        <Menu.Item key={ActionType.RunCurrent}>
+          <Icon type="caret-right" style={{ color: 'green' }} />
+          Run current ⌘ + ⏎
+        </Menu.Item>
+
         <Menu.Item key={ActionType.RunAll}>
-          <Icon type="forward" />
+          <Icon type="forward" style={{ color: 'green' }} />
           Run all ⇧ + ⌘ + ⏎
         </Menu.Item>
       </Menu>
     );
-
-    /*
-    *
-        <Menu.Item key="112">
-          <Icon type="user" />
-          2nd menu item
-        </Menu.Item>
-        <Menu.Item key="113">
-          <Icon type="user" />
-          3rd item
-        </Menu.Item>
-    * */
 
     return (
       <Flex alignItems="center" {...rest}>
         <Flex shrink={false}>
           <SpaceH />
           <Dropdown.Button size="small" onClick={onActionRunRunCurrent} overlay={menu}>
-            <Icon type="caret-right" />
-            Run current ⌘ + ⏎
+            <Icon type="caret-right" style={{ color: 'green' }} />
+            <b>Run current</b>
           </Dropdown.Button>
 
           <SpaceH />
