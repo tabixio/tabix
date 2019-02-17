@@ -83,12 +83,13 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   }
 
   public insertColumn(coll: ServerStructure.Column) {
-    this.insertText(coll.name, TextInsertType.Column);
+    // @todo : Если вставка до Where ,
+    this.insertText(` ${coll.name} `, TextInsertType.Column);
   }
 
   public insertText(textToInsert: string, mode: TextInsertType) {
     // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
-    console.log(textToInsert, mode);
+    console.log('textToInsert', textToInsert, mode);
     if (!this.editor) return;
     // method 1:
     // const position: Position = this.editor.getPosition(); // Get current mouse position
@@ -146,7 +147,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       monaco.languages.registerCompletionItemProvider('clickhouse', {
         provideCompletionItems: getCompletionItems,
       });
-      console.log('monaco - register ClickHouseLanguage');
+      // console.log('monaco - register ClickHouseLanguage');
     }
     if (this.props.serverStructure) {
       this.updateGlobalEditorStructure(this.props.serverStructure);
@@ -470,10 +471,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
           offset: token.offset + 1,
         };
         // Для разрезки, первый токен всегда начало
-        if (!splitToken.type) {
-          splitToken.line = line;
-          splitToken = previousToken;
-        }
+        // if (!splitToken.type) {
+        //   splitToken.line = line;
+        //   splitToken = previousToken;
+        //
+        //   console.log('splitToken',splitToken);
+        // }
 
         if (typeToken === splitterQueryToken || typeToken === splitterTabixToken) {
           // Если это токен раздиления запросов
@@ -668,6 +671,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
     const queryParseList = this.tokenizeModel(editor.getModel(), cursorPosition, userSelection);
 
+    // console.log('queryParseList',queryParseList);
     const queryExecList: Array<Query> = [];
 
     queryParseList.forEach((_query: Query) => {
@@ -697,7 +701,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
       if (!query.isFormatSet) {
         // Если у запроса НЕ указан формат
-        query.sql = `${query.sql} ${query.format}`;
+        query.sql = `${query.sql}\n${query.format}`;
       }
 
       query.currentDatabase = this.props.currentDatabase;
