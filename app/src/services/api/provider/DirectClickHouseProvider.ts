@@ -131,13 +131,15 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     this.clusters = clusters.data;
 
     // @todo : put to cache ( in localStore )
+    const ConnectionName = this.connection.connectionName;
     return ServerStructure.from(
       columnList,
       tables.data,
       databases.data,
       dictionaries.data,
       functions.data,
-      clusters.data
+      clusters.data,
+      ConnectionName
     );
   }
 

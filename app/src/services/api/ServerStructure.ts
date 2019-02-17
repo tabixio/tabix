@@ -71,7 +71,8 @@ namespace ServerStructure {
     databases: ReadonlyArray<Database>,
     dictionaries: any[],
     functions: any[],
-    clusters: any[]
+    clusters: any[],
+    connectionName: string
   ) {
     const dbTableColumns = columns.reduce((acc, col) => {
       const pcol = col;
@@ -204,7 +205,7 @@ namespace ServerStructure {
 
     return new Server(
       'root',
-      'Clickhouse Server',
+      connectionName,
       dbList,
       clusters,
       functions,
