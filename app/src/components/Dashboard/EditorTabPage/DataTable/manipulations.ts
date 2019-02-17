@@ -217,7 +217,7 @@ export function copyAsSQLWhere(ht: Handsontable): string {
       outText.push(`${collName} IN ( ${unique.join(' , ')} ) `);
     } else {
       // other cols as text
-      outText.push(`${collName} IN ( "${unique.join('" , "')}" ) `);
+      outText.push(`${collName} IN ( '${unique.join("' , '")}' ) `);
     }
   }
   return `\n${outText.join('\n\tAND\n')}\n`;

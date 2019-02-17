@@ -5,14 +5,14 @@ import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
-import { ServerStructure, Query } from 'services';
+import { Query, ServerStructure } from 'services';
 import { TextInsertType } from './types';
-import { languageDef, configuration } from './monaco/language/Clickhouse';
+import { configuration, languageDef } from './monaco/language/Clickhouse';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import { themeDarcula } from './monaco/theme/Darcula';
 import { themeVsDark } from './monaco/theme/Vsdark';
-import Toolbar, { ToolbarProps, ActionType } from './Toolbar';
-import { globalEditorsMap, getCompletionItems } from './completionItems';
+import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
+import { getCompletionItems, globalEditorsMap } from './completionItems';
 import css from './SqlEditor.css';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {
@@ -80,6 +80,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     if (serverStructure && serverStructure !== this.props.serverStructure) {
       this.updateGlobalEditorStructure(serverStructure);
     }
+  }
+
+  public insertColumn(coll: ServerStructure.Column) {
+    this.insertText(coll.name, TextInsertType.Column);
   }
 
   public insertText(textToInsert: string, mode: TextInsertType) {

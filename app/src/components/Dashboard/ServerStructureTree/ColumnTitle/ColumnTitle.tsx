@@ -6,6 +6,7 @@ import css from './ColumnTitle.css';
 
 export enum ColumnAction {
   DoubleClick = 1,
+  Click = 2,
 }
 
 export interface ColumnTitleProps {
@@ -18,6 +19,10 @@ export default function ColumnTitle({ column, onAction }: ColumnTitleProps) {
     () => onAction && onAction(ColumnAction.DoubleClick, column),
     [column, onAction]
   );
+  const handleClick = useCallback(() => onAction && onAction(ColumnAction.Click, column), [
+    column,
+    onAction,
+  ]);
   const br = '\n';
   return (
     <Tooltip
@@ -25,7 +30,9 @@ export default function ColumnTitle({ column, onAction }: ColumnTitleProps) {
       placement="right"
     >
       <Flex alignItems="center" hfill onDoubleClick={handleDoubleClick}>
-        <div className={css.name}>{column.name}</div>
+        <div className={css.name} onClick={handleClick}>
+          {column.name}
+        </div>
         <Flex grow justifyContent="flex-end" className={css.type}>
           {column.type.substring(0, 20)}
         </Flex>

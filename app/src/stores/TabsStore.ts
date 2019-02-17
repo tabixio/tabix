@@ -168,6 +168,13 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
       .forEach(editor => editor.insertText(text, insertType));
   }
 
+  @action.bound
+  insertColumnToEditor(coll: ServerStructure.Column) {
+    this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
+      .flatMap(t => t.codeEditor)
+      .forEach(editor => editor.insertColumn(coll));
+  }
+
   async insertTableSQLDescribe(table: ServerStructure.Table) {
     const text = await this.api.makeTableDescribe(table.database, table.name);
     this.insertTextToEditor(text);

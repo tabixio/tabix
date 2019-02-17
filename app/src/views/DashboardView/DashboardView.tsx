@@ -96,8 +96,8 @@ class DashboardView extends React.Component<RoutedProps> {
   };
 
   private onColumnAction = (action: ColumnAction, column: ServerStructure.Column) => {
-    if (action === ColumnAction.DoubleClick) {
-      this.props.tabsStore.insertTextToEditor(column.name, TextInsertType.Column);
+    if (action === ColumnAction.DoubleClick || action === ColumnAction.Click) {
+      this.props.tabsStore.insertColumnToEditor(column);
     }
   };
 
