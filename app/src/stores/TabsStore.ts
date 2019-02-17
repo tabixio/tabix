@@ -1,3 +1,4 @@
+import sqlFormatter from 'sql-formatter';
 import { observable, action, runInAction, IReactionDisposer, reaction, when } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
 import { withRequest, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
@@ -177,7 +178,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   async insertTableSQLDescribe(table: ServerStructure.Table) {
     const text = await this.api.makeTableDescribe(table.database, table.name);
-    this.insertTextToEditor(text);
+    this.insertTextToEditor(sqlFormatter.format(text));
   }
 
   async getProcessLists(isOnlySelect: boolean, isCluster: boolean) {

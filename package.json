@@ -124,6 +124,7 @@
     "react-virtualized-tree": "^2.3.10",
     "reflexy": "^2.3.3",
     "size-sensor": "^0.2.2",
+    "sql-formatter": "^2.3.2",
     "typelevel-ts": "^0.3.5",
     "uuid": "^3.3.2",
     "valtors": "^1.5.0"
