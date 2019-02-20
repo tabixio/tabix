@@ -72,33 +72,32 @@ export default class EditorTabPage extends React.Component<Props> {
   };
 
   private copyToClipboard(text: string) {
-    // @todo : Reweire to react code
-
     // const textarea = React.createElement(
     //   'textarea',
     //   { value: text, type: 'url', autoFocus: true },
     //   'body'
     // );
-
-    // const textarea: HTMLElement = document.createElement('textarea');
+    const textarea: HTMLTextAreaElement = document.createElement('textarea');
     // if (textarea.style) {
-    //   textarea.style.width = 0;
-    //   textarea.style.height = 0;
-    //   textarea.style.border = 0;
-    //   textarea.style.position = 'absolute';
-    //   textarea.style.top = 0;
+    // textarea.style.width = 0;
+    // textarea.style.height = 0;
+    // textarea.style.border = 0;
+    // textarea.style.position = 'absolute';
+    // textarea.style.top = 0;
     // }
-    // document.body.append(textarea);
-    // textarea.value = outText;
+    // textarea.innerText = text;
+    document.body.appendChild(textarea);
+    textarea.value = text;
     // textarea.focus();
-    // textarea.select();
-    // try {
-    //   const successful = document.execCommand('copy');
-    // } catch (err) {
-    //   console.log('Oops, unable to copy');
-    // }
-    // document.body.removeChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      console.log('Oops, unable to copy');
+    }
+    document.body.removeChild(textarea);
     console.log(text);
+    return true;
   }
 
   private onDataTableAction: DataTableProps['onAction'] = (action, data) => {
