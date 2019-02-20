@@ -41,8 +41,8 @@ export default function ServerTitle({
         onVisibleChange={setVisible}
       >
         <Flex grow alignItems="center" className={css.dropdown}>
-          <Icon type="home" theme="outlined" />
-          <div>{title}</div>
+          <Icon type="database" theme="twoTone" />
+          <div className={css.title}>{title}</div>
         </Flex>
       </Dropdown>
 

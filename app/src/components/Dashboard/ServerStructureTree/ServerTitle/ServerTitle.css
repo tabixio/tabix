@@ -4,6 +4,13 @@
   }
 }
 
+.title {
+  overflow: hidden;
+  max-width: 200px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
 .action {
   margin-left: 0.75em;
   cursor: pointer;
