@@ -36,7 +36,7 @@ export default class EditorTabModel extends TabModel<EditorTab>
     title,
     content = '',
     currentDatabase,
-    pinnedResult = false,
+    pinnedResult = true,
   }: Partial<JSONModel<EditorTabJsonEntity>> &
     Pick<JSONModel<EditorTabJsonEntity>, 'title'>): EditorTabModel {
     return new EditorTabModel({

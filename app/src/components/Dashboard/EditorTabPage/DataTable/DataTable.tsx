@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Icon } from 'antd';
+// import { Icon } from 'antd';
 import { HotTable } from '@handsontable/react';
 import Handsontable, { contextMenu } from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
@@ -9,7 +9,7 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator from 'services/api/DataDecorator';
-import RequestStats from '../RequestStats';
+// import RequestStats from '../RequestStats';
 import getFormatForColumn from './utils';
 import {
   ContextMenuItem,
@@ -106,29 +106,34 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     return true;
   };
 
-  private onExportToExcel = () => {
-    const hotTable = this.tableRef.current && this.tableRef.current.hotInstance;
-    if (!hotTable) return;
-    // Supports in PRO version.
-    const exportPlugin = hotTable.getPlugin('exportFile');
-    exportPlugin.downloadFile('csv', {
-      bom: false,
-      columnDelimiter: ',',
-      columnHeaders: false,
-      exportHiddenColumns: true,
-      exportHiddenRows: true,
-      fileExtension: 'csv',
-      filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-      mimeType: 'text/csv',
-      rowDelimiter: '\r\n',
-      rowHeaders: true,
-    });
-  };
+  // private onExportToExcel = () => {
+  //   const hotTable = this.tableRef.current && this.tableRef.current.hotInstance;
+  //   if (!hotTable) return;
+  //   // Supports in PRO version.
+  //   const exportPlugin = hotTable.getPlugin('exportFile');
+  //   exportPlugin.downloadFile('csv', {
+  //     bom: false,
+  //     columnDelimiter: ',',
+  //     columnHeaders: false,
+  //     exportHiddenColumns: true,
+  //     exportHiddenRows: true,
+  //     fileExtension: 'csv',
+  //     filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+  //     mimeType: 'text/csv',
+  //     rowDelimiter: '\r\n',
+  //     rowHeaders: true,
+  //   });
+  // };
 
   render() {
     const { data, onAction, className, ...flexProps } = this.props;
     // todo: refactor with DataDecorator?
     const columns = data.meta.columns.map(getFormatForColumn);
+
+    // <Flex shrink={false} justifyContent="flex-end" className={css.bar}>
+    //  <RequestStats {...data.stats} className={css.stats} />
+    //  <Icon type="file-excel" title="Export to Excel" onClick={this.onExportToExcel} />
+    // </Flex>
 
     return (
       <Flex
@@ -137,11 +142,6 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
         className={classNames(css.root, className)}
         {...flexProps}
       >
-        <Flex shrink={false} justifyContent="flex-end" className={css.bar}>
-          <RequestStats {...data.stats} className={css.stats} />
-          <Icon type="file-excel" title="Export to Excel" onClick={this.onExportToExcel} />
-        </Flex>
-
         <HotTable
           ref={this.tableRef}
           settings={hotTableSettings}
