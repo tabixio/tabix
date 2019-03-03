@@ -34,5 +34,33 @@
             </md-tab-body>
         </md-tab>
 
+<!-- !Chart metrics! -->
+        <md-tab md-on-select="initDBSizeTab()" layout-fill>
+            <md-tab-label>
+                DB Size <i class="mdi mdi-18px mdi-chart-bar"></i>
+            </md-tab-label>
+            <md-tab-body>
+                <div flex layout-fill ng-include="'app/metrics/dbsize.html'" ng-if="vars.active.Chart"></div>
+            </md-tab-body>
+        </md-tab>
 
+
+    <!-- !Chart metrics! -->
+    <md-tab md-on-select="initClusterTab()" layout-fill>
+        <md-tab-label>
+            Cluster&Replica <i class="mdi mdi-18px mdi-chart-bar"></i>
+        </md-tab-label>
+        <md-tab-body>
+            <div flex layout-fill ng-include="'app/metrics/clustersreplicas.html'" ng-if="vars.active.Chart"></div>
+        </md-tab-body>
+    </md-tab>
+    <!-- !Chart metrics! -->
+    <md-tab md-on-select="initClusterTab()" layout-fill>
+        <md-tab-label>
+            Merges <i class="mdi mdi-18px mdi-chart-bar"></i>
+        </md-tab-label>
+        <md-tab-body>
+            <div flex layout-fill ng-include="'app/metrics/merges.html'" ng-if="vars.active.Chart"></div>
+        </md-tab-body>
+    </md-tab>
     </md-tabs>

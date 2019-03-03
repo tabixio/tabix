@@ -20,11 +20,13 @@
         $scope.vars = {
             uiTheme: ThemeService.themeObject,
             isDark:ThemeService.isDark(),
-            selectedTabResultIndex:0,//
+            selectedTabResultIndex:3,//
             active:{
                 Overview:false,
                 Chart:false,
-                Processes:false
+                Processes:false,
+                DBSize:false,
+                Cluster:false
             }
         };
 
@@ -38,6 +40,13 @@
 
         $scope.initOverviewTab = (d) => {
             $scope.vars.active.Overview=true;
+        };
+
+        $scope.initDBSizeTab = (d) => {
+            $scope.vars.active.DBSize=true;
+        };
+        $scope.initClusterTab = (d) => {
+            $scope.vars.active.Cluster=true;
         };
 
 
