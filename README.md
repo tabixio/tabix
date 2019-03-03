@@ -9,6 +9,9 @@ Open source simple business intelligence application and sql editor tool for Cli
 
 Not need, open in browser http://ui.tabix.io/
 
+Alpha version : http://alpha.tabix.io
+
+
 ### If need install
 
 [Install to you host](https://tabix.io/doc/Install/)
