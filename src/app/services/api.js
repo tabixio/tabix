@@ -278,7 +278,7 @@
             {
                 // skip add user + password
             }
-            else {
+            else if (connection.login) {
 
                 if (connection.password)
                 {
