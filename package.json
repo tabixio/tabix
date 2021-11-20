@@ -18,7 +18,11 @@
     "marked": "^0.3.5"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "graceful-fs": "^4.2.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -27,7 +31,7 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "browser-sync": "^2.24.5",
+    "browser-sync": "2.21.0",
     "browser-sync-spa": "~1.0.3",
     "chalk": "~1.1.1",
     "del": "~2.0.2",
