@@ -95,8 +95,6 @@
   },
   "dependencies": {
     "@handsontable/react": "^2.1.0",
-    "@vzh/mobx-stores": "^0.33.0",
-    "@vzh/react-auth": "^0.3.1",
     "antd": "^3.11.6",
     "chroma-js": "^2.0.2",
     "classnames": "^2.2.6",

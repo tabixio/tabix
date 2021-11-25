@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { AppStore, Stores } from 'stores';
 
 interface InjectedProps {

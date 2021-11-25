@@ -1,4 +1,4 @@
-import { JSONModel } from '@vzh/mobx-stores';
+import { JSONModel } from 'module/mobx-utils';
 import TabModel, { Tab, TabType } from './TabModel';
 
 export interface ServerOverviewTab extends Tab<TabType.ServerOverview> {}

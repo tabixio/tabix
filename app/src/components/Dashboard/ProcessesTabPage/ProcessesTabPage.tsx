@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Select, Checkbox, Divider } from 'antd';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { Stores, TabsStore } from 'stores';
 import { observer } from 'mobx-react';
 import { HotTable } from '@handsontable/react';

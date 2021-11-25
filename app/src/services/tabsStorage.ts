@@ -1,6 +1,6 @@
 import { Tab } from 'models';
 import { Option, None } from 'funfix-core';
-import { JSONModel } from '@vzh/mobx-stores';
+import { JSONModel } from 'module/mobx-utils';
 import appStorage from './appStorage';
 
 const tabsKey = `tabs`;

@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Input } from 'antd';
 import Downshift, { ControllerStateAndHelpers } from 'downshift';
-import { FieldChangeHandler } from '@vzh/mobx-stores';
+import { FieldChangeHandler } from 'module/mobx-utils';
 import { TypedNode } from 'stores/TreeStore';
 import { TreeFilter } from 'models';
 import AutoCompleteOptions, { AutoCompleteOptionsProps } from './AutoCompleteOptions';

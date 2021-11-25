@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { UIStore } from '@vzh/mobx-stores';
+import { UIStore } from 'module/mobx-utils';
 import { Query } from 'services';
 import RootStore from './RootStore';
 

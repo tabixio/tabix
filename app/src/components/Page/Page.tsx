@@ -4,7 +4,7 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { IReactionDisposer, reaction } from 'mobx';
 import { observer } from 'mobx-react';
-import { UIStore } from '@vzh/mobx-stores';
+import { UIStore } from 'module/mobx-utils';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import css from './Page.css';

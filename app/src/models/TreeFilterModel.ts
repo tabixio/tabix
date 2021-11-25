@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { StoreModel } from '@vzh/mobx-stores';
+import { StoreModel } from 'module/mobx-utils';
 
 export interface TreeFilter {
   text: string;

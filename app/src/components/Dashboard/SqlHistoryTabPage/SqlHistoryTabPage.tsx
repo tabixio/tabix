@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { List } from 'antd';
 import { PaginationConfig } from 'antd/lib/table';
 import { SqlHistoryStore, Stores } from 'stores';

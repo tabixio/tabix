@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Option } from 'funfix-core';
-import { FieldChangeHandler } from '@vzh/mobx-stores';
+import { FieldChangeHandler } from 'module/mobx-utils';
 import { EditorTab } from 'models';
 import { TabsStore } from 'stores';
 import { ServerStructure } from 'services';

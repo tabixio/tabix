@@ -1,5 +1,5 @@
 import { observable } from 'mobx';
-import { SerializableModel, serialize, JSONModel } from '@vzh/mobx-stores';
+import { SerializableModel, serialize, JSONModel } from 'module/mobx-utils';
 import { Option, None, Try } from 'funfix-core';
 import uuid from 'uuid';
 import { Omit } from 'typelevel-ts';

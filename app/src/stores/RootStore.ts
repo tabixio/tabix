@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { UIStore, BaseRootStore } from '@vzh/mobx-stores';
+import { UIStore, BaseRootStore } from 'module/mobx-utils';
 import { Connection } from 'services';
 import AppStore from './AppStore';
 import SignInStore from './SignInStore';

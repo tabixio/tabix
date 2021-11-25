@@ -1,5 +1,5 @@
 import { observable, runInAction } from 'mobx';
-import { withRequest } from '@vzh/mobx-stores';
+import { withRequest } from 'module/mobx-utils';
 import { sqlHistoryStorage } from 'services';
 import ApiRequestableStore from './ApiRequestableStore';
 

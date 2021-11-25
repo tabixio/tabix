@@ -1,0 +1,69 @@
+{
+  "_from": "typelevel-ts@0.3.5",
+  "_id": "typelevel-ts@0.3.5",
+  "_inBundle": false,
+  "_integrity": "sha512-VZKF0ak5RNgrPkpI2uJJL0WBqNcj67+hzYzD6SwoxzrgvgjP24gskqniXd62UY5rrJCxd3q/iChtxKcHC6fRvA==",
+  "_location": "/@vzh/mobx-stores/typelevel-ts",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "typelevel-ts@0.3.5",
+    "name": "typelevel-ts",
+    "escapedName": "typelevel-ts",
+    "rawSpec": "0.3.5",
+    "saveSpec": null,
+    "fetchSpec": "0.3.5"
+  },
+  "_requiredBy": [
+    "/@vzh/mobx-stores"
+  ],
+  "_resolved": "https://registry.npmjs.org/typelevel-ts/-/typelevel-ts-0.3.5.tgz",
+  "_shasum": "9f242c193fa6c5489d2342c642ab8912a065af9d",
+  "_spec": "typelevel-ts@0.3.5",
+  "_where": "/Users/igor/sites/tabix.ts/node_modules/@vzh/mobx-stores",
+  "author": {
+    "name": "Giulio Canti",
+    "email": "giulio.canti@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/gcanti/typelevel-ts/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "Type level programming in TypeScript",
+  "devDependencies": {
+    "@types/react": "^16.3.17",
+    "dtslint": "^0.4.2",
+    "prettier": "^1.14.3",
+    "react": "^16.4.0",
+    "tslint": "4.4.2",
+    "tslint-config-standard": "4.0.0",
+    "typescript": "^3.1.1"
+  },
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/gcanti/typelevel-ts",
+  "keywords": [],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "name": "typelevel-ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gcanti/typelevel-ts.git"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf lib/*",
+    "dtslint": "dtslint dtslint",
+    "fix-prettier": "prettier --no-semi --single-quote --print-width 120 --parser typescript --write \"{src,typings-checker}/**/*.ts\"",
+    "lint": "tslint src/**/*.ts",
+    "prettier": "prettier --no-semi --single-quote --print-width 120 --parser typescript --list-different \"{src,typings-checker}/**/*.ts\"",
+    "test": "npm run prettier && npm run lint && npm run dtslint"
+  },
+  "tags": [],
+  "typings": "lib/index.d.ts",
+  "version": "0.3.5"
+}

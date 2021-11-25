@@ -1,4 +1,4 @@
-import { RequestableStore, UIStore } from '@vzh/mobx-stores';
+import { RequestableStore, UIStore } from 'module/mobx-utils';
 import RootStore from './RootStore';
 
 export default class ApiRequestableStore<

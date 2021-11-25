@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Input } from 'antd';
-import { FieldChangeHandler } from '@vzh/mobx-stores';
+import { FieldChangeHandler } from 'module/mobx-utils';
 
 interface Props {
   fieldName: string;

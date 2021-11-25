@@ -1,8 +1,8 @@
 import { History } from 'history';
 import { observable, action, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
-import { withRequest } from '@vzh/mobx-stores';
-import { FromLocationDescriptorObject } from '@vzh/react-auth';
+import { withRequest } from 'module/mobx-utils';
+import { FromLocationDescriptorObject } from 'module/react-auth';
 import { Connection, Api, isDirectConnection, connectionsStorage } from 'services';
 import { ConnectionModel } from 'models';
 import { routePaths } from 'routes';

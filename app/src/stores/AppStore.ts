@@ -1,7 +1,7 @@
 import { History } from 'history';
 import { computed, observable, action, runInAction } from 'mobx';
 import { None, Option } from 'funfix-core';
-import { withRequest, UIStore, RequestableStore } from '@vzh/mobx-stores';
+import { withRequest, UIStore, RequestableStore } from 'module/mobx-utils';
 import { Connection, connectionsStorage, Api } from 'services';
 import { routePaths } from 'routes';
 import RootStore from './RootStore';

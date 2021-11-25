@@ -1,6 +1,6 @@
 import { observable, action, IReactionDisposer, reaction, runInAction } from 'mobx';
 import { Option, None, Some } from 'funfix-core';
-import { withRequest } from '@vzh/mobx-stores';
+import { withRequest } from 'module/mobx-utils';
 import { Node } from 'react-virtualized-tree';
 import { TreeFilterModel, EditorTab } from 'models';
 import { ServerStructure } from 'services';

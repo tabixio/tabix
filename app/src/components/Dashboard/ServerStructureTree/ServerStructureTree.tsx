@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Flex } from 'reflexy';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { Stores, TreeStore } from 'stores';
 import { TypedNode } from 'stores/TreeStore';
 import SearchInput from './SearchInput';

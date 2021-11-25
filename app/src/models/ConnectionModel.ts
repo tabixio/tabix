@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { None } from 'funfix-core';
 import { required } from 'valtors';
-import { ValidableStoreModel, SerializableModel, JSONModel } from '@vzh/mobx-stores';
+import { ValidableStoreModel, SerializableModel, JSONModel } from 'module/mobx-utils';
 import {
   ConnectionLike,
   Connection,

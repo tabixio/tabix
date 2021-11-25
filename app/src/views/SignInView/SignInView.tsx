@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Flex } from 'reflexy';
 import { Layout, Tabs, Button } from 'antd';
 import { observer } from 'mobx-react';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { Stores, SignInStore } from 'stores';
 import { Connection, isDirectConnection, ConnectionType } from 'services';
 import { ConnectionModel } from 'models';

@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
 import { Icon } from 'antd';
 import { Flex } from 'reflexy';
-import { typedInject } from '@vzh/mobx-stores';
+import { typedInject } from 'module/mobx-utils';
 import { ServerStructure } from 'services';
 import { routePaths } from 'routes';
 import { Stores, TabsStore, TreeStore } from 'stores';

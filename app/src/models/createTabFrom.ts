@@ -1,4 +1,4 @@
-import { JSONModel } from '@vzh/mobx-stores';
+import { JSONModel } from 'module/mobx-utils';
 import { Tab, TabType, isTabOfType } from './TabModel';
 import EditorTabModel, { EditorTabJsonEntity } from './EditorTabModel';
 import ProcessesTabModel, { ProcessesTab } from './ProcessesTabModel';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex } from 'reflexy';
-import { Authorized } from '@vzh/react-auth';
+import { Authorized } from 'module/react-auth';
 import { Icon, Dropdown } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import ContextMenu, { ActionType } from './ContextMenu';

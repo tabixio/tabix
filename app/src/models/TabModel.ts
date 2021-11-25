@@ -1,4 +1,4 @@
-import { StoreModel, SerializableModel, JSONModel, serialize } from '@vzh/mobx-stores';
+import { StoreModel, SerializableModel, JSONModel, serialize } from 'module/mobx-utils';
 import { observable } from 'mobx';
 
 export enum TabType {

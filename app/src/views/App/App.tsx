@@ -2,8 +2,8 @@ import React from 'react';
 import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import { Switch, withRouter, RouteComponentProps, Redirect } from 'react-router';
-import { AuthorizationProvider, NotLoggedInRoute, LoggedInRoute } from '@vzh/react-auth';
-import { typedInject } from '@vzh/mobx-stores';
+import { AuthorizationProvider, NotLoggedInRoute, LoggedInRoute } from 'module/react-auth';
+import { typedInject } from 'module/mobx-utils';
 
 import 'assets/styles/global.css';
 import { AppStore, Stores } from 'stores';

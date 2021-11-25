@@ -1,7 +1,7 @@
 import sqlFormatter from 'sql-formatter';
 import { observable, action, runInAction, IReactionDisposer, reaction, when } from 'mobx';
 import { Option, None, Some, Try } from 'funfix-core';
-import { withRequest, ViewModelLike, createViewModel } from '@vzh/mobx-stores';
+import { withRequest, ViewModelLike, createViewModel } from 'module/mobx-utils';
 import { tabsStorage, sqlHistoryStorage, Query, ServerStructure } from 'services';
 import {
   EditorTabModel,

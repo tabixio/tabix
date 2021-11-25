@@ -694,16 +694,6 @@
     "@types/uglify-js" "*"
     source-map "^0.6.0"
 
-"@vzh/mobx-stores@^0.33.0":
-  version "0.33.0"
-  resolved "https://registry.yarnpkg.com/@vzh/mobx-stores/-/mobx-stores-0.33.0.tgz#51d4dfefc325f069c3d500708f6cbf6f8767da1b"
-  dependencies:
-    typelevel-ts "^0.3.4"
-
-"@vzh/react-auth@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@vzh/react-auth/-/react-auth-0.3.1.tgz#ff26ce220af6443fea1b474ee64da1bfe372b937"
-
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
@@ -7839,7 +7829,7 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
-typelevel-ts@^0.3.4, typelevel-ts@^0.3.5:
+typelevel-ts@^0.3.5:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/typelevel-ts/-/typelevel-ts-0.3.5.tgz#9f242c193fa6c5489d2342c642ab8912a065af9d"
 

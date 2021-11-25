@@ -1,0 +1,10 @@
+{
+  "extends": "./node_modules/@vzh/configs/ts/dev.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./lib/src",
+    "outDir": "./dist",
+    "declaration": true,
+    "sourceMap": false
+  },
+  "files": ["./lib/src/index.ts"]
+}
