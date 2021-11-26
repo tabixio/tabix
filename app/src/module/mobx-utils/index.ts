@@ -1,4 +1,4 @@
-export { default as Notification } from './Notification';
+// export { default as Notification } from './Notification';
 export * from './Notification';
 export { default as ValidableModel } from './ValidableModel';
 export * from './ValidableModel';
@@ -17,5 +17,5 @@ export { default as ValidableStoreModel } from './ValidableStoreModel';
 export { default as RequestableStore } from './RequestableStore';
 export * from './RequestableStore';
 export { default as withRequest } from './withRequest';
-export { default as SerializableModel } from './SerializableModel';
+export { default as SerializableModel, JSONModel } from './SerializableModel';
 export * from './SerializableModel';

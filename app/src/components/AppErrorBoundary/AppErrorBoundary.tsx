@@ -60,6 +60,7 @@ export default class AppErrorBoundary extends React.Component<Props, State> {
       <Flex column center fill className={css.root}>
         <h1>An error has occurred.</h1>
         <h2>See console log for more information.</h2>
+        <a href="/signout">Try `sign out`</a>
       </Flex>
     );
   }

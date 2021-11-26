@@ -51,7 +51,13 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
 
   @withRequest
   async initApi(connection: Connection) {
-    const api = await Api.connect(connection);
+    let api: Api;
+    try {
+      api = await Api.connect(connection);
+    } catch (e) {
+      console.error('initApi error', e);
+    }
+
     runInAction(() => {
       this.api = Option.of(api);
     });

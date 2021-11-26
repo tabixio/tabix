@@ -10,18 +10,27 @@ export default class Api {
     const provider = isDirectConnection(connection)
       ? new DirectClickHouseProvider(connection)
       : new TabixServerProvider(connection);
-
-    const version = await provider.fastGetVersion();
-    if (!version) throw new Error('Can`t fetch version server');
+    // -----
+    console.log('Try connect to clickhouse');
+    let version: string = '';
+    try {
+      version = await provider.fastGetVersion();
+    } catch (e) {
+      throw new Error('Can`t fetch version server,check connection URL/DNS/Host:PORT');
+    }
+    if (!version) {
+      throw new Error('Can`t fetch version server');
+    }
     console.log(`Connection - OK, version: ${version}`);
-
     return new Api(provider, version);
   }
 
   private constructor(
     public readonly provider: CoreProvider<Connection>,
     public readonly version: string
-  ) {}
+  ) {
+    // Cnos
+  }
 
   async fetch(query: Query) {
     const data = await this.provider.query(query);

@@ -27,8 +27,7 @@ export interface Response {
   error: boolean;
   rows: number | null;
   meta: any | null;
-  time: string,
-
+  time: string;
 }
 
 export interface TabixCommand {

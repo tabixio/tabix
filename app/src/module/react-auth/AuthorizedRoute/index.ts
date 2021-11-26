@@ -1,1 +1,1 @@
-export { default, FromLocationDescriptorObject, FromLocationState } from './AuthorizedRoute';
+export * from './AuthorizedRoute';

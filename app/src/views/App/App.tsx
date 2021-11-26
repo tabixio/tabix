@@ -59,7 +59,6 @@ class App extends React.Component<RoutedProps> {
     }
 
     const error = store.uiStore.hasError ? store.uiStore.notifications[0].text : '';
-
     return (
       <AppErrorBoundary error={error}>
         <AuthorizationProvider
