@@ -171,7 +171,10 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     isCluster: boolean,
     clusterList: Array<string>
   ): string {
-    let sql = `SELECT  now() as dt, query,  1 as count,
+    let sql = `
+    SELECT  now() as dt, 
+                query,  
+                1 as count,
                 toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
                 round(elapsed,1) as elapsed ,
                 formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
@@ -179,8 +182,11 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
                 formatReadableSize(read_bytes) as bytes_read,
                 formatReadableSize(written_bytes) as bytes_written,  
                 * ,     
-                cityHash64(query) as hash,  
-                hostName()`;
+                cityHash64(query) as hash
+    FROM (                
+    SELECT * hostName() as host 
+    `;
+    // from
     if (isCluster && clusterList.length) {
       sql = `${sql} FROM remote('${clusterList.join(',')}',system.processes, '${
         this.connection.username
