@@ -6,6 +6,8 @@ import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import lessVars from './webpack.less-vars';
 
 const baseDir = process.cwd();
+const CompressionPlugin = require('compression-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 export default {
   target: 'web',
@@ -29,7 +31,32 @@ export default {
   mode: 'development',
 
   devtool: 'cheap-module-eval-source-map',
-
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        reactVendor: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'reactvendor',
+        },
+        utilityVendor: {
+          test: /[\\/]node_modules[\\/](lodash|moment|moment-timezone)[\\/]/,
+          name: 'utilityVendor',
+        },
+        bootstrapVendor: {
+          test: /[\\/]node_modules[\\/](react-bootstrap)[\\/]/,
+          name: 'bootstrapVendor',
+        },
+        vendor: {
+          test: /[\\/]node_modules[\\/](!react-bootstrap)(!lodash)(!moment)(!moment-timezone)[\\/]/,
+          name: 'vendor',
+        },
+      },
+    },
+  },
   module: {
     rules: [
       {
@@ -118,8 +145,11 @@ export default {
   },
 
   plugins: [
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false, // http://127.0.0.1:8888/
+    }),
     new webpack.HotModuleReplacementPlugin(),
-
+    new CompressionPlugin(),
     new ForkTsCheckerPlugin({
       tsconfig: path.resolve(baseDir, 'app/tsconfig.json'),
       checkSyntacticErrors: false,
@@ -131,7 +161,7 @@ export default {
       template: path.join(baseDir, 'app/src/assets', 'index.pug'),
       filename: 'index.html',
     }),
-    new MonacoWebpackPlugin({ output: 'workers', languages: [] }),
+    new MonacoWebpackPlugin({ output: 'workers', languages: ['sql'] }),
   ],
 
   devServer: {

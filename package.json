@@ -16,6 +16,9 @@
     "build:ts": "yarn run clean && tsc --project ./app/tsconfig.json",
     "build:dev": "yarn run clean && webpack --config webpack.config.babel.js"
   },
+  "resolutions": {
+    "**/**/fsevents": "^1.2.9"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -90,6 +93,7 @@
     "typescript-eslint-parser": "^21.0.2",
     "url-loader": "^1.1.2",
     "webpack": "^4.28.3",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14"
   },
@@ -98,6 +102,7 @@
     "antd": "^3.11.6",
     "chroma-js": "^2.0.2",
     "classnames": "^2.2.6",
+    "compression-webpack-plugin": "4.0.1",
     "downshift": "^3.1.8",
     "echarts": "^4.2.0-rc.2",
     "echarts-for-react": "^2.0.15-beta.0",
