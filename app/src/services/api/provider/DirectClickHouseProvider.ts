@@ -152,6 +152,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   }
 
   query(q: Query) {
+    // @TODO: if not database exist
     const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
     const init: RequestInit = this.getRequestInit(q.sql);
     return this.request(url, init).then(r => r);
