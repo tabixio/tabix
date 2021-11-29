@@ -12,7 +12,7 @@ export default class preparedStatementQuery {
     // if version = 21.11.4.14, then this.versionCompare(version,'19.01.01') = 1
     // if version = 21.11.4.14, then this.versionCompare(version,'21.11.4.15') = -1
     // '1' - is less , '0' - eq , '-1' - big
-    console.info('compare 21.10.3.14', this.versionCompare(version, '21.11.3.14'));
+    // console.info('compare 21.10.3.14', this.versionCompare(this.version, '21.4.1'));
   }
 
   versionCompare(v1: string, v2: string): number {
@@ -44,13 +44,13 @@ export default class preparedStatementQuery {
       });
     }
 
-    for (let i = 0; i < v1parts.length; ++i) {
-      if (v2parts.length == i) {
+    for (let i = 0; i < v1parts.length; i += 1) {
+      if (v2parts.length === i) {
         return 1;
       }
 
-      if (v1parts[i] == v2parts[i]) {
-        continue;
+      if (v1parts[i] === v2parts[i]) {
+        // skip
       } else if (v1parts[i] > v2parts[i]) {
         return 1;
       } else {
@@ -58,7 +58,7 @@ export default class preparedStatementQuery {
       }
     }
 
-    if (v1parts.length != v2parts.length) {
+    if (v1parts.length !== v2parts.length) {
       return -1;
     }
     return 0;
@@ -112,7 +112,18 @@ export default class preparedStatementQuery {
     // Column keys in table system.dictionaries was replaced to columns key.names and key.types. Columns key.names, key.types, attribute.names, attribute.types from system.dictionaries table does not require dictionary to be loaded. #21884 (Maksim Kita).
     // Upated system.dictionaries table : https://github.com/ClickHouse/ClickHouse/commit/a53c90e509d0ab9596e73747f085cf0191284311?branch=a53c90e509d0ab9596e73747f085cf0191284311&diff=unified
     // SELECT * FROM system.dictionaries ARRAY JOIN attribute,key ORDER BY name,attribute.names
-    return `SELECT name,key,attribute.names,attribute.types FROM system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names LIMIT ${limitDics}`;
+    let s1 = `SELECT name,key.names as key,attribute.names,attribute.types
+FROM (
+  select name, \`key.names\`, \`key.types\`, attribute.names, attribute.types
+  from system.dictionaries array join key, attribute
+)
+LIMIT ${limitDics}
+`;
+    if (this.versionCompare(this.version, '21.4.1') < 0) {
+      // version < 21.4.1
+      s1 = `SELECT name,key,attribute.names,attribute.types FROM system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names LIMIT ${limitDics}`;
+    }
+    return s1;
   }
 
   databaseList(limitDBs: number): string {
