@@ -31,6 +31,7 @@ export default class Api {
     public readonly version: string
   ) {
     // Cnos
+    this.provider.preparedQuery.setVersion(version);
   }
 
   async fetch(query: Query) {

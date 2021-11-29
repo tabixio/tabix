@@ -1,12 +1,16 @@
 import { ConnectionLike, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import { Query } from '../Query';
+import preparedStatementQuery from './preparedStatementQuery';
 
 export default abstract class CoreProvider<C extends ConnectionLike> {
   readonly connection: C;
 
+  preparedQuery: preparedStatementQuery;
+
   constructor(connection: C) {
     this.connection = connection;
+    this.preparedQuery = new preparedStatementQuery('');
   }
 
   abstract getType(): ConnectionType;

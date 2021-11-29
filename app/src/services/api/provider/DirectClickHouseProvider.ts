@@ -1,7 +1,6 @@
 import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
-import SQLStructure from './SQLStructure';
 import { Query } from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
@@ -92,16 +91,14 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const limitClusters = 50;
     const limitColumns = 4000;
     const limitTables = 2000;
+    const limitDBs = 2000;
+    const limitDics = 1500;
 
     const columns = await this.queryString(`SELECT * FROM system.columns LIMIT ${limitColumns}`);
-    const tables = await this.queryString(
-      `SELECT database,name,engine,size FROM system.tables ANY LEFT JOIN ( SELECT database,table as name,formatReadableSize(sum(bytes)) as size FROM system.parts  GROUP BY database,name ) USING (database,name) LIMIT ${limitTables}`
-    );
-    const databases = await this.queryString(`SELECT name FROM system.databases`);
-    const dictionaries = await this.queryString(
-      `SELECT name,key,attribute.names,attribute.types FROM system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names`
-    );
-    const functions = await this.queryString('SELECT name,is_aggregate from system.functions');
+    const tables = await this.queryString(this.preparedQuery.databaseTablesList(limitTables));
+    const databases = await this.queryString(this.preparedQuery.databaseList(limitDBs));
+    const dictionaries = await this.queryString(this.preparedQuery.dictionariesList(limitDics));
+    const functions = await this.queryString(this.preparedQuery.functionsList());
     const clusters = await this.queryString(
       `SELECT host_address as hostAddress,port FROM system.clusters GROUP BY host_address,port LIMIT ${limitClusters}`
     );
@@ -174,7 +171,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         return c;
       });
     }
-    const sql = SQLStructure.processLists(
+    const sql = this.preparedQuery.processLists(
       isOnlySelect,
       isCluster,
       clusterList,
