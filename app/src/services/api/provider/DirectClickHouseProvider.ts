@@ -1,6 +1,7 @@
 import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
+import SQLStructure from './SQLStructure';
 import { Query } from '../Query';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
@@ -72,7 +73,6 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     url += Object.entries(settings)
       .map(([key, val]) => `${key}=${val}`)
       .join('&');
-
     if (this.connection.password) {
       url += `&user=${encodeURIComponent(this.connection.username)}&password=${encodeURIComponent(
         this.connection.password
@@ -166,42 +166,6 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
   }
 
-  private makeSQLProcessLists(
-    isOnlySELECT: boolean,
-    isCluster: boolean,
-    clusterList: Array<string>
-  ): string {
-    let sql = `
-    SELECT  now() as dt, 
-                query,  
-                1 as count,
-                toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
-                round(elapsed,1) as elapsed ,
-                formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
-                formatReadableSize(memory_usage) as memory_usage,
-                formatReadableSize(read_bytes) as bytes_read,
-                formatReadableSize(written_bytes) as bytes_written,  
-                * ,     
-                cityHash64(query) as hash
-    FROM (                
-    SELECT * hostName() as host 
-    `;
-    // from
-    if (isCluster && clusterList.length) {
-      sql = `${sql} FROM remote('${clusterList.join(',')}',system.processes, '${
-        this.connection.username
-      }','${this.connection.password}')`;
-    } else {
-      sql = `${sql} FROM system.processes `;
-    }
-    // исключить запрос
-    sql = `${sql} /* 12XQWE-3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'`;
-    if (isOnlySELECT) {
-      sql = `${sql} AND read_rows>0`;
-    }
-    return sql;
-  }
-
   async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<any> {
     const clusterList: Array<string> = [];
     if (this.clusters) {
@@ -210,8 +174,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         return c;
       });
     }
-    const sql = this.makeSQLProcessLists(isOnlySelect, isCluster, clusterList);
-    // console.log('clusterList',sql);
+    const sql = SQLStructure.processLists(
+      isOnlySelect,
+      isCluster,
+      clusterList,
+      this.connection.username,
+      this.connection.password
+    );
     const result = await this.queryString(sql);
     return result;
   }

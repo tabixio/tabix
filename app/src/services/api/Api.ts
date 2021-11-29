@@ -15,6 +15,7 @@ export default class Api {
     let version: string = '';
     try {
       version = await provider.fastGetVersion();
+      console.log('Version CH', version);
     } catch (e) {
       throw new Error('Can`t fetch version server,check connection URL/DNS/Host:PORT');
     }

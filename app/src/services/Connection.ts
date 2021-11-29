@@ -5,6 +5,7 @@ export interface ConnectionLike {
   connectionUrl: string;
   username: string;
   password: string;
+  version: string;
 }
 
 export enum ConnectionType {

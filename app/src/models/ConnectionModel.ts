@@ -29,6 +29,8 @@ export abstract class BaseConnectionModel<T extends Connection> extends Validabl
   @observable
   password: string = '';
 
+  version: string = '';
+
   abstract toJSON(): JSONModel<T>;
 }
 
@@ -53,6 +55,7 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
       username: { error: None },
       password: { error: None },
       params: { error: None },
+      version: { error: None },
     });
 
     this.connectionName = connectionName;
@@ -70,6 +73,7 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
       username: this.username,
       password: this.password,
       params: this.params,
+      version: this.version,
     };
   }
 }
@@ -95,6 +99,7 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
       username: { error: None },
       password: { error: None },
       configKey: { error: None },
+      version: { error: None },
     });
 
     this.connectionName = connectionName;
@@ -112,6 +117,7 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
       username: this.username,
       password: this.password,
       configKey: this.configKey,
+      version: this.version,
     };
   }
 }
