@@ -1,4 +1,8 @@
 namespace ServerStructure {
+  export enum PagesCommands {
+    Processes = 'Processes',
+  }
+
   export interface Item {
     id: string;
     name: string;
@@ -31,15 +35,16 @@ namespace ServerStructure {
   export interface SpecialItem extends Item {
     command: string;
   }
+  export interface Database extends Item {
+    tables: ReadonlyArray<Table>;
+  }
+
   export interface SpecialArrayGroupItem {
     children: ReadonlyArray<SpecialGroupItem>;
   }
   export interface SpecialGroupItem extends Item {
     type: string;
     children: ReadonlyArray<SpecialItem>;
-  }
-  export interface Database extends Item {
-    tables: ReadonlyArray<Table>;
   }
 
   export class Server implements Item {
@@ -64,12 +69,10 @@ namespace ServerStructure {
     return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
   }
 
-  export function isSpecialItem(
+  export function isSpecialGroupItem(
     item: Server | SpecialGroupItem | Table | Column | Database
   ): item is Table {
-    return (
-      !!(item as SpecialGroupItem).type && !!(item as Table).columns && !!(item as Column).database
-    );
+    return !!(item as SpecialGroupItem).type && !(item as Column).database;
   }
   export function isTable(item: Server | Table | Column | Database): item is Table {
     return !!(item as Table).database && !!(item as Table).columns;
@@ -218,7 +221,6 @@ namespace ServerStructure {
     });
 
     editorRules.tables = dbTables;
-
     return new Server(
       'root',
       connectionName,

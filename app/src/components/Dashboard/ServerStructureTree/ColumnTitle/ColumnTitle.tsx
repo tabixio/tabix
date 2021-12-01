@@ -34,7 +34,7 @@ export default function ColumnTitle({ column, onAction }: ColumnTitleProps) {
           {column.name}
         </div>
         <Flex grow justifyContent="flex-end" className={css.type}>
-          {column.type.substring(0, 20)}
+          {column.type && column.type.substring(0, 20)}
         </Flex>
       </Flex>
     </Tooltip>

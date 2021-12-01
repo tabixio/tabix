@@ -111,20 +111,25 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
         children: t.columns.map(c => ({ ...c })),
       })),
     }));
-    // Ias
-    attachItem.children.forEach(n => {
-      console.log('attachItemattachItemattachItem', n);
+    // Merge twice iterface in array
+    const cc: Array<any> = [];
+    children.forEach(n => {
+      cc.push(n);
     });
-
-    // children.push(attachItem);
+    attachItem.children &&
+      attachItem.children.forEach(n => {
+        cc.push(n);
+      });
+    console.log(children);
     this.treeNodes = [
       {
         ...server,
         state: { expanded: true },
-        children,
+        children: cc,
       },
     ];
     // ToDo: fix selectDbNode if change connection, assign select_db to host`s
+    // attachItem.children && attachItem.children.forEach(this.attachItem);
     this.selectDbNode(this.rootStore.tabsStore.getActiveEditorDatabase());
   }
 

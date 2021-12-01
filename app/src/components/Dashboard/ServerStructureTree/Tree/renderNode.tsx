@@ -70,10 +70,9 @@ function NodeRenderer({
     return <TableTitle table={node} onContextMenuAction={onTableAction} />;
   }
 
-  if (ServerStructure.isSpecialItem(node)) {
-    return <SpecialTitle name={node.name} />;
+  if (ServerStructure.isSpecialGroupItem(node)) {
+    return <SpecialTitle type={node.type} name={node.name} />;
   }
-
   return <ColumnTitle column={node} onAction={onColumnAction} />;
 }
 

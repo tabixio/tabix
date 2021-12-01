@@ -13,20 +13,19 @@ interface InjectedProps {
 }
 
 interface Props extends InjectedProps, NodeActions {}
-
 @observer
 class ServerStructureTree extends React.Component<Props> {
   attachItems: ServerStructure.SpecialArrayGroupItem = {
     children: [
       {
-        id: 'page',
-        name: 'DPE',
-        type: 'CommandsList',
+        id: 'Server overview',
+        name: 'Server overview',
+        type: 'server.overview',
         children: [
           {
-            id: 'page',
-            name: 'DPE',
-            command: 'COSNAS',
+            id: 'Processes',
+            name: 'Processes',
+            command: ServerStructure.PagesCommands.Processes,
           } as ServerStructure.SpecialItem,
         ],
       } as ServerStructure.SpecialGroupItem,
