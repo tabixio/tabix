@@ -28,7 +28,16 @@ namespace ServerStructure {
     size: string;
     columns: ReadonlyArray<Column>;
   }
-
+  export interface SpecialItem extends Item {
+    command: string;
+  }
+  export interface SpecialArrayGroupItem {
+    children: ReadonlyArray<SpecialGroupItem>;
+  }
+  export interface SpecialGroupItem extends Item {
+    type: string;
+    children: ReadonlyArray<SpecialItem>;
+  }
   export interface Database extends Item {
     tables: ReadonlyArray<Table>;
   }
@@ -55,6 +64,13 @@ namespace ServerStructure {
     return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
   }
 
+  export function isSpecialItem(
+    item: Server | SpecialGroupItem | Table | Column | Database
+  ): item is Table {
+    return (
+      !!(item as SpecialGroupItem).type && !!(item as Table).columns && !!(item as Column).database
+    );
+  }
   export function isTable(item: Server | Table | Column | Database): item is Table {
     return !!(item as Table).database && !!(item as Table).columns;
   }

@@ -76,12 +76,12 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
   }
 
   @withRequest.bound
-  async loadData() {
+  async loadData(attachItem: ServerStructure.SpecialArrayGroupItem) {
     // if (this.treeNodes.length) return;
     const structure = await this.api.loadDatabaseStructure();
     runInAction(() => {
       this.serverStructure = Some(structure);
-      this.generateNodes(structure);
+      this.generateNodes(structure, attachItem);
     });
   }
 
@@ -100,21 +100,31 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
     node.children && node.children.forEach(this.collapseDeep);
   }
 
-  private generateNodes(server: ServerStructure.Server) {
+  private generateNodes(
+    server: ServerStructure.Server,
+    attachItem: ServerStructure.SpecialArrayGroupItem
+  ) {
+    const children = server.databases.map(d => ({
+      ...d,
+      children: d.tables.map(t => ({
+        ...t,
+        children: t.columns.map(c => ({ ...c })),
+      })),
+    }));
+    // Ias
+    attachItem.children.forEach(n => {
+      console.log('attachItemattachItemattachItem', n);
+    });
+
+    // children.push(attachItem);
     this.treeNodes = [
       {
         ...server,
         state: { expanded: true },
-        children: server.databases.map(d => ({
-          ...d,
-          children: d.tables.map(t => ({
-            ...t,
-            children: t.columns.map(c => ({ ...c })),
-          })),
-        })),
+        children,
       },
     ];
-
+    // ToDo: fix selectDbNode if change connection, assign select_db to host`s
     this.selectDbNode(this.rootStore.tabsStore.getActiveEditorDatabase());
   }
 

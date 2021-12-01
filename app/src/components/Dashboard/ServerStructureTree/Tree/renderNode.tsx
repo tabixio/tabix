@@ -6,6 +6,7 @@ import { ServerStructure } from 'services';
 import { TypedNode } from 'stores/TreeStore';
 import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from '../ServerTitle';
 import DbTitle from '../DbTitle';
+import SpecialTitle from '../SpecialTitle';
 import TableTitle, { TableContextMenuProps } from '../TableTitle';
 import ColumnTitle, { ColumnTitleProps } from '../ColumnTitle';
 import css from './Tree.css';
@@ -67,6 +68,10 @@ function NodeRenderer({
 
   if (ServerStructure.isTable(node)) {
     return <TableTitle table={node} onContextMenuAction={onTableAction} />;
+  }
+
+  if (ServerStructure.isSpecialItem(node)) {
+    return <SpecialTitle name={node.name} />;
   }
 
   return <ColumnTitle column={node} onAction={onColumnAction} />;

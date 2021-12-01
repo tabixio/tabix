@@ -4,6 +4,7 @@ import { Flex } from 'reflexy';
 import { typedInject } from 'module/mobx-utils';
 import { Stores, TreeStore } from 'stores';
 import { TypedNode } from 'stores/TreeStore';
+import { ServerStructure } from 'services';
 import SearchInput from './SearchInput';
 import Tree, { NodeActions } from './Tree';
 
@@ -15,9 +16,30 @@ interface Props extends InjectedProps, NodeActions {}
 
 @observer
 class ServerStructureTree extends React.Component<Props> {
-  componentDidMount() {
+  attachItems: ServerStructure.SpecialArrayGroupItem = {
+    children: [
+      {
+        id: 'page',
+        name: 'DPE',
+        type: 'CommandsList',
+        children: [
+          {
+            id: 'page',
+            name: 'DPE',
+            command: 'COSNAS',
+          } as ServerStructure.SpecialItem,
+        ],
+      } as ServerStructure.SpecialGroupItem,
+    ],
+  };
+
+  private load() {
     const { store } = this.props;
-    store.loadData();
+    store.loadData(this.attachItems);
+  }
+
+  componentDidMount() {
+    this.load();
   }
 
   private highlightNode = (node: TypedNode) => {
@@ -43,7 +65,7 @@ class ServerStructureTree extends React.Component<Props> {
           nodes={store.treeNodes}
           onChange={store.updateTreeNodes}
           onCollapse={store.collapseAll}
-          onReload={store.loadData}
+          onReload={this.load}
           {...actions}
         />
       </Flex>
