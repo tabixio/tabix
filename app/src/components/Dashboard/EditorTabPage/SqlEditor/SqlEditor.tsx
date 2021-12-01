@@ -299,7 +299,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     // ======== Command-Enter ========
     codeEditor.addAction({
       id: 'my-exec-code',
-      label: 'Exec current code',
+      label: 'Exec current query`s',
       keybindings: [KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
       contextMenuGroupId: 'navigation',
       contextMenuOrder: 1.5,
@@ -313,7 +313,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     // ======== Shift-Command-Enter ========
     codeEditor.addAction({
       id: 'my-exec-all',
-      label: 'Exec All',
+      label: 'Exec All query',
       keybindings: [KM.Shift | KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
       precondition: undefined,
       keybindingContext: undefined,

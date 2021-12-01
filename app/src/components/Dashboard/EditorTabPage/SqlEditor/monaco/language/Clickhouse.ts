@@ -23,7 +23,7 @@ import { languages } from 'monaco-editor';
 // https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
 // https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
 // https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
-
+// https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
 /**
  * Global todo:
  * [+] Локальный ItemProvider, подсовывать fields
@@ -261,10 +261,10 @@ export const languageDef = {
         /[\w@#$]+/,
         {
           cases: {
-            '@typeKeywords': 'keyword.type',
-            '@fields': 'metatag',
             '@keywords': 'keyword',
             '@keywordsGlobal': 'keyword',
+            '@typeKeywords': 'keyword.type',
+            '@fields': 'metatag',
             '@tables': 'keyword.table',
             '@operators': 'operator',
             '@builtinVariables': 'predefined',

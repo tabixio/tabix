@@ -7,7 +7,11 @@ import lessVars from './webpack.less-vars';
 
 const baseDir = process.cwd();
 const CompressionPlugin = require('compression-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// Environment config
+// const isDevelopment = process.env.NODE_ENV !== 'production';
+// const mode = isDevelopment ? 'development' : 'production';
+const mode = 'development';
 
 export default {
   target: 'web',
@@ -28,7 +32,7 @@ export default {
     modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
   },
 
-  mode: 'development',
+  mode,
 
   devtool: 'cheap-module-eval-source-map',
   optimization: {
@@ -149,12 +153,8 @@ export default {
       openAnalyzer: false, // http://127.0.0.1:8888/
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new CompressionPlugin(),
-    new ForkTsCheckerPlugin({
-      tsconfig: path.resolve(baseDir, 'app/tsconfig.json'),
-      checkSyntacticErrors: false,
-      memoryLimit: 1024,
-    }),
+    // new CompressionPlugin(),
+    new ForkTsCheckerPlugin(),
 
     new HtmlWebpackPlugin({
       inject: false,
