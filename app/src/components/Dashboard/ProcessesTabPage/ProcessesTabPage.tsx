@@ -56,6 +56,7 @@ class ProcessesTabPage extends React.Component<Props> {
     data: [],
     columns: [],
     interval: 0.1,
+    isPlaying: false,
   };
 
   private tableRef = React.createRef<HotTable>();
@@ -118,6 +119,17 @@ class ProcessesTabPage extends React.Component<Props> {
     this.setState({ data: [] });
   };
 
+  private playStop = () => {
+    // if Play & Stop
+    if (this.state.isPlaying) {
+      this.state.isPlaying = false;
+      this.stop();
+    } else {
+      this.state.isPlaying = true;
+      this.play();
+    }
+  };
+
   private play = () => {
     this.reset();
     this.runTimer(this.state.interval);
@@ -158,7 +170,7 @@ class ProcessesTabPage extends React.Component<Props> {
 
   render() {
     const ratesOptions = [
-      { label: '0.1 seconds', value: 0.1 },
+      // { label: '0.1 seconds', value: 0.1 },
       { label: '0.5 seconds', value: 0.5 },
       { label: '1 seconds', value: 1 },
       { label: '2 seconds', value: 2 },
@@ -173,7 +185,7 @@ class ProcessesTabPage extends React.Component<Props> {
       <div>
         <Divider>Processes</Divider>
         <Select
-          defaultValue="0.1"
+          defaultValue="0.5"
           placeholder="Rate"
           style={{ width: 120 }}
           size="small"
@@ -186,14 +198,11 @@ class ProcessesTabPage extends React.Component<Props> {
           defaultValue={checkOptions}
           onChange={this.onChangeCheckbox}
         />
-        <Button type="primary" icon="play-circle" onClick={this.play}>
-          Play
+        <Button icon={this.state.isPlaying ? 'stop' : 'play-circle'} onClick={this.playStop}>
+          {this.state.isPlaying ? 'Pause' : 'Play'}
         </Button>
-        <Button icon="stop" onClick={this.stop}>
-          Stop
-        </Button>
-        <Button type="danger" icon="close" onClick={this.reset}>
-          Reset
+        <Button icon="close" onClick={this.reset}>
+          Clean
         </Button>
         <Divider />
         <HotTable
