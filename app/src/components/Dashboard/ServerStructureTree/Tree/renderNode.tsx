@@ -8,10 +8,12 @@ import ServerTitle, { ServerTitleProps, ServerContextMenuProps } from '../Server
 import DbTitle from '../DbTitle';
 import SpecialTitle from '../SpecialTitle';
 import TableTitle, { TableContextMenuProps } from '../TableTitle';
-import ColumnTitle, { ColumnTitleProps } from '../ColumnTitle';
+import ActionTitle, { ColumnTitleProps } from '../ColumnTitle';
+import CommandRowTitle, { CommandRowProps } from '../CommandRowTitle';
 import css from './Tree.css';
 
 export interface NodeActions {
+  onCommandAction?: CommandRowProps['onAction'];
   onColumnAction?: ColumnTitleProps['onAction'];
   onServerAction?: ServerContextMenuProps['onContextMenuAction'];
   onTableAction?: TableContextMenuProps['onContextMenuAction'];
@@ -33,6 +35,7 @@ function SelectableRenderer({ node: { state }, children }: RenderNodeProps) {
       hfill
       className={classNames(
         css.selectable,
+
         selected && css.selected,
         highlighted && css.highlighted
       )}
@@ -49,6 +52,7 @@ function NodeRenderer({
   onServerAction,
   onTableAction,
   onColumnAction,
+  onCommandAction,
 }: RenderNodeProps) {
   if (ServerStructure.isServer(node)) {
     return (
@@ -70,10 +74,16 @@ function NodeRenderer({
     return <TableTitle table={node} onContextMenuAction={onTableAction} />;
   }
 
+  if (ServerStructure.isSpecialItem(node)) {
+    return <CommandRowTitle command={node} onAction={onCommandAction} />;
+  }
   if (ServerStructure.isSpecialGroupItem(node)) {
     return <SpecialTitle type={node.type} name={node.name} />;
   }
-  return <ColumnTitle column={node} onAction={onColumnAction} />;
+  if (ServerStructure.isColumn(node)) {
+    return <ActionTitle column={node} onAction={onColumnAction} />;
+  }
+  return <SpecialTitle type="Null:SpecialTitle" name="Null:SpecialTitle" />;
 }
 
 function ExpandableRenderer({ node, onChange, children }: RenderNodeProps) {

@@ -1,6 +1,12 @@
 namespace ServerStructure {
   export enum PagesCommands {
     Processes = 'Processes',
+    Metrics = 'Metrics',
+    ServerOverview = 'ServerOverview',
+    DbOverview = 'DbOverview',
+    SqlHistory = 'SqlHistory',
+    QueryLog = 'QueryLog',
+    ClusterOverview = 'ClusterOverview',
   }
 
   export interface Item {
@@ -32,13 +38,13 @@ namespace ServerStructure {
     size: string;
     columns: ReadonlyArray<Column>;
   }
-  export interface SpecialItem extends Item {
-    command: string;
-  }
+
   export interface Database extends Item {
     tables: ReadonlyArray<Table>;
   }
-
+  export interface SpecialItem extends Item {
+    command: string;
+  }
   export interface SpecialArrayGroupItem {
     children: ReadonlyArray<SpecialGroupItem>;
   }
@@ -61,24 +67,37 @@ namespace ServerStructure {
     }
   }
 
-  export function isServer(item: Server | Table | Column | Database): item is Server {
+  export function isServer(
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is Server {
     return !!(item as Server).databases;
   }
 
-  export function isDatabase(item: Server | Table | Column | Database): item is Database {
+  export function isDatabase(
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is Database {
     return !(item as Table).database && !(item as Column).table && !!(item as Database).tables;
   }
 
+  export function isSpecialItem(
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is SpecialItem {
+    return !!(item as SpecialItem).command && !(item as Column).database;
+  }
   export function isSpecialGroupItem(
-    item: Server | SpecialGroupItem | Table | Column | Database
-  ): item is Table {
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is SpecialGroupItem {
     return !!(item as SpecialGroupItem).type && !(item as Column).database;
   }
-  export function isTable(item: Server | Table | Column | Database): item is Table {
+  export function isTable(
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is Table {
     return !!(item as Table).database && !!(item as Table).columns;
   }
 
-  export function isColumn(item: Server | Table | Column | Database): item is Column {
+  export function isColumn(
+    item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
+  ): item is Column {
     return !!(item as Column).table && !!(item as Column).database;
   }
 

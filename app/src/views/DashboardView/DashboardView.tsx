@@ -32,7 +32,12 @@ import {
 import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import Page from 'components/Page';
 import { ActionType } from 'components/Dashboard/Tabs';
-import { ColumnAction, ServerAction, TableAction } from 'components/Dashboard/ServerStructureTree';
+import {
+  RowActionTypeAction,
+  ColumnAction,
+  ServerAction,
+  TableAction,
+} from 'components/Dashboard/ServerStructureTree';
 import Splitter from 'components/Splitter';
 import css from './DashboardView.css';
 
@@ -92,6 +97,39 @@ class DashboardView extends React.Component<RoutedProps> {
         break;
       default:
         break;
+    }
+  };
+
+  // (action: RowActionTypeAction, column: ServerStructure.SpecialItem)
+  private onCommandAction = (action: RowActionTypeAction, command: ServerStructure.SpecialItem) => {
+    if (action === RowActionTypeAction.DoubleClick || action === RowActionTypeAction.Click) {
+      console.log(command);
+      switch (command.command) {
+        case ServerStructure.PagesCommands.Processes: {
+          this.props.tabsStore.openProcessesTab();
+          break;
+        }
+        case ServerStructure.PagesCommands.Metrics: {
+          this.props.tabsStore.openMetricsTab();
+          break;
+        }
+        // case ServerStructure.PagesCommands.ServerOverview: {
+        //   this.props.tabsStore.openServerOverviewTab();
+        //   break;
+        // }
+        // case ServerStructure.PagesCommands.DbOverview: {
+        //   this.props.tabsStore.openDbOverviewTab();
+        //   break;
+        // }
+        // case ServerStructure.PagesCommands.SqlHistory: {
+        //   this.props.tabsStore.openSqlHistoryTab();
+        //   break;
+        // }
+        default:
+          break;
+      }
+
+      // this.props.tabsStore.insertColumnToEditor(column);
     }
   };
 
@@ -157,6 +195,7 @@ class DashboardView extends React.Component<RoutedProps> {
               onServerAction={this.onServerAction}
               onTableAction={this.onTableAction}
               onColumnAction={this.onColumnAction}
+              onCommandAction={this.onCommandAction}
             />
           </Flex>
 

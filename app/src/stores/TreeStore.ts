@@ -11,10 +11,16 @@ export type TypedNode = Node & { children?: TypedNode[] } & (
     | ServerStructure.Server
     | ServerStructure.Database
     | ServerStructure.Table
+    | ServerStructure.SpecialItem
+    | ServerStructure.SpecialGroupItem
     | ServerStructure.Column);
 
 export type FilteredNodes = Array<
-  ServerStructure.Database | ServerStructure.Table | ServerStructure.Column
+  | ServerStructure.Database
+  | ServerStructure.Table
+  | ServerStructure.Column
+  | ServerStructure.SpecialItem
+  | ServerStructure.SpecialGroupItem
 >;
 
 export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
@@ -111,7 +117,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
         children: t.columns.map(c => ({ ...c })),
       })),
     }));
-    // Merge twice iterface in array
+    // Merge twice interface in array
     const cc: Array<any> = [];
     children.forEach(n => {
       cc.push(n);
@@ -120,7 +126,6 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
       attachItem.children.forEach(n => {
         cc.push(n);
       });
-    console.log(children);
     this.treeNodes = [
       {
         ...server,

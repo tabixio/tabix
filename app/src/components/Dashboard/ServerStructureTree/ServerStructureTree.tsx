@@ -27,6 +27,11 @@ class ServerStructureTree extends React.Component<Props> {
             name: 'Processes',
             command: ServerStructure.PagesCommands.Processes,
           } as ServerStructure.SpecialItem,
+          {
+            id: 'Metrics',
+            name: 'Metrics',
+            command: ServerStructure.PagesCommands.Metrics,
+          } as ServerStructure.SpecialItem,
         ],
       } as ServerStructure.SpecialGroupItem,
     ],

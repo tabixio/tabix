@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { FilteredNodes } from 'stores/TreeStore';
 import { ServerStructure } from 'services';
 import { TreeFilter, TreeFilterModel } from 'models';
-import ColumnTitle from '../../ColumnTitle';
+import ActionTitle from '../../ColumnTitle';
 import TableTitle from '../../TableTitle';
 import DbTitle from '../../DbTitle';
 import css from './AutoCompleteOptions.css';
@@ -39,7 +39,7 @@ export default class AutoCompleteOptions extends React.Component<AutoCompleteOpt
     const item = items[index];
 
     const title =
-      (ServerStructure.isColumn(item) && <ColumnTitle column={item} />) ||
+      (ServerStructure.isColumn(item) && <ActionTitle column={item} />) ||
       (ServerStructure.isTable(item) && <TableTitle table={item} />) ||
       (ServerStructure.isDatabase(item) && (
         <DbTitle name={item.name} tableCount={item.tables.length} />
