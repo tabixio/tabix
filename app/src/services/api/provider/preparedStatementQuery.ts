@@ -84,7 +84,7 @@ export default class preparedStatementQuery {
                 * ,     
                 cityHash64(query) as hash
     FROM (                
-    SELECT * hostName() as host 
+        SELECT *,hostName() as host 
     `;
     // from
     if (isCluster && clusterList.length) {
@@ -99,6 +99,7 @@ export default class preparedStatementQuery {
     if (isOnlySELECT) {
       sql = `${sql} AND read_rows>0`;
     }
+    sql = `${sql} )`;
     return sql;
   }
 

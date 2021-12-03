@@ -57,6 +57,8 @@ class ProcessesTabPage extends React.Component<Props> {
     columns: [],
     interval: 0.1,
     isPlaying: false,
+    countError: 0,
+    countSuccess: 0,
   };
 
   private tableRef = React.createRef<HotTable>();
@@ -106,6 +108,7 @@ class ProcessesTabPage extends React.Component<Props> {
   };
 
   private stop = () => {
+    this.setState({ isPlaying: false });
     this.cleanTimer();
   };
 
@@ -116,22 +119,22 @@ class ProcessesTabPage extends React.Component<Props> {
   };
 
   private reset = () => {
+    this.counterSet(0, 0);
     this.setState({ data: [] });
   };
 
   private playStop = () => {
     // if Play & Stop
     if (this.state.isPlaying) {
-      this.state.isPlaying = false;
       this.stop();
     } else {
-      this.state.isPlaying = true;
       this.play();
     }
   };
 
   private play = () => {
     this.reset();
+    this.setState({ isPlaying: true });
     this.runTimer(this.state.interval);
   };
 
@@ -147,25 +150,41 @@ class ProcessesTabPage extends React.Component<Props> {
     return true;
   };
 
+  private counterSet(error: number, ok: number) {
+    // Set
+    this.setState({ countError: error, countSuccess: ok });
+  }
+
   private update = () => {
     const isOnlySELECT: boolean = this.state.checkedList.indexOf('Only SELECT') !== -1;
     const isCluster: boolean = this.state.checkedList.indexOf('Talk Cluster') !== -1;
     const isLogMode: boolean = this.state.checkedList.indexOf('Log mode') !== -1;
     const { store } = this.props;
 
-    store.getProcessLists(isOnlySELECT, isCluster).then(data => {
-      if (!this.state.columns.length) {
-        this.setState({ columns: data.meta.map(this.sortingSet).map(getFormatForColumn) });
-      }
-      if (data.data.length) {
-        const current = this.state.data;
-        const setter = isLogMode ? this.megreData(data.data, current) : data.data;
-        this.setState({ data: setter });
-      } else if (!isLogMode) {
-        // Drop data, if result is empty
-        this.setState({ data: [] });
-      }
-    });
+    store
+      .getProcessLists(isOnlySELECT, isCluster)
+      .then(data => {
+        this.counterSet(this.state.countError, this.state.countSuccess + 1);
+        if (!this.state.columns.length) {
+          this.setState({ columns: data.meta.map(this.sortingSet).map(getFormatForColumn) });
+        }
+        if (data.data.length) {
+          const current = this.state.data;
+          const setter = isLogMode ? this.megreData(data.data, current) : data.data;
+          this.setState({ data: setter });
+        } else if (!isLogMode) {
+          // Drop data, if result is empty
+          this.setState({ data: [] });
+        }
+      })
+      .catch(e => {
+        console.log('Error', e);
+        this.counterSet(this.state.countError + 1, this.state.countSuccess);
+
+        if (this.state.countError > 19) {
+          this.stop();
+        }
+      });
   };
 
   render() {
@@ -204,6 +223,12 @@ class ProcessesTabPage extends React.Component<Props> {
         <Button icon="close" onClick={this.reset}>
           Clean
         </Button>
+        <span>
+          - Requests errors:
+          {this.state.countError}
+          ,Success:
+          {this.state.countSuccess}
+        </span>
         <Divider />
         <HotTable
           ref={this.tableRef}
