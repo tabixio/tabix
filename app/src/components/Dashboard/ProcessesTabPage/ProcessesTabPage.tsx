@@ -47,7 +47,7 @@ const IOption = Select.Option;
 
 const CheckboxGroup = Checkbox.Group;
 
-const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT'];
+const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT', 'Show Profile', 'Show Settings'];
 @observer
 class ProcessesTabPage extends React.Component<Props> {
   state = {
@@ -74,9 +74,9 @@ class ProcessesTabPage extends React.Component<Props> {
   private handleChange = (value: string) => {
     const v = parseFloat(value);
     this.setState({ interval: v });
-    if (this.state.intervalId) {
-      this.runTimer(v);
-    }
+    // if (this.state.intervalId) {
+    // this.runTimer(v);
+    // }
   };
 
   private onChangeCheckbox = (checkedList: any) => {
@@ -103,7 +103,7 @@ class ProcessesTabPage extends React.Component<Props> {
 
   private cleanTimer = () => {
     if (this.state.intervalId) {
-      clearInterval(this.state.intervalId);
+      clearTimeout(this.state.intervalId);
     }
   };
 
@@ -113,8 +113,8 @@ class ProcessesTabPage extends React.Component<Props> {
   };
 
   private runTimer = (interval: number) => {
-    this.cleanTimer();
-    const intervalId = setInterval(this.update, 1000 * interval);
+    // this.cleanTimer();
+    const intervalId = setTimeout(this.update, 1000 * interval);
     this.setState({ intervalId });
   };
 
@@ -135,8 +135,14 @@ class ProcessesTabPage extends React.Component<Props> {
   private play = () => {
     this.reset();
     this.setState({ isPlaying: true });
-    this.runTimer(this.state.interval);
+    this.update();
   };
+
+  private timerTic() {
+    if (this.state.isPlaying) {
+      this.runTimer(this.state.interval);
+    }
+  }
 
   private sortingSet = (coll: any) => {
     if (typeof coll === 'object') {
@@ -176,13 +182,15 @@ class ProcessesTabPage extends React.Component<Props> {
           // Drop data, if result is empty
           this.setState({ data: [] });
         }
+        this.timerTic();
       })
       .catch(e => {
         console.log('Error', e);
         this.counterSet(this.state.countError + 1, this.state.countSuccess);
-
         if (this.state.countError > 19) {
           this.stop();
+        } else {
+          this.timerTic();
         }
       });
   };
