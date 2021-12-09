@@ -4,7 +4,9 @@ import SqlEditor from './SqlEditor';
 
 type IReadOnlyModel = monacoEditor.editor.IReadOnlyModel;
 type Monaco = typeof monacoEditor;
-
+// https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/driver.ts
+// https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/keywords.ts
+// https://github.com/mtxr/vscode-sqltools/tree/dev/packages
 const globalMonaco: Monaco = window.monaco;
 
 export const globalEditorsMap = new WeakMap<Uri, SqlEditor>();
