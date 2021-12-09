@@ -127,7 +127,13 @@ export default class EditorTabPage extends React.Component<Props> {
     <DataTable data={data} onAction={this.onDataTableAction} fill />
   );
 
-  private renderDraw = (data: DataDecorator) => <Draw data={data} />;
+  private renderDraw = (data: DataDecorator) => <Draw data={data} fill />;
+
+  private onResizeGrid = () => {
+    //
+    console.log('on Resize Grid');
+    //
+  };
 
   render() {
     const { store, serverStructure, model, width } = this.props;
@@ -156,12 +162,13 @@ export default class EditorTabPage extends React.Component<Props> {
               pinned={model.pinnedResult}
               onAction={this.onResultTabAction}
             >
-              <Tabs.TabPane key="table" tab="Table view">
+              <Tabs.TabPane key="table" tab="Data / Table">
                 {!!store.uiStore.executingQueries.length && (
                   <Progress queries={store.uiStore.executingQueries} />
                 )}
 
                 <DataItemsLayout
+                  onResize={this.onResizeGrid}
                   cols={4}
                   itemWidth={4}
                   itemHeight={14}
@@ -172,12 +179,13 @@ export default class EditorTabPage extends React.Component<Props> {
                 />
               </Tabs.TabPane>
 
-              <Tabs.TabPane key="draw" tab="Draw view">
+              <Tabs.TabPane key="draw" tab="Chart / Draw">
                 {!!store.uiStore.executingQueries.length && (
                   <Progress queries={store.uiStore.executingQueries} />
                 )}
 
                 <DataItemsLayout
+                  onResize={this.onResizeGrid}
                   cols={4}
                   itemWidth={4}
                   itemHeight={6}

@@ -10,6 +10,11 @@ export interface JSONObject extends Record<string, JSONTypes> {}
 
 export interface JSONArray extends ReadonlyArray<JSONTypes> {}
 
+export default interface SerializableModel<Entity extends object> {
+  jsonModel?: Entity; // Just for correct infering: https://github.com/Microsoft/TypeScript/issues/26688
+  toJSON(): JSONModel<Entity>;
+}
+
 // type ExcludeFunctions<T> = Pick<T, { [K in keyof T]: T[K] extends Function ? never : K }[keyof T]>;
 export type ExcludeFunctions<T extends object> = Pick<T, Exclude<keyof T, KeysOfType<T, Function>>>;
 
@@ -172,11 +177,6 @@ export function serialize<Entity>(
   }
 
   return String(v) as any;
-}
-
-export default interface SerializableModel<Entity extends object> {
-  jsonModel?: Entity; // Just for correct infering: https://github.com/Microsoft/TypeScript/issues/26688
-  toJSON(): JSONModel<Entity>;
 }
 
 // const a = serialize({ a: 1 });

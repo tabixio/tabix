@@ -1,11 +1,13 @@
 import React from 'react';
 import { QueryResult } from 'models';
 import DataDecorator from 'services/api/DataDecorator';
+import { ItemCallback } from 'react-grid-layout';
 import GridLayout, { GridLayoutProps, ItemLayoutProps, getItemLayoutDefault } from '../GridLayout';
 import css from './DataItemsLayout.css';
 
 interface Props extends GridLayoutProps<QueryResult> {
   renderItem: (data: DataDecorator) => React.ReactNode;
+  onResize: ItemCallback | undefined;
 }
 
 function getItemLayout(
@@ -19,9 +21,9 @@ function getItemLayout(
     i: item.id,
   };
 }
-export default function DataItemsLayout({ items, renderItem, ...rest }: Props) {
+export default function DataItemsLayout({ items, renderItem, onResize, ...rest }: Props) {
   return (
-    <GridLayout items={items} getItemLayout={getItemLayout} {...rest}>
+    <GridLayout items={items} onResizeStop={onResize} getItemLayout={getItemLayout} {...rest}>
       {items.map(item => (
         <div key={item.id} className={css['grid-item']}>
           {item.result.fold(

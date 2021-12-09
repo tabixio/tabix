@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Childrenable } from 'reflexy';
-import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
+import ReactGridLayout, { WidthProvider, ItemCallback } from 'react-grid-layout';
 import { Omit } from 'typelevel-ts';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -18,6 +18,7 @@ export interface GridLayoutProps<Item = any> extends Childrenable {
   width?: number;
   locked?: boolean;
   getItemLayout?: (index: number, item: Item, props: ItemLayoutProps) => ReactGridLayout.Layout;
+  onResizeStop?: ItemCallback | undefined;
 }
 
 export function getItemLayoutDefault(
@@ -58,6 +59,7 @@ export default function GridLayout(props: GridLayoutProps) {
     itemWidth,
     locked,
     getItemLayout,
+    onResizeStop,
   } = props;
 
   if (!items.length) return null;
@@ -71,10 +73,12 @@ export default function GridLayout(props: GridLayoutProps) {
   ]);
 
   // refactor: detect initial width through props
-  const Layout = width ? ReactGridLayout : ReactGridLayoutFilled;
+  const GLayout = width ? ReactGridLayout : ReactGridLayoutFilled;
+  // const Layout = ReactGridLayoutFilled;
 
   return (
-    <Layout
+    <GLayout
+      onResizeStop={onResizeStop}
       layout={layout}
       cols={cols}
       width={width}
@@ -86,6 +90,6 @@ export default function GridLayout(props: GridLayoutProps) {
       useCSSTransforms={false}
     >
       {children}
-    </Layout>
+    </GLayout>
   );
 }

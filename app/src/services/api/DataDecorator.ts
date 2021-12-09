@@ -13,6 +13,7 @@ export interface ColumnMetadata {
   useHumanSort: boolean;
   forceSort: boolean;
   forceSortOrder: boolean;
+  index: number;
 }
 
 interface Metadata {
@@ -46,7 +47,7 @@ export default class DataDecorator {
   constructor(result: any, _query: Query | undefined) {
     this.query = _query;
     this.rows = [];
-    this.meta = { columns: [] };
+    this.meta = { columns: [] }; // name: "number" type: "UInt64"
 
     if (result.totals && result.data) {
       result.data.push(result.totals);
@@ -82,8 +83,18 @@ export default class DataDecorator {
     }
     // ----------------------------------------------------------------------------------------------------
     // this.rows = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
-    this.rows = result.data;
-    this.meta = { columns: result.meta };
+
+    const limitRows = 3500;
+
+    this.rows = result.data.slice(0, limitRows);
+
+    // let columns: Array<ColumnMetadata>;
+    const columns: Array<ColumnMetadata> = result.meta.map((row: any, index: number) => {
+      row.index = index;
+      return row;
+    });
+    this.meta = { columns };
+
     // prepare (Int64+UInt64+Float64)
     if (this.rows) {
       try {
@@ -92,11 +103,74 @@ export default class DataDecorator {
         console.error('Error in prepareInt64', e);
       }
     }
-
     // this.draw = this.query.drawCommands;
-    // this.rows = result.rows;
     // this.position = this.query.index; // порядковый номер
     // this.countAll = result.countAllQuery; // всего запросов в выполнении
+  }
+
+  findDateTimeOrDateColumn(): ColumnMetadata | null {
+    const l = this.getFirstDateTimeColumn();
+    if (!l) {
+      return this.getFirstDateColumn();
+    }
+    return l;
+  }
+
+  isExistsColumn(col: string): boolean {
+    return this.meta.columns.some((elem: ColumnMetadata) => elem.name === col);
+  }
+
+  getFirstColumn(): ColumnMetadata | null {
+    return this.getColumnByPosition(0);
+  }
+
+  getFirstDateTimeColumn(): ColumnMetadata | null {
+    return this.getFirstColumnByType('DateTime');
+  }
+
+  getFirstDateColumn(): ColumnMetadata | null {
+    return this.getFirstColumnByType('Date');
+  }
+
+  getColumn(col: string): ColumnMetadata | null {
+    const e = this.meta.columns.find((elem: ColumnMetadata) => elem.name === col);
+    return !e ? null : e;
+  }
+
+  getFirstColumnByType(type: string): ColumnMetadata | null {
+    const e = this.meta.columns.find(
+      (elem: ColumnMetadata) => elem.type.toLowerCase() === type.toLowerCase()
+    );
+    return !e ? null : e;
+  }
+
+  getColumnByPosition(index: number): ColumnMetadata | null {
+    const e = this.meta.columns.find((elem: ColumnMetadata) => elem.index === index);
+    return !e ? null : e;
+  }
+
+  getColumns(): ReadonlyArray<ColumnMetadata> {
+    return this.meta.columns;
+  }
+
+  isStringColumn(col: string): boolean {
+    const e = this.getColumn(col);
+    if (!e) return false;
+    const type = e.type.toLowerCase();
+    if (type.includes('string') || type.includes('emum')) {
+      return true;
+    }
+    return false;
+  }
+
+  isNumericColumn(col: string): boolean {
+    const e = this.getColumn(col);
+    if (!e) return false;
+    const type = e.type.toLowerCase();
+    if (type.includes('int') || type.includes('float')) {
+      return true;
+    }
+    return false;
   }
 
   private prepareInt64() {
