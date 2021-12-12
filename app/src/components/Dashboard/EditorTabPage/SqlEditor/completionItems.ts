@@ -7,6 +7,8 @@ type Monaco = typeof monacoEditor;
 // https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/driver.ts
 // https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/keywords.ts
 // https://github.com/mtxr/vscode-sqltools/tree/dev/packages
+// // https://github.com/joe-re/sql-language-server
+
 const globalMonaco: Monaco = window.monaco;
 
 export const globalEditorsMap = new WeakMap<Uri, SqlEditor>();
@@ -43,6 +45,7 @@ export function getCompletionItems(
       if (!query.inCursor) return;
       // @ts-ignore
       query.tokens.forEach(oToken => {
+        console.info('token', oToken);
         if (['keyword.dbtable.sql', 'keyword.table.sql'].indexOf(oToken.type) !== -1) {
           let [db, table] = oToken.text
             .toUpperCase()
@@ -62,8 +65,8 @@ export function getCompletionItems(
       });
     });
   }
-  // console.log('queryes', queryes);console.log(query.tokens);
-  // if (currentListTables) console.log('Find database & tables', currentListTables);
+  console.log('queryes', queryes);
+  if (currentListTables) console.log('Find database & tables', currentListTables);
   // ------------------------------------------------------------------------------------------------
   // add items to Completion:Tables
   sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
@@ -78,7 +81,7 @@ export function getCompletionItems(
         // skip tables & databases if not in `query`
         return;
       }
-      // console.log('Load items:', db.name, table.name);
+      console.log('Load items:', db.name, table.name);
       table.columns.forEach((column: ServerStructure.Column) => {
         completionItems.push({
           label: column.name,

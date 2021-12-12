@@ -46,6 +46,7 @@ export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexPro
   serverStructure?: ServerStructure.Server;
 }
 
+//  Глобальная ссылка на монако
 const globalMonaco: Monaco = window.monaco;
 
 @observer
@@ -87,6 +88,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     this.insertText(` ${coll.name} `, TextInsertType.Column);
   }
 
+  /**
+   * Вставка текста к курсору
+   * @param textToInsert
+   * @param mode
+   */
   public insertText(textToInsert: string, mode: TextInsertType) {
     // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
     console.log('textToInsert', textToInsert, mode);
@@ -125,6 +131,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     this.editor = editor;
   };
 
+  /**
+   * Init global editor
+   *
+   * @param monaco
+   */
   private onEditorWillMount = (monaco: Monaco) => {
     monaco.editor.defineTheme('darcula', themeDarcula);
     monaco.editor.defineTheme('cobalt', themeCobalt);
@@ -202,6 +213,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
         });
       });
     });
+    console.info('languageSettings', languageSettings);
     // ----- push to completionItems:Functions
     if (serverStructure.editorRules) {
       serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
