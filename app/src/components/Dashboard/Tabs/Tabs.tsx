@@ -6,21 +6,19 @@ import css from './Tabs.css';
 
 interface TabsProps extends AntdTabsProps, ActionsMenuProps {}
 
-export default function Tabs({
+export const Tabs: React.FC<TabsProps> = ({
   tabBarExtraContent,
   className,
   type,
   onMenuAction,
   ...rest
-}: TabsProps) {
-  return (
-    <AntdTabs
-      type="editable-card"
-      className={css.root}
-      tabBarExtraContent={<ActionsMenu onMenuAction={onMenuAction} />}
-      {...rest}
-    />
-  );
-}
+}) => (
+  <AntdTabs
+    type="editable-card"
+    className={css.root}
+    tabBarExtraContent={<ActionsMenu onMenuAction={onMenuAction} />}
+    {...rest}
+  />
+);
 
-Tabs.TabPane = AntdTabs.TabPane;
+export const TabsTabPane = AntdTabs.TabPane;

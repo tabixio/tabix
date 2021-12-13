@@ -14,12 +14,12 @@ export enum ConnectionType {
 }
 
 export interface DirectConnection extends ConnectionLike {
-  type: ConnectionType.Direct;
+  type: string;
   params?: string;
 }
 
 export interface ServerConnection extends ConnectionLike {
-  type: ConnectionType.Server;
+  type: string;
   configKey?: string;
 }
 

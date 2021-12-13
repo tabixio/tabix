@@ -52,7 +52,7 @@ export type ExtractOptionType<A> = A extends Option<infer B> ? B : A;
 export declare type JSONModelProp<P extends any> = P extends JSONTypes
   ? P
   : undefined extends P
-  ? P extends object | undefined
+  ? P extends object | undefined // @ts-ignore
     ? (JSONModel<Extract<P, undefined>> | undefined)
     : (string | undefined)
   : P extends SerializableModel<infer T>
@@ -154,6 +154,7 @@ export function serialize<Entity>(
   ? JSONModel<Entity>
   : string {
   if (v == null) {
+    // @ts-ignore
     return v;
   }
   if (Array.isArray(v)) {

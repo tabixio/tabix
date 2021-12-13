@@ -24,5 +24,5 @@ export type ViewModelLike<T> = T extends ModelLike<infer E>
 export default function createViewModel<E extends object, T extends Model<E>>(
   model: T
 ): ViewModelLike<T> {
-  return new ViewModel<E, T>(model) as ViewModelLike<T>;
+  return (new ViewModel<E, T>(model) as unknown) as ViewModelLike<T>;
 }

@@ -27,6 +27,7 @@ import {
   ServerOverviewTabPage,
   ServerStructureTree,
   Tabs,
+  TabsTabPane,
   SqlHistoryTabPage,
 } from 'components/Dashboard';
 import { TextInsertType } from 'components/Dashboard/EditorTabPage';
@@ -206,7 +207,7 @@ class DashboardView extends React.Component<RoutedProps> {
             onMenuAction={this.onMenuAction}
           >
             {tabsStore.tabs.map(t => (
-              <Tabs.TabPane
+              <TabsTabPane
                 key={t.id}
                 closable
                 tab={
@@ -239,7 +240,7 @@ class DashboardView extends React.Component<RoutedProps> {
                 {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
                   <SqlHistoryTabPage onEdit={tabsStore.openNewEditorTab} />
                 )}
-              </Tabs.TabPane>
+              </TabsTabPane>
             ))}
           </Tabs>
         </Splitter>

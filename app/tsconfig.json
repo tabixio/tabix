@@ -13,12 +13,14 @@
     "resolveJsonModule": true,
     "suppressImplicitAnyIndexErrors": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, /* true */
+    "noUnusedParameters": false, /* true */
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "jsx": "react",
-
+    "strictNullChecks": true, /* no */
+    "forceConsistentCasingInFileNames": true, /* no */
+    "noImplicitThis": true, /* no  */
     "lib": ["dom", "dom.iterable", "esnext"]
   },
   "files": ["./src/index.tsx"]

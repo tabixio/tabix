@@ -1,4 +1,4 @@
-export { default as Tabs } from './Tabs';
+export { Tabs, TabsTabPane } from './Tabs';
 export { default as ServerStructureTree } from './ServerStructureTree';
 export { default as NavPrompt } from './NavPrompt';
 export { default as EditorTabPage } from './EditorTabPage';

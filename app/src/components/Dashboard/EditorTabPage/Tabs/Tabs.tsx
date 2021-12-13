@@ -8,15 +8,12 @@ interface TabsProps
   extends Omit<AntdTabsProps, 'tabBarExtraContent' | 'className' | 'type'>,
     ActionsProps {}
 
-export default function Tabs({ pinned, onAction, ...rest }: TabsProps) {
-  return (
-    <AntdTabs
-      type="card"
-      animated={false}
-      tabBarExtraContent={<Actions pinned={pinned} onAction={onAction} />}
-      {...rest}
-    />
-  );
-}
-
-Tabs.TabPane = AntdTabs.TabPane;
+export const Tabs: React.FC<TabsProps> = ({ pinned, onAction, ...rest }) => (
+  <AntdTabs
+    type="card"
+    animated={false}
+    tabBarExtraContent={<Actions pinned={pinned} onAction={onAction} />}
+    {...rest}
+  />
+);
+export const TabsTabPane = AntdTabs.TabPane;

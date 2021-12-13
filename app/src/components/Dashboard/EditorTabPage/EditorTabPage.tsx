@@ -11,11 +11,12 @@ import SqlEditor from './SqlEditor';
 import { ActionType as EditorActionType } from './SqlEditor/Toolbar';
 import { TextInsertType } from './SqlEditor/types';
 import SaveModal from './SaveModal';
-import Tabs, { ResultTabActionType } from './Tabs';
+import { Tabs, ResultTabActionType } from './Tabs';
 import DataItemsLayout from './DataItemsLayout';
 import DataTable, { DataTableProps, ResultTableActionType } from './DataTable';
 import Draw from './Draw';
 import Progress from './Progress';
+import { TabsTabPane } from './Tabs/Tabs';
 
 interface Props {
   store: TabsStore;
@@ -162,7 +163,7 @@ export default class EditorTabPage extends React.Component<Props> {
               pinned={model.pinnedResult}
               onAction={this.onResultTabAction}
             >
-              <Tabs.TabPane key="table" tab="Data / Table">
+              <TabsTabPane key="table" tab="Data / Table">
                 {!!store.uiStore.executingQueries.length && (
                   <Progress queries={store.uiStore.executingQueries} />
                 )}
@@ -177,9 +178,9 @@ export default class EditorTabPage extends React.Component<Props> {
                   renderItem={this.renderTable}
                   locked={model.pinnedResult}
                 />
-              </Tabs.TabPane>
+              </TabsTabPane>
 
-              <Tabs.TabPane key="draw" tab="Chart / Draw">
+              <TabsTabPane key="draw" tab="Chart / Draw">
                 {!!store.uiStore.executingQueries.length && (
                   <Progress queries={store.uiStore.executingQueries} />
                 )}
@@ -193,7 +194,7 @@ export default class EditorTabPage extends React.Component<Props> {
                   width={width}
                   renderItem={this.renderDraw}
                 />
-              </Tabs.TabPane>
+              </TabsTabPane>
             </Tabs>
           </div>
         </Splitter>

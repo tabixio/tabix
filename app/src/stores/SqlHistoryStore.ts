@@ -5,7 +5,7 @@ import ApiRequestableStore from './ApiRequestableStore';
 
 export default class SqlHistoryStore extends ApiRequestableStore {
   @observable
-  history: ReadonlyArray<string> = [];
+  history: Array<string> = [];
 
   @withRequest
   async loadData() {
