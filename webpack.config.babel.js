@@ -73,7 +73,15 @@ const devServer = {
 const plugins = [
   // Removes/cleans build folders and unused assets when rebuilding
   new CleanWebpackPlugin(),
-  new ForkTsCheckerPlugin(),
+  new ForkTsCheckerPlugin({
+    typescript: {
+      memoryLimit: 2048,
+      configFile: path.resolve(baseDir, 'app/tsconfig.json'),
+    },
+    // tsconfig: path.resolve(baseDir, 'app/tsconfig.json'),
+    // checkSyntacticErrors: false,
+    // memoryLimit: 2024,
+  }),
   // new BundleAnalyzerPlugin({
   //   openAnalyzer: false, // http://127.0.0.1:8888/
   // }),
@@ -103,13 +111,13 @@ export default {
     modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
   },
 
-  stats: {
-    all: true,
-    assets: true,
-    // excludeAssets: !assetName.endsWith(".js")),
-    assetsSort: '!size',
-    errors: true,
-  },
+  // stats: {
+  //   all: false,
+  //   assets: true,
+  //   // excludeAssets: !assetName.endsWith(".js")),
+  //   assetsSort: '!size',
+  //   errors: true,
+  // },
   module: {
     rules: [
       // ts-loader
@@ -122,11 +130,11 @@ export default {
             configFile: path.resolve(baseDir, 'app/tsconfig.json'),
             transpileOnly: true,
             happyPackMode: false,
-            getCustomTransformers: path.resolve('./webpack.ts-transformers.js'),
+            getCustomTransformers: path.resolve('./webpack/webpack.ts-transformers.js'),
           },
         },
       },
-      // CSS
+      // CSS s
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'app/src')],
@@ -135,6 +143,9 @@ export default {
           {
             loader: 'css-loader',
             options: {
+              // postcssOptions: {
+              //   config: path.resolve('./webpack/postcss.config.js'),
+              // },
               modules: true,
               localIdentName: '[name]__[local]--[hash:5]',
               sourceMap: true,
