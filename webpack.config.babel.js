@@ -1,68 +1,118 @@
-import path from 'path';
 import webpack from 'webpack';
-import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
-import lessVars from './webpack.less-vars';
-
+import path from 'path';
+// Import Settings
+import TerserJSPlugin from 'terser-webpack-plugin';
+import lessVars from './webpack/less-vars';
+// ---------- Plugins ------------------------------------------------------------
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+// -------------------------------------------------------------------------------
 const baseDir = process.cwd();
+const mode = process.env.NODE_ENV ? 'development' : 'production';
+const isProd = mode === 'production';
+const isDev = !isProd;
+const devServerHost = '0.0.0.0'; // isWindows() ? '127.0.0.1' : '0.0.0.0';
+// -------------------------------------------------------------------------------
 const CompressionPlugin = require('compression-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-// Environment config
-// const isDevelopment = process.env.NODE_ENV !== 'production';
-// const mode = isDevelopment ? 'development' : 'production';
-const mode = 'development';
+// -------------------------------------------------------------------------------
+const performance = {
+  hints: false,
+  maxEntrypointSize: 512000,
+  maxAssetSize: 512000,
+};
+const optimization = {
+  minimize: true,
+  minimizer: [
+    //    new TerserPlugin({
+    //      parallel: true,
+    //      terserOptions: {
+    // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+    //      },
+    // }),
+  ],
+  runtimeChunk: {
+    name: 'runtime',
+  },
 
+  splitChunks: {
+    cacheGroups: {
+      commons: {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendor',
+        chunks: 'all',
+        maxAsyncRequests: 20,
+        minSize: 100000,
+      },
+    },
+  },
+};
+const devServer = {
+  client: {
+    overlay: false,
+  },
+
+  historyApiFallback: true,
+  host: devServerHost,
+  port: 9000,
+  hot: true,
+  headers: { 'Access-Control-Allow-Origin': '*' },
+  static: {
+    publicPath: '/',
+    directory: path.resolve(baseDir, 'app/public'),
+  },
+  // noInfo: false,
+  // stats: 'minimal',
+};
+// -------------------------------------------------------------------------------
+// Customize the webpack build process
+const plugins = [
+  // Removes/cleans build folders and unused assets when rebuilding
+  new CleanWebpackPlugin(),
+  new ForkTsCheckerPlugin(),
+  // new BundleAnalyzerPlugin({
+  //   openAnalyzer: false, // http://127.0.0.1:8888/
+  // }),
+  new HtmlWebpackPlugin({
+    title: 'Tabix',
+    // favicon: `${paths.src}/images/favicon.png`,
+    inject: false,
+    template: path.join(baseDir, 'app/src/assets', 'index.pug'),
+    filename: 'index.html',
+  }),
+  new MonacoWebpackPlugin({ output: 'workers', languages: ['sql'] }),
+];
+// -------------------------------------------------------------------------------
 export default {
   target: 'web',
   context: path.resolve(baseDir, 'app/src'),
-
   entry: {
     app: ['./index'],
   },
-
   output: {
     path: path.resolve(baseDir, 'dist'),
     publicPath: '/',
     filename: path.join('js', `[name].js?[hash:5]`),
   },
-
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
   },
 
-  mode,
-
-  devtool: 'cheap-module-eval-source-map',
-  optimization: {
-    runtimeChunk: 'single',
-    splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
-      cacheGroups: {
-        reactVendor: {
-          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-          name: 'reactvendor',
-        },
-        utilityVendor: {
-          test: /[\\/]node_modules[\\/](lodash|moment|moment-timezone)[\\/]/,
-          name: 'utilityVendor',
-        },
-        bootstrapVendor: {
-          test: /[\\/]node_modules[\\/](react-bootstrap)[\\/]/,
-          name: 'bootstrapVendor',
-        },
-        vendor: {
-          test: /[\\/]node_modules[\\/](!react-bootstrap)(!lodash)(!moment)(!moment-timezone)[\\/]/,
-          name: 'vendor',
-        },
-      },
-    },
+  stats: {
+    all: true,
+    assets: true,
+    // excludeAssets: !assetName.endsWith(".js")),
+    assetsSort: '!size',
+    errors: true,
   },
   module: {
     rules: [
+      // ts-loader
       {
         test: /\.tsx?$/,
         include: [path.resolve(baseDir, 'app/src')],
@@ -76,7 +126,7 @@ export default {
           },
         },
       },
-
+      // CSS
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'app/src')],
@@ -94,7 +144,7 @@ export default {
           'postcss-loader',
         ],
       },
-
+      // Css - modules
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'node_modules')],
@@ -109,7 +159,7 @@ export default {
           },
         ],
       },
-
+      // Less
       {
         test: /\.less$/,
         include: [path.resolve(baseDir, 'node_modules', 'antd')],
@@ -130,9 +180,9 @@ export default {
           },
         ],
       },
-
+      // PUG
       { test: /\.pug$/, use: { loader: 'pug-loader' } },
-
+      // IMG
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2|otf)$/,
         include: [path.resolve(baseDir, 'app/src/assets'), path.resolve(baseDir, 'node_modules')],
@@ -147,31 +197,42 @@ export default {
       },
     ],
   },
-
-  plugins: [
-    new BundleAnalyzerPlugin({
-      openAnalyzer: false, // http://127.0.0.1:8888/
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-    // new CompressionPlugin(),
-    new ForkTsCheckerPlugin(),
-
-    new HtmlWebpackPlugin({
-      inject: false,
-      template: path.join(baseDir, 'app/src/assets', 'index.pug'),
-      filename: 'index.html',
-    }),
-    new MonacoWebpackPlugin({ output: 'workers', languages: ['sql'] }),
-  ],
-
-  devServer: {
-    contentBase: path.resolve(baseDir, 'app/public'),
-    publicPath: '/',
-    historyApiFallback: true,
-    host: '0.0.0.0',
-    port: 9000,
-    hotOnly: true,
-    noInfo: false,
-    stats: 'minimal',
-  },
+  // devtool: 'cheap-module-eval-source-map',
+  devtool: 'source-map',
+  optimization,
+  plugins,
+  mode,
+  devServer,
+  performance,
 };
+
+// const { merge } = require('webpack-merge');
+// const common = require('./webpack/common');
+//
+//
+// module.exports = merge(common, {
+//   // Set the mode to development or production
+//   mode: 'development',
+//
+//   // Control how source maps are generated
+//   devtool: 'inline-source-map',
+//
+
+//   module: {
+//     rules: [
+//       // Styles: Inject CSS into the head with source maps
+//       {
+//         test: /\.(sass|scss|css)$/,
+//         use: [
+//           'style-loader',
+//           {
+//             loader: 'css-loader',
+//             options: { sourceMap: true, importLoaders: 1, modules: false },
+//           },
+//           { loader: 'postcss-loader', options: { sourceMap: true } },
+//           { loader: 'sass-loader', options: { sourceMap: true } },
+//         ],
+//       },
+//     ],
+//   },
+// });

@@ -235,7 +235,7 @@ SELECT 'RU' as cntr,'SPB' as city,8 as value,'Vokzalnay' as Street,3 as strval
 
 DRAW_SANKEYS
 {
-    path:'cntr.value.city.strval.Street'
+    settings:'cntr.value.city.strval.Street'
 }
 ```
 

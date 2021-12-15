@@ -1,7 +1,7 @@
 {
   "name": "tabix",
-  "version": "0.1.0",
-  "description": "tabix",
+  "version": "21.12.0",
+  "description": "Tabix",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
@@ -12,9 +12,11 @@
   },
   "scripts": {
     "clean": "rimraf dist/*",
-    "start": "yarn run clean && webpack-dev-server --color --progress --config webpack.config.babel.js",
+    "start": "yarn run clean && cross-env NODE_ENV=development && webpack-dev-server --mode development --color --progress --config webpack.config.babel.js",
+    "profile": "yarn run clean && cross-env NODE_ENV=production webpack --profile --json --config webpack.config.babel.js > ./dist/profile.json && webpack-bundle-analyzer ./dist/profile.json",
     "build:ts": "yarn run clean && tsc --project ./app/tsconfig.json",
-    "build:dev": "yarn run clean && webpack --config webpack.config.babel.js"
+    "build:dev": "yarn run clean && webpack --config webpack.config.babel.js",
+    "build:prod": "yarn run clean && cross-env NODE_ENV=production && webpack-dev-server --mode production --color --progress --config webpack.config.babel.js"
   },
   "resolutions": {
     "**/**/fsevents": "^1.2.9"
@@ -69,7 +71,7 @@
     "eslint-plugin-typescript": "^0.14.0",
     "file-loader": "^3.0.1",
     "fork-ts-checker-webpack-plugin": "^6.5.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^5.5.0",
     "husky": "^1.3.1",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
@@ -97,10 +99,10 @@
     "typescript": "3.9.5",
     "typescript-eslint-parser": "^21.0.2",
     "url-loader": "^1.1.2",
-    "webpack": "^4.28.3",
+    "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.14"
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
   },
   "dependencies": {
     "@handsontable/react": "^2.1.0",
@@ -110,6 +112,7 @@
     "classnames": "^2.2.6",
     "compression-webpack-plugin": "4.0.1",
     "downshift": "^3.1.8",
+    "eslint-webpack-plugin": "^3.1.1",
     "funfix-core": "^7.0.1",
     "handsontable": "6.2.2",
     "history": "^4.7.2",

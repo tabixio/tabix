@@ -1,6 +1,5 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-// import MonacoEditor from 'react-monaco-editor';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 // import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
@@ -8,12 +7,13 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
 import { Query, ServerStructure } from 'services';
+import {languages} from "monaco-editor";
 import { TextInsertType } from './types';
 
 //
-import { configuration, languageDef } from './monaco/language/Clickhouse';
+import { configuration as configurationClickhouse, language as languageClickhouse} from './monaco/language/Clickhouse';
 import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
-import { globalEditorsMap } from './completionItems';
+import { globalEditorsMap,provideCompletionItems} from './completionItems';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import css from './SqlEditor.css';
 import {bindKeys} from "./utils/bindKeys";
@@ -26,7 +26,7 @@ type tCodeEditor = monaco.editor.IStandaloneCodeEditor;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
 const monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
-  //   // language: 'clickhouse', // @TODO : ADD
+  // language: 'clickhouse', // @TODO : ADD
   //   // theme: 'cobalt', // @TODO : ADD
   minimap: { enabled: true, maxColumn: 60 },
   selectOnLineNumbers: true,
@@ -113,6 +113,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     this.editor = editor;
   };
 
+
+  public getSuggestions = () =>
+  [
+    {label:'OX',insertText:'OKSs'}
+  ]
+
   /**
    * Init global editor
    */
@@ -121,14 +127,19 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     thisMonaco.editor.defineTheme('cobalt', themeCobalt);
     if (!thisMonaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
         // Register a new language - add clickhouse
-        console.log('Register a new language - add clickhouse');
-      // Register a tokens provider for the language
-      thisMonaco.languages.setMonarchTokensProvider('clickhouse', languageDef as any);
+        thisMonaco.languages.register({ id: 'clickhouse', extensions: ['.sql'],aliases: ['chsql']});
+        // Register a tokens provider for the language
+        thisMonaco.languages.setMonarchTokensProvider('clickhouse', languageClickhouse as monaco.languages.IMonarchLanguage);
         // Set the editing configuration for the language
-      //   monaco.languages.setLanguageConfiguration('clickhouse', configuration);
-      if (this.props.serverStructure) {
-      //   this.updateGlobalEditorStructure(this.props.serverStructure);
-      }
+        thisMonaco.languages.setLanguageConfiguration('clickhouse', configurationClickhouse as monaco.languages.LanguageConfiguration);
+        if (this.props.serverStructure) {
+        //   this.updateGlobalEditorStructure(this.props.serverStructure);
+        }
+        monaco.languages.registerCompletionItemProvider('clickhouse',{
+            provideCompletionItems
+          }
+          // {provideCompletionItems: () => ({ suggestions: this.getSuggestions() }),}
+          );
     }
     // monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
     //
@@ -243,6 +254,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       <Flex column className={classNames(css.root, className)} {...rest}>
         <Flex grow fill className={css.editor}>
           <Editor
+            language="clickhouse"
             onMount={this.onEditorMount}
             beforeMount={this.onEditorBeforeMount}
             options={monacoEditorOptions}

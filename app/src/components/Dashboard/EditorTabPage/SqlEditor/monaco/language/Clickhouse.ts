@@ -48,7 +48,7 @@ import { languages } from 'monaco-editor';
  * [-] Order By COLLATE "LAST" : "FIRST"
  */
 
-export const languageDef = {
+export const language = <languages.IMonarchLanguage>{
   base: 'sql',
   defaultToken: '',
   tokenPostfix: '.sql',

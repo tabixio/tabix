@@ -1,96 +1,106 @@
-import monacoEditor, { Uri } from 'monaco-editor';
-// import { ServerStructure, Query } from 'services';
+// import monacoEditor, { Position, Uri } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
+import { ServerStructure, Query } from 'services';
 import SqlEditor from './SqlEditor';
 
-// type IReadOnlyModel = monacoEditor.editor.IReadOnlyModel;
-type Monaco = typeof monacoEditor;
+type Monaco = typeof monaco.editor;
+type IReadOnlyModel = monaco.editor.IReadOnlyModel;
+// type IPosition = monacoEditor.Position;
+// type CompletionList = typeof monacoEditor.languages.CompletionList;
+// type CompletionItem = typeof monacoEditor.languages.CompletionItem;
+// type ProviderResult = monacoEditor.languages.ProviderResult;
+
+// Examples:
 // https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/driver.ts
 // https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/keywords.ts
 // https://github.com/mtxr/vscode-sqltools/tree/dev/packages
-// // https://github.com/joe-re/sql-language-server
+// https://github.com/joe-re/sql-language-server
 
 const globalMonaco: Monaco = window.monaco;
 
-export const globalEditorsMap = new WeakMap<Uri, SqlEditor>();
+export const globalEditorsMap = new WeakMap<monaco.Uri, SqlEditor>();
 
-// export function getCompletionItems(
-//   model: IReadOnlyModel,
-//   position: Position
-// ): Array<monacoEditor.languages.CompletionItem> {
-//   const completionItems: Array<monacoEditor.languages.CompletionItem> = [];
-//   const sqlEditor = globalEditorsMap.get(model.uri);
-//   if (
-//     !(
-//       sqlEditor &&
-//       sqlEditor.props &&
-//       sqlEditor.props.currentDatabase &&
-//       sqlEditor.props.serverStructure
-//     )
-//   ) {
-//     console.error('sqlEditor.props.currentDatabase is empty');
-//     console.warn('sqlEditor', sqlEditor);
-//     return completionItems;
-//   }
-//   const selectDB: string = sqlEditor.props.currentDatabase;
-//   let currentListTables: Array<Array<string>> = [];
-//   // ------------------------------------------------------------------------------------------------
-//   // Try tokenize Text
-//   const queryes: Array<Query> = sqlEditor.tokenizeModel(model, position);
-//   if (queryes && queryes.length) {
-//     // if tokenize = true
-//     // find inCursor=true, fetch all tokens - find  type: "keyword.dbtable.sql" => push to currentListTables
-//     currentListTables = [];
-//     queryes.forEach((query: Query) => {
-//       // if query under cursor find databases & tables
-//       if (!query.inCursor) return;
-//       // @ts-ignore
-//       query.tokens.forEach(oToken => {
-//         console.info('token', oToken);
-//         if (['keyword.dbtable.sql', 'keyword.table.sql'].indexOf(oToken.type) !== -1) {
-//           let [db, table] = oToken.text
-//             .toUpperCase()
-//             .trim()
-//             .split('.') // @todo : need regexp
-//             // @ts-ignore
-//             .map(x => x.trim().replace('`', ''));
-//           // if find only table name -> use selectDB as DB
-//           if (!table && db) {
-//             table = db;
-//             db = selectDB;
-//           }
-//           // push
-//           if (!currentListTables[db]) currentListTables[db] = [];
-//           currentListTables[db].push(table);
-//         }
-//       });
-//     });
-//   }
-//   console.log('queryes', queryes);
-//   if (currentListTables) console.log('Find database & tables', currentListTables);
-//   // ------------------------------------------------------------------------------------------------
-//   // add items to Completion:Tables
-//   sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
-//     if (!currentListTables && db.name !== selectDB) return;
-//     if (!currentListTables[db.name.toUpperCase()]) return;
-//     db.tables.forEach((table: ServerStructure.Table) => {
-//       if (
-//         currentListTables &&
-//         currentListTables[db.name.toUpperCase()] &&
-//         currentListTables[db.name.toUpperCase()].indexOf(table.name.toUpperCase()) === -1
-//       ) {
-//         // skip tables & databases if not in `query`
-//         return;
-//       }
-//       console.log('Load items:', db.name, table.name);
-//       table.columns.forEach((column: ServerStructure.Column) => {
-//         completionItems.push({
-//           label: column.name,
-//           insertText: `${column.name}`,
-//           kind: globalMonaco.languages.CompletionItemKind.Reference,
-//           detail: `${column.type} in ${column.table}`,
-//         });
-//       });
-//     });
-//   });
-//   return completionItems;
-// }
+export function provideCompletionItems(
+  model: IReadOnlyModel,
+  position: monaco.Position,
+  context: monaco.languages.CompletionContext,
+  token: monaco.CancellationToken
+): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
+  const completionItems: Array<monaco.languages.CompletionItem> = [];
+  // const sqlEditor = globalEditorsMap.get(model.uri);
+  // if (
+  //   !(
+  //     sqlEditor &&
+  //     sqlEditor.props &&
+  //     sqlEditor.props.currentDatabase &&
+  //     sqlEditor.props.serverStructure
+  //   )
+  // ) {
+  console.error('sqlEditor.props.currentDatabase is empty');
+  console.error('completionItems');
+  // console.warn('sqlEditor', sqlEditor);
+  return { suggestions: completionItems };
+  // }
+  //   const selectDB: string = sqlEditor.props.currentDatabase;
+  //   let currentListTables: Array<Array<string>> = [];
+  //   // ------------------------------------------------------------------------------------------------
+  //   // Try tokenize Text
+  //   const queryes: Array<Query> = sqlEditor.tokenizeModel(model, position);
+  //   if (queryes && queryes.length) {
+  //     // if tokenize = true
+  //     // find inCursor=true, fetch all tokens - find  type: "keyword.dbtable.sql" => push to currentListTables
+  //     currentListTables = [];
+  //     queryes.forEach((query: Query) => {
+  //       // if query under cursor find databases & tables
+  //       if (!query.inCursor) return;
+  //       // @ts-ignore
+  //       query.tokens.forEach(oToken => {
+  //         console.info('token', oToken);
+  //         if (['keyword.dbtable.sql', 'keyword.table.sql'].indexOf(oToken.type) !== -1) {
+  //           let [db, table] = oToken.text
+  //             .toUpperCase()
+  //             .trim()
+  //             .split('.') // @todo : need regexp
+  //             // @ts-ignore
+  //             .map(x => x.trim().replace('`', ''));
+  //           // if find only table name -> use selectDB as DB
+  //           if (!table && db) {
+  //             table = db;
+  //             db = selectDB;
+  //           }
+  //           // push
+  //           if (!currentListTables[db]) currentListTables[db] = [];
+  //           currentListTables[db].push(table);
+  //         }
+  //       });
+  //     });
+  //   }
+  //   console.log('queryes', queryes);
+  //   if (currentListTables) console.log('Find database & tables', currentListTables);
+  //   // ------------------------------------------------------------------------------------------------
+  //   // add items to Completion:Tables
+  //   sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
+  //     if (!currentListTables && db.name !== selectDB) return;
+  //     if (!currentListTables[db.name.toUpperCase()]) return;
+  //     db.tables.forEach((table: ServerStructure.Table) => {
+  //       if (
+  //         currentListTables &&
+  //         currentListTables[db.name.toUpperCase()] &&
+  //         currentListTables[db.name.toUpperCase()].indexOf(table.name.toUpperCase()) === -1
+  //       ) {
+  //         // skip tables & databases if not in `query`
+  //         return;
+  //       }
+  //       console.log('Load items:', db.name, table.name);
+  //       table.columns.forEach((column: ServerStructure.Column) => {
+  //         completionItems.push({
+  //           label: column.name,
+  //           insertText: `${column.name}`,
+  //           kind: globalMonaco.languages.CompletionItemKind.Reference,
+  //           detail: `${column.type} in ${column.table}`,
+  //         });
+  //       });
+  //     });
+  //   });
+  // return { suggestions: completionItems };
+}
