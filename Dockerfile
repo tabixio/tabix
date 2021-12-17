@@ -5,7 +5,7 @@ ENV DEFAULT /etc/nginx/sites-enabled/default
 
 RUN set -x && \
     apt-get update && \
-    apt-get install -y --no-install-recommends nginx-full nginx libssl-dev openssl && \
+    apt-get install -y --no-install-recommends nginx-full nginx libssl-dev openssl bind9-dnsutils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

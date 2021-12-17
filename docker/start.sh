@@ -8,7 +8,18 @@ CONN=""
 if [ ! -z "$CH_NAME" ]; then
    CONN+="window.global_tabix_default_settings.name=\"${CH_NAME}\";"
 fi
-if [ ! -z "$CH_HOST" ]; then
+if [ -z "$CH_HOST" ]; then
+    if [ ! -z "$CH_RESOLVE_HOST" ]; then
+        host_="$(dig +short $CH_RESOLVE_HOST)"
+        if [ ! -z "$host_" ]; then
+            con_str_="${CH_RESOLVE_PROTO}${host_}${CH_RESOLVE_PORT}"
+            echo "Success: resolved host \"${CH_RESOLVE_HOST}\" using connection string: \"${con_str_}\""
+            CONN+="window.global_tabix_default_settings.host=\"${con_str_}\";"
+        else
+            echo "Error: could not resolve host: ${CH_RESOLVE_HOST}"
+        fi
+    fi
+else
    CONN+="window.global_tabix_default_settings.host=\"${CH_HOST}\";"
 fi
 if [ ! -z "$CH_PASSWORD" ]; then
