@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:bullseye
 
 ENV APP_HOME /usr/src/app
 ENV DEFAULT /etc/nginx/sites-enabled/default
