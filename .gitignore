@@ -18,7 +18,6 @@ node_modules/
 # Remove after prepare project
 app/src/components/Handsontable/
 
-
 # Yarn
 .yarn/*
 !.yarn/cache
