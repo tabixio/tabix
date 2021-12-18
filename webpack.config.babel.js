@@ -107,6 +107,7 @@ export default {
     filename: path.join('js', `[name].js?[hash:5]`),
   },
   resolve: {
+    fallback: { fs: false }, // For antlr4!
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
   },

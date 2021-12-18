@@ -2187,6 +2187,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"antlr4ts-cli@npm:^0.5.0-alpha.4":
+  version: 0.5.0-dev
+  resolution: "antlr4ts-cli@npm:0.5.0-dev"
+  dependencies:
+    source-map-support: ^0.5.16
+  bin:
+    antlr4ts: antlr4ts
+  checksum: 09f743ddfc4365cfe3e5c04896006b5ff8470913fcc80d05e17ded72079b11c3ba54c3b19857014df14f33c110d46ce67507873406687c6dcc4a3d730c514bbc
+  languageName: node
+  linkType: hard
+
+"antlr4ts@npm:^0.5.0-alpha.4":
+  version: 0.5.0-dev
+  resolution: "antlr4ts@npm:0.5.0-dev"
+  dependencies:
+    source-map-support: ^0.5.16
+  checksum: 640dae2229124372b0329315e9614ae983bb80b1af237d8c0b3e90a2d85fb534e851c51d65d1897c92b36d27851d041ad8d95aab44af19cf7355b3ad11a3ddbf
+  languageName: node
+  linkType: hard
+
 "any-observable@npm:^0.3.0":
   version: 0.3.0
   resolution: "any-observable@npm:0.3.0"
@@ -15518,6 +15538,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.20":
+  version: 0.5.21
+  resolution: "source-map-support@npm:0.5.21"
+  dependencies:
+    buffer-from: ^1.0.0
+    source-map: ^0.6.0
+  checksum: 43e98d700d79af1d36f859bdb7318e601dfc918c7ba2e98456118ebc4c4872b327773e5a1df09b0524e9e5063bb18f0934538eace60cca2710d1fa687645d137
+  languageName: node
+  linkType: hard
+
 "source-map-support@npm:^0.5.9":
   version: 0.5.9
   resolution: "source-map-support@npm:0.5.9"
@@ -15525,16 +15555,6 @@ __metadata:
     buffer-from: ^1.0.0
     source-map: ^0.6.0
   checksum: b5e0ad120ca7229041ce3cc2ea353495d23e0f58fc5fbacb04df863b5625206b6be3873508124d537de3a1fd7d2baa708b89b3d2ddfd04241c74aee6f788e40f
-  languageName: node
-  linkType: hard
-
-"source-map-support@npm:~0.5.20":
-  version: 0.5.21
-  resolution: "source-map-support@npm:0.5.21"
-  dependencies:
-    buffer-from: ^1.0.0
-    source-map: ^0.6.0
-  checksum: 43e98d700d79af1d36f859bdb7318e601dfc918c7ba2e98456118ebc4c4872b327773e5a1df09b0524e9e5063bb18f0934538eace60cca2710d1fa687645d137
   languageName: node
   linkType: hard
 
@@ -16249,6 +16269,8 @@ __metadata:
     "@types/uuid": ^3.4.4
     "@types/webpack-env": ^1.13.6
     antd: 3.26.20
+    antlr4ts: ^0.5.0-alpha.4
+    antlr4ts-cli: ^0.5.0-alpha.4
     babel-eslint: ^10.0.1
     chroma-js: ^2.0.2
     classnames: ^2.2.6
