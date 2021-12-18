@@ -12,7 +12,7 @@ import { themeCobalt } from './monaco/theme/Cobalt';
 import { themeDarcula } from './monaco/theme/Darcula';
 import { themeVsDark } from './monaco/theme/Vsdark';
 import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
-import { getCompletionItems, globalEditorsMap } from './completionItems';
+import { getCompletionItems, globalEditorsMap } from './monaco/language/completionItems';
 import css from './SqlEditor.css';
 
 const monacoEditorOptions: monacoEditor.editor.IEditorConstructionOptions = {

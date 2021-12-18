@@ -2,7 +2,6 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-// import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
@@ -11,9 +10,12 @@ import {languages} from "monaco-editor";
 import { TextInsertType } from './types';
 
 //
-import { configuration as configurationClickhouse, language as languageClickhouse} from './monaco/language/Clickhouse';
+import {
+  configuration as configurationClickhouse,
+  language as languageClickhouse,
+} from './monaco/language/Clickhouse';
 import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
-import { globalEditorsMap,provideCompletionItems} from './completionItems';
+import { ClickhouseCompletion} from './monaco/language/completionItems';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import css from './SqlEditor.css';
 import {bindKeys} from "./utils/bindKeys";
@@ -25,7 +27,12 @@ type tMonaco = typeof monaco;
 type tCodeEditor = monaco.editor.IStandaloneCodeEditor;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
+type tMonacoEditor = typeof monaco.editor;
+type IReadOnlyModel = monaco.editor.IReadOnlyModel;
+
+
 const monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
+  // tabIndex
   // language: 'clickhouse', // @TODO : ADD
   //   // theme: 'cobalt', // @TODO : ADD
   minimap: { enabled: true, maxColumn: 60 },
@@ -35,6 +42,8 @@ const monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
   fontFamily: 'Monaco,Menlo,Ubuntu Mono,Consolas,"source-code-pro","monospace"',
   fontSize: 14,
   //
+  mouseWheelZoom:true,
+  cursorSmoothCaretAnimation:true,
   fontWeight: 'lighter',
   emptySelectionClipboard: true,
   formatOnType: true,
@@ -46,10 +55,17 @@ const monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
   },
   scrollBeyondLastLine: false,
   //
-  quickSuggestionsDelay: 500,
-  renderWhitespace: 'boundary',
+  suggestOnTriggerCharacters:false,
+  quickSuggestions:true,
+  //   {
+  //   "other": true,
+  //   "comments": false,
+  //   "strings": true                 // this is the key setting, default is false3
+  // },
+  // quickSuggestionsDelay: 500,
+  // renderWhitespace: 'boundary',
   fontLigatures: true,
-  autoIndent: 'full', // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
+  // autoIndent: 'full', // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
 };
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
@@ -64,6 +80,7 @@ const globalMonaco: tMonaco = window.monaco;
 @observer
 export default class SqlEditor extends React.Component<SqlEditorProps> {
   private editor?: tCodeEditor;
+  private tMonaco?: tMonaco;
 
   componentWillUnmount() {
     this.setEditorRef(undefined);
@@ -113,54 +130,36 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     this.editor = editor;
   };
 
+  private getTableCompletionSuggestions = (  model: IReadOnlyModel,
+                             position: monaco.Position,
+                             context: monaco.languages.CompletionContext,
+                             token: monaco.CancellationToken):monaco.languages.ProviderResult<monaco.languages.CompletionList>=>{
 
-  public getSuggestions = () =>
-  [
-    {label:'OX',insertText:'OKSs'}
-  ]
+    // See monaco/lang/compl
+    return ClickhouseCompletion.findCurrentTableFields(model,position,context,token,this.props.currentDatabase,this.props.serverStructure);
+}
 
   /**
    * Init global editor
    */
-  private onEditorBeforeMount = (thisMonaco: tMonaco) => {
-    console.log('Init onEditorBeforeMount - tmonaco: tMonaco');
+  private onEditorBeforeMount = (thisMonaco: tMonaco):void => {
     thisMonaco.editor.defineTheme('cobalt', themeCobalt);
-    if (!thisMonaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
-        // Register a new language - add clickhouse
-        thisMonaco.languages.register({ id: 'clickhouse', extensions: ['.sql'],aliases: ['chsql']});
-        // Register a tokens provider for the language
-        thisMonaco.languages.setMonarchTokensProvider('clickhouse', languageClickhouse as monaco.languages.IMonarchLanguage);
-        // Set the editing configuration for the language
-        thisMonaco.languages.setLanguageConfiguration('clickhouse', configurationClickhouse as monaco.languages.LanguageConfiguration);
-        if (this.props.serverStructure) {
-        //   this.updateGlobalEditorStructure(this.props.serverStructure);
-        }
-        monaco.languages.registerCompletionItemProvider('clickhouse',{
-            provideCompletionItems
-          }
-          // {provideCompletionItems: () => ({ suggestions: this.getSuggestions() }),}
-          );
-    }
-    // monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-    //
-    //
-    //
-    // if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
-    //   // Register a new language
-    //   monaco.languages.register({
-    //     id: 'clickhouse',
-    //     extensions: ['.sql'],
-    //     aliases: ['chsql'],
-    //   });
-    //   // Register a tokens provider for the language
-    //   monaco.languages.setMonarchTokensProvider('clickhouse', languageDef as any);
-    //   // Set the editing configuration for the language
-    //   monaco.languages.setLanguageConfiguration('clickhouse', configuration);
-    // if (this.props.serverStructure) {
-    //   this.updateGlobalEditorStructure(this.props.serverStructure);
-    // }
-    //
-  };
+    this.tMonaco = thisMonaco;
+    if (!thisMonaco.languages.getLanguages().some(({id}) => id === 'clickhouse')) {
+      // Register a new language - add clickhouse
+      thisMonaco.languages.register({id: 'clickhouse', extensions: ['.sql'], aliases: ['chsql']});
+      // Register a tokens provider for the language
+      thisMonaco.languages.setMonarchTokensProvider('clickhouse', languageClickhouse as monaco.languages.IMonarchLanguage);
+      // Set the editing configuration for the language
+      thisMonaco.languages.setLanguageConfiguration('clickhouse', configurationClickhouse as monaco.languages.LanguageConfiguration);
+      if (this.props.serverStructure) {
+          this.updateGlobalEditorStructure(this.props.serverStructure);
+      }
+      // Register second CompletionItemProvider
+      thisMonaco.languages.registerCompletionItemProvider('clickhouse', { provideCompletionItems:this.getTableCompletionSuggestions});
+      // Done?
+    };
+  }
 
   public execQueries = (editor: iCodeEditor,isExecAll:boolean): void => {
     console.warn('execQueries');
@@ -180,32 +179,43 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
     if (!serverStructure) return;
-    // const languageSettings: any = languageDef;
-    // languageSettings.builtinFunctions = [];
-    //
+    if (!this.editor) {
+      console.warn("Error in updateGlobalEditorStructure, empty this.editor!");
+    }
+    if (!this.tMonaco) {
+      console.warn("Error in updateGlobalEditorStructure, empty this.tMonaco!");
+    }
+    if (this.tMonaco && serverStructure) {
+      // Base create completion,functions,tables,fields...
+      // Register first CompletionItemProvider & MonarchTokensProvider
+      // Attach to tMonaco - MonarchTokensProvider
+      ClickhouseCompletion.applyServerStructure(serverStructure,this.tMonaco);
+    }
   };
 
   private onEditorMount = (editor: tCodeEditor, thisMonaco: tMonaco) => {
     this.setEditorRef(editor);
+    this.tMonaco = thisMonaco;
+
     // Save current component instance to map
     //
       const modelUri = editor?.getModel()?.uri;
       if (modelUri) {
-        globalEditorsMap.set(modelUri, this);
-        // Replace model uri when changed
-        editor.onDidChangeModel(({ newModelUrl, oldModelUrl }) => {
-          if (oldModelUrl && newModelUrl) {
-            globalEditorsMap.delete(oldModelUrl);
-            globalEditorsMap.set(newModelUrl, this);
-          } else {
-            console.warn("globalEditorsMap not set old/new URI");
-          }
-        });
-
-      // Clear current component instance from map
-      editor.onDidDispose(() => {
-        globalEditorsMap.delete(modelUri);
-      });
+        //   globalEditorsMap.set(modelUri, this);
+        //   // Replace model uri when changed
+        //   editor.onDidChangeModel(({ newModelUrl, oldModelUrl }) => {
+        //     if (oldModelUrl && newModelUrl) {
+        //       globalEditorsMap.delete(oldModelUrl);
+        //       globalEditorsMap.set(newModelUrl, this);
+        //     } else {
+        //       console.warn("globalEditorsMap not set old/new URI");
+        //     }
+        //   });
+        //
+        // // Clear current component instance from map
+        // editor.onDidDispose(() => {
+        //   globalEditorsMap.delete(modelUri);
+        // });
     }
     // Bind keys to Editor
     const self=this;

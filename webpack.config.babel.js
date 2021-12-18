@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import path from 'path';
 // Import Settings
-import TerserJSPlugin from 'terser-webpack-plugin';
+// import TerserJSPlugin from 'terser-webpack-plugin';
 import lessVars from './webpack/less-vars';
 // ---------- Plugins ------------------------------------------------------------
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -9,7 +9,7 @@ const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 // -------------------------------------------------------------------------------
 const baseDir = process.cwd();
 const mode = process.env.NODE_ENV ? 'development' : 'production';

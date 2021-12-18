@@ -11,15 +11,12 @@
     "url": "https://github.com/tabixio/tabix.git"
   },
   "scripts": {
-    "clean": "rimraf dist/*",
-    "start": "yarn run clean && cross-env NODE_ENV=development && webpack-dev-server --mode development --color --progress --config webpack.config.babel.js",
+    "clean": "rimraf 'dist/*'",
+    "start": "yarn run clean && cross-env NODE_ENV=development && cross-env NODE_OPTIONS=--max-old-space-size=4096 webpack-dev-server --mode development --color --progress --config webpack.config.babel.js",
     "profile": "yarn run clean && cross-env NODE_ENV=production webpack --profile --json --config webpack.config.babel.js > ./dist/profile.json && webpack-bundle-analyzer ./dist/profile.json",
     "build:ts": "yarn run clean && tsc --project ./app/tsconfig.json",
     "build:dev": "yarn run clean && webpack --config webpack.config.babel.js",
     "build:prod": "yarn run clean && cross-env NODE_ENV=production && webpack-dev-server --mode production --color --progress --config webpack.config.babel.js"
-  },
-  "resolutions": {
-    "**/**/fsevents": "^1.2.9"
   },
   "husky": {
     "hooks": {
@@ -42,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.5",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
     "@types/chroma-js": "^1.4.1",
@@ -58,6 +56,8 @@
     "@types/uuid": "^3.4.4",
     "@types/webpack-env": "^1.13.6",
     "babel-eslint": "^10.0.1",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.1.0",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.0",
     "eslint": "^5.11.1",
@@ -112,6 +112,7 @@
     "classnames": "^2.2.6",
     "compression-webpack-plugin": "4.0.1",
     "downshift": "^3.1.8",
+    "dt-sql-parser": "^4.0.0-beta.2.2",
     "eslint-webpack-plugin": "^3.1.1",
     "funfix-core": "^7.0.1",
     "handsontable": "6.2.2",
@@ -126,6 +127,7 @@
     "react": "16.7.0-alpha.2",
     "react-dom": "16.7.0-alpha.2",
     "react-grid-layout": "^0.16.6",
+    "react-hot-loader": "^4.13.0",
     "react-plotly.js": "^2.5.1",
     "react-resizable": "^1.7.5",
     "react-router": "^4.3.1",
@@ -139,5 +141,6 @@
     "typelevel-ts": "^0.3.5",
     "uuid": "^3.3.2",
     "valtors": "^1.5.0"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }
