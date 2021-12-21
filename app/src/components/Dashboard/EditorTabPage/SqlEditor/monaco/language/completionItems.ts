@@ -1,10 +1,11 @@
 // import monacoEditor, { Position, Uri } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 import { ServerStructure } from 'services';
-import {
-  language as languageClickhouse,
-} from './Clickhouse';
-import monacoEditor, {languages} from "monaco-editor";
+import monacoEditor, { languages } from 'monaco-editor';
+import antlr4 from 'antlr4';
+import { language as languageClickhouse } from './Clickhouse';
+import ClickhouseSQL from '../sql-worker/clickhouse'; // //
+// import MySQL from 'dt-sql-parser/dist/parser/generic';
 
 type tMonaco = typeof monaco;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
@@ -23,8 +24,7 @@ type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 // https://github.com/mtxr/vscode-sqltools/tree/dev/packages
 // https://github.com/joe-re/sql-language-server
 // https://mono.software/2017/04/11/custom-intellisense-with-monaco-editor/
-// https://github.com/DTStack/monaco-sql-languages
-// https://github.com/DTStack/dt-sql-parser#readme
+
 // https://github.com/raycursive/monaco-sql-parser
 // https://github.com/DiscoverForever/monaco-sqlpad/blob/master/src/core/snippets.js
 // https://github.com/DTStack/molecule
@@ -35,11 +35,22 @@ type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 // export const globalEditorsMap = new WeakMap<monaco.Uri, SqlEditor>();
 export abstract class ClickhouseCompletion {
   static completionItems: Array<monacoEditor.languages.CompletionItem> = [];
+
   static serverStructure: ServerStructure.Server;
-  static languageCH:any;
-  public static updateGlobalProviderLink()
-  {
+
+  static languageCH: any;
+
+  // static parser: MySQL;
+  public static updateGlobalProviderLink() {
     console.info('updateGlobalProviderLink Dispose');
+    const w = new ClickhouseSQL();
+
+    const q =
+      "SELECT item1 as iT1, (2+2) as iT2, median(iT1+iT2) as Fie3  FROM system.tables WHERE table='ID' AND Fie3<1 ORDER BY iT1 /* COMMENTS */;";
+    const x: any = w.createParser(q);
+    console.warn(x);
+    // const input = "field = 123 AND items in (1,2,3)"
+    // const chars = new antlr4.InputStream(input);
     // Dispose
     // hack: link to window, need for react-hotload,or reload
     // когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
@@ -58,14 +69,11 @@ export abstract class ClickhouseCompletion {
       }
     }
   }
-  public static applyServerStructure(
-    serverStructure: ServerStructure.Server,
-    thisMonaco:tMonaco
-  )
-  {
+
+  public static applyServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco) {
     this.serverStructure = serverStructure;
     this.updateGlobalProviderLink();
-    let language: any = languageClickhouse;
+    const language: any = languageClickhouse;
     language.builtinFunctions = [];
 
     // ----- push databases and tables
@@ -91,16 +99,14 @@ export abstract class ClickhouseCompletion {
         language.builtinFunctions.push(func.name);
       });
     }
-    this.languageCH=language;
+    this.languageCH = language;
     // todo: add Dispose interface
     window.monacoGlobalProvider.tokensProvider = thisMonaco.languages.setMonarchTokensProvider(
       'clickhouse',
       language as any
     );
 
-
-
-return;
+    return;
     // serverStructure.databases.forEach((db: ServerStructure.Database) => {
     //   // Completion:dbName
     //   completionItems.push({
@@ -144,18 +150,14 @@ return;
     //   });
     // });
 
-    console.info("Update Editor Structure");
+    console.info('Update Editor Structure');
     const languageSettings = languageClickhouse;
     languageSettings.builtinFunctions = [];
 
+    thisMonaco.languages.setMonarchTokensProvider('clickhouse', languageSettings);
 
-
-
-    thisMonaco.languages.setMonarchTokensProvider( 'clickhouse', languageSettings );
-
-    console.warn("updateGlobalEditorStructure!",thisMonaco);
+    console.warn('updateGlobalEditorStructure!', thisMonaco);
   }
-
 
   public static findCurrentTableFields(
     model: IReadOnlyModel,
@@ -178,7 +180,6 @@ return;
     // console.error('sqlEditor.props.currentDatabase is empty');
     console.log('completionItemscompletionItems');
 
-
     const word = model.getWordUntilPosition(position);
     const range = {
       startLineNumber: position.lineNumber,
@@ -196,8 +197,7 @@ return;
     });
     // ---------------------------------------------------------------------------
     // push to completionItems: databases and tables
-    if (this.serverStructure.databases)
-    {
+    if (this.serverStructure.databases) {
       this.serverStructure.databases.forEach((db: ServerStructure.Database) => {
         // Completion:dbName
         completionItems.push({
@@ -205,7 +205,7 @@ return;
           insertText: db.name,
           kind: monaco.languages.CompletionItemKind.Reference,
           detail: `database`,
-          range
+          range,
         });
         // Completion:Tables
         db.tables.forEach((table: ServerStructure.Table) => {
@@ -216,7 +216,7 @@ return;
             kind: monaco.languages.CompletionItemKind.Interface,
             detail: `table:${table.engine}`,
             documentation: table.id,
-            range
+            range,
           });
 
           completionItems.push({
@@ -225,7 +225,7 @@ return;
             kind: monaco.languages.CompletionItemKind.Interface,
             detail: `table:${table.engine}`,
             documentation: table.id,
-            range
+            range,
           });
         });
       });
@@ -243,7 +243,7 @@ return;
             kind: monaco.languages.CompletionItemKind.Method,
             sortText: `fun ${func.name}`,
             detail: `function`,
-            range
+            range,
           }
         );
       });
@@ -254,7 +254,7 @@ return;
           insertText: `${dic.dic}`,
           kind: monaco.languages.CompletionItemKind.Snippet,
           detail: `dic ${dic.dic}`,
-          range
+          range,
         });
       });
     }
@@ -269,7 +269,7 @@ return;
           insertText: word,
           sortText: `000 ${word}`,
           kind: monaco.languages.CompletionItemKind.Keyword,
-          range
+          range,
         });
       });
     }
@@ -281,7 +281,7 @@ return;
           insertText: word,
           kind: monaco.languages.CompletionItemKind.Color,
           sortText: `zzz ${word}`,
-          range
+          range,
         });
       });
     }
@@ -292,7 +292,7 @@ return;
           insertText: word,
           kind: monaco.languages.CompletionItemKind.Property,
           sortText: `zzz ${word}`,
-          range
+          range,
         });
       });
     }
@@ -303,13 +303,12 @@ return;
           insertText: word,
           kind: monaco.languages.CompletionItemKind.Variable,
           sortText: `var ${word}`,
-          range
+          range,
         });
       });
     }
 
     // ---------------------------------------------------------------------------
-
 
     return { suggestions: completionItems };
     // console.warn('sqlEditor', sqlEditor);
@@ -378,11 +377,6 @@ return;
     //   });
     // return { suggestions: completionItems };
   }
-
-
-
-
-
 }
 
 // 0: "Method"
