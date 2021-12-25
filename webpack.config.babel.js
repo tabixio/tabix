@@ -3,6 +3,8 @@ import path from 'path';
 // Import Settings
 // import TerserJSPlugin from 'terser-webpack-plugin';
 import lessVars from './webpack/less-vars';
+
+// process.traceDeprecation = true;
 // ---------- Plugins ------------------------------------------------------------
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
@@ -82,6 +84,7 @@ const plugins = [
     // checkSyntacticErrors: false,
     // memoryLimit: 2024,
   }),
+  // new CompressionPlugin(),
   // new BundleAnalyzerPlugin({
   //   openAnalyzer: false, // http://127.0.0.1:8888/
   // }),
@@ -104,7 +107,7 @@ export default {
   output: {
     path: path.resolve(baseDir, 'dist'),
     publicPath: '/',
-    filename: path.join('js', `[name].js?[hash:5]`),
+    filename: path.join('js', `[name].js?[fullhash:5]`),
   },
   resolve: {
     fallback: { fs: false }, // For antlr4!

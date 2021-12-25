@@ -1,35 +1,33 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import {observer} from 'mobx-react';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { Flex, FlexProps } from 'reflexy';
+import {Flex, FlexProps} from 'reflexy';
 import classNames from 'classnames';
-import { Omit } from 'typelevel-ts';
-import { Query, ServerStructure } from 'services';
-import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
-import { TextInsertType } from './types';
-import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
+import {Omit} from 'typelevel-ts';
+import {Query, ServerStructure} from 'services';
+import {TextInsertType} from './types';
+import Toolbar, {ActionType, ToolbarProps} from './Toolbar';
 import css from './SqlEditor.css';
 // monaco
-import { defaultOptions } from './monaco/config';
-import { themeCobalt } from './monaco/theme/Cobalt';
-import { bindKeys } from './monaco/bindKeys';
-import { SqlWorker } from './monaco/sql-worker/SqlWorker';
-import { SupportLanguage } from './monaco/sql-worker/supportLanguage';
-import { delayFunctionWrap } from './monaco/utils';
+import {defaultOptions} from './monaco/config';
+import {themeCobalt} from './monaco/theme/Cobalt';
+import {bindKeys} from './monaco/bindKeys';
+import {SqlWorker} from './monaco/sql-worker/SqlWorker';
+import {SupportLanguage} from './monaco/sql-worker/supportLanguage';
+import {delayFunctionWrap} from './monaco/utils';
+//
 //
 type tMonaco = typeof monaco;
 type tCodeEditor = monaco.editor.IStandaloneCodeEditor;
 type iCodeEditor = monaco.editor.ICodeEditor;
-
-type tMonacoEditor = typeof monaco.editor;
-type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
   serverStructure?: ServerStructure.Server;
 }
+
 
 @observer
 export default class SqlEditor extends React.Component<SqlEditorProps> {
@@ -62,7 +60,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   }
 
-  componentWillReceiveProps({ serverStructure }: SqlEditorProps) {
+  componentWillReceiveProps({serverStructure}: SqlEditorProps) {
     if (serverStructure && serverStructure !== this.props.serverStructure) {
       this.updateGlobalEditorStructure(serverStructure);
     }
@@ -110,7 +108,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     console.info('SqlEditor->onEditorBeforeMount');
     this.tMonaco = thisMonaco;
     thisMonaco.editor.defineTheme('cobalt', themeCobalt); // if (this.props.theme !== theme) thisMonaco.editor.setTheme(theme)
-    if (!thisMonaco.languages.getLanguages().some(({ id }) => id === SupportLanguage.CLICKHOUSE)) {
+    if (!thisMonaco.languages.getLanguages().some(({id}) => id === SupportLanguage.CLICKHOUSE)) {
       if (this.props.serverStructure) {
         this.sqlWorker.applyServerStructure(this.props.serverStructure, thisMonaco);
       }
@@ -126,11 +124,21 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    * @param editor
    * @param isExecAll
    */
-  public execQueries = (sqlEditor:SqlEditor, editor: iCodeEditor, isExecAll: boolean): void => {
+  public execQueries = (sqlEditor: SqlEditor, editor: iCodeEditor, isExecAll: boolean): void => {
     const execQueries = this.sqlWorker.createExecCurrentQuery(editor, isExecAll);
+
+
     if (execQueries?.length) {
-      console.info('execQueries',execQueries);
-      sqlEditor.props.onAction((isExecAll?ActionType.RunAll:ActionType.RunCurrent), execQueries);
+      // Запросы которые необходимо отправть
+      console.info('execQueries', execQueries);
+      execQueries.forEach((query: Query) => {
+        // console.log(query);
+        console.info(`%c${query.sql}`, 'color: #bada55');
+      });
+      console.info('execQueries', execQueries);
+      sqlEditor.props.onAction((isExecAll ? ActionType.RunAll : ActionType.RunCurrent), execQueries);
+    } else {
+      console.warn("Empty execQueries after createExecCurrentQuery");
     }
   };
 
@@ -151,9 +159,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   };
 
-  // ICodeEditor.onDidChangeModelContent - An event emitted when the content of the current model has changed.
-  // ICodeEditor.onDidChangeCursorPosition
-
   public languageValueOnChange(callback?: any) {
     console.info('SqlEditor->languageValueOnChange');
     // if (this.props.disabledSyntaxCheck) {
@@ -171,7 +176,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   private onChange = (value: string | undefined, ev: monaco.editor.IModelContentChangedEvent) => {
     // console.info('Change',value,ev);
     if (value !== undefined) {
-      const { onContentChange } = this.props;
+      const {onContentChange} = this.props;
       // this.props.onContentChange(value);
       // Тут регистрируем timer на 500мс -> parse & validate
       this.delayLanguageValueOnChange(onContentChange);
@@ -227,7 +232,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   };
 
   private onAction = (action: ActionType, eventData?: any) => {
-    const { onAction } = this.props;
+    const {onAction} = this.props;
     switch (action) {
       case ActionType.RunCurrent: {
         this.editor && this.editor.getAction('my-exec-code').run();

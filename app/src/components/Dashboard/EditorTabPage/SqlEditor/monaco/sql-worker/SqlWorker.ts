@@ -11,6 +11,17 @@ type tMonaco = typeof monaco;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
+export interface oneToken {
+  line: number,
+  offset: number;
+  type: string;
+  language: string;
+  text:string,
+  range: monaco.Range,
+  inCursor: boolean,
+  inSelected: boolean,
+}
+
 export class SqlWorker {
   private serverStructure?: ServerStructure.Server;
 
@@ -180,16 +191,22 @@ export class SqlWorker {
     return text.toLocaleLowerCase();
   }
 
+  /**
+   * Разбираем запрос[ы] на токены, ищем пересечение с курсором/выделенным
+   *
+   *
+   * @param editor
+   * @param isExecAll
+   */
   public createExecCurrentQuery(editor: iCodeEditor, isExecAll: boolean): Array<Query>|null
   {
     console.info(`%c------------>>> executeCommand >>>--------------`, 'color: red');
-
 
     const queryExecList: Array<Query> = [];
     const model: monacoEditor.editor.ITextModel | null = editor.getModel();
 
     if (!this.monaco?.editor || !model) return null;
-    let typeCommand=(isExecAll ? 'all' : 'current');
+    let typeCommand=(isExecAll ? 'all' : 'current');  // Тип комманды
     const cursorPosition: Position | null = editor.getPosition(); // Позиция курсора
     const userSelection: Selection | null = editor.getSelection(); // Выбранная область
     if (userSelection) {
@@ -200,6 +217,7 @@ export class SqlWorker {
         }
       }
     }
+    // Токинизация
     const queryParseList = this.tokenizeQueryEditor(model, cursorPosition, userSelection);
 
 
@@ -240,17 +258,18 @@ export class SqlWorker {
       queryExecList.push(query);
     });
 
-    // Запросы которые необходимо отправть
-    queryExecList.forEach((query: Query) => {
-      console.log(query);
-      console.info(`%c${query.sql}`, 'color: #bada55');
-    });
-
 
     return queryExecList;
   }
 
 
+  /**
+   * Токинизация через MonacoEditor
+   *
+   * @param model
+   * @param cursorPos
+   * @param selection
+   */
   public tokenizeQueryEditor(
     model: monacoEditor.editor.ITextModel,
     cursorPos?: Position | null,
@@ -274,7 +293,7 @@ export class SqlWorker {
     const splitterTabixToken = 'tabix.sql'; // Токен разбития на запросы
     let countTabixCommandsInQuery: number = 0; // Кол-во tabix комманд запросе
 
-    let tokensList: any[] = [];
+    let tokensList: oneToken[] = [];
 
     // @TODO: Support multi langs
     const tokens = this.monaco?.editor.tokenize(model.getValue(), SupportLanguage.CLICKHOUSE); // ВЕСЬ текст редактора
@@ -309,12 +328,12 @@ export class SqlWorker {
           );
 
           const tokenText = model.getValueInRange(tokenRange); // Тут нужно выбирать из запроса
-          const fetchToken = {
+          const fetchToken : oneToken = {
             ...previousToken,
             text: tokenText,
             range: tokenRange,
             inCursor: cursorPosition && tokenRange.containsPosition(cursorPosition),
-            inSelected: selection && tokenRange.containsRange(selection),
+            inSelected: ( !!(selection && tokenRange.containsRange(selection))) ,
           };
 
           tokensList.push(fetchToken);
@@ -334,8 +353,8 @@ export class SqlWorker {
         // }
 
         if (typeToken === splitterQueryToken || typeToken === splitterTabixToken) {
-          // Если это токен раздиления запросов
-          // Значит все что было до него это оединый запрос
+          // Если это токен разделения запросов
+          // Значит все что было до него это общий запрос
           let trimCharTokens = 0;
           splits.push({
             numQuery: countQuery,
@@ -355,7 +374,6 @@ export class SqlWorker {
           }
           tokensList = [];
 
-          // monaco.Token = token;
           splitToken.type = token.type;
           splitToken.line = line;
           splitToken.offset = 1 + token.offset + trimCharTokens;
@@ -374,8 +392,7 @@ export class SqlWorker {
       tokens: tokensList,
     });
 
-    console.info('splits', splits);
-
+    // Идем по разбитым запросам
     splits.forEach(splitRange => {
       const numQuery: number = parseInt(splitRange.numQuery, 0);
       const range = new monaco.Range(
@@ -384,9 +401,7 @@ export class SqlWorker {
         splitRange.endLineNumber,
         splitRange.endColumn
       );
-
       const text = model.getValueInRange(range);
-
       const inCursor = cursorPosition && range.containsPosition(cursorPosition);
       let inSelected = selection && selection.containsRange(range);
       if (selection) {
@@ -412,8 +427,7 @@ export class SqlWorker {
 
         //
         if (splitRange.tokens) {
-          // @ts-ignore
-          splitRange.tokens.forEach(oToken => {
+          splitRange.tokens.forEach((oToken:oneToken) => {
             if (oToken.type === 'storage.sql') {
               isFormatSet = true;
               format = oToken.text.trim();
@@ -466,8 +480,8 @@ export class SqlWorker {
         // Находим typeOfCommand через поиск токена 'tabix.sql', его содержимое есть type
         let typeOfCommand = '';
         if (splitRange.tokens) {
-          // @ts-ignore
-          splitRange.tokens.forEach(oToken => {
+
+          splitRange.tokens.forEach((oToken:oneToken) => {
             if (oToken.type === splitterTabixToken) {
               typeOfCommand = oToken.text;
             }
@@ -491,8 +505,6 @@ export class SqlWorker {
         }
       }
     });
-
-    
     return listQuery;
   }
 }
