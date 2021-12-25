@@ -2,10 +2,9 @@
 
 Open source simple business intelligence application and sql editor tool for Clickhouse.
 
-
 ## Install
 
-Not need, open in browser http://dash.tabix.io/
+Not need, open in browser http://alpha.tabix.io/
 
 ### If need install
 
@@ -38,5 +37,4 @@ yarn build:dev
 
 ## License
 
-Copyright 2021 Tabix LLC
-Licensed under the Apache License, Version 2.0
+Copyright 2021 Tabix LLC Licensed under the Apache License, Version 2.0
