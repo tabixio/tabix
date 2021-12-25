@@ -42,8 +42,16 @@ const optimization = {
   },
 
   splitChunks: {
+    chunks: 'all',
+    maxInitialRequests: Infinity,
+    minSize: 0,
     cacheGroups: {
+      // reactVendor: {
+      //   test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+      //   name: 'reactvendor',
+      // },
       commons: {
+        // test: /[\\/]node_modules[\\/](!react-bootstrap)(!react)(!react-dom)[\\/]/,
         test: /[\\/]node_modules[\\/]/,
         name: 'vendor',
         chunks: 'all',
