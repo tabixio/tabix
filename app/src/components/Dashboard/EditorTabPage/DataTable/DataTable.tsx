@@ -131,27 +131,31 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     // todo: refactor with DataDecorator?
 
     const columns = data.meta?.columns?.map(getFormatForColumn);
-    console.info("HotTable",data,columns);
+
     // <Flex shrink={false} justifyContent="flex-end" className={css.bar}>
     //  <RequestStats {...data.stats} className={css.stats} />
     //  <Icon type="file-excel" title="Export to Excel" onClick={this.onExportToExcel} />
     // </Flex>
-
+    // hotTableSettings.update=123;
     return (
       <Flex
+        style={{border:'1px solid red'}}
         componentRef={this.rootRef}
         column
         className={classNames(css.root, className)}
         {...flexProps}
       >
-        {dataUpdate}
+
         <HotTable
+          style={{border:'1px solid red'}}
           ref={this.tableRef}
           settings={hotTableSettings}
           columns={columns}
           data={data.rows}
           contextMenu={createContextMenu(this.onContextMenuItemClick)}
+
         />
+        {dataUpdate}
       </Flex>
     );
   }

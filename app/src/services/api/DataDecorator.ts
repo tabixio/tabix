@@ -30,16 +30,24 @@ export type Row = Record<string, any>;
 
 // todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
+  private LIMIT_ROW: number = 3500;
 
-  private LIMIT_ROW:number=3500;
   dataUpdate: number = 0;
+
   meta: Metadata;
+
   rows: Row[];
+
   query: Query | undefined;
+
   stats: Statistics;
+
   text: string = '';
+
   isResultText: boolean = false;
+
   error: boolean = false;
+
   isHaveData = false;
 
   constructor(result?: any, _query?: Query | undefined) {
@@ -47,46 +55,68 @@ export default class DataDecorator {
     this.rows = [];
     this.meta = { columns: [] }; // name: "number" type: "UInt64"
     this.stats = {
-      timeElapsed : -1,
-      rowsRead : -1,
-      bytesRead : -1
-    }
+      timeElapsed: -1,
+      rowsRead: -1,
+      bytesRead: -1,
+    };
     // ---- Reset `data`
     this.reset();
     this.apply(result);
   }
-  private updateDT()
-  {
+
+  private updateDT() {
     this.dataUpdate = Date.now();
   }
-  resetData():void
-  {
+
+  resetData(): void {
     this.rows = [];
     this.updateDT();
   }
-  reset():void
-  {
+
+  reset(): void {
     this.rows = [];
     this.meta = { columns: [] }; // name: "number" type: "UInt64"
     this.isResultText = false;
+    this.isHaveData = false;
     this.error = false;
     this.text = '';
+    this.updateDT();
   }
-  merge(result:any):void
-  {
-    // DataDecorator
-  }
-  applyData(rows:Row[]):void
-  {
-    this.rows=rows;
-  }
-  apply(result:any):void
-  {
 
+  mergeByKey(newData: any, key: string): void {
+    let isDataUpdate = false;
+    newData.forEach((_cell: any) => {
+      let find = false;
+      this.rows.forEach((_exists: any, index: number) => {
+        if (_exists[key] == _cell[key]) {
+          // exists
+          find = true;
+          if (_exists.hasOwnProperty('count')) {
+            let counter: number = _exists.hasOwnProperty('count');
+            counter += 1;
+            _cell.count = counter;
+            this.rows[index] = _cell;
+            isDataUpdate = true;
+          }
+        }
+      });
+      if (!find) {
+        isDataUpdate = true;
+        this.rows.push(_cell);
+      }
+    });
+    if (isDataUpdate) {
+      this.updateDT();
+    }
+  }
+
+  applyData(rows: Row[]): void {
+    this.rows = rows;
+    this.updateDT();
+  }
+
+  apply(result: any): void {
     // ---- if result from ClickHouse
-
-    console.warn("Input object",result);
-
 
     if (!result) {
       return;
@@ -117,7 +147,6 @@ export default class DataDecorator {
     // ----------------------------------------------------------------------------------------------------
 
     if (typeof result === 'object') {
-
       const stats = result.statistics || {};
       this.stats = {
         timeElapsed: stats.elapsed || 0,
@@ -153,13 +182,10 @@ export default class DataDecorator {
     }
 
     this.updateDT();
-    console.info('after apply:',this);
     // this.draw = this.query.drawCommands;
     // this.position = this.query.index; // порядковый номер
     // this.countAll = result.countAllQuery; // всего запросов в выполнении
   }
-
-
 
   findDateTimeOrDateColumn(): ColumnMetadata | null {
     const l = this.getFirstDateTimeColumn();

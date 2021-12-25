@@ -12,7 +12,6 @@ interface InjectedProps {
 
 interface Props extends InjectedProps {}
 
-
 const IOption = Select.Option;
 
 const CheckboxGroup = Checkbox.Group;
@@ -20,7 +19,6 @@ const CheckboxGroup = Checkbox.Group;
 const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT', 'Show Profile', 'Show Settings'];
 @observer
 class ProcessesTabPage extends React.Component<Props> {
-
   protected data: DataDecorator = new DataDecorator();
 
   state = {
@@ -92,6 +90,7 @@ class ProcessesTabPage extends React.Component<Props> {
   private reset = () => {
     this.counterSet(0, 0);
     this.data.reset();
+    this.setState({ dataUpdate: this.data.dataUpdate });
   };
 
   private playStop = () => {
@@ -142,12 +141,9 @@ class ProcessesTabPage extends React.Component<Props> {
       .getProcessLists(isOnlySELECT, isCluster)
       .then(data => {
         // Inc
-        this.counterSet(this.state.countError, this.state.countSuccess + 1);
 
-
-        console.info('this.data.isHaveData=',this.data.isHaveData);
+        // console.info('this.data.isHaveData=',this.data.isHaveData);
         if (!this.data.isHaveData) {
-
           this.data.apply(data);
         } else {
           // Merge
@@ -155,15 +151,15 @@ class ProcessesTabPage extends React.Component<Props> {
             this.data.apply(data);
           } else {
             // Merge data
-            if (data.data) {
-              this.data.apply(this.megreData(data.data,this.data.rows));
+            if (data.data && data.data.length) {
+              this.data.mergeByKey(data.data, 'hash');
+              // console.log("Time",this.data.dataUpdate);
             }
-
           }
-
         }
-        this.setState({ dataUpdate:Date.now() });
-
+        this.setState({ dataUpdate: this.data.dataUpdate });
+        // INC
+        this.counterSet(this.state.countError, this.state.countSuccess + 1);
 
         // Data
         // if (!this.state.columns.length) {
@@ -203,7 +199,6 @@ class ProcessesTabPage extends React.Component<Props> {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
 
-    console.log("ProcList",this.data);
     return (
       <div>
         <Divider>Processes</Divider>
