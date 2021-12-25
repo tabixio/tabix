@@ -6,6 +6,7 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
 import { Query, ServerStructure } from 'services';
+import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
 import { TextInsertType } from './types';
 import Toolbar, { ActionType, ToolbarProps } from './Toolbar';
 import css from './SqlEditor.css';
@@ -117,19 +118,20 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   };
 
-  public execQueries = (editor: iCodeEditor, isExecAll: boolean): void => {
-    console.warn('execQueries');
-    // self.parseEditorText('current', editor, monaco);
-    // self.onAction(ActionType.RunCurrent);
-    // const queries = self.parseEditorText('current', editor);
-    // self.props.onAction(ActionType.RunCurrent, queries);
-
-    // if ALL
-
-    // self.parseEditorText('all', editor, monaco);
-    // self.onAction(ActionType.RunAll);
-    // const queries = self.parseEditorText('all', editor);
-    // self.props.onAction(ActionType.RunAll, queries);
+  /**
+   * Выполнение запросов при получение комманды
+   *
+   *
+   * @param sqlEditor
+   * @param editor
+   * @param isExecAll
+   */
+  public execQueries = (sqlEditor:SqlEditor, editor: iCodeEditor, isExecAll: boolean): void => {
+    const execQueries = this.sqlWorker.createExecCurrentQuery(editor, isExecAll);
+    if (execQueries?.length) {
+      console.info('execQueries',execQueries);
+      sqlEditor.props.onAction((isExecAll?ActionType.RunAll:ActionType.RunCurrent), execQueries);
+    }
   };
 
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {

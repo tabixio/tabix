@@ -20,7 +20,7 @@ export function bindKeys(
     contextMenuGroupId: 'navigation',
     contextMenuOrder: 1.5,
     run(editor) {
-      sqlEditor.execQueries(editor, false);
+      sqlEditor.execQueries(sqlEditor, editor, false);
     },
   });
   // ======== Shift-Command-Enter ========
@@ -33,7 +33,7 @@ export function bindKeys(
     contextMenuGroupId: 'navigation',
     contextMenuOrder: 1.5,
     run(editor) {
-      sqlEditor.execQueries(editor, true);
+      sqlEditor.execQueries(sqlEditor, editor, true);
     },
   });
   // ======== Command+Shift+- / Command+Shift+= ========
