@@ -224,6 +224,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   private onEditorMount = (editor: tCodeEditor, thisMonaco: tMonaco) => {
     this.setEditorRef(editor);
     this.tMonaco = thisMonaco;
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     // Bind keys to Editor
     bindKeys(editor, thisMonaco, self);
