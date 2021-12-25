@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { Omit } from 'typelevel-ts';
 import { Query, ServerStructure } from 'services';
 import { TextInsertType } from './types';
-import { configuration, languageDef } from './monaco/language/Clickhouse';
+import { configuration, languageDef } from './monaco/sql-worker/editorConfig/ClickhouseEditor';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import { themeDarcula } from './monaco/theme/Darcula';
 import { themeVsDark } from './monaco/theme/Vsdark';

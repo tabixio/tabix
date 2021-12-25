@@ -8,6 +8,8 @@ import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
 import '../EditorTabPage/DataTable/dark.css';
 import getFormatForColumn from '../EditorTabPage/DataTable/utils';
+import DataTable from '../EditorTabPage/DataTable';
+import DataDecorator from '../../../services/api/DataDecorator';
 
 interface InjectedProps {
   store: TabsStore;
@@ -50,18 +52,18 @@ const CheckboxGroup = Checkbox.Group;
 const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT', 'Show Profile', 'Show Settings'];
 @observer
 class ProcessesTabPage extends React.Component<Props> {
+  private data: DataDecorator = new DataDecorator();
+
   state = {
     intervalId: undefined,
     checkedList: checkOptions,
-    data: [],
+
     columns: [],
     interval: 0.1,
     isPlaying: false,
     countError: 0,
     countSuccess: 0,
   };
-
-  private tableRef = React.createRef<HotTable>();
 
   componentDidMount() {
     //
@@ -170,18 +172,21 @@ class ProcessesTabPage extends React.Component<Props> {
     store
       .getProcessLists(isOnlySELECT, isCluster)
       .then(data => {
+        // Inc
         this.counterSet(this.state.countError, this.state.countSuccess + 1);
-        if (!this.state.columns.length) {
-          this.setState({ columns: data.meta.map(this.sortingSet).map(getFormatForColumn) });
-        }
-        if (data.data.length) {
-          const current = this.state.data;
-          const setter = isLogMode ? this.megreData(data.data, current) : data.data;
-          this.setState({ data: setter });
-        } else if (!isLogMode) {
-          // Drop data, if result is empty
-          this.setState({ data: [] });
-        }
+
+        // Data
+        // if (!this.state.columns.length) {
+        //   this.setState({ columns: data.meta.map(this.sortingSet).map(getFormatForColumn) });
+        // }
+        // if (data.data.length) {
+        //   const current = this.state.data;
+        //   const setter = isLogMode ? this.megreData(data.data, current) : data.data;
+        //   this.setState({ data: setter });
+        // } else if (!isLogMode) {
+        //   // Drop data, if result is empty
+        //   this.setState({ data: [] });
+        // }
         this.timerTic();
       })
       .catch(e => {
@@ -238,12 +243,7 @@ class ProcessesTabPage extends React.Component<Props> {
           {this.state.countSuccess}
         </span>
         <Divider />
-        <HotTable
-          ref={this.tableRef}
-          settings={hotTableSettings}
-          columns={this.state.columns}
-          data={Object.values(this.state.data)}
-        />
+        <DataTable data={this.state.data} fill />
       </div>
     );
   }

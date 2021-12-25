@@ -13,12 +13,15 @@ import {
   isTabOfType,
   MetricsTabModel,
   ProcessesTabModel,
+  TableViewTabModel,
   ServerOverviewTab,
   Tab,
   TabType,
   SqlHistoryTab,
+  TableViewTab,
 } from 'models';
 import {
+  TableViewTabPage,
   DbOverviewTabPage,
   EditorTabPage,
   MetricsTabPage,
@@ -87,6 +90,9 @@ class DashboardView extends React.Component<RoutedProps> {
   private onTableAction = (action: TableAction, table: ServerStructure.Table) => {
     // https://github.com/tabixio/tabix/blob/master/src/app/base/sidebar.js#L233
     switch (action) {
+      case TableAction.OpenTable:
+        this.props.tabsStore.openTableTab(table);
+        break;
       case TableAction.CodeSelectFrom:
         this.props.tabsStore.insertSelectFrom(table);
         break;
@@ -224,6 +230,13 @@ class DashboardView extends React.Component<RoutedProps> {
                     model={t}
                     onModelFieldChange={t.changeField}
                     width={uiStore.primaryPaneSize}
+                  />
+                )}
+
+                {isTabOfType<TableViewTabModel>(t, TabType.TableView) && (
+                  <TableViewTabPage
+                    serverStructure={treeStore.serverStructure.orUndefined()}
+                    model={t}
                   />
                 )}
 

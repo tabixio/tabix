@@ -1,9 +1,10 @@
-import { StoreModel, SerializableModel, JSONModel, serialize } from 'module/mobx-utils';
+import { StoreModel, SerializableModel, JSONModel, JSONObject, serialize } from 'module/mobx-utils';
 import { observable } from 'mobx';
 
 export enum TabType {
   Editor = 'Editor',
   Processes = 'Processes',
+  TableView = 'TableView',
   Metrics = 'Metrics',
   ServerOverview = 'ServerOverview',
   DbOverview = 'DbOverview',

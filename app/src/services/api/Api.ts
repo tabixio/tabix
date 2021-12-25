@@ -1,3 +1,4 @@
+import { Data } from 'plotly.js';
 import Connection, { isDirectConnection } from '../Connection';
 import CoreProvider from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
@@ -40,7 +41,7 @@ export default class Api {
     return new DataDecorator(data, query);
   }
 
-  getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<any> =>
+  getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<DataDecorator> =>
     this.provider.getProcessLists(isOnlySelect, isCluster);
 
   getTableColumns = async (database: string, tablename: string) =>

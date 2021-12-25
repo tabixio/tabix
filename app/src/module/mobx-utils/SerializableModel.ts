@@ -2,6 +2,11 @@ import { KeysOfType, Omit } from 'typelevel-ts';
 import { Option } from 'funfix-core';
 import ValidableStoreModel from './ValidableStoreModel';
 
+export interface SerializableModel<Entity extends object> {
+  jsonModel?: Entity; // Just for correct infering: https://github.com/Microsoft/TypeScript/issues/26688
+  toJSON(): JSONModel<Entity>;
+}
+
 export type JSONPrimitives = string | number | boolean | null | undefined;
 
 export type JSONTypes = JSONPrimitives | JSONObject | JSONArray;
@@ -9,11 +14,6 @@ export type JSONTypes = JSONPrimitives | JSONObject | JSONArray;
 export interface JSONObject extends Record<string, JSONTypes> {}
 
 export interface JSONArray extends ReadonlyArray<JSONTypes> {}
-
-export default interface SerializableModel<Entity extends object> {
-  jsonModel?: Entity; // Just for correct infering: https://github.com/Microsoft/TypeScript/issues/26688
-  toJSON(): JSONModel<Entity>;
-}
 
 // type ExcludeFunctions<T> = Pick<T, { [K in keyof T]: T[K] extends Function ? never : K }[keyof T]>;
 export type ExcludeFunctions<T extends object> = Pick<T, Exclude<keyof T, KeysOfType<T, Function>>>;

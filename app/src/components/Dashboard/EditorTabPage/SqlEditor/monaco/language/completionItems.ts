@@ -2,10 +2,12 @@
 import * as monaco from 'monaco-editor';
 import { ServerStructure } from 'services';
 import monacoEditor, { languages } from 'monaco-editor';
-import antlr4 from 'antlr4';
-import { language as languageClickhouse } from './Clickhouse';
-import ClickhouseSQL from '../sql-worker/clickhouse'; // //
-// import MySQL from 'dt-sql-parser/dist/parser/generic';
+// import antlr4 from 'antlr4';
+import { language as languageClickhouse } from '../sql-worker/editorConfig/ClickhouseEditor';
+import { ClickhouseSQL } from '../sql-worker/grammar';
+// ClickHouseSQL
+
+//
 
 type tMonaco = typeof monaco;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
@@ -16,18 +18,6 @@ type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 
 // ------------------------------------------------------------------------------------------------------------
 // Examples:
-// https://github.com/microsoft/azuredatastudio/tree/main/extensions/sql/syntaxes
-// https://github.com/microsoft/vscode/tree/main/extensions/sql
-// https://github.com/microsoft/vscode-mssql/blob/main/syntaxes/SQL.plist
-// https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/driver.ts
-// https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/keywords.ts
-// https://github.com/mtxr/vscode-sqltools/tree/dev/packages
-// https://github.com/joe-re/sql-language-server
-// https://mono.software/2017/04/11/custom-intellisense-with-monaco-editor/
-
-// https://github.com/raycursive/monaco-sql-parser
-// https://github.com/DiscoverForever/monaco-sqlpad/blob/master/src/core/snippets.js
-// https://github.com/DTStack/molecule
 
 // ------------------------------------------------------------------------------------------------------------
 // const globalMonaco: Monaco = window.monaco;

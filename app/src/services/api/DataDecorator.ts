@@ -44,7 +44,7 @@ export default class DataDecorator {
 
   readonly error: boolean = false;
 
-  constructor(result: any, _query: Query | undefined) {
+  constructor(result: any, _query?: Query | undefined) {
     this.query = _query;
     this.rows = [];
     this.meta = { columns: [] }; // name: "number" type: "UInt64"
@@ -52,6 +52,7 @@ export default class DataDecorator {
     if (result.totals && result.data) {
       result.data.push(result.totals);
     }
+    console.info('result',result);
 
     const stats = result.statistics || {};
     this.stats = {
@@ -86,10 +87,13 @@ export default class DataDecorator {
 
     const limitRows = 3500;
 
-    this.rows = result.data.slice(0, limitRows);
+    if (Array.isArray(result.data)) {
+      this.rows = result.data.slice(0, limitRows);
+    }
+
 
     // let columns: Array<ColumnMetadata>;
-    const columns: Array<ColumnMetadata> = result.meta.map((row: any, index: number) => {
+    const columns: Array<ColumnMetadata> = result?.meta?.map((row: any, index: number) => {
       row.index = index;
       return row;
     });

@@ -15,6 +15,7 @@ import {
   ServerOverviewTabModel,
   DbOverviewTabModel,
   SqlHistoryTabModel,
+  TableViewTabModel,
 } from 'models';
 import { Statistics } from 'services/api/DataDecorator';
 import { TextInsertType } from 'components/Dashboard/EditorTabPage';
@@ -120,15 +121,22 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   }
 
   @action
-  private openSpecialTab<T extends TabModel<any>>(type: T['type'], factory: () => T) {
-    if (this.activeTab.map(_ => _.type === type).getOrElse(false)) return;
+  private openSpecialTab<T extends TabModel<any>>(id: T['id'], factory: () => T) {
+    if (this.activeTab.map(_ => _.id === id).getOrElse(false)) return;
 
-    let tab = this.tabs.find(_ => _.type === type);
+    let tab = this.tabs.find(_ => _.id === id);
     if (!tab) {
       tab = factory();
       this.tabs = this.tabs.concat(tab);
     }
     this.activeTab = Some(tab);
+  }
+
+  @action
+  openTableTab(table: ServerStructure.Table) {
+    this.openSpecialTab(TabType.TableView, () =>
+      TableViewTabModel.from({ tableName: table.name, tableId: table.id })
+    );
   }
 
   @action

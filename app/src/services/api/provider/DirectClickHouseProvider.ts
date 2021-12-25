@@ -2,6 +2,7 @@ import { DirectConnection, ConnectionType } from '../../Connection';
 import ServerStructure from '../ServerStructure';
 import CoreProvider from './CoreProvider';
 import { Query } from '../Query';
+import DataDecorator from '../DataDecorator';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   private clusters: ReadonlyArray<ServerStructure.Cluster> | undefined;
@@ -179,8 +180,9 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       this.connection.username,
       this.connection.password
     );
+    // const q = new Query();
     const result = await this.queryString(sql);
-    return result;
+    return new DataDecorator(result);
   }
 
   async getTableColumns(database: string, tablename: string) {

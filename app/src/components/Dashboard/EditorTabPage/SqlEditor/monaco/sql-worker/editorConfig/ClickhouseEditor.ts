@@ -339,6 +339,7 @@ export const language = <languages.IMonarchLanguage>{
           'DROP\\W+TEMPORARY\\W+TABLE|' +
           'EXISTS\\W+TEMPORARY\\W+TABLE|' +
           'SYSTEM\\W+RELOAD\\W+DICTIONARY|' +
+          'CHECK\\W+TABLE|' +
           'SYSTEM\\W+RELOAD\\W+DICTIONARIES|' +
           'SYSTEM\\W+DROP\\W+DNS\\W+CACHE|' +
           'SYSTEM\\W+SHUTDOWN|' +

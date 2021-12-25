@@ -2,16 +2,12 @@ import * as monaco from 'monaco-editor';
 
 export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
   // tabIndex
-  // language: 'clickhouse', // @TODO : ADD
-  //   // theme: 'cobalt', // @TODO : ADD
   minimap: { enabled: true, maxColumn: 60 },
   selectOnLineNumbers: true,
   automaticLayout: true, // Enable that the editor will install an interval to check if its container dom node size has changed. Enabling this might have a severe performance impact. Defaults to false.
   formatOnPaste: true,
   fontFamily: 'Monaco,Menlo,Ubuntu Mono,Consolas,"source-code-pro","monospace"',
   fontSize: 12,
-  //
-  //
   mouseWheelZoom: true,
   cursorSmoothCaretAnimation: true,
   fontWeight: 'lighter',
@@ -24,7 +20,6 @@ export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
     cycle: false,
   },
   scrollBeyondLastLine: false,
-  //
   suggestOnTriggerCharacters: false,
   quickSuggestions: true,
   //   {
@@ -35,5 +30,5 @@ export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
   // quickSuggestionsDelay: 500,
   // renderWhitespace: 'boundary',
   fontLigatures: true,
-  // autoIndent: 'full', // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
+  autoIndent: 'full', // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
 };

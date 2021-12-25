@@ -13704,17 +13704,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:16.7.0-alpha.2":
-  version: 16.7.0-alpha.2
-  resolution: "react-dom@npm:16.7.0-alpha.2"
+"react-dom@npm:16.8.6":
+  version: 16.8.6
+  resolution: "react-dom@npm:16.8.6"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
     prop-types: ^15.6.2
-    scheduler: ^0.12.0-alpha.2
+    scheduler: ^0.13.6
   peerDependencies:
-    react: ^16.0.0 || 16.7.0-alpha.2
-  checksum: ad910c31aa2487fdbfc3ecfd0f0d10dd52b19ca2fff271d7db22eeea2bab633050f6ec445553ec5c6e7ae2bd90425499442629d038a978cea311883fd906ee2f
+    react: ^16.0.0
+  checksum: 7f8ebd8523eb4a14a1439efa009d020abc0529da25d0de251a4f3d5b3781061f6b30d72425f5fe944317850997efc6c1d667e99b1fd70172f30a976a00008bf6
   languageName: node
   linkType: hard
 
@@ -13948,15 +13948,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:16.7.0-alpha.2":
-  version: 16.7.0-alpha.2
-  resolution: "react@npm:16.7.0-alpha.2"
+"react@npm:16.8.6":
+  version: 16.8.6
+  resolution: "react@npm:16.8.6"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
     prop-types: ^15.6.2
-    scheduler: ^0.12.0-alpha.2
-  checksum: 4e55c4a4a1f22fd0c52d8e9b50407220c558b3eceed3763d1e2bf915a3ea19b596305be486ad53464caeb035ae445e1e77687b843b6deeebc23098f7e1c01d6a
+    scheduler: ^0.13.6
+  checksum: 8dfdbec9af6999c2cfb33a9389995c6401daba732e1ee7e0a4920d28fd2e8e6b0fde99dfe4b8e2f81efc4a962c92656e3e79e221323449e55850232163f15ff4
   languageName: node
   linkType: hard
 
@@ -14945,13 +14945,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.12.0, scheduler@npm:^0.12.0-alpha.2":
+"scheduler@npm:^0.12.0":
   version: 0.12.0
   resolution: "scheduler@npm:0.12.0"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: d38f7180db7eb08c388fcf1ac04b24bd2ad134b5f0333daae58beb45f66de2f40e38296730e568ea47f5a38552ca834bf92262fb30d89b6d4551992800cec3e2
+  languageName: node
+  linkType: hard
+
+"scheduler@npm:^0.13.6":
+  version: 0.13.6
+  resolution: "scheduler@npm:0.13.6"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+  checksum: c82c705f6d0d6df87b26bf2cca33f427e91889438c0435ade3ee7f41860eda4dd7f3171ca2d93e8fe9431f3bd831ca0e267a401a0296e4b14de05e389f82d320
   languageName: node
   linkType: hard
 
@@ -16313,8 +16323,8 @@ __metadata:
     pug-loader: ^2.4.0
     rc-form: 2.4.10
     rc-util: 4.16.1
-    react: 16.7.0-alpha.2
-    react-dom: 16.7.0-alpha.2
+    react: 16.8.6
+    react-dom: 16.8.6
     react-grid-layout: ^0.16.6
     react-hot-loader: ^4.13.0
     react-plotly.js: ^2.5.1

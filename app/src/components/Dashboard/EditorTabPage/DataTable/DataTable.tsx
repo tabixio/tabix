@@ -21,7 +21,7 @@ import css from './DataTable.css';
 
 export interface DataTableProps {
   data: DataDecorator;
-  onAction: (action: ResultActionType, data: any) => void;
+  onAction?: (action: ResultActionType, data: any) => void;
 }
 
 interface State {

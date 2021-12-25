@@ -36,3 +36,25 @@ https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/
 https://segmentfault.com/a/1190000040176753/en
 
 https://blog.nimbleways.com/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-part-1-2/
+
+https://github.com/microsoft/azuredatastudio/tree/main/extensions/sql/syntaxes
+
+https://github.com/microsoft/vscode/tree/main/extensions/sql
+
+https://github.com/microsoft/vscode-mssql/blob/main/syntaxes/SQL.plist
+
+https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/driver.ts
+
+https://github.com/ultram4rine/sqltools-clickhouse-driver/blob/master/src/ls/keywords.ts
+
+https://github.com/mtxr/vscode-sqltools/tree/dev/packages
+
+https://github.com/joe-re/sql-language-server
+
+https://mono.software/2017/04/11/custom-intellisense-with-monaco-editor/
+
+https://github.com/raycursive/monaco-sql-parser
+
+https://github.com/DiscoverForever/monaco-sqlpad/blob/master/src/core/snippets.js
+
+https://github.com/DTStack/molecule
