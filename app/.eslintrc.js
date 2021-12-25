@@ -1,11 +1,17 @@
 module.exports = {
   root: true,
 
-  extends: ['airbnb', 'plugin:prettier/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    'plugin:prettier/recommended',
+  ],
 
-  parser: 'typescript-eslint-parser',
+  parser: '@typescript-eslint/parser',
 
-  plugins: ['typescript'],
+  plugins: ['react', '@typescript-eslint'],
 
   settings: {
     'import/resolver': {
@@ -15,6 +21,11 @@ module.exports = {
     },
   },
 
+  parserOptions: {
+    ecmaFeatures: {
+      legacyDecorators: true,
+    },
+  },
   rules: {
     // js
     'no-console': 'off',
@@ -24,7 +35,7 @@ module.exports = {
     'import/export': 'off',
     // jsx
     'react/sort-comp': 'off',
-    'react/destructuring-assignment': ['on', 'always', { ignoreClassFields: true }],
+    'react/destructuring-assignment': 1,
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
     'jsx-a11y/anchor-is-valid': ['error', { specialLink: ['to'] }],
     'jsx-a11y/label-has-for': [2, { allowChildren: true }],

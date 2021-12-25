@@ -1,0 +1,5 @@
+node_modules
+dist
+/dist/**
+node_modules/
+**/*.test.{js,jsx,ts,tsx}
