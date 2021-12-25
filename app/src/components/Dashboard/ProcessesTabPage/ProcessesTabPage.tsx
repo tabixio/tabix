@@ -3,13 +3,8 @@ import { Button, Select, Checkbox, Divider } from 'antd';
 import { typedInject } from 'module/mobx-utils';
 import { Stores, TabsStore } from 'stores';
 import { observer } from 'mobx-react';
-import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
-import 'handsontable/dist/handsontable.full.css';
-import '../EditorTabPage/DataTable/dark.css';
-import getFormatForColumn from '../EditorTabPage/DataTable/utils';
-import DataTable from '../EditorTabPage/DataTable';
-import DataDecorator from '../../../services/api/DataDecorator';
+import { DataTable } from 'components/Dashboard';
+import { DataDecorator } from 'services';
 
 interface InjectedProps {
   store: TabsStore;
@@ -17,33 +12,6 @@ interface InjectedProps {
 
 interface Props extends InjectedProps {}
 
-const hotTableSettings: Handsontable.DefaultSettings = {
-  className: 'handsontable-dark',
-  rowHeaders: true,
-  // allowEmpty: false,
-  autoRowSize: false,
-  // autoColumnSize: { samplingRatio: 23 },
-  allowInsertColumn: false,
-  allowInsertRow: false,
-  manualColumnMove: false,
-  manualColumnResize: true,
-  manualColumnFreeze: true,
-  stretchH: 'all',
-  colWidths: 100,
-  observeChanges: true /* =<!memory leak if true! */,
-  observeDOMVisibility: true,
-  fillHandle: false,
-  viewportColumnRenderingOffset: 'auto',
-  wordWrap: false,
-  // renderAllRows: false,
-  visibleRows: 140,
-  columnSorting: {
-    initialConfig: {
-      column: 3,
-      sortOrder: 'desc',
-    },
-  },
-};
 
 const IOption = Select.Option;
 
@@ -52,12 +20,13 @@ const CheckboxGroup = Checkbox.Group;
 const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT', 'Show Profile', 'Show Settings'];
 @observer
 class ProcessesTabPage extends React.Component<Props> {
-  private data: DataDecorator = new DataDecorator();
+
+  protected data: DataDecorator = new DataDecorator();
 
   state = {
     intervalId: undefined,
     checkedList: checkOptions,
-
+    dataUpdate: Date.now(),
     columns: [],
     interval: 0.1,
     isPlaying: false,
@@ -122,7 +91,7 @@ class ProcessesTabPage extends React.Component<Props> {
 
   private reset = () => {
     this.counterSet(0, 0);
-    this.setState({ data: [] });
+    this.data.reset();
   };
 
   private playStop = () => {
@@ -175,6 +144,27 @@ class ProcessesTabPage extends React.Component<Props> {
         // Inc
         this.counterSet(this.state.countError, this.state.countSuccess + 1);
 
+
+        console.info('this.data.isHaveData=',this.data.isHaveData);
+        if (!this.data.isHaveData) {
+
+          this.data.apply(data);
+        } else {
+          // Merge
+          if (!isLogMode) {
+            this.data.apply(data);
+          } else {
+            // Merge data
+            if (data.data) {
+              this.data.apply(this.megreData(data.data,this.data.rows));
+            }
+
+          }
+
+        }
+        this.setState({ dataUpdate:Date.now() });
+
+
         // Data
         // if (!this.state.columns.length) {
         //   this.setState({ columns: data.meta.map(this.sortingSet).map(getFormatForColumn) });
@@ -213,6 +203,7 @@ class ProcessesTabPage extends React.Component<Props> {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
 
+    console.log("ProcList",this.data);
     return (
       <div>
         <Divider>Processes</Divider>
@@ -243,7 +234,7 @@ class ProcessesTabPage extends React.Component<Props> {
           {this.state.countSuccess}
         </span>
         <Divider />
-        <DataTable data={this.state.data} fill />
+        <DataTable dataUpdate={this.state.dataUpdate} data={this.data} fill />
       </div>
     );
   }

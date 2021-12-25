@@ -21,6 +21,7 @@ import css from './DataTable.css';
 
 export interface DataTableProps {
   data: DataDecorator;
+  dataUpdate?:number;
   onAction?: (action: ResultActionType, data: any) => void;
 }
 
@@ -126,10 +127,11 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   // };
 
   render() {
-    const { data, onAction, className, ...flexProps } = this.props;
+    const { data, onAction, className, dataUpdate, ...flexProps } = this.props;
     // todo: refactor with DataDecorator?
-    const columns = data.meta.columns.map(getFormatForColumn);
 
+    const columns = data.meta?.columns?.map(getFormatForColumn);
+    console.info("HotTable",data,columns);
     // <Flex shrink={false} justifyContent="flex-end" className={css.bar}>
     //  <RequestStats {...data.stats} className={css.stats} />
     //  <Icon type="file-excel" title="Export to Excel" onClick={this.onExportToExcel} />
@@ -142,6 +144,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
         className={classNames(css.root, className)}
         {...flexProps}
       >
+        {dataUpdate}
         <HotTable
           ref={this.tableRef}
           settings={hotTableSettings}

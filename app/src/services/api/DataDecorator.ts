@@ -30,40 +30,69 @@ export type Row = Record<string, any>;
 
 // todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
-  readonly meta: Metadata;
 
-  readonly rows: Row[];
+  private LIMIT_ROW:number=3500;
+  dataUpdate: number = 0;
+  meta: Metadata;
+  rows: Row[];
+  query: Query | undefined;
+  stats: Statistics;
+  text: string = '';
+  isResultText: boolean = false;
+  error: boolean = false;
+  isHaveData = false;
 
-  readonly query: Query | undefined;
-
-  readonly stats: Statistics;
-
-  readonly text: string = '';
-
-  readonly isResultText: boolean = false;
-
-  readonly error: boolean = false;
-
-  constructor(result: any, _query?: Query | undefined) {
+  constructor(result?: any, _query?: Query | undefined) {
     this.query = _query;
     this.rows = [];
     this.meta = { columns: [] }; // name: "number" type: "UInt64"
-
-    if (result.totals && result.data) {
-      result.data.push(result.totals);
-    }
-    console.info('result',result);
-
-    const stats = result.statistics || {};
     this.stats = {
-      timeElapsed: stats.elapsed || 0,
-      rowsRead: stats.rows_read || 0,
-      bytesRead: stats.bytes_read || 0,
-    };
+      timeElapsed : -1,
+      rowsRead : -1,
+      bytesRead : -1
+    }
+    // ---- Reset `data`
+    this.reset();
+    this.apply(result);
+  }
+  private updateDT()
+  {
+    this.dataUpdate = Date.now();
+  }
+  resetData():void
+  {
+    this.rows = [];
+    this.updateDT();
+  }
+  reset():void
+  {
+    this.rows = [];
+    this.meta = { columns: [] }; // name: "number" type: "UInt64"
+    this.isResultText = false;
+    this.error = false;
+    this.text = '';
+  }
+  merge(result:any):void
+  {
+    // DataDecorator
+  }
+  applyData(rows:Row[]):void
+  {
+    this.rows=rows;
+  }
+  apply(result:any):void
+  {
 
-    // ----------------------------------------------------------------------------------------------------
+    // ---- if result from ClickHouse
+
+    console.warn("Input object",result);
+
+
+    if (!result) {
+      return;
+    }
     // Если результат строка
-    if (typeof result !== 'object') {
+    if (typeof result === 'string') {
       // let text = '';
       // if (result.error) {
       //   text = result.error;
@@ -79,38 +108,58 @@ export default class DataDecorator {
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
+      this.isHaveData = false;
       this.isResultText = true;
       return;
     }
     // ----------------------------------------------------------------------------------------------------
     // this.rows = result.data.map((r: any) => ({ id: uuid(), ...r })); // refactor id
+    // ----------------------------------------------------------------------------------------------------
 
-    const limitRows = 3500;
+    if (typeof result === 'object') {
 
-    if (Array.isArray(result.data)) {
-      this.rows = result.data.slice(0, limitRows);
-    }
+      const stats = result.statistics || {};
+      this.stats = {
+        timeElapsed: stats.elapsed || 0,
+        rowsRead: stats.rows_read || 0,
+        bytesRead: stats.bytes_read || 0,
+      };
 
+      if (result.totals && result.data) {
+        result.data.push(result.totals);
+      }
 
-    // let columns: Array<ColumnMetadata>;
-    const columns: Array<ColumnMetadata> = result?.meta?.map((row: any, index: number) => {
-      row.index = index;
-      return row;
-    });
-    this.meta = { columns };
+      if (Array.isArray(result.data)) {
+        this.rows = result.data.slice(0, this.LIMIT_ROW);
+      }
 
-    // prepare (Int64+UInt64+Float64)
-    if (this.rows) {
-      try {
-        this.prepareInt64();
-      } catch (e) {
-        console.error('Error in prepareInt64', e);
+      // let columns: Array<ColumnMetadata>;
+      if (Array.isArray(result.meta)) {
+        const columns: Array<ColumnMetadata> = result.meta.map((row: any, index: number) => {
+          row.index = index;
+          return row;
+        });
+        this.meta = { columns };
+      }
+      // prepare (Int64+UInt64+Float64)
+      if (this.rows) {
+        try {
+          this.isHaveData = true;
+          this.prepareInt64();
+        } catch (e) {
+          console.error('Error in prepareInt64', e);
+        }
       }
     }
+
+    this.updateDT();
+    console.info('after apply:',this);
     // this.draw = this.query.drawCommands;
     // this.position = this.query.index; // порядковый номер
     // this.countAll = result.countAllQuery; // всего запросов в выполнении
   }
+
+
 
   findDateTimeOrDateColumn(): ColumnMetadata | null {
     const l = this.getFirstDateTimeColumn();

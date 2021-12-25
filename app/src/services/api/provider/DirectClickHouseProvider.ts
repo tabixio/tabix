@@ -181,8 +181,8 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       this.connection.password
     );
     // const q = new Query();
-    const result = await this.queryString(sql);
-    return new DataDecorator(result);
+    return await this.queryString(sql);
+
   }
 
   async getTableColumns(database: string, tablename: string) {
