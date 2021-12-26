@@ -29,6 +29,6 @@ export default class ClickhouseSQL extends CommonSQL {
    *
    */
   public processor(): string {
-    return 'query';
+    return 'sql';
   }
 }

@@ -5,7 +5,10 @@ options {
 }
 
 // Top-level statements
-
+sql
+    : ((queryStmt) SEMICOLON*)* EOF
+    ;
+    
 queryStmt: query (INTO OUTFILE STRING_LITERAL)? (FORMAT identifierOrNull)? (SEMICOLON)? | insertStmt;
 query
     : alterStmt     // DDL

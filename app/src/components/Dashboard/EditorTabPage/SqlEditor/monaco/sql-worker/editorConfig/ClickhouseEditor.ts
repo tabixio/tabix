@@ -24,17 +24,18 @@ import { languages } from 'monaco-editor';
 // https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
 // https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
 // https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
+// https://github.com/microsoft/azuredatastudio/blob/main/extensions/sql/syntaxes/sql.tmLanguage.json
 /**
  * Global todo:
  * [+] Локальный ItemProvider, подсовывать fields
- * [+] ORDER BY подсветка
- * [+] Автокомплит на глобавльные keywords
+ * [-] ORDER BY подсветка
+ * [-] Автокомплит на глобавльные keywords
  * [+] SYSTEM FLUSH LOGS
  * [+] Allow completion providers for specific instances
  * [+] Выполнять updateEditorStructure после инициализации данных от сервера
  * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
  * [-] Подпиться на IModelTokensChangedEvent
- * [+] Определение баз.таблиц в редакторе между запросами ???
+ * [-] Определение баз.таблиц в редакторе между запросами ???
  * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
  * [-] LIMIT n BY columns
  * [-] WITH TOTALS
@@ -278,7 +279,10 @@ export const language = <languages.IMonarchLanguage>{
       [/[<>=!%&+\-*/|~^]/, 'operator'],
     ],
     whitespace: [[/\s+/, 'white']],
-    comments: [[/--+.*/, 'comment'], [/\/\*/, { token: 'comment.quote', next: '@comment' }]],
+    comments: [
+      [/--+.*/, 'comment'],
+      [/\/\*/, { token: 'comment.quote', next: '@comment' }],
+    ],
     comment: [
       [/[^*/]+/, 'comment'],
       // Not supporting nested comments, as nested comments seem to not be standard?
@@ -380,7 +384,11 @@ export const language = <languages.IMonarchLanguage>{
       [/N'/, { token: 'string', next: '@string' }],
       [/'/, { token: 'string', next: '@string' }],
     ],
-    string: [[/[^']+/, 'string'], [/''/, 'string'], [/'/, { token: 'string', next: '@pop' }]],
+    string: [
+      [/[^']+/, 'string'],
+      [/''/, 'string'],
+      [/'/, { token: 'string', next: '@pop' }],
+    ],
     complexIdentifiers: [
       [/\[/, { token: 'identifier.quote', next: '@bracketedIdentifier' }],
       [/"/, { token: 'identifier.quote', next: '@quotedIdentifier' }],
@@ -415,7 +423,11 @@ export const configuration: languages.LanguageConfiguration = {
     lineComment: '--',
     blockComment: ['/*', '*/'],
   },
-  brackets: [['{', '}'], ['[', ']'], ['(', ')']],
+  brackets: [
+    ['{', '}'],
+    ['[', ']'],
+    ['(', ')'],
+  ],
   folding: {
     markers: {
       // start: new RegExp("^\\s*(#|\/\/)region\\b"),
@@ -426,11 +438,11 @@ export const configuration: languages.LanguageConfiguration = {
     },
   },
   autoClosingPairs: [
-    { open: '{', close: '}' },
+    { open: '{', close: '}', notIn: ['string', 'comment'] },
     { open: '[', close: ']' },
     { open: '(', close: ')' },
-    { open: '"', close: '"' },
-    { open: "'", close: "'" },
+    { open: '"', close: '"', notIn: ['string', 'comment'] },
+    { open: "'", close: "'", notIn: ['string', 'comment'] },
     { open: '`', close: '`' },
   ],
   surroundingPairs: [

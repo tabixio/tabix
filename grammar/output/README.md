@@ -1,0 +1,1 @@
+Move files to dist

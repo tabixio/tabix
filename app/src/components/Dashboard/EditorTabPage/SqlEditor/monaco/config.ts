@@ -9,7 +9,7 @@ export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
   fontFamily: 'Monaco,Menlo,Ubuntu Mono,Consolas,"source-code-pro","monospace"',
   fontSize: 12,
   mouseWheelZoom: true,
-  cursorSmoothCaretAnimation: true,
+  // cursorSmoothCaretAnimation: true,
   fontWeight: 'lighter',
   emptySelectionClipboard: true,
   formatOnType: true,
@@ -20,15 +20,18 @@ export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
     cycle: false,
   },
   scrollBeyondLastLine: false,
-  suggestOnTriggerCharacters: false,
+  // suggestOnTriggerCharacters: false,
   quickSuggestions: true,
+  // wordBasedSuggestions: true,
+  // wordBasedSuggestionsOnlySameLanguage
   //   {
   //   "other": true,
   //   "comments": false,
   //   "strings": true                 // this is the key setting, default is false3
   // },
-  // quickSuggestionsDelay: 500,
+  quickSuggestionsDelay: 200,
   // renderWhitespace: 'boundary',
   fontLigatures: true,
-  autoIndent: 'full', // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
+  // Enable auto indentation adjustment. Defaults to false. '"none" | "keep" | "brackets" | "advanced" | "full" | undefined'.
+  autoIndent: 'full',
 };

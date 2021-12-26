@@ -2,4 +2,4 @@
 // @ts-ignore
 export { ClickHouseLexer } from './ClickHouseLexer.js';
 // @ts-ignore
-export { QueryContext, ClickHouseParser } from './ClickHouseParser.js';
+export { ClickHouseParser } from './ClickHouseParser.js';

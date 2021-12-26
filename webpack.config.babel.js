@@ -69,7 +69,9 @@ const devServer = {
   historyApiFallback: true,
   host: devServerHost,
   port: 9000,
+  compress: true,
   hot: true,
+  liveReload: true,
   headers: { 'Access-Control-Allow-Origin': '*' },
   static: {
     publicPath: '/',
@@ -100,6 +102,7 @@ const plugins = [
     title: 'Tabix',
     // favicon: `${paths.src}/images/favicon.png`,
     inject: false,
+    hash: true, // Cache busting
     template: path.join(baseDir, 'app/src/assets', 'index.pug'),
     filename: 'index.html',
   }),

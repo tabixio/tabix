@@ -1,31 +1,113 @@
-import monacoEditor from "monaco-editor";
+import monacoEditor from 'monaco-editor';
 import { ServerStructure } from 'services';
-import * as monaco from "monaco-editor";
+import * as monaco from 'monaco-editor';
 
 type tMonaco = typeof monaco;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
+
+interface keywordLanguage {
+  word: string;
+  type: monaco.languages.CompletionItemKind;
+  sort: number;
+}
 
 export abstract class SuggestionsMaker {
   static completionItems: Array<monacoEditor.languages.CompletionItem> = [];
 
   static serverStructure: ServerStructure.Server;
 
-  static keywordsLang:any;
+  static keywordsLanguage: Array<keywordLanguage>;
 
+  //
   public static setServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco) {
-    console.warn('setServerStructure',serverStructure);
+    console.info('SuggestionsMaker->setServerStructure()');
     this.serverStructure = serverStructure;
   }
 
-  public static getSuggestions(   model: IReadOnlyModel,
-                                  position: monaco.Position,
-                                  context: monaco.languages.CompletionContext,
-                                  token: monaco.CancellationToken)
-    : monaco.languages.ProviderResult<monaco.languages.CompletionList>
-  // currentDatabase: string,
-                                  // serverStructure?: ServerStructure.Server)
-  {
+  public static tokinize(query: string): void {
+    // Use ANTL4?
+    /**
+     * Тут делаем токенизацию
+     * 1. Определяем наличие ошибок
+     * 2. Разбиваем запросы
+     * 3. В текущем запросе находим таблицу(базу) - автокомлиту добавим все фильды таблицы
+     * 4. Если есть `AS` - ассоциации -> добавим их автокомлиту
+     * 5. Если есть `WITH AS` - ассоциации -> добавим их автокомлиту
+     * 6. Если секция находится в WHERE ... тут можно добавить ассоциации из 4,5
+     *
+     *
+     */
+  }
 
+  public static getMonarchLanguage(
+    language: monaco.languages.IMonarchLanguage
+  ): monaco.languages.IMonarchLanguage {
+    language.builtinFunctions = [];
+    // highlight-s
+    this.serverStructure?.databases.forEach((db: ServerStructure.Database) => {
+      db.tables.forEach((table: ServerStructure.Table) => {
+        // highlight tables and databases
+        language.dbtables.push(`${table.database}.${table.insertName}`);
+        language.dbtables.push(`${table.database}.${table.insertName.replace(/"/g, '`')}`);
+        language.tables.push(`${table.insertName}`);
+        language.tables.push(`${db.name}`); // uniq???
+
+        table.columns.forEach((column: ServerStructure.Column) => {
+          // column
+          language.fields.push(`${table.insertName}.${column.name}`);
+          language.fields.push(`${column.name}`);
+        });
+      });
+    });
+    // Add Functions
+    if (this.serverStructure?.editorRules) {
+      this.serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
+        language.builtinFunctions.push(func.name);
+      });
+    }
+    this.keywordsLanguage = [] as Array<keywordLanguage>;
+
+    // keywordsLang
+
+    // push to completionItems: languageClickhouse
+    if (language.keywordsGlobal?.length) {
+      language.keywordsGlobal.forEach((word: string) => {
+        this.keywordsLanguage.push({
+          type: monaco.languages.CompletionItemKind.Keyword,
+          sort: 0,
+          word,
+        });
+      });
+    }
+    if (language.builtinVariables?.length) {
+      language.builtinVariables.forEach((word: string) => {
+        this.keywordsLanguage.push({
+          type: monaco.languages.CompletionItemKind.Variable,
+          sort: 1110,
+          word,
+        });
+      });
+    }
+    if (language.typeKeywords?.length) {
+      language.typeKeywords.forEach((word: string) => {
+        this.keywordsLanguage.push({
+          type: monaco.languages.CompletionItemKind.Property,
+          sort: 110,
+          word,
+        });
+      });
+    }
+    // Todo : FORMAT JSON,FORMAT CSV...
+    // SYSTEM RELOAD,SYSTEM DROP DNS CACHE...
+    return language;
+  }
+
+  public static getSuggestions(
+    model: IReadOnlyModel,
+    position: monaco.Position,
+    context: monaco.languages.CompletionContext,
+    token: monaco.CancellationToken
+  ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
     const completionItems: Array<monaco.languages.CompletionItem> = [];
 
     const word = model.getWordUntilPosition(position);
@@ -35,8 +117,18 @@ export abstract class SuggestionsMaker {
       startColumn: word.startColumn,
       endColumn: word.endColumn,
     };
-
-
+    if (this.keywordsLanguage.length) {
+      this.keywordsLanguage.forEach((key) => {
+        completionItems.push({
+          label: key.word,
+          insertText: key.word,
+          kind: key.type,
+          sortText: `000${key.word}`,
+          detail: `Keyword`,
+          range,
+        });
+      });
+    }
     if (this.serverStructure?.databases) {
       this.serverStructure?.databases.forEach((db: ServerStructure.Database) => {
         // Completion:dbName
@@ -52,7 +144,7 @@ export abstract class SuggestionsMaker {
           // table
           completionItems.push({
             label: table.name,
-            insertText: `${table.database}.${table.insertName}`,
+            insertText: `${table.insertName}`,
             kind: monaco.languages.CompletionItemKind.Interface,
             detail: `table:${table.engine}`,
             documentation: table.id,
@@ -80,8 +172,8 @@ export abstract class SuggestionsMaker {
             label: func.name,
             insertText: `${func.name}(`,
             kind: monaco.languages.CompletionItemKind.Method,
-            sortText: `fun ${func.name}`,
-            detail: `function`,
+            sortText: `9999-${func.name}`,
+            detail: `Function`,
             range,
           }
         );
@@ -92,26 +184,13 @@ export abstract class SuggestionsMaker {
           label: dic.title,
           insertText: `${dic.dic}`,
           kind: monaco.languages.CompletionItemKind.Snippet,
+          sortText: `dic  ${dic.dic}`,
           detail: `dic ${dic.dic}`,
           range,
         });
       });
     } // <-editorRules
     // ---------------------------------------------------------------------------
-    // push to completionItems: languageClickhouse
-    //
-    // const keywords = [...this.languageCH.keywordsGlobal, ...this.languageCH.keywords];
-    // if (keywords.length) {
-    //   keywords.forEach((word: string) => {
-    //     completionItems.push({
-    //       label: word,
-    //       insertText: word,
-    //       sortText: `000 ${word}`,
-    //       kind: monaco.languages.CompletionItemKind.Keyword,
-    //       range,
-    //     });
-    //   });
-    // }
 
     if (!this.serverStructure) {
       console.warn('Not init serverStructure');
@@ -120,3 +199,66 @@ export abstract class SuggestionsMaker {
     return { suggestions: completionItems };
   }
 }
+
+//   const selectDB: string = sqlEditor.props.currentDatabase;
+//   let currentListTables: Array<Array<string>> = [];
+//   // ------------------------------------------------------------------------------------------------
+//   // Try tokenize Text
+//   const queryes: Array<Query> = sqlEditor.tokenizeModel(model, position);
+//   if (queryes && queryes.length) {
+//     // if tokenize = true
+//     // find inCursor=true, fetch all tokens - find  type: "keyword.dbtable.sql" => push to currentListTables
+//     currentListTables = [];
+//     queryes.forEach((query: Query) => {
+//       // if query under cursor find databases & tables
+//       if (!query.inCursor) return;
+//       // @ts-ignore
+//       query.tokens.forEach(oToken => {
+//         console.info('token', oToken);
+//         if (['keyword.dbtable.sql', 'keyword.table.sql'].indexOf(oToken.type) !== -1) {
+//           let [db, table] = oToken.text
+//             .toUpperCase()
+//             .trim()
+//             .split('.') // @todo : need regexp
+//             // @ts-ignore
+//             .map(x => x.trim().replace('`', ''));
+//           // if find only table name -> use selectDB as DB
+//           if (!table && db) {
+//             table = db;
+//             db = selectDB;
+//           }
+//           // push
+//           if (!currentListTables[db]) currentListTables[db] = [];
+//           currentListTables[db].push(table);
+//         }
+//       });
+//     });
+//   }
+//   console.log('queryes', queryes);
+//   if (currentListTables) console.log('Find database & tables', currentListTables);
+//   // ------------------------------------------------------------------------------------------------
+//   // add items to Completion:Tables
+//   sqlEditor.props.serverStructure.databases.forEach((db: ServerStructure.Database) => {
+//     if (!currentListTables && db.name !== selectDB) return;
+//     if (!currentListTables[db.name.toUpperCase()]) return;
+//     db.tables.forEach((table: ServerStructure.Table) => {
+//       if (
+//         currentListTables &&
+//         currentListTables[db.name.toUpperCase()] &&
+//         currentListTables[db.name.toUpperCase()].indexOf(table.name.toUpperCase()) === -1
+//       ) {
+//         // skip tables & databases if not in `query`
+//         return;
+//       }
+//       console.log('Load items:', db.name, table.name);
+//       table.columns.forEach((column: ServerStructure.Column) => {
+//         completionItems.push({
+//           label: column.name,
+//           insertText: `${column.name}`,
+//           kind: globalMonaco.languages.CompletionItemKind.Reference,
+//           detail: `${column.type} in ${column.table}`,
+//         });
+//       });
+//     });
+//   });
+// return { suggestions: completionItems };

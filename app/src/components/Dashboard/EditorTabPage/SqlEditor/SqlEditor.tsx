@@ -16,19 +16,19 @@ import { bindKeys } from './monaco/bindKeys';
 import { SqlWorker } from './monaco/sql-worker/SqlWorker';
 import { SupportLanguage } from './monaco/sql-worker/supportLanguage';
 import { delayFunctionWrap } from './monaco/utils';
-// ---dsa d-- adasdass
+//
 type tMonaco = typeof monaco;
 type tCodeEditor = monaco.editor.IStandaloneCodeEditor;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
+// ------------------------------------------------------------------------------------
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
   onContentChange: (content: string) => void;
   serverStructure?: ServerStructure.Server;
 }
 
-//
-//
+// ------------------------------------------------------------------------------------
 @observer
 export default class SqlEditor extends React.Component<SqlEditorProps> {
   private editor?: tCodeEditor;
@@ -37,16 +37,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   private sqlWorker: SqlWorker;
 
-  // const setCursorPosition = useState(new Position(0, 0))[1];
-  // const [tempCursor] = useState(new Position(0, 0));
-
   private monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
     fontSize: 15,
   };
 
   constructor(props: any) {
     super(props);
-    console.info('SqlEditor->create');
     this.sqlWorker = new SqlWorker();
     this.monacoEditorOptions = Object.assign({}, defaultOptions, this.monacoEditorOptions);
   }
@@ -56,7 +52,8 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     if (this.props.serverStructure) {
       console.info('SqlEditor->componentWillUnmount');
       // refactor: Why update monaco on editor unmount? Maybe update on mount and activate?
-      this.updateGlobalEditorStructure(this.props.serverStructure);
+      this.sqlWorker.disposeAll();
+      // this.updateGlobalEditorStructure(this.props.serverStructure);
     }
   }
 
@@ -97,7 +94,6 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   }
 
   private setEditorRef = (editor?: tCodeEditor) => {
-    console.info('SqlEditor->setEditorRef');
     this.editor = editor;
   };
 
@@ -108,17 +104,10 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     console.info('SqlEditor->onEditorBeforeMount');
     this.tMonaco = thisMonaco;
     thisMonaco.editor.defineTheme('cobalt', themeCobalt); // if (this.props.theme !== theme) thisMonaco.editor.setTheme(theme)
-    if (!thisMonaco.languages.getLanguages().some(({ id }) => id === SupportLanguage.CLICKHOUSE)) {
-      if (this.props.serverStructure) {
-        this.sqlWorker.applyServerStructure(this.props.serverStructure, thisMonaco);
-      }
-      this.sqlWorker.register(SupportLanguage.CLICKHOUSE, thisMonaco);
-    }
   };
 
   /**
-   * Выполнение запросов при получение комманды
-   *
+   * Выполнение запросов, если получена command
    *
    * @param sqlEditor
    * @param editor
@@ -141,20 +130,25 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     }
   };
 
+  /**
+   * Update completion,functions,tables on server update
+   * - dispose all
+   * - Recall all registered
+   *
+   * @param serverStructure
+   */
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
     console.info('SqlEditor->updateGlobalEditorStructure');
     if (!serverStructure) return;
-    if (!this.editor) {
-      console.warn('Error in updateGlobalEditorStructure, empty this.editor!');
-    }
     if (!this.tMonaco) {
-      console.warn('Error in updateGlobalEditorStructure, empty this.tMonaco!');
+      console.info('Error in updateGlobalEditorStructure, empty this.tMonaco!');
     }
     if (this.tMonaco && serverStructure) {
       // Base create completion,functions,tables,fields...
       // Register first CompletionItemProvider & MonarchTokensProvider
       // Attach to tMonaco - MonarchTokensProvider
       this.sqlWorker.applyServerStructure(serverStructure, this.tMonaco);
+      this.sqlWorker.register(SupportLanguage.CLICKHOUSE, this.tMonaco);
     }
   };
 
@@ -172,18 +166,26 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   delayLanguageValueOnChange: any = delayFunctionWrap(this.languageValueOnChange.bind(this));
 
+  /**
+   * On typing
+   *
+   * @param value
+   * @param ev
+   */
   private onChange = (value: string | undefined, ev: monaco.editor.IModelContentChangedEvent) => {
-    // console.info('Change',value,ev);
     if (value !== undefined) {
       const { onContentChange } = this.props;
-      // this.props.onContentChange(value);
-      // Тут регистрируем timer на 500мс -> parse & validate
+      // Registration delay timer 2000мс -> parse & validate
       this.delayLanguageValueOnChange(onContentChange);
     }
-
     // setCursorPosition(e.position)
   };
 
+  /***
+   * Never call? need add markers-worker?
+   *
+   * @param markers
+   */
   private onValidate = (markers: monaco.editor.IMarker[]) => {
     // work on have markers only!
 
@@ -228,7 +230,15 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     const self = this;
     // Bind keys to Editor
     bindKeys(editor, thisMonaco, self);
-    this.languageValueOnChange();
+    console.info('SqlEditor->onEditorMount()');
+    // Register
+    if (!thisMonaco.languages.getLanguages().some(({ id }) => id === SupportLanguage.CLICKHOUSE)) {
+      if (this.props.serverStructure) {
+        this.sqlWorker.applyServerStructure(this.props.serverStructure, thisMonaco);
+      }
+    }
+    this.sqlWorker.register(SupportLanguage.CLICKHOUSE, thisMonaco);
+    // this.languageValueOnChange();
   };
 
   private onAction = (action: ActionType, eventData?: any) => {

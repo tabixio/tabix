@@ -1,30 +1,31 @@
 import * as monaco from 'monaco-editor';
 import { Query, ServerStructure } from 'services';
-import monacoEditor, {IRange, Position, Selection} from 'monaco-editor';
+import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
 import { SuggestionsMaker } from './SuggestionsMaker';
 import { SupportLanguage } from './supportLanguage';
 import { configurationClickhouse, languageClickhouse } from './editorConfig';
 import { ClickhouseSQL, CommonSQL } from './grammar';
-// import {VocabularyPack} from './lib/vocabularyPack';
+
 type tMonaco = typeof monaco;
 
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
 export interface oneToken {
-  line: number,
+  line: number;
   offset: number;
   type: string;
   language: string;
-  text:string,
-  range: monaco.Range,
-  inCursor: boolean,
-  inSelected: boolean,
+  text: string;
+  range: monaco.Range;
+  inCursor: boolean;
+  inSelected: boolean;
 }
 
 export class SqlWorker {
   private serverStructure?: ServerStructure.Server;
 
+  private isRegistred = false;
   private monaco?: tMonaco;
 
   private languageWords: any;
@@ -35,6 +36,28 @@ export class SqlWorker {
     this.parserMap = new Map<string, CommonSQL>();
     // console.info("SqlWorker->create");
     //
+  }
+
+  public addDisposable(d: monaco.IDisposable) {
+    // hack for HotReload monacoEditor  когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
+    if (!window.monacoGlobalProvider || !window.monacoGlobalProvider.IDisposable) {
+      // ./app/types/app/index.d.ts
+      console.warn('Reset window.monacoGlobalProvider.IDisposable');
+      window.monacoGlobalProvider = {
+        IDisposable: [] as Array<monaco.IDisposable>,
+      };
+    }
+    window.monacoGlobalProvider.IDisposable.push(d);
+    console.info('SqlWorker->addDisposable()', window.monacoGlobalProvider.IDisposable.length);
+  }
+
+  public disposeAll() {
+    if (window.monacoGlobalProvider && window.monacoGlobalProvider.IDisposable.length) {
+      console.info('SqlWorker->disposeAll()');
+      window.monacoGlobalProvider.IDisposable.forEach((d: monaco.IDisposable) => d && d.dispose());
+      // clean
+      window.monacoGlobalProvider.IDisposable.length = 0;
+    }
   }
 
   //
@@ -54,6 +77,7 @@ export class SqlWorker {
   //     this.props.serverStructure
   //   );
   public applyServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco): void {
+    console.info('SqlWorker->applyServerStructure() ');
     this.serverStructure = serverStructure;
     SuggestionsMaker.setServerStructure(serverStructure, thisMonaco);
   }
@@ -67,9 +91,21 @@ export class SqlWorker {
   }
 
   public register(language: SupportLanguage, thisMonaco: tMonaco): void {
-    console.info('register1');
-    // thisMonaco.editor.getModel().id;
+    if (this.isRegistred) {
+      console.info('SqlWorker->Register() - skip, already done');
+      return;
+    }
+    if (!this.serverStructure) {
+      console.info('SqlWorker->Register() - skip, not set serverStructure');
+      return;
+    }
+    console.info('SqlWorker->Register()', language);
+    // UnRegister all Language,Completion
+    this.disposeAll();
+    // Link
     this.monaco = thisMonaco;
+    // Register
+    this.isRegistred = true;
     this.registerLanguage(language, thisMonaco);
     this.registerCompletion(language, thisMonaco);
   }
@@ -92,9 +128,11 @@ export class SqlWorker {
     //
     const self = this;
     // this.addProvider(language,Completion) =
-    thisMonaco.languages.registerCompletionItemProvider(language, {
-      provideCompletionItems: self.getSuggestions,
-    });
+    this.addDisposable(
+      thisMonaco.languages.registerCompletionItemProvider(language, {
+        provideCompletionItems: self.getSuggestions,
+      })
+    );
   }
 
   /**
@@ -123,54 +161,45 @@ export class SqlWorker {
     // .keywordsGlobal
     // .keywords
     // .
-
-    const p = this.getParserANTLR(language);
-    console.warn(' p p p p', language, p);
-
-    if (p) {
-      console.warn('parseDefault', p.parseDefault());
-      console.warn('getLexer', p.getLexer());
-      console.warn('getParser', p.getParser());
-      console.warn('getSymbolicNames', p.getSymbolicNames());
-
-      // const voc = new VocabularyPack(p.getLexer(),p.getParser());
-      // console.info('VOC',voc);
-      //
-    }
-    //  serverStructure.editorRules.builtinFunctions.forEach((func: any) => {
-    //         languageSettings.builtinFunctions.push(func.name);
-
-    // highlight tables and databases
-    // languageSettings.dbtables.push(`${table.database}.${table.insertName}`);
-    // languageSettings.dbtables.push(`${table.database}.${table.insertName.replace(/"/g, '`')}`);
-    // languageSettings.tables.push(`${table.insertName}`);
-    // languageSettings.tables.push(`${db.name}`);
     //
-    // table.columns.forEach((column: ServerStructure.Column) => {
-    //   // col highlingts
-    //   languageSettings.fields.push(`${table.insertName}.${column.name}`);
-    //   languageSettings.fields.push(`${column.name}`);
-    // });
+    const parser = this.getParserANTLR(language);
+    console.warn(' p p p p', language, parser);
+    //
+    if (parser) {
+      const tree = parser.parseDefault();
+      console.warn('parseDefault', tree);
+      // @ts-ignore
+      console.log(tree.toStringTree(parser.ruleNames));
+    }
+    //   console.warn('getLexer', p.getLexer());
+    //   console.warn('getParser', p.getParser());
+
     let lang: monaco.languages.IMonarchLanguage;
 
     // if (language === SupportLanguage.CLICKHOUSE) {  // @TODO: Support other language
 
     lang = languageClickhouse as monaco.languages.IMonarchLanguage;
-
-    // Merge
-
-    //
+    // Merge with server structure, todo un support many lang`s
+    lang = SuggestionsMaker.getMonarchLanguage(lang);
     return lang;
   }
 
+  /**
+   * Register a new language and addDisposable list
+   * @param language
+   * @param thisMonaco
+   * @private
+   */
   private registerLanguage(language: SupportLanguage, thisMonaco: tMonaco): void {
-    // Register a new language - add clickhouse
     thisMonaco.languages.register({ id: language, extensions: ['.sql'], aliases: ['chsql'] });
-    // this.addProvider(language,Monarc) =
-    thisMonaco.languages.setMonarchTokensProvider(language, this.getIMonarchLanguage(language));
-    thisMonaco.languages.setLanguageConfiguration(
-      language,
-      this.getLanguageConfiguration(language)
+    this.addDisposable(
+      thisMonaco.languages.setMonarchTokensProvider(language, this.getIMonarchLanguage(language))
+    );
+    this.addDisposable(
+      thisMonaco.languages.setLanguageConfiguration(
+        language,
+        this.getLanguageConfiguration(language)
+      )
     );
   }
 
@@ -184,7 +213,7 @@ export class SqlWorker {
   }
 
   private makeQueryId(): string {
-    let text: string = '';
+    let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     for (let i = 0; i < 9; i += 1)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -198,15 +227,14 @@ export class SqlWorker {
    * @param editor
    * @param isExecAll
    */
-  public createExecCurrentQuery(editor: iCodeEditor, isExecAll: boolean): Array<Query>|null
-  {
+  public createExecCurrentQuery(editor: iCodeEditor, isExecAll: boolean): Array<Query> | null {
     console.info(`%c------------>>> executeCommand >>>--------------`, 'color: red');
 
     const queryExecList: Array<Query> = [];
     const model: monacoEditor.editor.ITextModel | null = editor.getModel();
 
     if (!this.monaco?.editor || !model) return null;
-    let typeCommand=(isExecAll ? 'all' : 'current');  // Тип комманды
+    let typeCommand = isExecAll ? 'all' : 'current'; // Тип комманды
     const cursorPosition: Position | null = editor.getPosition(); // Позиция курсора
     const userSelection: Selection | null = editor.getSelection(); // Выбранная область
     if (userSelection) {
@@ -219,7 +247,6 @@ export class SqlWorker {
     }
     // Токинизация
     const queryParseList = this.tokenizeQueryEditor(model, cursorPosition, userSelection);
-
 
     queryParseList.forEach((_query: Query) => {
       // skip empty
@@ -258,10 +285,8 @@ export class SqlWorker {
       queryExecList.push(query);
     });
 
-
     return queryExecList;
   }
-
 
   /**
    * Токинизация через MonacoEditor
@@ -291,14 +316,14 @@ export class SqlWorker {
 
     const splitterQueryToken = 'warn-token.sql'; // Токен разбития на запросы
     const splitterTabixToken = 'tabix.sql'; // Токен разбития на запросы
-    let countTabixCommandsInQuery: number = 0; // Кол-во tabix комманд запросе
+    let countTabixCommandsInQuery = 0; // Кол-во tabix комманд запросе
 
     let tokensList: oneToken[] = [];
 
     // @TODO: Support multi langs
     const tokens = this.monaco?.editor.tokenize(model.getValue(), SupportLanguage.CLICKHOUSE); // ВЕСЬ текст редактора
     console.warn('tokens', tokens);
-    let countQuery: number = 0; // Кол-во запросов в тексте
+    let countQuery = 0; // Кол-во запросов в тексте
     const splits: any[] = [];
     const splitToken = {
       line: 1,
@@ -315,7 +340,7 @@ export class SqlWorker {
     // Идем по токенам
     tokens.forEach((lineTokens: monaco.Token[], i) => {
       const line = i + 1;
-      lineTokens.forEach(token => {
+      lineTokens.forEach((token) => {
         const typeToken = token.type;
 
         // Если указан преведущий токен, вырезаем значение между текущим и преведущим
@@ -328,12 +353,12 @@ export class SqlWorker {
           );
 
           const tokenText = model.getValueInRange(tokenRange); // Тут нужно выбирать из запроса
-          const fetchToken : oneToken = {
+          const fetchToken: oneToken = {
             ...previousToken,
             text: tokenText,
             range: tokenRange,
             inCursor: cursorPosition && tokenRange.containsPosition(cursorPosition),
-            inSelected: ( !!(selection && tokenRange.containsRange(selection))) ,
+            inSelected: !!(selection && tokenRange.containsRange(selection)),
           };
 
           tokensList.push(fetchToken);
@@ -393,7 +418,7 @@ export class SqlWorker {
     });
 
     // Идем по разбитым запросам
-    splits.forEach(splitRange => {
+    splits.forEach((splitRange) => {
       const numQuery: number = parseInt(splitRange.numQuery, 0);
       const range = new monaco.Range(
         splitRange.startLineNumber,
@@ -420,14 +445,14 @@ export class SqlWorker {
         // это запрос
 
         // Проходим по всем Tokens одного запроса
-        let isFormatSet: boolean = false;
-        let isOperationCAD: boolean = false;
-        let findSelectQuery: boolean = false;
-        let format: string = 'FORMAT JSON';
+        let isFormatSet = false;
+        let isOperationCAD = false;
+        let findSelectQuery = false;
+        let format = 'FORMAT JSON';
 
         //
         if (splitRange.tokens) {
-          splitRange.tokens.forEach((oToken:oneToken) => {
+          splitRange.tokens.forEach((oToken: oneToken) => {
             if (oToken.type === 'storage.sql') {
               isFormatSet = true;
               format = oToken.text.trim();
@@ -480,8 +505,7 @@ export class SqlWorker {
         // Находим typeOfCommand через поиск токена 'tabix.sql', его содержимое есть type
         let typeOfCommand = '';
         if (splitRange.tokens) {
-
-          splitRange.tokens.forEach((oToken:oneToken) => {
+          splitRange.tokens.forEach((oToken: oneToken) => {
             if (oToken.type === splitterTabixToken) {
               typeOfCommand = oToken.text;
             }
