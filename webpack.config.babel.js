@@ -155,9 +155,6 @@ export default {
           {
             loader: 'css-loader',
             options: {
-              // postcssOptions: {
-              //   config: path.resolve('./webpack/postcss.config.js'),
-              // },
               modules: true,
               localIdentName: '[name]__[local]--[hash:5]',
               sourceMap: true,
