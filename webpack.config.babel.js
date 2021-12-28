@@ -4,6 +4,8 @@ import path from 'path';
 // import TerserJSPlugin from 'terser-webpack-plugin';
 import lessVars from './webpack/less-vars';
 
+const { merge } = require('webpack-merge');
+
 // process.traceDeprecation = true;
 // ---------- Plugins ------------------------------------------------------------
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -11,10 +13,10 @@ const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 // -------------------------------------------------------------------------------
 const baseDir = process.cwd();
-const mode = process.env.NODE_ENV ? 'development' : 'production';
+const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 const isProd = mode === 'production';
 const isDev = !isProd;
 const devServerHost = '0.0.0.0'; // isWindows() ? '127.0.0.1' : '0.0.0.0';
@@ -28,18 +30,12 @@ const performance = {
   maxAssetSize: 512000,
 };
 const optimization = {
-  minimize: true,
-  minimizer: [
-    //    new TerserPlugin({
-    //      parallel: true,
-    //      terserOptions: {
-    // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-    //      },
-    // }),
-  ],
+  removeAvailableModules: false,
+
   runtimeChunk: {
     name: 'runtime',
   },
+  moduleIds: 'deterministic',
 
   splitChunks: {
     chunks: 'all',
@@ -109,7 +105,7 @@ const plugins = [
   new MonacoWebpackPlugin({ output: 'workers', languages: ['sql'] }),
 ];
 // -------------------------------------------------------------------------------
-export default {
+let common = {
   target: 'web',
   context: path.resolve(baseDir, 'app/src'),
   entry: {
@@ -127,6 +123,21 @@ export default {
   },
 
   // stats: {
+  //   colors: true,
+  //   hash: true,
+  //   version: true,
+  //   timings: true,
+  //   assets: true,
+  //   chunks: true,
+  //   modules: true,
+  //   reasons: true,
+  //   children: true,
+  //   source: false,
+  //   errors: true,
+  //   errorDetails: false,
+  //   warnings: true,
+  //   publicPath: false,
+  // },
   //   all: false,
   //   assets: true,
   //   // excludeAssets: !assetName.endsWith(".js")),
@@ -221,10 +232,30 @@ export default {
     ],
   },
   // devtool: 'cheap-module-eval-source-map',
-  devtool: 'source-map',
+
   optimization,
   plugins,
   mode,
-  devServer,
   performance,
 };
+// -------------------------------------------------------------------------------
+if (isProd) {
+  console.log('\x1b[36mIs production mode\x1b[0m');
+  common = merge(common, {
+    mode: 'production',
+    optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin({ parallel: true })],
+    },
+  });
+} else {
+  console.log('\x1b[33mIs development mode\x1b[0m');
+  common = merge(common, {
+    devtool: 'source-map',
+    devServer,
+  });
+}
+// -------------------------------------------------------------------------------
+module.exports = merge(common, {
+  // mode: 'production',
+});
