@@ -1,13 +1,7 @@
-import webpack from 'webpack';
 import path from 'path';
-// Import Settings
-// import TerserJSPlugin from 'terser-webpack-plugin';
-import lessVars from './webpack/less-vars';
-
-const { merge } = require('webpack-merge');
-
-// process.traceDeprecation = true;
+import antdLessVars from './webpack/less-vars';
 // ---------- Plugins ------------------------------------------------------------
+const { merge } = require('webpack-merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
@@ -18,11 +12,13 @@ const TerserPlugin = require('terser-webpack-plugin');
 const baseDir = process.cwd();
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 const isProd = mode === 'production';
-const isDev = !isProd;
 const devServerHost = '0.0.0.0'; // isWindows() ? '127.0.0.1' : '0.0.0.0';
 // -------------------------------------------------------------------------------
-const CompressionPlugin = require('compression-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// const CompressionPlugin = require('compression-webpack-plugin');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// -------------------------------------------------------------------------------
+// process.traceDeprecation = true;
 // -------------------------------------------------------------------------------
 const performance = {
   hints: false,
@@ -73,11 +69,9 @@ const devServer = {
     publicPath: '/',
     directory: path.resolve(baseDir, 'app/public'),
   },
-  // noInfo: false,
   // stats: 'minimal',
 };
 // -------------------------------------------------------------------------------
-// Customize the webpack build process
 const plugins = [
   // Removes/cleans build folders and unused assets when rebuilding
   new CleanWebpackPlugin(),
@@ -86,9 +80,6 @@ const plugins = [
       memoryLimit: 2048,
       configFile: path.resolve(baseDir, 'app/tsconfig.json'),
     },
-    // tsconfig: path.resolve(baseDir, 'app/tsconfig.json'),
-    // checkSyntacticErrors: false,
-    // memoryLimit: 2024,
   }),
   // new CompressionPlugin(),
   // new BundleAnalyzerPlugin({
@@ -138,12 +129,6 @@ let common = {
   //   warnings: true,
   //   publicPath: false,
   // },
-  //   all: false,
-  //   assets: true,
-  //   // excludeAssets: !assetName.endsWith(".js")),
-  //   assetsSort: '!size',
-  //   errors: true,
-  // },
   module: {
     rules: [
       // ts-loader
@@ -160,7 +145,7 @@ let common = {
           },
         },
       },
-      // CSS s
+      // CSS app/src ----------
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'app/src')],
@@ -178,7 +163,7 @@ let common = {
           'postcss-loader',
         ],
       },
-      // Css - modules
+      // Css ---- node_modules ------
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'node_modules')],
@@ -193,7 +178,7 @@ let common = {
           },
         ],
       },
-      // Less
+      // Less --- antd ---
       {
         test: /\.less$/,
         include: [path.resolve(baseDir, 'node_modules', 'antd')],
@@ -209,7 +194,7 @@ let common = {
             loader: 'less-loader',
             options: {
               javascriptEnabled: true,
-              modifyVars: lessVars,
+              modifyVars: antdLessVars,
             },
           },
         ],
@@ -231,8 +216,6 @@ let common = {
       },
     ],
   },
-  // devtool: 'cheap-module-eval-source-map',
-
   optimization,
   plugins,
   mode,
@@ -251,7 +234,7 @@ if (isProd) {
 } else {
   console.log('\x1b[33mIs development mode\x1b[0m');
   common = merge(common, {
-    devtool: 'source-map',
+    devtool: 'eval',
     devServer,
   });
 }

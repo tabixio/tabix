@@ -1295,13 +1295,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/antlr4@npm:4.7.0":
-  version: 4.7.0
-  resolution: "@types/antlr4@npm:4.7.0"
-  checksum: 7bffd53822f194cb05c8e79e4da08a5e23bf4f3891fceace1bb17d61f844eef17a5f088b90ba062c2705256b40188a79c3a005988b1a0b4615ea310989657300
-  languageName: node
-  linkType: hard
-
 "@types/antlr4@npm:^4.7.2":
   version: 4.7.2
   resolution: "@types/antlr4@npm:4.7.2"
@@ -2304,13 +2297,6 @@ __metadata:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
   checksum: af5507b5aeb043cee88799b49329234c88c86f7a47eff29355279cc826f38ebc721dba6612d629084b301c95391b12274800e9659a1ceace7a5a4953e323dd94
-  languageName: node
-  linkType: hard
-
-"antlr4@npm:4.7.2":
-  version: 4.7.2
-  resolution: "antlr4@npm:4.7.2"
-  checksum: abdb3fc385c465b453cba3babeded7827ddc75e641c8777c2feb53e9255aaf273c456023adf1003a58cc69f2c33e326fd89a3b4d245694634a3927a6e112b7ec
   languageName: node
   linkType: hard
 
@@ -5195,16 +5181,6 @@ __metadata:
     abs-svg-path: ~0.1.1
     normalize-svg-path: ~0.1.0
   checksum: d1f6b7979193d3989bccc330ee9bf96219df7a1c5925066b4b14a98177c9def1ef5cdaf50b453c13fc7f73c3d06ebd850c3b662143982f33c6061d127f599015
-  languageName: node
-  linkType: hard
-
-"dt-sql-parser@npm:^4.0.0-beta.2.2":
-  version: 4.0.0-beta.2.2
-  resolution: "dt-sql-parser@npm:4.0.0-beta.2.2"
-  dependencies:
-    "@types/antlr4": 4.7.0
-    antlr4: 4.7.2
-  checksum: be931e1351d9ddef8688ae078ee9f5f41e6acd5970e270332fe31b611469c8d49b0a2d0a991d67bf20c91fcce590259f3687216a4602bef6f6389a5144834e17
   languageName: node
   linkType: hard
 
@@ -16224,7 +16200,6 @@ __metadata:
     cross-env: ^5.2.0
     css-loader: ^2.1.0
     downshift: ^3.1.8
-    dt-sql-parser: ^4.0.0-beta.2.2
     eslint: ^8.5.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-prettier: ^8.3.0

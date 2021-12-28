@@ -118,7 +118,6 @@
     "classnames": "^2.2.6",
     "compression-webpack-plugin": "4.0.1",
     "downshift": "^3.1.8",
-    "dt-sql-parser": "^4.0.0-beta.2.2",
     "eslint-webpack-plugin": "^3.1.1",
     "funfix-core": "^7.0.1",
     "handsontable": "6.2.2",
