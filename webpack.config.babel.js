@@ -234,7 +234,7 @@ if (isProd) {
 } else {
   console.log('\x1b[33mIs development mode\x1b[0m');
   common = merge(common, {
-    devtool: 'eval',
+    devtool: 'eval-cheap-source-map',
     devServer,
   });
 }

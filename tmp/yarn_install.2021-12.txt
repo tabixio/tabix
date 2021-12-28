@@ -1,0 +1,45 @@
+➜  tabix.ts21 git:(ts21) ✗ yarn install
+➤ YN0000: ┌ Resolution step
+➤ YN0061: │ babel-eslint@npm:10.1.0 is deprecated: babel-eslint is now @babel/eslint-parser. This package will no longer receive updates.
+➤ YN0061: │ uuid@npm:3.4.0 is deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
+➤ YN0061: │ eslint-plugin-typescript@npm:0.14.0 is deprecated: Deprecated: Use @typescript-eslint/eslint-plugin instead
+➤ YN0032: │ fsevents@npm:2.3.2: Implicit dependencies on node-gyp are discouraged
+➤ YN0061: │ typescript-estree@npm:5.3.0 is deprecated: This package was moved to @typescript-eslint/typescript-estree, please install the latest version from there instead
+➤ YN0061: │ core-js@npm:2.6.12 is deprecated: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+➤ YN0061: │ flatten@npm:1.0.3 is deprecated: flatten is deprecated in favor of utility frameworks such as lodash.
+➤ YN0061: │ querystring@npm:0.2.0 is deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
+➤ YN0061: │ core-js@npm:1.2.7 is deprecated: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+➤ YN0061: │ mumath@npm:3.3.4 is deprecated: Redundant dependency in your project.
+➤ YN0061: │ resolve-url@npm:0.2.1 is deprecated: https://github.com/lydell/resolve-url#deprecated
+➤ YN0061: │ urix@npm:0.1.0 is deprecated: Please see https://github.com/lydell/urix#deprecated
+➤ YN0032: │ evp_bytestokey@npm:1.0.3: Implicit dependencies on node-gyp are discouraged
+➤ YN0002: │ rc-collapse@npm:1.11.8 doesn't provide react (p1311f), requested by rc-animate
+➤ YN0002: │ rc-collapse@npm:1.11.8 doesn't provide react-dom (p345f3), requested by rc-animate
+➤ YN0002: │ rc-dialog@npm:7.6.1 doesn't provide react (p74831), requested by rc-animate
+➤ YN0002: │ rc-dialog@npm:7.6.1 doesn't provide react-dom (p0f8be), requested by rc-animate
+➤ YN0002: │ rc-mentions@npm:0.4.2 [9a2ed] doesn't provide prop-types (p05e3e), requested by @ant-design/create-react-context
+➤ YN0002: │ rc-mentions@npm:0.4.2 [9a2ed] doesn't provide react-dom (pe84a5), requested by rc-menu
+➤ YN0002: │ rc-notification@npm:3.3.1 doesn't provide react (p628cc), requested by rc-animate
+➤ YN0002: │ rc-notification@npm:3.3.1 doesn't provide react-dom (pf6d7f), requested by rc-animate
+➤ YN0002: │ rc-select@npm:9.2.3 doesn't provide react (p67c32), requested by rc-animate
+➤ YN0002: │ rc-select@npm:9.2.3 doesn't provide react (p382ce), requested by rc-menu
+➤ YN0002: │ rc-select@npm:9.2.3 doesn't provide react-dom (p6fde9), requested by rc-animate
+➤ YN0002: │ rc-select@npm:9.2.3 doesn't provide react-dom (p8febd), requested by rc-menu
+➤ YN0002: │ rc-tree-select@npm:2.9.4 doesn't provide react (pf31db), requested by rc-animate
+➤ YN0002: │ rc-tree-select@npm:2.9.4 doesn't provide react (p9534a), requested by rc-tree
+➤ YN0002: │ rc-tree-select@npm:2.9.4 doesn't provide react-dom (paa0e3), requested by rc-animate
+➤ YN0002: │ rc-tree-select@npm:2.9.4 doesn't provide react-dom (pb54d3), requested by rc-tree
+➤ YN0002: │ rc-trigger@npm:2.6.5 doesn't provide react (p8a8f0), requested by rc-animate
+➤ YN0002: │ rc-trigger@npm:2.6.5 doesn't provide react-dom (p1433f), requested by rc-animate
+➤ YN0002: │ rc-trigger@npm:3.0.0 doesn't provide react (pab7d1), requested by rc-animate
+➤ YN0002: │ rc-trigger@npm:3.0.0 doesn't provide react-dom (p93ce1), requested by rc-animate
+➤ YN0002: │ react-grid-layout@npm:0.16.6 doesn't provide react (pdc95c), requested by react-draggable
+➤ YN0002: │ react-grid-layout@npm:0.16.6 doesn't provide react (pd5d77), requested by react-resizable
+➤ YN0002: │ react-grid-layout@npm:0.16.6 doesn't provide react-dom (pc76e7), requested by react-draggable
+➤ YN0002: │ react-grid-layout@npm:0.16.6 doesn't provide react-dom (p0dc70), requested by react-resizable
+➤ YN0002: │ tabix@workspace:. doesn't provide eslint-plugin-react-hooks (p5ccc6), requested by eslint-config-airbnb
+➤ YN0002: │ tabix@workspace:. doesn't provide prop-types (p3c806), requested by rc-form
+➤ YN0060: │ tabix@workspace:. provides react (pcac33) with version 16.8.6, which doesn't satisfy what antd and some of its descendants request
+➤ YN0060: │ tabix@workspace:. provides react-dom (pb7e37) with version 16.8.6, which doesn't satisfy what antd and some of its descendants request
+➤ YN0060: │ tabix@workspace:. provides webpack (pe54ea) with version 5.65.0, which doesn't satisfy what css-loader requests
+➤ YN0060: │ tabix@workspace:. provides webpack (p25cb2) with version 5.65.0, which doesn't satisfy what less-loader requests
