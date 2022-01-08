@@ -29,10 +29,12 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     // Doc
     // ClickHouse/dbms/src/Interpreters/Settings.h :
     // https://github.com/yandex/ClickHouse/blob/master/dbms/src/Interpreters/Settings.h
+    // https://github.com/ClickHouse/ClickHouse/blob/master/src/Core/Settings.h
     const defaultState = {
       output_format_json_quote_denormals: 1,
       output_format_json_quote_64bit_integers: 1,
       log_queries: 1,
+      enable_http_compression: 1,
       add_http_cors_header: 1,
       result_overflow_mode: 'throw',
       timeout_overflow_mode: 'throw',
@@ -42,12 +44,19 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       // max_block_size:200,
       // send_progress_in_http_headers:1,
       // http_headers_progress_interval_ms:500
+      // http_connection_timeout
+      // http_send_timeout
+      // enable_http_compression
+      // cancel_http_readonly_queries_on_client_close
+      // http_options_response
+      // output_format_json_quote_denormals
+      // use_client_time_zone
     };
 
     if (typeof urlParams === 'string' && urlParams) {
       const hashes = urlParams.slice(urlParams.indexOf('?') + 1).split('&');
 
-      hashes.map(hash => {
+      hashes.map((hash) => {
         const [key, val] = hash.split('=');
         defaultState[key] = decodeURIComponent(val);
         return true;
@@ -81,9 +90,9 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       url += `&user=${encodeURIComponent(this.connection.username)}`;
     }
 
-    if (withDatabase) {
-      url += `&database=${encodeURIComponent(withDatabase)}`;
-    }
+    // if (withDatabase) {
+    //   url += `&database=${encodeURIComponent(withDatabase)}`;
+    // }
 
     return url;
   }
@@ -95,13 +104,16 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const limitDBs = 2000;
     const limitDics = 1500;
 
-    const columns = await this.queryString(`SELECT * FROM system.columns LIMIT ${limitColumns}`);
+    const columns = await this.queryString(`SELECT *
+                                            FROM system.columns LIMIT ${limitColumns}`);
     const tables = await this.queryString(this.preparedQuery.databaseTablesList(limitTables));
     const databases = await this.queryString(this.preparedQuery.databaseList(limitDBs));
     const dictionaries = await this.queryString(this.preparedQuery.dictionariesList(limitDics));
     const functions = await this.queryString(this.preparedQuery.functionsList());
     const clusters = await this.queryString(
-      `SELECT host_address as hostAddress,port FROM system.clusters GROUP BY host_address,port LIMIT ${limitClusters}`
+      `SELECT host_address as hostAddress, port
+       FROM system.clusters
+       GROUP BY host_address, port LIMIT ${limitClusters}`
     );
     const columnList = columns.data.map((c: any) => {
       /* eslint-disable camelcase */
@@ -144,31 +156,31 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   private queryString(
     sql: string,
     withDatabase?: string,
-    format: string = 'FoRmAt JSON',
+    format = 'FoRmAt JSON',
     extendSettings?: any
   ) {
     const init: RequestInit = this.getRequestInit(format ? `${sql}\n${format}` : sql);
     const url = this.getRequestUrl(withDatabase, extendSettings);
-    return fetch(url, init).then(r => r.json());
+    return fetch(url, init).then((r) => r.json());
   }
 
   query(q: Query) {
     // @TODO: if not database exist
     const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
     const init: RequestInit = this.getRequestInit(q.sql);
-    return this.request(url, init).then(r => r);
+    return this.request(url, init).then((r) => r);
   }
 
   fastGetVersion() {
     const url = this.getRequestUrl();
     const query = 'SELECT version() as version';
-    return fetch(`${url}&query=${query}`, { method: 'GET' }).then(r => r.text());
+    return fetch(`${url}&query=${query}`, { method: 'GET' }).then((r) => r.text());
   }
 
   async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<any> {
     const clusterList: Array<string> = [];
     if (this.clusters) {
-      this.clusters.map(c => {
+      this.clusters.map((c) => {
         clusterList.push(`${c.hostAddress}:${c.port}`);
         return c;
       });
@@ -182,12 +194,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     );
     // const q = new Query();
     return await this.queryString(sql);
-
   }
 
   async getTableColumns(database: string, tablename: string) {
     const columns = await this.queryString(
-      `SELECT * FROM system.columns WHERE database='${database}' AND table='${tablename}'`
+      `SELECT *
+       FROM system.columns
+       WHERE database = '${database}' AND table ='${tablename}'`
     );
     return columns;
   }
