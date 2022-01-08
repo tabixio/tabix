@@ -30,7 +30,7 @@ export async function getActiveTabId(): Promise<Option<string>> {
 export async function saveTabs(tabs: JSONModel<ReadonlyArray<Tab>>) {
   try {
     await appStorage.setItem(tabsKey, tabs);
-    console.log('Tabs saved at', new Date().toISOString());
+    // console.log('Tabs saved at', new Date().toISOString());
   } catch (e) {
     console.error(e);
   }
@@ -53,7 +53,7 @@ export async function saveTab(tab: JSONModel<Tab>) {
       return;
     }
 
-    const i = tabs.findIndex(t => t.id === tab.id);
+    const i = tabs.findIndex((t) => t.id === tab.id);
     const nextTabs = tabs.slice();
     if (i >= 0) {
       nextTabs.splice(i, 1, tab);

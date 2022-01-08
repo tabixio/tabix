@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 import { SerializableModel, serialize, JSONModel } from 'module/mobx-utils';
 import { Option, None, Try } from 'funfix-core';
-import uuid from 'uuid';
+import { v4 as UUIDv4 } from 'uuid';
 import { Omit } from 'typelevel-ts';
 import DataDecorator, { Statistics } from 'services/api/DataDecorator';
 import SqlEditor from 'components/Dashboard/EditorTabPage/SqlEditor'; // refactor: use interface of sqleditor and not ref to component type?
@@ -26,13 +26,14 @@ export interface EditorTab extends Tab<TabType.Editor> {
   tableData: Option<string>;
 }
 
-export interface EditorTabJsonEntity
-  extends Omit<EditorTab, 'codeEditor' | 'queriesResult' | 'tableData'> {}
+export type EditorTabJsonEntity = Omit<EditorTab, 'codeEditor' | 'queriesResult' | 'tableData'>;
 
-export default class EditorTabModel extends TabModel<EditorTab>
-  implements EditorTab, SerializableModel<EditorTabJsonEntity> {
+export default class EditorTabModel
+  extends TabModel<EditorTab>
+  implements EditorTab, SerializableModel<EditorTabJsonEntity>
+{
   static from({
-    id = uuid(),
+    id = UUIDv4(),
     title,
     content = '',
     currentDatabase,
