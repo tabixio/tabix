@@ -6,3 +6,7 @@
 .form {
   width: 350px;
 }
+
+.layout-connection-list {
+  overflow-x: hidden;
+}

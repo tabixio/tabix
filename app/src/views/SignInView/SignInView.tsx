@@ -16,7 +16,7 @@ interface InjectedProps {
   store: SignInStore;
 }
 
-export interface Props extends InjectedProps {}
+export type Props = InjectedProps;
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
@@ -50,7 +50,7 @@ class SignInView extends React.Component<RoutedProps> {
     return (
       <Page column={false} uiStore={store.uiStore}>
         <Splitter>
-          <Flex alignItems="stretch" vfill>
+          <Flex alignItems="stretch" className={css['layout-connection-list']} vfill>
             <Layout>
               <Layout.Sider width="100%">
                 <ConnectionList
@@ -61,6 +61,7 @@ class SignInView extends React.Component<RoutedProps> {
                 <Flex center>
                   <Button
                     type="primary"
+                    style={{ float: 'left' }}
                     className={css['add-connection-btn']}
                     onClick={store.addNewConnection}
                   >
