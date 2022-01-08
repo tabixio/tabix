@@ -11428,7 +11428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
+"loader-utils@npm:^2.0.0, loader-utils@npm:^2.0.2":
   version: 2.0.2
   resolution: "loader-utils@npm:2.0.2"
   dependencies:
@@ -11436,13 +11436,6 @@ __metadata:
     emojis-list: ^3.0.0
     json5: ^2.1.2
   checksum: 9078d1ed47cadc57f4c6ddbdb2add324ee7da544cea41de3b7f1128e8108fcd41cd3443a85b7ee8d7d8ac439148aa221922774efe4cf87506d4fb054d5889303
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "loader-utils@npm:3.2.0"
-  checksum: c7b9a8dc4b3bc19e9ef563c48e3a18ea9f8bb2da1ad38a12e4b88358cfba5f148a7baf12d78fe78ffcb718ce1e062ab31fcf5c148459f1247a672a4213471e80
   languageName: node
   linkType: hard
 
@@ -12358,22 +12351,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor-webpack-plugin@npm:7.0.0":
-  version: 7.0.0
-  resolution: "monaco-editor-webpack-plugin@npm:7.0.0"
+"monaco-editor-webpack-plugin@npm:7.0.1":
+  version: 7.0.1
+  resolution: "monaco-editor-webpack-plugin@npm:7.0.1"
   dependencies:
-    loader-utils: ^3.2.0
+    loader-utils: ^2.0.2
   peerDependencies:
     monaco-editor: ">= 0.31.0"
     webpack: ^4.5.0 || 5.x
-  checksum: 75a1cc99a5b575b6d9bce62bd2f65d46f7e347e5608ad96f5aaef14782ec06781738e8d34d8652a3a4c08c9bea2320546e1a99cd51b0fa396512de50c5c56c1a
+  checksum: 436814c724d5033254519ef8203f0df600d15c6bf0a3bf48a42ea678086becb56ed5685df2bca4cd4107855ecf8cea73722e52b63573edba5c020ff51b4f2d31
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:0.31.0":
-  version: 0.31.0
-  resolution: "monaco-editor@npm:0.31.0"
-  checksum: 6a610e8720d22ec65e55b7d746d058dbd20ff91afca19bcdd9f3a9f4bf58843229d4a3784868b9fdb3129d7bbfc2f905c530b72576090fdcc8ffe07ef8531159
+"monaco-editor@npm:0.31.1":
+  version: 0.31.1
+  resolution: "monaco-editor@npm:0.31.1"
+  checksum: 65be40c5570e1186938490e47ac3a23ecd8faf1bda631091a6da1de8275f049efb8d9514fcb780ca40053adf8fe9229413b4c801d86ebbade078371acbb9df3b
   languageName: node
   linkType: hard
 
@@ -18149,8 +18142,8 @@ __metadata:
     mobx: ^5.8.0
     mobx-react: ^5.4.3
     mobx-utils: ^5.1.0
-    monaco-editor: 0.31.0
-    monaco-editor-webpack-plugin: 7.0.0
+    monaco-editor: 0.31.1
+    monaco-editor-webpack-plugin: 7.0.1
     normalize.css: ^8.0.1
     plotly.js: 1.58.5
     postcss-icss-values: ^2.0.2
