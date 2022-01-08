@@ -1,55 +1,6 @@
 import { languages } from 'monaco-editor';
-// This config defines the editor's view.
-// export const options = {
-//     lineNumbers: false,
-//     scrollBeyondLastLine: false,
-//     readOnly: false,
-//     fontSize: 12,
-// };
-// https://bitwiser.in/monaco-themes/
-// https://microsoft.github.io/monaco-editor/monarch.html
-// https://github.com/Microsoft/monaco-editor/issues/74
-// Auto
-// https://gist.github.com/mwrouse/05d8c11cd3872c19c684bd1904a2202e
-// Optimizations in Syntax Highlighting: https://code.visualstudio.com/blogs/2017/02/08/syntax-highlighting-optimizations
-// registerFoldingProvider
-// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
 
-// https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_create-a-new-color-theme
-// https://github.com/brijeshb42/monaco-themes/tree/master/themes
-// https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/common/themes.ts#L13
-// This config defines how the language is displayed in the editor.
-// https://stackoverflow.com/questions/43014131/monaco-editor-match-an-arbitrary-number-of-arguments-on-the-same-row-using-a-r
-// https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
-// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
-// https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
-// https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
-// https://github.com/microsoft/azuredatastudio/blob/main/extensions/sql/syntaxes/sql.tmLanguage.json
-/**
- * Global todo:
- * [+] Локальный ItemProvider, подсовывать fields
- * [-] ORDER BY подсветка
- * [-] Автокомплит на глобавльные keywords
- * [+] SYSTEM FLUSH LOGS
- * [+] Allow completion providers for specific instances
- * [+] Выполнять updateEditorStructure после инициализации данных от сервера
- * [-] Повесить эвент и переиминовывать кнопку -"Выполнить" : tab.buttonTitle = editor.getSelectedText() !== '' ? 'Run selected ⌘ + ⏎' : 'Run all ⇧ + ⌘ + ⏎';
- * [-] Подпиться на IModelTokensChangedEvent
- * [-] Определение баз.таблиц в редакторе между запросами ???
- * [-] Модификатор WITH CUBE для GROUP BY (также доступен синтаксис: GROUP BY CUBE(...)).
- * [-] LIMIT n BY columns
- * [-] WITH TOTALS
- * [-] [GLOBAL] ANY|ALL INNER|LEFT JOIN
- * [-] CREATE DATABASE ... IF NOT EXISTS
- * [-] DROP TABLE IF EXISTS
- * [-] ALTER UPDATE
- * [-] TRUNCATE TABLE
- * [-] Добавлен тип данных DECIMAL(digits, scale)
- * [-] Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
- * [-] Order By COLLATE "LAST" : "FIRST"
- */
-
-export const language = <languages.IMonarchLanguage>{
+const language = <languages.IMonarchLanguage>{
   base: 'sql',
   defaultToken: '',
   tokenPostfix: '.sql',
@@ -418,7 +369,7 @@ export const language = <languages.IMonarchLanguage>{
 };
 
 // This config defines the editor's behavior.
-export const configuration: languages.LanguageConfiguration = {
+const configuration: languages.LanguageConfiguration = {
   comments: {
     lineComment: '--',
     blockComment: ['/*', '*/'],
@@ -454,4 +405,9 @@ export const configuration: languages.LanguageConfiguration = {
     { open: '`', close: '`' },
   ],
   // wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
+};
+
+export const ClickhouseSQLMonaco = {
+  language,
+  configuration,
 };

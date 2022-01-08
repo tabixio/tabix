@@ -8,18 +8,21 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#sql.
 	visitSql(ctx) {
+    console.warn('visitSql');
 	  return this.visitChildren(ctx);
 	}
 
 
 	// Visit a parse tree produced by ClickHouseParser#queryStmt.
 	visitQueryStmt(ctx) {
+    console.warn('visitQueryStmt');
 	  return this.visitChildren(ctx);
 	}
 
 
 	// Visit a parse tree produced by ClickHouseParser#query.
 	visitQuery(ctx) {
+    console.warn('visitQuery');
 	  return this.visitChildren(ctx);
 	}
 
@@ -626,6 +629,7 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#whereClause.
 	visitWhereClause(ctx) {
+    console.warn('visitWhereClause');
 	  return this.visitChildren(ctx);
 	}
 
@@ -938,6 +942,7 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#ColumnExprAlias.
 	visitColumnExprAlias(ctx) {
+    console.warn('visitColumnExprAlias');
 	  return this.visitChildren(ctx);
 	}
 
@@ -1160,6 +1165,7 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#TableExprAlias.
 	visitTableExprAlias(ctx) {
+    console.warn('visitTableExprAlias');
 	  return this.visitChildren(ctx);
 	}
 
@@ -1178,6 +1184,7 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#tableIdentifier.
 	visitTableIdentifier(ctx) {
+    console.warn('visitTableIdentifier',ctx);
 	  return this.visitChildren(ctx);
 	}
 
@@ -1196,6 +1203,7 @@ export default class ClickHouseParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ClickHouseParser#databaseIdentifier.
 	visitDatabaseIdentifier(ctx) {
+    console.warn('\tvisitDatabaseIdentifier(ctx) {\n',ctx);
 	  return this.visitChildren(ctx);
 	}
 

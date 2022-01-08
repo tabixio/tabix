@@ -14,14 +14,21 @@ export const defaultOptions: monaco.editor.IEditorConstructionOptions = {
   emptySelectionClipboard: true,
   formatOnType: true,
   showFoldingControls: 'always',
+  folding: true,
   smoothScrolling: true,
   parameterHints: {
     enabled: true,
     cycle: false,
   },
+  // snippetSuggestions: "bottom",
   scrollBeyondLastLine: false,
+  inlayHints: {
+    enabled: true,
+  },
   // suggestOnTriggerCharacters: false,
   quickSuggestions: true,
+  // disableLayerHinting: true, // fixes bug in FF
+  // fixedOverflowWidgets: true,
   // wordBasedSuggestions: true,
   // wordBasedSuggestionsOnlySameLanguage
   //   {

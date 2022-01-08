@@ -19,6 +19,7 @@ wget https://raw.githubusercontent.com/ClickHouse/ClickHouse/master/utils/antlr/
 
 ## Links
 
+* [How to parse a Clickhouse-SQL statement using ANTRL4?](https://stackoverflow.com/questions/68687065/how-to-parse-a-clickhouse-sql-statement-using-antrl4)
 * [Github ClickHouse antlr](https://github.com/ClickHouse/ClickHouse/tree/master/utils/antlr)
 * [Mysql grammars](https://github.com/mysql/mysql-workbench/tree/8.0/library/parsers/grammars)
 * [mysql Oracle](https://github.com/antlr/grammars-v4/tree/master/sql/mysql/Oracle)
@@ -35,8 +36,6 @@ Other:
 https://betterprogramming.pub/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-bcfc7554e446
 
 https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/
-
-https://segmentfault.com/a/1190000040176753/en
 
 https://blog.nimbleways.com/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-part-1-2/
 
@@ -63,3 +62,24 @@ https://github.com/DiscoverForever/monaco-sqlpad/blob/master/src/core/snippets.j
 https://github.com/DTStack/molecule
 
 https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies/MySqlLexer.g4
+
+// https://bitwiser.in/monaco-themes/
+// https://microsoft.github.io/monaco-editor/monarch.html
+// https://github.com/Microsoft/monaco-editor/issues/74
+// Auto // https://gist.github.com/mwrouse/05d8c11cd3872c19c684bd1904a2202e
+// Optimizations in Syntax
+Highlighting: https://code.visualstudio.com/blogs/2017/02/08/syntax-highlighting-optimizations
+// registerFoldingProvider
+// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
+
+// https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_create-a-new-color-theme
+// https://github.com/brijeshb42/monaco-themes/tree/master/themes
+// https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/common/themes.ts#L13
+// This config defines how the language is displayed in the editor.
+// https://stackoverflow.com/questions/43014131/monaco-editor-match-an-arbitrary-number-of-arguments-on-the-same-row-using-a-r
+// https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
+// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
+// https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
+// https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
+// https://github.com/microsoft/azuredatastudio/blob/main/extensions/sql/syntaxes/sql.tmLanguage.json
+

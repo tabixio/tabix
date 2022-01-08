@@ -3,13 +3,18 @@ import { Query, ServerStructure } from 'services';
 import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
 import { SuggestionsMaker } from './SuggestionsMaker';
 import { SupportLanguage } from './supportLanguage';
-import { configurationClickhouse, languageClickhouse } from './editorConfig';
-import { ClickhouseSQL, CommonSQL } from './grammar';
+import { CommonSQL } from './grammar';
+import { v4 as UUIDv4 } from 'uuid';
 
 type tMonaco = typeof monaco;
 
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 type iCodeEditor = monaco.editor.ICodeEditor;
+
+interface tbxIDisposable {
+  d: monaco.IDisposable;
+  id: string;
+}
 
 export interface oneToken {
   line: number;
@@ -23,19 +28,35 @@ export interface oneToken {
 }
 
 export class SqlWorker {
+  private id: string;
   private serverStructure?: ServerStructure.Server;
-
   private isRegistred = false;
   private monaco?: tMonaco;
-
-  private languageWords: any;
-
-  private parserMap: Map<string, CommonSQL>;
+  private language: SupportLanguage | null = null;
+  private ready = false;
+  // Static Map to SQL parsers
+  static parserMap: Map<string, CommonSQL> = new Map<string, CommonSQL>();
 
   constructor() {
-    this.parserMap = new Map<string, CommonSQL>();
-    // console.info("SqlWorker->create");
+    this.id = this.makeQueryId();
+    console.info('SqlWorker->create');
     //
+  }
+
+  static getParser(language: SupportLanguage): CommonSQL {
+    if (!SqlWorker.parserMap.has(language)) {
+      SqlWorker.parserMap.set(language, new CommonSQL(language));
+    }
+    const d = SqlWorker.parserMap.get(language);
+    if (!d) throw 'Error can`t getParser->CommonSQL()';
+    return d;
+  }
+
+  private CommonSQL(): CommonSQL {
+    if (!this.language) {
+      throw 'Error can`t CommonSQL() not set language';
+    }
+    return SqlWorker.getParser(this.language);
   }
 
   public addDisposable(d: monaco.IDisposable) {
@@ -44,53 +65,55 @@ export class SqlWorker {
       // ./app/types/app/index.d.ts
       console.warn('Reset window.monacoGlobalProvider.IDisposable');
       window.monacoGlobalProvider = {
-        IDisposable: [] as Array<monaco.IDisposable>,
+        IDisposable: [] as Array<tbxIDisposable>,
       };
     }
-    window.monacoGlobalProvider.IDisposable.push(d);
-    console.info('SqlWorker->addDisposable()', window.monacoGlobalProvider.IDisposable.length);
+    window.monacoGlobalProvider.IDisposable.push({ d: d, id: this.id });
+    // console.info( `SqlWorker->addDisposable(${this.id})`, window.monacoGlobalProvider.IDisposable.length);
   }
 
   public disposeAll() {
+    // see addDisposable(x)
+    // hack for HotReload monacoEditor
     if (window.monacoGlobalProvider && window.monacoGlobalProvider.IDisposable.length) {
-      console.info('SqlWorker->disposeAll()');
-      window.monacoGlobalProvider.IDisposable.forEach((d: monaco.IDisposable) => d && d.dispose());
+      // console.info(`SqlWorker->disposeAll(${this.id})`);
       // clean
-      window.monacoGlobalProvider.IDisposable.length = 0;
+      for (let i: number = window.monacoGlobalProvider.IDisposable.length - 1; i >= 0; i -= 1) {
+        const d = window.monacoGlobalProvider.IDisposable[i];
+        if (d.id === this.id) {
+          console.log(this.id, i);
+          d.d.dispose();
+          window.monacoGlobalProvider.IDisposable.splice(i, 1);
+        }
+      }
     }
   }
 
-  //
-  // private getTableCompletionSuggestions = (
-  //   model: IReadOnlyModel,
-  //   position: monaco.Position,
-  //   context: monaco.languages.CompletionContext,
-  //   token: monaco.CancellationToken
-  // ): monaco.languages.ProviderResult<monaco.languages.CompletionList> =>
-  //   // See monaco/lang/compl
-  //   this.sqlWorker.getSuggestions(
-  //     model,
-  //     position,
-  //     context,
-  //     token,
-  //     this.props.currentDatabase,
-  //     this.props.serverStructure
-  //   );
+  public applyLanguage(language: SupportLanguage): void {
+    if (this.language && this.language !== language) {
+      this.onLanguageChange();
+    }
+    this.language = language;
+  }
+
+  public onLanguageChange(): void {
+    // ------------------------
+    console.warn('!!! SqlWorker -> onLanguageChange');
+    // ------------------------
+  }
+
   public applyServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco): void {
     console.info('SqlWorker->applyServerStructure() ');
     this.serverStructure = serverStructure;
     SuggestionsMaker.setServerStructure(serverStructure, thisMonaco);
   }
 
-  private getParserANTLR(language: SupportLanguage): CommonSQL | undefined {
-    if (!this.parserMap.has(language)) {
-      // @TODO: Support other lang
-      this.parserMap.set(language, new ClickhouseSQL());
+  public register(thisMonaco: tMonaco): void {
+    if (!this.language) {
+      console.error('Not set language', this.language);
+      return;
     }
-    return this.parserMap.get(language);
-  }
 
-  public register(language: SupportLanguage, thisMonaco: tMonaco): void {
     if (this.isRegistred) {
       console.info('SqlWorker->Register() - skip, already done');
       return;
@@ -99,15 +122,63 @@ export class SqlWorker {
       console.info('SqlWorker->Register() - skip, not set serverStructure');
       return;
     }
-    console.info('SqlWorker->Register()', language);
+    console.info('SqlWorker->Register()');
     // UnRegister all Language,Completion
     this.disposeAll();
     // Link
     this.monaco = thisMonaco;
     // Register
     this.isRegistred = true;
-    this.registerLanguage(language, thisMonaco);
-    this.registerCompletion(language, thisMonaco);
+    // language not register in global,create
+    if (!this.monaco.languages.getLanguages().some(({ id }) => id === this.language)) {
+      this.registerLanguage(this.language, this.monaco);
+      this.registerCompletion(this.language, this.monaco);
+    }
+    this.ready = true;
+  }
+
+  public isReady(): boolean {
+    if (!this.language) {
+      console.warn('SQL_WORKER not ready - language = false');
+      return false;
+    }
+    if (!this.ready) {
+      console.warn('SQL_WORKER not ready - ready = false');
+      return false;
+    }
+    if (!this.monaco) {
+      console.warn('SQL_WORKER not ready - monaco = false');
+      return false;
+    }
+    return this.ready;
+  }
+
+  public getHover(
+    model: IReadOnlyModel,
+    position: monaco.Position,
+    token: monaco.CancellationToken
+  ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+    // GetHover
+
+    const offset: number = model.getOffsetAt(position);
+
+    // this.getCommonSQL(language).parse(content).haveStatement();
+
+    const hovers: monaco.IMarkdownString[] = [];
+    // model.getWordAtPosition(position).word;
+    const currentWord = model.getWordAtPosition(position)?.word;
+
+    // model.getText()
+    hovers.push({ value: '\n`[' + currentWord + ':' + offset + '`]\n' });
+    hovers.push({
+      // isTrusted: true,
+      // supportHtml: true,
+      value: '| foo | bar |\n   | --- | --- |\n| baz |  `bim` |\n| b2z   |  bHm |\n',
+      // value: '```sql\n' + ' SELECT * FRA```\n',
+    });
+
+    return { contents: hovers };
+    // Range&IMarkdownString
   }
 
   public getSuggestions(
@@ -120,30 +191,33 @@ export class SqlWorker {
   }
 
   /**
-   * Add CompletionItemProvider
+   * Add&register Completion
    * @param language
    * @param thisMonaco
    */
   private registerCompletion(language: SupportLanguage, thisMonaco: tMonaco): void {
-    //
+    // todo : drop use self
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
-    // this.addProvider(language,Completion) =
     this.addDisposable(
       thisMonaco.languages.registerCompletionItemProvider(language, {
         provideCompletionItems: self.getSuggestions,
       })
     );
+    // thisMonaco.languages.reg();
+    this.addDisposable(
+      thisMonaco.languages.registerHoverProvider(language, {
+        provideHover: self.getHover,
+      })
+    );
   }
 
-  /**
-   * Register a tokens provider for the language
-   *
-   * @param language
-   */
-  private getLanguageConfiguration(
-    language: SupportLanguage
-  ): monaco.languages.LanguageConfiguration {
-    return configurationClickhouse as monaco.languages.LanguageConfiguration;
+  public OnChange(content: string) {
+    // current value in edior
+    this.CommonSQL().parse(content);
+    // resultParse.getDiagnostics():Diagnostic[] => this.monaco.setModelMarkers()
+    // resultParse.getVariables():[] => this.setVariablesToCompletionHover(...)
+    // console.info(content);
   }
 
   /**
@@ -151,7 +225,7 @@ export class SqlWorker {
    *
    * @param language
    */
-  private getIMonarchLanguage(language: SupportLanguage): monaco.languages.IMonarchLanguage {
+  private getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
     //   lexer?.ruleNames -> ['INDEX', 'INF', 'INJECTIVE', 'INNER', 'INSERT', 'INTERVAL', 'INTO', 'IS', ]
     //   lexer?.literalNames -> [null,....,"'+'","'?'"]
     //   lexer?.symbolicNames -> ['ADD', 'AFTER', 'ALIAS', 'ALL', 'ALTER', 'AND', 'ANTI', 'ANY']
@@ -161,25 +235,13 @@ export class SqlWorker {
     // .keywordsGlobal
     // .keywords
     // .
-    //
-    const parser = this.getParserANTLR(language);
-    console.warn(' p p p p', language, parser);
-    //
-    if (parser) {
-      const tree = parser.parseDefault();
-      console.warn('parseDefault', tree);
-      // @ts-ignore
-      console.log(tree.toStringTree(parser.ruleNames));
-    }
-    //   console.warn('getLexer', p.getLexer());
-    //   console.warn('getParser', p.getParser());
 
+    // Test method`s
+
+    //
     let lang: monaco.languages.IMonarchLanguage;
-
-    // if (language === SupportLanguage.CLICKHOUSE) {  // @TODO: Support other language
-
-    lang = languageClickhouse as monaco.languages.IMonarchLanguage;
-    // Merge with server structure, todo un support many lang`s
+    // Merge with server structure,  and support many lang`s
+    lang = this.CommonSQL().getIMonarchLanguage() as monaco.languages.IMonarchLanguage;
     lang = SuggestionsMaker.getMonarchLanguage(lang);
     return lang;
   }
@@ -192,13 +254,19 @@ export class SqlWorker {
    */
   private registerLanguage(language: SupportLanguage, thisMonaco: tMonaco): void {
     thisMonaco.languages.register({ id: language, extensions: ['.sql'], aliases: ['chsql'] });
+    /**
+     * Set the editing configuration for the language
+     */
     this.addDisposable(
-      thisMonaco.languages.setMonarchTokensProvider(language, this.getIMonarchLanguage(language))
+      thisMonaco.languages.setMonarchTokensProvider(language, this.getIMonarchLanguage())
     );
+    /**
+     * Register a tokens provider for the language
+     */
     this.addDisposable(
       thisMonaco.languages.setLanguageConfiguration(
         language,
-        this.getLanguageConfiguration(language)
+        this.CommonSQL().getLanguageConfiguration()
       )
     );
   }
@@ -213,11 +281,7 @@ export class SqlWorker {
   }
 
   private makeQueryId(): string {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 9; i += 1)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    return text.toLocaleLowerCase();
+    return UUIDv4();
   }
 
   /**
