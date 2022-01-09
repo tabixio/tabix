@@ -175,7 +175,7 @@ export default class CommonSQL {
       console.error('CommonSQL -> parse()', e);
       return null;
     }
-    return new ParsedQuery(tokensList, errL.getErrors());
+    return new ParsedQuery(tokensList, errL.getErrors(), errP.getErrors());
   }
 
   /**

@@ -19,11 +19,14 @@ enum wew {
 
 export class ParsedQuery {
   private tokensList: Array<QToken> | null;
-  private process = {
-    countQuery: 0,
-  };
+  private countStm = -1;
+  private splitStm: Array<any> = [];
 
-  constructor(tokensList: Array<QToken>, err: Antlr4ParserErrorCollector[]) {
+  constructor(
+    tokensList: Array<QToken>,
+    errParser: Antlr4ParserErrorCollector[],
+    errLexer: Antlr4ParserErrorCollector[]
+  ) {
     this.tokensList = tokensList;
     // https://github.com/contiamo/rhombic
     // https://github.com/elastic/kibana
@@ -74,8 +77,20 @@ export class ParsedQuery {
     if (_startSplit && _prev) {
       _listSplitQuery.push({ start: _startSplit, stop: _prev });
     }
-    this.process.countQuery = _listSplitQuery.length;
-    console.info('_listSplitQuery', _listSplitQuery);
+    this.countStm = _listSplitQuery.length;
+    this.splitStm = _listSplitQuery;
+  }
+
+  public getCountOfStmt(): number {
+    return this.countStm;
+  }
+
+  public getTokensInRange(offStart: number, offStop: number): Array<QToken> | null {
+    return null;
+  }
+
+  public getStmtOnOffset(off: number): number {
+    return -1;
   }
 
   public getTokens(): Array<QToken> {

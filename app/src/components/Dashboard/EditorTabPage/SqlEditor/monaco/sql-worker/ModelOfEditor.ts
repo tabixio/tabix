@@ -24,7 +24,14 @@ export class ModelOfEditor {
   }
 
   public getHover(offset: number): string {
-    return '`X-1-2-3#K3pw;l[l[pppw`';
+    if (!this.parsedQuery) return '';
+
+    let str = '`';
+    str += 'Offset:' + offset + `\n`;
+    str += 'SizeStmt:' + this.parsedQuery.getCountOfStmt() + `\n`;
+    str += 'SizeStmt:' + this.parsedQuery.getStmtOnOffset(offset) + `\n`;
+    str += '`';
+    return str;
   }
 
   public getDatabase(offset: number): string {
