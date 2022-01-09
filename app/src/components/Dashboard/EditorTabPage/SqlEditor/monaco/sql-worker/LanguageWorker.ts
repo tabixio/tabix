@@ -1,8 +1,10 @@
 import monacoEditor from 'monaco-editor';
 import { ServerStructure } from 'services';
 import * as monaco from 'monaco-editor';
+import { CommonSQL, ParsedQuery } from './grammar';
+import { SupportLanguage } from './supportLanguage';
+import { ModelOfEditor } from './ModelOfEditor';
 
-type tMonaco = typeof monaco;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 
 interface keywordLanguage {
@@ -11,17 +13,51 @@ interface keywordLanguage {
   sort: number;
 }
 
-export abstract class SuggestionsMaker {
+export abstract class LanguageWorker {
   static completionItems: Array<monacoEditor.languages.CompletionItem> = [];
 
   static serverStructure: ServerStructure.Server;
 
   static keywordsLanguage: Array<keywordLanguage>;
+  // Static Map to SQL parsers
+  static parserMap: Map<string, CommonSQL> = new Map<string, CommonSQL>();
+  static modelMap: Map<string, ModelOfEditor> = new Map<string, ModelOfEditor>();
 
-  //
-  public static setServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco) {
+  static getModel(modelUri: string) {
+    if (!LanguageWorker.modelMap.has(modelUri)) {
+      LanguageWorker.modelMap.set(modelUri, new ModelOfEditor(modelUri));
+    }
+    const m = LanguageWorker.modelMap.get(modelUri);
+    if (!m) throw 'Error can`t LanguageWorker->getModel';
+    return m;
+  }
+
+  static getParser(language: SupportLanguage): CommonSQL {
+    if (!LanguageWorker.parserMap.has(language)) {
+      LanguageWorker.parserMap.set(language, new CommonSQL(language));
+    }
+    const d = LanguageWorker.parserMap.get(language);
+    if (!d) throw 'Error can`t LanguageWorker->getParser->CommonSQL()';
+    return d;
+  }
+
+  public static setServerStructure(serverStructure: ServerStructure.Server) {
     console.info('SuggestionsMaker->setServerStructure()');
     this.serverStructure = serverStructure;
+  }
+
+  public static parseAndApplyModel(
+    language: SupportLanguage,
+    modelUri: string,
+    query: string
+  ): void {
+    const parser = LanguageWorker.getParser(language);
+    if (!parser) {
+      console.warn('No parser for ', language);
+      return;
+    }
+    // Fetch exists model by uri
+    LanguageWorker.getModel(modelUri).process(parser.parse(query));
   }
 
   public static tokinize(query: string): void {
@@ -102,12 +138,47 @@ export abstract class SuggestionsMaker {
     return language;
   }
 
+  public static getHover(
+    model: IReadOnlyModel,
+    position: monaco.Position,
+    token: monaco.CancellationToken
+  ): monaco.languages.ProviderResult<monaco.languages.Hover> {
+    const modelUri: string = model.uri.toString();
+    // Make hover
+    const offset: number = model.getOffsetAt(position);
+
+    // this.getCommonSQL(language).parse(content).haveStatement();
+
+    const hovers: monaco.IMarkdownString[] = [];
+    // model.getWordAtPosition(position).word;
+    const currentWord = model.getWordAtPosition(position)?.word;
+
+    // model.getText()
+    hovers.push({ value: '\n`[' + currentWord + ':' + offset + '`]\n' });
+    hovers.push({ value: LanguageWorker.getModel(modelUri).getHover(offset) });
+    // hovers.push({
+    //   // isTrusted: true,
+    //   // supportHtml: true,
+    //   value: '| foo | bar |\n   | --- | --- |\n| baz |  `bim` |\n| b2z   |  bHm |\n',
+    //   // value: '```sql\n' + ' SELECT * FRA```\n',
+    // });
+    return { contents: hovers };
+    // Range&IMarkdownString
+  }
+
   public static getSuggestions(
     model: IReadOnlyModel,
     position: monaco.Position,
     context: monaco.languages.CompletionContext,
     token: monaco.CancellationToken
   ): monaco.languages.ProviderResult<monaco.languages.CompletionList> {
+    const modelUri: string = model.uri.toString();
+
+    // console.warn(
+    //   'LanguageWorker.getSuggestions',
+    //   LanguageWorker.getModel(modelUri).getSuggestions()
+    // );
+
     const completionItems: Array<monaco.languages.CompletionItem> = [];
 
     const word = model.getWordUntilPosition(position);

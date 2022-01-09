@@ -78,6 +78,11 @@ export class ParsedQuery {
     console.info('_listSplitQuery', _listSplitQuery);
   }
 
+  public getTokens(): Array<QToken> {
+    if (!this.tokensList) throw 'Can`t get tokens';
+    return this.tokensList;
+  }
+
   public getTableReference(): Array<string> {
     return [];
   }
