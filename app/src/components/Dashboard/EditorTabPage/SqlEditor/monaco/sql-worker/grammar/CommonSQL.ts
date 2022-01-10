@@ -7,6 +7,23 @@ import * as monaco from 'monaco-editor';
 import { RuleNode } from 'antlr4/tree/Tree';
 import { ParsedQuery } from './ParsedQuery';
 
+/** Statement represents a single query */
+export interface Statement {
+  /** The text of the statement */
+  text: string;
+  /** The zero-based offset of the starting position of the statement in the original text */
+  start: number;
+  /** The zero-based offset of the stopping position of the statement in the original text */
+  stop: number;
+}
+
+function skipLeadingWhitespace(text: string, head: number, tail: number): number {
+  while (head < tail && text[head] <= ' ') {
+    head++;
+  }
+  return head;
+}
+
 export interface QToken {
   points: Map<string, number>;
   counter: Map<string, number | undefined>;
@@ -207,6 +224,238 @@ export default class CommonSQL {
    */
   public getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
     return this.baseAntlr4.getIMonarchLanguage();
+  }
+
+  /**
+   * Split a text of MySQL queries into multiple statements, optionally specifying the line break and delimiter.
+   *
+   * @param text
+   * @param lineBreak
+   * @param delimiter
+   * @returns Statement[]
+   */
+  public splitStatements(text: string, lineBreak?: string, delimiter?: string): Statement[] {
+    lineBreak = lineBreak || '\n';
+    delimiter = delimiter || ';';
+
+    const statements: Statement[] = [];
+    let delimiterHead = delimiter[0];
+    const keywordPos = 0;
+    const start = 0;
+    let head = start;
+    let tail = head;
+    const end = head + text.length;
+
+    // Set when anything else but comments were found for the current statement.
+    let haveContent = false;
+
+    while (tail < end) {
+      switch (text[tail]) {
+        // Possible multi line comment or hidden (conditional) command.
+        case '/': {
+          if (text[tail + 1] === '*') {
+            tail += 2;
+            const isHiddenCommand = text[tail] === '!';
+
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+              while (tail < end && text[tail] !== '*') {
+                tail++;
+              }
+
+              // Unfinished comment.
+              if (tail === end) {
+                break;
+              } else {
+                if (text[++tail] === '/') {
+                  // Skip the slash too.
+                  tail++;
+                  break;
+                }
+              }
+            }
+
+            if (isHiddenCommand) {
+              haveContent = true;
+            }
+
+            if (!haveContent) {
+              // Skip over the comment.
+              head = tail;
+            }
+          } else {
+            tail++;
+          }
+
+          break;
+        }
+        // Possible single line comment.
+        case '-': {
+          const endChar = tail + 2;
+          if (
+            text[tail + 1] === '-' &&
+            (text[endChar] === ' ' || text[endChar] === '\t' || text[endChar] === lineBreak)
+          ) {
+            // Skip everything until the end of the line.
+            tail += 2;
+
+            while (tail < end && text[tail] !== lineBreak) {
+              tail++;
+            }
+
+            if (!haveContent) {
+              head = tail;
+            }
+          } else {
+            tail++;
+          }
+
+          break;
+        }
+        // MySQL single line comment.
+        case '#': {
+          while (tail < end && text[tail] !== lineBreak) {
+            tail++;
+          }
+
+          if (!haveContent) {
+            head = tail;
+          }
+
+          break;
+        }
+        case '"':
+        case "'":
+        case '`': {
+          haveContent = true;
+          const quote = text[tail++];
+
+          while (tail < end && text[tail] !== quote) {
+            // Skip any escaped character too.
+            if (text[tail] === '\\') {
+              tail++;
+            }
+            tail++;
+          }
+
+          // Skip trailing quote char if one was there.
+          if (text[tail] === quote) {
+            tail++;
+          }
+
+          break;
+        }
+        case 'd':
+        case 'D': {
+          haveContent = true;
+
+          // Possible start of the keyword DELIMITER. Must be at the start of the text or a character,
+          // which is not part of a regular MySQL identifier (0-9, A-Z, a-z, _, $, \u0080-\uffff).
+          const previous = tail > start ? tail - 1 : 0;
+          const isIdentifierChar =
+            previous >= 0x80 ||
+            (text[previous] >= '0' && text[previous] <= '9') ||
+            (text[previous | 0x20] >= 'a' && text[previous | 0x20] <= 'z') ||
+            text[previous] === '$' ||
+            text[previous] === '_';
+
+          if (tail === start || !isIdentifierChar) {
+            let run = tail + 1;
+            let kw = keywordPos + 1;
+            let count = 9;
+
+            while (count-- > 1 && (run++ | 0x20) === kw++);
+
+            if (count === 0 && text[run] === ' ') {
+              // Delimiter keyword found. Get the new delimiter (everything until the end of the line).
+              tail = run++;
+              while (run < end && text[run] !== lineBreak) {
+                ++run;
+              }
+
+              delimiter = text.substring(tail, run - tail).trim();
+              delimiterHead = delimiter;
+
+              // Skip over the delimiter statement and any following line breaks.
+              while (text[run] === lineBreak) {
+                ++run;
+              }
+              tail = run;
+              head = tail;
+            } else {
+              ++tail;
+            }
+          } else {
+            ++tail;
+          }
+
+          break;
+        }
+        default: {
+          if (text[tail] > ' ') {
+            haveContent = true;
+          }
+
+          tail++;
+          break;
+        }
+      }
+
+      if (text[tail] === delimiterHead) {
+        // Found possible start of the delimiter. Check if it really is.
+        let count = delimiter.length;
+
+        if (count === 1) {
+          // Most common case. Trim the statement and check if it is not empty before adding the range.
+          head = skipLeadingWhitespace(text, head, tail);
+          if (head < tail) {
+            statements.push({
+              text: text.substring(head, tail),
+              start: head,
+              stop: tail,
+            });
+          }
+          head = ++tail;
+          haveContent = false;
+        } else {
+          let run = tail + 1;
+          let del = delimiterHead.length + 1;
+
+          while (count-- > 1 && text[run++] === text[del++]);
+
+          if (count === 0) {
+            // Multi char delimiter is complete. Tail still points to the start of the delimiter.
+            // Run points to the first character after the delimiter.
+            head = skipLeadingWhitespace(text, head, tail);
+
+            if (head < tail) {
+              statements.push({
+                text: text.substring(head, tail),
+                start: head,
+                stop: tail,
+              });
+            }
+
+            tail = run;
+            head = run;
+            haveContent = false;
+          }
+        }
+      }
+    }
+
+    // Add remaining text to the range list.
+    head = skipLeadingWhitespace(text, head, tail);
+
+    if (head < tail) {
+      statements.push({
+        text: text.substring(head, tail),
+        start: head,
+        stop: tail,
+      });
+    }
+
+    return statements;
   }
 
   //
