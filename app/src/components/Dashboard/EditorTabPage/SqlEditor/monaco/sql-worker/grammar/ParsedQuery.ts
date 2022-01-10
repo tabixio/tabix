@@ -80,7 +80,13 @@ export class ParsedQuery {
     this.countStm = _listSplitQuery.length;
     this.splitStm = _listSplitQuery;
   }
-
+  public getToken(offset: number): QToken | undefined {
+    return this.tokensList?.find((q) => q.start <= offset && offset <= q.stop);
+  }
+  public info(off: number): string {
+    const res = '`' + this.getToken(off)?.text;
+    return res + '`';
+  }
   public getCountOfStmt(): number {
     return this.countStm;
   }

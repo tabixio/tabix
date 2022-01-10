@@ -69,6 +69,8 @@ export default class CommonSQL {
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
+    // Если происходит ошибка в парсинге -> вызываем Split -> и каждый из запросов отдельно отдаем на парсинг
+
     const lexer = this.baseAntlr4.createLexer(input + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
