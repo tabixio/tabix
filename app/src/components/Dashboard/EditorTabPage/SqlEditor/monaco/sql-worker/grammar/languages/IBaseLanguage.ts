@@ -1,5 +1,4 @@
 import antlr4 from 'antlr4/index';
-// import { ParseTreeVisitor } from 'antlr4/tree/Tree';
 import * as monaco from 'monaco-editor';
 
 export interface IBaseLanguageConfiguration {

@@ -52,7 +52,7 @@ export abstract class antlr4ParserErrorCollector {
       endCol = charPositionInLine + offendingSymbol.text.length;
       token = offendingSymbol.text;
     }
-    console.error(`ERROR ${msg} at ${line}:${charPositionInLine}`, offendingSymbol, recognizer);
+    // console.error(`ERROR ${msg} at ${line}:${charPositionInLine}`, offendingSymbol, recognizer);
 
     this._errors.push({
       type: this.type,
@@ -74,7 +74,7 @@ export abstract class antlr4ParserErrorCollector {
     ambigAlts: any,
     configs: any
   ): void {
-    console.warn(`ERROR antlr4ParserErrorCollector->reportAmbiguity`, recognizer, dfa, configs);
+    // console.info(`ERROR antlr4ParserErrorCollector->reportAmbiguity`); //, recognizer, dfa, configs);
   }
 
   reportAttemptingFullContext(
@@ -85,12 +85,12 @@ export abstract class antlr4ParserErrorCollector {
     conflictingAlts: any,
     configs: any
   ): void {
-    console.warn(
-      `ERROR antlr4ParserErrorCollector->reportAttemptingFullContext`,
-      recognizer,
-      dfa,
-      configs
-    );
+    // console.info(
+    //   `ERROR antlr4ParserErrorCollector->reportAttemptingFullContext`
+    // recognizer,
+    // dfa,
+    // configs
+    // );
   }
 
   reportContextSensitivity(
@@ -101,7 +101,7 @@ export abstract class antlr4ParserErrorCollector {
     conflictingAlts: any,
     configs: any
   ): void {
-    console.info(`ERROR reportContextSensitivity`);
+    // console.info(`ERROR reportContextSensitivity`);
   }
 }
 
@@ -113,6 +113,6 @@ export class antlr4ErrorLexer extends antlr4ParserErrorCollector {
 
 export class antlr4ErrorParser extends antlr4ParserErrorCollector {
   constructor() {
-    super(TypeError.LEXER);
+    super(TypeError.PARSER);
   }
 }

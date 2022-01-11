@@ -34,7 +34,7 @@ export class ParsedQuery {
     // https://github.com/segmentio/ts-mysql-plugin
     // [Unfinished multiline comment | Unfinished ...] https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/listeners/lexer-error-listener.ts
     // https://github.com/cube-js/cube.js/blob/master/packages/cubejs-schema-compiler/src/parser/SqlParser.ts
-    console.info('tokensList', tokensList);
+    // console.info('tokensList', tokensList);
     /**
      * Todo:
      * 0. Add LexerErrorListener
@@ -80,13 +80,16 @@ export class ParsedQuery {
     this.countStm = _listSplitQuery.length;
     this.splitStm = _listSplitQuery;
   }
+
   public getToken(offset: number): QToken | undefined {
     return this.tokensList?.find((q) => q.start <= offset && offset <= q.stop);
   }
+
   public info(off: number): string {
     const res = '`' + this.getToken(off)?.text;
     return res + '`';
   }
+
   public getCountOfStmt(): number {
     return this.countStm;
   }

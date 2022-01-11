@@ -1,4 +1,8 @@
-import { antlr4ErrorLexer, antlr4ErrorParser } from './antlr4ParserErrorCollector';
+import {
+  antlr4ErrorLexer,
+  antlr4ErrorParser,
+  Antlr4ParserErrorCollector,
+} from './antlr4ParserErrorCollector';
 import { Token } from 'antlr4/Token';
 import { SupportLanguage } from '../supportLanguage';
 import ClickhouseSQL from './languages/ClickhouseSQL';
@@ -22,6 +26,11 @@ function skipLeadingWhitespace(text: string, head: number, tail: number): number
     head++;
   }
   return head;
+}
+
+interface ResultParseState {
+  tokens: Array<QToken>;
+  errors: Antlr4ParserErrorCollector[];
 }
 
 export interface QToken {
@@ -74,127 +83,134 @@ export default class CommonSQL {
   private baseAntlr4: IBaseAntlr4;
 
   constructor(language: SupportLanguage) {
+    if (language !== SupportLanguage.CLICKHOUSE) throw 'Language not support by parser';
     this.language = language;
     // @TODO: Support other language
     this.baseAntlr4 = new ClickhouseSQL();
   }
 
-  // https://github.com/segmentio/ts-mysql-plugin
   /**
    * Parse one/many query
    *
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
-    // Если происходит ошибка в парсинге -> вызываем Split -> и каждый из запросов отдельно отдаем на парсинг
+    // const st=this.splitStatements(input);
+    // st.foreach()...
+    // push to parseResults
+    // {query : text , tokens: <arr> , err : errs , stat: , stop: }
 
+    return null;
+  }
+
+  /**
+   * Use Antlr4 for parse, if parsed ok result ParsedQuery
+   *
+   * @param input
+   */
+  public parseOneStatement(input: string): ResultParseState {
+    // ------------------------------------------------------------------------------------------------
     const lexer = this.baseAntlr4.createLexer(input + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
-    console.info(input);
     const errP = new antlr4ErrorParser();
     const errL = new antlr4ErrorLexer();
-    try {
-      parser.buildParseTrees = true;
-      parser.removeErrorListeners();
-      lexer.addErrorListener(errL);
-      parser.addErrorListener(errL);
-      const tokens: Token[] = lexer.getAllTokens();
-      lexer.reset();
-      const proc = this.baseAntlr4.configuration().topStatements;
-      const tree = parser[proc]();
-      // --------- Base End
-      const current_points: Map<string, number> = new Map();
-      // @ts-ignore
-      const symbolicNames = parser.getSymbolicNames();
-      // ------ fetch QTok ------------------------------------------------------------
-
-      tokens.forEach((tok: Token, index) => {
-        tokensList.push({
-          points: new Map(),
-          counter: new Map(),
-          exception: [],
-          invokingState: new Map(),
-          ruleIndex: new Map(),
-          channel: tok.channel,
-          column: tok.column,
-          line: tok.line,
-          start: tok.start,
-          stop: tok.stop,
-          tokenIndex: index,
-          type: tok.type,
-          text: tok.text,
-          symbolic: symbolicNames[tok.type],
-        });
+    // ------------------------------------------------------------------------------------------------
+    parser.buildParseTrees = true;
+    parser.removeErrorListeners();
+    lexer.addErrorListener(errL);
+    parser.addErrorListener(errL);
+    const tokens: Token[] = lexer.getAllTokens();
+    lexer.reset();
+    const proc = this.baseAntlr4.configuration().topStatements;
+    const tree = parser[proc]();
+    // --------- Base End
+    const current_points: Map<string, number> = new Map();
+    // @ts-ignore
+    const symbolicNames = parser.getSymbolicNames();
+    // ------ fetch QTok ------------------------------------------------------------------------------
+    tokens.forEach((tok: Token, index) => {
+      tokensList.push({
+        points: new Map(),
+        counter: new Map(),
+        exception: [],
+        invokingState: new Map(),
+        ruleIndex: new Map(),
+        channel: tok.channel,
+        column: tok.column,
+        line: tok.line,
+        start: tok.start,
+        stop: tok.stop,
+        tokenIndex: index,
+        type: tok.type,
+        text: tok.text,
+        symbolic: symbolicNames[tok.type],
       });
-      // ParseTreeVisitor
-      tree.accept(
-        nodeVisitor({
-          visitNode(ctx: any) {
-            const name: string = ctx.constructor.name;
-            let start: Token | null = null;
-            let stop: Token | null = null;
-            if (ctx.symbol) {
-              start = ctx.symbol;
-              stop = ctx.symbol;
-            }
-            if (ctx.start && ctx.stop) {
-              start = ctx.start;
-              stop = ctx.stop;
-            }
-            let exception = false;
-            let invokingState = -1;
-            let ruleIndex = -1;
-            if (ctx.invokingState) {
-              invokingState = ctx.invokingState;
-            }
-            if (ctx.ruleIndex) {
-              ruleIndex = ctx.ruleIndex;
-            }
-            if (ctx.exception) {
-              exception = true;
-            }
-            if (!start || !stop) {
-              console.warn('EMPTY TAG`s', name, ctx, start, stop);
-              return;
-            }
-            current_points.set(name, (current_points.get(name) ?? 0) + 1);
-            // console.info('CXT', name, ctx, current_points);
-            if (start && stop) {
-              tokensList.forEach((tok: QToken, index) => {
-                if (
-                  start &&
-                  stop &&
-                  tok.tokenIndex >= start.tokenIndex &&
-                  tok.tokenIndex <= stop.tokenIndex
-                ) {
-                  // map.set("a", (map.get("a") ?? 0) + 1)
-                  tokensList[index].points.set(name, (tokensList[index].points.get(name) ?? 0) + 1);
-                  tokensList[index].counter.set(name, current_points.get(name));
+    });
+    // ------------------------------------------------------------------------------------------------
+    // ParseTreeVisitor
+    tree.accept(
+      nodeVisitor({
+        visitNode(ctx: any) {
+          const name: string = ctx.constructor.name;
+          let start: Token | null = null;
+          let stop: Token | null = null;
+          if (ctx.symbol) {
+            start = ctx.symbol;
+            stop = ctx.symbol;
+          }
+          if (ctx.start && ctx.stop) {
+            start = ctx.start;
+            stop = ctx.stop;
+          }
+          let exception = false;
+          let invokingState = -1;
+          let ruleIndex = -1;
+          if (ctx.invokingState) {
+            invokingState = ctx.invokingState;
+          }
+          if (ctx.ruleIndex) {
+            ruleIndex = ctx.ruleIndex;
+          }
+          if (ctx.exception) {
+            exception = true;
+          }
+          if (!start || !stop) {
+            console.warn('EMPTY TAG`s', name, ctx, start, stop);
+            return;
+          }
+          current_points.set(name, (current_points.get(name) ?? 0) + 1);
+          // console.info('CXT', name, ctx, current_points);
+          if (start && stop) {
+            tokensList.forEach((tok: QToken, index) => {
+              if (
+                start &&
+                stop &&
+                tok.tokenIndex >= start.tokenIndex &&
+                tok.tokenIndex <= stop.tokenIndex
+              ) {
+                // map.set("a", (map.get("a") ?? 0) + 1)
+                tokensList[index].points.set(name, (tokensList[index].points.get(name) ?? 0) + 1);
+                tokensList[index].counter.set(name, current_points.get(name));
 
-                  if (exception) {
-                    tokensList[index].exception.push(name);
-                  }
-                  if (invokingState >= 0) {
-                    tokensList[index].invokingState.set(name, invokingState);
-                  }
-                  if (ruleIndex >= 0) {
-                    tokensList[index].ruleIndex.set(name, ruleIndex);
-                  }
-                } // if in `token`
-              }); // tokensList loop
-            } // have start & stop
-          }, // visitNode
-        }) // nodeVisitor
-      ); // accept
-      // ------------------------------------------------------------------------------------------------
-      // ALL OK!
-      //
-    } catch (e) {
-      console.error('CommonSQL -> parse()', e);
-      return null;
-    }
-    return new ParsedQuery(tokensList, errL.getErrors(), errP.getErrors());
+                if (exception) {
+                  tokensList[index].exception.push(name);
+                }
+                if (invokingState >= 0) {
+                  tokensList[index].invokingState.set(name, invokingState);
+                }
+                if (ruleIndex >= 0) {
+                  tokensList[index].ruleIndex.set(name, ruleIndex);
+                }
+              } // if in `token`
+            }); // tokensList loop
+          } // have start & stop
+        }, // visitNode
+      }) // nodeVisitor
+    ); // accept
+    // ------------------------------------------------------------------------------------------------
+    // ALL OK!
+    return { tokens: tokensList, errors: [...errP.getErrors(), ...errL.getErrors()] };
   }
 
   /**
@@ -213,21 +229,8 @@ export default class CommonSQL {
   }
 
   /**
-   * Monaco editing configuration for the language
-   */
-  public getLanguageConfiguration(): monaco.languages.LanguageConfiguration {
-    return this.baseAntlr4.getLanguageConfiguration();
-  }
-
-  /**
-   * Monaco editing configuration for the language
-   */
-  public getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
-    return this.baseAntlr4.getIMonarchLanguage();
-  }
-
-  /**
    * Split a text of MySQL queries into multiple statements, optionally specifying the line break and delimiter.
+   * Source from https://github.com/segmentio/ts-mysql-plugin
    *
    * @param text
    * @param lineBreak
@@ -456,6 +459,20 @@ export default class CommonSQL {
     }
 
     return statements;
+  }
+
+  /**
+   * Monaco editing configuration for the language
+   */
+  public getLanguageConfiguration(): monaco.languages.LanguageConfiguration {
+    return this.baseAntlr4.getLanguageConfiguration();
+  }
+
+  /**
+   * Monaco editing configuration for the language
+   */
+  public getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
+    return this.baseAntlr4.getIMonarchLanguage();
   }
 
   //
