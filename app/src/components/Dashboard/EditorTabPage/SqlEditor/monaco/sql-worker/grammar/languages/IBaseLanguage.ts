@@ -1,5 +1,6 @@
 import antlr4 from 'antlr4/index';
 import * as monaco from 'monaco-editor';
+import { QToken, ReferenceMap } from '../CommonSQL';
 
 export interface IBaseLanguageConfiguration {
   querySeparator: Array<string>; // Like [ `;;`, SEMICOLON ]
@@ -20,4 +21,26 @@ export default abstract class IBaseLanguage {
   abstract getLanguageConfiguration(): monaco.languages.LanguageConfiguration;
 
   abstract getIMonarchLanguage(): monaco.languages.IMonarchLanguage;
+
+  abstract processTokens(tokens: Array<QToken>): ReferenceMap | undefined;
+
+  protected unquote(text?: string): string {
+    if (!text) {
+      return '';
+    }
+
+    if (text.length < 2) {
+      return text;
+    }
+
+    if (
+      text.startsWith('"') ||
+      text.startsWith('`') ||
+      (text.startsWith("'") && text.startsWith(text[text.length - 1]))
+    ) {
+      return text.substr(1, text.length - 2);
+    }
+
+    return text;
+  }
 }

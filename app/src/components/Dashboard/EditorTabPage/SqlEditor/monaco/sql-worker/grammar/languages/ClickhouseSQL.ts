@@ -1,9 +1,18 @@
-import antlr4, { InputStream, CommonTokenStream, Lexer } from 'antlr4';
+import antlr4, { CommonTokenStream, InputStream } from 'antlr4';
 import { ClickHouseLexer, ClickHouseParser } from './clickhouse';
 import IBaseAntlr4, { IBaseLanguageConfiguration } from './IBaseLanguage';
 // import { ParseTreeVisitor } from 'antlr4/tree/Tree';
 import { ClickhouseSQLMonaco } from './ClickhouseSQL.editor';
 import * as monaco from 'monaco-editor';
+import {
+  AliasReference,
+  QToken,
+  Reference,
+  ReferenceContext,
+  ReferenceMap,
+  ReferenceType,
+  TableReference,
+} from '../CommonSQL';
 // import antlr4ParserErrorCollector from '../antlr4ParserErrorCollector';
 // import { Token } from 'antlr4/Token';
 // ------------------------------------------------------------------------
@@ -39,6 +48,159 @@ export default class ClickhouseSQL extends IBaseAntlr4 {
    */
   public processor(): string {
     return 'sql';
+  }
+
+  private _find_database_name(tokens: Array<QToken>): QToken | undefined {
+    return tokens.find((q) =>
+      q.treeText.includes('TableIdentifierContext,DatabaseIdentifierContext,IdentifierContext')
+    );
+  }
+
+  private _find_table_name(tokens: Array<QToken>): QToken | undefined {
+    return tokens.find((q) =>
+      q.treeText.includes('TableExprIdentifierContext,TableIdentifierContext,IdentifierContext')
+    );
+  }
+
+  private _find_table_alias(tokens: Array<QToken>): QToken | undefined {
+    return tokens.find((q) => q.treeText.includes('TableExprAliasContext,IdentifierContext'));
+  }
+
+  private _table_context_reference(tableContext: Array<QToken>): TableReference | undefined {
+    // if `tableName` = [TableExprIdentifierContext,TableIdentifierContext,IdentifierContext]
+    // if `alias` = [TableExprAliasContext,IdentifierContext];
+    // if `dbName` = TableIdentifierContext,DatabaseIdentifierContext,IdentifierContext
+    const tb = this._find_table_name(tableContext);
+
+    let ref: TableReference | undefined = undefined;
+    if (!tb) {
+      // WARN
+      return undefined;
+    }
+    let alias: AliasReference | null = null;
+    const db = this._find_database_name(tableContext);
+    const al = this._find_table_alias(tableContext);
+
+    if (al) {
+      alias = {
+        type: ReferenceType.TableRef,
+        alias: this.unquote(al.text),
+        start: al.start,
+        stop: al.stop,
+      };
+    }
+
+    const start: Array<number> = [];
+    const stop: Array<number> = [];
+
+    if (db) {
+      start.push(db.start);
+      stop.push(db.stop);
+    }
+    if (tb) {
+      start.push(tb.start);
+      stop.push(tb.stop);
+    }
+    if (al) {
+      start.push(al.start);
+      stop.push(al.stop);
+    }
+    ref = {
+      type: ReferenceType.TableRef,
+      database: db ? this.unquote(db.text) : undefined,
+      table: this.unquote(tb.text),
+      aliasReference: alias,
+      start: Math.min(...start),
+      stop: Math.max(...stop),
+    };
+    return ref;
+  }
+
+  public processTokens(tokens: Array<QToken>): ReferenceMap | undefined {
+    //
+    // COL_ALIAS  - ColumnsExprColumnContext,ColumnExprAliasContext,IdentifierContext
+    // COL_NAME   - ColumnExprIdentifierContext,ColumnIdentifierContext,NestedIdentifierContext,IdentifierContext
+    // DB_NAME    - TableExprIdentifierContext,TableIdentifierContext,DatabaseIdentifierContext,IdentifierContext
+    // TABLE_NAME - TableExprIdentifierContext,TableIdentifierContext,IdentifierContext
+    // ALIAS_TABLE- TableExprAliasContext,IdentifierContext
+    // isSelect   - SelectUnionStmtContext,SelectStmtWithParensContext
+    // FUNCTION   - ColumnExprFunctionContext,IdentifierContext
+    // = 123 Num  - WhereClauseContext...LiteralContext,NumberLiteralContext
+    // = '1' Str  - WhereClauseContext...ColumnExprLiteralContext,LiteralContext
+
+    if (!tokens.length) return undefined;
+    const resultReference: ReferenceMap = new Map<string, Array<Reference>>();
+    //
+    // ------------------------------- [dbName.]tbName as aliasName -----------------------------------
+    //
+    const tableContext: Array<QToken> = tokens.filter((q) => q.counter.has('JoinExprTableContext'));
+    if (tableContext.length) {
+      const tb = this._table_context_reference(tableContext);
+      if (tb) {
+        if (!resultReference.has(ReferenceType.TableRef))
+          resultReference.set(ReferenceType.TableRef, []);
+        resultReference.get(ReferenceType.TableRef)!.push(tb);
+      }
+    }
+
+    //
+    //
+    //   SELECT		[] (0:5)
+    //    *		[,ColumnExprListContext,ColumnsExprAsteriskContext] (7:7)
+    //   FROM		[,FromClauseContext] (9:12)
+    //   tabl1		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprIdentifierContext,TableIdentifierContext,IdentifierContext] (14:18)
+    //   JOIN		[,FromClauseContext,JoinExprOpContext] (20:23)
+    //   dbnname		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprAliasContext,TableExprIdentifierContext,TableIdentifierContext,DatabaseIdentifierContext,IdentifierContext] (25:31)
+    //    .		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprAliasContext,TableExprIdentifierContext,TableIdentifierContext] (32:32)
+    //   tabl2		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprAliasContext,TableExprIdentifierContext,TableIdentifierContext,IdentifierContext] (33:37)
+    //   as		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprAliasContext] (39:40)
+    //   tt2		[,FromClauseContext,JoinExprOpContext,JoinExprTableContext,TableExprAliasContext,IdentifierContext] (42:44)
+    //   USING		[,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext] (46:50)
+    //   (		[,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext] (52:52)
+    //   key		[,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext,ColumnExprListContext,ColumnsExprColumnContext,ColumnExprIdentifierContext,ColumnIdentifierContext,NestedIdentifierContext,IdentifierContext,KeywordContext] (53:55)
+    //   )		[,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext] (56:56)
+    //
+
+    return resultReference;
+
+    //
+    //
+    //
+    //
+    //   // COL_ALIAS  - ColumnsExprColumnContext,ColumnExprAliasContext,IdentifierContext
+    //   if (str.includes('ColumnsExprColumnContext,ColumnExprAliasContext,IdentifierContext')) {
+    //     // const r: ColumnReference = {};
+    //   }
+    // });
+  }
+
+  public getReferenceContext(t: QToken): ReferenceContext | null {
+    // To-Do: move to CH.parser()
+    if (t.counter.has('WithClauseContext')) {
+      return 'withClause';
+    }
+    if (t.counter.has('FromClauseContext')) {
+      return 'fromClause';
+    }
+    if (t.counter.has('WhereClauseContext') || t.counter.has('PrewhereClauseContext')) {
+      return 'whereClause';
+    }
+    if (t.counter.has('HavingClauseContext')) {
+      return 'havingClause';
+    }
+    if (t.counter.has('OrderByClauseContext')) {
+      return 'orderClause';
+    }
+    if (t.counter.has('LimitClauseContext') || t.counter.has('LimitByClauseContext')) {
+      return 'limitClause';
+    }
+    // arrayJoinClause
+    // windowClause
+    // prewhereClause
+    // orderByClause
+    // limitByClause
+    // settingsClause
+    return null;
   }
 
   public configuration(): IBaseLanguageConfiguration {

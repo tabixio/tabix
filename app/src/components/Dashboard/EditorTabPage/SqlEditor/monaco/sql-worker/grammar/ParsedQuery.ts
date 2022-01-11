@@ -1,8 +1,4 @@
-import { Antlr4ParserErrorCollector } from './antlr4ParserErrorCollector';
-import { Token } from 'antlr4';
-import antlr4 from 'antlr4/index';
-import { RuleNode } from 'antlr4/tree/Tree';
-import { QToken, Statement } from './CommonSQL';
+import { QToken, Statement, Reference, ReferenceType, TableReference } from './CommonSQL';
 
 enum wew {
   QUERY = '__QueryStmt',
@@ -24,13 +20,7 @@ export class ParsedQuery {
   //
   constructor(statements: Statement[]) {
     this.statements = statements;
-    // https://github.com/contiamo/rhombic
-    // https://github.com/elastic/kibana
-    // https://github.com/adelsz/pgtyped
-    // https://github.com/segmentio/ts-mysql-plugin
-    // [Unfinished multiline comment | Unfinished ...] https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/listeners/lexer-error-listener.ts
-    // https://github.com/cube-js/cube.js/blob/master/packages/cubejs-schema-compiler/src/parser/SqlParser.ts
-    // console.info('tokensList', tokensList);
+
     /**
      * Todo:
      * 0. Add LexerErrorListener
@@ -42,11 +32,15 @@ export class ParsedQuery {
      * x. Test like this https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/__tests__/statements.txt
      *
      */
+  }
 
-    // ---------- Search Table`s ---------------
-    // ---------- Search DB names`s ---------------
-    // ---------- Search Alias`s ---------------
-    // ---------- Search Value`s ---------------
+  public dumpTokens(st_num: number): string {
+    let str = ``;
+    this.statements[st_num].tokens?.forEach((t) => {
+      str +=
+        t.text + `\t\t[` + Array.from(t.counter.keys()).join(',') + `] (${t.start}:${t.stop})  \n`;
+    });
+    return str;
   }
 
   // private splitQuery(SPLIT_QUERY_CONTEXT_NAME: string): void {
@@ -83,6 +77,13 @@ export class ParsedQuery {
     return res + '`';
   }
 
+  public isAsteriskSelect(): boolean {
+    // if select * from - return true
+
+    // if ColumnsExprAsteriskContext,QueryStmtContext,SelectUnionStmtContext - for CH
+    return false;
+  }
+
   public getCountOfStmt(): number {
     return this.statements.length;
   }
@@ -91,49 +92,41 @@ export class ParsedQuery {
     return null;
   }
 
-  public getStmtOnOffset(off: number): number {
-    return -1;
+  public getStatementNumAtOffset(offset: number): number | undefined {
+    return this.statements.findIndex((st) => st.start <= offset && offset <= st.stop);
+  }
+
+  public getStatementAtOffset(offset: number): Statement | undefined {
+    return this.statements.find((st) => st.start <= offset && offset <= st.stop);
   }
 
   public getTokens(): Array<QToken> {
-    if (!this.tokensList) throw 'Can`t get tokens';
-    return this.tokensList;
+    return [];
+    // if (!this.tokensList) throw 'Can`t get tokens';
+    // return this.tokensList;
   }
 
-  public getTableReference(): Array<string> {
-    return [];
+  public getTableReference(offset: number): Array<TableReference> | undefined {
+    return this.getStatementAtOffset(offset)?.refs?.get(
+      ReferenceType.TableRef
+    ) as Array<TableReference>;
+  }
+
+  public getTablesNames(offset: number): Array<string> | undefined {
+    console.info(this.getTableReference(offset));
+    return this.getTableReference(offset)?.map((r) => r.table);
   }
 
   public getColumnReference(): Array<string> {
     return [];
   }
 
-  public getAliasReference(): Array<string> {
+  public getAliasReference(offset: number): Array<string> {
     return [];
   }
 
   public getValueReference(): Array<string> {
     return [];
-  }
-
-  private unquote(text?: string): string {
-    if (!text) {
-      return '';
-    }
-
-    if (text.length < 2) {
-      return text;
-    }
-
-    if (
-      text.startsWith('"') ||
-      text.startsWith('`') ||
-      (text.startsWith("'") && text.startsWith(text[text.length - 1]))
-    ) {
-      return text.substr(1, text.length - 2);
-    }
-
-    return text;
   }
 
   public toString(): string {

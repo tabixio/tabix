@@ -63,6 +63,7 @@ https://github.com/DTStack/molecule
 
 https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies/MySqlLexer.g4
 
+```
 // https://bitwiser.in/monaco-themes/
 // https://microsoft.github.io/monaco-editor/monarch.html
 // https://github.com/Microsoft/monaco-editor/issues/74
@@ -83,3 +84,11 @@ Highlighting: https://code.visualstudio.com/blogs/2017/02/08/syntax-highlighting
 // https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
 // https://github.com/microsoft/azuredatastudio/blob/main/extensions/sql/syntaxes/sql.tmLanguage.json
 
+    // https://github.com/contiamo/rhombic
+    // https://github.com/elastic/kibana
+    // https://github.com/adelsz/pgtyped
+    // https://github.com/segmentio/ts-mysql-plugin
+    // [Unfinished multiline comment | Unfinished ...] https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/listeners/lexer-error-listener.ts
+    // https://github.com/cube-js/cube.js/blob/master/packages/cubejs-schema-compiler/src/parser/SqlParser.ts
+
+```

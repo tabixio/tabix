@@ -11,6 +11,95 @@ import * as monaco from 'monaco-editor';
 import { RuleNode } from 'antlr4/tree/Tree';
 import { ParsedQuery } from './ParsedQuery';
 
+// ts-mysql-parser,parser-listener.ts
+export type ReferenceContext =
+  | 'fromClause'
+  | 'whereClause'
+  | 'withClause'
+  | 'limitClause'
+  | 'groupClause'
+  | 'havingClause'
+  | 'orderClause';
+
+export enum ReferenceType {
+  FunctionRef = 'FunctionRef',
+  KeywordRef = 'KeywordRef',
+  ColumnRef = 'ColumnRef',
+  SchemaRef = 'SchemaRef',
+  TableRef = 'TableRef',
+  AliasRef = 'AliasRef',
+  ValueRef = 'ValueRef',
+}
+
+export type Reference =
+  | FunctionReference
+  | KeywordReference
+  | TableReference
+  | ColumnReference
+  | SchemaReference
+  | AliasReference
+  | ValueReference;
+
+export type ReferenceMap = Map<string, Array<Reference>>;
+
+interface KeywordReference {
+  type: ReferenceType;
+  keyword: string;
+  start: number;
+  stop: number;
+}
+
+export interface SchemaReference {
+  type: ReferenceType;
+  schema: string;
+  start: number;
+  stop: number;
+}
+
+export interface TableReference {
+  type: ReferenceType;
+  database?: string;
+  aliasReference: AliasReference | null;
+  table: string;
+  start: number;
+  stop: number;
+}
+
+export interface ColumnReference {
+  type: ReferenceType;
+  context: ReferenceContext | null;
+  tableReference: TableReference | null;
+  aliasReference: AliasReference | null;
+  column: string;
+  start: number;
+  stop: number;
+}
+
+export interface AliasReference {
+  type: ReferenceType;
+  alias: string;
+  start: number;
+  stop: number;
+}
+
+export interface ValueReference {
+  type: ReferenceType;
+  context: ReferenceContext | null;
+  columnReference: ColumnReference | null;
+  dataType: string;
+  value: string;
+  start: number;
+  stop: number;
+}
+
+export interface FunctionReference {
+  type: ReferenceType;
+  context: ReferenceContext | null;
+  function: string;
+  start: number;
+  stop: number;
+}
+
 /** Statement represents a single query */
 export interface Statement {
   text: string;
@@ -19,6 +108,7 @@ export interface Statement {
   isParsed: boolean;
   tokens?: Array<QToken>;
   errors?: Antlr4ParserErrorCollector[];
+  refs?: ReferenceMap;
 }
 
 function skipLeadingWhitespace(text: string, head: number, tail: number): number {
@@ -34,7 +124,7 @@ interface ResultParseState {
 }
 
 export interface QToken {
-  points: Map<string, number>;
+  treeText: string;
   counter: Map<string, number | undefined>;
   exception: Array<string>;
   invokingState: Map<string, number>;
@@ -100,6 +190,7 @@ export default class CommonSQL {
     states.forEach((st, index) => {
       const res = this.parseOneStatement(st.text);
       if (res.tokens.length) {
+        states[index].refs = this.baseAntlr4.processTokens(res.tokens);
         states[index].isParsed = true;
         states[index].tokens = res.tokens;
         states[index].errors = res.errors;
@@ -136,7 +227,7 @@ export default class CommonSQL {
     // ------ fetch QTok ------------------------------------------------------------------------------
     tokens.forEach((tok: Token, index) => {
       tokensList.push({
-        points: new Map(),
+        treeText: '',
         counter: new Map(),
         exception: [],
         invokingState: new Map(),
@@ -195,7 +286,6 @@ export default class CommonSQL {
                 tok.tokenIndex <= stop.tokenIndex
               ) {
                 // map.set("a", (map.get("a") ?? 0) + 1)
-                tokensList[index].points.set(name, (tokensList[index].points.get(name) ?? 0) + 1);
                 tokensList[index].counter.set(name, current_points.get(name));
 
                 if (exception) {
@@ -213,6 +303,10 @@ export default class CommonSQL {
         }, // visitNode
       }) // nodeVisitor
     ); // accept
+    // Convert to string like `ColumnsExprColumnContext,ColumnExprAliasContext,IdentifierContext`
+    tokensList.forEach(
+      (t, i) => (tokensList[i].treeText = t.counter ? Array.from(t.counter.keys()).join(',') : '')
+    );
     // ------------------------------------------------------------------------------------------------
     // ALL OK!
     return { tokens: tokensList, errors: [...errP.getErrors(), ...errL.getErrors()] };
