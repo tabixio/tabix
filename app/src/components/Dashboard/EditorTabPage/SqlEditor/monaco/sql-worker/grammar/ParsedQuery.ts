@@ -2,7 +2,7 @@ import { Antlr4ParserErrorCollector } from './antlr4ParserErrorCollector';
 import { Token } from 'antlr4';
 import antlr4 from 'antlr4/index';
 import { RuleNode } from 'antlr4/tree/Tree';
-import { QToken } from './CommonSQL';
+import { QToken, Statement } from './CommonSQL';
 
 enum wew {
   QUERY = '__QueryStmt',
@@ -18,16 +18,12 @@ enum wew {
 }
 
 export class ParsedQuery {
-  private tokensList: Array<QToken> | null;
+  private statements: Statement[];
   private countStm = -1;
-  private splitStm: Array<any> = [];
 
-  constructor(
-    tokensList: Array<QToken>,
-    errParser: Antlr4ParserErrorCollector[],
-    errLexer: Antlr4ParserErrorCollector[]
-  ) {
-    this.tokensList = tokensList;
+  //
+  constructor(statements: Statement[]) {
+    this.statements = statements;
     // https://github.com/contiamo/rhombic
     // https://github.com/elastic/kibana
     // https://github.com/adelsz/pgtyped
@@ -46,43 +42,40 @@ export class ParsedQuery {
      * x. Test like this https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/__tests__/statements.txt
      *
      */
-    // ---------- Split Query ---------------
-    try {
-      this.splitQuery('QueryStmtContext'); // <!- if other lang
-    } catch (e) {
-      console.error('ParsedQuery -> splitQuery()', e);
-    }
+
     // ---------- Search Table`s ---------------
     // ---------- Search DB names`s ---------------
     // ---------- Search Alias`s ---------------
     // ---------- Search Value`s ---------------
   }
 
-  private splitQuery(SPLIT_QUERY_CONTEXT_NAME: string): void {
-    let _counterSplitQuery = 0;
-    const _listSplitQuery = [];
-    let _startSplit: QToken | null = null;
-    let _prev: QToken | null = null;
-    this.tokensList?.forEach((q, index) => {
-      const numQ = q.counter.get(SPLIT_QUERY_CONTEXT_NAME);
-      if (numQ && numQ > _counterSplitQuery) {
-        if (_startSplit && _prev) {
-          _listSplitQuery.push({ start: _startSplit, stop: _prev });
-        }
-        _startSplit = q;
-        _counterSplitQuery++;
-      }
-      _prev = q;
-    });
-    if (_startSplit && _prev) {
-      _listSplitQuery.push({ start: _startSplit, stop: _prev });
-    }
-    this.countStm = _listSplitQuery.length;
-    this.splitStm = _listSplitQuery;
-  }
+  // private splitQuery(SPLIT_QUERY_CONTEXT_NAME: string): void {
+  //   let _counterSplitQuery = 0;
+  //   const _listSplitQuery = [];
+  //   let _startSplit: QToken | null = null;
+  //   let _prev: QToken | null = null;
+  //   this.tokensList?.forEach((q, index) => {
+  //     const numQ = q.counter.get(SPLIT_QUERY_CONTEXT_NAME);
+  //     if (numQ && numQ > _counterSplitQuery) {
+  //       if (_startSplit && _prev) {
+  //         _listSplitQuery.push({ start: _startSplit, stop: _prev });
+  //       }
+  //       _startSplit = q;
+  //       _counterSplitQuery++;
+  //     }
+  //     _prev = q;
+  //   });
+  //   if (_startSplit && _prev) {
+  //     _listSplitQuery.push({ start: _startSplit, stop: _prev });
+  //   }
+  //   this.countStm = _listSplitQuery.length;
+  //   this.splitStm = _listSplitQuery;
+  // }
 
   public getToken(offset: number): QToken | undefined {
-    return this.tokensList?.find((q) => q.start <= offset && offset <= q.stop);
+    return undefined;
+
+    // return this.tokensList?.find((q) => q.start <= offset && offset <= q.stop);
   }
 
   public info(off: number): string {
@@ -91,7 +84,7 @@ export class ParsedQuery {
   }
 
   public getCountOfStmt(): number {
-    return this.countStm;
+    return this.statements.length;
   }
 
   public getTokensInRange(offStart: number, offStop: number): Array<QToken> | null {

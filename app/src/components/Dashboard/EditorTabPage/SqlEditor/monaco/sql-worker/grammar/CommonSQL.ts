@@ -13,12 +13,12 @@ import { ParsedQuery } from './ParsedQuery';
 
 /** Statement represents a single query */
 export interface Statement {
-  /** The text of the statement */
   text: string;
-  /** The zero-based offset of the starting position of the statement in the original text */
   start: number;
-  /** The zero-based offset of the stopping position of the statement in the original text */
   stop: number;
+  isParsed: boolean;
+  tokens?: Array<QToken>;
+  errors?: Antlr4ParserErrorCollector[];
 }
 
 function skipLeadingWhitespace(text: string, head: number, tail: number): number {
@@ -95,12 +95,17 @@ export default class CommonSQL {
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
-    // const st=this.splitStatements(input);
-    // st.foreach()...
-    // push to parseResults
-    // {query : text , tokens: <arr> , err : errs , stat: , stop: }
-
-    return null;
+    const states = this.splitStatements(input);
+    if (!states.length) return null;
+    states.forEach((st, index) => {
+      const res = this.parseOneStatement(st.text);
+      if (res.tokens.length) {
+        states[index].isParsed = true;
+        states[index].tokens = res.tokens;
+        states[index].errors = res.errors;
+      }
+    });
+    return new ParsedQuery(states);
   }
 
   /**
@@ -416,6 +421,7 @@ export default class CommonSQL {
               text: text.substring(head, tail),
               start: head,
               stop: tail,
+              isParsed: false,
             });
           }
           head = ++tail;
@@ -436,6 +442,7 @@ export default class CommonSQL {
                 text: text.substring(head, tail),
                 start: head,
                 stop: tail,
+                isParsed: false,
               });
             }
 
@@ -455,6 +462,7 @@ export default class CommonSQL {
         text: text.substring(head, tail),
         start: head,
         stop: tail,
+        isParsed: false,
       });
     }
 
