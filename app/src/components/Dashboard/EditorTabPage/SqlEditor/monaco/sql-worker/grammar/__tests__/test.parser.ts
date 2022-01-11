@@ -53,7 +53,11 @@ describe('Generic SQL Reference Tables', () => {
     ).toMatchObject({ table: 'tabl1' });
 
     console.info(
-      c.parse('SELECT * FROM tabl1 JOIN dbnname.tabl2 as tt2 USING (key)').dumpTokens(0)
+      c
+        .parse(
+          'SELECT * FROM tabl1 JOIN dbnname.tabl2 as tt2 USING (key) JOIN ( SELECT * FROM db2.tt2 JOIN db3.tb3 USING (kkey) ) as jtb2 USING (kkey)'
+        )
+        .dumpTokens(0)
     );
     //
     // expect(c.parse('SELECT * FROM tabl1 JOIN tabl2 USING (key)').getTablesNames(0)).toBe([
