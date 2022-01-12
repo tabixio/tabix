@@ -1,4 +1,4 @@
-// Generated from /Users/igor/sites/tabix.ts21/grammar/clickhouse/ClickHouseParser.g4 by ANTLR 4.9.3
+// Generated from grammar/clickhouse/ClickHouseParser.g4 by ANTLR 4.9.3
 // jshint ignore: start
 import antlr4 from 'antlr4';
 

@@ -13,10 +13,11 @@ import {
   ReferenceType,
   TableReference,
 } from '../CommonSQL';
+import { ParseTreeListener } from 'antlr4/tree/Tree';
 // import antlr4ParserErrorCollector from '../antlr4ParserErrorCollector';
 // import { Token } from 'antlr4/Token';
 // ------------------------------------------------------------------------
-export default class ClickhouseSQL extends IBaseAntlr4 {
+export class ClickhouseSQL extends IBaseAntlr4 {
   /**
    * Create Parser from SQL
    *
@@ -182,9 +183,6 @@ export default class ClickhouseSQL extends IBaseAntlr4 {
     //   (		  [,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext] (129:129)
     //   kkey		[,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext,ColumnExprListContext,ColumnsExprColumnContext,ColumnExprIdentifierContext,ColumnIdentifierContext,NestedIdentifierContext,IdentifierContext] (130:133)
     // )		    [,FromClauseContext,JoinExprOpContext,JoinConstraintClauseContext] (134:134)
-
-    //
-
     return resultReference;
 
     //
@@ -237,5 +235,34 @@ export default class ClickhouseSQL extends IBaseAntlr4 {
 
   public getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
     return ClickhouseSQLMonaco.language;
+  }
+}
+
+export class ClickhouseSQLParserListener {
+  visitTerminal(node: any) {}
+
+  visitErrorNode(node: any) {}
+
+  enterEveryRule(node: any) {}
+
+  exitColumnsExprAsteriskContext(n: any) {
+    console.log(n);
+  }
+
+  // exitEveryRule(node: any) {
+  exitEveryRule(node: any) {
+    // console.log(node);
+  }
+
+  exitFromClause(ctx: any) {
+    console.log(ctx);
+  }
+
+  exitSelectStmt(ctx: any) {
+    console.log(ctx);
+  }
+
+  exitJoinExprOp(ctx: any) {
+    console.log(ctx);
   }
 }

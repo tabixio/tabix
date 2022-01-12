@@ -5,12 +5,12 @@ import {
 } from './antlr4ParserErrorCollector';
 import { Token } from 'antlr4/Token';
 import { SupportLanguage } from '../supportLanguage';
-import ClickhouseSQL from './languages/ClickhouseSQL';
+import { ClickhouseSQL, ClickhouseSQLParserListener } from './languages/ClickhouseSQL';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
-import { RuleNode } from 'antlr4/tree/Tree';
+import { RuleNode, ParseTreeListener } from 'antlr4/tree/Tree';
 import { ParsedQuery } from './ParsedQuery';
-
+// import antlr4 from 'antlr4';
 // ts-mysql-parser,parser-listener.ts
 export type ReferenceContext =
   | 'fromClause'
@@ -212,12 +212,18 @@ export default class CommonSQL {
     const errP = new antlr4ErrorParser();
     const errL = new antlr4ErrorLexer();
     // ------------------------------------------------------------------------------------------------
-    parser.buildParseTrees = true;
+    // parser.buildParseTrees = true;
     parser.removeErrorListeners();
+    lexer.removeErrorListeners();
+    //
     lexer.addErrorListener(errL);
     parser.addErrorListener(errL);
+    //
+    parser.addParseListener(this.getParseListener());
+    //
     const tokens: Token[] = lexer.getAllTokens();
     lexer.reset();
+    //
     const proc = this.baseAntlr4.configuration().topStatements;
     const tree = parser[proc]();
     // --------- Base End
@@ -244,6 +250,7 @@ export default class CommonSQL {
       });
     });
     // ------------------------------------------------------------------------------------------------
+    console.log('ParseTreeVisitor');
     // ParseTreeVisitor
     tree.accept(
       nodeVisitor({
@@ -310,6 +317,11 @@ export default class CommonSQL {
     // ------------------------------------------------------------------------------------------------
     // ALL OK!
     return { tokens: tokensList, errors: [...errP.getErrors(), ...errL.getErrors()] };
+  }
+
+  public getParseListener(): ParseTreeListener {
+    //
+    return new ClickhouseSQLParserListener();
   }
 
   /**
