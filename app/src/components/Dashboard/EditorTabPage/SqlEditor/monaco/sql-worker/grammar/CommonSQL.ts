@@ -3,15 +3,14 @@ import {
   antlr4ErrorParser,
   Antlr4ParserErrorCollector,
 } from './antlr4ParserErrorCollector';
-import { Token } from 'antlr4/Token';
 import { SupportLanguage } from '../supportLanguage';
-import { ClickhouseSQL, ClickhouseSQLParserListener } from './languages/ClickhouseSQL';
+import { ClickhouseSQL, ClickhouseSQLVisitor } from './languages/ClickhouseSQL';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
-import { RuleNode, ParseTreeListener } from 'antlr4/tree/Tree';
 import { ParsedQuery } from './ParsedQuery';
-// import antlr4 from 'antlr4';
-// ts-mysql-parser,parser-listener.ts
+import { Token } from 'antlr4ts';
+import { RuleNode } from 'antlr4ts/tree/RuleNode';
+
 export type ReferenceContext =
   | 'fromClause'
   | 'whereClause'
@@ -136,7 +135,7 @@ export interface QToken {
   stop: number;
   tokenIndex: number;
   type: number;
-  text: string;
+  text?: string;
   symbolic: string;
 }
 
@@ -199,6 +198,37 @@ export default class CommonSQL {
     return new ParsedQuery(states);
   }
 
+  public parse2OneStatement(input: string): any {
+    const lexer = this.baseAntlr4.createLexer(input + '\n');
+    const parser = this.baseAntlr4.createParser(lexer);
+    const tokensList: Array<QToken> = [];
+    const errP = new antlr4ErrorParser();
+    const errL = new antlr4ErrorLexer();
+    // ------------------------------------------------------------------------------------------------
+    parser.buildParseTree = true;
+    parser.removeErrorListeners();
+    lexer.removeErrorListeners();
+    //
+    lexer.addErrorListener(errL);
+    parser.addErrorListener(errP);
+    //
+
+    //
+    const tokens: Token[] = lexer.getAllTokens();
+    lexer.reset();
+    //
+    const proc = this.baseAntlr4.configuration().topStatements;
+    let tree: any;
+    try {
+      tree = parser[proc]();
+    } catch (e) {
+      console.error(e);
+    }
+    tree.accept(this.baseAntlr4.getVisitor());
+    // ParseTreeWalker.DEFAULT.walk(list, tree);
+    return ';';
+  }
+
   /**
    * Use Antlr4 for parse, if parsed ok result ParsedQuery
    *
@@ -219,7 +249,9 @@ export default class CommonSQL {
     lexer.addErrorListener(errL);
     parser.addErrorListener(errL);
     //
-    parser.addParseListener(this.getParseListener());
+    const list = new ClickhouseSQLVisitor();
+    // parser.add
+    // parser.addParseListener(list);
     //
     const tokens: Token[] = lexer.getAllTokens();
     lexer.reset();
@@ -228,8 +260,8 @@ export default class CommonSQL {
     const tree = parser[proc]();
     // --------- Base End
     const current_points: Map<string, number> = new Map();
-    // @ts-ignore
-    const symbolicNames = parser.getSymbolicNames();
+
+    // const symbolicNames = parser.getSymbolicNames();
     // ------ fetch QTok ------------------------------------------------------------------------------
     tokens.forEach((tok: Token, index) => {
       tokensList.push({
@@ -239,14 +271,14 @@ export default class CommonSQL {
         invokingState: new Map(),
         ruleIndex: new Map(),
         channel: tok.channel,
-        column: tok.column,
+        column: tok.line,
         line: tok.line,
-        start: tok.start,
-        stop: tok.stop,
+        start: tok.startIndex,
+        stop: tok.stopIndex,
         tokenIndex: index,
         type: tok.type,
         text: tok.text,
-        symbolic: symbolicNames[tok.type],
+        symbolic: '', //symbsolicNames[tok.type],
       });
     });
     // ------------------------------------------------------------------------------------------------
@@ -317,11 +349,6 @@ export default class CommonSQL {
     // ------------------------------------------------------------------------------------------------
     // ALL OK!
     return { tokens: tokensList, errors: [...errP.getErrors(), ...errL.getErrors()] };
-  }
-
-  public getParseListener(): ParseTreeListener {
-    //
-    return new ClickhouseSQLParserListener();
   }
 
   /**

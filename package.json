@@ -11,7 +11,6 @@
     "url": "https://github.com/tabixio/tabix.git"
   },
   "scripts": {
-    "antlr": "node grammar/antlr4.js",
     "clean": "rimraf 'dist/*'",
     "start": "yarn run clean && cross-env NODE_ENV=development && cross-env NODE_OPTIONS=--max-old-space-size=4096 webpack serve --mode development --color --progress --config webpack.config.babel.js",
     "profile": "yarn run clean && cross-env NODE_ENV=production webpack --profile --json --config webpack.config.babel.js > ./dist/profile.json && webpack-bundle-analyzer ./dist/profile.json",
@@ -62,6 +61,7 @@
     "@types/webpack-env": "^1.13.6",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
+    "antlr4ts-cli": "^0.5.0-alpha.4",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^27.4.6",
     "clean-webpack-plugin": "^4.0.0",
@@ -117,9 +117,8 @@
   "dependencies": {
     "@handsontable/react": "^2.1.0",
     "@monaco-editor/react": "4.3.1",
-    "@types/antlr4": "^4.7.2",
     "antd": "3.26.20",
-    "antlr4": "4.9.3",
+    "antlr4ts": "^0.5.0-alpha.4",
     "chroma-js": "^2.0.2",
     "classnames": "^2.2.6",
     "compression-webpack-plugin": "4.0.1",

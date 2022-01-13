@@ -1932,13 +1932,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/antlr4@npm:^4.7.2":
-  version: 4.7.2
-  resolution: "@types/antlr4@npm:4.7.2"
-  checksum: 0403178c652cc8e5e2c7afa0202ca29cf5c650958624ec4687b98b7f25f20d0050a0c97ea5fe914180d45a696c1a89995e8de7efdf31c0ed38fc8883222822be
-  languageName: node
-  linkType: hard
-
 "@types/babel-types@npm:*, @types/babel-types@npm:^7.0.0":
   version: 7.0.4
   resolution: "@types/babel-types@npm:7.0.4"
@@ -3092,10 +3085,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antlr4@npm:4.9.3":
-  version: 4.9.3
-  resolution: "antlr4@npm:4.9.3"
-  checksum: 2e3b7bcf3b79686311182dac71a4d320abbb7e7bca5fb0e47585771130f4f07489fb4012339bb9a45c1bb0e724d4e185b7a6995111b3b86abfbdfc89b4f92bb1
+"antlr4ts-cli@npm:^0.5.0-alpha.4":
+  version: 0.5.0-dev
+  resolution: "antlr4ts-cli@npm:0.5.0-dev"
+  dependencies:
+    source-map-support: ^0.5.16
+  bin:
+    antlr4ts: antlr4ts
+  checksum: 09f743ddfc4365cfe3e5c04896006b5ff8470913fcc80d05e17ded72079b11c3ba54c3b19857014df14f33c110d46ce67507873406687c6dcc4a3d730c514bbc
+  languageName: node
+  linkType: hard
+
+"antlr4ts@npm:^0.5.0-alpha.4":
+  version: 0.5.0-alpha.4
+  resolution: "antlr4ts@npm:0.5.0-alpha.4"
+  checksum: 37948499d59477f5b5a8ea71dfb8b5330e71d5a7cee60f57351dd744219b8619fa6aac1a5b6ec1a9991846e8ddc9ca47680eb166c59b44333369b3115e7aa358
   languageName: node
   linkType: hard
 
@@ -17455,7 +17459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.6, source-map-support@npm:~0.5.20":
+"source-map-support@npm:^0.5.16, source-map-support@npm:^0.5.6, source-map-support@npm:~0.5.20":
   version: 0.5.21
   resolution: "source-map-support@npm:0.5.21"
   dependencies:
@@ -18199,7 +18203,6 @@ __metadata:
     "@babel/register": ^7.0.0
     "@handsontable/react": ^2.1.0
     "@monaco-editor/react": 4.3.1
-    "@types/antlr4": ^4.7.2
     "@types/chroma-js": ^1.4.1
     "@types/classnames": ^2.2.6
     "@types/css-modules": ^1.0.0
@@ -18217,7 +18220,8 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.8.0
     "@typescript-eslint/parser": ^5.8.0
     antd: 3.26.20
-    antlr4: 4.9.3
+    antlr4ts: ^0.5.0-alpha.4
+    antlr4ts-cli: ^0.5.0-alpha.4
     babel-eslint: ^10.0.1
     babel-jest: ^27.4.6
     chroma-js: ^2.0.2

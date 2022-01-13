@@ -1,6 +1,7 @@
-import antlr4 from 'antlr4/index';
+import { Lexer, Parser } from 'antlr4ts';
 import * as monaco from 'monaco-editor';
 import { QToken, ReferenceMap } from '../CommonSQL';
+import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 
 export interface IBaseLanguageConfiguration {
   querySeparator: Array<string>; // Like [ `;;`, SEMICOLON ]
@@ -12,11 +13,11 @@ export interface IBaseLanguageConfiguration {
 export default abstract class IBaseLanguage {
   abstract configuration(): IBaseLanguageConfiguration;
 
-  abstract createParser(lexer: antlr4.Lexer): antlr4.Parser;
+  abstract createParser(lexer: Lexer): Parser;
 
-  abstract createLexer(input: string): antlr4.Lexer;
+  abstract createLexer(input: string): Lexer;
 
-  // abstract getVisitor(): ParseTreeVisitor;
+  abstract getVisitor(): AbstractParseTreeVisitor<any>;
 
   abstract getLanguageConfiguration(): monaco.languages.LanguageConfiguration;
 

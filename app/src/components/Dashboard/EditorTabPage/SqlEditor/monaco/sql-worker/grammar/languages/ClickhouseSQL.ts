@@ -1,7 +1,7 @@
-import antlr4, { CommonTokenStream, InputStream } from 'antlr4';
-import { ClickHouseLexer, ClickHouseParser } from './clickhouse';
+import { ClickHouseLexer, ClickHouseParser, ClickHouseParserVisitor } from './CHSql';
+import { CharStreams, Lexer, CommonTokenStream } from 'antlr4ts';
 import IBaseAntlr4, { IBaseLanguageConfiguration } from './IBaseLanguage';
-// import { ParseTreeVisitor } from 'antlr4/tree/Tree';
+import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { ClickhouseSQLMonaco } from './ClickhouseSQL.editor';
 import * as monaco from 'monaco-editor';
 import {
@@ -13,7 +13,7 @@ import {
   ReferenceType,
   TableReference,
 } from '../CommonSQL';
-import { ParseTreeListener } from 'antlr4/tree/Tree';
+import { ExistsTableStmtContext } from './CHSql/ClickHouseParser';
 // import antlr4ParserErrorCollector from '../antlr4ParserErrorCollector';
 // import { Token } from 'antlr4/Token';
 // ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ export class ClickhouseSQL extends IBaseAntlr4 {
    *
    * @param lexer
    */
-  public createParser(lexer: antlr4.Lexer): ClickHouseParser {
+  public createParser(lexer: Lexer): ClickHouseParser {
     return new ClickHouseParser(new CommonTokenStream(lexer));
   }
 
@@ -33,9 +33,13 @@ export class ClickhouseSQL extends IBaseAntlr4 {
    * @param input String query
    */
   public createLexer(input: string): ClickHouseLexer {
-    const chars = new InputStream(input); // Some Lexer only support uppercase token, So you need transform
+    const chars = CharStreams.fromString(input); // Some Lexer only support uppercase token, So you need transform
     // return (<unknown>new ClickHouseLexer(chars)) as Lexer;
     return new ClickHouseLexer(chars);
+  }
+
+  public getVisitor(): AbstractParseTreeVisitor<any> {
+    return new ClickhouseSQLVisitor();
   }
 
   //
@@ -238,31 +242,41 @@ export class ClickhouseSQL extends IBaseAntlr4 {
   }
 }
 
-export class ClickhouseSQLParserListener {
-  visitTerminal(node: any) {}
+// export default class ClickHouseParserListener extends antlr4.tree.ParseTreeListener {
+interface Result {
+  references: any;
+  incomplete: any;
+}
 
-  visitErrorNode(node: any) {}
-
-  enterEveryRule(node: any) {}
-
-  exitColumnsExprAsteriskContext(n: any) {
-    console.log(n);
+export class ClickhouseSQLVisitor
+  extends AbstractParseTreeVisitor<Result>
+  implements ClickHouseParserVisitor<Result>
+{
+  constructor() {
+    super();
   }
 
-  // exitEveryRule(node: any) {
-  exitEveryRule(node: any) {
-    // console.log(node);
-  }
+  // visitColumnIdentifier?: (ctx: ColumnIdentifierContext)
 
-  exitFromClause(ctx: any) {
+  visitColumnIdentifier(ctx: any): Result {
     console.log(ctx);
+    const result = this.visitChildren(ctx);
+    return result;
   }
 
-  exitSelectStmt(ctx: any) {
+  visitTableExprIdentifier(ctx: any): Result {
     console.log(ctx);
+    const result = this.visitChildren(ctx);
+    return result;
   }
 
-  exitJoinExprOp(ctx: any) {
+  visitExistsTableStmt(ctx: any): Result {
     console.log(ctx);
+    const result = this.visitChildren(ctx);
+    return result;
+  }
+
+  protected defaultResult(): Result {
+    return { references: [], incomplete: [] };
   }
 }
