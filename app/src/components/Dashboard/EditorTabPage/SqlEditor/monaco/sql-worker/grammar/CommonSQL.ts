@@ -1,10 +1,12 @@
 import {
   antlr4ErrorLexer,
   antlr4ErrorParser,
-  Antlr4ParserErrorCollector,
+  antlrErrorCollector,
+  antlrErrorList,
 } from './antlr4ParserErrorCollector';
 import { SupportLanguage } from '../supportLanguage';
-import { ClickhouseSQL, ClickhouseSQLVisitor } from './languages/ClickhouseSQL';
+import { ClickhouseSQL } from './languages/ClickhouseSQL';
+import { ClickhouseSQLVisitor } from './languages/ClickhouseSQLVisitor';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
@@ -106,7 +108,7 @@ export interface Statement {
   stop: number;
   isParsed: boolean;
   tokens?: Array<QToken>;
-  errors?: Antlr4ParserErrorCollector[];
+  errors?: antlrErrorList[];
   refs?: ReferenceMap;
 }
 
@@ -119,7 +121,7 @@ function skipLeadingWhitespace(text: string, head: number, tail: number): number
 
 interface ResultParseState {
   tokens: Array<QToken>;
-  errors: Antlr4ParserErrorCollector[];
+  errors: antlrErrorList[];
 }
 
 export interface QToken {
@@ -202,8 +204,8 @@ export default class CommonSQL {
     const lexer = this.baseAntlr4.createLexer(input + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
-    const errP = new antlr4ErrorParser();
-    const errL = new antlr4ErrorLexer();
+    const errP = new antlr4ErrorParser(lexer);
+    const errL = new antlr4ErrorLexer(lexer);
     // ------------------------------------------------------------------------------------------------
     parser.buildParseTree = true;
     parser.removeErrorListeners();
@@ -212,11 +214,30 @@ export default class CommonSQL {
     lexer.addErrorListener(errL);
     parser.addErrorListener(errP);
     //
-
-    //
+    const visitor = this.baseAntlr4.getVisitor();
     const tokens: Token[] = lexer.getAllTokens();
+    // ------ fetch QTok ---------------------------
+    tokens.forEach((tok: Token, index) => {
+      tokensList.push({
+        treeText: '',
+        counter: new Map(),
+        exception: [],
+        invokingState: new Map(),
+        ruleIndex: new Map(),
+        channel: tok.channel,
+        column: tok.line,
+        line: tok.line,
+        start: tok.startIndex,
+        stop: tok.stopIndex,
+        tokenIndex: index,
+        type: tok.type,
+        text: tok.text,
+        symbolic: '', //symbsolicNames[tok.type],
+      });
+    });
+    visitor.setTokenList(tokensList);
     lexer.reset();
-    //
+    // -------------------------------------------
     const proc = this.baseAntlr4.configuration().topStatements;
     let tree: any;
     try {
@@ -224,8 +245,8 @@ export default class CommonSQL {
     } catch (e) {
       console.error(e);
     }
-    tree.accept(this.baseAntlr4.getVisitor());
-    // ParseTreeWalker.DEFAULT.walk(list, tree);
+    // GoTo visitor
+    tree.accept(visitor);
     return ';';
   }
 
@@ -239,8 +260,8 @@ export default class CommonSQL {
     const lexer = this.baseAntlr4.createLexer(input + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
-    const errP = new antlr4ErrorParser();
-    const errL = new antlr4ErrorLexer();
+    const errP = new antlr4ErrorParser(lexer);
+    const errL = new antlr4ErrorLexer(lexer);
     // ------------------------------------------------------------------------------------------------
     // parser.buildParseTrees = true;
     parser.removeErrorListeners();
@@ -249,7 +270,7 @@ export default class CommonSQL {
     lexer.addErrorListener(errL);
     parser.addErrorListener(errL);
     //
-    const list = new ClickhouseSQLVisitor();
+    // const list = new ClickhouseSQLVisitor();
     // parser.add
     // parser.addParseListener(list);
     //

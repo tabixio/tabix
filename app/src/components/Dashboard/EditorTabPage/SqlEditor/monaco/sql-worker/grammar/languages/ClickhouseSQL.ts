@@ -1,8 +1,9 @@
 import { ClickHouseLexer, ClickHouseParser, ClickHouseParserVisitor } from './CHSql';
-import { CharStreams, Lexer, CommonTokenStream } from 'antlr4ts';
+import { CharStreams, Lexer, CommonTokenStream, Token } from 'antlr4ts';
 import IBaseAntlr4, { IBaseLanguageConfiguration } from './IBaseLanguage';
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { ClickhouseSQLMonaco } from './ClickhouseSQL.editor';
+import { ClickhouseSQLVisitor } from './ClickhouseSQLVisitor';
 import * as monaco from 'monaco-editor';
 import {
   AliasReference,
@@ -13,7 +14,9 @@ import {
   ReferenceType,
   TableReference,
 } from '../CommonSQL';
-import { ExistsTableStmtContext } from './CHSql/ClickHouseParser';
+import { ColumnIdentifierContext, ExistsTableStmtContext } from './CHSql/ClickHouseParser';
+import { AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
+import { RuleNode } from 'antlr4ts/tree/RuleNode';
 // import antlr4ParserErrorCollector from '../antlr4ParserErrorCollector';
 // import { Token } from 'antlr4/Token';
 // ------------------------------------------------------------------------
@@ -38,14 +41,9 @@ export class ClickhouseSQL extends IBaseAntlr4 {
     return new ClickHouseLexer(chars);
   }
 
-  public getVisitor(): AbstractParseTreeVisitor<any> {
+  public getVisitor(): AbstractSQLTreeVisitor<any> {
     return new ClickhouseSQLVisitor();
   }
-
-  //
-  // public getVisitor(): ParseTreeVisitor {
-  //   return new ClickHouseParserVisitor();
-  // }
 
   /**
    * Base function
@@ -244,39 +242,6 @@ export class ClickhouseSQL extends IBaseAntlr4 {
 
 // export default class ClickHouseParserListener extends antlr4.tree.ParseTreeListener {
 interface Result {
-  references: any;
-  incomplete: any;
-}
-
-export class ClickhouseSQLVisitor
-  extends AbstractParseTreeVisitor<Result>
-  implements ClickHouseParserVisitor<Result>
-{
-  constructor() {
-    super();
-  }
-
-  // visitColumnIdentifier?: (ctx: ColumnIdentifierContext)
-
-  visitColumnIdentifier(ctx: any): Result {
-    console.log(ctx);
-    const result = this.visitChildren(ctx);
-    return result;
-  }
-
-  visitTableExprIdentifier(ctx: any): Result {
-    console.log(ctx);
-    const result = this.visitChildren(ctx);
-    return result;
-  }
-
-  visitExistsTableStmt(ctx: any): Result {
-    console.log(ctx);
-    const result = this.visitChildren(ctx);
-    return result;
-  }
-
-  protected defaultResult(): Result {
-    return { references: [], incomplete: [] };
-  }
+  references: Array<string>;
+  incomplete: Array<string>;
 }

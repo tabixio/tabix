@@ -52,7 +52,7 @@ describe('Generic SQL Reference Tables', () => {
     //   c.parse('SELECT * FROM tabl1 JOIN tabl2 USING (key)').getTableReference(0)[0]
     // ).toMatchObject({ table: 'tabl1' });
     c.parse2OneStatement(
-      'SELECT * FROM tabl1 JOIN dbnname.tabl2 as tt2 USING (key) JOIN ( SELECT * FROM db2.tt2 JOIN db3.tb3 USING (kkey) ) as jtb2 USING (kkey)'
+      'SELECT lx.col1,lx.col2 FROM tabl1 as lx JOIN dbnname.tabl2 as tt2 USING (key) JOIN ( SELECT tt2.e1,tt2.e2,tt2.key,tb3.f33 FROM db2.tt2 JOIN db3.tb3 USING (kkey) ) as jtb2 USING (kkey)'
     );
 
     //
