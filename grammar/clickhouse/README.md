@@ -1,1 +1,0 @@
-See `docs/antlr.md`
