@@ -1,17 +1,219 @@
-import {
-  antlr4ErrorLexer,
-  antlr4ErrorParser,
-  antlrErrorCollector,
-  antlrErrorList,
-} from './antlr4ParserErrorCollector';
+import { antlr4ErrorLexer, antlr4ErrorParser, antlrErrorList } from './antlr4ParserErrorCollector';
 import { SupportLanguage } from '../supportLanguage';
 import { ClickhouseSQL } from './languages/ClickhouseSQL';
-import { ClickhouseSQLVisitor } from './languages/ClickhouseSQLVisitor';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
 import { Token } from 'antlr4ts';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
+
+export interface Range {
+  startLine: number;
+  endLine: number;
+  startColumn: number;
+  endColumn: number;
+}
+
+export type ColumnRef = { tableId: string; columnId: string; isAssumed: boolean };
+
+export type QuotableIdentifier = { name: string; quoted: boolean };
+
+export class Column {
+  readonly columnReferences: Array<ColumnRef> = [];
+
+  constructor(
+    readonly id: string,
+    public label: string,
+    readonly range?: Range,
+    readonly data?: unknown,
+    readonly isAssumed?: boolean
+  ) {}
+}
+
+/**
+ * Base relation class representing any relation in query: query itself, subquery, source table, CTE
+ */
+export abstract class Relation {
+  constructor(
+    readonly id: string,
+    readonly columns: Array<Column>,
+    readonly parent?: QueryRelation,
+    readonly range?: Range
+  ) {}
+
+  findColumn(columnName: QuotableIdentifier): Column | undefined {
+    return this.columns.find((c) =>
+      columnName.quoted
+        ? c.label == columnName.name
+        : c.label.localeCompare(columnName.name, undefined, {
+            sensitivity: 'accent',
+          }) == 0
+    );
+  }
+
+  resolveColumn(columnName: QuotableIdentifier): ColumnRef | undefined {
+    const col = this.findColumn(columnName);
+    return col !== undefined
+      ? {
+          tableId: this.id,
+          columnId: col.id,
+          isAssumed: false,
+        }
+      : undefined;
+  }
+}
+
+export interface TablePrimary {
+  catalogName?: string;
+  schemaName?: string;
+  tableName: string;
+  alias?: string;
+  range?: Range;
+}
+
+/**
+ * Relation representing source table.
+ */
+export class TableRelation extends Relation {
+  constructor(
+    id: string,
+    readonly tablePrimary: TablePrimary,
+    columns: Array<Column>,
+    readonly isFetched: boolean,
+    parent?: QueryRelation,
+    range?: Range,
+    readonly data?: unknown
+  ) {
+    super(id, columns, parent, range);
+  }
+
+  addAssumedColumn(columnName: QuotableIdentifier, range: Range): ColumnRef {
+    const column = new Column(
+      `column_${this.columns.length + 1}`,
+      columnName.name,
+      range,
+      undefined,
+      true
+    );
+    this.columns.push(column);
+    return { tableId: this.id, columnId: column.id, isAssumed: true };
+  }
+}
+
+/** SQL clause where dependency occured. */
+export type EdgeType = 'select' | 'from' | 'where' | 'group by' | 'order by' | 'having';
+
+/**
+ * Relation representing (sub-)query.
+ */
+export class QueryRelation extends Relation {
+  // CTEs from this context
+  ctes: Map<string, QueryRelation> = new Map();
+
+  // relations for this context extracted from FROM
+  relations: Map<string, Relation> = new Map();
+
+  // sequence generator for columns in this context
+  columnIdSeq = 0;
+
+  currentClause?: string;
+
+  currentColumnId?: string;
+
+  columnReferences: Array<ColumnRef> = [];
+
+  constructor(id: string, parent?: QueryRelation, range?: Range) {
+    super(id, [], parent, range);
+  }
+
+  findLocalRelation(tableName: QuotableIdentifier): Relation | undefined {
+    for (const rel of this.relations) {
+      if (tableName.quoted) {
+        if (rel[0] == tableName.name) return rel[1];
+      } else {
+        if (
+          tableName.name.localeCompare(rel[0], undefined, {
+            sensitivity: 'accent',
+          }) == 0
+        )
+          return rel[1];
+      }
+    }
+
+    return undefined;
+  }
+
+  findRelation(tableName: QuotableIdentifier): Relation | undefined {
+    return this.findLocalRelation(tableName) ?? this.parent?.findRelation(tableName);
+  }
+
+  findCTE(tableName: QuotableIdentifier): Relation | undefined {
+    for (const rel of this.ctes) {
+      if (tableName.quoted) {
+        if (rel[0] == tableName.name) return rel[1];
+      } else {
+        if (
+          tableName.name.localeCompare(rel[0], undefined, {
+            sensitivity: 'accent',
+          }) == 0
+        )
+          return rel[1];
+      }
+    }
+
+    return this.parent?.findCTE(tableName);
+  }
+
+  getCTENames(): string[] {
+    const localCtes = Array.from(this.ctes.keys());
+    if (this.parent !== undefined) {
+      return localCtes.concat(this.parent.getCTENames());
+    } else {
+      return localCtes;
+    }
+  }
+
+  resolveOrAssumeRelationColumn(
+    columnName: QuotableIdentifier,
+    range: Range,
+    tableName?: QuotableIdentifier
+  ): ColumnRef | undefined {
+    if (tableName !== undefined) {
+      const rel = this.findRelation(tableName);
+      const col = rel?.resolveColumn(columnName);
+      if (col === undefined && rel != undefined && rel instanceof TableRelation) {
+        return rel.addAssumedColumn(columnName, range);
+      }
+      return col;
+    } else {
+      const tables: TableRelation[] = [];
+      for (const r of this.relations) {
+        const rel = r[1];
+        const col = rel.resolveColumn(columnName);
+        if (col) {
+          return col;
+        }
+        if (rel instanceof TableRelation) {
+          tables.push(rel);
+        }
+      }
+
+      const assumed = tables.filter((t) => !t.isFetched);
+      if (assumed.length == 1) {
+        return assumed[0].addAssumedColumn(columnName, range);
+      } else if (tables.length == 1) {
+        return tables[0].addAssumedColumn(columnName, range);
+      }
+
+      return undefined;
+    }
+  }
+
+  getNextColumnId(): string {
+    this.columnIdSeq++;
+    return `column_${this.columnIdSeq}`;
+  }
+}
 
 export type ReferenceContext =
   | 'fromClause'

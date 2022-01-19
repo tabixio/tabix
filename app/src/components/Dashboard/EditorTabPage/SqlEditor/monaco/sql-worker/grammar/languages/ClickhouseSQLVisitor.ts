@@ -13,19 +13,85 @@ import {
   LimitByClauseContext,
   LimitClauseContext,
   SettingsClauseContext,
+  QueryStmtContext,
+  TableExprContext,
+  TableExprFunctionContext,
+  JoinExprTableContext,
 } from './CHSql/ClickHouseParser';
+
+import { QueryRelation, QuotableIdentifier, Range, TableRelation } from '../CommonSQL';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
-import { Token } from 'antlr4ts';
+import { Token, ParserRuleContext } from 'antlr4ts';
 
 export class ClickhouseSQLVisitor<Result>
   extends AbstractSQLTreeVisitor<Result>
   implements ClickHouseParserVisitor<Result>
 {
-  visitColumnIdentifier(ctx: ColumnIdentifierContext): Result {
-    const tableName: string | undefined = ctx.tableIdentifier()?.identifier().text;
-    const colName: string | undefined = ctx.nestedIdentifier()?.text;
+  private relationSeq = 0;
 
-    console.log(`ColumnIdentifier: ${tableName} . ${colName}`);
+  protected currentRelation = new QueryRelation(this.getNextRelationId());
+
+  public lastRelation: QueryRelation | undefined;
+
+  getNextRelationId(): string {
+    return `result_${this.relationSeq++}`;
+  }
+
+  protected unquote(text?: string): string {
+    if (!text) {
+      return '';
+    }
+
+    if (text.length < 2) {
+      return text;
+    }
+
+    if (
+      text.startsWith('"') ||
+      text.startsWith('`') ||
+      (text.startsWith("'") && text.startsWith(text[text.length - 1]))
+    ) {
+      return text.substr(1, text.length - 2);
+    }
+
+    return text;
+  }
+
+  /**
+   *  Extracts table and column names from IdentifierContext (if possible).
+   */
+  visitColumnIdentifier(ctx: ColumnIdentifierContext): Result {
+    // columnIdentifier: (tableIdentifier DOT)? nestedIdentifier;
+    const tableName: string | undefined = this.unquote(ctx.tableIdentifier()?.identifier().text);
+    const colName: string | undefined = this.unquote(ctx.nestedIdentifier()?.text);
+
+    if (colName !== undefined) {
+      if (
+        tableName === undefined &&
+        this.currentRelation.currentClause !== undefined
+        // &&
+        // ['group by', 'order by', 'having'].includes(this.currentRelation.currentClause)
+      ) {
+        //
+        // check if it is self column reference
+        // const selfCol = this.currentRelation.findColumn(tableCol.column);
+        // if (selfCol) {
+        //   selfCol.columnReferences.forEach(cr => this.onColumnReference(cr.tableId, cr.columnId));
+        //   return this.defaultResult();
+        // }
+      }
+
+      // Текущий range?
+      const range = this.rangeFromContext(ctx);
+      const qCol: QuotableIdentifier = { name: colName, quoted: false };
+      const qTb: QuotableIdentifier = { name: tableName, quoted: false };
+      const col = this.currentRelation.resolveOrAssumeRelationColumn(qCol, range, qTb);
+      if (col !== undefined) {
+        this.currentRelation.columnReferences.push(col);
+        // this.onColumnReference(col.tableId, col.columnId);
+      }
+      console.log(`ColumnIdentifier: ${tableName} . ${colName}`, range, col);
+    }
 
     const result = this.visitChildren(ctx);
     return result;
@@ -89,13 +155,40 @@ export class ClickhouseSQLVisitor<Result>
     // console.log(name);
   }
 
-  //
-  // visitTableExprIdentifier(ctx: any): Result {
-  //   console.log(ctx);
-  //   const result = this.visitChildren(ctx);
-  //   return result;
-  // }
-  //
+  // TableExprSubquery  // SELECT ... FROM ( SELECT )
+  // TableExprAlias // tableExpr (alias | AS identifier)
+  visitJoinExprTable(ctx: JoinExprTableContext) {
+    const result = this.visitChildren(ctx);
+    console.log('visitJoinExprTable', ctx.tableExpr().text, 'isFin');
+    // ctx.sampleClause()
+    // isFinal = ctx.FINAL()?.text !== undefined
+
+    return result;
+  }
+
+  visitTableExpr(ctx: TableExprContext) {
+    const result = this.visitChildren(ctx);
+    console.log('visitTableExpr', ctx);
+    return result;
+  }
+
+  /**
+   * // SELECT ... FROM remote(...)
+   * @param ctx
+   */
+  visitTableExprFunction(ctx: TableExprFunctionContext) {
+    return this.visitChildren(ctx);
+  }
+
+  visitTableExprIdentifier(ctx: any): Result {
+    console.log('visitTableExprIdentifier');
+    const result = this.visitChildren(ctx);
+    return result;
+  }
+
+  // processes subqueries, SELECT ... FROM (SELECT ...) as AliasedQuery
+  //ToDo: visitAliasedQuery(ctx: AliasedQueryContext): Result {
+
   // visitExistsTableStmt(ctx: any): Result {
   //   console.log(ctx);
   //   const result = this.visitChildren(ctx);
@@ -104,10 +197,60 @@ export class ClickhouseSQLVisitor<Result>
 
   private processClause(clause: string, ctx: RuleNode): Result {
     console.log('clause', clause);
-    // this.currentRelation.currentClause = clause;
+    this.currentRelation.currentClause = clause;
     const result = this.visitChildren(ctx);
-    // this.currentRelation.currentClause = undefined;
+    this.currentRelation.currentClause = undefined;
     return result;
+  }
+
+  private rangeFromContext(ctx: ParserRuleContext): Range {
+    const stop = ctx.stop ?? ctx.start;
+    return {
+      startLine: ctx.start.line,
+      endLine: stop.line,
+      startColumn: ctx.start.charPositionInLine,
+      endColumn: stop.charPositionInLine + (stop.stopIndex - stop.startIndex + 1),
+    };
+  }
+
+  // visitJoinExpr
+
+  /**
+   * First IN
+   * @param ctx
+   */
+  visitQueryStmt(ctx: QueryStmtContext) {
+    //queryStmt
+    this.currentRelation = new QueryRelation(
+      this.getNextRelationId(),
+      this.currentRelation,
+      this.rangeFromContext(ctx)
+    );
+
+    console.log('--> ENTER: visitQueryStmt --> ');
+    const result = this.visitChildren(ctx);
+
+    // selectStmt
+
+    this.reportTableReferences();
+
+    console.log('--> EXIT : visitQueryStmt --> ');
+
+    // to be consumed later
+    this.lastRelation = this.currentRelation;
+    // if (this.currentRelation.id == ROOT_QUERY_ID) this.onRelation(this.currentRelation, ROOT_QUERY_NAME);
+    // this.currentRelation = this.currentRelation.parent ?? new QueryRelation(this.getNextRelationId());
+
+    return result;
+  }
+
+  private reportTableReferences() {
+    for (const [alias, relation] of this.currentRelation.relations) {
+      if (relation instanceof TableRelation) {
+        console.log('onRelation ', relation);
+        // this.onRelation(relation, alias !== relation.id ? alias : undefined);
+      }
+    }
   }
 
   visitFromClause(ctx: FromClauseContext): Result {

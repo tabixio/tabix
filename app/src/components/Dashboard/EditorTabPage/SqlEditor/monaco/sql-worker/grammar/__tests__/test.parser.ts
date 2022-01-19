@@ -70,23 +70,35 @@ describe('Generic SQL Reference Tables', () => {
     // ]);
   });
 });
+
 describe('Generic SQL Reference Tests', () => {
   const c = new CommonSQL(SupportLanguage.CLICKHOUSE);
   const expectTableName = 'uSer31';
   const sql = `
-WITH ( 12+13 ) as UT1, (23+23) as UT2
-selEcT user_id as uid, aLisTable.user_name as uname, user_pass as PpAs, (uid + uname) as neAlis1
-               from dsa.uose as aLisTable WHERE user_id = '321' AND user_id = 123 AND user_id = sin(32) 
+WITH ( 12+13 ) as param1, (23+23) as param2
+selEcT user_id as uid, 
+      a_sales_user.user_name as uname, 
+      user_pas as user_password, 
+      md5(uid,uname) as param3
+               from salesDB.users as a_sales_user 
+               JOIN (
+                  SELECT user_id,taxi_id FROM taxiDB.taxi_list 
+               ) as taxiSets ON ( taxiSets.user_id = a_sales_user.user_id )  
+WHERE user_id = '321' AND user_id = 123 AND user_id = sin(32) 
                GROUP BY uname
                HAVING user_id <> 123
-               ORDER BY user_id LIMIT 123,52;;
-  SELECT 123 as e1w1 FROM dbb.tbb as alllis;;
-  SELECT 123 as e1w1 FROM tbbx as al1is;;
-  SELECT 123 as e1w1 FROM tbwx ;;
+               ORDER BY user_id LIMIT 123,52
   `;
 
   test('Parser->parseOneStatement->resultTokens', () => {
-    const result = c.parse(sql).getTablesNames(3);
+    const result = c.parse2OneStatement(sql);
+    console.info(result);
+    // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
+  });
+
+  test('Parser->parseOneStatement->alias_table', () => {
+    const result = c.parse2OneStatement(`SELECT tx.taxi_id, tx.taxi_position
+                                         FROM dbName.TaxiTable as tx `);
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });
