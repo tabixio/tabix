@@ -99,6 +99,7 @@ import { ShowCreateTableStmtContext } from "./ClickHouseParser";
 import { ShowDatabasesStmtContext } from "./ClickHouseParser";
 import { ShowDictionariesStmtContext } from "./ClickHouseParser";
 import { ShowTablesStmtContext } from "./ClickHouseParser";
+import { RegularQuerySpecificationContext } from "./ClickHouseParser";
 import { SchemaDescriptionClauseContext } from "./ClickHouseParser";
 import { SchemaAsTableClauseContext } from "./ClickHouseParser";
 import { SchemaAsFunctionClauseContext } from "./ClickHouseParser";
@@ -1485,6 +1486,19 @@ export interface ClickHouseParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitShowTablesStmt?: (ctx: ShowTablesStmtContext) => void;
+
+	/**
+	 * Enter a parse tree produced by the `regularQuerySpecification`
+	 * labeled alternative in `ClickHouseParser.selectStmt`.
+	 * @param ctx the parse tree
+	 */
+	enterRegularQuerySpecification?: (ctx: RegularQuerySpecificationContext) => void;
+	/**
+	 * Exit a parse tree produced by the `regularQuerySpecification`
+	 * labeled alternative in `ClickHouseParser.selectStmt`.
+	 * @param ctx the parse tree
+	 */
+	exitRegularQuerySpecification?: (ctx: RegularQuerySpecificationContext) => void;
 
 	/**
 	 * Enter a parse tree produced by the `SchemaDescriptionClause`

@@ -7,6 +7,8 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
 
   private tokensList: Array<QToken> = [];
 
+  abstract getCurrentRelation(): void;
+
   public setTokenList(tokensList: Array<QToken>): void {
     this.tokensList = tokensList;
   }

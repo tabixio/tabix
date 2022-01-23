@@ -102,6 +102,25 @@ WHERE user_id = '321' AND user_id = 123 AND user_id = sin(32)
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });
+
+  test('Parser->parseOneStatement->alias_table and one sub', () => {
+    const result = c.parse2OneStatement(`SELECT tx.taxi_id, tx.taxi_position
+                                         FROM dbName.TaxiTable as tx
+                                         WHERE tx.taxi_id IN (select sls.idd FROM dbName.TaxiSale as sls) `);
+    console.info(result);
+    // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
+  });
+
+  test('Parser->parseOneStatement->alias_table and one join', () => {
+    const sql = `SELECT tx.taxi_id, tx.taxi_position
+                 FROM dbName.TaxiTable as tx
+                        JOIN (select sls.idd FROM dbName.TaxiSale as sls) as salAse
+                             ON (salAse.idd = tx.taxi_id)
+                 WHERE tx.taxi_id IN (select crash.taxi_id FROM dbName.TaxiCrash as crash)`;
+    const result = c.parse2OneStatement(sql);
+    console.info(result);
+    // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
+  });
 });
 
 describe('parser->splitStatements()', () => {

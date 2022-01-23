@@ -5,7 +5,6 @@ import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
 import { Token } from 'antlr4ts';
-import { RuleNode } from 'antlr4ts/tree/RuleNode';
 
 export interface Range {
   startLine: number;
@@ -96,6 +95,7 @@ export class TableRelation extends Relation {
       true
     );
     this.columns.push(column);
+    console.log(`addAssumedColumn[ ${columnName.name} ] `, this.columns);
     return { tableId: this.id, columnId: column.id, isAssumed: true };
   }
 }
@@ -178,9 +178,11 @@ export class QueryRelation extends Relation {
     range: Range,
     tableName?: QuotableIdentifier
   ): ColumnRef | undefined {
+    console.log(`resolveOrAssumeRelationColumn "${columnName?.name}" in table=${tableName?.name}`);
     if (tableName !== undefined) {
       const rel = this.findRelation(tableName);
       const col = rel?.resolveColumn(columnName);
+      console.log('ResolveCol', col);
       if (col === undefined && rel != undefined && rel instanceof TableRelation) {
         return rel.addAssumedColumn(columnName, range);
       }
@@ -343,34 +345,6 @@ export interface QToken {
   symbolic: string;
 }
 
-const nodeVisitor = <Result = void>(visitor: { visitNode: (node: RuleNode) => void }): any => ({
-  visit: () => {
-    //
-  },
-  visitTerminal: (node: any) => {
-    // if (!node) { return; } console.info('child > > > ', node);
-  },
-  visitErrorNode: () => {
-    //
-  },
-  visitChildren(node: any) {
-    if (!node) {
-      return;
-    }
-    visitor.visitNode(node);
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
-      if (child && child.children) {
-        child.accept(this);
-      } else {
-        if (child && !child.children) {
-          // visitor.visitNode(child);
-        }
-      }
-    }
-  },
-});
-
 export default class CommonSQL {
   private language: SupportLanguage;
   private baseAntlr4: IBaseAntlr4;
@@ -402,7 +376,12 @@ export default class CommonSQL {
     return new ParsedQuery(states);
   }
 
-  public parse2OneStatement(input: string): any {
+  /**
+   * Use Antlr4 for parse, if parsed ok result ParsedQuery
+   *
+   * @param input
+   */
+  public parseOneStatement(input: string): any {
     const lexer = this.baseAntlr4.createLexer(input + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
@@ -444,134 +423,16 @@ export default class CommonSQL {
     let tree: any;
     try {
       tree = parser[proc]();
+
+      // GoTo visitor
+      tree.accept(visitor);
     } catch (e) {
       console.error(e);
     }
-    // GoTo visitor
-    tree.accept(visitor);
+
+    visitor.getCurrentRelation();
+
     return ';';
-  }
-
-  /**
-   * Use Antlr4 for parse, if parsed ok result ParsedQuery
-   *
-   * @param input
-   */
-  public parseOneStatement(input: string): ResultParseState {
-    // ------------------------------------------------------------------------------------------------
-    const lexer = this.baseAntlr4.createLexer(input + '\n');
-    const parser = this.baseAntlr4.createParser(lexer);
-    const tokensList: Array<QToken> = [];
-    const errP = new antlr4ErrorParser(lexer);
-    const errL = new antlr4ErrorLexer(lexer);
-    // ------------------------------------------------------------------------------------------------
-    // parser.buildParseTrees = true;
-    parser.removeErrorListeners();
-    lexer.removeErrorListeners();
-    //
-    lexer.addErrorListener(errL);
-    parser.addErrorListener(errL);
-    //
-    // const list = new ClickhouseSQLVisitor();
-    // parser.add
-    // parser.addParseListener(list);
-    //
-    const tokens: Token[] = lexer.getAllTokens();
-    lexer.reset();
-    //
-    const proc = this.baseAntlr4.configuration().topStatements;
-    const tree = parser[proc]();
-    // --------- Base End
-    const current_points: Map<string, number> = new Map();
-
-    // const symbolicNames = parser.getSymbolicNames();
-    // ------ fetch QTok ------------------------------------------------------------------------------
-    tokens.forEach((tok: Token, index) => {
-      tokensList.push({
-        treeText: '',
-        counter: new Map(),
-        exception: [],
-        invokingState: new Map(),
-        ruleIndex: new Map(),
-        channel: tok.channel,
-        column: tok.line,
-        line: tok.line,
-        start: tok.startIndex,
-        stop: tok.stopIndex,
-        tokenIndex: index,
-        type: tok.type,
-        text: tok.text,
-        symbolic: '', //symbsolicNames[tok.type],
-      });
-    });
-    // ------------------------------------------------------------------------------------------------
-    console.log('ParseTreeVisitor');
-    // ParseTreeVisitor
-    tree.accept(
-      nodeVisitor({
-        visitNode(ctx: any) {
-          const name: string = ctx.constructor.name;
-          let start: Token | null = null;
-          let stop: Token | null = null;
-          if (ctx.symbol) {
-            start = ctx.symbol;
-            stop = ctx.symbol;
-          }
-          if (ctx.start && ctx.stop) {
-            start = ctx.start;
-            stop = ctx.stop;
-          }
-          let exception = false;
-          let invokingState = -1;
-          let ruleIndex = -1;
-          if (ctx.invokingState) {
-            invokingState = ctx.invokingState;
-          }
-          if (ctx.ruleIndex) {
-            ruleIndex = ctx.ruleIndex;
-          }
-          if (ctx.exception) {
-            exception = true;
-          }
-          if (!start || !stop) {
-            console.warn('EMPTY TAG`s', name, ctx, start, stop);
-            return;
-          }
-          current_points.set(name, (current_points.get(name) ?? 0) + 1);
-          // console.info('CXT', name, ctx, current_points);
-          if (start && stop) {
-            tokensList.forEach((tok: QToken, index) => {
-              if (
-                start &&
-                stop &&
-                tok.tokenIndex >= start.tokenIndex &&
-                tok.tokenIndex <= stop.tokenIndex
-              ) {
-                // map.set("a", (map.get("a") ?? 0) + 1)
-                tokensList[index].counter.set(name, current_points.get(name));
-
-                if (exception) {
-                  tokensList[index].exception.push(name);
-                }
-                if (invokingState >= 0) {
-                  tokensList[index].invokingState.set(name, invokingState);
-                }
-                if (ruleIndex >= 0) {
-                  tokensList[index].ruleIndex.set(name, ruleIndex);
-                }
-              } // if in `token`
-            }); // tokensList loop
-          } // have start & stop
-        }, // visitNode
-      }) // nodeVisitor
-    ); // accept
-    // Convert to string like `ColumnsExprColumnContext,ColumnExprAliasContext,IdentifierContext`
-    tokensList.forEach(
-      (t, i) => (tokensList[i].treeText = t.counter ? Array.from(t.counter.keys()).join(',') : '')
-    );
-    // ------------------------------------------------------------------------------------------------
-    // ALL OK!
-    return { tokens: tokensList, errors: [...errP.getErrors(), ...errL.getErrors()] };
   }
 
   /**
@@ -839,16 +700,6 @@ export default class CommonSQL {
     return this.baseAntlr4.getIMonarchLanguage();
   }
 
-  //
-  // public getParser(): antlr4.Parser {
-  //   if (!this._parser) throw 'Error not set Parser';
-  //   return this._parser;
-  // }
-  //
-  // public getLexer(): antlr4.Lexer {
-  //   if (!this._lexer) throw 'Error not set Lexer';
-  //   return this._lexer;
-  // }
   //
   // public getSymbolicNames(): any {
   //   const parser = this.getParser();
