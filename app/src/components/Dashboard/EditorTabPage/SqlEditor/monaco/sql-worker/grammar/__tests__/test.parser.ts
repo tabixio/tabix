@@ -14,6 +14,18 @@ import { SupportLanguage } from '../../supportLanguage';
  * -
  */
 
+describe('Generic SQL SIN/COS', () => {
+  const c = new CommonSQL(SupportLanguage.CLICKHOUSE);
+  const sql = `select nums.number,
+                      sin(nums.number) as sin,
+                      cos(nums.number) as cos
+               from system.numbers as nums limit 400`;
+  test('Parser->parseOneStatement->resultTokens', () => {
+    const stmList = c.parse(sql);
+    // stmList.g
+  });
+});
+
 describe('Generic SQL Listener Tests', () => {
   const c = new CommonSQL(SupportLanguage.CLICKHOUSE);
   const expectTableName = 'uSer31';
@@ -51,7 +63,7 @@ describe('Generic SQL Reference Tables', () => {
     // expect(
     //   c.parse('SELECT * FROM tabl1 JOIN tabl2 USING (key)').getTableReference(0)[0]
     // ).toMatchObject({ table: 'tabl1' });
-    c.parse2OneStatement(
+    c.parseOneStatement(
       'SELECT lx.col1,lx.col2 FROM tabl1 as lx JOIN dbnname.tabl2 as tt2 USING (key) JOIN ( SELECT tt2.e1,tt2.e2,tt2.key,tb3.f33 FROM db2.tt2 JOIN db3.tb3 USING (kkey) ) as jtb2 USING (kkey)'
     );
 
@@ -91,22 +103,22 @@ WHERE user_id = '321' AND user_id = 123 AND user_id = sin(32)
   `;
 
   test('Parser->parseOneStatement->resultTokens', () => {
-    const result = c.parse2OneStatement(sql);
+    const result = c.parseOneStatement(sql);
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });
 
   test('Parser->parseOneStatement->alias_table', () => {
-    const result = c.parse2OneStatement(`SELECT tx.taxi_id, tx.taxi_position
-                                         FROM dbName.TaxiTable as tx `);
+    const result = c.parseOneStatement(`SELECT tx.taxi_id, tx.taxi_position
+                                        FROM dbName.TaxiTable as tx `);
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });
 
   test('Parser->parseOneStatement->alias_table and one sub', () => {
-    const result = c.parse2OneStatement(`SELECT tx.taxi_id, tx.taxi_position
-                                         FROM dbName.TaxiTable as tx
-                                         WHERE tx.taxi_id IN (select sls.idd FROM dbName.TaxiSale as sls) `);
+    const result = c.parseOneStatement(`SELECT tx.taxi_id, tx.taxi_position
+                                        FROM dbName.TaxiTable as tx
+                                        WHERE tx.taxi_id IN (select sls.idd FROM dbName.TaxiSale as sls) `);
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });
@@ -117,7 +129,8 @@ WHERE user_id = '321' AND user_id = 123 AND user_id = sin(32)
                         JOIN (select sls.idd FROM dbName.TaxiSale as sls) as salAse
                              ON (salAse.idd = tx.taxi_id)
                  WHERE tx.taxi_id IN (select crash.taxi_id FROM dbName.TaxiCrash as crash)`;
-    const result = c.parse2OneStatement(sql);
+    const result = c.parseOneStatement(sql);
+
     console.info(result);
     // expect(resultTokens[7].symbolic).toBe('IDENTIFIER');
   });

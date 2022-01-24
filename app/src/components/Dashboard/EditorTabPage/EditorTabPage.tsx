@@ -107,7 +107,7 @@ export default class EditorTabPage extends React.Component<Props> {
       console.log('insert result:');
       console.info(`%c${data}`, 'color: #bada55');
       const { model } = this.props;
-      model.codeEditor.forEach(editor => editor.insertText(data, TextInsertType.Sql));
+      model.codeEditor.forEach((editor) => editor.insertText(data, TextInsertType.Sql));
     }
     if (action === ResultTableActionType.Show) {
       // to show result in elements
@@ -138,7 +138,7 @@ export default class EditorTabPage extends React.Component<Props> {
 
   render() {
     const { store, serverStructure, model, width } = this.props;
-    const resultList = model.queriesResult.map(r => r.list).getOrElse([]);
+    const resultList = model.queriesResult.map((r) => r.list).getOrElse([]);
 
     return (
       <React.Fragment>
@@ -150,13 +150,13 @@ export default class EditorTabPage extends React.Component<Props> {
             currentDatabase={model.currentDatabase.getOrElse('')}
             onDatabaseChange={this.onDatabaseChange}
             onAction={this.onEditorAction}
-            stats={model.queriesResult.map(_ => _.totalStats).orUndefined()}
+            stats={model.queriesResult.map((_) => _.totalStats).orUndefined()}
             ref={this.setEditorRef}
             fill
           />
 
           <div>
-            {model.tableData.map(data => <div>{data}</div>).orUndefined()}
+            {model.tableData.map((data) => <div>{data}</div>).orUndefined()}
 
             <Tabs
               defaultActiveKey="table"
@@ -172,7 +172,7 @@ export default class EditorTabPage extends React.Component<Props> {
                   onResize={this.onResizeGrid}
                   cols={4}
                   itemWidth={4}
-                  itemHeight={14}
+                  itemHeight={10}
                   items={resultList}
                   width={width}
                   renderItem={this.renderTable}
@@ -200,8 +200,8 @@ export default class EditorTabPage extends React.Component<Props> {
         </Splitter>
 
         {store.editedTab
-          .filter(t => t.model === model)
-          .map(editedTab => (
+          .filter((t) => t.model === model)
+          .map((editedTab) => (
             <SaveModal
               fieldName="title"
               fieldValue={editedTab.title}

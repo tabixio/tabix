@@ -35,36 +35,13 @@ export class ParsedQuery {
   }
 
   public dumpTokens(st_num: number): string {
-    let str = ``;
-    this.statements[st_num].tokens?.forEach((t) => {
-      str +=
-        t.text + `\t\t[` + Array.from(t.counter.keys()).join(',') + `] (${t.start}:${t.stop})  \n`;
-    });
+    const str = ``;
+    // this.statements[st_num].visitor?.getTokens()?.forEach((t) => {
+    //   str +=
+    //     t.text + `\t\t[` + Array.from(t.counter.keys()).join(',') + `] (${t.start}:${t.stop})  \n`;
+    // });
     return str;
   }
-
-  // private splitQuery(SPLIT_QUERY_CONTEXT_NAME: string): void {
-  //   let _counterSplitQuery = 0;
-  //   const _listSplitQuery = [];
-  //   let _startSplit: QToken | null = null;
-  //   let _prev: QToken | null = null;
-  //   this.tokensList?.forEach((q, index) => {
-  //     const numQ = q.counter.get(SPLIT_QUERY_CONTEXT_NAME);
-  //     if (numQ && numQ > _counterSplitQuery) {
-  //       if (_startSplit && _prev) {
-  //         _listSplitQuery.push({ start: _startSplit, stop: _prev });
-  //       }
-  //       _startSplit = q;
-  //       _counterSplitQuery++;
-  //     }
-  //     _prev = q;
-  //   });
-  //   if (_startSplit && _prev) {
-  //     _listSplitQuery.push({ start: _startSplit, stop: _prev });
-  //   }
-  //   this.countStm = _listSplitQuery.length;
-  //   this.splitStm = _listSplitQuery;
-  // }
 
   public getToken(offset: number): QToken | undefined {
     return undefined;
@@ -73,7 +50,7 @@ export class ParsedQuery {
   }
 
   public info(off: number): string {
-    const res = '`' + this.getToken(off)?.text;
+    const res = 'Token:`' + this.getToken(off)?.text;
     return res + '`';
   }
 

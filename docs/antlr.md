@@ -31,15 +31,22 @@ wget https://raw.githubusercontent.com/ClickHouse/ClickHouse/master/utils/antlr/
 * [github:DTStack monaco-sql-languages](https://github.com/DTStack/monaco-sql-languages)
 * [MonacoEditorTWX](https://github.com/ptc-iot-sharing/MonacoEditorTWX)
 
+## Antlr
+
+* [antlr4 TS SQL](https://github.com/modeldba/antlr4ts-sql)
+* [cube js SqlParser](https://github.com/cube-js/cube.js/blob/master/packages/cubejs-schema-compiler/src/parser/SqlParser.ts)
+* [ts-mysql-parser](https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/listeners/lexer-error-listener.ts)
+* [Rhombic](https://github.com/contiamo/rhombic)
+
 Other:
 
-https://betterprogramming.pub/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-bcfc7554e446
+[antlr-and-monaco-editor](https://betterprogramming.pub/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-bcfc7554e446)
 
-https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/
+[writing-a-browser-based-editor-using-monaco-and-antlr](https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/)
 
 https://blog.nimbleways.com/create-a-custom-web-editor-using-typescript-react-antlr-and-monaco-editor-part-1-2/
 
-https://github.com/microsoft/azuredatastudio/tree/main/extensions/sql/syntaxes
+[azure sql/syntaxes](https://github.com/microsoft/azuredatastudio/tree/main/extensions/sql/syntaxes)
 
 https://github.com/microsoft/vscode/tree/main/extensions/sql
 
@@ -63,32 +70,32 @@ https://github.com/DTStack/molecule
 
 https://github.com/antlr/grammars-v4/blob/master/sql/mysql/Positive-Technologies/MySqlLexer.g4
 
-```
-// https://bitwiser.in/monaco-themes/
-// https://microsoft.github.io/monaco-editor/monarch.html
-// https://github.com/Microsoft/monaco-editor/issues/74
-// Auto // https://gist.github.com/mwrouse/05d8c11cd3872c19c684bd1904a2202e
-// Optimizations in Syntax
-Highlighting: https://code.visualstudio.com/blogs/2017/02/08/syntax-highlighting-optimizations
-// registerFoldingProvider
-// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
+## Themes
 
-// https://code.visualstudio.com/docs/extensions/themes-snippets-colorizers#_create-a-new-color-theme
-// https://github.com/brijeshb42/monaco-themes/tree/master/themes
-// https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/common/themes.ts#L13
-// This config defines how the language is displayed in the editor.
-// https://stackoverflow.com/questions/43014131/monaco-editor-match-an-arbitrary-number-of-arguments-on-the-same-row-using-a-r
-// https://www.bountysource.com/issues/36158910-trigger-auto-complete-suggestions-programmatically
-// https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json
+https://bitwiser.in/monaco-themes/
+
+https://github.com/brijeshb42/monaco-themes/tree/master/themes
+
+https://github.com/Microsoft/vscode/blob/master/src/vs/editor/standalone/common/themes.ts#L13
+
+[registerFoldingProvider](https://github.com/Microsoft/vscode/blob/master/extensions/sql/syntaxes/sql.tmLanguage.json)
+[Highlighting](https://code.visualstudio.com/blogs/2017/02/08/syntax-highlighting-optimizations)
+
+```
+//    
+// Optimizations in Syntax
+
+
+
 // https://www.snip2code.com/Snippet/3196855/Example-of-a-completion-provider-for-ngx/
-// https://github.com/DTStack/monaco-sql-languages/blob/main/src/mysql/mysql.ts
-// https://github.com/microsoft/azuredatastudio/blob/main/extensions/sql/syntaxes/sql.tmLanguage.json
 
     // https://github.com/contiamo/rhombic
     // https://github.com/elastic/kibana
     // https://github.com/adelsz/pgtyped
     // https://github.com/segmentio/ts-mysql-plugin
-    // [Unfinished multiline comment | Unfinished ...] https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/listeners/lexer-error-listener.ts
-    // https://github.com/cube-js/cube.js/blob/master/packages/cubejs-schema-compiler/src/parser/SqlParser.ts
+    // [Unfinished multiline comment | Unfinished ...] 
+    // 
+
+
 
 ```

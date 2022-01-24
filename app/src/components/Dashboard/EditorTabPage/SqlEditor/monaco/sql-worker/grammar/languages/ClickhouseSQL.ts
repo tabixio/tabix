@@ -1,7 +1,6 @@
 import { ClickHouseLexer, ClickHouseParser, ClickHouseParserVisitor } from './CHSql';
 import { CharStreams, Lexer, CommonTokenStream, Token } from 'antlr4ts';
 import IBaseAntlr4, { IBaseLanguageConfiguration } from './IBaseLanguage';
-import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { ClickhouseSQLMonaco } from './ClickhouseSQL.editor';
 import { ClickhouseSQLVisitor } from './ClickhouseSQLVisitor';
 import * as monaco from 'monaco-editor';
@@ -16,9 +15,7 @@ import {
 } from '../CommonSQL';
 import { ColumnIdentifierContext, ExistsTableStmtContext } from './CHSql/ClickHouseParser';
 import { AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
-import { RuleNode } from 'antlr4ts/tree/RuleNode';
-// import antlr4ParserErrorCollector from '../antlr4ParserErrorCollector';
-// import { Token } from 'antlr4/Token';
+
 // ------------------------------------------------------------------------
 export class ClickhouseSQL extends IBaseAntlr4 {
   /**
@@ -240,7 +237,6 @@ export class ClickhouseSQL extends IBaseAntlr4 {
   }
 }
 
-// export default class ClickHouseParserListener extends antlr4.tree.ParseTreeListener {
 interface Result {
   references: Array<string>;
   incomplete: Array<string>;

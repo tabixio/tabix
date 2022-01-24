@@ -5,12 +5,16 @@ import { QToken } from '../CommonSQL';
 export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVisitor<Result> {
   abstract visitNode(ctx: RuleNode): void;
 
-  private tokensList: Array<QToken> = [];
+  protected tokensList: Array<QToken> = [];
 
   abstract getCurrentRelation(): void;
 
   public setTokenList(tokensList: Array<QToken>): void {
     this.tokensList = tokensList;
+  }
+
+  public getTokens(): Array<QToken> {
+    return this.tokensList;
   }
 
   visitChildren(ctx: RuleNode): Result {

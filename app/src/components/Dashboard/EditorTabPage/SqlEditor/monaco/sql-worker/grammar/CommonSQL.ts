@@ -5,6 +5,7 @@ import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
 import { Token } from 'antlr4ts';
+import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
 
 export interface Range {
   startLine: number;
@@ -314,6 +315,7 @@ export interface Statement {
   tokens?: Array<QToken>;
   errors?: antlrErrorList[];
   refs?: ReferenceMap;
+  visitor?: AbstractSQLTreeVisitor<any>;
 }
 
 function skipLeadingWhitespace(text: string, head: number, tail: number): number {
@@ -362,16 +364,24 @@ export default class CommonSQL {
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
+    console.log(`PARSE:"${input}"`);
     const states = this.splitStatements(input);
     if (!states.length) return null;
     states.forEach((st, index) => {
-      const res = this.parseOneStatement(st.text);
-      if (res.tokens.length) {
-        states[index].refs = this.baseAntlr4.processTokens(res.tokens);
-        states[index].isParsed = true;
-        states[index].tokens = res.tokens;
-        states[index].errors = res.errors;
-      }
+      const result = this.parseOneStatement(st.text);
+      states[index].visitor = result.visitor;
+      states[index].visitor?.getCurrentRelation();
+      states[index].errors = result.errors;
+      states[index].isParsed = true;
+
+      // states[index].tokens = visitor.getTokens;
+      //
+      // if (res.tokens.length) {
+      //   states[index].refs = this.baseAntlr4.processTokens(res.tokens);
+      //   states[index].isParsed = true;
+      //   states[index].tokens = res.tokens;
+      //   states[index].errors = res.errors;
+      // }
     });
     return new ParsedQuery(states);
   }
@@ -413,7 +423,7 @@ export default class CommonSQL {
         tokenIndex: index,
         type: tok.type,
         text: tok.text,
-        symbolic: '', //symbsolicNames[tok.type],
+        symbolic: '',
       });
     });
     visitor.setTokenList(tokensList);
@@ -423,16 +433,12 @@ export default class CommonSQL {
     let tree: any;
     try {
       tree = parser[proc]();
-
       // GoTo visitor
       tree.accept(visitor);
     } catch (e) {
       console.error(e);
     }
-
-    visitor.getCurrentRelation();
-
-    return ';';
+    return { visitor: visitor, errors: [...errP.getErrors(), ...errL.getErrors()] };
   }
 
   /**
@@ -700,17 +706,4 @@ export default class CommonSQL {
     return this.baseAntlr4.getIMonarchLanguage();
   }
 
-  //
-  // public getSymbolicNames(): any {
-  //   const parser = this.getParser();
-  //   // @ts-ignore
-  //   parser.symbolicNames?.forEach((ruleName, index) => {
-  //     // @ts-ignore
-  //     const lit = parser.literalNames[index];
-  //     // -- // --
-  //     // console.log(index, ruleName, lit)
-  //     // if (ruleName in lexer) {
-  //     //  const index = lexer[ruleName as keyof typeof lexer];
-  //   });
-  // }
 }

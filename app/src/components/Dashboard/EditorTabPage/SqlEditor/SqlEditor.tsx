@@ -188,7 +188,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    */
   public async processSQL(modelUri: string, value: string) {
     if (this.EditorHelper.isReady()) {
-      console.warn('processSQL');
+      // console.warn('processSQL');
       await this.EditorHelper.OnChange(modelUri, value);
     } else {
       console.info('Error on languageValueOnChange, EditorHelper.isReady = false');

@@ -31,9 +31,11 @@ import {
   TablePrimary,
   Column,
   TableRelation,
+  QToken,
 } from '../CommonSQL';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 
 const ROOT_QUERY_ID = 'result_1';
 export const ROOT_QUERY_NAME = '[final result]';
@@ -47,6 +49,7 @@ export class ClickhouseSQLVisitor<Result>
   protected currentRelation = new QueryRelation(this.getNextRelationId());
 
   public lastRelation: QueryRelation | undefined;
+  private tokensCurrentPoints: Map<string, number> = new Map();
 
   getNextRelationId(): string {
     return `result_${this.relationSeq++}`;
@@ -134,62 +137,42 @@ export class ClickhouseSQLVisitor<Result>
     return result;
   }
 
+  visitChildren(/*@NotNull*/ node: RuleNode): Result {
+    this.visitNode(node);
+    return super.visitChildren(node);
+  }
+
   visitNode(ctx: RuleNode) {
     const name: string = ctx.constructor.name;
-    const start: Token | null = null;
-    const stop: Token | null = null;
-    //
-    // if (ctx.symbol) {
-    //   start = ctx.symbol;
-    //   stop = ctx.symbol;
-    // }
-    // if (ctx.start && ctx.stop) {
-    //   start = ctx.start;
-    //   stop = ctx.stop;
-    // }
-    // let exception = false;
-    // let invokingState = -1;
-    // let ruleIndex = -1;
-    // if (ctx.invokingState) {
-    //   invokingState = ctx.invokingState;
-    // }
-    // if (ctx.ruleIndex) {
-    //   ruleIndex = ctx.ruleIndex;
-    // }
-    // if (ctx.exception) {
-    //   exception = true;
-    // }
-    // if (!start || !stop) {
-    //   console.warn('EMPTY TAG`s', name, ctx, start, stop);
-    //   return;
-    // }
-    //   current_points.set(name, (current_points.get(name) ?? 0) + 1);
-    //   // console.info('CXT', name, ctx, current_points);
-    //   if (start && stop) {
-    //     tokensList.forEach((tok: QToken, index) => {
-    //       if (
-    //         start &&
-    //         stop &&
-    //         tok.tokenIndex >= start.tokenIndex &&
-    //         tok.tokenIndex <= stop.tokenIndex
-    //       ) {
-    //         // map.set("a", (map.get("a") ?? 0) + 1)
-    //         tokensList[index].counter.set(name, current_points.get(name));
-    //
-    //         if (exception) {
-    //           tokensList[index].exception.push(name);
-    //         }
-    //         if (invokingState >= 0) {
-    //           tokensList[index].invokingState.set(name, invokingState);
-    //         }
-    //         if (ruleIndex >= 0) {
-    //           tokensList[index].ruleIndex.set(name, ruleIndex);
-    //         }
-    //       } // if in `token`
-    //     }); // tokensList loop
-    //   } // have start & stop
-    // }, // visitNode
-    // console.log(name);
+    let start: Token | undefined;
+    let stop: Token | undefined;
+    let exception = false;
+
+    if (ctx instanceof ParserRuleContext) {
+      start = ctx.start;
+      stop = ctx.stop;
+      if (ctx.exception) exception = true;
+    }
+    if (!start) return;
+    // ------------------------
+    this.tokensCurrentPoints.set(name, (this.tokensCurrentPoints.get(name) ?? 0) + 1);
+    if (start && stop) {
+      this.tokensList.forEach((tok: QToken, index) => {
+        if (
+          start &&
+          stop &&
+          tok.tokenIndex >= start.tokenIndex &&
+          tok.tokenIndex <= stop.tokenIndex
+        ) {
+          this.tokensList[index].counter.set(name, this.tokensCurrentPoints.get(name));
+          if (exception) {
+            this.tokensList[index].exception.push(name);
+          }
+          //this.tokensList[index].invokingState.set(name, invokingState);
+          // this.tokensList[index].ruleIndex.set(name, ruleIndex);
+        } // if in `token`
+      }); // tokensList loop
+    } // have start & stop
   }
 
   // TableExprSubquery  // SELECT ... FROM ( SELECT )

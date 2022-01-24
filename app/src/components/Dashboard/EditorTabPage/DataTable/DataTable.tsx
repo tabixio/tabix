@@ -21,7 +21,7 @@ import css from './DataTable.css';
 
 export interface DataTableProps {
   data: DataDecorator;
-  dataUpdate?:number;
+  dataUpdate?: number;
   onAction?: (action: ResultActionType, data: any) => void;
 }
 
@@ -73,7 +73,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   };
 
   componentDidMount() {
-    sizeSensor.bind(this.rootRef.current, el => {
+    sizeSensor.bind(this.rootRef.current, (el) => {
       // Use callback only when parent resizing finished,
       // so callback will called only when resize finished.
       // Otherwise performance issue of hottable update.
@@ -139,21 +139,19 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     // hotTableSettings.update=123;
     return (
       <Flex
-        style={{border:'1px solid red'}}
+        style={{ border: '0px solid red' }}
         componentRef={this.rootRef}
         column
         className={classNames(css.root, className)}
         {...flexProps}
       >
-
         <HotTable
-          style={{border:'1px solid red'}}
+          style={{ border: '0px solid red' }}
           ref={this.tableRef}
           settings={hotTableSettings}
           columns={columns}
           data={data.rows}
           contextMenu={createContextMenu(this.onContextMenuItemClick)}
-
         />
         {dataUpdate}
       </Flex>
