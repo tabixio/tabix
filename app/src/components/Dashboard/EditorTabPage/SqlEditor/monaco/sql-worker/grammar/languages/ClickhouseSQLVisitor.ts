@@ -22,6 +22,7 @@ import {
   SelectStmtWithParensContext,
   RegularQuerySpecificationContext,
   QueryContext,
+  ColumnExprFunctionContext,
 } from './CHSql/ClickHouseParser';
 
 import {
@@ -35,7 +36,6 @@ import {
 } from '../CommonSQL';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
-import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
 
 const ROOT_QUERY_ID = 'result_1';
 export const ROOT_QUERY_NAME = '[final result]';
@@ -91,6 +91,9 @@ export class ClickhouseSQLVisitor<Result>
     const colName: string | undefined = this.unquote(ctx.nestedIdentifier()?.text);
     //
     if (colName !== undefined) {
+      const deb = `Field: ${colName}`;
+      if (ctx.stop) this.applyToken(ctx.start, ctx.stop, deb);
+
       // if (
       //   tableName === undefined &&
       //   this.currentRelation.currentClause !== undefined
@@ -164,6 +167,7 @@ export class ClickhouseSQLVisitor<Result>
           tok.tokenIndex >= start.tokenIndex &&
           tok.tokenIndex <= stop.tokenIndex
         ) {
+          this.tokensList[index].up = this.tokensList[index].up + 1;
           this.tokensList[index].counter.set(name, this.tokensCurrentPoints.get(name));
           if (exception) {
             this.tokensList[index].exception.push(name);
@@ -173,6 +177,19 @@ export class ClickhouseSQLVisitor<Result>
         } // if in `token`
       }); // tokensList loop
     } // have start & stop
+  }
+
+  applyToken(start: Token, stop: Token, type: string) {
+    this.tokensList.forEach((tok: QToken, index) => {
+      if (
+        start &&
+        stop &&
+        tok.tokenIndex >= start.tokenIndex &&
+        tok.tokenIndex <= stop.tokenIndex
+      ) {
+        this.tokensList[index].context.push(type);
+      }
+    });
   }
 
   // TableExprSubquery  // SELECT ... FROM ( SELECT )
@@ -221,6 +238,15 @@ export class ClickhouseSQLVisitor<Result>
 
     this.log(`visitJoinExprTable->Find db: [${databaseName}]:[${tableName}] as [${alias}] `);
 
+    if (ctx.stop) {
+      // `DB:[${databaseName}]:[${tableName}] as [${alias}]`
+      const debud =
+        `Use database: ${databaseName}, Table = ${tableName}` +
+        (alias ? ',alias = ' + alias : ' no alias');
+
+      this.applyToken(ctx.start, ctx.stop, debud);
+    }
+
     // catalogName?: string; schemaName?: string; tableName: string; alias?: string;
     if (!databaseName && !tableName && alias) {
       // (...) AS alias
@@ -267,6 +293,15 @@ export class ClickhouseSQLVisitor<Result>
     return this.visitChildren(ctx);
   }
 
+  visitColumnExprFunction(ctx: ColumnExprFunctionContext) {
+    const re = this.visitChildren(ctx);
+
+    //
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, 'Function');
+
+    return re;
+  }
+
   //
   // visitTableExprIdentifier(ctx: any): Result {
   //   console.log('visitTableExprIdentifier');
@@ -291,11 +326,12 @@ export class ClickhouseSQLVisitor<Result>
   //   return result;
   // }
 
-  private processClause(clause: string, ctx: RuleNode): Result {
+  private processClause(clause: string, ctx: ParserRuleContext): Result {
     // console.log('processClause : ', clause);
     this.currentRelation.currentClause = clause;
     const result = this.visitChildren(ctx);
     this.currentRelation.currentClause = undefined;
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, `IN:${clause}`);
     return result;
   }
 

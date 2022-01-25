@@ -27,11 +27,11 @@ export class ModelOfEditor {
     if (!this.parsedQuery) return '';
 
     let str = '';
-    str += 'Offset:' + offset + '\n\n';
+    // str += 'Offset:' + offset + '\n\n';
     str += '' + this.parsedQuery.info(offset) + '\n\n';
-    str += 'SizeStmt:' + this.parsedQuery.getCountOfStmt() + `\n`;
+    // str += 'SizeStmt:' + this.parsedQuery.getCountOfStmt() + `\n`;
     // str += 'SizeStmt:' + this.parsedQuery.getStmtOnOffset(offset) + `\n`;
-    str += '`';
+    str += '';
     return str;
   }
 

@@ -1,4 +1,5 @@
 import { QToken, Statement, Reference, ReferenceType, TableReference } from './CommonSQL';
+import { Token } from 'antlr4ts';
 
 enum wew {
   QUERY = '__QueryStmt',
@@ -44,13 +45,14 @@ export class ParsedQuery {
   }
 
   public getToken(offset: number): QToken | undefined {
-    return undefined;
-
-    // return this.tokensList?.find((q) => q.start <= offset && offset <= q.stop);
+    const st = this.getStatementAtOffset(offset);
+    if (!st) return;
+    return st.visitor?.getTokens().find((st) => st.start <= offset && offset <= st.stop);
   }
 
   public info(off: number): string {
-    const res = 'Token:`' + this.getToken(off)?.text;
+    const res = 'Token:`' + JSON.stringify(this.getToken(off)?.context);
+    const st = this.getStatementAtOffset(off);
     return res + '`';
   }
 

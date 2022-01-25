@@ -333,6 +333,7 @@ interface ResultParseState {
 export interface QToken {
   treeText: string;
   counter: Map<string, number | undefined>;
+  context: Array<string>;
   exception: Array<string>;
   invokingState: Map<string, number>;
   ruleIndex: Map<string, number>;
@@ -345,6 +346,7 @@ export interface QToken {
   type: number;
   text?: string;
   symbolic: string;
+  up: number;
 }
 
 export default class CommonSQL {
@@ -424,6 +426,8 @@ export default class CommonSQL {
         type: tok.type,
         text: tok.text,
         symbolic: '',
+        up: 0,
+        context: [],
       });
     });
     visitor.setTokenList(tokensList);
@@ -705,5 +709,4 @@ export default class CommonSQL {
   public getIMonarchLanguage(): monaco.languages.IMonarchLanguage {
     return this.baseAntlr4.getIMonarchLanguage();
   }
-
 }

@@ -154,7 +154,7 @@ export abstract class LanguageWorker {
     const currentWord = model.getWordAtPosition(position)?.word;
 
     // model.getText()
-    hovers.push({ value: '\n`[' + currentWord + ':' + offset + '`]\n' });
+    // hovers.push({ value: '\n`[' + currentWord + ':' + offset + '`]\n' });
     hovers.push({ value: LanguageWorker.getModel(modelUri).getHover(offset) });
     // hovers.push({
     //   // isTrusted: true,
