@@ -5,6 +5,8 @@ import { Query } from './Query';
 //   ArrayOfUInt8 = 'Array(UInt8)',
 // }
 
+//
+
 export interface ColumnMetadata {
   name: string;
   // type: DataType;
@@ -26,13 +28,29 @@ export interface Statistics {
   rowsRead: number;
 }
 
+export function humanSize(bytes: number, precision = 1) {
+  const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
+  if (isNaN(bytes) || !isFinite(bytes)) {
+    return '?';
+  }
+
+  let unit = 0;
+
+  while (bytes >= 1024) {
+    bytes /= 1024;
+    unit++;
+  }
+
+  return bytes.toFixed(+precision) + ' ' + units[unit];
+}
+
 export type Row = Record<string, any>;
 
 // todo: refactor for use in DataTable. Maybe not needed?
 export default class DataDecorator {
-  private LIMIT_ROW: number = 3500;
+  private LIMIT_ROW = 3500;
 
-  dataUpdate: number = 0;
+  dataUpdate = 0;
 
   meta: Metadata;
 
@@ -42,11 +60,11 @@ export default class DataDecorator {
 
   stats: Statistics;
 
-  text: string = '';
+  text = '';
 
-  isResultText: boolean = false;
+  isResultText = false;
 
-  error: boolean = false;
+  error = false;
 
   isHaveData = false;
 
@@ -236,20 +254,14 @@ export default class DataDecorator {
     const e = this.getColumn(col);
     if (!e) return false;
     const type = e.type.toLowerCase();
-    if (type.includes('string') || type.includes('emum')) {
-      return true;
-    }
-    return false;
+    return type.includes('string') || type.includes('enum');
   }
 
   isNumericColumn(col: string): boolean {
     const e = this.getColumn(col);
     if (!e) return false;
     const type = e.type.toLowerCase();
-    if (type.includes('int') || type.includes('float')) {
-      return true;
-    }
-    return false;
+    return type.includes('int') || type.includes('float');
   }
 
   private prepareInt64() {
@@ -266,11 +278,12 @@ export default class DataDecorator {
           !(
             cell.type.includes('Array(') ||
             !(cell.type.includes('Int64') || cell.type.includes('Float64')) ||
-            (row[cell.name] == null || !row[cell.name])
+            row[cell.name] == null ||
+            !row[cell.name]
           )
         ) {
           //
-          let c: number = 0;
+          let c = 0;
           if (cell.type.includes('Float64')) {
             c = parseFloat(row[cell.name]);
           } else {
@@ -286,7 +299,7 @@ export default class DataDecorator {
       } // for
     }
     // Find max
-    this.meta.columns.map(o => {
+    this.meta.columns.map((o) => {
       const e = o;
       e.unsafe64Bit = searchUnSafe[o.name];
       return e;
@@ -297,10 +310,11 @@ export default class DataDecorator {
     // console.warn(this.meta.columns);
     return false;
   }
+
   //
   //
   // /**
-  //  * Преобразование массива в обьект для конструктора  DataProvider
+  //  * Преобразование массива в объект для конструктора  DataProvider
   //  *
   //  * @param data
   //  * @returns {DataDecorator}
@@ -325,7 +339,7 @@ export default class DataDecorator {
     return JSON.stringify(this.rows);
   }
 
-  setSort(coll: string, order: string, useHumanSort: boolean = false): boolean {
+  setSort(coll: string, order: string, useHumanSort = false): boolean {
     // column : Number - this index of column, by which you want to sorter the table.
     // sortOrder : Boolean - defines the order of sorting (true for ascending, false for descending).
     // @todo : write -find coll in meta -> set to coll settings

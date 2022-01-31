@@ -21,5 +21,5 @@
 }
 
 .bytes::after {
-  content: 'bytes';
+  content: '.';
 }

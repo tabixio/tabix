@@ -110,6 +110,10 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const databases = await this.queryString(this.preparedQuery.databaseList(limitDBs));
     const dictionaries = await this.queryString(this.preparedQuery.dictionariesList(limitDics));
     const functions = await this.queryString(this.preparedQuery.functionsList());
+
+    // ToDo: CheckSupportFunctions , ['normalizeQueryKeepNames','normalizedQueryHashKeepNames','normalizeQuery']
+    // Create Map?
+
     const clusters = await this.queryString(
       `SELECT host_address as hostAddress, port
        FROM system.clusters
