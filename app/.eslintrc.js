@@ -7,11 +7,16 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
     'plugin:prettier/recommended',
+    'plugin:jsx-a11y/recommended',
+    'plugin:import/recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
 
   parser: '@typescript-eslint/parser',
 
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'jsx-a11y'],
 
   settings: {
     'import/resolver': {
@@ -31,9 +36,19 @@ module.exports = {
   },
   rules: {
     // js
+    'max-len': 'off',
     'no-console': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
-    'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    // 'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: false,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
+
     'import/no-cycle': 'off',
     'import/export': 'off',
     // jsx
