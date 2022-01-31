@@ -1,5 +1,6 @@
 import { QToken, Statement, Reference, ReferenceType, TableReference } from './CommonSQL';
 import { Token } from 'antlr4ts';
+import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
 
 enum wew {
   QUERY = '__QueryStmt',
@@ -45,9 +46,9 @@ export class ParsedQuery {
   }
 
   public getToken(offset: number): QToken | undefined {
-    const st = this.getStatementAtOffset(offset);
-    if (!st) return;
-    return st.visitor?.getTokens().find((st) => st.start <= offset && offset <= st.stop);
+    return this.getVisitor(offset)
+      ?.getTokens()
+      .find((st) => st.start <= offset && offset <= st.stop);
   }
 
   public info(off: number): string {
@@ -79,21 +80,29 @@ export class ParsedQuery {
     return this.statements.find((st) => st.start <= offset && offset <= st.stop);
   }
 
+  public getVisitor(offset: number): AbstractSQLTreeVisitor<any> | undefined {
+    return this.getStatementAtOffset(offset)?.visitor;
+  }
+
   public getTokens(): Array<QToken> {
     return [];
     // if (!this.tokensList) throw 'Can`t get tokens';
     // return this.tokensList;
   }
 
-  public getTableReference(offset: number): Array<TableReference> | undefined {
-    return this.getStatementAtOffset(offset)?.refs?.get(
-      ReferenceType.TableRef
-    ) as Array<TableReference>;
-  }
+  //
+  // public getTableReference(offset: number): Array<TableReference> | undefined {
+  //   return this.getStatementAtOffset(offset)?.refs?.get(
+  //     ReferenceType.TableRef
+  //   ) as Array<TableReference>;
+  // }
 
   public getTablesNames(offset: number): Array<string> | undefined {
-    console.info(this.getTableReference(offset));
-    return this.getTableReference(offset)?.map((r) => r.table);
+    const v = this.getVisitor(offset);
+
+    return [''];
+    // console.info(this.getTableReference(offset));
+    // return this.getTableReference(offset)?.map((r) => r.table);
   }
 
   public getColumnReference(): Array<string> {

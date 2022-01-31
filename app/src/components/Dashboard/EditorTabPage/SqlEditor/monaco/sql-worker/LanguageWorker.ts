@@ -180,7 +180,7 @@ export abstract class LanguageWorker {
     // );
 
     const completionItems: Array<monaco.languages.CompletionItem> = [];
-
+    const offset: number = model.getOffsetAt(position);
     const word = model.getWordUntilPosition(position);
     const range = {
       startLineNumber: position.lineNumber,
@@ -266,6 +266,9 @@ export abstract class LanguageWorker {
     if (!this.serverStructure) {
       console.warn('Not init serverStructure');
       return { suggestions: completionItems };
+    } else {
+      const sug = LanguageWorker.getModel(modelUri).getSuggestions(offset, this.serverStructure);
+      console.log('getSuggestions', sug);
     }
     return { suggestions: completionItems };
   }

@@ -36,7 +36,7 @@ import {
 } from '../CommonSQL';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
-
+// ------------------------------------------------------------------------------------------------------------------------------
 const ROOT_QUERY_ID = 'result_1';
 export const ROOT_QUERY_NAME = '[final result]';
 
@@ -44,43 +44,6 @@ export class ClickhouseSQLVisitor<Result>
   extends AbstractSQLTreeVisitor<Result>
   implements ClickHouseParserVisitor<Result>
 {
-  private relationSeq = 0;
-
-  protected currentRelation = new QueryRelation(this.getNextRelationId());
-
-  public lastRelation: QueryRelation | undefined;
-  private tokensCurrentPoints: Map<string, number> = new Map();
-
-  getNextRelationId(): string {
-    return `result_${this.relationSeq++}`;
-  }
-
-  public log(...args: any[]) {
-    if (false) {
-      console.log(...args);
-    }
-  }
-
-  protected unquote(text?: string): string {
-    if (!text) {
-      return '';
-    }
-
-    if (text.length < 2) {
-      return text;
-    }
-
-    if (
-      text.startsWith('"') ||
-      text.startsWith('`') ||
-      (text.startsWith("'") && text.startsWith(text[text.length - 1]))
-    ) {
-      return text.substr(1, text.length - 2);
-    }
-
-    return text;
-  }
-
   /**
    *  Extracts table and column names from IdentifierContext (if possible).
    */
@@ -120,7 +83,10 @@ export class ClickhouseSQLVisitor<Result>
 
       //
       const qCol: QuotableIdentifier = { name: colName, quoted: false };
-      const qTb: QuotableIdentifier = { name: tableName, quoted: false };
+      const qTb: QuotableIdentifier | undefined = !tableName
+        ? undefined
+        : { name: tableName, quoted: false };
+
       const col = this.currentRelation.resolveOrAssumeRelationColumn(qCol, range, qTb);
       this.currentRelation.currentColumnId = columnId;
       if (col !== undefined) {
@@ -177,19 +143,6 @@ export class ClickhouseSQLVisitor<Result>
         } // if in `token`
       }); // tokensList loop
     } // have start & stop
-  }
-
-  applyToken(start: Token, stop: Token, type: string) {
-    this.tokensList.forEach((tok: QToken, index) => {
-      if (
-        start &&
-        stop &&
-        tok.tokenIndex >= start.tokenIndex &&
-        tok.tokenIndex <= stop.tokenIndex
-      ) {
-        this.tokensList[index].context.push(type);
-      }
-    });
   }
 
   // TableExprSubquery  // SELECT ... FROM ( SELECT )
@@ -458,31 +411,5 @@ export class ClickhouseSQLVisitor<Result>
 
   protected defaultResult(): Result {
     return {} as Result;
-  }
-
-  getCurrentRelation(): void {
-    console.log('getCurrentRelationgetCurrentRelationgetCurrentRelationgetCurrentRelation');
-    console.log(this.lastRelation);
-    if (this.lastRelation) {
-      this.availableColumns(this.lastRelation);
-    }
-  }
-
-  availableColumns(relation: QueryRelation): void {
-    const columns: { relation?: string; name: string; rrange?: Range; range?: Range }[] = [];
-
-    relation.relations.forEach((rel, name) => {
-      const relationName = name !== rel.id ? name : undefined;
-
-      rel.columns.forEach((col) => {
-        columns.push({
-          relation: relationName,
-          name: col.label,
-          range: col.range,
-          rrange: relation.range,
-        });
-      });
-    });
-    console.log('Cols:', columns);
   }
 }

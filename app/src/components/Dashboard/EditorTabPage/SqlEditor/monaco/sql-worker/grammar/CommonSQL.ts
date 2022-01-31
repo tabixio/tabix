@@ -53,13 +53,16 @@ export abstract class Relation {
 
   resolveColumn(columnName: QuotableIdentifier): ColumnRef | undefined {
     const col = this.findColumn(columnName);
-    return col !== undefined
-      ? {
-          tableId: this.id,
-          columnId: col.id,
-          isAssumed: false,
-        }
-      : undefined;
+    const re =
+      col !== undefined
+        ? {
+            tableId: this.id,
+            columnId: col.id,
+            isAssumed: false,
+          }
+        : undefined;
+    // console.log(`resolveColumn ${columnName.name}`, re);
+    return re;
   }
 }
 
@@ -96,7 +99,7 @@ export class TableRelation extends Relation {
       true
     );
     this.columns.push(column);
-    console.log(`addAssumedColumn[ ${columnName.name} ] `, this.columns);
+    // console.log(`addAssumedColumn[ ${columnName.name} ] `, this.columns);
     return { tableId: this.id, columnId: column.id, isAssumed: true };
   }
 }
@@ -179,11 +182,11 @@ export class QueryRelation extends Relation {
     range: Range,
     tableName?: QuotableIdentifier
   ): ColumnRef | undefined {
-    console.log(`resolveOrAssumeRelationColumn "${columnName?.name}" in table=${tableName?.name}`);
+    // console.log(`resolveOrAssumeRelationColumn "${columnName?.name}" in table=${tableName?.name}`);
     if (tableName !== undefined) {
       const rel = this.findRelation(tableName);
       const col = rel?.resolveColumn(columnName);
-      console.log('ResolveCol', col);
+      // console.log('ResolveCol [X1]', col, tableName);
       if (col === undefined && rel != undefined && rel instanceof TableRelation) {
         return rel.addAssumedColumn(columnName, range);
       }
@@ -192,6 +195,7 @@ export class QueryRelation extends Relation {
       const tables: TableRelation[] = [];
       for (const r of this.relations) {
         const rel = r[1];
+        // console.log('resolveColumn(columnName) [X2]', columnName);
         const col = rel.resolveColumn(columnName);
         if (col) {
           return col;
@@ -323,11 +327,6 @@ function skipLeadingWhitespace(text: string, head: number, tail: number): number
     head++;
   }
   return head;
-}
-
-interface ResultParseState {
-  tokens: Array<QToken>;
-  errors: antlrErrorList[];
 }
 
 export interface QToken {

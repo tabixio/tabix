@@ -1,5 +1,6 @@
 import { QToken } from './grammar/CommonSQL';
 import { ParsedQuery } from './grammar';
+import { ServerStructure } from '../../../../../../services';
 
 export class ModelOfEditor {
   //
@@ -42,11 +43,17 @@ export class ModelOfEditor {
     //
   }
 
-  public getTables(offset: number): Array<string> {
-    return [''];
+  public getTables(offset: number): Array<string> | undefined {
+    if (this.parsedQuery) {
+      return this.parsedQuery?.getTablesNames(offset);
+    }
+    return undefined;
   }
 
-  public getSuggestions(offset: number): any {
+  public getSuggestions(offset: number, structure: ServerStructure.Server): Array<string> {
+    if (!this.parsedQuery) return [];
+    const $table = this.getTables(offset);
+    console.error('$table', $table);
     return [];
   }
 
