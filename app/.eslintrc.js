@@ -8,9 +8,9 @@ module.exports = {
     'prettier',
     'plugin:prettier/recommended',
     'plugin:jsx-a11y/recommended',
-    'plugin:import/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
+    // 'plugin:import/recommended',  //  ??? Error: Cannot find module '/node_modules/monaco-editor/webpack.config.babel.js'
+    // 'plugin:import/errors',
+    // 'plugin:import/warnings',
     'plugin:import/typescript',
   ],
 
@@ -36,18 +36,19 @@ module.exports = {
   },
   rules: {
     // js
+    'object-curly-spacing': 'off',
     'max-len': 'off',
     'no-console': 'off',
     'no-unused-expressions': ['error', { allowShortCircuit: true }],
     // 'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: false,
-        optionalDependencies: false,
-        peerDependencies: false,
-      },
-    ],
+    // 'import/no-extraneous-dependencies': [
+    //   'error',
+    //   {
+    //     devDependencies: false,
+    //     optionalDependencies: false,
+    //     peerDependencies: false,
+    //   },
+    // ],
 
     'import/no-cycle': 'off',
     'import/export': 'off',

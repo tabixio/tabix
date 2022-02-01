@@ -117,6 +117,7 @@
   "dependencies": {
     "@handsontable/react": "^2.1.0",
     "@monaco-editor/react": "4.3.1",
+    "@supercharge/promise-pool": "^2.1.0",
     "@types/nunjucks": "^3.2.1",
     "antd": "3.26.20",
     "antlr4ts": "^0.5.0-alpha.4",

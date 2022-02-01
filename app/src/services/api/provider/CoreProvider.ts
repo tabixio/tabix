@@ -3,6 +3,12 @@ import ServerStructure from '../ServerStructure';
 import { Query } from '../Query';
 import preparedStatementQuery from './preparedStatementQuery';
 
+export interface QueryResponse {
+  response: any;
+  query: Query;
+  error: any;
+}
+
 export default abstract class CoreProvider<C extends ConnectionLike> {
   readonly connection: C;
 
@@ -11,6 +17,13 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
   constructor(connection: C) {
     this.connection = connection;
     this.preparedQuery = new preparedStatementQuery('');
+  }
+
+  prepared(): preparedStatementQuery {
+    if (!this.preparedQuery.version) {
+      throw Error('preparedStatementQuery not set version');
+    }
+    return this.preparedQuery;
   }
 
   abstract getType(): ConnectionType;
@@ -22,7 +35,9 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
   //   extendSettings?: any
   // ): Promise<any>;
 
-  abstract query(query: Query): Promise<any>;
+  // abstract query(query: string): Promise<any>;
+
+  abstract query(query: Query | string): Promise<QueryResponse>;
 
   abstract getProcessLists(_isOnlySelect: boolean, _isCluster: boolean): Promise<any>;
 
@@ -38,7 +53,7 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
   // For what this method?
   request(request: Request | string, init?: RequestInit) {
     return fetch(request, init)
-      .then(response => {
+      .then((response) => {
         const contentType = response.headers.get('content-type');
         if (
           contentType &&
@@ -65,14 +80,14 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
         // return response.text();
       })
       .then(
-        response => {
+        (response) => {
           if (response === 'OK' || !response) {
             return 'OK';
           }
           return response;
         },
         // refactor: use catch
-        responseBody => Promise.reject(responseBody)
+        (responseBody) => Promise.reject(responseBody)
       );
   }
 }

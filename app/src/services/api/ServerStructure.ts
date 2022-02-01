@@ -42,12 +42,15 @@ namespace ServerStructure {
   export interface Database extends Item {
     tables: ReadonlyArray<Table>;
   }
+
   export interface SpecialItem extends Item {
     command: string;
   }
+
   export interface SpecialArrayGroupItem {
     children: ReadonlyArray<SpecialGroupItem>;
   }
+
   export interface SpecialGroupItem extends Item {
     type: string;
     children: ReadonlyArray<SpecialItem>;
@@ -84,11 +87,13 @@ namespace ServerStructure {
   ): item is SpecialItem {
     return !!(item as SpecialItem).command && !(item as Column).database;
   }
+
   export function isSpecialGroupItem(
     item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
   ): item is SpecialGroupItem {
     return !!(item as SpecialGroupItem).type && !(item as Column).database;
   }
+
   export function isTable(
     item: Server | Table | Column | Database | SpecialItem | SpecialGroupItem
   ): item is Table {
@@ -104,7 +109,7 @@ namespace ServerStructure {
   // export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], [], {});
 
   export function from(
-    columns: ReadonlyArray<Column>,
+    columnsRaw: any[],
     tables: ReadonlyArray<Table>,
     databases: ReadonlyArray<Database>,
     dictionaries: any[],
@@ -112,6 +117,31 @@ namespace ServerStructure {
     clusters: any[],
     connectionName: string
   ) {
+    // const columns: Array<Column> = [];
+    const columns: Array<Column> = columnsRaw.map((c: any) => {
+      /* eslint-disable camelcase */
+      const {
+        data_compressed_bytes,
+        data_uncompressed_bytes,
+        default_expression,
+        default_kind,
+        default_type,
+        marks_bytes,
+        ...rest
+      } = c;
+
+      return {
+        ...rest,
+        dataCompressedBytes: +data_compressed_bytes,
+        dataUncompressedBytes: +data_uncompressed_bytes,
+        defaultExpression: default_expression,
+        defaultKind: default_kind,
+        defaultType: default_type || '',
+        marksBytes: +marks_bytes,
+      } as ServerStructure.Column;
+      /* eslint-enable */
+    });
+
     const dbTableColumns = columns.reduce((acc, col) => {
       const pcol = col;
       if (col.type) {
@@ -154,7 +184,7 @@ namespace ServerStructure {
       return acc;
     }, {});
 
-    const dbList = databases.map(db => ({
+    const dbList = databases.map((db) => ({
       ...db,
       tables: dbTables[db.name] || [],
       id: db.name,
@@ -168,7 +198,7 @@ namespace ServerStructure {
     };
 
     // ------------------------------- builtinFunctions -----------------------------------
-    functions.forEach(item => {
+    functions.forEach((item) => {
       editorRules.builtinFunctions.push({
         name: item.name,
         isaggr: item.is_aggregate,
@@ -210,7 +240,7 @@ namespace ServerStructure {
     });
 
     // -------------------------------- dictionaries ---------------------------------------------------
-    dictionaries.forEach(item => {
+    dictionaries.forEach((item) => {
       let idField = item.name;
 
       // Определяем id_field из item.name
@@ -230,9 +260,7 @@ namespace ServerStructure {
         idField = `${idField.toLowerCase()}_id`;
       }
 
-      const dic = `dictGet${item['attribute.types']}('${item.name}','${
-        item['attribute.names']
-      }',to${item.key}( ${idField} ) ) AS ${item['attribute.names']},`;
+      const dic = `dictGet${item['attribute.types']}('${item.name}','${item['attribute.names']}',to${item.key}( ${idField} ) ) AS ${item['attribute.names']},`;
       editorRules.dictionaries.push({
         dic,
         title: `dic_${item.name}.${item['attribute.names']}`,

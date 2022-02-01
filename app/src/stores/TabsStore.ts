@@ -1,24 +1,24 @@
 import sqlFormatter from 'sql-formatter';
-import { observable, action, runInAction, IReactionDisposer, reaction, when } from 'mobx';
-import { Option, None, Some, Try } from 'funfix-core';
-import { withRequest, ViewModelLike, createViewModel } from 'module/mobx-utils';
-import { tabsStorage, sqlHistoryStorage, Query, ServerStructure } from 'services';
+import {action, IReactionDisposer, observable, reaction, runInAction, when} from 'mobx';
+import {None, Option, Some, Try} from 'funfix-core';
+import {createViewModel, ViewModelLike, withRequest} from 'module/mobx-utils';
+import {Query, ServerStructure, sqlHistoryStorage, tabsStorage} from 'services';
 import {
-  EditorTabModel,
-  TabModel,
-  Tab,
-  isTabOfType,
-  ProcessesTabModel,
-  TabType,
   createTabFrom,
-  MetricsTabModel,
-  ServerOverviewTabModel,
   DbOverviewTabModel,
+  EditorTabModel,
+  isTabOfType,
+  MetricsTabModel,
+  ProcessesTabModel,
+  ServerOverviewTabModel,
   SqlHistoryTabModel,
+  Tab,
   TableViewTabModel,
+  TabModel,
+  TabType,
 } from 'models';
-import { Statistics } from 'services/api/DataDecorator';
-import { TextInsertType } from 'components/Dashboard/EditorTabPage';
+import {Statistics} from 'services/api/DataDecorator';
+import {TextInsertType} from 'components/Dashboard/EditorTabPage';
 import DashboardUIStore from './DashboardUIStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
@@ -135,7 +135,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   @action
   openTableTab(table: ServerStructure.Table) {
     this.openSpecialTab(TabType.TableView, () =>
-      TableViewTabModel.from({ tableName: table.name, tableId: table.id })
+      TableViewTabModel.from({tableName: table.name, tableId: table.id})
     );
   }
 
@@ -264,7 +264,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
         const results = await Promise.all(
           queries.map(async query => {
             const q = query;
-            q.extendSettings = extendSettings;
+            q.settings.extendSettings = extendSettings;
 
             runInAction(() => {
               this.uiStore.executingQueries = this.uiStore.executingQueries.concat(q);
@@ -272,9 +272,9 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
             try {
               const fetchResult = await this.api.fetch(q);
-              return { id: q.id, result: Try.success(fetchResult) };
+              return {id: q.id, result: Try.success(fetchResult)};
             } catch (ex) {
-              return { id: q.id, result: Try.failure(ex) };
+              return {id: q.id, result: Try.failure(ex)};
             } finally {
               runInAction(() => {
                 this.uiStore.executingQueries = this.uiStore.executingQueries.filter(
@@ -296,7 +296,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
               });
             return acc;
           },
-          { timeElapsed: 0, rowsRead: 0, bytesRead: 0 } as Statistics
+          {timeElapsed: 0, rowsRead: 0, bytesRead: 0} as Statistics
         );
 
         runInAction(() => {

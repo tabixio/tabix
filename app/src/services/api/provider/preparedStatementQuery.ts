@@ -1,4 +1,3 @@
-// eslint-disable-next-line jsx-a11y/anchor-is-valid
 import TemplateQuery from './TemplateQuery';
 
 export default class preparedStatementQuery extends TemplateQuery {
@@ -41,9 +40,19 @@ export default class preparedStatementQuery extends TemplateQuery {
     return this.template(sql);
   }
 
+  columnsList(limit = 500, database: string | null = null, table: string | null = null): string {
+    // SL
+    return `SELECT * FROM system.columns LIMIT ${limit}`;
+  }
+
+  clustersList(limit = 500): string {
+    return `SELECT * FROM system.clusters WHERE host_address NOT LIKE '127.0.0.%' LIMIT ${limit}`;
+  }
+
   functionsList(): string {
-    return `SELECT name, is_aggregate
-            from system.functions`;
+    /* eslint-disable */
+    return `SELECT name, is_aggregate from system.functions`;
+    /* eslint-enable */
   }
 
   dictionariesList(limitDics: number): string {
@@ -69,8 +78,7 @@ export default class preparedStatementQuery extends TemplateQuery {
   }
 
   databaseList(limitDBs: number): string {
-    return `SELECT name
-            FROM system.databases LIMIT ${limitDBs}`;
+    return `SELECT name FROM system.databases LIMIT ${limitDBs}`;
   }
 
   databaseTablesList(limitTables: number): string {
@@ -90,27 +98,27 @@ LIMIT ${limitTables}`;
   // release 21.2 - Add normalizeQueryKeepNames and normalizedQueryHashKeepNames
   // v20.8 - Add function normalizeQuery that replaces literals,
   public databasesListAndSize(limit = 10) {
-    return `SELECT name,
-                   engine,
-                   tables,
-                   partitions,
-                   parts,
-                   formatReadableSize(bytes_on_disk) "disk_size"
-            FROM system.databases db
-                   LEFT JOIN
-                 (
-                   SELECT database,
-                          uniq(table)            "tables",
-                          uniq(table, partition) "partitions",
-                          count() AS             parts,
-                          sum(bytes_on_disk)     "bytes_on_disk"
-                   FROM system.parts
-                   WHERE active
-                   GROUP BY database
-                 ) AS db_stats ON db.name = db_stats.database
-            ORDER BY bytes_on_disk DESC
-              LIMIT ${limit}
-    `;
+    return this.template(`SELECT name,
+                                 engine,
+                                 tables,
+                                 partitions,
+                                 parts,
+                                 formatReadableSize(bytes_on_disk) "disk_size"
+                          FROM system.databases db
+                                 LEFT JOIN
+                               (
+                                 SELECT database,
+                                        uniq(table)            "tables",
+                                        uniq(table, partition) "partitions",
+                                        count() AS             parts,
+                                        sum(bytes_on_disk)     "bytes_on_disk"
+                                 FROM system.parts
+                                 WHERE active
+                                 GROUP BY database
+                               ) AS db_stats ON db.name = db_stats.database
+                          ORDER BY bytes_on_disk DESC
+                            LIMIT ${limit}
+    `);
   }
 
   public replicas() {

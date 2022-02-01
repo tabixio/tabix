@@ -1879,6 +1879,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@supercharge/promise-pool@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@supercharge/promise-pool@npm:2.1.0"
+  checksum: e2a52312f026c0bea965d7e2e776b156ffa900ed110669afcb179f306af0ee73c9e151046f1e34e02b48e96b7ee990befeeca40cc585049f25d6adbf7692d494
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -18241,6 +18248,7 @@ __metadata:
     "@babel/register": ^7.0.0
     "@handsontable/react": ^2.1.0
     "@monaco-editor/react": 4.3.1
+    "@supercharge/promise-pool": ^2.1.0
     "@types/chroma-js": ^1.4.1
     "@types/classnames": ^2.2.6
     "@types/css-modules": ^1.0.0

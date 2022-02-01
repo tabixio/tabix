@@ -1,4 +1,4 @@
-import { ServerConnection, ConnectionType } from '../../Connection';
+import { ConnectionType, ServerConnection } from '../../Connection';
 import CoreProvider from './CoreProvider';
 import { Query } from '../Query';
 
@@ -12,26 +12,23 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
   }
 
   queryString(
-    // @ts-ignore
     sql: string,
-    // @ts-ignore
     withDatabase?: string | undefined,
-    // @ts-ignore
     format?: string | undefined,
-    // @ts-ignore
     extendSettings?: any
   ): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
-  query(
-    // @ts-ignore
-    q: Query
-  ): Promise<any> {
+  query(query: Query | string): Promise<any> {
     throw new Error('Method not implemented.');
   }
 
   fastGetVersion(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
+  getMetricsData(): Promise<any> {
     throw new Error('Method not implemented.');
   }
 

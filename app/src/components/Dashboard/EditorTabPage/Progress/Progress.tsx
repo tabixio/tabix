@@ -15,8 +15,8 @@ export default function Progress({ queries }: Props) {
       </div>
 
       <div className={css['query-list']}>
-        {queries.map(q => (
-          <div key={q.id}>{q.showProgressQuery}</div>
+        {queries.map((q) => (
+          <div key={q.id}>{q.sqlOriginal.replace(/(\r\n|\n|\r)$/gm, '').substr(0, 130)}</div>
         ))}
       </div>
     </div>

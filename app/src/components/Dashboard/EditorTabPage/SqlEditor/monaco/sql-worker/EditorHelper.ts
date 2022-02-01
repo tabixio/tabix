@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor';
-import { Query, ServerStructure } from 'services';
 import monacoEditor, { IRange, Position, Selection } from 'monaco-editor';
+import { Query, ServerStructure } from 'services';
 import { LanguageWorker } from './LanguageWorker';
 import { SupportLanguage } from './supportLanguage';
 import { CommonSQL } from './grammar';
@@ -312,36 +312,36 @@ export class EditorHelper {
     queryParseList.forEach((_query: Query) => {
       // skip empty
       const query: Query = _query;
-      if (!query.isExecutable) return;
+      if (!query.settings.isExecutable) return;
       // if need only current
       // Если комманда исполнить текущий и выделен текст -> пропускаем все пока не найдем подходящий
       if (typeCommand === 'current') {
-        if (!query.inCursor) return;
+        if (!query.settings.inCursor) return;
       }
       if (typeCommand === 'select') {
-        if (!query.inSelected) return;
+        if (!query.settings.inSelected) return;
       }
 
       if (typeCommand === 'select' && userSelection) {
         // Переписываем область / Достаем выделенную область
-        const intersect: IRange | null = query.range.intersectRanges(userSelection);
+        const intersect: IRange | null | undefined =
+          query.settings.range?.intersectRanges(userSelection);
         if (intersect) {
           const sqlSelect = model.getValueInRange(intersect);
           query.sql = sqlSelect;
-          query.isFormatSet = false;
-          query.format = 'FORMAT JSON';
+          query.setJsonFormat();
         }
       }
 
       // insert TABIX_QUERY_ID
-      query.sql = `/*TABIX_QUERY_ID_${query.id}*/ ${query.sql}`;
+      // query.sql = `/*TABIX_QUERY_ID_${query.id}*/ ${query.sql}`;
 
-      if (!query.isFormatSet) {
+      if (!query.settings.isFormatSet) {
         // Если у запроса НЕ указан формат
-        query.sql = `${query.sql}\n${query.format}`;
+        // query.sql = `${query.sql}\n${query.settings.format}`;
       }
 
-      query.currentDatabase = '';
+      // query.currentDatabase = '';
 
       queryExecList.push(query);
     });
@@ -489,7 +489,7 @@ export class EditorHelper {
       );
       const text = model.getValueInRange(range);
       const inCursor = cursorPosition && range.containsPosition(cursorPosition);
-      let inSelected = selection && selection.containsRange(range);
+      let inSelected = !!(selection && selection.containsRange(range));
       if (selection) {
         if (range.containsPosition(selection.getEndPosition())) {
           inSelected = true;
@@ -509,7 +509,7 @@ export class EditorHelper {
         let isFormatSet = false;
         let isOperationCAD = false;
         let findSelectQuery = false;
-        let format = 'FORMAT JSON';
+        let format = 'JSON';
 
         //
         if (splitRange.tokens) {
@@ -536,32 +536,27 @@ export class EditorHelper {
           format = '';
           isFormatSet = false;
         }
-
-        listQuery[numQuery] = {
-          ...splitRange,
-          id: this.makeQueryId(),
+        listQuery[numQuery] = new Query(text, this.makeQueryId());
+        listQuery[numQuery].settings = {
           isExecutable: !(text.trim().length < 1),
-          inCursor,
-          sql: text,
-          sqlOriginal: text,
           range,
+          inCursor,
           tokens: splitRange.tokens,
           numCommand: splitRange.numCommand,
           numQuery,
           inSelected,
-          showProgressQuery: text.replace(/(\r\n|\n|\r)$/gm, '').substr(0, 130),
           isOperationCAD,
           variables: null,
-          format,
-          isFormatSet,
           extendSettings: '',
           currentDatabase: '',
           commands: [],
+          format,
+          isFormatSet,
         };
       } else {
         // это комманда
-        if (!listQuery[numQuery].commands) {
-          listQuery[numQuery].commands = [];
+        if (!listQuery[numQuery].settings.commands) {
+          listQuery[numQuery].settings.commands = [];
         }
         // Находим typeOfCommand через поиск токена 'tabix.sql', его содержимое есть type
         let typeOfCommand = '';
@@ -573,20 +568,22 @@ export class EditorHelper {
           });
         }
         // collect tokens
-        listQuery[numQuery].commands.push({
-          ...splitRange,
-          type: typeOfCommand,
-          code: text,
-          inCursor,
-          range,
-          tokens: splitRange.tokens,
-          numCommand: splitRange.numCommand,
-          numQuery,
-          inSelected,
-        });
+        listQuery[numQuery].settings.commands = [];
+        // if (listQuery[numQuery].settings.commands)
+        //   listQuery[numQuery].settings.commands.push({
+        //     ...splitRange,
+        //     type: typeOfCommand,
+        //     code: text,
+        //     inCursor,
+        //     range,
+        //     tokens: splitRange.tokens,
+        //     numCommand: splitRange.numCommand,
+        //     numQuery,
+        //     inSelected,
+        //   });
         // Если курсор на draw -> вся комманда на cursor
-        if (inCursor && listQuery[numQuery] && !listQuery[numQuery].inCursor) {
-          listQuery[numQuery].inCursor = true;
+        if (inCursor && listQuery[numQuery] && !listQuery[numQuery].settings.inCursor) {
+          listQuery[numQuery].settings.inCursor = true;
         }
       }
     });

@@ -1,8 +1,8 @@
-import { DirectConnection, ConnectionType } from '../../Connection';
+import { ConnectionType, DirectConnection } from '../../Connection';
 import ServerStructure from '../ServerStructure';
-import CoreProvider from './CoreProvider';
+import CoreProvider, { QueryResponse } from './CoreProvider';
 import { Query } from '../Query';
-import DataDecorator from '../DataDecorator';
+import { PromisePool } from '@supercharge/promise-pool';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   private clusters: ReadonlyArray<ServerStructure.Cluster> | undefined;
@@ -20,7 +20,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         'Accept-Encoding': 'gzip',
       },
       body: query,
-      // credentials:'include' // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+      // credentials: 'include', // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
     };
     return init;
   }
@@ -71,7 +71,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return defaultState;
   }
 
-  private getRequestUrl(withDatabase?: string, extendSettings?: any): string {
+  private getRequestUrl(extendSettings?: any): string {
     const httpProto = this.connection.connectionUrl.indexOf('//') === -1 ? 'http://' : '';
     // this.connection.connectionUrl.indexOf('/') > 0
 
@@ -97,85 +97,76 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return url;
   }
 
-  async getDatabaseStructure() {
-    const limitClusters = 50;
-    const limitColumns = 4000;
-    const limitTables = 2000;
-    const limitDBs = 2000;
-    const limitDics = 1500;
+  async getDatabaseStructure(): Promise<ServerStructure.Server> {
+    const _LimitRead = 5000;
 
-    const columns = await this.queryString(`SELECT *
-                                            FROM system.columns LIMIT ${limitColumns}`);
-    const tables = await this.queryString(this.preparedQuery.databaseTablesList(limitTables));
-    const databases = await this.queryString(this.preparedQuery.databaseList(limitDBs));
-    const dictionaries = await this.queryString(this.preparedQuery.dictionariesList(limitDics));
-    const functions = await this.queryString(this.preparedQuery.functionsList());
+    // Create pool of SQL-Query
+    const pool: { key: string; query: string }[] = [
+      { key: 'tables', query: this.prepared().databaseTablesList(_LimitRead * 2) },
+      { key: 'databases', query: this.prepared().databaseList(_LimitRead * 2) },
+      { key: 'functions', query: this.prepared().functionsList() },
+      { key: 'clusters', query: this.prepared().clustersList(_LimitRead) },
+      { key: 'dictionaries', query: this.prepared().dictionariesList(_LimitRead) },
+      { key: 'columns', query: this.prepared().columnsList(_LimitRead * 10) },
+    ];
 
-    // ToDo: CheckSupportFunctions , ['normalizeQueryKeepNames','normalizedQueryHashKeepNames','normalizeQuery']
-    // Create Map?
-
-    const clusters = await this.queryString(
-      `SELECT host_address as hostAddress, port
-       FROM system.clusters
-       GROUP BY host_address, port LIMIT ${limitClusters}`
-    );
-    const columnList = columns.data.map((c: any) => {
-      /* eslint-disable camelcase */
-      const {
-        data_compressed_bytes,
-        data_uncompressed_bytes,
-        default_expression,
-        default_kind,
-        default_type,
-        marks_bytes,
-        ...rest
-      } = c;
-
-      return {
-        ...rest,
-        dataCompressedBytes: +data_compressed_bytes,
-        dataUncompressedBytes: +data_uncompressed_bytes,
-        defaultExpression: default_expression,
-        defaultKind: default_kind,
-        defaultType: default_type || '',
-        marksBytes: +marks_bytes,
-      } as ServerStructure.Column;
-      /* eslint-enable */
+    // Exec
+    const { results, errors } = await PromisePool.for(pool)
+      .withConcurrency(4)
+      .handleError(async (error, user) => {
+        throw error; // Uncaught errors will immediately stop PromisePool
+      })
+      .process(async (data) => {
+        const q = new Query(data.query, data.key);
+        q.setJsonFormat();
+        return this.query(q);
+      });
+    // Fetch done, fill map [key<->result]
+    const map: Map<string, number> = new Map<string, number>();
+    results.map((q: QueryResponse, index) => {
+      map.set(q.query.id, index);
     });
-    this.clusters = clusters.data;
 
-    // @todo : put to cache ( in localStore )
     const ConnectionName = this.connection.connectionName;
-    return ServerStructure.from(
-      columnList,
-      tables.data,
-      databases.data,
-      dictionaries.data,
-      functions.data,
-      clusters.data,
-      ConnectionName
-    );
+
+    if (
+      // Check all filled
+      map.has('columns') &&
+      map.has('tables') &&
+      map.has('databases') &&
+      map.has('dictionaries') &&
+      map.has('functions') &&
+      map.has('clusters')
+    ) {
+      // Create ServerStructure.Server
+      return ServerStructure.from(
+        results[map.get('columns') ?? 0].response.data,
+        results[map.get('tables') ?? 0].response.data,
+        results[map.get('databases') ?? 0].response.data,
+        results[map.get('dictionaries') ?? 0].response.data,
+        results[map.get('functions') ?? 0].response.data,
+        results[map.get('clusters') ?? 0].response.data,
+        ConnectionName
+      );
+    } else {
+      console.error('Can`t create getDatabaseStructure', results);
+      throw Error('Can`t create getDatabaseStructure');
+    }
   }
 
-  private queryString(
-    sql: string,
-    withDatabase?: string,
-    format = 'FoRmAt JSON',
-    extendSettings?: any
-  ) {
-    const init: RequestInit = this.getRequestInit(format ? `${sql}\n${format}` : sql);
-    const url = this.getRequestUrl(withDatabase, extendSettings);
-    return fetch(url, init).then((r) => r.json());
+  public query(q: Query | string): Promise<QueryResponse> {
+    if (typeof q === 'string') {
+      q = new Query(q);
+      q.setJsonFormat();
+    }
+    const url = this.getRequestUrl(q.settings?.extendSettings);
+    const init = this.getRequestInit(q.getSQL());
+    return this.request(url, init).then((r) => {
+      return { response: r, query: q as Query, error: [] };
+    });
   }
 
-  query(q: Query) {
-    // @TODO: if not database exist
-    const url = this.getRequestUrl(q.currentDatabase, q.extendSettings);
-    const init: RequestInit = this.getRequestInit(q.sql);
-    return this.request(url, init).then((r) => r);
-  }
-
-  fastGetVersion() {
+  fastGetVersion(): Promise<string> {
     const url = this.getRequestUrl();
     const query = 'SELECT version() as version';
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then((r) => r.text());
@@ -189,33 +180,29 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         return c;
       });
     }
-    const sql = this.preparedQuery.processLists(
+    const sql = this.prepared().processLists(
       isOnlySelect,
       isCluster,
       clusterList,
       this.connection.username,
       this.connection.password
     );
-    // const q = new Query();
-    return await this.queryString(sql);
+    return await this.query(sql);
   }
 
   async getTableColumns(database: string, tablename: string) {
-    const columns = await this.queryString(
-      `SELECT *
-       FROM system.columns
-       WHERE database = '${database}' AND table ='${tablename}'`
-    );
+    const columns = await this.query(this.prepared().columnsList(1500, database, tablename));
     return columns;
   }
 
   async makeTableDescribe(_database: string, _tablename: string) {
-    // @ts-ignore
-    const dat = await this.queryString(`SHOW CREATE TABLE ${_database}.${_tablename}`);
-    let sql = '';
-    if (dat && dat.data && dat.data[0] && dat.data[0].statement) {
-      sql = dat.data[0].statement;
-    }
-    return sql;
+    // let dat = await this.query(`SHOW CREATE TABLE ${_database}.${_tablename}`);
+    // dat = dat.response;
+    //
+    // let sql = '';
+    // if (dat && dat.data && dat.data[0] && dat.data[0].statement) {
+    //   sql = dat.data[0].statement;
+    // }
+    return `sql[XF2]`;
   }
 }

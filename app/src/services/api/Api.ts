@@ -1,10 +1,10 @@
-import { Data } from 'plotly.js';
 import Connection, { isDirectConnection } from '../Connection';
 import CoreProvider from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import TabixServerProvider from './provider/TabixServerProvider';
 import DataDecorator from './DataDecorator';
 import { Query } from './Query';
+import preparedStatementQuery from './provider/preparedStatementQuery';
 
 export default class Api {
   static async connect(connection: Connection): Promise<Api> {
@@ -13,7 +13,7 @@ export default class Api {
       : new TabixServerProvider(connection);
     // -----
     console.log('Try connect to clickhouse');
-    let version: string = '';
+    let version = '';
     try {
       version = await provider.fastGetVersion();
       console.log('Version CH', version);
@@ -35,10 +35,19 @@ export default class Api {
     this.provider.preparedQuery.setVersion(version);
   }
 
-  async fetch(query: Query) {
-    const data = await this.provider.query(query);
-    // , this.provider.getType()
-    return new DataDecorator(data, query);
+  public prepared(): preparedStatementQuery {
+    return this.provider.prepared();
+  }
+
+  public query(sql: string): Promise<DataDecorator> {
+    return this.provider.query(sql).then((r) => {
+      return new DataDecorator(r.response, r.query);
+    });
+  }
+
+  async fetch(query: Query): Promise<DataDecorator> {
+    const r = await this.provider.query(query);
+    return new DataDecorator(r.response, r.query);
   }
 
   getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<any> =>
