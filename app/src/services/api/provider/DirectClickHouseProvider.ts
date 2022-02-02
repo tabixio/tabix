@@ -195,6 +195,54 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return columns;
   }
 
+  async _fetchQueryPool(pool: { key: string; query: string }[]): Promise<any> {
+    // Exec
+    // const errors: Array<any> = [];
+
+    const { results, errors } = await PromisePool.for(pool)
+      .withConcurrency(4)
+      // .handleError(async (error, item) => {
+      //   return errors.push({ error, item });
+      // })
+      .process(async (data) => {
+        const q = new Query(data.query, data.key);
+        q.setJsonFormat();
+        return this.query(q);
+      });
+    return { results, errors };
+  }
+
+  async fetchPool(pool: { key: string; query: string | Query }[]): Promise<any> {
+    const d = await this.fetchPool(pool);
+    const map: Map<string, number> = new Map<string, number>();
+
+    d.map((q: QueryResponse, index) => {
+      map.set(q.query.id, index);
+    });
+
+    console.log('dddd2:', d);
+    return d;
+  }
+
+  async metricsTabStructure() {
+    // Create pool of SQL-Query
+    const pool: { key: string; query: string }[] = [
+      { key: 'replicas', query: this.prepared().replicas() },
+      { key: 'replicaQueue', query: this.prepared().replicaQueue() },
+      { key: 'replicatedFetches', query: this.prepared().replicatedFetches() },
+      { key: 'partsPerTable', query: this.prepared().partsPerTable() },
+      { key: 'merges', query: this.prepared().merges() },
+      { key: 'recentDataParts', query: this.prepared().recentDataParts() },
+      { key: 'mutations', query: this.prepared().mutations() },
+      { key: 'crashLog', query: this.prepared().crashLog() },
+      // { key: 'detachedDataParts', query: this.prepared().detachedDataParts() },
+      // { key: 'failedQueries', query: this.prepared().failedQueries() },
+      // { key: 'stackTraces', query: this.prepared().stackTraces() },
+    ];
+    const e = await this.fetchPool(pool);
+    console.log('E2:', e);
+    return e;
+  }
   async makeTableDescribe(_database: string, _tablename: string) {
     // let dat = await this.query(`SHOW CREATE TABLE ${_database}.${_tablename}`);
     // dat = dat.response;

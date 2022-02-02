@@ -132,7 +132,7 @@ LIMIT ${limitTables}`;
               merges_in_queue
             FROM system.replicas
             ORDER BY absolute_delay DESC
-              LIMIT 10`;
+              LIMIT 150`;
   }
 
   public replicaQueue() {
@@ -177,4 +177,232 @@ LIMIT ${limitTables}`;
               thread_id
             FROM system.replicated_fetches`;
   }
+  public partsPerTable(limit = 140) {
+    return `
+    SELECT
+        database,
+    table,
+    count() "partitions",
+    sum(part_count) "parts",
+    max(part_count) "max_parts_per_partition"
+    FROM
+    (
+        SELECT
+            database,
+            table,
+            partition,
+            count() "part_count"
+        FROM system.parts
+        WHERE active
+        GROUP BY database, table, partition
+    ) partitions
+    GROUP BY database, table
+    ORDER BY max_parts_per_partition DESC
+    LIMIT ${limit}
+    `;
+  }
+
+  public merges() {
+    return this.template(`   
+        SELECT
+            database,
+            table,
+            round(elapsed, 1) "elapsed",
+            round(100 * progress, 1) "progress",
+            is_mutation,
+            partition_id,
+        {% if version_ge('20.3') -%}
+            result_part_path,
+            source_part_paths,
+        {% endif -%}
+            num_parts,
+            formatReadableSize(total_size_bytes_compressed) "total_size_compressed",
+            formatReadableSize(bytes_read_uncompressed) "read_uncompressed",
+            formatReadableSize(bytes_written_uncompressed) "written_uncompressed",
+            columns_written,
+        {% if version_ge('20.3') -%}
+            formatReadableSize(memory_usage) "memory_usage",
+            thread_id
+        {% else -%}
+            formatReadableSize(memory_usage) "memory_usage"
+        {% endif -%}
+        FROM system.merges
+    `);
+  }
+
+  public mutations() {
+    return this.template(` 
+            
+      SELECT
+          database,
+          table,
+          mutation_id,
+          command,
+          create_time,
+      {% if version_ge('20.3') -%}
+          parts_to_do_names,
+      {% endif -%}
+          parts_to_do,
+          is_done,
+          latest_failed_part,
+          latest_fail_time,
+          latest_fail_reason
+      FROM system.mutations
+      WHERE NOT is_done
+      ORDER BY create_time DESC
+
+    `);
+  }
+
+  public recentDataParts() {
+    return this.template(`
+         SELECT
+            database,
+            table,
+            engine,
+            partition_id,
+            name,
+        {% if version_ge('20.3') -%}
+            part_type,
+        {% endif -%}
+            active,
+            level,
+        {% if version_ge('20.3') -%}
+            disk_name,
+        {% endif -%}
+            path,
+            marks,
+            rows,
+            bytes_on_disk,
+            data_compressed_bytes,
+            data_uncompressed_bytes,
+            marks_bytes,
+            modification_time,
+            remove_time,
+            refcount,
+            is_frozen,
+            min_date,
+            max_date,
+            min_time,
+            max_time,
+            min_block_number,
+            max_block_number
+        FROM system.parts
+        WHERE modification_time > now() - INTERVAL 3 MINUTE
+        ORDER BY modification_time DESC
+`);
+  }
+
+  public crashLog() {
+    return this.template(`
+    
+    SELECT
+        event_time,
+        signal,
+        thread_id,
+        query_id,
+        '\\n' || arrayStringConcat(trace_full, '\\n') AS trace,
+        version
+    FROM system.crash_log
+    ORDER BY event_time DESC
+
+    `);
+  }
+  public detachedDataParts() {
+    return this.template(` 
+      
+    SELECT
+      database,
+      table,
+      partition_id,
+      name,
+      disk,
+      reason,
+      min_block_number,
+      max_block_number,
+      level
+    FROM system.detached_parts
+
+      `);
+  }
+
+  public failedQueries(normalize = true) {
+    return this.template(
+      ` SELECT
+    type,
+    query_start_time,
+    query_duration_ms,
+    query_id,
+    query_kind,
+    is_initial_query,
+    {% if normalize_queries -%}
+    normalizeQuery(query) AS normalized_query,
+    {% else -%}
+    query,
+    {% endif -%}
+    concat(toString(read_rows), ' rows / ', formatReadableSize(read_bytes)) AS read,
+    concat(toString(written_rows), ' rows / ', formatReadableSize(written_bytes)) AS written,
+    concat(toString(result_rows), ' rows / ', formatReadableSize(result_bytes)) AS result,
+    formatReadableSize(memory_usage) AS "memory usage",
+    exception,
+    '\\n' || stack_trace AS stack_trace,
+    user,
+    initial_user,
+    multiIf(empty(client_name), http_user_agent, concat(client_name, ' ', toString(client_version_major), '.', toString(client_version_minor), '.', toString(client_version_patch))) AS client,
+    client_hostname,
+    {% if version_ge('21.3') -%}
+    databases,
+    tables,
+    columns,
+    used_aggregate_functions,
+    used_aggregate_function_combinators,
+    used_database_engines,
+    used_data_type_families,
+    used_dictionaries,
+    used_formats,
+    used_functions,
+    used_storages,
+    used_table_functions,
+    thread_ids,
+    {% endif -%}
+    {% if version_ge('21.8') -%}
+    ProfileEvents,
+    Settings
+    {% else -%}
+    ProfileEvents.Names,
+    ProfileEvents.Values,
+    Settings.Names,
+    Settings.Values
+    {% endif -%}
+FROM system.query_log
+WHERE type != 'QueryStart'
+  AND event_date >= today() - 1
+  AND event_time >= now() - INTERVAL 1 DAY
+  AND exception != ''
+ORDER BY query_start_time DESC
+LIMIT 10
+`,
+      { normalize_queries: normalize }
+    );
+  }
+
+  public stackTraces() {
+    return this.template(` 
+      
+      SELECT
+    '\\n' || arrayStringConcat(
+       arrayMap(
+           x,
+           y -> concat(x, ': ', y),
+           arrayMap(x -> addressToLine(x), trace),
+           arrayMap(x -> demangle(addressToSymbol(x)), trace)),
+       '\\n') AS trace
+FROM system.stack_trace
+
+      `);
+  }
+  //
+  // public merges() {
+  //   return this.template(`   `)
+  // }
 }

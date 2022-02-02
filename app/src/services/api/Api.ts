@@ -60,4 +60,8 @@ export default class Api {
     this.provider.makeTableDescribe(database, tablename);
 
   loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
+  // @ts-ignore
+  metricsTabStructure() {
+    return this.provider.metricsTabStructure();
+  }
 }
