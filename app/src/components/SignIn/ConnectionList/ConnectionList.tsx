@@ -2,9 +2,9 @@ import React from 'react';
 import { Flex } from 'reflexy';
 import { Menu } from 'antd';
 import { SyncOutlined } from '@ant-design/icons';
-import { SelectParam } from 'antd/lib/menu';
 import { Connection } from 'services';
 import css from './ConnectionList.css';
+import { SelectInfo } from 'rc-menu/lib/interface';
 
 export interface Props {
   connections: ReadonlyArray<Connection>;
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 export default class ConnectionList extends React.Component<Props> {
-  private onSelect = (p: SelectParam) => {
+  private onSelect = (p: SelectInfo) => {
     const { connections, onSelect } = this.props;
     if (onSelect) {
       const con = connections.find((_) => _.connectionName === p.key);

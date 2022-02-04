@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
 import { Flex } from 'reflexy';
@@ -18,6 +18,15 @@ import {
   TableViewTabModel,
   TabType,
 } from 'models';
+
+import {
+  CodeOutlined,
+  HddOutlined,
+  LineChartOutlined,
+  RadarChartOutlined,
+  DatabaseOutlined,
+} from '@ant-design/icons';
+
 import {
   DbOverviewTabPage,
   EditorTabPage,
@@ -144,7 +153,10 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
-  private onEditTabs = (eventOrKey: string  | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,, action: 'remove' | 'add') => {
+  private onEditTabs = (
+    eventOrKey: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
+    action: 'remove' | 'add'
+  ) => {
     const { tabsStore: store } = this.props;
     if (action === 'remove' && typeof eventOrKey === 'string') {
       store.removeTab(eventOrKey);
@@ -165,14 +177,12 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
-  private getTabIcon = (tab: Tab): string => {
-    let icon = 'code';
-    if (tab.type === TabType.Processes) icon = 'hdd';
-    if (tab.type === TabType.Metrics) icon = 'line-chart';
-    if (tab.type === TabType.DbOverview) icon = 'radar-chart';
-    if (tab.type === TabType.ServerOverview) icon = 'database';
-
-    return icon;
+  private getTabIcon = (tab: Tab): JSX.Element => {
+    if (tab.type === TabType.Processes) return <HddOutlined />;
+    if (tab.type === TabType.Metrics) return <LineChartOutlined />;
+    if (tab.type === TabType.DbOverview) return <RadarChartOutlined />;
+    if (tab.type === TabType.ServerOverview) return <DatabaseOutlined />;
+    return <CodeOutlined />;
   };
 
   render() {
@@ -216,7 +226,7 @@ class DashboardView extends React.Component<RoutedProps> {
                 closable
                 tab={
                   <span>
-                    <Icon type={this.getTabIcon(t)} />
+                    {this.getTabIcon(t)}
                     {t.title}
                   </span>
                 }

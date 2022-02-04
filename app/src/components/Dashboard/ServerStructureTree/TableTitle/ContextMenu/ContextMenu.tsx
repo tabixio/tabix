@@ -1,6 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { ClickParam } from 'antd/lib/menu';
+import { MenuInfo } from 'rc-menu/lib/interface';
+
 import { ServerStructure } from 'services';
 
 export enum TableAction {
@@ -19,7 +20,7 @@ export interface ContextMenuProps {
 }
 
 export default class ContextMenu extends React.Component<ContextMenuProps> {
-  private onItemClick = ({ key, domEvent }: ClickParam) => {
+  private onItemClick = ({ key, domEvent }: MenuInfo) => {
     domEvent.preventDefault();
     domEvent.stopPropagation();
     const { onContextMenuAction, table } = this.props;

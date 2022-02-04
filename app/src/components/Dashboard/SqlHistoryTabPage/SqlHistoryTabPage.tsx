@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { typedInject } from 'module/mobx-utils';
 import { List } from 'antd';
-import { PaginationConfig } from 'antd/lib/table';
+import { PaginationConfig } from 'antd/lib/pagination';
 import { SqlHistoryStore, Stores } from 'stores';
 import { eventBus, EventType } from 'services/sqlHistoryStorage';
 import ListItem, { ListItemProps } from './ListItem';

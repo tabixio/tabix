@@ -3,6 +3,7 @@ import { Menu } from 'antd';
 import Icon from '@ant-design/icons';
 import { MenuProps } from 'antd/lib/menu';
 
+import { SettingOutlined, QuestionCircleOutlined, LogoutOutlined } from '@ant-design/icons';
 export enum ActionType {
   SignOut = 1,
   Settings,
@@ -13,17 +14,17 @@ export default function ContextMenu(props: MenuProps) {
   return (
     <Menu theme="dark" mode="vertical" {...props}>
       <Menu.Item key={ActionType.Settings}>
-        <Icon type="setting" theme="outlined" />
+        <SettingOutlined />
         <span>Settings</span>
       </Menu.Item>
 
       <Menu.Item key={ActionType.Help}>
-        <Icon type="question-circle" theme="outlined" />
+        <QuestionCircleOutlined />
         <span>Help</span>
       </Menu.Item>
 
       <Menu.Item key={ActionType.SignOut}>
-        <Icon type="logout" theme="outlined" />
+        <LogoutOutlined />
         <span>Sign Out</span>
       </Menu.Item>
     </Menu>

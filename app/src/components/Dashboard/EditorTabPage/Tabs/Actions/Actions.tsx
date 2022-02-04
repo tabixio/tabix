@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Flex } from 'reflexy';
-import Icon from '@ant-design/icons';
+
+import { PushpinOutlined, PushpinFilled } from '@ant-design/icons';
 import css from './Actions.css';
 
 export enum ActionType {
@@ -14,15 +15,22 @@ export interface ActionsProps {
 
 export default function Actions({ pinned, onAction }: ActionsProps) {
   const onTogglePin = useCallback(() => onAction(ActionType.TogglePin), [onAction]);
+  let icon = <PushpinOutlined />;
+  if (pinned) {
+    icon = <PushpinFilled />;
+  }
 
+  // PushpinOutlined,PushpinFilled
   return (
     <Flex grow hfill alignItems="center" justifyContent="flex-end" className={css.root}>
-      <Icon
-        type="pushpin"
-        theme={pinned ? 'filled' : 'outlined'}
-        onClick={onTogglePin}
-        title={pinned ? 'Pinned' : 'Unpinned'}
-      />
+      {icon}
+      {/*{icon title=pinned ? 'Pinned' : 'Unpinned'}*/}
+      {/*<Icon*/}
+      {/*  type="pushpin"*/}
+      {/*  theme={pinned ? 'filled' : 'outlined'}*/}
+      {/*  onClick={onTogglePin}*/}
+      {/*  title={pinned ? 'Pinned' : 'Unpinned'}*/}
+      {/*/>*/}
     </Flex>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import SplitPane, { Props as SplitPaneProps } from 'react-split-pane';
+import SplitPane, { SplitPaneProps } from 'react-split-pane';
 import classNames from 'classnames';
 import css from './Splitter.css';
 

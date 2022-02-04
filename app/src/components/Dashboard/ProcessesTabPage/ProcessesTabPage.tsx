@@ -10,7 +10,7 @@ interface InjectedProps {
   store: TabsStore;
 }
 
-interface Props extends InjectedProps {}
+type Props = InjectedProps;
 
 const IOption = Select.Option;
 
@@ -139,7 +139,7 @@ class ProcessesTabPage extends React.Component<Props> {
 
     store
       .getProcessLists(isOnlySELECT, isCluster)
-      .then(data => {
+      .then((data) => {
         // Inc
 
         // console.info('this.data.isHaveData=',this.data.isHaveData);
@@ -175,7 +175,7 @@ class ProcessesTabPage extends React.Component<Props> {
         // }
         this.timerTic();
       })
-      .catch(e => {
+      .catch((e) => {
         console.log('Error', e);
         this.counterSet(this.state.countError + 1, this.state.countSuccess);
         if (this.state.countError > 19) {
@@ -195,7 +195,7 @@ class ProcessesTabPage extends React.Component<Props> {
       { label: '5 seconds', value: 5 },
     ];
     const children: Array<any> = [];
-    ratesOptions.forEach(item => {
+    ratesOptions.forEach((item) => {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
 
@@ -216,10 +216,10 @@ class ProcessesTabPage extends React.Component<Props> {
           defaultValue={checkOptions}
           onChange={this.onChangeCheckbox}
         />
-        <Button icon={this.state.isPlaying ? 'stop' : 'play-circle'} onClick={this.playStop}>
-          {this.state.isPlaying ? 'Pause' : 'Play'}
-        </Button>
-        <Button icon="close" onClick={this.reset}>
+        {/*icon={this.state.isPlaying ? 'stop' : 'play-circle'}*/}
+        <Button onClick={this.playStop}>{this.state.isPlaying ? 'Pause' : 'Play'}</Button>
+        <Button onClick={this.reset}>
+          {/*icon="close"*/}
           Clean
         </Button>
         <span>

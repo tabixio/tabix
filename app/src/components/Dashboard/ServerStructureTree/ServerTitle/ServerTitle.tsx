@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Dropdown } from 'antd';
-import Icon from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import ContextMenu, { ContextMenuProps } from './ContextMenu';
 import css from './ServerTitle.css';
+import { SwitcherOutlined, ReloadOutlined, DatabaseOutlined } from '@ant-design/icons';
 
 export interface ServerTitleProps extends ContextMenuProps {
   title: string;
@@ -42,26 +42,14 @@ export default function ServerTitle({
         onVisibleChange={setVisible}
       >
         <Flex grow alignItems="center" className={css.dropdown}>
-          <Icon type="database" theme="twoTone" />
+          <DatabaseOutlined />
           <div className={css.title}>{title}</div>
         </Flex>
       </Dropdown>
 
       <Flex justifyContent="flex-end" onDoubleClick={preventPropagation}>
-        <Icon
-          type="reload"
-          theme="outlined"
-          title="Reload"
-          onClick={onReload}
-          className={css.action}
-        />
-        <Icon
-          type="switcher"
-          theme="outlined"
-          title="Collapse"
-          onClick={collapse}
-          className={css.action}
-        />
+        <ReloadOutlined title="Reload" onClick={onReload} className={css.action} />
+        <SwitcherOutlined title="Collapse" onClick={collapse} className={css.action} />
       </Flex>
     </Flex>
   );

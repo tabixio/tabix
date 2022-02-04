@@ -5,7 +5,7 @@ import Icon from '@ant-design/icons';
 import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
 import { Statistics } from 'services/api/DataDecorator';
-import { ClickParam } from 'antd/lib/menu';
+import { MenuInfo } from 'rc-menu/lib/interface';
 import ActionButton, { Props as ActionButtonProps } from './ActionButton';
 import RequestStats from '../../RequestStats';
 import css from './Toolbar.css';
@@ -34,14 +34,14 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
     if (!onDatabaseChange) return;
 
     const { databases } = this.props;
-    const db = databases.find((_) => _.name === value.toString());
+    const db = databases.find((_) => _.name === value?.toString());
     db && onDatabaseChange(db);
   };
 
   render() {
     const { databases, currentDatabase, onDatabaseChange, onAction, stats, ...rest } = this.props;
 
-    const onActionMenuClick = (click: ClickParam) => {
+    const onActionMenuClick = (click: MenuInfo) => {
       onAction(parseInt(click.key, 0), click.domEvent);
     };
     const onActionRunRunCurrent = (event: React.MouseEvent<HTMLElement>) => {
@@ -73,7 +73,8 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
 
           <SpaceH />
 
-          <ActionButton icon="save" size="small" actionType={ActionType.Save} onAction={onAction} />
+          {/*icon="save"*/}
+          <ActionButton size="small" actionType={ActionType.Save} onAction={onAction} />
 
           <SpaceH />
 
@@ -102,12 +103,8 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
           )}
 
           <SpaceH />
-          <ActionButton
-            size="small"
-            icon="fullscreen"
-            actionType={ActionType.Fullscreen}
-            onAction={onAction}
-          />
+          {/*icon="fullscreen"*/}
+          <ActionButton size="small" actionType={ActionType.Fullscreen} onAction={onAction} />
           <SpaceH />
         </Flex>
       </Flex>

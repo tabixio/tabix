@@ -28,7 +28,7 @@ export default function ActionButtons({
         okText="Yes"
         cancelText="No"
       >
-        <Button type="danger" disabled={!deleteEnabled}>
+        <Button danger disabled={!deleteEnabled}>
           DELETE
         </Button>
       </Popconfirm>

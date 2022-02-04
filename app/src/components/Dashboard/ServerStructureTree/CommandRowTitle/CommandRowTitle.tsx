@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Tooltip } from 'antd';
-import Icon from '@ant-design/icons';
+import { CheckOutlined } from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import css from './CommandRowTitle.css';
@@ -28,7 +28,7 @@ export default function CommandRowTitle({ command, onAction }: CommandRowProps) 
   return (
     <Tooltip title={`${command.name}${br} ${br}${br} `} placement="right">
       <Flex alignItems="center" hfill onDoubleClick={handleDoubleClick}>
-        <Icon type="check" theme="outlined" />
+        <CheckOutlined />
         <div className={css.name} onClick={handleClick}>
           {command.name}
         </div>

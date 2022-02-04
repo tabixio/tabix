@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@ant-design/icons';
+import { DatabaseOutlined } from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import css from './DbTitle.css';
 
@@ -11,7 +11,7 @@ interface Props {
 export default function DbTitle({ name, tableCount }: Props) {
   return (
     <Flex alignItems="center" hfill className={css.root}>
-      <Icon type="database" theme="outlined" />
+      <DatabaseOutlined />
       <div>{name}</div>
       <Flex grow justifyContent="flex-end">
         {tableCount}

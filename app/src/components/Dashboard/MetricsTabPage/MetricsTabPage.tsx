@@ -81,9 +81,7 @@ class MetricsTabPage extends React.Component<Props> {
       <div>
         <b>MetricsTabPage</b>
         <hr />
-        <Button icon="close" onClick={this.go}>
-          GOG
-        </Button>
+        <Button onClick={this.go}>GOG</Button>
         <Collapse>{this.renderItems()}</Collapse>
         {/*{this.renderTable('replicas')}*/}
         {/*{this.renderTable('replicaQueue')}*/}
