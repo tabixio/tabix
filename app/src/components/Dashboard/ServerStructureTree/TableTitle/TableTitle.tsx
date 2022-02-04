@@ -1,11 +1,12 @@
 import React from 'react';
-import { Icon, Dropdown, Tooltip } from 'antd';
+import { Dropdown, Tooltip } from 'antd';
+import Icon from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import ContextMenu, { ContextMenuProps, TableAction } from './ContextMenu';
 import css from './TableTitle.css';
 
-interface Props extends ContextMenuProps {}
+type Props = ContextMenuProps;
 
 export default class TableTitle extends React.Component<Props> {
   state = { visible: false };

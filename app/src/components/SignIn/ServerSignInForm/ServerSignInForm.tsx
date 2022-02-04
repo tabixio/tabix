@@ -27,7 +27,7 @@ export default class ServerSignInForm extends React.Component<Props> {
     } = this.props;
 
     return (
-      <Form layout="vertical" onSubmit={this.submit}>
+      <Form layout="vertical" onFinish={this.submit}>
         <Form.Item
           help="For example: dev"
           validateStatus={error2status(errors.connectionName.error.nonEmpty())}

@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { Icon, Dropdown } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Dropdown } from 'antd';
+import Icon from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import ContextMenu, { ContextMenuProps } from './ContextMenu';
 import css from './ServerTitle.css';

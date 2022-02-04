@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { Icon, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
+import Icon from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import css from './CommandRowTitle.css';
@@ -19,10 +20,10 @@ export default function CommandRowTitle({ command, onAction }: CommandRowProps) 
     () => onAction && onAction(RowActionTypeAction.DoubleClick, command),
     [command, onAction]
   );
-  const handleClick = useCallback(() => onAction && onAction(RowActionTypeAction.Click, command), [
-    command,
-    onAction,
-  ]);
+  const handleClick = useCallback(
+    () => onAction && onAction(RowActionTypeAction.Click, command),
+    [command, onAction]
+  );
   const br = '\n';
   return (
     <Tooltip title={`${command.name}${br} ${br}${br} `} placement="right">

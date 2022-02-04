@@ -94,8 +94,6 @@
     "prettier": "^2.5.1",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
-    "rc-form": "2.4.10",
-    "rc-util": "4.16.1",
     "rimraf": "^2.6.1",
     "style-loader": "^0.23.1",
     "stylelint": "^9.9.0",
@@ -115,11 +113,12 @@
     "webpack-dev-server": "^4.6.0"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@handsontable/react": "^2.1.0",
     "@monaco-editor/react": "4.3.1",
     "@supercharge/promise-pool": "^2.1.0",
     "@types/nunjucks": "^3.2.1",
-    "antd": "3.26.20",
+    "antd": "4.18.5",
     "antlr4ts": "^0.5.0-alpha.4",
     "chroma-js": "^2.0.2",
     "classnames": "^2.2.6",

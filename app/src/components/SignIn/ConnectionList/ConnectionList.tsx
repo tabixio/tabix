@@ -1,6 +1,7 @@
 import React from 'react';
 import { Flex } from 'reflexy';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
 import { SelectParam } from 'antd/lib/menu';
 import { Connection } from 'services';
 import css from './ConnectionList.css';
@@ -15,7 +16,7 @@ export default class ConnectionList extends React.Component<Props> {
   private onSelect = (p: SelectParam) => {
     const { connections, onSelect } = this.props;
     if (onSelect) {
-      const con = connections.find(_ => _.connectionName === p.key);
+      const con = connections.find((_) => _.connectionName === p.key);
       con && onSelect(con);
     }
   };
@@ -36,14 +37,15 @@ export default class ConnectionList extends React.Component<Props> {
         onSelect={this.onSelect}
         className={css['root']}
       >
-        {connections.map(c => (
+        {connections.map((c) => (
           <Menu.Item key={c.connectionName}>
             <Flex alignItems="center" justifyContent="space-between">
               <Flex column>
                 <div className={css['title']}>{c.connectionName}</div>
                 <div className={css['subtitle']}>{c.connectionUrl}</div>
               </Flex>
-              <Icon type="ellipsis" />
+              <SyncOutlined spin />
+              {/*  type="ellipsis" */}
             </Flex>
           </Menu.Item>
         ))}

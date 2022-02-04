@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'antd';
+import Icon from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import css from './SpecialTitle.css';
 

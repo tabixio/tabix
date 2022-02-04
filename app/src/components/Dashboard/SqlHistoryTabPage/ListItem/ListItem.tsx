@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { List, Icon } from 'antd';
+import { List } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 export interface ListItemProps {
   content: string;
@@ -7,12 +8,9 @@ export interface ListItemProps {
 }
 
 export default function ListItem({ content, onEdit }: ListItemProps) {
-  const edit = useCallback(
-    () => {
-      onEdit(content);
-    },
-    [content, onEdit]
-  );
+  const edit = useCallback(() => {
+    onEdit(content);
+  }, [content, onEdit]);
 
-  return <List.Item actions={[<Icon type="edit" onClick={edit} />]}>{content}</List.Item>;
+  return <List.Item actions={[<EditOutlined onClick={edit} />]}>{content}</List.Item>;
 }

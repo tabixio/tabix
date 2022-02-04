@@ -1,5 +1,6 @@
 import React from 'react';
-import { Menu, Icon } from 'antd';
+import { Menu } from 'antd';
+import Icon from '@ant-design/icons';
 import { MenuProps } from 'antd/lib/menu';
 
 export enum ActionType {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Flex, FlexProps } from 'reflexy';
-import { Select, Menu, Icon, Dropdown } from 'antd';
+import { Dropdown, Menu, Select } from 'antd';
+import Icon from '@ant-design/icons';
 import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
 import { Statistics } from 'services/api/DataDecorator';
@@ -33,7 +34,7 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
     if (!onDatabaseChange) return;
 
     const { databases } = this.props;
-    const db = databases.find(_ => _.name === value.toString());
+    const db = databases.find((_) => _.name === value.toString());
     db && onDatabaseChange(db);
   };
 
@@ -82,7 +83,7 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
             value={currentDatabase}
             onChange={this.onDatabaseChange}
           >
-            {databases.map(db => (
+            {databases.map((db) => (
               <Select.Option key={db.name} value={db.name}>
                 {db.name}
               </Select.Option>

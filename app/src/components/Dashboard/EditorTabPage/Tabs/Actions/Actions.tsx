@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Flex } from 'reflexy';
-import { Icon } from 'antd';
+import Icon from '@ant-design/icons';
 import css from './Actions.css';
 
 export enum ActionType {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
-import { Icon } from 'antd';
 import { Flex } from 'reflexy';
 import { typedInject } from 'module/mobx-utils';
 import { ServerStructure } from 'services';
@@ -13,15 +12,13 @@ import {
   isTabOfType,
   MetricsTabModel,
   ProcessesTabModel,
-  TableViewTabModel,
   ServerOverviewTab,
-  Tab,
-  TabType,
   SqlHistoryTab,
-  TableViewTab,
+  Tab,
+  TableViewTabModel,
+  TabType,
 } from 'models';
 import {
-  TableViewTabPage,
   DbOverviewTabPage,
   EditorTabPage,
   MetricsTabPage,
@@ -29,16 +26,17 @@ import {
   ProcessesTabPage,
   ServerOverviewTabPage,
   ServerStructureTree,
+  SqlHistoryTabPage,
+  TableViewTabPage,
   Tabs,
   TabsTabPane,
-  SqlHistoryTabPage,
 } from 'components/Dashboard';
 import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import Page from 'components/Page';
 import { ActionType } from 'components/Dashboard/Tabs';
 import {
-  RowActionTypeAction,
   ColumnAction,
+  RowActionTypeAction,
   ServerAction,
   TableAction,
 } from 'components/Dashboard/ServerStructureTree';
@@ -50,7 +48,7 @@ interface InjectedProps {
   tabsStore: TabsStore;
 }
 
-export interface Props extends InjectedProps {}
+export type Props = InjectedProps;
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
@@ -146,7 +144,7 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
-  private onEditTabs = (eventOrKey: string | React.MouseEvent<any>, action: 'remove' | 'add') => {
+  private onEditTabs = (eventOrKey: string  | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,, action: 'remove' | 'add') => {
     const { tabsStore: store } = this.props;
     if (action === 'remove' && typeof eventOrKey === 'string') {
       store.removeTab(eventOrKey);
@@ -182,7 +180,7 @@ class DashboardView extends React.Component<RoutedProps> {
     const { uiStore } = tabsStore;
     const isBlocking = tabsStore
       .getActiveTabOfType<EditorTabModel>(TabType.Editor)
-      .map(t => !!t.content)
+      .map((t) => !!t.content)
       .getOrElse(false);
 
     return (
@@ -207,12 +205,12 @@ class DashboardView extends React.Component<RoutedProps> {
           </Flex>
 
           <Tabs
-            activeKey={tabsStore.activeTab.map(_ => _.id).orUndefined()}
+            activeKey={tabsStore.activeTab.map((_) => _.id).orUndefined()}
             onEdit={this.onEditTabs}
             onChange={tabsStore.setActiveTab}
             onMenuAction={this.onMenuAction}
           >
-            {tabsStore.tabs.map(t => (
+            {tabsStore.tabs.map((t) => (
               <TabsTabPane
                 key={t.id}
                 closable
