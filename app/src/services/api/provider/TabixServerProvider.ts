@@ -11,15 +11,6 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
     throw new Error('Method not implemented.');
   }
 
-  queryString(
-    sql: string,
-    withDatabase?: string | undefined,
-    format?: string | undefined,
-    extendSettings?: any
-  ): Promise<any> {
-    throw new Error('Method not implemented.');
-  }
-
   query(query: Query | string): Promise<any> {
     throw new Error('Method not implemented.');
   }
@@ -27,7 +18,6 @@ export default class TabixServerProvider extends CoreProvider<ServerConnection> 
   fastGetVersion(): Promise<string> {
     throw new Error('Method not implemented.');
   }
-
   getMetricsData(): Promise<any> {
     throw new Error('Method not implemented.');
   }

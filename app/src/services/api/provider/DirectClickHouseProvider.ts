@@ -1,8 +1,7 @@
 import { ConnectionType, DirectConnection } from '../../Connection';
 import ServerStructure from '../ServerStructure';
-import CoreProvider, { QueryResponse } from './CoreProvider';
+import CoreProvider, { QueryResponse, RequestPool } from './CoreProvider';
 import { Query } from '../Query';
-import { PromisePool } from '@supercharge/promise-pool';
 
 export default class DirectClickHouseProvider extends CoreProvider<DirectConnection> {
   private clusters: ReadonlyArray<ServerStructure.Cluster> | undefined;
@@ -101,69 +100,49 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const _LimitRead = 5000;
 
     // Create pool of SQL-Query
-    const pool: { key: string; query: string }[] = [
-      { key: 'tables', query: this.prepared().databaseTablesList(_LimitRead * 2) },
-      { key: 'databases', query: this.prepared().databaseList(_LimitRead * 2) },
-      { key: 'functions', query: this.prepared().functionsList() },
-      { key: 'clusters', query: this.prepared().clustersList(_LimitRead) },
-      { key: 'dictionaries', query: this.prepared().dictionariesList(_LimitRead) },
-      { key: 'columns', query: this.prepared().columnsList(_LimitRead * 10) },
-    ];
-
-    // Exec
-    const { results, errors } = await PromisePool.for(pool)
-      .withConcurrency(4)
-      .handleError(async (error, user) => {
-        throw error; // Uncaught errors will immediately stop PromisePool
-      })
-      .process(async (data) => {
-        const q = new Query(data.query, data.key);
-        q.setJsonFormat();
-        return this.query(q);
-      });
-    // Fetch done, fill map [key<->result]
-    const map: Map<string, number> = new Map<string, number>();
-    results.map((q: QueryResponse, index) => {
-      map.set(q.query.id, index);
-    });
-
+    const pool: RequestPool = {
+      tables: this.prepared().databaseTablesList(_LimitRead * 2),
+      databases: this.prepared().databaseList(_LimitRead * 2),
+      functions: this.prepared().functionsList(),
+      clusters: this.prepared().clustersList(_LimitRead),
+      dictionaries: this.prepared().dictionariesList(_LimitRead),
+      columns: this.prepared().columnsList(_LimitRead * 10),
+    };
+    const data = await this.fetchPool(pool);
     const ConnectionName = this.connection.connectionName;
-
-    if (
-      // Check all filled
-      map.has('columns') &&
-      map.has('tables') &&
-      map.has('databases') &&
-      map.has('dictionaries') &&
-      map.has('functions') &&
-      map.has('clusters')
-    ) {
+    if ('columns' in data && 'tables' in data && 'databases' in data) {
       // Create ServerStructure.Server
       return ServerStructure.from(
-        results[map.get('columns') ?? 0].response.data,
-        results[map.get('tables') ?? 0].response.data,
-        results[map.get('databases') ?? 0].response.data,
-        results[map.get('dictionaries') ?? 0].response.data,
-        results[map.get('functions') ?? 0].response.data,
-        results[map.get('clusters') ?? 0].response.data,
+        data['columns'].response.data,
+        data['tables'].response.data,
+        data['databases'].response.data,
+        data['dictionaries'].response.data,
+        data['functions'].response.data,
+        data['clusters'].response.data,
         ConnectionName
       );
     } else {
-      console.error('Can`t create getDatabaseStructure', results);
+      //
+      console.error('Can`t create getDatabaseStructure', data);
       throw Error('Can`t create getDatabaseStructure');
     }
   }
 
-  public query(q: Query | string): Promise<QueryResponse> {
+  public query(q: Query | string, resultAsKey = false): Promise<QueryResponse> {
     if (typeof q === 'string') {
       q = new Query(q);
       q.setJsonFormat();
     }
+    //
     const url = this.getRequestUrl(q.settings?.extendSettings);
     const init = this.getRequestInit(q.getSQL());
-    return this.request(url, init).then((r) => {
-      return { response: r, query: q as Query, error: [] };
-    });
+    return this.request(url, init)
+      .then((r) => {
+        return { response: r, query: q as Query, error: null, isError: false } as QueryResponse;
+      })
+      .catch((e) => {
+        return { response: null, query: q as Query, error: e, isError: true } as QueryResponse;
+      });
   }
 
   fastGetVersion(): Promise<string> {
@@ -195,54 +174,6 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return columns;
   }
 
-  async _fetchQueryPool(pool: { key: string; query: string }[]): Promise<any> {
-    // Exec
-    // const errors: Array<any> = [];
-
-    const { results, errors } = await PromisePool.for(pool)
-      .withConcurrency(4)
-      // .handleError(async (error, item) => {
-      //   return errors.push({ error, item });
-      // })
-      .process(async (data) => {
-        const q = new Query(data.query, data.key);
-        q.setJsonFormat();
-        return this.query(q);
-      });
-    return { results, errors };
-  }
-
-  async fetchPool(pool: { key: string; query: string | Query }[]): Promise<any> {
-    const d = await this.fetchPool(pool);
-    const map: Map<string, number> = new Map<string, number>();
-
-    d.map((q: QueryResponse, index) => {
-      map.set(q.query.id, index);
-    });
-
-    console.log('dddd2:', d);
-    return d;
-  }
-
-  async metricsTabStructure() {
-    // Create pool of SQL-Query
-    const pool: { key: string; query: string }[] = [
-      { key: 'replicas', query: this.prepared().replicas() },
-      { key: 'replicaQueue', query: this.prepared().replicaQueue() },
-      { key: 'replicatedFetches', query: this.prepared().replicatedFetches() },
-      { key: 'partsPerTable', query: this.prepared().partsPerTable() },
-      { key: 'merges', query: this.prepared().merges() },
-      { key: 'recentDataParts', query: this.prepared().recentDataParts() },
-      { key: 'mutations', query: this.prepared().mutations() },
-      { key: 'crashLog', query: this.prepared().crashLog() },
-      // { key: 'detachedDataParts', query: this.prepared().detachedDataParts() },
-      // { key: 'failedQueries', query: this.prepared().failedQueries() },
-      // { key: 'stackTraces', query: this.prepared().stackTraces() },
-    ];
-    const e = await this.fetchPool(pool);
-    console.log('E2:', e);
-    return e;
-  }
   async makeTableDescribe(_database: string, _tablename: string) {
     // let dat = await this.query(`SHOW CREATE TABLE ${_database}.${_tablename}`);
     // dat = dat.response;

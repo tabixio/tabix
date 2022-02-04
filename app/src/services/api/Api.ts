@@ -1,5 +1,9 @@
 import Connection, { isDirectConnection } from '../Connection';
-import CoreProvider from './provider/CoreProvider';
+import CoreProvider, {
+  QueryResponse,
+  QueryResponseKey,
+  RequestPool,
+} from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import TabixServerProvider from './provider/TabixServerProvider';
 import DataDecorator from './DataDecorator';
@@ -38,9 +42,11 @@ export default class Api {
   public prepared(): preparedStatementQuery {
     return this.provider.prepared();
   }
-
+  public async fetchPool(pool: RequestPool, concurrency = 4): Promise<QueryResponseKey> {
+    return this.provider.fetchPool(pool, concurrency);
+  }
   public query(sql: string): Promise<DataDecorator> {
-    return this.provider.query(sql).then((r) => {
+    return this.provider.query(sql).then((r: QueryResponse) => {
       return new DataDecorator(r.response, r.query);
     });
   }
@@ -60,8 +66,4 @@ export default class Api {
     this.provider.makeTableDescribe(database, tablename);
 
   loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
-  // @ts-ignore
-  metricsTabStructure() {
-    return this.provider.metricsTabStructure();
-  }
 }

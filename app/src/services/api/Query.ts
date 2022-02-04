@@ -47,7 +47,9 @@ export class Query {
       format: '',
     };
   }
-
+  public setId(id: string): void {
+    this.id = id;
+  }
   public getSQL(): string {
     const format = this.settings.format ? ` FORMAT ` + this.settings.format : '';
     const id = `/*TABIX_QUERY_ID_${this.id}*/`;
