@@ -1,5 +1,5 @@
 import path from 'path';
-import antdLessVars from './webpack/less-vars';
+import antdLessVars from './webpack/antd.less.vars';
 // ---------- Plugins ------------------------------------------------------------
 const { merge } = require('webpack-merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -8,6 +8,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const { getThemeVariables } = require('antd/dist/theme');
 // -------------------------------------------------------------------------------
 const baseDir = process.cwd();
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
@@ -194,7 +195,7 @@ let common = {
             loader: 'less-loader',
             options: {
               javascriptEnabled: true,
-              modifyVars: antdLessVars,
+              modifyVars: merge(getThemeVariables({ dark: true, compact: true }), antdLessVars),
             },
           },
         ],

@@ -1,17 +1,13 @@
-import React from 'react';
-import AuthContext, { AuthContextValue } from '../AuthContext';
+import React, { useContext } from 'react';
+import { AuthorizationContext } from '../AuthorizationProvider';
 
 /**
  * Used with `AuthorizationProvider`.
  * Render `children` if user is not logged in, else render nothing.
  */
-export default class NotLoggedIn extends React.Component {
-  private renderChildren = ({ isLoggedIn }: AuthContextValue) => {
-    const loggedIn = typeof isLoggedIn === 'function' ? isLoggedIn() : isLoggedIn;
-    return loggedIn ? null : this.props.children;
-  };
-
-  render() {
-    return <AuthContext.Consumer>{this.renderChildren}</AuthContext.Consumer>;
-  }
+export default function NotLoggedIn({ children }: React.PropsWithChildren<{}>): JSX.Element | null {
+  const { isLoggedIn } = useContext(AuthorizationContext);
+  const result = isLoggedIn() ? null : (children as JSX.Element);
+  if (result === undefined) return null;
+  return result;
 }

@@ -49,16 +49,18 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
 
   componentWillUnmount() {
     // Todo : goto useEffect()
+    console.log('SqlEditor->componentWillUnmount');
     this.setEditorRef(undefined);
     // !No disposeAll HERE!
   }
-
-  UNSAFE_componentWillReceiveProps({ serverStructure }: SqlEditorProps) {
-    // Todo : goto useEffect()
-    if (serverStructure && serverStructure !== this.props.serverStructure) {
-      this.updateGlobalEditorStructure(serverStructure);
-    }
-  }
+  //
+  // UNSAFE_componentWillReceiveProps({ serverStructure }: SqlEditorProps) {
+  //   console.log('SqlEditor->UNSAFE_componentWillReceiveProps');
+  //   // Todo : goto useEffect()
+  //   if (serverStructure && serverStructure !== this.props.serverStructure) {
+  //     this.updateGlobalEditorStructure(serverStructure);
+  //   }
+  // }
 
   public insertColumn(coll: ServerStructure.Column) {
     // @todo : Если вставка до Where ,

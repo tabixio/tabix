@@ -26,9 +26,9 @@ export default class Page extends React.Component<Props> {
         const { uiStore } = this.props;
         return uiStore && uiStore.notifications;
       },
-      list =>
+      (list) =>
         list &&
-        list.forEach(n => {
+        list.forEach((n) => {
           notification.open({
             key: n.id.toString(),
             type: n.type,
@@ -50,6 +50,7 @@ export default class Page extends React.Component<Props> {
   }
 
   componentWillUnmount() {
+    console.log('Page->componentWillUnmount');
     this.notificationReaction();
   }
 

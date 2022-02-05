@@ -1,8 +1,8 @@
 @import 'normalize.css';
 @import './reset-defaults.css';
-
 body {
   font-size: 13px;
+  background: black;
   /* line-height: 1.15; */
   /* color: font-color; */
   /* fill: font-color; */

@@ -1,8 +1,8 @@
 import React from 'react';
-import { reaction, IReactionDisposer } from 'mobx';
+import { IReactionDisposer, reaction } from 'mobx';
 import { observer } from 'mobx-react';
-import { Switch, withRouter, RouteComponentProps, Redirect } from 'react-router';
-import { AuthorizationProvider, NotLoggedInRoute, LoggedInRoute } from 'module/react-auth';
+import { Redirect, RouteComponentProps, Switch, withRouter } from 'react-router';
+import { AuthorizationProvider, LoggedInRoute, NotLoggedInRoute } from 'module/react-auth';
 import { typedInject } from 'module/mobx-utils';
 
 import 'assets/styles/global.css';
@@ -34,17 +34,19 @@ class App extends React.Component<RoutedProps> {
   protected loadingReaction?: IReactionDisposer;
 
   componentDidMount() {
+    console.log('App->componentDidMount');
     const { store, connection } = this.props;
 
     this.loadingReaction = reaction(
       () => store.uiStore.loading,
-      loading => App.toggleAppLoader(loading)
+      (loading) => App.toggleAppLoader(loading)
     );
 
     connection && !store.isLoggedIn && store.initApi(connection);
   }
 
   componentWillUnmount() {
+    console.log('App->componentWillUnmount');
     this.loadingReaction && this.loadingReaction();
     const { store } = this.props;
     store.disposeStores();
@@ -62,7 +64,7 @@ class App extends React.Component<RoutedProps> {
     return (
       <AppErrorBoundary error={error}>
         <AuthorizationProvider
-          isLoggedIn={store.isLoggedIn}
+          isLoggedIn={store.isAuthorized}
           isAuthorized={store.isAuthorized}
           redirectTo={routePaths.signIn.path}
           notLoggedInRedirectTo={routePaths.home.path}

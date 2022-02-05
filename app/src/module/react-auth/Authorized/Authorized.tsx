@@ -1,7 +1,7 @@
-import React from 'react';
-import AuthContext, { AuthContextValue } from '../AuthContext';
+import React, { useContext } from 'react';
+import { AuthorizationContext } from '../AuthorizationProvider';
 
-export interface Props {
+export interface AuthorizedProps {
   role?: any;
   /**
    * Invert result from AuthorizationProvider.isAuthorized for render children.
@@ -14,14 +14,14 @@ export interface Props {
  * Used with `AuthorizationProvider`.
  * Render `children` if user is logged in and authorized, else render nothing.
  */
-export default class Authorized extends React.Component<Props> {
-  private renderChildren = ({ isAuthorized }: AuthContextValue) => {
-    const { role, not, children } = this.props;
-    const authorized = typeof isAuthorized === 'function' ? isAuthorized(role) : isAuthorized;
-    return ((!not && authorized) || (not && !authorized)) && children;
-  };
-
-  render() {
-    return <AuthContext.Consumer>{this.renderChildren}</AuthContext.Consumer>;
-  }
+export default function Authorized({
+  role,
+  not,
+  children,
+}: React.PropsWithChildren<AuthorizedProps>): JSX.Element | null {
+  const { isAuthorized } = useContext(AuthorizationContext);
+  const authorized = isAuthorized ? isAuthorized(role) : true;
+  const result = (!not && authorized) || (not && !authorized) ? (children as JSX.Element) : null;
+  if (result === undefined) return null;
+  return result;
 }

@@ -4,19 +4,21 @@ import { observer } from 'mobx-react';
 import { ServerConnectionModel } from 'models';
 import { error2status } from 'components/utils';
 import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
+import { RouteComponentProps } from 'react-router';
 
 export interface Props extends ActionButtonsProps {
   model: ServerConnectionModel;
 }
+type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
-export default class ServerSignInForm extends React.Component<Props> {
+export default class ServerSignInForm extends React.Component<RoutedProps> {
   private submit = (event: React.FormEvent<any>) => {
     event.preventDefault();
-    // const { store, history } = this.props;
-    // if (store.model.validate()) {
-    // store.signIn(history);
-    // }
+    const { store, history } = this.props;
+    if (store.model.validate()) {
+      store.signIn(history);
+    }
   };
 
   render() {

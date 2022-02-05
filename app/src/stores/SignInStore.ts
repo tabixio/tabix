@@ -1,9 +1,9 @@
 import { History } from 'history';
-import { observable, action, runInAction } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
 import { withRequest } from 'module/mobx-utils';
-import { FromLocationDescriptorObject } from 'module/react-auth';
-import { Connection, Api, isDirectConnection, connectionsStorage } from 'services';
+// import { FromLocationDescriptorObject } from 'module/react-auth';
+import { Api, Connection, connectionsStorage, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
 import { routePaths } from 'routes';
 import ApiRequestableStore from './ApiRequestableStore';
@@ -40,30 +40,28 @@ export default class SignInStore extends ApiRequestableStore {
     });
     this.connectionList = this.connectionList.concat(con);
     this.setSelectedConnection(con);
-    await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
+    await connectionsStorage.saveConnections(this.connectionList.map((_) => _.toJSON()));
   }
 
   @withRequest.bound
   @action
   async deleteSelectedConnection() {
     this.connectionList = this.connectionList.filter(
-      c => c.connectionName !== this.selectedConnection.connectionName
+      (c) => c.connectionName !== this.selectedConnection.connectionName
     );
     this.setSelectedConnection(
       isDirectConnection(this.selectedConnection)
         ? ConnectionModel.DirectEmpty
         : ConnectionModel.ServerEmpty
     );
-    await connectionsStorage.saveConnections(this.connectionList.map(_ => _.toJSON()));
+    await connectionsStorage.saveConnections(this.connectionList.map((_) => _.toJSON()));
   }
 
   signIn(history: History) {
     return this.submit(this.selectedConnection, async () => {
       const api = await Api.connect(this.selectedConnection.toJSON());
       this.rootStore.appStore.updateApi(Option.of(api));
-      const {
-        state: { from: path } = { from: routePaths.home.path },
-      } = history.location as FromLocationDescriptorObject;
+      const { state: { from: path } = { from: routePaths.home.path } } = history.location; //  as FromLocationDescriptorObject;
       history.push(path);
     });
   }
