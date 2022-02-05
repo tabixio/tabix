@@ -6,19 +6,23 @@ import { error2status } from 'components/utils';
 import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
 import { RouteComponentProps } from 'react-router';
 
-export interface Props extends ActionButtonsProps {
+export interface InjectedProps extends ActionButtonsProps {
   model: ServerConnectionModel;
 }
+
+export type Props = InjectedProps;
+
 type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
 export default class ServerSignInForm extends React.Component<RoutedProps> {
   private submit = (event: React.FormEvent<any>) => {
+    console.log('ServerSignInForm->submit');
     event.preventDefault();
-    const { store, history } = this.props;
-    if (store.model.validate()) {
-      store.signIn(history);
-    }
+    // const { store, history } = this.props;
+    // if (store.model.validate()) {
+    //   store.signIn(history);
+    // }
   };
 
   render() {

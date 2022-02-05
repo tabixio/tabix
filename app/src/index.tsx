@@ -16,6 +16,7 @@ function render(
   store: ReturnType<typeof initStores>,
   cb?: () => void
 ) {
+  console.warn('supportsHistory', supportsHistory());
   ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter forceRefresh={!supportsHistory()}>
@@ -54,7 +55,7 @@ function render(
       });
     });
 
-    module.hot.accept(err => {
+    module.hot.accept((err) => {
       console.error('HMR error:', err);
     });
   }

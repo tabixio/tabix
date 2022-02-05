@@ -2298,13 +2298,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:4.7.8":
-  version: 4.7.8
-  resolution: "@types/history@npm:4.7.8"
-  checksum: 9c867532afd80f72a7101a5bb3c10c1ad7cc8c2c14e92fdbc54d5fed0ef8cdb6060c0f261a39884e243424636c6ff85d8aaffb984e2edaac348d2f216f9eedeb
-  languageName: node
-  linkType: hard
-
 "@types/html-minifier-terser@npm:^6.0.0":
   version: 6.1.0
   resolution: "@types/html-minifier-terser@npm:6.1.0"
@@ -9291,6 +9284,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"history@npm:4.7.2":
+  version: 4.7.2
+  resolution: "history@npm:4.7.2"
+  dependencies:
+    invariant: ^2.2.1
+    loose-envify: ^1.2.0
+    resolve-pathname: ^2.2.0
+    value-equal: ^0.4.0
+    warning: ^3.0.0
+  checksum: 66ffc537ceb9ed8e092ea31e2090d1888abba67e830549aa669cecb4cf0f06a234ae7d616f92904bdcb5cbf428acefe6fc3451d8e5edcb05172b61f1567e0061
+  languageName: node
+  linkType: hard
+
 "history@npm:^4.9.0":
   version: 4.10.1
   resolution: "history@npm:4.10.1"
@@ -9918,7 +9924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.2.2":
+"invariant@npm:^2.2.1, invariant@npm:^2.2.2":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -16561,6 +16567,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"resolve-pathname@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "resolve-pathname@npm:2.2.0"
+  checksum: c12eb87f04d6a6101aa44080c4c2f25b8fab49db8c43823a142614e1f5fb359f7c511a02b0f1089919778da79af99b3a11b8991556b51b494f30be4b2ee3748b
+  languageName: node
+  linkType: hard
+
 "resolve-pathname@npm:^3.0.0":
   version: 3.0.0
   resolution: "resolve-pathname@npm:3.0.0"
@@ -18299,7 +18312,6 @@ __metadata:
     "@types/chroma-js": ^1.4.1
     "@types/classnames": ^2.2.6
     "@types/css-modules": ^1.0.0
-    "@types/history": 4.7.8
     "@types/jest": ^27.4.0
     "@types/nunjucks": ^3.2.1
     "@types/plotly.js": ^1.54.17
@@ -18342,6 +18354,7 @@ __metadata:
     fork-ts-checker-webpack-plugin: ^6.5.0
     funfix-core: ^7.0.1
     handsontable: 6.2.2
+    history: 4.7.2
     html-webpack-plugin: ^5.5.0
     husky: ^7.0.4
     jest: ^27.4.5
@@ -19680,6 +19693,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"value-equal@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "value-equal@npm:0.4.0"
+  checksum: 8a9b4b866705470d4d6a2e01bda24a75dd435fe0ea3a8bef003f67780a58116e65e795db4d018caf2e4b8bee336ee7787c338322325fc3a7dac8cbb8064ebca8
+  languageName: node
+  linkType: hard
+
 "value-equal@npm:^1.0.1":
   version: 1.0.1
   resolution: "value-equal@npm:1.0.1"
@@ -19799,6 +19819,15 @@ __metadata:
   dependencies:
     makeerror: 1.0.12
   checksum: ad7a257ea1e662e57ef2e018f97b3c02a7240ad5093c392186ce0bcf1f1a60bbadd520d073b9beb921ed99f64f065efb63dfc8eec689a80e569f93c1c5d5e16c
+  languageName: node
+  linkType: hard
+
+"warning@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "warning@npm:3.0.0"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: c9f99a12803aab81b29858e7dc3415bf98b41baee3a4c3acdeb680d98c47b6e17490f1087dccc54432deed5711a5ce0ebcda2b27e9b5eb054c32ae50acb4419c
   languageName: node
   linkType: hard
 

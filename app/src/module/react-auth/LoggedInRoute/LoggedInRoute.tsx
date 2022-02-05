@@ -14,6 +14,7 @@ export default function LoggedInRoute({
   ...props
 }: RouteProps & RedirectProps): JSX.Element {
   const { isLoggedIn, redirectTo: contextRedirectTo } = useContext(AuthorizationContext);
+  console.log('isLoggedIn', isLoggedIn());
   if (!isLoggedIn()) {
     return <RouteRedirect {...props} to={redirectTo || contextRedirectTo} />;
   }

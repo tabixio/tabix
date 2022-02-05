@@ -13,5 +13,6 @@ export default function RouteRedirect({
 }: RouteRedirectProps): JSX.Element {
   const location = useLocation();
   const redirectTo = getLocationWithState(to, location);
+  console.info('RouteRedirect->', location, redirectTo);
   return <Route {...rest} render={() => <Redirect to={redirectTo} />} />;
 }

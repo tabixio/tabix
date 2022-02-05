@@ -16,7 +16,9 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   }
 
   isAuthorized = () => this.isLoggedIn;
-
+  isLogIn = () => {
+    return this.isLoggedIn;
+  };
   private async saveConnection(api: Api) {
     const { connection } = api.provider;
     await connectionsStorage.saveLastActiveConnection(connection);
@@ -35,7 +37,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   async updateApi(api: Option<Api>) {
     if (this.api.equals(api)) return;
     runInAction(async () => {
-      await this.clearAuth();
+      //await this.clearAuth();
       runInAction(() => {
         this.api = api;
       });

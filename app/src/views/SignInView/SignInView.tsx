@@ -1,15 +1,15 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Flex } from 'reflexy';
-import { Layout, Tabs, Button } from 'antd';
+import { Button, Layout, Tabs } from 'antd';
 import { observer } from 'mobx-react';
 import { typedInject } from 'module/mobx-utils';
-import { Stores, SignInStore } from 'stores';
-import { Connection, isDirectConnection, ConnectionType } from 'services';
+import { SignInStore, Stores } from 'stores';
+import { Connection, ConnectionType, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
 import Page from 'components/Page';
 import Splitter from 'components/Splitter';
-import { DirectSignInForm, ServerSignInForm, ConnectionList } from 'components/SignIn';
+import { ConnectionList, DirectSignInForm } from 'components/SignIn';
 import css from './SignInView.css';
 
 interface InjectedProps {
@@ -93,15 +93,16 @@ class SignInView extends React.Component<RoutedProps> {
                   />
                 )}
               </Tabs.TabPane>
-              <Tabs.TabPane tab="TABIX.SERVER" key={ConnectionType.Server}>
-                {!isDirectConnection(store.selectedConnection) && (
-                  <ServerSignInForm
-                    model={store.selectedConnection}
-                    onDelete={store.deleteSelectedConnection}
-                    deleteEnabled={!!store.selectedConnection.connectionName}
-                  />
-                )}
-              </Tabs.TabPane>
+              {/*<Tabs.TabPane tab="TABIX.SERVER" key={ConnectionType.Server}>*/}
+              {/*  {!isDirectConnection(store.selectedConnection) && (*/}
+              {/*    <ServerSignInForm*/}
+              {/*      model={store.selectedConnection}*/}
+              {/*      onDelete={store.deleteSelectedConnection}*/}
+              {/*      onSignIn={this.signIn}*/}
+              {/*      deleteEnabled={!!store.selectedConnection.connectionName}*/}
+              {/*    />*/}
+              {/*  )}*/}
+              {/*</Tabs.TabPane>*/}
             </Tabs>
           </Flex>
         </Splitter>

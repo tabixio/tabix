@@ -64,7 +64,7 @@ class App extends React.Component<RoutedProps> {
     return (
       <AppErrorBoundary error={error}>
         <AuthorizationProvider
-          isLoggedIn={store.isAuthorized}
+          isLoggedIn={store.isLogIn}
           isAuthorized={store.isAuthorized}
           redirectTo={routePaths.signIn.path}
           notLoggedInRedirectTo={routePaths.home.path}
