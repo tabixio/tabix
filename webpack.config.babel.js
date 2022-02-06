@@ -11,8 +11,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const { getThemeVariables } = require('antd/dist/theme');
 // -------------------------------------------------------------------------------
 const baseDir = process.cwd();
-const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
-const isProd = mode === 'production';
 const devServerHost = '0.0.0.0'; // isWindows() ? '127.0.0.1' : '0.0.0.0';
 // -------------------------------------------------------------------------------
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -112,6 +110,10 @@ let common = {
     fallback: { fs: false }, // For antlr4!
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     modules: [path.resolve(baseDir, 'node_modules'), baseDir, path.resolve(baseDir, 'app/src')],
+  },
+  cache: {
+    type: 'filesystem',
+    allowCollectingMemory: true,
   },
 
   // stats: {
@@ -219,27 +221,32 @@ let common = {
   },
   optimization,
   plugins,
-  mode,
   performance,
 };
 // -------------------------------------------------------------------------------
-if (isProd) {
-  console.log('\x1b[36mIs production mode\x1b[0m');
-  common = merge(common, {
-    mode: 'production',
-    optimization: {
-      minimize: true,
-      minimizer: [new TerserPlugin({ parallel: true })],
-    },
-  });
-} else {
-  console.log('\x1b[33mIs development mode\x1b[0m');
-  common = merge(common, {
-    devtool: 'eval-cheap-source-map',
-    devServer,
-  });
-}
+
 // -------------------------------------------------------------------------------
-module.exports = merge(common, {
-  // mode: 'production',
-});
+module.exports = (env, argv) => {
+  // Get Mode
+  const mode = argv.mode === 'production' ? 'production' : 'development';
+  const isProd = mode === 'production';
+  if (isProd) {
+    console.log('\x1b[36m 🙇🏼‍♀️ 🙇🏼 🙇🏼‍♂️  Is production mode\x1b[0m');
+    common = merge(common, {
+      mode: 'production',
+      optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({ parallel: 8 })],
+      },
+    });
+  } else {
+    console.log('\x1b[33m 🧘🏻‍♀️ 🧘🏻 🧘🏻‍♂️ Is development mode\x1b[0m');
+    common = merge(common, {
+      devtool: 'eval-cheap-source-map',
+      devServer,
+    });
+  }
+  const result = merge(common, { mode });
+  // console.log(result);
+  return result;
+};
