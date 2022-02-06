@@ -1,9 +1,9 @@
 import React from 'react';
 import { Menu } from 'antd';
-import Icon from '@ant-design/icons';
 import { MenuProps } from 'antd/lib/menu';
 
-import { SettingOutlined, QuestionCircleOutlined, LogoutOutlined } from '@ant-design/icons';
+import { LogoutOutlined, QuestionCircleOutlined, SettingOutlined } from '@ant-design/icons';
+
 export enum ActionType {
   SignOut = 1,
   Settings,

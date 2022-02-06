@@ -34,7 +34,7 @@ class App extends React.Component<RoutedProps> {
   protected loadingReaction?: IReactionDisposer;
 
   componentDidMount() {
-    console.log('App->componentDidMount');
+    // console.log('App->componentDidMount');
     const { store, connection } = this.props;
 
     this.loadingReaction = reaction(

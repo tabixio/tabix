@@ -1,7 +1,6 @@
 import React from 'react';
 import { Flex, FlexProps } from 'reflexy';
 import { Dropdown, Menu, Select } from 'antd';
-import Icon from '@ant-design/icons';
 import { SelectValue } from 'antd/lib/select';
 import { ServerStructure } from 'services';
 import { Statistics } from 'services/api/DataDecorator';
@@ -9,6 +8,7 @@ import { MenuInfo } from 'rc-menu/lib/interface';
 import ActionButton, { Props as ActionButtonProps } from './ActionButton';
 import RequestStats from '../../RequestStats';
 import css from './Toolbar.css';
+import { CaretRightOutlined, ForwardOutlined, SaveOutlined } from '@ant-design/icons';
 
 export enum ActionType {
   Save = 1,
@@ -51,12 +51,12 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
     const menu = (
       <Menu onClick={onActionMenuClick}>
         <Menu.Item key={ActionType.RunCurrent}>
-          <Icon type="caret-right" style={{ color: 'green' }} />
+          <CaretRightOutlined style={{ color: 'green' }} />
           Run current ⌘ + ⏎
         </Menu.Item>
 
         <Menu.Item key={ActionType.RunAll}>
-          <Icon type="forward" style={{ color: 'green' }} />
+          <ForwardOutlined style={{ color: 'green' }} />
           Run all ⇧ + ⌘ + ⏎
         </Menu.Item>
       </Menu>
@@ -67,14 +67,16 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
         <Flex shrink={false}>
           <SpaceH />
           <Dropdown.Button size="small" onClick={onActionRunRunCurrent} overlay={menu}>
-            <Icon type="caret-right" style={{ color: 'green' }} />
+            <CaretRightOutlined style={{ color: 'green' }} />
             <b>Run current</b>
           </Dropdown.Button>
 
           <SpaceH />
 
           {/*icon="save"*/}
-          <ActionButton size="small" actionType={ActionType.Save} onAction={onAction} />
+          <ActionButton size="small" actionType={ActionType.Save} onAction={onAction}>
+            <SaveOutlined />
+          </ActionButton>
 
           <SpaceH />
 

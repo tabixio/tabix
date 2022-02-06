@@ -73,7 +73,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   };
 
   componentDidMount() {
-    console.log('DataTableProps->componentDidMount');
+    // console.log('DataTableProps->componentDidMount');
     sizeSensor.bind(this.rootRef.current, (el) => {
       // Use callback only when parent resizing finished,
       // so callback will called only when resize finished.
@@ -87,7 +87,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   }
 
   componentWillUnmount() {
-    console.log('DataTableProps->componentWillUnmount');
+    // console.log('DataTableProps->componentWillUnmount');
     sizeSensor.clear(this.rootRef.current);
   }
 

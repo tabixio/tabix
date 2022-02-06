@@ -16,7 +16,6 @@ function render(
   store: ReturnType<typeof initStores>,
   cb?: () => void
 ) {
-  console.warn('supportsHistory', supportsHistory());
   ReactDOM.render(
     <Provider store={store}>
       <BrowserRouter forceRefresh={!supportsHistory()}>

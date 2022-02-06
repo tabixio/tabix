@@ -1,21 +1,16 @@
 .root {
   :global {
-    /*
+    .ant-tabs-card > .ant-tabs-nav .ant-tabs-ink-bar {
+      visibility: visible;
+    }
 
-    .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-nav-container {
-  height: 40px;
-}
-    */
     & .ant-tabs-nav-container {
       height: 30px !important;
     }
 
-    & .ant-tabs-bar {
+    & .ant-tabs-top > .ant-tabs-nav {
       border-bottom: unset;
       margin-bottom: 0;
-      display: flex;
-      align-items: center;
-      flex-grow: 0;
 
       & div.ant-tabs-extra-content {
         flex-grow: 1;
@@ -31,10 +26,10 @@
         color: silver;
         line-height: 26px !important;
         background: unset !important;
-        border: unset !important;
-        border-left: rgba(255, 255, 255, 0.1) 1px solid !important;
-        border-top: rgba(255, 255, 255, 0.1) 1px solid !important;
-        padding-left: 9px !important;
+        /* border: unset !important; */
+        /* border-left: rgba(255, 255, 255, 0.1) 1px solid !important; */
+        /* border-top: rgba(255, 255, 255, 0.1) 1px solid !important; */
+        /* padding-left: 9px !important; */
         margin-right: 0;
         border-radius: unset !important;
 
