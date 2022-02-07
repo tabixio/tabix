@@ -146,7 +146,7 @@
     "react-router-dom": "5.2.0",
     "react-split-pane": "^0.1.92",
     "react-virtualized": "^9.22.3",
-    "react-virtualized-tree": "^3.4.1",
+    "react-virtualized-tree": "2.3.10",
     "reflexy": "^2.3.3",
     "size-sensor": "^1.0.1",
     "sql-formatter": "^2.3.2",

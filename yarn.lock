@@ -15967,9 +15967,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtualized-tree@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "react-virtualized-tree@npm:3.4.1"
+"react-virtualized-tree@npm:2.3.10":
+  version: 2.3.10
+  resolution: "react-virtualized-tree@npm:2.3.10"
   dependencies:
     classnames: ^2.2.5
     lodash: ^4.17.4
@@ -15984,7 +15984,7 @@ __metadata:
     react: 16.x
     react-dom: ^16.2.0
     react-virtualized: ^9.13.0
-  checksum: 23318ba6e7f09541d5b09be6cc08563328efd7a02f5b8988cfe53ee4f3f832852a9da883735cd139c9025e6ef07512d0ca9567e753355e812f4f17d326a77ff7
+  checksum: c9feffe2af148fa5b9308f3fe2cec2f8e2d8ab70d48c09bc3eb5730cf5c8dde64a0d98382dab60066315cd85795fdd6c80c3b0b6b0f5394bb11a3adef6fd5945
   languageName: node
   linkType: hard
 
@@ -18387,7 +18387,7 @@ __metadata:
     react-router-dom: 5.2.0
     react-split-pane: ^0.1.92
     react-virtualized: ^9.22.3
-    react-virtualized-tree: ^3.4.1
+    react-virtualized-tree: 2.3.10
     reflexy: ^2.3.3
     rimraf: ^2.6.1
     size-sensor: ^1.0.1

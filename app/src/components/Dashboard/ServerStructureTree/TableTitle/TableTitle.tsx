@@ -5,7 +5,17 @@ import { ServerStructure } from 'services';
 import ContextMenu, { ContextMenuProps, TableAction } from './ContextMenu';
 import css from './TableTitle.css';
 
-import { TableOutlined } from '@ant-design/icons';
+import {
+  BookOutlined,
+  CloudOutlined,
+  EyeOutlined,
+  FireOutlined,
+  ForkOutlined,
+  GatewayOutlined,
+  ReadOutlined,
+  ShopOutlined,
+  TableOutlined,
+} from '@ant-design/icons';
 
 type Props = ContextMenuProps;
 
@@ -23,17 +33,16 @@ export default class TableTitle extends React.Component<Props> {
   };
 
   private getIconTable = (table: ServerStructure.Table): JSX.Element => {
-    return <TableOutlined />;
     // let classEngine = 'table';
-    // if (table.engine.match(/Dictionary.*/)) classEngine = 'book';
-    // if (table.engine.match(/Distributed.*/)) classEngine = 'cloud';
-    // if (table.engine.match(/AggregatingMergeTree.*/)) classEngine = 'fork';
-    // if (table.engine.match(/MaterializedView.*/)) classEngine = 'eye';
-    // if (table.engine.match(/SummingMergeTree.*/)) classEngine = 'read';
-    // if (table.engine.match(/CollapsingMergeTree.*/)) classEngine = 'gateway';
-    // if (table.engine.match(/$Merge^/)) classEngine = 'source-fork';
-    // if (table.engine.match(/$TinyLog^/)) classEngine = 'fire';
-    // return classEngine;
+    if (table.engine.match(/Dictionary.*/)) return <BookOutlined />;
+    if (table.engine.match(/Distributed.*/)) return <CloudOutlined />;
+    if (table.engine.match(/AggregatingMergeTree.*/)) return <ForkOutlined />;
+    if (table.engine.match(/MaterializedView.*/)) return <EyeOutlined />;
+    if (table.engine.match(/SummingMergeTree.*/)) return <ReadOutlined />;
+    if (table.engine.match(/CollapsingMergeTree.*/)) return <GatewayOutlined />;
+    if (table.engine.match(/$Merge^/)) return <ShopOutlined />;
+    if (table.engine.match(/$TinyLog^/)) return <FireOutlined />;
+    return <TableOutlined />;
   };
 
   render() {
