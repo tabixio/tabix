@@ -51,15 +51,15 @@ export class Query {
     this.id = id;
   }
   public getSQL(): string {
-    const format = this.settings.format ? ` FORMAT ` + this.settings.format : '';
+    const format =
+      this.settings.format && !this.settings.isFormatSet ? ` FORMAT ` + this.settings.format : '';
     const id = `/*TABIX_QUERY_ID_${this.id}*/`;
-
     return this.sql + `\n\n${format}\n\n${id}`;
   }
 
   public setJsonFormat(): void {
     this.settings.format = 'JSON';
-    this.settings.isFormatSet = true;
+    this.settings.isFormatSet = false;
   }
 }
 

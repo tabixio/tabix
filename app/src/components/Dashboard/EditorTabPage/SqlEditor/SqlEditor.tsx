@@ -24,8 +24,9 @@ type iCodeEditor = monaco.editor.ICodeEditor;
 // ------------------------------------------------------------------------------------
 export interface SqlEditorProps extends Omit<ToolbarProps, 'databases'>, FlexProps {
   content: string;
-  onContentChange: (content: string) => void;
+  onContentChange?: (content: string) => void;
   serverStructure?: ServerStructure.Server;
+  readonly?: boolean;
 }
 
 // ------------------------------------------------------------------------------------
@@ -48,15 +49,12 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   }
 
   componentWillUnmount() {
-    // Todo : goto useEffect()
-    console.log('SqlEditor->componentWillUnmount');
     this.setEditorRef(undefined);
     // !No disposeAll HERE!
   }
 
   UNSAFE_componentWillReceiveProps({ serverStructure }: SqlEditorProps) {
-    console.log('SqlEditor->UNSAFE_componentWillReceiveProps');
-    // Todo : goto useEffect()
+    // console.log('SqlEditor->UNSAFE_componentWillReceiveProps');
     if (serverStructure && serverStructure !== this.props.serverStructure) {
       this.updateGlobalEditorStructure(serverStructure);
     }
@@ -100,7 +98,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    * Init global editor
    */
   private onEditorBeforeMount = (thisMonaco: tMonaco): void => {
-    console.info('SqlEditor->onEditorBeforeMount');
+    // console.info('SqlEditor->onEditorBeforeMount');
     this.tMonaco = thisMonaco;
     thisMonaco.editor.defineTheme('cobalt', themeCobalt);
     // if (this.props.theme !== theme) thisMonaco.editor.setTheme(theme)
@@ -142,7 +140,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    * @param serverStructure
    */
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
-    console.info('SqlEditor->updateGlobalEditorStructure');
+    // console.info('SqlEditor->updateGlobalEditorStructure');
     if (!serverStructure) {
       console.warn('Error in updateGlobalEditorStructure, empty serverStructure!');
       return;
@@ -163,7 +161,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       this.EditorHelper.register(this.tMonaco);
     }
 
-    // Обрабатываем текущий запрос в акивном таб/окне
+    // Обрабатываем текущий запрос в активном таб/окне
     this.processCurrent();
   };
 
@@ -172,15 +170,15 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    *
    * @private
    */
-  private processCurrent(): void {
+  private processCurrent = (): void => {
     const q = this.editor?.getValue();
     const uriModel = this.editor?.getModel()?.uri.toString();
-    if (q && uriModel) {
+    if (q && uriModel && this.EditorHelper.getLanguage()) {
       this.processSQL(uriModel, q).catch();
     } else {
-      console.info('Can`t processCurrent, not set q or uri', q, uriModel);
+      // console.info('Can`t processCurrent, not set q or uri', q, uriModel);
     }
-  }
+  };
 
   /**
    * Call EditorHelper->LanguageWorker.parseAndApplyModel()
@@ -193,7 +191,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       // console.warn('processSQL');
       await this.EditorHelper.OnChange(modelUri, value);
     } else {
-      console.info('Error on languageValueOnChange, EditorHelper.isReady = false');
+      console.info('In processSQL, error on languageValueOnChange, EditorHelper.isReady = false');
     }
   }
 
@@ -216,7 +214,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     if (value !== undefined && uriModel) {
       // Update model
       const { onContentChange } = this.props;
-      onContentChange(value);
+      onContentChange && onContentChange(value);
       // Registration delay timer 2000мс -> parse & validate
       this.delayLanguageValueOnChange(uriModel, value);
     }
@@ -230,7 +228,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
     const self = this;
     // Bind keys to Editor
     bindKeys(editor, thisMonaco, self);
-    console.info('SqlEditor->onEditorMount()');
+    // console.info('SqlEditor->onEditorMount()');
     this.processCurrent();
   };
 
@@ -258,11 +256,11 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
       onDatabaseChange,
       onContentChange,
       content,
-      onAction,
       stats,
       className,
       ...rest
     } = this.props;
+
     return (
       <Flex column className={classNames(css.root, className)} {...rest}>
         <Flex grow fill className={css.editor}>

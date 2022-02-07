@@ -2,7 +2,7 @@ import React from 'react';
 import { QueryResult } from 'models';
 import DataDecorator from 'services/api/DataDecorator';
 import { ItemCallback } from 'react-grid-layout';
-import GridLayout, { GridLayoutProps, ItemLayoutProps, getItemLayoutDefault } from '../GridLayout';
+import GridLayout, { getItemLayoutDefault, GridLayoutProps, ItemLayoutProps } from '../GridLayout';
 import css from './DataItemsLayout.css';
 
 interface Props extends GridLayoutProps<QueryResult> {
@@ -24,18 +24,23 @@ function getItemLayout(
 export default function DataItemsLayout({ items, renderItem, onResize, ...rest }: Props) {
   return (
     <GridLayout items={items} onResizeStop={onResize} getItemLayout={getItemLayout} {...rest}>
-      {items.map(item => (
+      {items.map((item) => (
         <div key={item.id} className={css['grid-item']}>
           {item.result.fold(
-            ex => (
-              <textarea className={css.error} value={String(ex)} />
+            (ex) => (
+              <textarea className={css.error} defaultValue={String(ex)} />
             ),
-            data => {
+            (data) => {
               if (!data.isResultText) {
                 return renderItem(data);
               }
               // Example query: SELECT * FROM system.tables format Vertical
-              return <textarea className={css.text} value={data.text} />;
+
+              if (data.error) {
+                return <textarea className={css.error} defaultValue={data.text} />;
+              }
+
+              return <textarea className={css.text} defaultValue={data.text} />;
             }
           )}
         </div>

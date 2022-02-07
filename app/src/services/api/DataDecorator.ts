@@ -1,4 +1,5 @@
 import { Query } from './Query';
+import { QueryResponse } from './provider/CoreProvider';
 
 // export enum DataType {
 //   String = 'String',
@@ -68,8 +69,8 @@ export default class DataDecorator {
 
   isHaveData = false;
 
-  constructor(result?: any, _query?: Query | undefined) {
-    this.query = _query;
+  constructor(result?: QueryResponse) {
+    this.query = undefined;
     this.rows = [];
     this.meta = { columns: [] }; // name: "number" type: "UInt64"
     this.stats = {
@@ -79,7 +80,18 @@ export default class DataDecorator {
     };
     // ---- Reset `data`
     this.reset();
-    this.apply(result);
+
+    if (result) {
+      // QueryResponse
+      this.query = result.query;
+
+      if (result.isError) {
+        this.error = true;
+        this.apply(result.error);
+      } else {
+        this.apply(result.response);
+      }
+    }
   }
 
   private updateDT() {

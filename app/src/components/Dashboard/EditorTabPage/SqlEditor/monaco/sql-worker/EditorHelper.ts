@@ -37,10 +37,11 @@ export class EditorHelper {
 
   constructor() {
     this.id = this.makeQueryId();
-    console.info('SqlWorker->create');
-    //
+    // console.info('EditorHelper->create');
   }
-
+  public getLanguage(): SupportLanguage | null {
+    return this.language;
+  }
   private languageParser(): CommonSQL {
     if (!this.language) {
       throw 'Error can`t CommonSQL() not set language';
@@ -52,23 +53,19 @@ export class EditorHelper {
     // hack for HotReload monacoEditor  когда hotReload или обновление структуры нужно удалить через dispose() созданные элементы
     if (!window.monacoGlobalProvider || !window.monacoGlobalProvider.IDisposable) {
       // ./app/types/app/index.d.ts
-      console.warn('Reset window.monacoGlobalProvider.IDisposable');
       window.monacoGlobalProvider = {
         IDisposable: [] as Array<tbxIDisposable>,
       };
     }
     window.monacoGlobalProvider.IDisposable.push({ d: d, id: helperId });
-    console.info(
-      `SqlWorker->addDisposable(${helperId})`,
-      window.monacoGlobalProvider.IDisposable.length
-    );
+    // console.info( `EditorHelper->addDisposable(${helperId})`, window.monacoGlobalProvider.IDisposable.length );
   }
 
   public static disposeAll() {
     // see addDisposable(x)
     // hack for HotReload monacoEditor
     if (window.monacoGlobalProvider && window.monacoGlobalProvider.IDisposable.length) {
-      console.info(`SqlWorker->disposeAll()`);
+      // console.info(`EditorHelper->disposeAll()`);
       // clean
       for (let i: number = window.monacoGlobalProvider.IDisposable.length - 1; i >= 0; i -= 1) {
         const d = window.monacoGlobalProvider.IDisposable[i];
@@ -89,35 +86,36 @@ export class EditorHelper {
       this.onLanguageChange();
     }
     this.language = language;
+    // console.info('EditorHelper->applyLanguage');
   }
 
   public onLanguageChange(): void {
     // ------------------------
-    console.warn('!!! SqlWorker -> onLanguageChange');
+    console.warn('!!! EditorHelper -> onLanguageChange');
     // ------------------------
   }
 
   public applyServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco): void {
-    console.info('SqlWorker->applyServerStructure() ');
+    console.info('EditorHelper->applyServerStructure() ');
     this.serverStructure = serverStructure;
     LanguageWorker.setServerStructure(serverStructure);
   }
 
   public register(thisMonaco: tMonaco): void {
-    console.info('SqlWorker-> try Register()');
+    // console.info('EditorHelper->Try Register()');
     if (!this.language) {
       console.error('Not set language', this.language);
       return;
     }
     if (this.isRegistred) {
-      console.info('SqlWorker->Register() - skip, already done');
+      console.info('EditorHelper->Register() - skip, already done');
       return;
     }
     if (!this.serverStructure) {
-      console.info('SqlWorker->Register() - skip, not set serverStructure');
+      console.info('EditorHelper->Register() - skip, not set serverStructure');
       return;
     }
-    console.info('SqlWorker->Register()');
+    console.info('EditorHelper->Register()');
     // Link
     this.monaco = thisMonaco;
     // Register
@@ -135,15 +133,15 @@ export class EditorHelper {
 
   public isReady(): boolean {
     if (!this.language) {
-      console.warn('SQL_WORKER not ready - language = false');
+      console.info('EditorHelper->WORKER not ready - language = false');
       return false;
     }
     if (!this.ready) {
-      console.warn('SQL_WORKER not ready - ready = false');
+      console.info('EditorHelper->WORKER not ready - ready = false');
       return false;
     }
     if (!this.monaco) {
-      console.warn('SQL_WORKER not ready - monaco = false');
+      console.info('EditorHelper->WORKER not ready - monaco = false');
       return false;
     }
     return this.ready;
@@ -333,9 +331,6 @@ export class EditorHelper {
         }
       }
 
-      // insert TABIX_QUERY_ID
-      // query.sql = `/*TABIX_QUERY_ID_${query.id}*/ ${query.sql}`;
-
       if (!query.settings.isFormatSet) {
         // Если у запроса НЕ указан формат
         // query.sql = `${query.sql}\n${query.settings.format}`;
@@ -516,7 +511,8 @@ export class EditorHelper {
           splitRange.tokens.forEach((oToken: oneToken) => {
             if (oToken.type === 'storage.sql') {
               isFormatSet = true;
-              format = oToken.text.trim();
+              // format = oToken.text.trim().replace('FORMAT ', '');
+              // console.log('formatformatformatformatformat', format);
             }
             if (oToken.type === 'keyword.other.DML.sql') {
               if (['SELECT'].indexOf(oToken.text.toUpperCase().trim()) !== -1) {

@@ -1,8 +1,8 @@
 import sqlFormatter from 'sql-formatter';
-import {action, IReactionDisposer, observable, reaction, runInAction, when} from 'mobx';
-import {None, Option, Some, Try} from 'funfix-core';
-import {createViewModel, ViewModelLike, withRequest} from 'module/mobx-utils';
-import {Query, ServerStructure, sqlHistoryStorage, tabsStorage} from 'services';
+import { action, IReactionDisposer, observable, reaction, runInAction, when } from 'mobx';
+import { None, Option, Some, Try } from 'funfix-core';
+import { createViewModel, ViewModelLike, withRequest } from 'module/mobx-utils';
+import { Query, ServerStructure, sqlHistoryStorage, tabsStorage } from 'services';
 import {
   createTabFrom,
   DbOverviewTabModel,
@@ -17,8 +17,8 @@ import {
   TabModel,
   TabType,
 } from 'models';
-import {Statistics} from 'services/api/DataDecorator';
-import {TextInsertType} from 'components/Dashboard/EditorTabPage';
+import { Statistics } from 'services/api/DataDecorator';
+import { TextInsertType } from 'components/Dashboard/EditorTabPage';
 import DashboardUIStore from './DashboardUIStore';
 import ApiRequestableStore from './ApiRequestableStore';
 
@@ -40,31 +40,31 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   protected initialize() {
     this.autosaveTimer = window.setInterval(() => {
-      tabsStorage.saveTabs(this.tabs.map(_ => _.toJSON()));
+      tabsStorage.saveTabs(this.tabs.map((_) => _.toJSON()));
     }, 30000);
 
     this.changeTabsReaction = reaction(
       () => this.tabs,
-      tabs => tabsStorage.saveTabs(tabs.map(_ => _.toJSON()))
+      (tabs) => tabsStorage.saveTabs(tabs.map((_) => _.toJSON()))
     );
 
     this.changeActiveTabReaction = reaction(
       () => this.activeTab,
-      tab => {
+      (tab) => {
         this.resetTabViewState();
-        tabsStorage.saveActiveTabId(tab.map(t => t.id).orUndefined());
+        tabsStorage.saveActiveTabId(tab.map((t) => t.id).orUndefined());
       }
     );
   }
 
   getActiveTabOfType<T extends TabModel<Tab>>(type: T['type']): Option<T> {
-    return this.activeTab.flatMap(t => (isTabOfType<T>(t, type) ? Some(t) : None));
+    return this.activeTab.flatMap((t) => (isTabOfType<T>(t, type) ? Some(t) : None));
   }
 
   getActiveEditorDatabase(): Option<string> {
     return this.rootStore.tabsStore
       .getActiveTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.currentDatabase);
+      .flatMap((t) => t.currentDatabase);
   }
 
   @withRequest
@@ -80,7 +80,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
       if (this.activeTab.isEmpty()) {
         this.activeTab = activeTabId
-          .flatMap(id => Option.of(this.tabs.find(t => t.id === id)))
+          .flatMap((id) => Option.of(this.tabs.find((t) => t.id === id)))
           .orElseL(() => Option.of(this.tabs.length ? this.tabs[0] : undefined));
       }
     });
@@ -101,7 +101,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   @action.bound
   setActiveTab(id: string) {
-    this.activeTab = Option.of(this.tabs.find(_ => _.id === id));
+    this.activeTab = Option.of(this.tabs.find((_) => _.id === id));
   }
 
   // todo: fix if name already exists
@@ -113,7 +113,9 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
       title: this.getNewTabName(),
       content,
       currentDatabase: this.getActiveEditorDatabase()
-        .orElse(this.rootStore.treeStore.serverStructure.map(s => s.databases[0]).map(d => d.name))
+        .orElse(
+          this.rootStore.treeStore.serverStructure.map((s) => s.databases[0]).map((d) => d.name)
+        )
         .orUndefined(),
     });
     this.tabs = this.tabs.concat(newTab);
@@ -122,9 +124,9 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   @action
   private openSpecialTab<T extends TabModel<any>>(id: T['id'], factory: () => T) {
-    if (this.activeTab.map(_ => _.id === id).getOrElse(false)) return;
+    if (this.activeTab.map((_) => _.id === id).getOrElse(false)) return;
 
-    let tab = this.tabs.find(_ => _.id === id);
+    let tab = this.tabs.find((_) => _.id === id);
     if (!tab) {
       tab = factory();
       this.tabs = this.tabs.concat(tab);
@@ -135,7 +137,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   @action
   openTableTab(table: ServerStructure.Table) {
     this.openSpecialTab(TabType.TableView, () =>
-      TableViewTabModel.from({tableName: table.name, tableId: table.id})
+      TableViewTabModel.from({ tableName: table.name, tableId: table.id })
     );
   }
 
@@ -166,22 +168,22 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   @action.bound
   removeTab(id: string) {
-    this.tabs = this.tabs.filter(t => t.id !== id);
+    this.tabs = this.tabs.filter((t) => t.id !== id);
     this.activeTab = Option.of(this.tabs[this.tabs.length - 1]);
   }
 
   @action.bound
   insertTextToEditor(text: string, insertType: TextInsertType = TextInsertType.Sql) {
     this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.codeEditor)
-      .forEach(editor => editor.insertText(text, insertType));
+      .flatMap((t) => t.codeEditor)
+      .forEach((editor) => editor.insertText(text, insertType));
   }
 
   @action.bound
   insertColumnToEditor(coll: ServerStructure.Column) {
     this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
-      .flatMap(t => t.codeEditor)
-      .forEach(editor => editor.insertColumn(coll));
+      .flatMap((t) => t.codeEditor)
+      .forEach((editor) => editor.insertColumn(coll));
   }
 
   async insertTableSQLDescribe(table: ServerStructure.Table) {
@@ -221,7 +223,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   @withRequest.bound
   async saveEditedTab() {
-    this.editedTab.forEach(tab => {
+    this.editedTab.forEach((tab) => {
       tab.submit();
       tabsStorage.saveTab(tab.model.toJSON());
       this.hideSaveModal();
@@ -230,13 +232,13 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   private resetTabViewState() {
     if (this.editedTab.isEmpty()) return;
-    this.editedTab.forEach(t => t.reset());
+    this.editedTab.forEach((t) => t.reset());
     this.editedTab = None;
   }
 
   @action
   showSaveModal() {
-    this.getActiveTabOfType<EditorTabModel>(TabType.Editor).forEach(tab => {
+    this.getActiveTabOfType<EditorTabModel>(TabType.Editor).forEach((tab) => {
       this.editedTab = Option.of(createViewModel(tab));
     });
   }
@@ -250,7 +252,7 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
     if (!queries.length) return;
 
     // Save history
-    sqlHistoryStorage.addItems(queries.map(_ => _.sqlOriginal));
+    sqlHistoryStorage.addItems(queries.map((_) => _.sqlOriginal));
 
     const extendSettings = {
       max_execution_time: 20, // ToDo:Read from Store.User.Tabix.Settings
@@ -258,11 +260,11 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
     };
 
     await this.getActiveTabOfType<EditorTabModel>(TabType.Editor)
-      .map(async t => {
+      .map(async (t) => {
         const tab = t;
 
         const results = await Promise.all(
-          queries.map(async query => {
+          queries.map(async (query) => {
             const q = query;
             q.settings.extendSettings = extendSettings;
 
@@ -272,13 +274,13 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
             try {
               const fetchResult = await this.api.fetch(q);
-              return {id: q.id, result: Try.success(fetchResult)};
+              return { id: q.id, result: Try.success(fetchResult) };
             } catch (ex) {
-              return {id: q.id, result: Try.failure(ex)};
+              return { id: q.id, result: Try.failure(ex) };
             } finally {
               runInAction(() => {
                 this.uiStore.executingQueries = this.uiStore.executingQueries.filter(
-                  eq => eq.id !== q.id
+                  (eq) => eq.id !== q.id
                 );
               });
             }
@@ -288,15 +290,15 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
         const stats = results.reduce(
           (acc, i) => {
             i.result
-              .map(d => d.stats)
-              .forEach(s => {
+              .map((d) => d.stats)
+              .forEach((s) => {
                 acc.timeElapsed += s.timeElapsed;
                 acc.rowsRead += s.rowsRead;
                 acc.bytesRead += s.bytesRead;
               });
             return acc;
           },
-          {timeElapsed: 0, rowsRead: 0, bytesRead: 0} as Statistics
+          { timeElapsed: 0, rowsRead: 0, bytesRead: 0 } as Statistics
         );
 
         runInAction(() => {

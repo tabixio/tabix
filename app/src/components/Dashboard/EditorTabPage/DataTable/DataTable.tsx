@@ -22,11 +22,13 @@ import css from './DataTable.css';
 export interface DataTableProps {
   data: DataDecorator;
   dataUpdate?: number;
+  height?: number;
   onAction?: (action: ResultActionType, data: any) => void;
 }
 
 interface State {
   width?: number;
+  height?: number;
 }
 
 const hotTableSettings: Handsontable.DefaultSettings = {
@@ -69,7 +71,8 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   private tableRef = React.createRef<HotTable>();
 
   state: State = {
-    width: undefined,
+    width: undefined, // ширина
+    height: undefined, // высота
   };
 
   componentDidMount() {
@@ -79,9 +82,14 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
       // so callback will called only when resize finished.
       // Otherwise performance issue of hottable update.
       const width = el ? el.clientWidth : this.state.width;
+      const height = el ? el.clientHeight : this.state.height;
       if (width && width !== this.state.width) {
         // For update hottable when resizing
         this.setState({ width });
+      }
+      if (height && height !== this.state.height) {
+        // For update hottable when resizing
+        // this.setState({ height });
       }
     });
   }
@@ -129,7 +137,7 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
   // };
 
   render() {
-    const { data, onAction, className, dataUpdate, ...flexProps } = this.props;
+    const { data, onAction, className, height, dataUpdate, ...flexProps } = this.props;
     // todo: refactor with DataDecorator?
 
     const columns = data.meta?.columns?.map(getFormatForColumn);
@@ -141,21 +149,22 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     // hotTableSettings.update=123;
     return (
       <Flex
-        style={{ border: '0px solid red' }}
+        style={{ border: '0px solid silver' }}
         componentRef={this.rootRef}
         column
         className={classNames(css.root, className)}
         {...flexProps}
       >
         <HotTable
-          style={{ border: '0px solid red' }}
+          style={{ border: '1px solid red' }}
           ref={this.tableRef}
           settings={hotTableSettings}
           columns={columns}
+          height={height}
           data={data.rows}
           contextMenu={createContextMenu(this.onContextMenuItemClick)}
         />
-        {dataUpdate}
+        {/*{dataUpdate}*/}
       </Flex>
     );
   }

@@ -37,10 +37,10 @@ class ServerStructureTree extends React.Component<Props> {
     ],
   };
 
-  private load() {
+  private load = () => {
     const { store } = this.props;
     store.loadData(this.attachItems);
-  }
+  };
 
   componentDidMount() {
     this.load();

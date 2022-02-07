@@ -7,7 +7,7 @@ import { PromisePool } from '@supercharge/promise-pool';
 export interface QueryResponse {
   response: any;
   query: Query;
-  error: any;
+  error: string | null;
   isError: boolean;
 }
 export interface QueryResponseKey {

@@ -60,7 +60,9 @@ class MetricsTabPage extends React.Component<Props> {
   };
   renderTable(table: string) {
     if (this.data[table]) {
-      return <DataTable dataUpdate={this.state.dataUpdate} data={this.data[table]} fill />;
+      return (
+        <DataTable dataUpdate={this.state.dataUpdate} height={300} data={this.data[table]} fill />
+      );
     } else {
       return <b>{table} not ready</b>;
     }
@@ -70,7 +72,11 @@ class MetricsTabPage extends React.Component<Props> {
     const items = [];
     for (const key in this.pool) {
       const title: string = key;
-      items.push(<Panel header={title} key={title}></Panel>);
+      items.push(
+        <Panel header={title} key={title}>
+          {this.renderTable(key)}
+        </Panel>
+      );
     }
 
     return items;

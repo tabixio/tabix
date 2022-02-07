@@ -47,13 +47,13 @@ export default class Api {
   }
   public query(sql: string): Promise<DataDecorator> {
     return this.provider.query(sql).then((r: QueryResponse) => {
-      return new DataDecorator(r.response, r.query);
+      return new DataDecorator(r);
     });
   }
 
   async fetch(query: Query): Promise<DataDecorator> {
     const r = await this.provider.query(query);
-    return new DataDecorator(r.response, r.query);
+    return new DataDecorator(r);
   }
 
   getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<any> =>
