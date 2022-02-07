@@ -12691,7 +12691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor-webpack-plugin@npm:7.0.1":
+"monaco-editor-webpack-plugin@npm:^7.0.1":
   version: 7.0.1
   resolution: "monaco-editor-webpack-plugin@npm:7.0.1"
   dependencies:
@@ -12703,10 +12703,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:0.31.1":
-  version: 0.31.1
-  resolution: "monaco-editor@npm:0.31.1"
-  checksum: 65be40c5570e1186938490e47ac3a23ecd8faf1bda631091a6da1de8275f049efb8d9514fcb780ca40053adf8fe9229413b4c801d86ebbade078371acbb9df3b
+"monaco-editor@npm:^0.32.1":
+  version: 0.32.1
+  resolution: "monaco-editor@npm:0.32.1"
+  checksum: f63e96fadca3e46ee639c3c7fead95bc03413d4b47d27ffdf5636270e2753c45391e830dd34ae5404004b8fc6a06b50a91d9ae4b593e1fc21cfc20ee00ca98c5
   languageName: node
   linkType: hard
 
@@ -18365,8 +18365,8 @@ __metadata:
     mobx: ^5.8.0
     mobx-react: ^5.4.3
     mobx-utils: ^5.1.0
-    monaco-editor: 0.31.1
-    monaco-editor-webpack-plugin: 7.0.1
+    monaco-editor: ^0.32.1
+    monaco-editor-webpack-plugin: ^7.0.1
     normalize.css: ^8.0.1
     nunjucks: ^3.2.3
     plotly.js: 1.58.5

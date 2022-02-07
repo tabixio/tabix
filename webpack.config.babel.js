@@ -231,7 +231,7 @@ module.exports = (env, argv) => {
   const mode = argv.mode === 'production' ? 'production' : 'development';
   const isProd = mode === 'production';
   if (isProd) {
-    console.log('\x1b[36m 🙇🏼‍♀️ 🙇🏼 🙇🏼‍♂️  Is production mode\x1b[0m');
+    console.log('\x1b[36m 🙇🏼‍ 🙇🏼  Is production mode\x1b[0m');
     common = merge(common, {
       mode: 'production',
       optimization: {
@@ -240,7 +240,7 @@ module.exports = (env, argv) => {
       },
     });
   } else {
-    console.log('\x1b[33m 🧘🏻‍♀️ 🧘🏻 🧘🏻‍♂️ Is development mode\x1b[0m');
+    console.log('\x1b[33m 🧘🏻‍️   🧘🏻   🧘🏻‍️ Is development mode\x1b[0m');
     common = merge(common, {
       devtool: 'eval-cheap-source-map',
       devServer,
