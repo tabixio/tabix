@@ -5,7 +5,7 @@ import { Button, Collapse } from 'antd';
 import { RequestPool } from '../../../services/api/provider/CoreProvider';
 import { DataTable } from 'components/Dashboard';
 import { observer } from 'mobx-react';
-import { DataDecorator } from '../../../services';
+import { DataDecorator } from 'services';
 
 const { Panel } = Collapse;
 interface InjectedProps {

@@ -147,7 +147,6 @@ export default class DataDecorator {
 
   apply(result: any): void {
     // ---- if result from ClickHouse
-
     if (!result) {
       return;
     }
@@ -215,6 +214,23 @@ export default class DataDecorator {
     // this.draw = this.query.drawCommands;
     // this.position = this.query.index; // порядковый номер
     // this.countAll = result.countAllQuery; // всего запросов в выполнении
+  }
+
+  getStatementResponse(): string {
+    let ret = 'no?';
+    console.log(
+      'isStringColumnisStringColumn:',
+      this.isHaveData,
+      this.getColumn('statement'),
+      this.isStringColumn('statement')
+    );
+    if (this.isHaveData && this.isStringColumn('statement')) {
+      ret = 'find1';
+      if (this.rows[0] && this.rows[0]['statement']) {
+        return this.rows[0]['statement'];
+      }
+    }
+    return ret; //'Can`t getStatementResponse()';
   }
 
   findDateTimeOrDateColumn(): ColumnMetadata | null {
