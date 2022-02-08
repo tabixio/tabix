@@ -13,17 +13,23 @@ export default class TableViewTabModel extends TabModel<TableViewTab> implements
 
   tableId = '';
 
+  static id(tableId: string) {
+    return `${this.tabId}:${tableId}`;
+  }
+
   static from({
     tableName = 'NA_NULL',
     tableId = 'NA_NULL',
   }: Pick<JSONModel<Partial<TableViewTab>>, 'tableId' | 'tableName'>): TableViewTabModel {
-    return new TableViewTabModel({
+    const r = new TableViewTabModel({
       type: TabType.TableView,
-      id: `${this.tabId}:${tableId}`,
+      id: TableViewTabModel.id(tableId),
       title: tableName,
       tableId,
       tableName,
     });
+    console.warn(r);
+    return r;
   }
 
   protected constructor(data: TableViewTab) {

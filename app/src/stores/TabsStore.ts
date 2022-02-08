@@ -123,10 +123,14 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   }
 
   @action
-  private openSpecialTab<T extends TabModel<any>>(id: T['id'], factory: () => T) {
-    if (this.activeTab.map((_) => _.id === id).getOrElse(false)) return;
-
-    let tab = this.tabs.find((_) => _.id === id);
+  private openSpecialTab<T extends TabModel<any>>(
+    typeTab: T['type'],
+    tabId: T['id'] | null,
+    factory: () => T
+  ) {
+    if (this.activeTab.map((_) => (tabId ? _.id === tabId : _.type === typeTab)).getOrElse(false))
+      return;
+    let tab = this.tabs.find((_) => (tabId ? _.id === tabId : _.type === typeTab));
     if (!tab) {
       tab = factory();
       this.tabs = this.tabs.concat(tab);
@@ -136,34 +140,34 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
 
   @action
   openTableTab(table: ServerStructure.Table) {
-    this.openSpecialTab(TabType.TableView, () =>
+    this.openSpecialTab(TabType.TableView, TableViewTabModel.id(table.id), () =>
       TableViewTabModel.from({ tableName: table.name, tableId: table.id })
     );
   }
 
   @action
   openProcessesTab() {
-    this.openSpecialTab(TabType.Processes, () => ProcessesTabModel.from({}));
+    this.openSpecialTab(TabType.Processes, null, () => ProcessesTabModel.from({}));
   }
 
   @action
   openMetricsTab() {
-    this.openSpecialTab(TabType.Metrics, () => MetricsTabModel.from({}));
+    this.openSpecialTab(TabType.Metrics, null, () => MetricsTabModel.from({}));
   }
 
   @action
   openServerOverviewTab() {
-    this.openSpecialTab(TabType.ServerOverview, () => ServerOverviewTabModel.from({}));
+    this.openSpecialTab(TabType.ServerOverview, null, () => ServerOverviewTabModel.from({}));
   }
 
   @action
   openDbOverviewTab() {
-    this.openSpecialTab(TabType.DbOverview, () => DbOverviewTabModel.from({}));
+    this.openSpecialTab(TabType.DbOverview, null, () => DbOverviewTabModel.from({}));
   }
 
   @action
   openSqlHistoryTab() {
-    this.openSpecialTab(TabType.SqlHistory, () => SqlHistoryTabModel.from({}));
+    this.openSpecialTab(TabType.SqlHistory, null, () => SqlHistoryTabModel.from({}));
   }
 
   @action.bound

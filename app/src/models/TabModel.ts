@@ -23,8 +23,10 @@ export function isTabOfType<T extends Tab>(tab: Tab, type: T['type']): tab is T 
   return tab.type === type;
 }
 
-export default abstract class TabModel<T extends Tab> extends StoreModel<T>
-  implements Tab, SerializableModel<Tab> {
+export default abstract class TabModel<T extends Tab>
+  extends StoreModel<T>
+  implements Tab, SerializableModel<Tab>
+{
   readonly type: T['type'];
 
   @observable
@@ -37,6 +39,8 @@ export default abstract class TabModel<T extends Tab> extends StoreModel<T>
     super();
     this.type = type;
     this.id = id;
+
+    console.log('CRRATE TABL!>>>', this.id);
     this.title = title;
   }
 
