@@ -13,7 +13,7 @@ export default function DbTitle({ name, tableCount }: Props) {
     <Flex alignItems="center" hfill className={css.root}>
       <DatabaseOutlined />
       <div>{name}</div>
-      <Flex grow justifyContent="flex-end">
+      <Flex grow justifyContent="flex-end" style={{ fontSize: '80%' }}>
         {tableCount}
       </Flex>
     </Flex>

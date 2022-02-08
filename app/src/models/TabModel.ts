@@ -39,8 +39,6 @@ export default abstract class TabModel<T extends Tab>
     super();
     this.type = type;
     this.id = id;
-
-    console.log('CRRATE TABL!>>>', this.id);
     this.title = title;
   }
 

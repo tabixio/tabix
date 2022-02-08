@@ -5,6 +5,7 @@ import { Flex } from 'reflexy';
 import { typedInject } from 'module/mobx-utils';
 import { ServerStructure } from 'services';
 import { routePaths } from 'routes';
+import { Menu, Dropdown } from 'antd';
 import { Stores, TabsStore, TreeStore } from 'stores';
 import {
   DbOverviewTab,
@@ -25,6 +26,7 @@ import {
   LineChartOutlined,
   RadarChartOutlined,
   DatabaseOutlined,
+  TableOutlined,
 } from '@ant-design/icons';
 
 import {
@@ -181,6 +183,7 @@ class DashboardView extends React.Component<RoutedProps> {
     if (tab.type === TabType.Processes) return <HddOutlined />;
     if (tab.type === TabType.Metrics) return <LineChartOutlined />;
     if (tab.type === TabType.DbOverview) return <RadarChartOutlined />;
+    if (tab.type === TabType.TableView) return <TableOutlined />;
     if (tab.type === TabType.ServerOverview) return <DatabaseOutlined />;
     return <CodeOutlined />;
   };
@@ -192,6 +195,16 @@ class DashboardView extends React.Component<RoutedProps> {
       .getActiveTabOfType<EditorTabModel>(TabType.Editor)
       .map((t) => !!t.content)
       .getOrElse(false);
+
+    const tabRightMenu = (
+      <Menu>
+        <Menu.Item>Close other</Menu.Item>
+        <Menu.Item>Close All</Menu.Item>
+        <Menu.Item>Close Tabs to the Left</Menu.Item>
+        <Menu.Item>Close Tabs to the Rigth</Menu.Item>
+        <Menu.Item>Pin tab</Menu.Item>
+      </Menu>
+    );
 
     return (
       <Page column={false} uiStore={tabsStore.uiStore}>
@@ -225,10 +238,12 @@ class DashboardView extends React.Component<RoutedProps> {
                 key={t.id}
                 closable
                 tab={
-                  <span>
-                    {this.getTabIcon(t)}
-                    {t.title}
-                  </span>
+                  <Dropdown overlay={tabRightMenu} trigger={['contextMenu']}>
+                    <span>
+                      {this.getTabIcon(t)}
+                      {t.title}
+                    </span>
+                  </Dropdown>
                 }
               >
                 {isTabOfType<EditorTabModel>(t, TabType.Editor) && (

@@ -19,22 +19,29 @@ export default function ColumnTitle({ column, onAction }: ColumnTitleProps) {
     () => onAction && onAction(ColumnAction.DoubleClick, column),
     [column, onAction]
   );
-  const handleClick = useCallback(() => onAction && onAction(ColumnAction.Click, column), [
-    column,
-    onAction,
-  ]);
-  const br = '\n';
+  const handleClick = useCallback(
+    () => onAction && onAction(ColumnAction.Click, column),
+    [column, onAction]
+  );
+
+  const title = (t: string): string => {
+    t = t.replace('LowCardinality(', 'l(').replace('Nullable(', 'n(').replace('Array(', ' N(');
+
+    return t.substring(0, 15);
+  };
+  const br = '\n\n';
   return (
     <Tooltip
       title={`${column.name}${br}${column.type}${br}${br}${column.defaultType}`}
+      className={css.tooltip}
       placement="right"
     >
       <Flex alignItems="center" hfill onDoubleClick={handleDoubleClick}>
         <div className={css.name} onClick={handleClick}>
-          {column.name}
+          {column.name}&nbsp;&nbsp;
         </div>
         <Flex grow justifyContent="flex-end" className={css.type}>
-          {column.type && column.type.substring(0, 20)}
+          {title(column.type)}
         </Flex>
       </Flex>
     </Tooltip>

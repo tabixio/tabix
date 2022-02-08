@@ -2,10 +2,17 @@
   padding-left: 0.25em;
   font-family: Monaco, Menlo, Ubuntu Mono, Consolas, 'source-code-pro', 'monospace';
   font-size: 90%;
+  white-space: nowrap;
+  min-width: 150px;
+}
+
+.tooltip {
+  font-family: Monaco, Menlo, Ubuntu Mono, Consolas, 'source-code-pro', 'monospace';
 }
 
 .type {
   font-family: monospace;
-  font-size: 75%;
+  font-size: 70%;
   color: silver;
+  white-space: nowrap;
 }

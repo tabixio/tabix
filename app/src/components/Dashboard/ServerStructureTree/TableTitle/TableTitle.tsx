@@ -4,7 +4,6 @@ import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import ContextMenu, { ContextMenuProps, TableAction } from './ContextMenu';
 import css from './TableTitle.css';
-
 import {
   BookOutlined,
   CloudOutlined,
@@ -14,6 +13,7 @@ import {
   GatewayOutlined,
   ReadOutlined,
   ShopOutlined,
+  SmallDashOutlined,
   TableOutlined,
 } from '@ant-design/icons';
 
