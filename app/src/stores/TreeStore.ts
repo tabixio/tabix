@@ -13,7 +13,8 @@ export type TypedNode = Node & { children?: TypedNode[] } & (
     | ServerStructure.Table
     | ServerStructure.SpecialItem
     | ServerStructure.SpecialGroupItem
-    | ServerStructure.Column);
+    | ServerStructure.Column
+  );
 
 export type FilteredNodes = Array<
   | ServerStructure.Database
@@ -74,7 +75,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
   selectDbNode(dbName: EditorTab['currentDatabase']) {
     this.lastSelectedId && this.updateState(this.lastSelectedId, { selected: false });
 
-    dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach(n => {
+    dbName.flatMap(this.findDbNode.bind(this, this.treeNodes)).forEach((n) => {
       const node = n;
       node.state = { ...node.state, selected: true };
       this.lastSelectedId = node.id;
@@ -85,6 +86,8 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
   async loadData(attachItem: ServerStructure.SpecialArrayGroupItem) {
     // if (this.treeNodes.length) return;
     const structure = await this.api.loadDatabaseStructure();
+    // Check new build Tabix and Clickhouse compatibility
+    const updateTabix = await this.api.checkVersionUpdateTabix();
     runInAction(() => {
       this.serverStructure = Some(structure);
       this.generateNodes(structure, attachItem);
@@ -110,20 +113,20 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
     server: ServerStructure.Server,
     attachItem: ServerStructure.SpecialArrayGroupItem
   ) {
-    const children = server.databases.map(d => ({
+    const children = server.databases.map((d) => ({
       ...d,
-      children: d.tables.map(t => ({
+      children: d.tables.map((t) => ({
         ...t,
-        children: t.columns.map(c => ({ ...c })),
+        children: t.columns.map((c) => ({ ...c })),
       })),
     }));
     // Merge twice interface in array
     const cc: Array<any> = [];
-    children.forEach(n => {
+    children.forEach((n) => {
       cc.push(n);
     });
     attachItem.children &&
-      attachItem.children.forEach(n => {
+      attachItem.children.forEach((n) => {
         cc.push(n);
       });
     this.treeNodes = [
@@ -180,7 +183,7 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
   }
 
   private updateState(id: string, state: object) {
-    this.findNode(id, this.treeNodes).forEach(n => {
+    this.findNode(id, this.treeNodes).forEach((n) => {
       const node = n;
       node.state = { ...node.state, ...state };
     });

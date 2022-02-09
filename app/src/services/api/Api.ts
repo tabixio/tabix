@@ -28,7 +28,14 @@ export default class Api {
       throw new Error('Can`t fetch version server');
     }
     console.log(`Connection - OK, version: ${version}`);
+
     return new Api(provider, version);
+  }
+
+  static getTabixBuildVersion(): string {
+    // See webpack.DefinePlugin => ('./package.json').version
+    // @ts-ignore
+    return `${BUILD_VERSION}`.trim();
   }
 
   private constructor(
@@ -66,4 +73,19 @@ export default class Api {
     this.provider.makeTableDescribe(database, tablename);
 
   loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
+
+  checkVersionUpdateTabix = async () => {
+    try {
+      const v = await this.provider.checkVersionUpdateTabix(
+        Api.getTabixBuildVersion(),
+        this.version
+      );
+      if (v['update'] && v['currentVersion']) {
+        return v;
+      }
+    } catch (e) {
+      console.warn('Can`t check Tabix update');
+    }
+    return false;
+  };
 }

@@ -1,6 +1,6 @@
 {
   "name": "tabix",
-  "version": "21.12.0",
+  "version": "22.02.01",
   "description": "Tabix",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

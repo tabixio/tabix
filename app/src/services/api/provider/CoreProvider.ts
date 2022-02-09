@@ -34,6 +34,30 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
     return this.preparedQuery;
   }
 
+  protected getRequestInit(query: string): RequestInit {
+    const init: RequestInit = {
+      mode: 'cors',
+      method: 'post',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Encoding': 'gzip',
+      },
+      body: query,
+      // credentials: 'include', // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+    };
+    return init;
+  }
+
+  checkVersionUpdateTabix(build: string, ch: string): Promise<string> {
+    const url = `https://tabix.io/checkVersion/UpdateTabix?dt=` + Date.now();
+    const data = {
+      tabix: build,
+      clickhouse_compatibility: ch,
+    };
+    const init = this.getRequestInit(JSON.stringify(data));
+    return this.request(url, init);
+  }
+
   abstract getType(): ConnectionType;
 
   abstract query(query: Query | string): Promise<QueryResponse>;

@@ -1,6 +1,7 @@
 import path from 'path';
 import antdLessVars from './webpack/antd.less.vars';
 // ---------- Plugins ------------------------------------------------------------
+const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerPlugin = require('fork-ts-checker-webpack-plugin');
@@ -9,6 +10,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { getThemeVariables } = require('antd/dist/theme');
+const PACKAGE = require('./package.json');
+
+const VersionBuild = PACKAGE.version;
 // -------------------------------------------------------------------------------
 const baseDir = process.cwd();
 const devServerHost = '0.0.0.0'; // isWindows() ? '127.0.0.1' : '0.0.0.0';
@@ -74,6 +78,10 @@ const devServer = {
 const plugins = [
   // Removes/cleans build folders and unused assets when rebuilding
   new CleanWebpackPlugin(),
+  new webpack.DefinePlugin({
+    BUILD_VERSION: JSON.stringify(VersionBuild),
+    BUILD_TIME: Date.now(),
+  }),
   new ForkTsCheckerPlugin({
     typescript: {
       memoryLimit: 2048,
@@ -231,7 +239,7 @@ module.exports = (env, argv) => {
   const mode = argv.mode === 'production' ? 'production' : 'development';
   const isProd = mode === 'production';
   if (isProd) {
-    console.log('\x1b[36m 🙇🏼‍ 🙇🏼  Is production mode\x1b[0m');
+    console.log(`\x1b[36m 🙇🏼‍ 🙇🏼  Is production mode [${VersionBuild}] \x1b[0m`);
     common = merge(common, {
       mode: 'production',
       optimization: {
@@ -240,7 +248,7 @@ module.exports = (env, argv) => {
       },
     });
   } else {
-    console.log('\x1b[33m 🧘🏻‍️   🧘🏻   🧘🏻‍️ Is development mode\x1b[0m');
+    console.log(`\x1b[33m 🧘🏻‍️   🧘🏻   🧘🏻‍️ Is development mode [${VersionBuild}] \x1b[0m`);
     common = merge(common, {
       devtool: 'eval-cheap-source-map',
       devServer,

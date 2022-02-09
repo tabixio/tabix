@@ -10,20 +10,6 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return ConnectionType.Direct;
   }
 
-  private getRequestInit(query: string): RequestInit {
-    const init: RequestInit = {
-      mode: 'cors',
-      method: 'post',
-      headers: {
-        'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Encoding': 'gzip',
-      },
-      body: query,
-      // credentials: 'include', // Error : The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
-    };
-    return init;
-  }
-
   private getPresetSettings(extendSettings: any, urlParams: string | undefined): object {
     // Doc
     // ClickHouse/dbms/src/Interpreters/Settings.h :
