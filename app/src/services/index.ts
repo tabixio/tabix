@@ -2,6 +2,7 @@ import * as connectionsStorage from './connectionsStorage';
 import * as sqlHistoryStorage from './sqlHistoryStorage';
 
 import * as tabsStorage from './tabsStorage';
+export { default as TabixUpdate } from './TabixUpdate';
 
 export { connectionsStorage, sqlHistoryStorage, tabsStorage };
 export { default as Connection } from './Connection';
@@ -12,4 +13,4 @@ export { default as ServerStructure } from './api/ServerStructure';
 export * from './api/Query';
 export { default as EventEmitter } from './EventEmitter';
 export { default as PlotlyCreator } from './PlotlyCreator';
-export * from './api/provider/CoreProvider';
+export { default as CoreProvider, RequestPool } from './api/provider/CoreProvider';

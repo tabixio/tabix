@@ -87,7 +87,8 @@ export default class TreeStore extends ApiRequestableStore<DashboardUIStore> {
     // if (this.treeNodes.length) return;
     const structure = await this.api.loadDatabaseStructure();
     // Check new build Tabix and Clickhouse compatibility
-    const updateTabix = await this.api.checkVersionUpdateTabix();
+    // const updateTabix = await this.api.checkVersionUpdateTabix();
+    // TODO: show alert if need update tabix
     runInAction(() => {
       this.serverStructure = Some(structure);
       this.generateNodes(structure, attachItem);

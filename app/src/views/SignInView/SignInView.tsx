@@ -15,7 +15,6 @@ import css from './SignInView.css';
 interface InjectedProps {
   store: SignInStore;
 }
-
 export type Props = InjectedProps;
 
 type RoutedProps = Props & RouteComponentProps<any>;
@@ -48,7 +47,7 @@ class SignInView extends React.Component<RoutedProps> {
     const { store } = this.props;
 
     return (
-      <Page column={false} uiStore={store.uiStore}>
+      <Page column={false} showHeader={true} uiStore={store.uiStore}>
         <Splitter>
           <Flex alignItems="stretch" className={css['layout-connection-list']} vfill>
             <Layout>

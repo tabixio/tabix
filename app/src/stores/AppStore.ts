@@ -37,7 +37,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   async updateApi(api: Option<Api>) {
     if (this.api.equals(api)) return;
     runInAction(async () => {
-      //await this.clearAuth();
+      //
       runInAction(() => {
         this.api = api;
       });
@@ -48,6 +48,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   @withRequest
   async logout(history: History) {
     await this.updateApi(None);
+    await this.clearAuth();
     history.replace(routePaths.home.path);
   }
 
