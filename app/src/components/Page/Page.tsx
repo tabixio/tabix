@@ -1,10 +1,13 @@
 import React from 'react';
 import { Layout, notification } from 'antd';
+import { Badge } from 'antd';
+import { ClockCircleOutlined } from '@ant-design/icons';
+
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { IReactionDisposer, reaction } from 'mobx';
 import { observer } from 'mobx-react';
-import { UIStore } from 'module/mobx-utils';
+import { NotificationType, UIStore } from 'module/mobx-utils';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import css from './Page.css';
@@ -26,7 +29,7 @@ export default class Page extends React.Component<Props> {
     currentVersion: '',
     newVersion: '',
     link: '',
-    dataUpdate: Date.now(),
+    needUpdate: false,
   };
 
   constructor(props: Props) {
@@ -44,7 +47,7 @@ export default class Page extends React.Component<Props> {
             key: n.id.toString(),
             type: n.type,
             message: n.text,
-            description: '',
+            description: n.description,
             style: {
               width: 600,
               marginLeft: 335 - 600,
@@ -88,21 +91,37 @@ export default class Page extends React.Component<Props> {
   renderHeader() {
     return (
       <Header>
-        <div className="logo" />{' '}
+        <div className={css.logo}>
+          <img
+            className={css.logoimg}
+            src="https://tabix.io/img/logotabix.png?v=22"
+            alt="Tabix LOGO"
+          />
+        </div>
       </Header>
     );
   }
 
   checkVersionUpdateTabix = async () => {
+    const { uiStore } = this.props;
     try {
       this.state.currentVersion = TabixUpdate.getTabixBuildVersion();
       const v = await TabixUpdate.checkVersionUpdateTabix(undefined);
 
       if (v.haveUpdate) {
-        this.state.newVersion = v.newVersion;
-        this.state.link = v.link;
+        this.setState({
+          needUpdate: true,
+          newVersion: v.newVersion,
+          link: v.link,
+        });
+
+        uiStore?.addNotification({
+          type: NotificationType.info,
+          text: 'Update Tabix, new version: ' + v.newVersion,
+        });
+      } else {
+        this.setState({ needUpdate: false, newVersion: '' });
       }
-      console.log('checkVersionUpdateTabix', v);
     } catch (e) {
       console.warn('Can`t check Tabix update');
     }
@@ -111,9 +130,21 @@ export default class Page extends React.Component<Props> {
 
   renderFooter() {
     // Check update here?
-    const currentV = this.state.currentVersion;
 
-    return <Footer style={{ textAlign: 'center' }}>Tabix ©2022 Version: {currentV}</Footer>;
+    return (
+      <Footer style={{ textAlign: 'center' }}>
+        Tabix ©2022 Version: {this.state.currentVersion},
+        {this.state.needUpdate ? (
+          <Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>
+            <a target="_blank" href={this.state.link} rel="noreferrer">
+              Update new version {this.state.newVersion}
+            </a>
+          </Badge>
+        ) : (
+          'is last'
+        )}
+      </Footer>
+    );
   }
 
   render() {

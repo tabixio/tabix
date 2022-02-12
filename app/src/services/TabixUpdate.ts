@@ -26,7 +26,7 @@ export default class TabixUpdate {
     if (ch === undefined) {
       // if `&f=1` force show update -)
 
-      url = `https://tabix.io/checkVersion/UpdateTabix?&dt=${Date.now()}&version=${encodeURIComponent(
+      url = `https://tabix.io/checkVersion/UpdateTabix?&f=1&dt=${Date.now()}&version=${encodeURIComponent(
         versionTabix
       )}`;
     } else {

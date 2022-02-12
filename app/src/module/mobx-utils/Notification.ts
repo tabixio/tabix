@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 export type NotificationID = string | number;
 
 export enum NotificationType {
@@ -11,5 +13,6 @@ export default interface Notification {
   id: NotificationID;
   type: NotificationType | keyof typeof NotificationType;
   text: string;
+  description?: React.ReactNode | string;
   timeout?: number;
 }

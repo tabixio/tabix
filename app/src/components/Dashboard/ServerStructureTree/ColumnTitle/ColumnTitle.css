@@ -1,7 +1,6 @@
 .name {
-  padding-left: 0.25em;
-  font-family: Monaco, Menlo, Ubuntu Mono, Consolas, 'source-code-pro', 'monospace';
-  font-size: 90%;
+  padding-left: 0.05em;
+  font-size: 85%;
   white-space: nowrap;
   min-width: 150px;
 }

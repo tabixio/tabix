@@ -1,6 +1,12 @@
 import React, { useCallback } from 'react';
 import { Tooltip } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  BranchesOutlined,
+  ConsoleSqlOutlined,
+  FundViewOutlined,
+  CloudDownloadOutlined,
+} from '@ant-design/icons';
 import { Flex } from 'reflexy';
 import { ServerStructure } from 'services';
 import css from './CommandRowTitle.css';
@@ -24,11 +30,21 @@ export default function CommandRowTitle({ command, onAction }: CommandRowProps) 
     () => onAction && onAction(RowActionTypeAction.Click, command),
     [command, onAction]
   );
+  let icon = <CheckOutlined />;
+  // <ConsoleSqlOutlined />
+
+  if (command.command === ServerStructure.PagesCommands.Processes) icon = <BranchesOutlined />;
+  if (command.command === ServerStructure.PagesCommands.Metrics) icon = <FundViewOutlined />;
+  if (command.command === ServerStructure.PagesCommands.SqlHistory) icon = <ConsoleSqlOutlined />;
+  if (command.command === ServerStructure.PagesCommands.ServerOverview)
+    icon = <CloudDownloadOutlined />;
+
+  console.log('COSD>', command);
   const br = '\n';
   return (
     <Tooltip title={`${command.name}${br} ${br}${br} `} placement="right">
       <Flex alignItems="center" hfill onDoubleClick={handleDoubleClick}>
-        <CheckOutlined />
+        {icon}
         <div className={css.name} onClick={handleClick}>
           {command.name}
         </div>

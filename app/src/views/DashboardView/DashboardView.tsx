@@ -129,18 +129,18 @@ class DashboardView extends React.Component<RoutedProps> {
           this.props.tabsStore.openMetricsTab();
           break;
         }
-        // case ServerStructure.PagesCommands.ServerOverview: {
-        //   this.props.tabsStore.openServerOverviewTab();
-        //   break;
-        // }
+        case ServerStructure.PagesCommands.ServerOverview: {
+          this.props.tabsStore.openServerOverviewTab();
+          break;
+        }
         // case ServerStructure.PagesCommands.DbOverview: {
         //   this.props.tabsStore.openDbOverviewTab();
         //   break;
         // }
-        // case ServerStructure.PagesCommands.SqlHistory: {
-        //   this.props.tabsStore.openSqlHistoryTab();
-        //   break;
-        // }
+        case ServerStructure.PagesCommands.SqlHistory: {
+          this.props.tabsStore.openSqlHistoryTab();
+          break;
+        }
         default:
           break;
       }

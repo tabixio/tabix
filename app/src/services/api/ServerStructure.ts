@@ -44,7 +44,7 @@ namespace ServerStructure {
   }
 
   export interface SpecialItem extends Item {
-    command: string;
+    command: ServerStructure.PagesCommands;
   }
 
   export interface SpecialArrayGroupItem {

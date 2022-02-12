@@ -19,7 +19,7 @@ class ServerStructureTree extends React.Component<Props> {
     children: [
       {
         id: 'Server overview',
-        name: 'Server overview',
+        name: '# Info overview',
         type: 'server.overview',
         children: [
           {
@@ -31,6 +31,16 @@ class ServerStructureTree extends React.Component<Props> {
             id: 'Metrics',
             name: 'Metrics',
             command: ServerStructure.PagesCommands.Metrics,
+          } as ServerStructure.SpecialItem,
+          {
+            id: 'Server overview',
+            name: 'Server overview',
+            command: ServerStructure.PagesCommands.ServerOverview,
+          } as ServerStructure.SpecialItem,
+          {
+            id: 'Server query history',
+            name: 'Server query history',
+            command: ServerStructure.PagesCommands.SqlHistory,
           } as ServerStructure.SpecialItem,
         ],
       } as ServerStructure.SpecialGroupItem,

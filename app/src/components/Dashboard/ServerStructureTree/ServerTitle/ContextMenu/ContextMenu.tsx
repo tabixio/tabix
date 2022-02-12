@@ -27,11 +27,11 @@ export default function ContextMenu({ onContextMenuAction, server }: ContextMenu
 
   return (
     <Menu selectable={false} onClick={onClick}>
-      <Menu.Item key={ServerAction.OpenProcesses}>Список процессов сервера</Menu.Item>
-      <Menu.Item key={ServerAction.OpenDbOverview}>Обзор базы данных</Menu.Item>
-      <Menu.Item key={ServerAction.OpenServerOverview}>Обзор сервера</Menu.Item>
-      <Menu.Item key={ServerAction.OpenMetrics}>Метрики сервера</Menu.Item>
-      <Menu.Item key={ServerAction.OpenSqlHistory}>История sql запросов</Menu.Item>
+      <Menu.Item key={ServerAction.OpenProcesses}>Processes</Menu.Item>
+      <Menu.Item key={ServerAction.OpenDbOverview}>Db Overview</Menu.Item>
+      <Menu.Item key={ServerAction.OpenServerOverview}>Server Overview</Menu.Item>
+      <Menu.Item key={ServerAction.OpenMetrics}>Metrics server</Menu.Item>
+      <Menu.Item key={ServerAction.OpenSqlHistory}>History sql</Menu.Item>
     </Menu>
   );
 }
