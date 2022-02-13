@@ -137,7 +137,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return fetch(`${url}&query=${query}`, { method: 'GET' }).then((r) => r.text());
   }
 
-  async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<any> {
+  async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<QueryResponse> {
     const clusterList: Array<string> = [];
     if (this.clusters) {
       this.clusters.map((c) => {

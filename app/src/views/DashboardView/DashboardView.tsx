@@ -226,59 +226,62 @@ class DashboardView extends React.Component<RoutedProps> {
               onCommandAction={this.onCommandAction}
             />
           </Flex>
+          <Flex fill={true} column hfill className={css.baseContent}>
+            <Tabs
+              activeKey={tabsStore.activeTab.map((_) => _.id).orUndefined()}
+              onEdit={this.onEditTabs}
+              onChange={tabsStore.setActiveTab}
+              onMenuAction={this.onMenuAction}
+            >
+              {tabsStore.tabs.map((t) => (
+                <TabsTabPane
+                  key={t.id}
+                  closable
+                  tab={
+                    <Dropdown overlay={tabRightMenu} trigger={['contextMenu']}>
+                      <span>
+                        {this.getTabIcon(t)}
+                        {t.title}
+                      </span>
+                    </Dropdown>
+                  }
+                >
+                  <Flex fill={true} column hfill style={{ minHeight: '96vh', maxHeight: '96vh' }}>
+                    {isTabOfType<EditorTabModel>(t, TabType.Editor) && (
+                      <EditorTabPage
+                        store={tabsStore}
+                        serverStructure={treeStore.serverStructure.orUndefined()}
+                        model={t}
+                        onModelFieldChange={t.changeField}
+                        width={uiStore.primaryPaneSize}
+                      />
+                    )}
 
-          <Tabs
-            activeKey={tabsStore.activeTab.map((_) => _.id).orUndefined()}
-            onEdit={this.onEditTabs}
-            onChange={tabsStore.setActiveTab}
-            onMenuAction={this.onMenuAction}
-          >
-            {tabsStore.tabs.map((t) => (
-              <TabsTabPane
-                key={t.id}
-                closable
-                tab={
-                  <Dropdown overlay={tabRightMenu} trigger={['contextMenu']}>
-                    <span>
-                      {this.getTabIcon(t)}
-                      {t.title}
-                    </span>
-                  </Dropdown>
-                }
-              >
-                {isTabOfType<EditorTabModel>(t, TabType.Editor) && (
-                  <EditorTabPage
-                    store={tabsStore}
-                    serverStructure={treeStore.serverStructure.orUndefined()}
-                    model={t}
-                    onModelFieldChange={t.changeField}
-                    width={uiStore.primaryPaneSize}
-                  />
-                )}
+                    {isTabOfType<TableViewTabModel>(t, TabType.TableView) && (
+                      <TableViewTabPage
+                        serverStructure={treeStore.serverStructure.orUndefined()}
+                        model={t}
+                      />
+                    )}
 
-                {isTabOfType<TableViewTabModel>(t, TabType.TableView) && (
-                  <TableViewTabPage
-                    serverStructure={treeStore.serverStructure.orUndefined()}
-                    model={t}
-                  />
-                )}
+                    {isTabOfType<ProcessesTabModel>(t, TabType.Processes) && <ProcessesTabPage />}
 
-                {isTabOfType<ProcessesTabModel>(t, TabType.Processes) && <ProcessesTabPage />}
+                    {isTabOfType<MetricsTabModel>(t, TabType.Metrics) && <MetricsTabPage />}
 
-                {isTabOfType<MetricsTabModel>(t, TabType.Metrics) && <MetricsTabPage />}
+                    {isTabOfType<ServerOverviewTab>(t, TabType.ServerOverview) && (
+                      <ServerOverviewTabPage />
+                    )}
 
-                {isTabOfType<ServerOverviewTab>(t, TabType.ServerOverview) && (
-                  <ServerOverviewTabPage />
-                )}
+                    {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
 
-                {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}
-
-                {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
-                  <SqlHistoryTabPage onEdit={tabsStore.openNewEditorTab} />
-                )}
-              </TabsTabPane>
-            ))}
-          </Tabs>
+                    {isTabOfType<SqlHistoryTab>(t, TabType.SqlHistory) && (
+                      <SqlHistoryTabPage onEdit={tabsStore.openNewEditorTab} />
+                    )}
+                  </Flex>
+                </TabsTabPane>
+              ))}
+            </Tabs>
+          </Flex>
         </Splitter>
       </Page>
     );

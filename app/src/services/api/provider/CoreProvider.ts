@@ -62,7 +62,7 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract query(query: Query | string): Promise<QueryResponse>;
 
-  abstract getProcessLists(_isOnlySelect: boolean, _isCluster: boolean): Promise<any>;
+  abstract getProcessLists(_isOnlySelect: boolean, _isCluster: boolean): Promise<QueryResponse>;
 
   abstract getTableColumns(_database: string, _tablename: string): Promise<any>;
 

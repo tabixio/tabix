@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button, Select, Checkbox, Divider } from 'antd';
+import { Row, Col, Button, Select, Checkbox, Divider } from 'antd';
 import { typedInject } from 'module/mobx-utils';
 import { Stores, TabsStore } from 'stores';
 import { observer } from 'mobx-react';
+import { Flex } from 'reflexy';
 import { DataTable } from 'components/Dashboard';
 import { DataDecorator } from 'services';
-
+import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
 interface InjectedProps {
   store: TabsStore;
 }
@@ -16,14 +17,20 @@ const IOption = Select.Option;
 
 const CheckboxGroup = Checkbox.Group;
 
-const checkOptions = ['Log mode', 'Talk Cluster', 'Only SELECT', 'Show Profile', 'Show Settings'];
+const settingsOptions = {
+  'Log mode': true,
+  'Talk Cluster': false,
+  'Only Select': true,
+  'Detail Profile': false,
+  'Detail Settings': false,
+};
 @observer
 class ProcessesTabPage extends React.Component<Props> {
   protected data: DataDecorator = new DataDecorator();
 
   state = {
     intervalId: undefined,
-    checkedList: checkOptions,
+    settingsOptions: [] as Array<string>,
     dataUpdate: Date.now(),
     columns: [],
     interval: 0.1,
@@ -48,27 +55,27 @@ class ProcessesTabPage extends React.Component<Props> {
     // }
   };
 
-  private onChangeCheckbox = (checkedList: any) => {
-    this.setState({ checkedList });
+  private onChangeSettings = (settingsOptions: any) => {
+    this.setState({ settingsOptions });
   };
-
-  private megreData = (newData: any, _current: any) => {
-    const current = _current;
-    newData.forEach((_cell: any) => {
-      const cell = _cell;
-      if (current[cell.hash]) {
-        let c = current[cell.hash].count;
-        if (current[cell.hash].initial_query_id !== cell.initial_query_id) {
-          c += 1;
-        }
-        cell.count = c;
-      } else {
-        cell.count = 1;
-      }
-      current[cell.hash] = cell;
-    });
-    return current;
-  };
+  //
+  // private megreData = (newData: any, _current: any) => {
+  //   const current = _current;
+  //   newData.forEach((_cell: any) => {
+  //     const cell = _cell;
+  //     if (current[cell.hash]) {
+  //       let c = current[cell.hash].count;
+  //       if (current[cell.hash].initial_query_id !== cell.initial_query_id) {
+  //         c += 1;
+  //       }
+  //       cell.count = c;
+  //     } else {
+  //       cell.count = 1;
+  //     }
+  //     current[cell.hash] = cell;
+  //   });
+  //   return current;
+  // };
 
   private cleanTimer = () => {
     if (this.state.intervalId) {
@@ -132,28 +139,28 @@ class ProcessesTabPage extends React.Component<Props> {
   }
 
   private update = () => {
-    const isOnlySELECT: boolean = this.state.checkedList.indexOf('Only SELECT') !== -1;
-    const isCluster: boolean = this.state.checkedList.indexOf('Talk Cluster') !== -1;
-    const isLogMode: boolean = this.state.checkedList.indexOf('Log mode') !== -1;
+    const isOnlySELECT: boolean = this.state.settingsOptions.indexOf('Only Select') !== -1;
+    const isCluster: boolean = this.state.settingsOptions.indexOf('Talk Cluster') !== -1;
+    const isLogMode: boolean = this.state.settingsOptions.indexOf('Log mode') !== -1;
     const { store } = this.props;
-
+    console.log(this.state.settingsOptions, isOnlySELECT, isCluster, isLogMode);
     store
       .getProcessLists(isOnlySELECT, isCluster)
       .then((data) => {
         // Inc
-
-        // console.info('this.data.isHaveData=',this.data.isHaveData);
+        if (data.isError) {
+          throw Error(data.error ?? 'Error1');
+        }
         if (!this.data.isHaveData) {
-          this.data.apply(data);
+          this.data.apply(data.response);
         } else {
           // Merge
           if (!isLogMode) {
-            this.data.apply(data);
+            this.data.apply(data.response);
           } else {
             // Merge data
-            if (data.data && data.data.length) {
-              this.data.mergeByKey(data.data, 'hash');
-              // console.log("Time",this.data.dataUpdate);
+            if (data.response.data && data.response.data.length) {
+              this.data.mergeByKey(data.response.data, 'hash');
             }
           }
         }
@@ -194,42 +201,77 @@ class ProcessesTabPage extends React.Component<Props> {
       { label: '2 seconds', value: 2 },
       { label: '5 seconds', value: 5 },
     ];
-    const children: Array<any> = [];
+    const children: Array<React.ReactElement> = [];
+    const settings: Array<React.ReactElement> = [];
+    const settingsDef: Array<string> = [];
     ratesOptions.forEach((item) => {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
+    for (const [key, value] of Object.entries(settingsOptions)) {
+      if (value) settingsDef.push(key);
+      settings.push(<IOption key={key}>{key}</IOption>);
+    }
+    if (!this.state.settingsOptions.length) {
+      this.setState({ settingsOptions: settingsDef });
+    }
 
     return (
       <div>
-        <Divider>Processes</Divider>
-        <Select
-          defaultValue="0.5"
-          placeholder="Rate"
-          style={{ width: 120 }}
-          size="small"
-          onChange={this.handleChange}
-        >
-          {children}
-        </Select>
-        <CheckboxGroup
-          options={checkOptions}
-          defaultValue={checkOptions}
-          onChange={this.onChangeCheckbox}
-        />
-        {/*icon={this.state.isPlaying ? 'stop' : 'play-circle'}*/}
-        <Button onClick={this.playStop}>{this.state.isPlaying ? 'Pause' : 'Play'}</Button>
-        <Button onClick={this.reset}>
-          {/*icon="close"*/}
-          Clean
-        </Button>
-        <span>
-          - Requests errors:
-          {this.state.countError}
-          ,Success:
-          {this.state.countSuccess}
-        </span>
-        <Divider />
-        <DataTable dataUpdate={this.state.dataUpdate} data={this.data} fill />
+        <Flex column>
+          <Divider style={{ margin: ' 5px 0' }}>Processes</Divider>
+          <Row justify="space-around">
+            <Col flex="200px">
+              <Button size="large" onClick={this.playStop}>
+                {this.state.isPlaying ? (
+                  <PauseOutlined style={{ color: 'orange' }} />
+                ) : (
+                  <CaretRightOutlined style={{ color: 'orange' }} />
+                )}
+                {this.state.isPlaying ? ' Pause' : ' Play'}
+              </Button>
+
+              <Button size="large" onClick={this.reset}>
+                <CloseOutlined style={{ color: 'red' }} />
+                Clean
+              </Button>
+            </Col>
+
+            <Col flex="auto">
+              <Select
+                defaultValue="0.5"
+                placeholder="Rate"
+                style={{ width: 120 }}
+                size="large"
+                onChange={this.handleChange}
+              >
+                {children}
+              </Select>
+              <Select
+                mode="multiple"
+                size="large"
+                placeholder="Please select"
+                // @ts-ignore (need update rc-select ts type? )
+                defaultValue={settingsDef}
+                onChange={this.onChangeSettings}
+                style={{ width: '50%' }}
+              >
+                {settings}
+              </Select>
+            </Col>
+          </Row>
+          <Divider dashed={true} style={{ margin: ' 5px 0' }} />
+
+          <span>
+            &nbsp;&nbsp;&nbsp;Requests errors:
+            {this.state.countError}
+            ,Success:
+            {this.state.countSuccess}
+          </span>
+          <Divider dashed={true} style={{ margin: ' 5px 0' }} />
+        </Flex>
+        <Flex vfill={true} hfill={true}>
+          <DataTable dataUpdate={this.state.dataUpdate} data={this.data} fill />
+        </Flex>
       </div>
     );
   }

@@ -57,7 +57,7 @@ export default class Api {
     return new DataDecorator(r);
   }
 
-  getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<any> =>
+  getProcessLists = async (isOnlySelect: boolean, isCluster: boolean): Promise<QueryResponse> =>
     this.provider.getProcessLists(isOnlySelect, isCluster);
 
   getTableColumns = async (database: string, tablename: string) =>
