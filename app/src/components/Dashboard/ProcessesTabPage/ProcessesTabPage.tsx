@@ -10,23 +10,26 @@ import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/ic
 interface InjectedProps {
   store: TabsStore;
 }
-
+enum ListOptions {
+  LOG = 'Log mode',
+  CLUSTER = 'Talk Cluster',
+  SELECT = 'Only Select',
+  PROFILE = 'Detail Profile',
+}
 type Props = InjectedProps;
 
 const IOption = Select.Option;
 
-const CheckboxGroup = Checkbox.Group;
-
-const settingsOptions = {
-  'Log mode': true,
-  'Talk Cluster': false,
-  'Only Select': true,
-  'Detail Profile': false,
-  'Detail Settings': false,
-};
 @observer
 class ProcessesTabPage extends React.Component<Props> {
   protected data: DataDecorator = new DataDecorator();
+
+  PresetOptions = {
+    [ListOptions.LOG]: true,
+    [ListOptions.CLUSTER]: false,
+    [ListOptions.SELECT]: true,
+    [ListOptions.PROFILE]: false,
+  };
 
   state = {
     intervalId: undefined,
@@ -137,15 +140,13 @@ class ProcessesTabPage extends React.Component<Props> {
     // Set
     this.setState({ countError: error, countSuccess: ok });
   }
-
+  private is(n: string): boolean {
+    return this.state.settingsOptions.indexOf(n) !== -1;
+  }
   private update = () => {
-    const isOnlySELECT: boolean = this.state.settingsOptions.indexOf('Only Select') !== -1;
-    const isCluster: boolean = this.state.settingsOptions.indexOf('Talk Cluster') !== -1;
-    const isLogMode: boolean = this.state.settingsOptions.indexOf('Log mode') !== -1;
     const { store } = this.props;
-    console.log(this.state.settingsOptions, isOnlySELECT, isCluster, isLogMode);
     store
-      .getProcessLists(isOnlySELECT, isCluster)
+      .getProcessLists(this.is(ListOptions.SELECT), this.is(ListOptions.CLUSTER))
       .then((data) => {
         // Inc
         if (data.isError) {
@@ -155,7 +156,7 @@ class ProcessesTabPage extends React.Component<Props> {
           this.data.apply(data.response);
         } else {
           // Merge
-          if (!isLogMode) {
+          if (!this.is(ListOptions.LOG)) {
             this.data.apply(data.response);
           } else {
             // Merge data
@@ -207,7 +208,7 @@ class ProcessesTabPage extends React.Component<Props> {
     ratesOptions.forEach((item) => {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
-    for (const [key, value] of Object.entries(settingsOptions)) {
+    for (const [key, value] of Object.entries(this.PresetOptions)) {
       if (value) settingsDef.push(key);
       settings.push(<IOption key={key}>{key}</IOption>);
     }

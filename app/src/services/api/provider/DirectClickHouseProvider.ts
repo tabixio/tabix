@@ -145,7 +145,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         return c;
       });
     }
-    const sql = this.prepared().processLists(
+    const sql = this.prepared().process(
       isOnlySelect,
       isCluster,
       clusterList,

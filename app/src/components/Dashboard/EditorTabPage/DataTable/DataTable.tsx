@@ -9,7 +9,6 @@ import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
 import DataDecorator from 'services/api/DataDecorator';
-// import RequestStats from '../RequestStats';
 import getFormatForColumn from './utils';
 import {
   ContextMenuItem,
@@ -36,8 +35,12 @@ const hotTableSettings: Handsontable.DefaultSettings = {
   rowHeaders: true,
   allowEmpty: true,
   autoRowSize: false,
-  autoColumnSize: false,
-  // autoColumnSize: samplingRatio: 23 ,
+  // autoColumnSize: false,
+  // autoColumnSize: { useHeaders: true },
+  autoColumnSize: true,
+  stretchH: 'all',
+  preventOverflow: 'horizontal',
+
   allowInsertColumn: false,
   allowInsertRow: false,
   manualColumnMove: true,
@@ -45,7 +48,7 @@ const hotTableSettings: Handsontable.DefaultSettings = {
   manualColumnFreeze: true,
   mergeCells: true,
   // manualRowResize: true,
-  stretchH: 'all',
+  // stretchH: 'last',
   colWidths: 100,
   observeChanges: false /* =<!memory leak if true! */,
   observeDOMVisibility: true,
@@ -149,7 +152,6 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
     // hotTableSettings.update=123;
     return (
       <Flex
-        style={{ border: '0px solid silver' }}
         componentRef={this.rootRef}
         column
         className={classNames(css.root, className)}

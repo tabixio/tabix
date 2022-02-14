@@ -6,6 +6,7 @@
   font-size: font-size;
   /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
   font-family: font-family;
+  /*max-width: 1000px;*/
 }
 
 .bar {

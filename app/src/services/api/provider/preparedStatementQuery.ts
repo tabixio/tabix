@@ -1,43 +1,121 @@
 import TemplateQuery from './TemplateQuery';
 
 export default class preparedStatementQuery extends TemplateQuery {
-  processLists(
-    isOnlySELECT: boolean,
+  process(
+    selectOnly: boolean,
     isCluster: boolean,
     clusterList: Array<string>,
     username: string,
     password: string
   ): string {
-    // eslint-disable-next-line no-unexpected-multiline
-    let sql = ` SELECT now() as dt,
-                       query,
-                       1 as count,
-                toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
-                round(elapsed,1) as elapsed ,
-                formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes, 
-                formatReadableSize(memory_usage) as memory_usage,
-                formatReadableSize(read_bytes) as bytes_read,
-                formatReadableSize(written_bytes) as bytes_written,  
-                * ,     
-                cityHash64(query) as hash
-                FROM (
-                  SELECT *, hostName() as host
-    `;
+    let from = 'system.processes';
     // from
     if (isCluster && clusterList.length) {
-      sql = `${sql} FROM remote('${clusterList.join(
-        ','
-      )}',system.processes, '${username}','${password}')`;
-    } else {
-      sql = `${sql} FROM system.processes `;
+      from = `remote('${clusterList.join(',')}',system.processes, '${username}','${password}')`;
     }
-    // исключить запрос
-    sql = `${sql} /* 12XQWE3X1X2XASDF */ WHERE query not like '%12XQWE3X1X2XASDF%'`;
-    if (isOnlySELECT) {
-      sql = `${sql} AND read_rows>0`;
-    }
-    sql = `${sql} )`;
-    return this.template(sql);
+
+    // release 21.2 - Add normalizeQueryKeepNames and normalizedQueryHashKeepNames
+    // v20.8 - Add function normalizeQuery that replaces literals,
+    const sql = `
+    
+    SELECT
+      now() as time,
+      round(elapsed,1) as elapsed ,
+      
+      {% if version_ge('20.8') and normalize_queries -%}
+        normalizeQuery(query) AS Query,
+      {% else -%}
+        query as Query,
+      {% endif -%}
+      1 as count,
+      formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes,
+      toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
+      formatReadableSize(peak_memory_usage) AS "peak memory",
+      -- formatReadableSize(memory_usage) as "memory usage",
+      formatReadableSize(read_bytes) as "read bytes",
+      formatReadableSize(written_bytes) as "written bytes",  
+      formatReadableSize(memory_usage) AS "memory usage",
+      
+      query_id,
+      is_cancelled,
+      user,
+      multiIf(empty(client_name), http_user_agent, concat(client_name, ' ', toString(client_version_major), '.', toString(client_version_minor), '.', toString(client_version_patch))) AS client,
+      
+      {% if version_ge('20.8') -%}
+        cityHash64(normalizeQuery(query)) AS hash,
+      {% else -%}
+        cityHash64(query) as hash, 
+      {% endif -%}
+      
+       
+      
+    {% if version_ge('21.3') -%}
+        thread_ids,
+    {% endif -%}
+   
+    {% if version_ge('21.8') -%}
+        ProfileEvents,
+        Settings
+    {% else -%}
+        ProfileEvents.Names,
+        ProfileEvents.Values,
+        Settings.Names,
+        Settings.Values
+    {% endif -%}
+    
+FROM ${from}
+  
+WHERE query not like '%12XQWE3X1X2XASDF%' /* 12XQWE3X1X2XASDF */
+
+    {%if selectOnly -%}
+            AND read_rows>0
+      {% endif -%} 
+
+    `;
+    return this.template(sql, {
+      normalize_queries: true,
+      selectOnly,
+    });
+
+    /*  - select * from system.processes -
+          is_initial_query
+          user
+          query_id
+          address
+          port
+          initial_user
+          initial_query_id
+          initial_address
+          initial_port
+          interface
+          os_user
+          client_hostname
+          client_name
+          client_revision
+          client_version_major
+          client_version_minor
+          client_version_patch
+          http_method
+          http_user_agent
+          forwarded_for
+          quota_key
+          elapsed
+          is_cancelled
+          read_rows
+          read_bytes
+          total_rows_approx
+          written_rows
+          written_bytes
+          memory_usage
+          peak_memory_usage
+          query
+          thread_ids
+          ProfileEvents.Names
+          ProfileEvents.Values
+          Settings.Names
+          Settings.Values
+
+    * */
   }
 
   columnsList(limit = 500, database: string | null = null, table: string | null = null): string {
@@ -95,8 +173,6 @@ LIMIT ${limitTables}`;
   // Create by Alex-Burmak ?https://github.com/ClickHouse/ClickHouse/commit/465a9bf615e1b233606460f956c09f71931c99a2
   // https://github.com/ClickHouse/ClickHouse/blob/master/utils/clickhouse-diagnostics/clickhouse-diagnostics
 
-  // release 21.2 - Add normalizeQueryKeepNames and normalizedQueryHashKeepNames
-  // v20.8 - Add function normalizeQuery that replaces literals,
   public databasesListAndSize(limit = 10) {
     return this.template(`SELECT name,
                                  engine,
