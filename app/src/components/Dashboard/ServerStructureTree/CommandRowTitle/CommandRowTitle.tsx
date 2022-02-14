@@ -39,7 +39,6 @@ export default function CommandRowTitle({ command, onAction }: CommandRowProps) 
   if (command.command === ServerStructure.PagesCommands.ServerOverview)
     icon = <CloudDownloadOutlined />;
 
-  console.log('COSD>', command);
   const br = '\n';
   return (
     <Tooltip title={`${command.name}${br} ${br}${br} `} placement="right">

@@ -202,10 +202,11 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
   async insertSelectFrom(table: ServerStructure.Table) {
     const cols = await this.api.getTableColumns(table.database, table.name);
 
+    if (!cols) return;
     const fields: Array<string> = [];
     const where: Array<string> = [];
 
-    cols.data.forEach((item: any) => {
+    cols.forEach((item: any) => {
       if (!item) return;
       fields.push(item.name);
       if (item.type === 'Date') {

@@ -34,7 +34,7 @@ export default class ContextMenu extends React.Component<ContextMenuProps> {
         <Menu.Item key={TableAction.CodeSelectFrom}>Make SELECT</Menu.Item>
         <Menu.Item key={TableAction.InsertTableName}>Insert table name</Menu.Item>
         <Menu.Item key={TableAction.MakeSQLDescribe}>Make SQL Describe</Menu.Item>
-        <Menu.Item key={TableAction.MakeSQLDropTable}>Make SQL Drop Table</Menu.Item>
+        {/*<Menu.Item key={TableAction.MakeSQLDropTable}>Make SQL Drop Table</Menu.Item>*/}
       </Menu>
     );
   }

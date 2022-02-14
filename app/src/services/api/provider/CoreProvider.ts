@@ -64,9 +64,9 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract getProcessLists(_isOnlySelect: boolean, _isCluster: boolean): Promise<QueryResponse>;
 
-  abstract getTableColumns(_database: string, _tablename: string): Promise<any>;
+  abstract getTableColumns(_database: string, _tablename: string): Promise<Array<any> | undefined>;
 
-  abstract makeTableDescribe(_database: string, _tablename: string): Promise<string>;
+  abstract makeTableDescribe(database: string, tablename: string): Promise<string | undefined>;
 
   abstract fastGetVersion(): Promise<string>;
 

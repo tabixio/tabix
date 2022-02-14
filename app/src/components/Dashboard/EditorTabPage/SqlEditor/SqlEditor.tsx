@@ -61,8 +61,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   }
 
   public insertColumn(coll: ServerStructure.Column) {
-    // @todo : Если вставка до Where ,
-    this.insertText(` ${coll.name} `, TextInsertType.Column);
+    if (this.editor) {
+      this.EditorHelper.insert(this.editor, ` ${coll.name} `, TextInsertType.Column);
+    }
   }
 
   /**
@@ -71,23 +72,9 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
    * @param mode
    */
   public insertText(textToInsert: string, mode: TextInsertType) {
-    // https://stackoverflow.com/questions/46451965/append-not-insert-replace-text
-    console.log('textToInsert', textToInsert, mode);
-
-    // const line = this.editor.getPosition();
-
-    // if (line) {
-    //   const range = new globalMonaco.Range(
-    //     line.lineNumber,
-    //     line.column + 1,
-    //     line.lineNumber,
-    //     line.column + 1
-    //   );
-    //   const id = { major: 1, minor: 1 };
-    //   const op = { identifier: id, range, text: textToInsert, forceMoveMarkers: true };
-    //   this.editor.executeEdits('my-source', [op]);
-    // }
-    // this.editor.focus();
+    if (this.editor) {
+      this.EditorHelper.insert(this.editor, textToInsert, mode);
+    }
   }
 
   private setEditorRef = (editor?: tCodeEditor) => {

@@ -61,24 +61,6 @@ class ProcessesTabPage extends React.Component<Props> {
   private onChangeSettings = (settingsOptions: any) => {
     this.setState({ settingsOptions });
   };
-  //
-  // private megreData = (newData: any, _current: any) => {
-  //   const current = _current;
-  //   newData.forEach((_cell: any) => {
-  //     const cell = _cell;
-  //     if (current[cell.hash]) {
-  //       let c = current[cell.hash].count;
-  //       if (current[cell.hash].initial_query_id !== cell.initial_query_id) {
-  //         c += 1;
-  //       }
-  //       cell.count = c;
-  //     } else {
-  //       cell.count = 1;
-  //     }
-  //     current[cell.hash] = cell;
-  //   });
-  //   return current;
-  // };
 
   private cleanTimer = () => {
     if (this.state.intervalId) {

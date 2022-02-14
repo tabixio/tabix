@@ -13,4 +13,5 @@ export { default as ServerStructure } from './api/ServerStructure';
 export * from './api/Query';
 export { default as EventEmitter } from './EventEmitter';
 export { default as PlotlyCreator } from './PlotlyCreator';
-export { default as CoreProvider, RequestPool } from './api/provider/CoreProvider';
+export { default as CoreProvider } from './api/provider/CoreProvider';
+export * from './api/provider/CoreProvider';

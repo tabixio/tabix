@@ -155,19 +155,20 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return await this.query(sql);
   }
 
-  async getTableColumns(database: string, tablename: string) {
-    const columns = await this.query(this.prepared().columnsList(1500, database, tablename));
-    return columns;
+  async getTableColumns(database: string, tablename: string): Promise<Array<any> | undefined> {
+    const r = await this.query(this.prepared().columnsList(1500, database, tablename));
+    if (r.isError || !r.response.data) return undefined;
+    return r.response.data;
   }
 
-  async makeTableDescribe(_database: string, _tablename: string) {
-    // let dat = await this.query(`SHOW CREATE TABLE ${_database}.${_tablename}`);
-    // dat = dat.response;
-    //
-    // let sql = '';
-    // if (dat && dat.data && dat.data[0] && dat.data[0].statement) {
-    //   sql = dat.data[0].statement;
-    // }
-    return `sql[XF2]`;
+  async makeTableDescribe(database: string, tablename: string): Promise<string | undefined> {
+    const r = await this.query(this.prepared().describe(database, tablename));
+    if (r.isError || !r.response.data) return undefined;
+
+    let sql = '';
+    if (r && r.response.data && r.response.data[0] && r.response.data[0].statement) {
+      sql = r.response.data[0].statement;
+    }
+    return sql;
   }
 }

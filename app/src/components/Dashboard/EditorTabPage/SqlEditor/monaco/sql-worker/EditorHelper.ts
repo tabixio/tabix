@@ -5,6 +5,7 @@ import { LanguageWorker } from './LanguageWorker';
 import { SupportLanguage } from './supportLanguage';
 import { CommonSQL } from './grammar';
 import { v4 as UUIDv4 } from 'uuid';
+import { TextInsertType } from '../../types';
 
 type tMonaco = typeof monaco;
 
@@ -264,6 +265,26 @@ export class EditorHelper {
       ),
       this.id
     );
+  }
+  public insert(editor: iCodeEditor, textToInsert: string, mode: TextInsertType) {
+    const line = editor.getPosition();
+    // const line = this.monaco?.editor.getModel().get
+    console.log('INSERTT', line);
+
+    // const line = this.editor.getPosition();
+
+    if (line && this.monaco) {
+      const range = new this.monaco.Range(
+        line.lineNumber,
+        line.column + 1,
+        line.lineNumber,
+        line.column + 1
+      );
+      const id = { major: 1, minor: 1 };
+      const op = { identifier: id, range, text: textToInsert, forceMoveMarkers: true };
+      editor.executeEdits('my-source', [op]);
+      editor.focus();
+    }
   }
 
   private getVariables(q: string): any {

@@ -117,10 +117,26 @@ WHERE query not like '%12XQWE3X1X2XASDF%' /* 12XQWE3X1X2XASDF */
 
     * */
   }
-
+  describe(database: string, table: string): string {
+    return this.template(`SHOW CREATE TABLE {{ database }}.{{ table }}`, {
+      table,
+      database,
+    });
+  }
   columnsList(limit = 500, database: string | null = null, table: string | null = null): string {
-    // SL
-    return `SELECT * FROM system.columns LIMIT ${limit}`;
+    return this.template(
+      `SELECT * FROM system.columns
+
+        {% if table and database -%}
+            WHERE database = '{{ database }}'  AND table = '{{ table }}'
+        {% endif -%}
+
+    LIMIT ${limit}`,
+      {
+        table: table?.toString() ?? '',
+        database: database?.toString() ?? '',
+      }
+    );
   }
 
   clustersList(limit = 500): string {
