@@ -250,7 +250,8 @@ module.exports = (env, argv) => {
   } else {
     console.log(`\x1b[33m 🧘🏻‍️   🧘🏻   🧘🏻‍️ Is development mode [${VersionBuild}] \x1b[0m`);
     common = merge(common, {
-      devtool: 'eval-cheap-source-map',
+      // devtool: 'eval-cheap-source-map',
+      devtool: 'source-map',
       devServer,
     });
   }

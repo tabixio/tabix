@@ -64,7 +64,8 @@ export default class Page extends React.Component<Props> {
   }
   componentDidMount() {
     // Mount?
-    this.checkVersionUpdateTabix();
+    //
+    // this.checkVersionUpdateTabix();
   }
 
   componentWillUnmount() {

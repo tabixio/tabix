@@ -8,7 +8,7 @@ import { v4 as UUIDv4 } from 'uuid';
 import { TextInsertType } from '../../types';
 
 type tMonaco = typeof monaco;
-
+type ExecCallback = (isAllQuery: boolean) => void;
 type IReadOnlyModel = monaco.editor.IReadOnlyModel;
 type iCodeEditor = monaco.editor.ICodeEditor;
 
@@ -97,9 +97,82 @@ export class EditorHelper {
   }
 
   public applyServerStructure(serverStructure: ServerStructure.Server, thisMonaco: tMonaco): void {
-    console.info('EditorHelper->applyServerStructure() ');
+    // console.info('EditorHelper->applyServerStructure() ');
     this.serverStructure = serverStructure;
     LanguageWorker.setServerStructure(serverStructure);
+  }
+
+  public bindKeyExecCommand(
+    editor: monaco.editor.IStandaloneCodeEditor,
+    onExecCommand: ExecCallback
+  ): void {
+    const KM = monaco.KeyMod;
+    const KC = monaco.KeyCode;
+    // ======== Shift-Command-Enter ========
+    editor.addAction({
+      id: 'ExecAllCommand',
+      label: 'Exec all query',
+      keybindings: [KM.Shift | KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
+      precondition: undefined,
+      keybindingContext: undefined,
+      contextMenuGroupId: 'navigation',
+      contextMenuOrder: 1.5,
+      run(editor) {
+        onExecCommand(true);
+      },
+    });
+    // ======== Command-Enter ========
+    editor.addAction({
+      id: 'ExecCurrentCode',
+      label: 'Exec current query`s',
+      keybindings: [KM.CtrlCmd | KC.Enter], // eslint-disable-line no-bitwise
+      contextMenuGroupId: 'navigation',
+      contextMenuOrder: 1.5,
+      run(editor) {
+        onExecCommand(false);
+      },
+    });
+  }
+  public bindBaseKeys(editor: monaco.editor.IStandaloneCodeEditor): void {
+    // Keys
+    const KM = monaco.KeyMod;
+    const KC = monaco.KeyCode;
+    // KeyMod.CtrlCmd | KeyCode.Tab for ctrl+tab on Win/Linux and cmd+tab on OSX,
+    // KM.CtrlCmd | KC.KeyY -> macos: cmd+Y not work in chrome
+
+    const actions = {
+      'editor.action.deleteLines': {
+        // Cmd-Y -> Drop line
+        label: 'Delete line',
+        keybindings: [KM.chord(KM.CtrlCmd | KC.KeyY, 0)],
+      },
+      'editor.foldAll': {
+        // Command+Shift+-
+        label: 'Fold All',
+        keybindings: [KM.chord(KM.Shift | KM.CtrlCmd | KC.Minus, 0)],
+      },
+      'editor.unfoldAll': {
+        // Command+Shift+=
+        label: 'Unfold All',
+        keybindings: [KM.chord(KM.Shift | KM.CtrlCmd | KC.Equal, 0)],
+      },
+      'editor.action.formatDocument': {
+        label: 'Format Document',
+        keybindings: [KM.chord(KM.Shift | KM.CtrlCmd | KC.KeyF, 0)],
+      }, // Shift-CtrlCmd-F
+    };
+    for (const [cmd, key] of Object.entries(actions)) {
+      editor.addAction({
+        id: `key-${cmd}`,
+        label: key.label,
+        keybindings: key.keybindings,
+        contextMenuGroupId: '1_modification',
+        contextMenuOrder: 1.5,
+        run(editor) {
+          editor.getAction(cmd).run();
+        },
+      });
+    }
   }
 
   public register(thisMonaco: tMonaco): void {
@@ -116,7 +189,7 @@ export class EditorHelper {
       console.info('EditorHelper->Register() - skip, not set serverStructure');
       return;
     }
-    console.info('EditorHelper->Register()');
+    // console.info('EditorHelper->Register()');
     // Link
     this.monaco = thisMonaco;
     // Register
@@ -226,10 +299,8 @@ export class EditorHelper {
     // .keywordsGlobal
     // .keywords
     // .
-
     // Test method`s
-
-    //
+    // ---
     let lang: monaco.languages.IMonarchLanguage;
     // Merge with server structure,  and support many lang`s
     lang = this.languageParser().getIMonarchLanguage() as monaco.languages.IMonarchLanguage;

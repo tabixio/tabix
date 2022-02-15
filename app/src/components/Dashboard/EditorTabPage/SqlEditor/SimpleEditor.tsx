@@ -2,13 +2,14 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { ServerStructure } from 'services';
+import { Query, ServerStructure } from 'services';
 // monaco
 import { defaultOptions } from './monaco/config';
 import { themeCobalt } from './monaco/theme/Cobalt';
 import { EditorHelper } from './monaco/sql-worker/EditorHelper';
 import { SupportLanguage } from './monaco/sql-worker/supportLanguage';
 import { delayFunctionWrap } from './monaco/utils';
+import { TextInsertType } from './types';
 //
 type tMonaco = typeof monaco;
 type tCodeEditor = monaco.editor.IStandaloneCodeEditor;
@@ -20,41 +21,44 @@ export interface SimpleEditorProps {
   onContentChange?: (content: string) => void;
   serverStructure?: ServerStructure.Server;
   readonly?: boolean;
+  processSql?: boolean;
+  onMount?: () => void;
+  onExecCommand?: (queryList: Array<Query>, isExecAll: boolean) => void;
 }
 
 // ------------------------------------------------------------------------------------
 @observer
 export default class SimpleEditor extends React.Component<SimpleEditorProps> {
-  private editor?: tCodeEditor;
+  private currentEditor?: tCodeEditor;
 
   private tMonaco?: tMonaco;
 
-  private EditorHelper: EditorHelper;
+  private readonly editorHelper: EditorHelper;
 
-  private monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
-    fontSize: 12,
+  private readonly monacoEditorOptions: monaco.editor.IEditorConstructionOptions = {
+    fontSize: 13,
   };
 
   constructor(props: any) {
     super(props);
-    this.EditorHelper = new EditorHelper();
+    this.editorHelper = new EditorHelper();
     this.monacoEditorOptions = Object.assign({}, defaultOptions, this.monacoEditorOptions);
   }
 
   componentWillUnmount() {
     this.setEditorRef(undefined);
-    // !No disposeAll HERE!
+    // WARN!:!No disposeAll HERE!
   }
 
   UNSAFE_componentWillReceiveProps({ serverStructure }: SimpleEditorProps) {
-    // console.log('SqlEditor->UNSAFE_componentWillReceiveProps');
+    // Todo_drop use UNSAFE
     if (serverStructure && serverStructure !== this.props.serverStructure) {
       this.updateGlobalEditorStructure(serverStructure);
     }
   }
 
   private setEditorRef = (editor?: tCodeEditor) => {
-    this.editor = editor;
+    this.currentEditor = editor;
   };
 
   /**
@@ -67,32 +71,8 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
     // if (this.props.theme !== theme) thisMonaco.editor.setTheme(theme)
     if (this.props.serverStructure) {
       this.updateGlobalEditorStructure(this.props.serverStructure);
-      // this.EditorHelper.applyServerStructure(this.props.serverStructure, thisMonaco);
+      // this.editorHelper.applyServerStructure(this.props.serverStructure, thisMonaco);
     }
-  };
-
-  /**
-   * Выполнение запросов, если получена command
-   *
-   * @param sqlEditor
-   * @param editor
-   * @param isExecAll
-   */
-  public execQueries = (sqlEditor: SimpleEditor, editor: iCodeEditor, isExecAll: boolean): void => {
-    // const execQueries = this.EditorHelper.createExecCurrentQuery(editor, isExecAll);
-    //
-    // if (execQueries?.length) {
-    //   // Запросы которые необходимо отправть
-    //   console.info('execQueries', execQueries);
-    //   execQueries.forEach((query: Query) => {
-    //     // console.log(query);
-    //     console.info(`%c${query.sql}`, 'color: #bada55');
-    //   });
-    //   console.info('execQueries', execQueries);
-    //   sqlEditor.props.onAction(isExecAll ? ActionType.RunAll : ActionType.RunCurrent, execQueries);
-    // } else {
-    //   console.warn('Empty execQueries after createExecCurrentQuery');
-    // }
   };
 
   /**
@@ -119,9 +99,9 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
       // Base create completion,functions,tables,fields...
       // Register first CompletionItemProvider & MonarchTokensProvider
       // Attach to tMonaco - MonarchTokensProvider
-      this.EditorHelper.applyLanguage(SupportLanguage.CLICKHOUSE);
-      this.EditorHelper.applyServerStructure(serverStructure, this.tMonaco);
-      this.EditorHelper.register(this.tMonaco);
+      this.helper().applyLanguage(SupportLanguage.CLICKHOUSE);
+      this.helper().applyServerStructure(serverStructure, this.tMonaco);
+      this.helper().register(this.tMonaco);
     }
 
     // Обрабатываем текущий запрос в активном таб/окне
@@ -134,27 +114,35 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
    * @private
    */
   private processCurrent = (): void => {
-    const q = this.editor?.getValue();
-    const uriModel = this.editor?.getModel()?.uri.toString();
-    if (q && uriModel && this.EditorHelper.getLanguage()) {
+    const q = this.editor()?.getValue();
+    const uriModel = this.editor()?.getModel()?.uri.toString();
+    if (q && uriModel && this.helper().getLanguage()) {
       this.processSQL(uriModel, q).catch();
     } else {
       // console.info('Can`t processCurrent, not set q or uri', q, uriModel);
     }
   };
 
+  public helper(): EditorHelper {
+    return this.editorHelper;
+  }
+
+  public editor(): tCodeEditor | undefined {
+    return this.currentEditor;
+  }
   /**
-   * Call EditorHelper->LanguageWorker.parseAndApplyModel()
+   * Call editorHelper->LanguageWorker.parseAndApplyModel()
    *
    * @param modelUri
    * @param value
    */
   public async processSQL(modelUri: string, value: string) {
-    if (this.EditorHelper.isReady()) {
-      // console.warn('processSQL');
-      await this.EditorHelper.OnChange(modelUri, value);
+    const { processSql } = this.props;
+    if (!processSql) return;
+    if (this.helper().isReady()) {
+      await this.helper().OnChange(modelUri, value);
     } else {
-      console.info('In processSQL, error on languageValueOnChange, EditorHelper.isReady = false');
+      console.info('In processSQL, error on languageValueOnChange, editorHelper.isReady = false');
     }
   }
 
@@ -173,7 +161,7 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
    * @param ev
    */
   private onChange = (value: string | undefined, ev: monaco.editor.IModelContentChangedEvent) => {
-    const uriModel = this.editor?.getModel()?.uri.toString();
+    const uriModel = this.editor()?.getModel()?.uri.toString();
     if (value !== undefined && uriModel) {
       // Update model
       const { onContentChange } = this.props;
@@ -183,21 +171,65 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
     }
   };
 
+  /**
+   * Выполнение запросов, если получена command
+   *
+   * @param isAllQuery
+   */
+  public onExecCommand = (isAllQuery: boolean) => {
+    // Запросы которые необходимо отправить
+    const execQueries =
+      this.currentEditor && this.helper()?.createExecCurrentQuery(this.currentEditor, isAllQuery);
+    if (execQueries?.length) {
+      // Если запросы найдены и разобраны в обьекты Query
+      const { onExecCommand } = this.props;
+      if (onExecCommand) {
+        onExecCommand(execQueries, isAllQuery);
+      }
+    } else {
+      console.warn('Empty onExecCommand, after createExecCurrentQuery');
+    }
+  };
+
+  /**
+   * Event
+   *
+   *
+   * @param editor
+   * @param thisMonaco
+   */
+
   private onEditorMount = (editor: tCodeEditor, thisMonaco: tMonaco) => {
     this.setEditorRef(editor);
     this.tMonaco = thisMonaco;
-    // todo disable use `self-this`
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    // Bind keys to Editor
-    // bindKeys(editor, thisMonaco, self);
-    // console.info('SqlEditor->onEditorMount()');
     this.processCurrent();
+
+    // @todo: Command-Left | Command-Right | Shift-Alt-Command-Right | Shift-Alt-Command-Right
+    // @todo: Command-Shift-[NUM]
+    // for (let i = 0; i < 9; i++) {
+    // [ globalMonaco.KeyMod.Shift | globalMonaco.KeyMod.CtrlCmd | globalMonaco.KeyCode['KEY_'+i])] => self.actionChangeTab(i);
+
+    // Bind keys
+    this.helper().bindBaseKeys(editor);
+    // Attach Cmd+Enter key
+    this.helper().bindKeyExecCommand(editor, this.onExecCommand);
+    //
+    editor.focus();
+    // Call on mount
+    const { onMount } = this.props;
+    onMount && onMount();
   };
 
+  /**
+   * Вставка текста к курсору
+   * @param textToInsert
+   * @param mode
+   */
+  public insert(textToInsert: string, mode: TextInsertType) {
+    this.currentEditor && this.helper().insert(this.currentEditor, textToInsert, mode);
+  }
   render() {
     const { serverStructure, onContentChange, content, ...rest } = this.props;
-
     return (
       <Editor
         language={SupportLanguage.CLICKHOUSE}
