@@ -170,6 +170,39 @@ export default class TabsStore extends ApiRequestableStore<DashboardUIStore> {
     this.openSpecialTab(TabType.SqlHistory, null, () => SqlHistoryTabModel.from({}));
   }
 
+  @action
+  closeTabsOthers(currentTabId: string) {
+    if (this.tabs) {
+      const tabs = this.tabs.filter((_) => currentTabId !== _.id);
+      for (const tab of tabs) {
+        this.closeTab(tab.id);
+      }
+    }
+  }
+  @action
+  closeTabsDirection(currentTabId: string, directionLeft: boolean) {
+    const index = this.tabs.findIndex((_) => _.id === currentTabId);
+    if (index === -1) {
+      return;
+    }
+    const tabs = directionLeft ? this.tabs.slice(0, index) : this.tabs.slice(index + 1);
+    for (const tab of tabs) {
+      this.closeTab(tab.id);
+    }
+  }
+  @action
+  closeTabsAll(currentTabId: string) {
+    if (this.tabs) {
+      for (const tab of this.tabs) {
+        this.closeTab(tab.id);
+      }
+    }
+  }
+  @action.bound
+  closeTab(id: string) {
+    this.removeTab(id);
+  }
+
   @action.bound
   removeTab(id: string) {
     this.tabs = this.tabs.filter((t) => t.id !== id);

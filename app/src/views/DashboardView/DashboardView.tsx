@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { observer } from 'mobx-react';
 import { Flex } from 'reflexy';
@@ -6,6 +6,7 @@ import { typedInject } from 'module/mobx-utils';
 import { ServerStructure } from 'services';
 import { routePaths } from 'routes';
 import { Menu, Dropdown } from 'antd';
+import { MenuInfo } from 'rc-menu/lib/interface';
 import { Stores, TabsStore, TreeStore } from 'stores';
 import {
   DbOverviewTab,
@@ -60,6 +61,15 @@ interface InjectedProps {
 }
 
 export type Props = InjectedProps;
+
+export enum TabRightMenuAction {
+  CloseOther = 'CloseOther',
+  CloseAll = 'CloseAll',
+  CloseCurrent = 'Close',
+  CloseLeft = 'CloseLeft',
+  CloseRight = 'CloseRight',
+  PinTab = 'PIN',
+}
 
 type RoutedProps = Props & RouteComponentProps<any>;
 
@@ -119,7 +129,6 @@ class DashboardView extends React.Component<RoutedProps> {
   // (action: RowActionTypeAction, column: ServerStructure.SpecialItem)
   private onCommandAction = (action: RowActionTypeAction, command: ServerStructure.SpecialItem) => {
     if (action === RowActionTypeAction.DoubleClick || action === RowActionTypeAction.Click) {
-      console.log(command);
       switch (command.command) {
         case ServerStructure.PagesCommands.Processes: {
           this.props.tabsStore.openProcessesTab();
@@ -179,6 +188,36 @@ class DashboardView extends React.Component<RoutedProps> {
     }
   };
 
+  private onClickTabRightMenu = ({ key }: MenuInfo) => {
+    const { tabsStore: store } = this.props;
+    const k = key.split('#');
+    const tabId = k[1];
+    switch (k[0]) {
+      case TabRightMenuAction.CloseLeft: {
+        store.closeTabsDirection(tabId, true);
+        break;
+      }
+      case TabRightMenuAction.CloseRight: {
+        store.closeTabsDirection(tabId, false);
+        break;
+      }
+      case TabRightMenuAction.CloseAll: {
+        store.closeTabsAll(tabId);
+        break;
+      }
+      case TabRightMenuAction.CloseOther: {
+        store.closeTabsOthers(tabId);
+        break;
+      }
+      case TabRightMenuAction.CloseCurrent: {
+        store.closeTab(tabId);
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
   private getTabIcon = (tab: Tab): JSX.Element => {
     if (tab.type === TabType.Processes) return <HddOutlined />;
     if (tab.type === TabType.Metrics) return <LineChartOutlined />;
@@ -196,13 +235,14 @@ class DashboardView extends React.Component<RoutedProps> {
       .map((t) => !!t.content)
       .getOrElse(false);
 
-    const tabRightMenu = (
-      <Menu>
-        <Menu.Item>Close other</Menu.Item>
-        <Menu.Item>Close All</Menu.Item>
-        <Menu.Item>Close Tabs to the Left</Menu.Item>
-        <Menu.Item>Close Tabs to the Rigth</Menu.Item>
-        <Menu.Item>Pin tab</Menu.Item>
+    const tabRightMenu = (id: string) => (
+      <Menu onClick={this.onClickTabRightMenu}>
+        <Menu.Item key={`${TabRightMenuAction.CloseCurrent}#${id}`}>Close</Menu.Item>
+        <Menu.Item key={`${TabRightMenuAction.CloseOther}#${id}`}>Close other</Menu.Item>
+        <Menu.Item key={`${TabRightMenuAction.CloseAll}#${id}`}>Close all</Menu.Item>
+        <Menu.Item key={`${TabRightMenuAction.CloseLeft}#${id}`}>Close left</Menu.Item>
+        <Menu.Item key={`${TabRightMenuAction.CloseRight}#${id}`}>Close right</Menu.Item>
+        {/*<Menu.Item key={`${TabRightMenuAction.PinTab}#${id}`}>Pin tab</Menu.Item>*/}
       </Menu>
     );
 
@@ -238,7 +278,7 @@ class DashboardView extends React.Component<RoutedProps> {
                   key={t.id}
                   closable
                   tab={
-                    <Dropdown overlay={tabRightMenu} trigger={['contextMenu']}>
+                    <Dropdown overlay={tabRightMenu(t.id)} trigger={['contextMenu']}>
                       <span>
                         {this.getTabIcon(t)}
                         {t.title}

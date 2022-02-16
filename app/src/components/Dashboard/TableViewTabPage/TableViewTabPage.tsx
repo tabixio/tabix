@@ -43,7 +43,7 @@ export class TableViewTabPage extends React.Component<Props> {
 
   load = () => {
     this.requestTableDescribe().then((e) => {
-      console.log('ON TAB', e);
+      // console.log('ON TAB', e);
       let describe = 'Error can`t fetch:SHOW CREATE TABLE';
 
       if (!e['SHOWCREATE'].isError) {
@@ -68,9 +68,7 @@ export class TableViewTabPage extends React.Component<Props> {
   render() {
     const { serverStructure, model } = this.props;
     const tableId = model.tableId;
-    //
-
-    // console.warn(serverStructure, model);
+    const { describe, dataUpdate } = this.state;
 
     return (
       <div>
@@ -82,12 +80,12 @@ export class TableViewTabPage extends React.Component<Props> {
           <TabPane tab="DDL" key="1">
             <Flex column fill={true} style={{ maxHeight: 350 }}>
               <Flex grow fill className={css.editor}>
-                <SimpleEditor content={this.state.describe} serverStructure={serverStructure} />
+                <SimpleEditor content={describe} serverStructure={serverStructure} />
               </Flex>
             </Flex>
             <Flex column fill={true} style={{ maxHeight: 350 }}>
               <Flex grow fill className={css.editor}>
-                <DataTable dataUpdate={this.state.dataUpdate} data={this.data} fill />
+                <DataTable dataUpdate={dataUpdate} data={this.data} fill />
               </Flex>
             </Flex>
           </TabPane>

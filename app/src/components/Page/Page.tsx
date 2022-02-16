@@ -24,7 +24,7 @@ const { Header, Footer } = Layout;
 @observer
 export default class Page extends React.Component<Props> {
   private readonly notificationReaction: IReactionDisposer;
-
+  private imCheck = false;
   state = {
     currentVersion: '',
     newVersion: '',
@@ -104,6 +104,7 @@ export default class Page extends React.Component<Props> {
   }
 
   checkVersionUpdateTabix = async () => {
+    this.imCheck = true;
     const { uiStore } = this.props;
     try {
       this.state.currentVersion = TabixUpdate.getTabixBuildVersion();
@@ -152,6 +153,11 @@ export default class Page extends React.Component<Props> {
     const { uiStore, className, showHeader, ...rest } = this.props;
     const showLoader = uiStore && uiStore.loading;
 
+    // i`m
+    if (!this.imCheck) {
+      this.imCheck = true;
+      this.checkVersionUpdateTabix();
+    }
     return (
       <Layout className={css.root}>
         {showLoader && <Loader />}

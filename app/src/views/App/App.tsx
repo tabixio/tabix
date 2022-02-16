@@ -46,7 +46,6 @@ class App extends React.Component<RoutedProps> {
   }
 
   componentWillUnmount() {
-    console.log('App->componentWillUnmount');
     this.loadingReaction && this.loadingReaction();
     const { store } = this.props;
     store.disposeStores();

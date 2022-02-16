@@ -218,12 +218,6 @@ export default class DataDecorator {
 
   getStatementResponse(): string {
     let ret = 'no?';
-    console.log(
-      'isStringColumnisStringColumn:',
-      this.isHaveData,
-      this.getColumn('statement'),
-      this.isStringColumn('statement')
-    );
     if (this.isHaveData && this.isStringColumn('statement')) {
       ret = 'find1';
       if (this.rows[0] && this.rows[0]['statement']) {
@@ -332,10 +326,6 @@ export default class DataDecorator {
       e.unsafe64Bit = searchUnSafe[o.name];
       return e;
     });
-
-    // console.warn(this.rows);
-    // console.warn(searchUnSafe);
-    // console.warn(this.meta.columns);
     return false;
   }
 

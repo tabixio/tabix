@@ -42,7 +42,7 @@ export abstract class LanguageWorker {
   }
 
   public static setServerStructure(serverStructure: ServerStructure.Server) {
-    console.info('SuggestionsMaker->setServerStructure()');
+    // console.info('SuggestionsMaker->setServerStructure()');
     this.serverStructure = serverStructure;
   }
 

@@ -41,6 +41,15 @@ class ProcessesTabPage extends React.Component<Props> {
     countError: 0,
     countSuccess: 0,
   };
+  constructor(props: any) {
+    super(props);
+
+    const set: Array<string> = [];
+    for (const [key, value] of Object.entries(this.PresetOptions)) {
+      if (value) set.push(key);
+    }
+    this.state.settingsOptions = set;
+  }
 
   componentDidMount() {
     //
@@ -53,9 +62,6 @@ class ProcessesTabPage extends React.Component<Props> {
   private handleChange = (value: string) => {
     const v = parseFloat(value);
     this.setState({ interval: v });
-    // if (this.state.intervalId) {
-    // this.runTimer(v);
-    // }
   };
 
   private onChangeSettings = (settingsOptions: any) => {
@@ -184,18 +190,17 @@ class ProcessesTabPage extends React.Component<Props> {
       { label: '2 seconds', value: 2 },
       { label: '5 seconds', value: 5 },
     ];
+    //
+    const { isPlaying, countError, settingsOptions, countSuccess, dataUpdate } = this.state;
+
     const children: Array<React.ReactElement> = [];
     const settings: Array<React.ReactElement> = [];
-    const settingsDef: Array<string> = [];
+
     ratesOptions.forEach((item) => {
       children.push(<IOption key={item.value.toString()}>{item.label}</IOption>);
     });
-    for (const [key, value] of Object.entries(this.PresetOptions)) {
-      if (value) settingsDef.push(key);
+    for (const [key] of Object.entries(this.PresetOptions)) {
       settings.push(<IOption key={key}>{key}</IOption>);
-    }
-    if (!this.state.settingsOptions.length) {
-      this.setState({ settingsOptions: settingsDef });
     }
 
     return (
@@ -205,12 +210,12 @@ class ProcessesTabPage extends React.Component<Props> {
           <Row justify="space-around">
             <Col flex="200px">
               <Button size="large" onClick={this.playStop}>
-                {this.state.isPlaying ? (
+                {isPlaying ? (
                   <PauseOutlined style={{ color: 'orange' }} />
                 ) : (
                   <CaretRightOutlined style={{ color: 'orange' }} />
                 )}
-                {this.state.isPlaying ? ' Pause' : ' Play'}
+                {isPlaying ? ' Pause' : ' Play'}
               </Button>
 
               <Button size="large" onClick={this.reset}>
@@ -234,7 +239,7 @@ class ProcessesTabPage extends React.Component<Props> {
                 size="large"
                 placeholder="Please select"
                 // @ts-ignore (need update rc-select ts type? )
-                defaultValue={settingsDef}
+                defaultValue={settingsOptions}
                 onChange={this.onChangeSettings}
                 style={{ width: '50%' }}
               >
@@ -246,14 +251,14 @@ class ProcessesTabPage extends React.Component<Props> {
 
           <span>
             &nbsp;&nbsp;&nbsp;Requests errors:
-            {this.state.countError}
+            {countError}
             ,Success:
-            {this.state.countSuccess}
+            {countSuccess}
           </span>
           <Divider dashed={true} style={{ margin: ' 5px 0' }} />
         </Flex>
         <Flex vfill={true} hfill={true}>
-          <DataTable dataUpdate={this.state.dataUpdate} data={this.data} fill />
+          <DataTable dataUpdate={dataUpdate} data={this.data} fill />
         </Flex>
       </div>
     );
