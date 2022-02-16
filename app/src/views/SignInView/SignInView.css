@@ -9,4 +9,13 @@
 
 .layout-connection-list {
   overflow-x: hidden;
+  
+}
+.logo {
+  float: left;
+}
+
+.logoimg {
+  width: 270px;
+  height: 110px; 
 }

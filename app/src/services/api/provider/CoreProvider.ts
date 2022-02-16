@@ -57,7 +57,6 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
     const init = this.getRequestInit(JSON.stringify(data));
     return this.request(url, init);
   }
-
   abstract getType(): ConnectionType;
 
   abstract query(query: Query | string): Promise<QueryResponse>;

@@ -21,10 +21,11 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       log_queries: 1,
       enable_http_compression: 1,
       add_http_cors_header: 1,
-      result_overflow_mode: 'throw',
+      result_overflow_mode: 'throw', // break
       timeout_overflow_mode: 'throw',
       max_execution_time: 10,
       max_result_rows: 90000,
+      max_result_bytes: 10000000,
 
       // max_block_size:200,
       // send_progress_in_http_headers:1,
@@ -56,11 +57,15 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return defaultState;
   }
 
-  private getRequestUrl(extendSettings?: any): string {
+  private getRequestUrl(extendSettings?: any, onlyUrlCheck = false): string {
     const httpProto = this.connection.connectionUrl.indexOf('//') === -1 ? 'http://' : '';
     // this.connection.connectionUrl.indexOf('/') > 0
 
-    let url = `${httpProto}${this.connection.connectionUrl}/?`;
+    let url = `${httpProto}${this.connection.connectionUrl}`;
+    // if need only checkers
+    if (onlyUrlCheck) return url;
+    // add /?
+    url = `${url}/?`;
 
     const settings: object = this.getPresetSettings(extendSettings, this.connection.params);
 

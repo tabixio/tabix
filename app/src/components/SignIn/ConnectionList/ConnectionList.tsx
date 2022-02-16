@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex } from 'reflexy';
 import { Menu } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 import { Connection } from 'services';
 import css from './ConnectionList.css';
 import { SelectInfo } from 'rc-menu/lib/interface';
@@ -44,8 +44,7 @@ export default class ConnectionList extends React.Component<Props> {
                 <div className={css['title']}>{c.connectionName}</div>
                 <div className={css['subtitle']}>{c.connectionUrl}</div>
               </Flex>
-              <SyncOutlined spin />
-              {/*  type="ellipsis" */}
+              <EllipsisOutlined />
             </Flex>
           </Menu.Item>
         ))}
