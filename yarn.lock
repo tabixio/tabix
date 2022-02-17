@@ -8076,6 +8076,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fscreen@npm:^1.0.2":
+  version: 1.2.0
+  resolution: "fscreen@npm:1.2.0"
+  checksum: ac50f9ac52a157b8fe6aaecdf9efa7c1cfa90b42a76c3bc6b85372fab05c5a9cd72c1b7f4c2e273eba1a0e630e381fd72ae135fcc57acd05a0943d5d0c21b451
+  languageName: node
+  linkType: hard
+
 "fsevents@npm:^2.3.2, fsevents@npm:~2.3.2":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
@@ -15816,6 +15823,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-full-screen@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "react-full-screen@npm:1.1.0"
+  dependencies:
+    fscreen: ^1.0.2
+  peerDependencies:
+    react: ">= 16.8.0"
+  checksum: 151e82f8a6d0b4dceb6e34d3600f467dc9a88d00827e9f5f6ce86cb083b16c8a3e7b68efbddcd46acc563409505011edaf062a6a837fa062752a6e880ca7a1c6
+  languageName: node
+  linkType: hard
+
 "react-grid-layout@npm:^1.3.3":
   version: 1.3.3
   resolution: "react-grid-layout@npm:1.3.3"
@@ -18380,6 +18398,7 @@ __metadata:
     pug-loader: ^2.4.0
     react: 17.0.1
     react-dom: 17.0.1
+    react-full-screen: ^1.1.0
     react-grid-layout: ^1.3.3
     react-hot-loader: ^4.13.0
     react-plotly.js: ^2.5.1
