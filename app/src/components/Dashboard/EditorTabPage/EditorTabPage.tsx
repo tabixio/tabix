@@ -17,7 +17,7 @@ import DataTable, { ExportData, DataTableProps, ResultTableActionType } from './
 import Draw from './Draw';
 import Progress from './Progress';
 import { TabsTabPane } from './Tabs/Tabs';
-
+import FullScreener from './FullScreener';
 interface Props {
   store: TabsStore;
   serverStructure?: ServerStructure.Server;
@@ -28,6 +28,10 @@ interface Props {
 
 @observer
 export default class EditorTabPage extends React.Component<Props> {
+  state = {
+    enterFullScreen: false,
+  };
+
   private onContentChange = (content: string) => {
     this.props.onModelFieldChange({ name: 'content', value: content });
   };
@@ -66,6 +70,12 @@ export default class EditorTabPage extends React.Component<Props> {
       case ResultTabActionType.TogglePin: {
         const { onModelFieldChange: onTabModelFieldChange, model } = this.props;
         onTabModelFieldChange({ name: 'pinnedResult', value: !model.pinnedResult });
+        break;
+      }
+      case ResultTabActionType.Fullscreen: {
+        const v = this.state.enterFullScreen;
+        this.setState({ enterFullScreen: !v });
+        console.log('FULLSCREEN', this.state.enterFullScreen);
         break;
       }
       case ResultTabActionType.Export: {
@@ -159,75 +169,77 @@ export default class EditorTabPage extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <Splitter split="horizontal" minSize={100} defaultSize={350}>
-          <SqlEditor
-            content={model.content}
-            onContentChange={this.onContentChange}
-            serverStructure={serverStructure}
-            currentDatabase={model.currentDatabase.getOrElse('')}
-            onDatabaseChange={this.onDatabaseChange}
-            onAction={this.onEditorAction}
-            stats={model.queriesResult.map((_) => _.totalStats).orUndefined()}
-            ref={this.setEditorRef}
-            fill
-          />
-
-          <div>
-            {model.tableData.map((data) => <div>{data}</div>).orUndefined()}
-
-            <Tabs
-              defaultActiveKey="table"
-              pinned={model.pinnedResult}
-              onAction={this.onResultTabAction}
-            >
-              <TabsTabPane key="table" tab="Data / Table">
-                {!!store.uiStore.executingQueries.length && (
-                  <Progress queries={store.uiStore.executingQueries} />
-                )}
-
-                <DataItemsLayout
-                  onResize={this.onResizeGrid}
-                  cols={4}
-                  itemWidth={4}
-                  itemHeight={10}
-                  items={resultList}
-                  width={width}
-                  renderItem={this.renderTable}
-                  locked={model.pinnedResult}
-                />
-              </TabsTabPane>
-
-              <TabsTabPane key="draw" tab="Chart / Draw">
-                {!!store.uiStore.executingQueries.length && (
-                  <Progress queries={store.uiStore.executingQueries} />
-                )}
-
-                <DataItemsLayout
-                  onResize={this.onResizeGrid}
-                  cols={4}
-                  itemWidth={4}
-                  itemHeight={6}
-                  items={resultList}
-                  width={width}
-                  renderItem={this.renderDraw}
-                />
-              </TabsTabPane>
-            </Tabs>
-          </div>
-        </Splitter>
-
-        {store.editedTab
-          .filter((t) => t.model === model)
-          .map((editedTab) => (
-            <SaveModal
-              fieldName="title"
-              fieldValue={editedTab.title}
-              onFieldChange={editedTab.changeField}
-              onSave={store.saveEditedTab}
-              onCancel={store.hideSaveModal}
+        <FullScreener enter={this.state.enterFullScreen}>
+          <Splitter split="horizontal" minSize={100} defaultSize={350}>
+            <SqlEditor
+              content={model.content}
+              onContentChange={this.onContentChange}
+              serverStructure={serverStructure}
+              currentDatabase={model.currentDatabase.getOrElse('')}
+              onDatabaseChange={this.onDatabaseChange}
+              onAction={this.onEditorAction}
+              stats={model.queriesResult.map((_) => _.totalStats).orUndefined()}
+              ref={this.setEditorRef}
+              fill
             />
-          ))
-          .orUndefined()}
+
+            <div>
+              {model.tableData.map((data) => <div>{data}</div>).orUndefined()}
+
+              <Tabs
+                defaultActiveKey="table"
+                pinned={model.pinnedResult}
+                onAction={this.onResultTabAction}
+              >
+                <TabsTabPane key="table" tab="Data / Table">
+                  {!!store.uiStore.executingQueries.length && (
+                    <Progress queries={store.uiStore.executingQueries} />
+                  )}
+
+                  <DataItemsLayout
+                    onResize={this.onResizeGrid}
+                    cols={4}
+                    itemWidth={4}
+                    itemHeight={10}
+                    items={resultList}
+                    width={width}
+                    renderItem={this.renderTable}
+                    locked={model.pinnedResult}
+                  />
+                </TabsTabPane>
+
+                <TabsTabPane key="draw" tab="Chart / Draw">
+                  {!!store.uiStore.executingQueries.length && (
+                    <Progress queries={store.uiStore.executingQueries} />
+                  )}
+
+                  <DataItemsLayout
+                    onResize={this.onResizeGrid}
+                    cols={4}
+                    itemWidth={4}
+                    itemHeight={6}
+                    items={resultList}
+                    width={width}
+                    renderItem={this.renderDraw}
+                  />
+                </TabsTabPane>
+              </Tabs>
+            </div>
+          </Splitter>
+
+          {store.editedTab
+            .filter((t) => t.model === model)
+            .map((editedTab) => (
+              <SaveModal
+                fieldName="title"
+                fieldValue={editedTab.title}
+                onFieldChange={editedTab.changeField}
+                onSave={store.saveEditedTab}
+                onCancel={store.hideSaveModal}
+              />
+            ))
+            .orUndefined()}
+        </FullScreener>
       </React.Fragment>
     );
   }
