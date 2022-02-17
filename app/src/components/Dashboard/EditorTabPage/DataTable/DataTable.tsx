@@ -61,7 +61,7 @@ const hotTableSettings: Handsontable.DefaultSettings = {
   // sortIndicator,
   // fixedRowsTop: 1,
   renderAllRows: false,
-  visibleRows: 40,
+  // visibleRows: 40,
   columnSorting: true,
   // contextMenu: contextMenu,
   // columnsMenu: columnsMenu,
@@ -84,15 +84,33 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
       // Use callback only when parent resizing finished,
       // so callback will called only when resize finished.
       // Otherwise performance issue of hottable update.
+      let f = false;
       const width = el ? el.clientWidth : this.state.width;
       const height = el ? el.clientHeight : this.state.height;
       if (width && width !== this.state.width) {
-        // For update hottable when resizing
+        // For update hottable when resizing [ширина]
         this.setState({ width });
+        f = true;
       }
+      // height [высота]
       if (height && height !== this.state.height) {
         // For update hottable when resizing
-        // this.setState({ height });
+        console.log('height:', height);
+
+        // this.setState({ height: height - 25 });
+        this.setState({ height: height });
+        f = true;
+      }
+
+      if (f) {
+        this.tableRef?.current?.hotInstance.updateSettings(
+          {
+            height: height,
+            width: width,
+          },
+          false
+        );
+        this.tableRef?.current?.hotInstance.render();
       }
     });
   }
@@ -155,10 +173,12 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
         componentRef={this.rootRef}
         column
         className={classNames(css.root, className)}
+        hfill
         {...flexProps}
+        style={{ border: '1px solid aquamarine', minHeight: 150 }}
       >
         <HotTable
-          style={{ border: '1px solid red' }}
+          style={{ border: '2px dotted chartreuse', minHeight: 150 }}
           ref={this.tableRef}
           settings={hotTableSettings}
           columns={columns}

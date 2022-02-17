@@ -3,11 +3,11 @@ import { DataDecorator, RequestPool, ServerStructure } from 'services';
 import { TableViewTabModel } from 'models';
 import { TableOutlined } from '@ant-design/icons';
 import { DataTable } from '../index';
-import { Divider, Tabs } from 'antd';
+import { Row, Col, Button, Select, Checkbox, Tabs, Divider } from 'antd';
 import { typedInject } from '../../../module/mobx-utils';
 import SimpleEditor from '../EditorTabPage/SqlEditor/SimpleEditor';
 import css from '../EditorTabPage/SqlEditor/SqlEditor.css';
-
+import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
 import { Flex } from 'reflexy';
 
 import { Stores, TabsStore } from '../../../stores';
@@ -71,29 +71,44 @@ export class TableViewTabPage extends React.Component<Props> {
     const { describe, dataUpdate } = this.state;
 
     return (
-      <div>
-        <Divider orientation="left" plain>
+      <div style={{ height: '100%' }}>
+        <Divider orientation="left" style={{ margin: ' 5px 0' }} plain>
           <TableOutlined /> {tableId}
         </Divider>
 
-        <Tabs type="card" defaultActiveKey="1" onChange={this.onTab}>
+        <Tabs type="card" defaultActiveKey="2" onChange={this.onTab} style={{ height: '100%' }}>
           <TabPane tab="DDL" key="1">
-            <Flex column fill={true} style={{ maxHeight: 350 }}>
-              <Flex grow fill className={css.editor}>
+            <Col>
+              <Row style={{ height: '40vh' }}>
                 <SimpleEditor content={describe} serverStructure={serverStructure} />
-              </Flex>
-            </Flex>
-            <Flex column fill={true} style={{ maxHeight: 350 }}>
-              <Flex grow fill className={css.editor}>
+              </Row>
+              <Row style={{ height: '48vh', border: '2px solid orange' }}>
                 <DataTable dataUpdate={dataUpdate} data={this.data} fill />
-              </Flex>
+              </Row>
+            </Col>
+          </TabPane>
+
+          <TabPane tab="Stats" key="2">
+            <Flex row fill={true} style={{ border: '1px solid orange' }}>
+              F2
+            </Flex>
+
+            <Flex row fill style={{ border: '1px solid orange', height: '40px' }}>
+              <DataTable dataUpdate={dataUpdate} data={this.data} />
             </Flex>
           </TabPane>
-          <TabPane tab="Stats" key="2">
-            Content of Tab Pane 2
-          </TabPane>
+
           <TabPane tab="Data" key="3">
-            Content of Tab Pane 3
+            <Row style={{ height: '40vh' }} justify="space-around">
+              <Col flex="200px">
+                <Button size="large">
+                  <CaretRightOutlined style={{ color: 'orange' }} /> Load
+                </Button>
+              </Col>
+            </Row>
+            <Row style={{ alignItems: 'stretch', border: '2px solid orange' }}>
+              <DataTable dataUpdate={dataUpdate} data={this.data} />
+            </Row>
           </TabPane>
         </Tabs>
       </div>

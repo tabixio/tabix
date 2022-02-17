@@ -83,15 +83,12 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
    * @param serverStructure
    */
   public updateGlobalEditorStructure = (serverStructure: ServerStructure.Server): void => {
-    // console.info('SqlEditor->updateGlobalEditorStructure');
     if (!serverStructure) {
-      console.warn('Error in updateGlobalEditorStructure, empty serverStructure!');
+      //console.warn('Error in updateGlobalEditorStructure, empty serverStructure!');
       return;
     }
-    //
-    //
     if (!this.tMonaco) {
-      console.warn('Error in updateGlobalEditorStructure, empty this.tMonaco!');
+      // console.warn('Error in updateGlobalEditorStructure, empty this.tMonaco!');
       return;
     }
     // Регистрируем язык
