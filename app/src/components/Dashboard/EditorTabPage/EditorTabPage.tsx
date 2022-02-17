@@ -13,7 +13,7 @@ import { TextInsertType } from './SqlEditor/types';
 import SaveModal from './SaveModal';
 import { Tabs, ResultTabActionType } from './Tabs';
 import DataItemsLayout from './DataItemsLayout';
-import DataTable, { DataTableProps, ResultTableActionType } from './DataTable';
+import DataTable, { ExportData, DataTableProps, ResultTableActionType } from './DataTable';
 import Draw from './Draw';
 import Progress from './Progress';
 import { TabsTabPane } from './Tabs/Tabs';
@@ -60,11 +60,28 @@ export default class EditorTabPage extends React.Component<Props> {
     }
   };
 
-  private onResultTabAction = (action: ResultTabActionType) => {
+  private onResultTabAction = (action: ResultTabActionType, subEvent = '') => {
+    const { model } = this.props;
     switch (action) {
       case ResultTabActionType.TogglePin: {
         const { onModelFieldChange: onTabModelFieldChange, model } = this.props;
         onTabModelFieldChange({ name: 'pinnedResult', value: !model.pinnedResult });
+        break;
+      }
+      case ResultTabActionType.Export: {
+        let counter = 0;
+        model.queriesResult.value?.list?.map((_) => {
+          if (
+            _.result.isSuccess() &&
+            !_.result.value.isResultText &&
+            !_.result.value.error &&
+            _.result.value.isHaveData
+          ) {
+            counter++;
+            const title = `ResultTable-${counter}-${model.title}`;
+            ExportData(_.result.value, subEvent, title);
+          }
+        });
         break;
       }
       default:

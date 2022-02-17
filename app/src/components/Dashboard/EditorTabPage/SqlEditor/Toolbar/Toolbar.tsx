@@ -73,25 +73,25 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
 
           <SpaceH />
 
-          {/*icon="save"*/}
-          <ActionButton size="small" actionType={ActionType.Save} onAction={onAction}>
-            <SaveOutlined />
-          </ActionButton>
+          {/*/!*icon="save"*!/*/}
+          {/*<ActionButton size="small" actionType={ActionType.Save} onAction={onAction}>*/}
+          {/*  <SaveOutlined />*/}
+          {/*</ActionButton>*/}
 
           <SpaceH />
 
-          <Select
-            size="small"
-            dropdownMatchSelectWidth={false}
-            value={currentDatabase}
-            onChange={this.onDatabaseChange}
-          >
-            {databases.map((db) => (
-              <Select.Option key={db.name} value={db.name}>
-                {db.name}
-              </Select.Option>
-            ))}
-          </Select>
+          {/*<Select*/}
+          {/*  size="small"*/}
+          {/*  dropdownMatchSelectWidth={false}*/}
+          {/*  value={currentDatabase}*/}
+          {/*  onChange={this.onDatabaseChange}*/}
+          {/*>*/}
+          {/*  {databases.map((db) => (*/}
+          {/*    <Select.Option key={db.name} value={db.name}>*/}
+          {/*      {db.name}*/}
+          {/*    </Select.Option>*/}
+          {/*  ))}*/}
+          {/*</Select>*/}
 
           <SpaceH />
         </Flex>
@@ -104,9 +104,6 @@ export default class Toolbar extends React.Component<ToolbarProps & FlexProps> {
             </>
           )}
 
-          <SpaceH />
-          {/*icon="fullscreen"*/}
-          <ActionButton size="small" actionType={ActionType.Fullscreen} onAction={onAction} />
           <SpaceH />
         </Flex>
       </Flex>
