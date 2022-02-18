@@ -76,38 +76,38 @@ export class TableViewTabPage extends React.Component<Props> {
           <TableOutlined /> {tableId}
         </Divider>
 
-        <Tabs type="card" defaultActiveKey="2" onChange={this.onTab} style={{ height: '100%' }}>
+        <Tabs type="card" defaultActiveKey="3" onChange={this.onTab} style={{ height: '100%' }}>
           <TabPane tab="DDL" key="1">
-            <Col>
-              <Row style={{ height: '40vh' }}>
+            <Row style={{ height: 'calc(90vh - 30px)' }}>
+              <Flex row hfill style={{ height: '40%' }}>
                 <SimpleEditor content={describe} serverStructure={serverStructure} />
-              </Row>
-              <Row style={{ height: '48vh', border: '2px solid orange' }}>
-                <DataTable dataUpdate={dataUpdate} data={this.data} fill />
-              </Row>
-            </Col>
+              </Flex>
+
+              <Flex row hfill style={{ height: '60%' }}>
+                <DataTable dataUpdate={dataUpdate} data={this.data} />
+              </Flex>
+            </Row>
           </TabPane>
 
           <TabPane tab="Stats" key="2">
-            <Flex row fill={true} style={{ border: '1px solid orange' }}>
-              F2
+            <Flex row fill={true} style={{ height: 'calc(50vh-40px)', border: '1px solid orange' }}>
+              calc(50vh-40px)
             </Flex>
 
-            <Flex row fill style={{ border: '1px solid orange', height: '40px' }}>
+            <Flex row style={{ border: '1px solid orange', height: 'calc(50vh-40px)' }}>
               <DataTable dataUpdate={dataUpdate} data={this.data} />
             </Flex>
           </TabPane>
 
           <TabPane tab="Data" key="3">
-            <Row style={{ height: '40vh' }} justify="space-around">
-              <Col flex="200px">
-                <Button size="large">
-                  <CaretRightOutlined style={{ color: 'orange' }} /> Load
-                </Button>
-              </Col>
-            </Row>
-            <Row style={{ alignItems: 'stretch', border: '2px solid orange' }}>
-              <DataTable dataUpdate={dataUpdate} data={this.data} />
+            <Row style={{ height: 'calc(90vh - 30px)', border: '1px solid orange' }}>
+              <Flex row hfill style={{ height: '10%', border: '1px solid orange' }}>
+                calc(50vh-40px)
+              </Flex>
+
+              <Flex row hfill style={{ border: '1px solid orange', height: '90%' }}>
+                <DataTable dataUpdate={dataUpdate} data={this.data} />
+              </Flex>
             </Row>
           </TabPane>
         </Tabs>

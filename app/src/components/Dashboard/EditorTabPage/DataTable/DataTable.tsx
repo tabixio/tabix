@@ -175,10 +175,10 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
         className={classNames(css.root, className)}
         hfill
         {...flexProps}
-        style={{ border: '1px solid aquamarine', minHeight: 150 }}
+        style={{ minHeight: 150 }}
       >
         <HotTable
-          style={{ border: '2px dotted chartreuse', minHeight: 150 }}
+          style={{ minHeight: 150 }}
           ref={this.tableRef}
           settings={hotTableSettings}
           columns={columns}
