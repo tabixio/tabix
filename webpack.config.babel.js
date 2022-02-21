@@ -178,7 +178,10 @@ let common = {
       {
         test: /\.css$/,
         include: [path.resolve(baseDir, 'node_modules')],
-        exclude: [path.join(baseDir, 'node_modules', 'antd')],
+        exclude: [
+          path.join(baseDir, 'node_modules', 'antd'),
+          // path.join(baseDir, 'node_modules', '@ant-design'),
+        ],
         use: [
           'style-loader',
           {
@@ -192,7 +195,10 @@ let common = {
       // Less --- antd ---
       {
         test: /\.less$/,
-        include: [path.resolve(baseDir, 'node_modules', 'antd')],
+        include: [
+          path.resolve(baseDir, 'node_modules', 'antd'),
+          // path.resolve(baseDir, 'node_modules', '@ant-design'),
+        ],
         use: [
           'style-loader',
           {

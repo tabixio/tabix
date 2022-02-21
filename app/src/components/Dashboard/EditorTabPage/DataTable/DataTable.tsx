@@ -95,9 +95,6 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
       // height [высота]
       if (height && height !== this.state.height) {
         // For update hottable when resizing
-        console.log('height:', height);
-
-        // this.setState({ height: height - 25 });
         this.setState({ height: height });
         f = true;
       }

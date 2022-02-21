@@ -3,11 +3,11 @@ import { DataDecorator, RequestPool, ServerStructure } from 'services';
 import { TableViewTabModel } from 'models';
 import { TableOutlined } from '@ant-design/icons';
 import { DataTable } from '../index';
-import { Row, Col, Button, Select, Checkbox, Tabs, Divider } from 'antd';
+import { Row, Col, Button, Drawer, Select, Checkbox, Table, Tabs, Divider } from 'antd';
 import { typedInject } from '../../../module/mobx-utils';
 import SimpleEditor from '../EditorTabPage/SqlEditor/SimpleEditor';
-import css from '../EditorTabPage/SqlEditor/SqlEditor.css';
 import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
+import { TableFilter } from './TableFilter';
 import { Flex } from 'reflexy';
 
 import { Stores, TabsStore } from '../../../stores';
@@ -25,23 +25,25 @@ export class TableViewTabPage extends React.Component<Props> {
   state = {
     dataUpdate: Date.now(),
     describe: '',
+    visibleTableFilter: false,
   };
   private data: DataDecorator = new DataDecorator();
 
   private getPool = (tableName: string): RequestPool => {
+    const { api } = this.props.store;
     return {
-      DESCRIBE: this.props.store.api.prepared().template('DESCRIBE TABLE ' + tableName),
-      SHOWCREATE: this.props.store.api.prepared().template('SHOW CREATE TABLE ' + tableName),
+      DESCRIBE: api.prepared().template('DESCRIBE TABLE ' + tableName),
+      SHOWCREATE: api.prepared().template('SHOW CREATE TABLE ' + tableName),
     };
   };
   componentDidMount() {
-    this.load();
+    this.loadDescribe();
   }
-  onTab = () => {
-    //
+  onTab = (activeKey: string) => {
+    console.log('ON TAB Open', activeKey);
   };
 
-  load = () => {
+  private loadDescribe = () => {
     this.requestTableDescribe().then((e) => {
       // console.log('ON TAB', e);
       let describe = 'Error can`t fetch:SHOW CREATE TABLE';
@@ -57,18 +59,32 @@ export class TableViewTabPage extends React.Component<Props> {
       this.setState({ describe: describe, dataUpdate: Date.now() });
     });
   };
-  requestTableDescribe = async () => {
+  private requestTableDescribe = async () => {
     const { api } = this.props.store;
-
     const { model } = this.props;
     const tableId = model.tableId;
-
     return await api.fetchPool(this.getPool(tableId));
   };
   render() {
     const { serverStructure, model } = this.props;
     const tableId = model.tableId;
     const { describe, dataUpdate } = this.state;
+    const showTableFilter = () => {
+      this.setState({ visibleTableFilter: true });
+    };
+    const onCloseTableFilter = () => {
+      this.setState({ visibleTableFilter: false });
+    };
+    // const children = server.databases.map((d) => ({
+    //   ...d,
+    //   children: d.tables.map((t) => ({
+    //     ...t,
+    //     children: t.columns.map((c) => ({ ...c })),
+    //   })),
+    // }));
+    const tb: Readonly<ServerStructure.Table> | undefined = serverStructure?.databases
+      .find((_) => _.name === 'system')
+      ?.tables.find((_) => _.name === 'query_log');
 
     return (
       <div style={{ height: '100%' }}>
@@ -76,7 +92,13 @@ export class TableViewTabPage extends React.Component<Props> {
           <TableOutlined /> {tableId}
         </Divider>
 
-        <Tabs type="card" defaultActiveKey="3" onChange={this.onTab} style={{ height: '100%' }}>
+        <Tabs
+          type="card"
+          defaultActiveKey="3"
+          onTabClick={this.onTab}
+          onChange={this.onTab}
+          style={{ height: '100%' }}
+        >
           <TabPane tab="DDL" key="1">
             <Row style={{ height: 'calc(90vh - 30px)' }}>
               <Flex row hfill style={{ height: '40%' }}>
@@ -101,8 +123,19 @@ export class TableViewTabPage extends React.Component<Props> {
 
           <TabPane tab="Data" key="3">
             <Row style={{ height: 'calc(90vh - 30px)', border: '1px solid orange' }}>
-              <Flex row hfill style={{ height: '10%', border: '1px solid orange' }}>
-                calc(50vh-40px)
+              <Flex row hfill style={{ height: '30%', border: '1px solid orange' }}>
+                <Button type="primary" onClick={showTableFilter}>
+                  Open
+                </Button>
+                <Drawer
+                  title="Select Filter"
+                  placement="right"
+                  onClose={onCloseTableFilter}
+                  visible={this.state.visibleTableFilter}
+                  size="large"
+                >
+                  <TableFilter table={tb} />
+                </Drawer>
               </Flex>
 
               <Flex row hfill style={{ border: '1px solid orange', height: '90%' }}>
