@@ -5,7 +5,7 @@ import { Button, Layout, Typography, Tabs, Row, Col, Divider, Timeline, Badge } 
 import { observer } from 'mobx-react';
 import { NotificationType, typedInject } from 'module/mobx-utils';
 import { SignInStore, Stores } from 'stores';
-import { Connection, ConnectionType, isDirectConnection, TabixUpdate } from 'services';
+import { Connection, ConnectionType, isDirectConnection } from 'services';
 import { ConnectionModel } from 'models';
 import Page from 'components/Page';
 import Splitter from 'components/Splitter';
@@ -29,17 +29,16 @@ type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
 class SignInView extends React.Component<RoutedProps> {
-  private imCheck = false;
-  state = {
-    currentVersion: '',
-    newVersion: '',
-    link: '',
-    needUpdate: false,
-  };
-
   componentDidMount() {
     const { store } = this.props;
+    // i`m
+    // if (!this.imCheck) {
+    //   this.imCheck = true;
+    //   //
+    //   this.checkVersionUpdateTabix();
+    // }
     store.loadConnections();
+    store.checkVersionUpdateTabix();
   }
 
   private onSelectConnection = (connection: Connection) => {
@@ -59,41 +58,16 @@ class SignInView extends React.Component<RoutedProps> {
     store.signIn(history);
   };
 
-  checkVersionUpdateTabix = async () => {
-    this.imCheck = true;
-    const { store } = this.props;
-    try {
-      this.state.currentVersion = TabixUpdate.getTabixBuildVersion();
-      const v = await TabixUpdate.checkVersionUpdateTabix(undefined);
-
-      if (v.haveUpdate) {
-        this.setState({
-          needUpdate: true,
-          newVersion: v.newVersion,
-          link: v.link,
-        });
-
-        store?.uiStore?.addNotification({
-          type: NotificationType.info,
-          text: 'Update Tabix, new version: ' + v.newVersion,
-        });
-      } else {
-        this.setState({ needUpdate: false, newVersion: '' });
-      }
-    } catch (e) {
-      console.warn('Can`t check Tabix update');
-    }
-    return false;
-  };
-
   renderFooter() {
+    const { store } = this.props;
     return (
       <div style={{ textAlign: 'center' }}>
-        Tabix ©{new Date().getFullYear()} Version: {this.state.currentVersion},
-        {this.state.needUpdate ? (
+        Tabix ©{new Date().getFullYear()} Version: {store.tbxUpdate.currentVersion}&nbsp;
+        {store.tbxUpdate.needUpdate ? (
           <Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>
-            <a target="_blank" href={this.state.link} rel="noreferrer">
-              Update new version {this.state.newVersion}
+            ,
+            <a target="_blank" href={store.tbxUpdate.link} rel="noreferrer">
+              Update new version {store.tbxUpdate.newVersion}
             </a>
           </Badge>
         ) : (
@@ -105,15 +79,7 @@ class SignInView extends React.Component<RoutedProps> {
 
   render() {
     const { store } = this.props;
-
-    // i`m
-    if (!this.imCheck) {
-      this.imCheck = true;
-      this.checkVersionUpdateTabix();
-    }
-
     //pass:checkVersionUpdateTabix123
-
     return (
       <Page column={false} uiStore={store.uiStore}>
         <Splitter>

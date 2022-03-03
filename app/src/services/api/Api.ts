@@ -22,9 +22,13 @@ export default class Api {
       version = await provider.fastGetVersion();
       console.log('Version CH', version);
     } catch (e) {
-      //
+      let msg = 'Can`t fetch version server,check connection URL/DNS/Host:PORT,';
+      if (e.name == 'AbortError') {
+        msg = ' Can`t fetch version server,timeout connection URL/DNS/Host:PORT,';
+      }
       throw new Error(
-        'Can`t fetch version server,check connection URL/DNS/Host:PORT, open in browser:' +
+        msg +
+          ' open in browser:' +
           `http://${provider.connection.connectionUrl.replace('http://', '')}`
       );
     }

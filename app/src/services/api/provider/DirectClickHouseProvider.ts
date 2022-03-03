@@ -138,8 +138,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
 
   fastGetVersion(): Promise<string> {
     const url = this.getRequestUrl();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout:
+
     const query = 'SELECT version() as version';
-    return fetch(`${url}&query=${query}`, { method: 'GET' }).then((r) => r.text());
+    return fetch(`${url}&query=${query}`, { method: 'GET', signal: controller.signal }).then((r) =>
+      r.text()
+    );
   }
 
   async getProcessLists(isOnlySelect: boolean, isCluster: boolean): Promise<QueryResponse> {

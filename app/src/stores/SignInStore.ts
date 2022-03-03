@@ -1,12 +1,19 @@
 import { History } from 'history';
 import { action, observable, runInAction } from 'mobx';
 import { Option } from 'funfix-core';
-import { withRequest } from 'module/mobx-utils';
+import { NotificationType, withRequest } from 'module/mobx-utils';
 // import { FromLocationDescriptorObject } from 'module/react-auth';
-import { Api, Connection, connectionsStorage, isDirectConnection } from 'services';
+import { Api, Connection, connectionsStorage, isDirectConnection, TabixUpdate } from 'services';
 import { ConnectionModel } from 'models';
 import { routePaths } from 'routes';
 import ApiRequestableStore from './ApiRequestableStore';
+
+interface iTabixUpdate {
+  currentVersion: string;
+  newVersion: string;
+  link: string;
+  needUpdate: boolean;
+}
 
 export default class SignInStore extends ApiRequestableStore {
   @observable
@@ -15,11 +22,45 @@ export default class SignInStore extends ApiRequestableStore {
   @observable
   connectionList: ReadonlyArray<ConnectionModel> = [];
 
+  @observable
+  tbxUpdate: iTabixUpdate = {
+    currentVersion: '',
+    link: '',
+    newVersion: '',
+    needUpdate: false,
+  };
+
   @withRequest
   async loadConnections() {
     const list = await connectionsStorage.get();
     runInAction(() => {
       this.connectionList = list.map(ConnectionModel.of);
+    });
+  }
+
+  @withRequest
+  async checkVersionUpdateTabix() {
+    const currentVersion = TabixUpdate.getTabixBuildVersion();
+    const v = await TabixUpdate.checkVersionUpdateTabix(undefined);
+
+    runInAction(() => {
+      try {
+        this.tbxUpdate = {
+          currentVersion,
+          needUpdate: v.haveUpdate,
+          link: v.link,
+          newVersion: v.newVersion,
+        };
+        if (v.haveUpdate) {
+          this.uiStore?.addNotification({
+            type: NotificationType.info,
+            text: 'Update Tabix, new version: ' + v.newVersion,
+          });
+        }
+      } catch (e) {
+        console.warn('Can`t check Tabix update');
+      }
+      return false;
     });
   }
 
