@@ -1,17 +1,18 @@
-![Tabix Logo](http://ui.tabix.io/assets/images/logo2.png?123)
+![Tabix Logo](https://tabix.io/img/LogoTabix22Icon.png?utm_source=git)
 
 Open source simple business intelligence application and sql editor tool for Clickhouse.
 
 ## Install
 
-Not need, open in browser http://alpha.tabix.io/
+Not need, open in browser http://dash.tabix.io/
 
 ### If need install
 
 ```bash
 
-# git clone git@github.com:tabixio/tabix.git
- git checkout ts21
+# git clone https://github.com/tabixio/tabix.git
+cd tabix
+git checkout master
 
 # Install JS libs 
 yarn set version 3.1.1
@@ -37,4 +38,4 @@ yarn build:dev
 
 ## License
 
-Copyright 2021 Tabix LLC Licensed under the Apache License, Version 2.0
+Copyright 2022 Tabix LLC Licensed under the Apache License, Version 2.0
