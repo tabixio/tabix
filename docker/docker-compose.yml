@@ -1,0 +1,150 @@
+#docker-compose.yml (Base)
+version: '3.5'
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
+services:
+  ### react #####################################################
+  react:
+    build:
+      context: ./react
+    ports:
+      - "3000:3000"
+    container_name: react
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - frontend
+      - backend
+    volumes:
+      - ./react:/usr/src/app/react
+      - /usr/src/app/react/node_modules
+  
+  ### NGINX Server #########################################
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        - CHANGE_SOURCE=${CHANGE_SOURCE}
+        - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
+        - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
+      - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
+      - ${NGINX_SSL_PATH}:/etc/nginx/ssl
+    ports:
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
+      - "${VARNISH_BACKEND_PORT}:81"
+    networks:
+      - frontend
+      - backend
+### ClickHouse #############################################
+  clickhouse19:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=19.9.2.4
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/19.9.2:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "9813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
+      
+  clickhouse209:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=20.9.4.76
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/20.9.4:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "10813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
+      
+      
+  clickhouse21:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=21.9.7.2
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/21.9.7:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "11813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
+      
+  clickhouse22:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=22.2.2.1
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/22.2.2:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "12813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
