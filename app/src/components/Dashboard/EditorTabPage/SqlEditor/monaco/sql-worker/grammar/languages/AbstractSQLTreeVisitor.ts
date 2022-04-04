@@ -94,6 +94,23 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     }
   }
 
+  public getRelation(offset: number): Array<QueryRelation> | undefined {
+    if (!this.lastRelation) return;
+    const r: Array<QueryRelation> = [];
+    this.lastRelation.relations?.forEach((rel) => {
+      console.log(rel.range);
+      // if (rel.range?.start <= offset && offset <= rel.range.stop )
+    });
+    return r;
+  }
+
+  public getTables(): Array<string> | undefined {
+    console.log('----x------------------');
+    console.log(this.lastRelation);
+    console.log('----x------------------');
+    return;
+  }
+
   public availableColumns(relation: QueryRelation): void {
     const columns: { relation?: string; name: string; rrange?: Range; range?: Range }[] = [];
 

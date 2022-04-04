@@ -39,8 +39,7 @@ export default class SqlEditor extends React.Component<SqlEditorProps> {
   /**
    * Выполнение запросов, если получена command
    *
-   * @param sqlEditor
-   * @param editor
+   * @param queryList
    * @param isExecAll
    */
   public execQueries = (queryList: Array<Query>, isExecAll: boolean): void => {

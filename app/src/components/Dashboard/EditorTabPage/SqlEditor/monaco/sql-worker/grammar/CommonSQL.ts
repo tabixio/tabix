@@ -313,6 +313,8 @@ export interface FunctionReference {
 /** Statement represents a single query */
 export interface Statement {
   text: string;
+  count: number;
+  factStart: number;
   start: number;
   stop: number;
   isParsed: boolean;
@@ -369,20 +371,11 @@ export default class CommonSQL {
     const states = this.splitStatements(input);
     if (!states.length) return null;
     states.forEach((st, index) => {
-      const result = this.parseOneStatement(st.text);
+      const result = this.parseOneStatement(st);
       states[index].visitor = result.visitor;
       states[index].visitor?.getCurrentRelation();
       states[index].errors = result.errors;
       states[index].isParsed = true;
-
-      // states[index].tokens = visitor.getTokens;
-      //
-      // if (res.tokens.length) {
-      //   states[index].refs = this.baseAntlr4.processTokens(res.tokens);
-      //   states[index].isParsed = true;
-      //   states[index].tokens = res.tokens;
-      //   states[index].errors = res.errors;
-      // }
     });
     return new ParsedQuery(states);
   }
@@ -392,8 +385,8 @@ export default class CommonSQL {
    *
    * @param input
    */
-  public parseOneStatement(input: string): any {
-    const lexer = this.baseAntlr4.createLexer(input + '\n');
+  public parseOneStatement(input: Statement): any {
+    const lexer = this.baseAntlr4.createLexer(input.text + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
     const errP = new antlr4ErrorParser(lexer);
@@ -419,8 +412,8 @@ export default class CommonSQL {
         channel: tok.channel,
         column: tok.line,
         line: tok.line,
-        start: tok.startIndex,
-        stop: tok.stopIndex,
+        start: tok.startIndex + input.start,
+        stop: tok.stopIndex + input.start,
         tokenIndex: index,
         type: tok.type,
         text: tok.text,
@@ -476,6 +469,7 @@ export default class CommonSQL {
     let delimiterHead = delimiter[0];
     const keywordPos = 0;
     const start = 0;
+    let counterQ = 0;
     let head = start;
     let tail = head;
     const end = head + text.length;
@@ -641,11 +635,13 @@ export default class CommonSQL {
 
         if (count === 1) {
           // Most common case. Trim the statement and check if it is not empty before adding the range.
-          head = skipLeadingWhitespace(text, head, tail);
+          // head = skipLeadingWhitespace(text, head, tail);
           if (head < tail) {
             statements.push({
               text: text.substring(head, tail),
-              start: head,
+              start: counterQ > 0 ? head : 0,
+              count: counterQ,
+              factStart: head,
               stop: tail,
               isParsed: false,
             });
@@ -661,12 +657,14 @@ export default class CommonSQL {
           if (count === 0) {
             // Multi char delimiter is complete. Tail still points to the start of the delimiter.
             // Run points to the first character after the delimiter.
-            head = skipLeadingWhitespace(text, head, tail);
+            //head = skipLeadingWhitespace(text, head, tail);
 
             if (head < tail) {
               statements.push({
                 text: text.substring(head, tail),
                 start: head,
+                factStart: head,
+                count: counterQ,
                 stop: tail,
                 isParsed: false,
               });
@@ -677,16 +675,19 @@ export default class CommonSQL {
             haveContent = false;
           }
         }
+        counterQ++;
       }
     }
 
     // Add remaining text to the range list.
-    head = skipLeadingWhitespace(text, head, tail);
+    // head = skipLeadingWhitespace(text, head, tail);
 
     if (head < tail) {
       statements.push({
         text: text.substring(head, tail),
-        start: head,
+        start: counterQ > 0 ? head : 0,
+        factStart: head,
+        count: counterQ,
         stop: tail,
         isParsed: false,
       });

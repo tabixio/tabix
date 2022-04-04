@@ -45,16 +45,37 @@ export class ParsedQuery {
     return str;
   }
 
+  public getVisitor(offset: number): AbstractSQLTreeVisitor<any> | undefined {
+    return this.getStatementAtOffset(offset)?.visitor;
+  }
+
+  public getTokens(offset: number): Array<QToken> | undefined {
+    return this.getVisitor(offset)?.getTokens();
+    // if (!this.tokensList) throw 'Can`t get tokens';
+    // return this.tokensList;
+  }
+
+  public getStatementNumAtOffset(offset: number): number | undefined {
+    return this.statements.findIndex((st) => st.start <= offset && offset <= st.stop);
+  }
+
+  public getStatementAtOffset(offset: number): Statement | undefined {
+    return this.statements.find((st) => st.start <= offset && offset <= st.stop);
+  }
+
   public getToken(offset: number): QToken | undefined {
     return this.getVisitor(offset)
       ?.getTokens()
       .find((st) => st.start <= offset && offset <= st.stop);
   }
 
-  public info(off: number): string {
-    const res = 'Token:`' + JSON.stringify(this.getToken(off)?.context);
-    const st = this.getStatementAtOffset(off);
-    return res + '`';
+  public info(offset: number): string {
+    let str = '```Info\n\n';
+    str += 'Offset:' + offset + '\n\n';
+    str += 'Token:' + JSON.stringify(this.getToken(offset)?.context) + '\n\n';
+    console.log('TOKE', this.getVisitor(offset)?.getTokens());
+    console.log('ST', this.getStatementAtOffset(offset));
+    return str + '```';
   }
 
   public isAsteriskSelect(): boolean {
@@ -72,24 +93,6 @@ export class ParsedQuery {
     return null;
   }
 
-  public getStatementNumAtOffset(offset: number): number | undefined {
-    return this.statements.findIndex((st) => st.start <= offset && offset <= st.stop);
-  }
-
-  public getStatementAtOffset(offset: number): Statement | undefined {
-    return this.statements.find((st) => st.start <= offset && offset <= st.stop);
-  }
-
-  public getVisitor(offset: number): AbstractSQLTreeVisitor<any> | undefined {
-    return this.getStatementAtOffset(offset)?.visitor;
-  }
-
-  public getTokens(): Array<QToken> {
-    return [];
-    // if (!this.tokensList) throw 'Can`t get tokens';
-    // return this.tokensList;
-  }
-
   //
   // public getTableReference(offset: number): Array<TableReference> | undefined {
   //   return this.getStatementAtOffset(offset)?.refs?.get(
@@ -97,12 +100,8 @@ export class ParsedQuery {
   //   ) as Array<TableReference>;
   // }
 
-  public getTablesNames(offset: number): Array<string> | undefined {
-    const v = this.getVisitor(offset);
-
-    return [''];
-    // console.info(this.getTableReference(offset));
-    // return this.getTableReference(offset)?.map((r) => r.table);
+  public getTablesNames(offset: number): any {
+    return this.getVisitor(offset)?.getRelation(offset);
   }
 
   public getColumnReference(): Array<string> {
