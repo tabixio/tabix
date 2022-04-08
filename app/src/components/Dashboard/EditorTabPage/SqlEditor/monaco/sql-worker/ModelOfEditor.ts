@@ -58,7 +58,8 @@ export class ModelOfEditor {
   }
 
   public getTokens(): Array<QToken> | undefined {
-    return this.parsedQuery?.getTokens();
+    return;
+    //return this.parsedQuery?.getTokens();
   }
 
   public validate(): void {
