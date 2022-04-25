@@ -1,4 +1,4 @@
-import { AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
+import { ROOT_QUERY_NAME, AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
 import { ClickHouseParserVisitor } from './CHSql';
 import {
   ColumnIdentifierContext,
@@ -23,6 +23,7 @@ import {
   RegularQuerySpecificationContext,
   QueryContext,
   ColumnExprFunctionContext,
+  SelectUnionStmtContext,
 } from './CHSql/ClickHouseParser';
 
 import {
@@ -38,7 +39,6 @@ import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
 // ------------------------------------------------------------------------------------------------------------------------------
 const ROOT_QUERY_ID = 'result_1';
-export const ROOT_QUERY_NAME = '[final result]';
 
 export class ClickhouseSQLVisitor<Result>
   extends AbstractSQLTreeVisitor<Result>
@@ -77,7 +77,7 @@ export class ClickhouseSQLVisitor<Result>
 
       if (column === undefined) {
         column = new Column(columnId, colName, range);
-        this.log(`->Add Column ${colName} as ${columnId}`);
+        // this.log(`->Add Column ${colName} as ${columnId}`);
         this.currentRelation.columns.push(column);
       }
 
@@ -92,10 +92,10 @@ export class ClickhouseSQLVisitor<Result>
       if (col !== undefined) {
         this.currentRelation.columnReferences.push(col);
         // this.onColumnReference(col.tableId, col.columnId);
-        this.log('processColumnReference:::', this.currentRelation.columnReferences);
+        // this.log('processColumnReference:::', this.currentRelation.columnReferences);
       }
 
-      this.log(`[ColumnIdentifier]: [ ${tableName} . ${colName} ] ADD_COLL`, this.currentRelation);
+      // this.log(`[ColumnIdentifier]: [ ${tableName} . ${colName} ] ADD_COLL`, this.currentRelation);
 
       return this.defaultResult();
     }
@@ -160,16 +160,22 @@ export class ClickhouseSQLVisitor<Result>
     //    c.label = columnAliases[i] ?? c.label;
     //  });
     //}
+
     this.currentRelation.relations.set(alias, relation);
-    //this.onRelation(relation, alias);
+    this.log(
+      `relations.set [aliasedQuery] : ${relation.id} to ${this.currentRelation.id} `,
+      alias,
+      Object.assign({}, this.currentRelation)
+    );
+    this.onRelation(relation, alias);
   }
 
   visitJoinExprTable(ctx: JoinExprTableContext) {
-    this.log(`visitJoinExprTable ->ENTER`);
+    // this.log(`visitJoinExprTable ->ENTER`);
 
     const result = this.visitChildren(ctx);
 
-    this.log(`visitJoinExprTable ->EXIT`);
+    // this.log(`visitJoinExprTable ->pre exit`);
 
     // isFinal = ctx.FINAL()?.text !== undefined
     // ctx.sampleClause()
@@ -222,19 +228,32 @@ export class ClickhouseSQLVisitor<Result>
       this.getNextRelationId(),
       tablePrimary,
       [],
-      true, //metadata !== undefined,
-      this.currentRelation,
-      this.rangeFromContext(ctx),
+      true, // metadata !== undefined,
+      this.currentRelation, // parent
+      this.rangeFromContext(ctx), // range
       null // table.data
     );
     const keyAlias = alias ?? tableName;
+    if (!keyAlias) {
+      console.warn('Can`t find alias for relation', relation, tablePrimary, aliasId);
+    }
+
     this.currentRelation.relations.set(keyAlias, relation);
+    this.log(
+      `relations.set [in visitJoinExprTable] add ${relation.id} to ${this.currentRelation.id}`,
+      keyAlias,
+      {
+        ...Object.assign({}, this.currentRelation),
+      }
+    );
+    this.log(`visitJoinExprTable ->Exit`, keyAlias);
+    //throw 'ERR';
     return this.defaultResult();
   }
 
   visitTableExpr(ctx: TableExprContext) {
     const result = this.visitChildren(ctx);
-    console.log('visitTableExpr', ctx);
+    this.log('visitTableExpr', ctx);
     return result;
   }
 
@@ -295,6 +314,8 @@ export class ClickhouseSQLVisitor<Result>
       endLine: stop.line,
       startColumn: ctx.start.charPositionInLine,
       endColumn: stop.charPositionInLine + (stop.stopIndex - stop.startIndex + 1),
+      startTokenIndex: ctx.start.tokenIndex,
+      stopTokenIndex: stop.tokenIndex,
     };
   }
 
@@ -314,7 +335,6 @@ export class ClickhouseSQLVisitor<Result>
 
   visitQuery(ctx: QueryContext) {
     const result = this.visitChildren(ctx);
-
     return result;
   }
 
@@ -340,7 +360,7 @@ export class ClickhouseSQLVisitor<Result>
     return result;
   }
 
-  visitSelectStmtWithParens(ctx: SelectStmtWithParensContext) {
+  visitSelectUnionStmt(ctx: SelectUnionStmtContext): Result {
     //queryStmt
     this.currentRelation = new QueryRelation(
       this.getNextRelationId(),
@@ -348,21 +368,35 @@ export class ClickhouseSQLVisitor<Result>
       this.rangeFromContext(ctx)
     );
     //
-
     // this.currentRelation.columnIdSeq = 0;
     // this.reportTableReferences();
     // this.currentRelation.relations = new Map();
     const rw = this.visitChildren(ctx);
 
     this.lastRelation = this.currentRelation;
-    // console.log('!!! SET this.lastRelation [currentRelation]', this.lastRelation);
-    // if (this.currentRelation.id == ROOT_QUERY_ID) this.onRelation(this.currentRelation, ROOT_QUERY_NAME);
-    // console.log(this.currentRelation);
+
+    this.log(
+      `!!! SET this.lastRelation [currentRelation] ${this.currentRelation.id}`,
+      this.lastRelation
+    );
+
+    this.onRelation(
+      this.currentRelation,
+      this.currentRelation.id == ROOT_QUERY_ID ? ROOT_QUERY_NAME : this.currentRelation.id
+    );
     this.currentRelation =
       this.currentRelation.parent ?? new QueryRelation(this.getNextRelationId());
-
-    // console.log('visitSelectStmtWithParens>>>EXIT');
     return rw;
+  }
+
+  visitSelectStmtWithParens(ctx: SelectStmtWithParensContext) {
+    // reinit column seq as we will repeat the same columns in subsequent queries
+    // this.currentRelation.columnIdSeq = 0;
+    // reports table references from previous queryTerm (if any)
+    // this.reportTableReferences();
+    // clear relations for each queryTermDefault because it's individual query
+    // this.currentRelation.relations = new Map();
+    return this.visitChildren(ctx);
   }
 
   visitFromClause(ctx: FromClauseContext): Result {

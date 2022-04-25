@@ -1,7 +1,9 @@
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
-import { QToken, QueryRelation, Range } from '../CommonSQL';
+import { QToken, QueryRelation, Range, TableRelation } from '../CommonSQL';
 import { Token } from 'antlr4ts';
+
+export const ROOT_QUERY_NAME = '[ROOT_QUERY]';
 
 export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVisitor<Result> {
   protected relationSeq = 0;
@@ -12,7 +14,8 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return `result_${this.relationSeq++}`;
   }
 
-  public lastRelation: QueryRelation | undefined;
+  protected listRelations: Map<string, QueryRelation> = new Map();
+  protected lastRelation: QueryRelation | undefined;
   protected tokensCurrentPoints: Map<string, number> = new Map();
 
   abstract visitNode(ctx: RuleNode): void;
@@ -25,13 +28,37 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     this.tokensList = tokensList;
   }
 
+  public getRelations(): Map<string, QueryRelation> {
+    return this.listRelations;
+  }
+
+  public onRelation(_relation: QueryRelation, _alias?: string): void {
+    if (_alias) _relation.alias = _alias;
+    this.listRelations.set(_relation.id, _relation);
+    return;
+  }
+
   public getTokens(): Array<QToken> {
     return this.tokensList;
   }
 
   public log(...args: any[]) {
     if (this.debug) {
+      // console.log(structuredClone({ a: 1 }));
+      // }
+      //   function copyObject(o: any): object {
+      //     return JSON.parse(JSON.stringify(o));
+      //   }
+      //
+      //   function copyIfRegularObject(o: any): any {
+      //     const isRegularObject = typeof o === 'object' && !(o instanceof RegExp);
+      //     return isRegularObject ? copyObject(o) : o;
+      //   }
+      //
+      //   //const sargs = [].slice.call(args);
+      // const argsWithObjectCopies = args.map(structuredClone);
       console.log(...args);
+      //   // return console.log.apply(console, argsWithObjectCopies);
     }
   }
 
@@ -86,27 +113,139 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return {} as Result;
   }
 
-  public getCurrentRelation(): void {
-    console.log('getCurrentRelationgetCurrentRelationgetCurrentRelationgetCurrentRelation');
-    console.log(this.lastRelation);
-    if (this.lastRelation) {
-      this.availableColumns(this.lastRelation);
-    }
+  public getLastRelation(): QueryRelation | undefined {
+    return this.lastRelation;
   }
 
-  public getRelation(offset: number): Array<QueryRelation> | undefined {
-    if (!this.lastRelation) return;
-    const r: Array<QueryRelation> = [];
-    this.lastRelation.relations?.forEach((rel) => {
-      console.log(rel.range);
-      // if (rel.range?.start <= offset && offset <= rel.range.stop )
+  public getCurrentRelation(): void {
+    // console.log('getCurrentRelationgetCurrentRelationgetCurrentRelationgetCurrentRelation');
+    // console.log(this.lastRelation);
+    // if (this.getRelations()) {
+    //   this.availableColumns(this.getRelations());
+    // }
+  }
+
+  public getToken(offset: number): QToken | undefined {
+    return this.getTokens().find((st) => st.start <= offset && offset <= st.stop);
+  }
+
+  public getPositionByTokenOffset(offset: number): Range | undefined {
+    const t = this.getToken(offset);
+    if (!t) return;
+    console.log('tokens', t);
+    return {
+      startLine: t.line,
+      startColumn: t.start,
+      endColumn: t.stop,
+      endLine: t.line,
+    };
+  }
+
+  private getColumnsFromTableRelation(relation: QueryRelation): Array<any> {
+    let parent: null | string = null;
+
+    if (relation.alias === ROOT_QUERY_NAME) {
+      parent = null;
+    } else {
+      parent = relation.alias ?? 'NA_ERROR';
+    }
+
+    return (relation as QueryRelation).columns.map((q) => {
+      return {
+        label: q.label,
+        parent: parent,
+      };
     });
-    return r;
+  }
+
+  private getTableFromTableRelation(relation: TableRelation, parent = false): any {
+    return {
+      db: relation.tablePrimary.schemaName,
+      name: relation.tablePrimary.tableName,
+      alias: relation.tablePrimary.alias,
+      parent: parent,
+    };
+  }
+
+  public getRelation(offset: number): any {
+    // Need find CaretScope , from tag?
+
+    // Array<QueryRelation> | undefined {
+    console.groupCollapsed('---------- getRelation ------------------');
+
+    console.log('---------- getRelation ------------------');
+    const t = this.getToken(offset);
+    if (!t) return;
+
+    console.log('token:', t.tokenIndex, t);
+
+    let dist = 999999;
+    let qr: QueryRelation | null = null;
+
+    this.getRelations().forEach((rel, id) => {
+      if (
+        !rel.range ||
+        rel.range?.stopTokenIndex === undefined ||
+        rel.range?.startTokenIndex === undefined
+      ) {
+        console.warn('Can`t find range for rel', rel);
+        return;
+      }
+      const tokRange = rel.range?.stopTokenIndex - rel.range?.startTokenIndex;
+      if (rel.range?.startTokenIndex <= t.tokenIndex && t.tokenIndex <= rel.range?.stopTokenIndex) {
+        if (dist > tokRange) {
+          qr = rel;
+          dist = tokRange;
+        }
+      }
+    });
+    // console.log(`---------- relation # ` + ((qr ?? 'null') + ` ------------------`);
+    console.log('Result QR:', qr);
+
+    // 1. Достаем relations.<0 => TableRelation}>.value.tablePrimary.alias,tableName,schemaName - указывает какие таблицы
+    // 2. col
+
+    console.groupEnd();
+    const ret = {
+      columms: [] as Array<any>,
+      tables: [] as Array<any>,
+    };
+
+    // qr.relantion.<MAP >.columns - is sub comls & have alias: "ewp"
+    if (!qr) return;
+    // --- cols ----
+
+    const cols = this.getColumnsFromTableRelation(qr);
+    if (cols) {
+      ret.columms.push(cols);
+    }
+
+    // --- tables --
+    (qr as QueryRelation).relations.forEach((relation) => {
+      if (relation instanceof QueryRelation) {
+        const cols = this.getColumnsFromTableRelation(relation);
+        if (cols) {
+          ret.columms.push(cols);
+        }
+
+        relation.relations.forEach((sub_relation) => {
+          if (sub_relation instanceof TableRelation) {
+            sub_relation.tablePrimary &&
+              ret.tables.push(this.getTableFromTableRelation(sub_relation, true));
+          }
+        });
+      }
+      if (relation instanceof TableRelation) {
+        relation.tablePrimary && ret.tables.push(this.getTableFromTableRelation(relation, false));
+      }
+    });
+
+    return ret;
   }
 
   public getTables(): Array<string> | undefined {
     console.log('----x------------------');
-    console.log(this.lastRelation);
+    // console.log(this.lastRelation);
     console.log('----x------------------');
     return;
   }

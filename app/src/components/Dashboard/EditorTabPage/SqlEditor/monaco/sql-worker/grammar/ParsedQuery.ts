@@ -64,15 +64,16 @@ export class ParsedQuery {
   }
 
   public getToken(offset: number): QToken | undefined {
-    return this.getVisitor(offset)
-      ?.getTokens()
-      .find((st) => st.start <= offset && offset <= st.stop);
+    return this.getVisitor(offset)?.getToken(offset);
   }
 
   public info(offset: number): string {
     let str = '```Info\n\n';
-    str += 'Offset:' + offset + '\n\n';
-    str += 'Token:' + JSON.stringify(this.getToken(offset)?.context) + '\n\n';
+    str += 'Offset:' + offset + '\n';
+    str += 'Relation:' + JSON.stringify(this.getVisitor(offset)?.getRelation(offset)) + '\n';
+    str += 'Token:' + JSON.stringify(this.getToken(offset)?.text) + '\n';
+    str += 'Token:' + JSON.stringify(this.getToken(offset)?.context) + '\n';
+
     console.log('TOKE', this.getVisitor(offset)?.getTokens());
     console.log('ST', this.getStatementAtOffset(offset));
     return str + '```';

@@ -197,7 +197,7 @@ const language = <languages.IMonarchLanguage>{
       { include: '@strings' },
       { include: '@complexIdentifiers' },
       { include: '@scopes' },
-      [/;;/, 'warn-token'],
+      [/;;|;/, 'warn-token'],
       [/[;,.]/, 'delimiter'],
       [/[()]/, '@brackets'],
       [

@@ -29,3 +29,20 @@
 - [ ] Добавлен тип данных DECIMAL(digits, scale)
 - [ ] Возможность указания смещения для LIMIT n, m в виде LIMIT n OFFSET m
 - [ ] Order By COLLATE "LAST" : "FIRST"
+
+```sql
+
+// Rel fix
+SELECT z1
+FROM (
+       SELECT 1 as z1, 2 as z2, 3 as z3
+       FROM system.clusters
+       UNION ALL
+       SELECT 1 as w1, 2 as w2, 3 as w3
+       FROM system.collations
+       ) as alias_a11
+
+
+
+
+```

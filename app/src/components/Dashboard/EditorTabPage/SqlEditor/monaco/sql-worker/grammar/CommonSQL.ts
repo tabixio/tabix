@@ -12,6 +12,8 @@ export interface Range {
   endLine: number;
   startColumn: number;
   endColumn: number;
+  startTokenIndex?: number;
+  stopTokenIndex?: number;
 }
 
 export type ColumnRef = { tableId: string; columnId: string; isAssumed: boolean };
@@ -126,6 +128,8 @@ export class QueryRelation extends Relation {
 
   columnReferences: Array<ColumnRef> = [];
 
+  alias?: string;
+
   constructor(id: string, parent?: QueryRelation, range?: Range) {
     super(id, [], parent, range);
   }
@@ -148,6 +152,7 @@ export class QueryRelation extends Relation {
   }
 
   findRelation(tableName: QuotableIdentifier): Relation | undefined {
+    console.log('findRelation,', tableName);
     return this.findLocalRelation(tableName) ?? this.parent?.findRelation(tableName);
   }
 
@@ -344,6 +349,7 @@ export interface QToken {
   start: number;
   stop: number;
   tokenIndex: number;
+  charPositionInLine: number;
   type: number;
   text?: string;
   symbolic: string;
@@ -367,15 +373,19 @@ export default class CommonSQL {
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
-    console.log(`PARSE:"${input}"`);
     const states = this.splitStatements(input);
+
     if (!states.length) return null;
     states.forEach((st, index) => {
+      console.log(`PARSE:"${st.text}"`);
       const result = this.parseOneStatement(st);
+
       states[index].visitor = result.visitor;
       states[index].visitor?.getCurrentRelation();
       states[index].errors = result.errors;
       states[index].isParsed = true;
+      console.log('\n--------getRelations ---------\n', result.visitor?.getRelations());
+      console.log('\n--------getLastRelation ---------\n', result.visitor?.getLastRelation());
     });
     return new ParsedQuery(states);
   }
@@ -417,6 +427,7 @@ export default class CommonSQL {
         tokenIndex: index,
         type: tok.type,
         text: tok.text,
+        charPositionInLine: tok.charPositionInLine,
         symbolic: '',
         up: 0,
         context: [],
