@@ -48,6 +48,7 @@ export class ClickhouseSQLVisitor<Result>
    *  Extracts table and column names from IdentifierContext (if possible).
    */
   visitColumnIdentifier(ctx: ColumnIdentifierContext): Result {
+    // @TODO: WHERE col alias ? ColumnExprAlias?
     // columnIdentifier: (tableIdentifier DOT)? nestedIdentifier;
     // processColumn Reference
     const tableName: string | undefined = this.unquote(ctx.tableIdentifier()?.identifier().text);
@@ -237,7 +238,7 @@ export class ClickhouseSQLVisitor<Result>
     if (!keyAlias) {
       console.warn('Can`t find alias for relation', relation, tablePrimary, aliasId);
     }
-
+    this.onRelation(relation);
     this.currentRelation.relations.set(keyAlias, relation);
     this.log(
       `relations.set [in visitJoinExprTable] add ${relation.id} to ${this.currentRelation.id}`,
@@ -318,20 +319,6 @@ export class ClickhouseSQLVisitor<Result>
       stopTokenIndex: stop.tokenIndex,
     };
   }
-
-  // visitJoinExpr
-
-  // /**
-  //  * First IN
-  //  * @param ctx
-  //  */
-  // visitQueryStmt(ctx: QueryStmtContext) {
-  //   // console.log('--> ENTER: visitQueryStmt --> ');
-  //   const result = this.visitChildren(ctx);
-  //   // console.log('--> EXIT : visitQueryStmt --> ');
-  //
-  //   return result;
-  // }
 
   visitQuery(ctx: QueryContext) {
     const result = this.visitChildren(ctx);

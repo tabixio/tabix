@@ -1,6 +1,6 @@
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
-import { QToken, QueryRelation, Range, TableRelation } from '../CommonSQL';
+import { QToken, QueryRelation, Range, Relation, TableRelation } from '../CommonSQL';
 import { Token } from 'antlr4ts';
 
 export const ROOT_QUERY_NAME = '[ROOT_QUERY]';
@@ -14,7 +14,7 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return `result_${this.relationSeq++}`;
   }
 
-  protected listRelations: Map<string, QueryRelation> = new Map();
+  protected listRelations: Map<string, Relation> = new Map();
   protected lastRelation: QueryRelation | undefined;
   protected tokensCurrentPoints: Map<string, number> = new Map();
 
@@ -28,12 +28,12 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     this.tokensList = tokensList;
   }
 
-  public getRelations(): Map<string, QueryRelation> {
+  public getRelations(): Map<string, Relation> {
     return this.listRelations;
   }
 
-  public onRelation(_relation: QueryRelation, _alias?: string): void {
-    if (_alias) _relation.alias = _alias;
+  public onRelation(_relation: QueryRelation | TableRelation, _alias?: string): void {
+    if (_alias && _relation instanceof QueryRelation) _relation.alias = _alias;
     this.listRelations.set(_relation.id, _relation);
     return;
   }
@@ -171,16 +171,16 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     // Need find CaretScope , from tag?
 
     // Array<QueryRelation> | undefined {
-    console.groupCollapsed('---------- getRelation ------------------');
+    console.group('---------- getRelation ------------------');
 
     console.log('---------- getRelation ------------------');
     const t = this.getToken(offset);
     if (!t) return;
 
     console.log('token:', t.tokenIndex, t);
-
+    console.log('this.getRelations()', this.getRelations());
     let dist = 999999;
-    let qr: QueryRelation | null = null;
+    let qr: Relation | null = null;
 
     this.getRelations().forEach((rel, id) => {
       if (
@@ -193,6 +193,7 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
       }
       const tokRange = rel.range?.stopTokenIndex - rel.range?.startTokenIndex;
       if (rel.range?.startTokenIndex <= t.tokenIndex && t.tokenIndex <= rel.range?.stopTokenIndex) {
+        console.log('Range:', tokRange, rel.range?.stopTokenIndex, rel.range?.startTokenIndex);
         if (dist > tokRange) {
           qr = rel;
           dist = tokRange;
@@ -219,26 +220,26 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     if (cols) {
       ret.columms.push(cols);
     }
-
-    // --- tables --
-    (qr as QueryRelation).relations.forEach((relation) => {
-      if (relation instanceof QueryRelation) {
-        const cols = this.getColumnsFromTableRelation(relation);
-        if (cols) {
-          ret.columms.push(cols);
-        }
-
-        relation.relations.forEach((sub_relation) => {
-          if (sub_relation instanceof TableRelation) {
-            sub_relation.tablePrimary &&
-              ret.tables.push(this.getTableFromTableRelation(sub_relation, true));
-          }
-        });
-      }
-      if (relation instanceof TableRelation) {
-        relation.tablePrimary && ret.tables.push(this.getTableFromTableRelation(relation, false));
-      }
-    });
+    //
+    // // --- tables --
+    // (qr as QueryRelation).relations.forEach((relation) => {
+    //   if (relation instanceof QueryRelation) {
+    //     const cols = this.getColumnsFromTableRelation(relation);
+    //     if (cols) {
+    //       ret.columms.push(cols);
+    //     }
+    //
+    //     relation.relations.forEach((sub_relation) => {
+    //       if (sub_relation instanceof TableRelation) {
+    //         sub_relation.tablePrimary &&
+    //           ret.tables.push(this.getTableFromTableRelation(sub_relation, true));
+    //       }
+    //     });
+    //   }
+    //   if (relation instanceof TableRelation) {
+    //     relation.tablePrimary && ret.tables.push(this.getTableFromTableRelation(relation, false));
+    //   }
+    // });
 
     return ret;
   }

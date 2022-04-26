@@ -7,6 +7,11 @@ import { ParsedQuery } from './ParsedQuery';
 import { Token } from 'antlr4ts';
 import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
 
+import { default as antlr } from 'libs/rhombic/antlr/index';
+import { SqlCompletionParseTree } from '../../../../../../../libs/rhombic/antlr/SqlCompletionParseTree';
+import { LineageParserOptions } from '../../../../../../../libs/rhombic/antlr/SqlLineageParseTree';
+
+//
 export interface Range {
   startLine: number;
   endLine: number;
@@ -367,6 +372,37 @@ export default class CommonSQL {
     this.baseAntlr4 = new ClickhouseSQL();
   }
 
+  public processSQL(i: string): void {
+    console.log('-------------  --------- ------------   --------- ------------ ');
+    console.log('%c-------------          ROMBIC           --------- ------------ ', 'color:red');
+    const env = new Map<string, string[]>();
+    env.set('test', ['column1', 'column2']);
+    const metadataProvider = {
+      getCatalogs: () => {
+        return [];
+      },
+      getSchemas: (_arg?: { catalog: string }) => {
+        return [];
+      },
+      getTables: (_args?: { catalogOrSchema: string; schema?: string }) => {
+        return Array.from(env.keys()).map((n) => {
+          return { name: n };
+        });
+      },
+      getColumns: (args: { table: string; catalogOrSchema?: string; schema?: string }) => {
+        const cs = env.get(args.table);
+        return (
+          cs?.map((c) => {
+            return { name: c };
+          }) || []
+        );
+      },
+    };
+    const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 32 } });
+    console.log('getUsedTables', p.getSuggestions(metadataProvider));
+    console.log('-------------  --------- ------------   --------- ------------ ');
+  }
+
   /**
    * Parse one/many query
    *
@@ -377,15 +413,16 @@ export default class CommonSQL {
 
     if (!states.length) return null;
     states.forEach((st, index) => {
-      console.log(`PARSE:"${st.text}"`);
+      console.log(`%c${st.text}`, 'font-family: monospace, "Gill Sans", sans-serif;font-size:120%');
       const result = this.parseOneStatement(st);
 
       states[index].visitor = result.visitor;
       states[index].visitor?.getCurrentRelation();
       states[index].errors = result.errors;
       states[index].isParsed = true;
-      console.log('\n--------getRelations ---------\n', result.visitor?.getRelations());
-      console.log('\n--------getLastRelation ---------\n', result.visitor?.getLastRelation());
+      console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
+      console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
+      this.processSQL(st.text);
     });
     return new ParsedQuery(states);
   }
