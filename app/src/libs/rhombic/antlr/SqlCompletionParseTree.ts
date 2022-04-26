@@ -83,6 +83,7 @@ export class SqlCompletionParseTree extends SqlLineageParseTree {
 
     const completions = completionVisitor.getSuggestions();
     console.log('completions', completions);
+    console.log('lastRelation:', completionVisitor.lastRelation);
     const completionItems: CompletionItem<Catalog, Schema, Table, Column>[] = [];
     switch (completions.type) {
       case 'column': {

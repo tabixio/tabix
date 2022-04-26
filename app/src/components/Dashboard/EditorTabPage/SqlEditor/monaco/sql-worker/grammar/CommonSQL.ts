@@ -341,6 +341,20 @@ function skipLeadingWhitespace(text: string, head: number, tail: number): number
   return head;
 }
 
+export enum ClauseToken {
+  'from' = 'from',
+  'where' = 'where',
+  'group' = 'group_by',
+  'having' = 'having',
+  'with' = 'with',
+  'window' = 'window',
+  'order' = 'order by',
+  'prewhere' = 'prewhere',
+  'limit' = 'limit',
+  'settings' = 'settings',
+  'function' = 'function',
+}
+
 export interface QToken {
   treeText: string;
   counter: Map<string, number | undefined>;
@@ -353,6 +367,7 @@ export interface QToken {
   line: number;
   start: number;
   stop: number;
+  clause?: ClauseToken;
   tokenIndex: number;
   charPositionInLine: number;
   type: number;
@@ -398,7 +413,7 @@ export default class CommonSQL {
         );
       },
     };
-    const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 32 } });
+    const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 0 } });
     console.log('getUsedTables', p.getSuggestions(metadataProvider));
     console.log('-------------  --------- ------------   --------- ------------ ');
   }

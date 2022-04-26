@@ -34,6 +34,7 @@ import {
   Column,
   TableRelation,
   QToken,
+  ClauseToken,
 } from '../CommonSQL';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
@@ -56,7 +57,7 @@ export class ClickhouseSQLVisitor<Result>
     //
     if (colName !== undefined) {
       const deb = `Field: ${colName}`;
-      if (ctx.stop) this.applyToken(ctx.start, ctx.stop, deb);
+      if (ctx.stop) this.applyTokenContext(ctx.start, ctx.stop, deb);
 
       // if (
       //   tableName === undefined &&
@@ -204,7 +205,7 @@ export class ClickhouseSQLVisitor<Result>
         `Use database: ${databaseName}, Table = ${tableName}` +
         (alias ? ',alias = ' + alias : ' no alias');
 
-      this.applyToken(ctx.start, ctx.stop, debud);
+      this.applyTokenContext(ctx.start, ctx.stop, debud);
     }
 
     // catalogName?: string; schemaName?: string; tableName: string; alias?: string;
@@ -268,10 +269,7 @@ export class ClickhouseSQLVisitor<Result>
 
   visitColumnExprFunction(ctx: ColumnExprFunctionContext) {
     const re = this.visitChildren(ctx);
-
-    //
-    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, 'Function');
-
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, ClauseToken.function);
     return re;
   }
 
@@ -299,12 +297,13 @@ export class ClickhouseSQLVisitor<Result>
   //   return result;
   // }
 
-  private processClause(clause: string, ctx: ParserRuleContext): Result {
+  private processClause(clause: ClauseToken, ctx: ParserRuleContext): Result {
     // console.log('processClause : ', clause);
     this.currentRelation.currentClause = clause;
     const result = this.visitChildren(ctx);
     this.currentRelation.currentClause = undefined;
-    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, `IN:${clause}`);
+    if (ctx.stop) this.applyTokenContext(ctx.start, ctx.stop, `IN:${clause}`);
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, clause);
     return result;
   }
 
@@ -387,47 +386,47 @@ export class ClickhouseSQLVisitor<Result>
   }
 
   visitFromClause(ctx: FromClauseContext): Result {
-    return this.processClause('from', ctx);
+    return this.processClause(ClauseToken.from, ctx);
   }
 
   visitWhereClause(ctx: WhereClauseContext): Result {
-    return this.processClause('where', ctx);
+    return this.processClause(ClauseToken.where, ctx);
   }
 
   visitGroupByClause(ctx: GroupByClauseContext): Result {
-    return this.processClause('group_by', ctx);
+    return this.processClause(ClauseToken.group, ctx);
   }
 
   visitHavingClause(ctx: HavingClauseContext): Result {
-    return this.processClause('having', ctx);
+    return this.processClause(ClauseToken.having, ctx);
   }
 
   visitWithClause(ctx: WithClauseContext): Result {
-    return this.processClause('with', ctx);
+    return this.processClause(ClauseToken.with, ctx);
   }
 
   visitWindowClause(ctx: WindowClauseContext): Result {
-    return this.processClause('window', ctx);
+    return this.processClause(ClauseToken.window, ctx);
   }
 
   visitOrderByClause(ctx: OrderByClauseContext): Result {
-    return this.processClause('order_by', ctx);
+    return this.processClause(ClauseToken.order, ctx);
   }
 
   visitPrewhereClause(ctx: PrewhereClauseContext): Result {
-    return this.processClause('prewhere', ctx);
+    return this.processClause(ClauseToken.prewhere, ctx);
   }
 
   visitLimitByClause(ctx: LimitByClauseContext): Result {
-    return this.processClause('limit', ctx);
+    return this.processClause(ClauseToken.limit, ctx);
   }
 
   visitLimitClause(ctx: LimitClauseContext): Result {
-    return this.processClause('limit', ctx);
+    return this.processClause(ClauseToken.limit, ctx);
   }
 
   visitSettingsClause(ctx: SettingsClauseContext): Result {
-    return this.processClause('settings', ctx);
+    return this.processClause(ClauseToken.settings, ctx);
   }
 
   protected defaultResult(): Result {

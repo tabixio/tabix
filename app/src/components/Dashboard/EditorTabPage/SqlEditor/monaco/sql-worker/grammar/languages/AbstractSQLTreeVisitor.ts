@@ -1,6 +1,6 @@
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
-import { QToken, QueryRelation, Range, Relation, TableRelation } from '../CommonSQL';
+import { ClauseToken, QToken, QueryRelation, Range, Relation, TableRelation } from '../CommonSQL';
 import { Token } from 'antlr4ts';
 
 export const ROOT_QUERY_NAME = '[ROOT_QUERY]';
@@ -82,7 +82,20 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return text;
   }
 
-  public applyToken(start: Token, stop: Token, type: string) {
+  public applyToken(start: Token, stop: Token, clause: ClauseToken) {
+    this.tokensList.forEach((tok: QToken, index) => {
+      if (
+        start &&
+        stop &&
+        tok.tokenIndex >= start.tokenIndex &&
+        tok.tokenIndex <= stop.tokenIndex
+      ) {
+        this.tokensList[index].clause = clause;
+      }
+    });
+  }
+
+  public applyTokenContext(start: Token, stop: Token, type: string) {
     this.tokensList.forEach((tok: QToken, index) => {
       if (
         start &&
