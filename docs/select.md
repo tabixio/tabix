@@ -8,6 +8,18 @@ from system.columns as c
   GROUP BY database, table, name
   LIMIT 40
   ) as p ON (p.database = c.database AND p.table = c.table AND p.name = c.name)
+;;
+-- Rel fix
+SELECT z1
+FROM (
+       SELECT 1 as z1, 2 as z2, 3 as z3
+       FROM system.clusters
+       UNION ALL
+       SELECT 1 as w1, 2 as w2, 3 as w3
+       FROM system.collations
+       ) as alias_a11
+
+
 
 
 

@@ -3,4 +3,5 @@ dist
 /dist/**
 node_modules/
 **/*.test.{js,jsx,ts,tsx}
-app/src/components/Dashboard/EditorTabPage/SqlEditor/monaco/sql-worker/grammar/languages/CHSql
+app/src/components/Dashboard/EditorTabPage/SqlEditor/monaco/sql-worker/grammar/languages/*.ts
+app/src/components/Dashboard/EditorTabPage/SqlEditor/monaco/sql-worker/grammar/languages/

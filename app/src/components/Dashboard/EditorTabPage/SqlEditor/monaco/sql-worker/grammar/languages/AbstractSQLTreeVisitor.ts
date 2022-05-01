@@ -1,13 +1,20 @@
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
 import { RuleNode } from 'antlr4ts/tree/RuleNode';
-import { ClauseToken, QToken, QueryRelation, Range, Relation, TableRelation } from '../CommonSQL';
+import {
+  ClauseTokenType,
+  QToken,
+  QueryRelation,
+  Range,
+  Relation,
+  TableRelation,
+} from '../CommonSQL';
 import { Token } from 'antlr4ts';
 
 export const ROOT_QUERY_NAME = '[ROOT_QUERY]';
 
 export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVisitor<Result> {
   protected relationSeq = 0;
-  private debug = false;
+  public debug = false;
   protected currentRelation = new QueryRelation(this.getNextRelationId());
 
   getNextRelationId(): string {
@@ -82,7 +89,9 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return text;
   }
 
-  public applyToken(start: Token, stop: Token, clause: ClauseToken) {
+  public applyToken(start: Token, stop: Token, clause: ClauseTokenType) {
+    this.log(`applyToken ${clause}, range [ ${start.tokenIndex}, ${stop.tokenIndex} ]`);
+
     this.tokensList.forEach((tok: QToken, index) => {
       if (
         start &&
@@ -90,7 +99,23 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
         tok.tokenIndex >= start.tokenIndex &&
         tok.tokenIndex <= stop.tokenIndex
       ) {
-        this.tokensList[index].clause = clause;
+        let set = true;
+        const exists = this.tokensList[index].clause;
+        if (exists) {
+          // if set, set minimal size
+          const sizeCur = exists.stop - exists.start;
+          const sizeNew = stop.tokenIndex - start.tokenIndex;
+          if (sizeNew >= sizeCur) {
+            set = false;
+          }
+        }
+        if (set) {
+          this.tokensList[index].clause = {
+            type: clause,
+            start: start.tokenIndex,
+            stop: stop.tokenIndex,
+          };
+        }
       }
     });
   }

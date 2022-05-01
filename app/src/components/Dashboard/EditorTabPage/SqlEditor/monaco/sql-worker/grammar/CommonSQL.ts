@@ -8,8 +8,6 @@ import { Token } from 'antlr4ts';
 import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
 
 import { default as antlr } from 'libs/rhombic/antlr/index';
-import { SqlCompletionParseTree } from '../../../../../../../libs/rhombic/antlr/SqlCompletionParseTree';
-import { LineageParserOptions } from '../../../../../../../libs/rhombic/antlr/SqlLineageParseTree';
 
 //
 export interface Range {
@@ -23,7 +21,7 @@ export interface Range {
 
 export type ColumnRef = { tableId: string; columnId: string; isAssumed: boolean };
 
-export type QuotableIdentifier = { name: string; quoted: boolean };
+export type QuotableIdentifier = { name: string; quoted: boolean; origin?: string };
 
 export class Column {
   readonly columnReferences: Array<ColumnRef> = [];
@@ -32,7 +30,8 @@ export class Column {
     readonly id: string,
     public label: string,
     readonly range?: Range,
-    readonly data?: unknown,
+    readonly original?: string,
+    readonly clause?: string,
     readonly isAssumed?: boolean
   ) {}
 }
@@ -97,16 +96,21 @@ export class TableRelation extends Relation {
     super(id, columns, parent, range);
   }
 
-  addAssumedColumn(columnName: QuotableIdentifier, range: Range): ColumnRef {
+  addAssumedColumn(
+    columnName: QuotableIdentifier,
+    range: Range,
+    origin?: string,
+    clause?: string
+  ): ColumnRef {
     const column = new Column(
       `column_${this.columns.length + 1}`,
       columnName.name,
       range,
-      undefined,
-      true
+      origin,
+      clause
     );
     this.columns.push(column);
-    // console.log(`addAssumedColumn[ ${columnName.name} ] `, this.columns);
+    // console.log(`!> AddAssumedColumn[ ${columnName.name} ] `, this.columns);
     return { tableId: this.id, columnId: column.id, isAssumed: true };
   }
 }
@@ -157,7 +161,7 @@ export class QueryRelation extends Relation {
   }
 
   findRelation(tableName: QuotableIdentifier): Relation | undefined {
-    console.log('findRelation,', tableName);
+    // this.log('findRelation,', tableName);
     return this.findLocalRelation(tableName) ?? this.parent?.findRelation(tableName);
   }
 
@@ -341,11 +345,12 @@ function skipLeadingWhitespace(text: string, head: number, tail: number): number
   return head;
 }
 
-export enum ClauseToken {
+export enum ClauseTokenType {
   'from' = 'from',
   'where' = 'where',
   'group' = 'group_by',
   'having' = 'having',
+  'join' = 'join',
   'with' = 'with',
   'window' = 'window',
   'order' = 'order by',
@@ -367,7 +372,11 @@ export interface QToken {
   line: number;
   start: number;
   stop: number;
-  clause?: ClauseToken;
+  clause?: {
+    type: ClauseTokenType;
+    start: number;
+    stop: number;
+  };
   tokenIndex: number;
   charPositionInLine: number;
   type: number;
@@ -428,7 +437,10 @@ export default class CommonSQL {
 
     if (!states.length) return null;
     states.forEach((st, index) => {
-      console.log(`%c${st.text}`, 'font-family: monospace, "Gill Sans", sans-serif;font-size:120%');
+      console.log(
+        `%c${st.text}`,
+        'font-family: monospace, "Gill Sans", sans-serif;font-size:120%;color:#1c42c9'
+      );
       const result = this.parseOneStatement(st);
 
       states[index].visitor = result.visitor;
@@ -437,7 +449,7 @@ export default class CommonSQL {
       states[index].isParsed = true;
       console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
       console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
-      this.processSQL(st.text);
+      // ROMBIC : this.processSQL(st.text);
     });
     return new ParsedQuery(states);
   }

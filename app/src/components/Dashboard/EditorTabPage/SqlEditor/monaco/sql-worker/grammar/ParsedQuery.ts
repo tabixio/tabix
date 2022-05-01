@@ -71,10 +71,11 @@ export class ParsedQuery {
     let str = '```Info\n\n';
     str += 'Offset:' + offset + '\n';
     str += 'Relation:' + JSON.stringify(this.getVisitor(offset)?.getRelation(offset)) + '\n';
-    str += 'Token:' + JSON.stringify(this.getToken(offset)?.text) + '\n';
-    str += 'Token:' + JSON.stringify(this.getToken(offset)?.context) + '\n';
+    str += 'Index:' + JSON.stringify(this.getToken(offset)?.tokenIndex) + '\n';
+    str += 'text:' + JSON.stringify(this.getToken(offset)?.text) + '\n';
+    str += 'clause:' + JSON.stringify(this.getToken(offset)?.clause) + '\n';
 
-    console.log('TOKE', this.getVisitor(offset)?.getTokens());
+    console.log('TOKEN', this.getToken(offset));
     console.log('ST', this.getStatementAtOffset(offset));
     return str + '```';
   }
