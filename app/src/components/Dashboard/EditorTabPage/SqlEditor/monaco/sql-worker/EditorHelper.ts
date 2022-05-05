@@ -278,9 +278,10 @@ export class EditorHelper {
     );
   }
 
-  public async OnChange(modelUri: string, content: string) {
+  public async OnChange(modelUri: string, content: string, offset : number) {
+    
     if (this.language && modelUri) {
-      LanguageWorker.parseAndApplyModel(this.language, modelUri, content);
+      LanguageWorker.parseAndApplyModel(this.language, modelUri, content , offset);
     }
   }
 

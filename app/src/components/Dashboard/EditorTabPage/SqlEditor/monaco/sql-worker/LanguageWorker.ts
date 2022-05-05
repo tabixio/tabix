@@ -49,15 +49,19 @@ export abstract class LanguageWorker {
   public static parseAndApplyModel(
     language: SupportLanguage,
     modelUri: string,
-    query: string
+    query: string,
+    offset : number
   ): void {
     const parser = LanguageWorker.getParser(language);
     if (!parser) {
       console.warn('No parser for ', language);
       return;
     }
+    // Get position cursor
+    // position: monaco.Position,
+    
     // Fetch exists model by uri
-    LanguageWorker.getModel(modelUri).process(parser.parse(query));
+    LanguageWorker.getModel(modelUri).process(parser.parse(query,offset));
   }
 
   public static tokinize(query: string): void {

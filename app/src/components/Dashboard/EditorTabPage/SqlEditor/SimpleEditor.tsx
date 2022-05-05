@@ -137,7 +137,13 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
     const { processSql } = this.props;
     if (!processSql) return;
     if (this.helper().isReady()) {
-      await this.helper().OnChange(modelUri, value);
+      const position = this.editor()?.getPosition();
+      let offset: number = -1;
+      if (position) {
+        const d = this.editor()?.getModel()?.getOffsetAt(position);
+        if (d !== undefined) offset=d;
+      }
+      await this.helper().OnChange(modelUri, value, offset);
     } else {
       console.info('In processSQL, error on languageValueOnChange, editorHelper.isReady = false');
     }
@@ -162,6 +168,7 @@ export default class SimpleEditor extends React.Component<SimpleEditorProps> {
     if (value !== undefined && uriModel) {
       // Update model
       const { onContentChange } = this.props;
+      
       onContentChange && onContentChange(value);
       // Registration delay timer 2000мс -> parse & validate
       this.delayLanguageValueOnChange(uriModel, value);

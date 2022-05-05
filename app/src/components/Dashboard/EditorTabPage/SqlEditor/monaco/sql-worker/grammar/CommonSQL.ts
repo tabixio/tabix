@@ -479,10 +479,13 @@ export default class CommonSQL {
    * Parse one/many query
    *
    * @param input String query
+   * @param offset
    */
-  public parse(input: string): ParsedQuery | null {
+  public parse(input: string, offset : number = -1): ParsedQuery | null {
     const isDebug = input.includes('tabix_debug');
-
+    if (isDebug) {
+      console.log('Debug sql mode');
+    }
     const states = this.splitStatements(input);
 
     if (!states.length) return null;
@@ -501,6 +504,7 @@ export default class CommonSQL {
         console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
         console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
       }
+      console.log(offset);
     });
     return new ParsedQuery(states);
   }
@@ -571,6 +575,7 @@ export default class CommonSQL {
         parser.errorHandler = new DefaultErrorStrategy();
         parser.interpreter.setPredictionMode(PredictionMode.LL);
         tree = parser[proc]();
+        console.log(tree);
         tree.accept(visitor);
         console.log('Parse 2', errL.getErrors(), errP.getErrors());
       } catch (ee) {
@@ -586,14 +591,7 @@ export default class CommonSQL {
    *
    */
   public parseDefault(): ParsedQuery | null {
-    return this.parse(
-      'SELECT DISTINCT sin(x) as si,cos(x) as co, (si+co) as pi, user_name FROM system.users WHERE user_name LIKE "%bad%" ORDER BY user_id LIMIT 40,12' +
-        // 'SELECT sin(x) as si,cos(x) as co, (si+co) as pi;' +
-        '\n' +
-        'SELECT pings as pinga2a'
-      // '\n\n' +
-      // 'DROP TABLE sy.swqws;SELECT 1 as wewe'
-    );
+      return null;
   }
 
   /**
