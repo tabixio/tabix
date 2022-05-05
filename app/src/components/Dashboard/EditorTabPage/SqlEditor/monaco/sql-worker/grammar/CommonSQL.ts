@@ -72,6 +72,44 @@ export abstract class Relation {
   }
 }
 
+// if (relation instanceof QueryRelation || relation instanceof TableRelation) {
+//   //
+//   relation.columns.forEach((col) => {
+//     result.columns.push({ name: col.label, d: deep });
+//   });
+// }
+// if (relation instanceof TableRelation) {
+//   if (relation.tablePrimary) {
+//     result.tables.push({
+//       name: relation.tablePrimary.tableName,
+//       db: relation.tablePrimary.schemaName,
+//       alias: relation.tablePrimary.alias,
+//       d: deep,
+//     });
+//     result.databases.push({
+//       db: relation.tablePrimary.schemaName,
+//       d: deep,
+//     });
+//   }
+//
+export interface ResultQuery_Column {
+  name: string;
+  deep: number;
+}
+
+export type ResultQuery_DataBase = ResultQuery_Column;
+
+export interface ResultQuery_Table extends ResultQuery_Column {
+  db?: string;
+  alias?: string;
+}
+
+export interface ResultQueryStructure {
+  columns: Array<ResultQuery_Column>;
+  databases: Array<ResultQuery_DataBase>;
+  tables: Array<ResultQuery_Table>;
+}
+
 export interface TablePrimary {
   catalogName?: string;
   schemaName?: string;
@@ -336,6 +374,7 @@ export interface Statement {
   errors?: antlrErrorList[];
   refs?: ReferenceMap;
   visitor?: AbstractSQLTreeVisitor<any>;
+  isDebug?: boolean;
 }
 
 function skipLeadingWhitespace(text: string, head: number, tail: number): number {
@@ -377,6 +416,11 @@ export interface QToken {
     start: number;
     stop: number;
   };
+  link?: {
+    table?: string;
+    alias?: string;
+    db?: string;
+  };
   tokenIndex: number;
   charPositionInLine: number;
   type: number;
@@ -397,34 +441,34 @@ export default class CommonSQL {
   }
 
   public processSQL(i: string): void {
-    console.log('-------------  --------- ------------   --------- ------------ ');
-    console.log('%c-------------          ROMBIC           --------- ------------ ', 'color:red');
-    const env = new Map<string, string[]>();
-    env.set('test', ['column1', 'column2']);
-    const metadataProvider = {
-      getCatalogs: () => {
-        return [];
-      },
-      getSchemas: (_arg?: { catalog: string }) => {
-        return [];
-      },
-      getTables: (_args?: { catalogOrSchema: string; schema?: string }) => {
-        return Array.from(env.keys()).map((n) => {
-          return { name: n };
-        });
-      },
-      getColumns: (args: { table: string; catalogOrSchema?: string; schema?: string }) => {
-        const cs = env.get(args.table);
-        return (
-          cs?.map((c) => {
-            return { name: c };
-          }) || []
-        );
-      },
-    };
-    const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 0 } });
-    console.log('getUsedTables', p.getSuggestions(metadataProvider));
-    console.log('-------------  --------- ------------   --------- ------------ ');
+    // console.log('-------------  --------- ------------   --------- ------------ ');
+    // console.log('%c-------------          ROMBIC           --------- ------------ ', 'color:red');
+    // const env = new Map<string, string[]>();
+    // env.set('test', ['column1', 'column2']);
+    // const metadataProvider = {
+    //   getCatalogs: () => {
+    //     return [];
+    //   },
+    //   getSchemas: (_arg?: { catalog: string }) => {
+    //     return [];
+    //   },
+    //   getTables: (_args?: { catalogOrSchema: string; schema?: string }) => {
+    //     return Array.from(env.keys()).map((n) => {
+    //       return { name: n };
+    //     });
+    //   },
+    //   getColumns: (args: { table: string; catalogOrSchema?: string; schema?: string }) => {
+    //     const cs = env.get(args.table);
+    //     return (
+    //       cs?.map((c) => {
+    //         return { name: c };
+    //       }) || []
+    //     );
+    //   },
+    // };
+    // const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 0 } });
+    // console.log('getUsedTables', p.getSuggestions(metadataProvider));
+    // console.log('-------------  --------- ------------   --------- ------------ ');
   }
 
   /**
@@ -433,6 +477,8 @@ export default class CommonSQL {
    * @param input String query
    */
   public parse(input: string): ParsedQuery | null {
+    const isDebug = input.includes('tabix_debug');
+
     const states = this.splitStatements(input);
 
     if (!states.length) return null;
@@ -441,15 +487,16 @@ export default class CommonSQL {
         `%c${st.text}`,
         'font-family: monospace, "Gill Sans", sans-serif;font-size:120%;color:#1c42c9'
       );
-      const result = this.parseOneStatement(st);
+      const result = this.parseOneStatement(st, isDebug);
 
       states[index].visitor = result.visitor;
-      states[index].visitor?.getCurrentRelation();
       states[index].errors = result.errors;
       states[index].isParsed = true;
-      console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
-      console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
-      // ROMBIC : this.processSQL(st.text);
+      states[index].isDebug = isDebug;
+      if (isDebug) {
+        console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
+        console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
+      }
     });
     return new ParsedQuery(states);
   }
@@ -459,7 +506,7 @@ export default class CommonSQL {
    *
    * @param input
    */
-  public parseOneStatement(input: Statement): any {
+  public parseOneStatement(input: Statement, isDebug = false): any {
     const lexer = this.baseAntlr4.createLexer(input.text + '\n');
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
@@ -474,6 +521,7 @@ export default class CommonSQL {
     parser.addErrorListener(errP);
     //
     const visitor = this.baseAntlr4.getVisitor();
+    visitor.debug = isDebug;
     const tokens: Token[] = lexer.getAllTokens();
     // ------ fetch QTok ---------------------------
     tokens.forEach((tok: Token, index) => {
@@ -607,7 +655,7 @@ export default class CommonSQL {
             }
 
             if (!haveContent) {
-              head = tail;
+              //  head = tail;
             }
           } else {
             tail++;

@@ -1,4 +1,4 @@
-import { QToken } from './grammar/CommonSQL';
+import { QToken, ResultQueryStructure } from './grammar/CommonSQL';
 import { ParsedQuery } from './grammar';
 import { ServerStructure } from '../../../../../../services';
 
@@ -36,6 +36,10 @@ export class ModelOfEditor {
     return str;
   }
 
+  public getStructureData(offset: number): ResultQueryStructure | undefined {
+    return this.parsedQuery?.getStructureData(offset);
+  }
+
   public getDatabase(offset: number): string {
     return '';
     //
@@ -50,11 +54,43 @@ export class ModelOfEditor {
     return undefined;
   }
 
-  public getSuggestions(offset: number, structure: ServerStructure.Server): Array<string> {
+  public getSuggestions(
+    offset: number,
+    structure: ServerStructure.Server
+  ): Array<{ label: string; detail: string }> {
     if (!this.parsedQuery) return [];
-    const $table = this.getTables(offset);
-    console.error('$table', $table);
-    return [];
+    const $sd = this.getStructureData(offset);
+    console.info('$tables ', $sd);
+    // ------------------------------------------------------------------------------------------------
+    const result: Array<{ label: string; detail: string }> = [];
+    const addedCols: Array<string> = [];
+    // ------------------------------------------------------------------------------------------------
+    structure.databases.forEach((db: ServerStructure.Database) => {
+      const existsDb = $sd?.databases.find((d) => d.name === db.name);
+      if (!existsDb) return;
+      db.tables.forEach((table: ServerStructure.Table) => {
+        const existsTb = $sd?.tables.find((d) => d.name === table.name);
+        if (!existsTb) return;
+        table.columns.forEach((col) => {
+          addedCols.push(col.name);
+          result.push({
+            label: col.name,
+            detail: `${col.type} in ${col.table}`,
+          });
+        });
+      });
+    });
+    $sd?.columns.forEach((c) => {
+      if (addedCols && addedCols.indexOf(c.name)) {
+        return;
+      }
+      result.push({
+        label: c.name,
+        detail: `${c.name} in ${c.deep}`,
+      });
+    });
+
+    return result;
   }
 
   public getTokens(): Array<QToken> | undefined {

@@ -1,4 +1,11 @@
-import { QToken, Statement, Reference, ReferenceType, TableReference } from './CommonSQL';
+import {
+  QToken,
+  Statement,
+  Reference,
+  ReferenceType,
+  TableReference,
+  ResultQueryStructure,
+} from './CommonSQL';
 import { Token } from 'antlr4ts';
 import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
 
@@ -18,11 +25,14 @@ enum wew {
 export class ParsedQuery {
   private statements: Statement[];
   private countStm = -1;
+  private debug = false;
 
   //
   constructor(statements: Statement[]) {
     this.statements = statements;
-
+    this.statements.forEach((st) => {
+      if (st.isDebug) this.debug = true;
+    });
     /**
      * Todo:
      * 0. Add LexerErrorListener
@@ -34,6 +44,10 @@ export class ParsedQuery {
      * x. Test like this https://github.com/stevenmiller888/ts-mysql-parser/blob/master/src/__tests__/statements.txt
      *
      */
+  }
+
+  public isDebug(): boolean {
+    return this.debug;
   }
 
   public dumpTokens(st_num: number): string {
@@ -70,14 +84,17 @@ export class ParsedQuery {
   public info(offset: number): string {
     let str = '```Info\n\n';
     str += 'Offset:' + offset + '\n';
-    str += 'Relation:' + JSON.stringify(this.getVisitor(offset)?.getRelation(offset)) + '\n';
-    str += 'Index:' + JSON.stringify(this.getToken(offset)?.tokenIndex) + '\n';
+    // str += '' + JSON.stringify(this.getVisitor(offset)?.getStructureData(offset)) + '\n';
+    // str += 'Index:' + JSON.stringify(this.getToken(offset)?.tokenIndex) + '\n';
     str += 'text:' + JSON.stringify(this.getToken(offset)?.text) + '\n';
     str += 'clause:' + JSON.stringify(this.getToken(offset)?.clause) + '\n';
-
-    console.log('TOKEN', this.getToken(offset));
-    console.log('ST', this.getStatementAtOffset(offset));
+    str += 'context:' + JSON.stringify(this.getToken(offset)?.context) + '\n';
+    str += 'clause:' + JSON.stringify(this.getToken(offset)?.link) + '\n';
     return str + '```';
+  }
+
+  public getStructureData(offset: number): ResultQueryStructure | undefined {
+    return this.getVisitor(offset)?.getStructureData(offset);
   }
 
   public isAsteriskSelect(): boolean {

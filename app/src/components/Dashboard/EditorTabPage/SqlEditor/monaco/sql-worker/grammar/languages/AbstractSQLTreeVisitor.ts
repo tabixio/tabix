@@ -6,6 +6,10 @@ import {
   QueryRelation,
   Range,
   Relation,
+  ResultQuery_Column,
+  ResultQuery_DataBase,
+  ResultQuery_Table,
+  ResultQueryStructure,
   TableRelation,
 } from '../CommonSQL';
 import { Token } from 'antlr4ts';
@@ -89,8 +93,12 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return text;
   }
 
-  public applyToken(start: Token, stop: Token, clause: ClauseTokenType) {
-    this.log(`applyToken ${clause}, range [ ${start.tokenIndex}, ${stop.tokenIndex} ]`);
+  public applyToken(
+    start: Token,
+    stop: Token,
+    data: { clause?: ClauseTokenType; context?: string; link?: QToken['link'] }
+  ) {
+    this.log(`applyToken ${data.clause}, range [ ${start.tokenIndex}, ${stop.tokenIndex} ]`);
 
     this.tokensList.forEach((tok: QToken, index) => {
       if (
@@ -110,25 +118,21 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
           }
         }
         if (set) {
-          this.tokensList[index].clause = {
-            type: clause,
-            start: start.tokenIndex,
-            stop: stop.tokenIndex,
-          };
-        }
-      }
-    });
-  }
+          if (data.context) {
+            this.tokensList[index].context.push(data.context);
+          }
 
-  public applyTokenContext(start: Token, stop: Token, type: string) {
-    this.tokensList.forEach((tok: QToken, index) => {
-      if (
-        start &&
-        stop &&
-        tok.tokenIndex >= start.tokenIndex &&
-        tok.tokenIndex <= stop.tokenIndex
-      ) {
-        this.tokensList[index].context.push(type);
+          if (data.link) {
+            this.tokensList[index].link = data.link;
+          }
+          if (data.clause) {
+            this.tokensList[index].clause = {
+              type: data.clause,
+              start: start.tokenIndex,
+              stop: stop.tokenIndex,
+            };
+          }
+        }
       }
     });
   }
@@ -155,14 +159,6 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     return this.lastRelation;
   }
 
-  public getCurrentRelation(): void {
-    // console.log('getCurrentRelationgetCurrentRelationgetCurrentRelationgetCurrentRelation');
-    // console.log(this.lastRelation);
-    // if (this.getRelations()) {
-    //   this.availableColumns(this.getRelations());
-    // }
-  }
-
   public getToken(offset: number): QToken | undefined {
     return this.getTokens().find((st) => st.start <= offset && offset <= st.stop);
   }
@@ -170,7 +166,7 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
   public getPositionByTokenOffset(offset: number): Range | undefined {
     const t = this.getToken(offset);
     if (!t) return;
-    console.log('tokens', t);
+    // console.log('tokens', t);
     return {
       startLine: t.line,
       startColumn: t.start,
@@ -179,46 +175,79 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
     };
   }
 
-  private getColumnsFromTableRelation(relation: QueryRelation): Array<any> {
-    let parent: null | string = null;
+  private getDataFromRelation(
+    relation: Relation,
+    result: ResultQueryStructure,
+    deep = 0
+  ): ResultQueryStructure {
+    const parent: null | string = null;
 
-    if (relation.alias === ROOT_QUERY_NAME) {
-      parent = null;
-    } else {
-      parent = relation.alias ?? 'NA_ERROR';
+    if (relation instanceof QueryRelation || relation instanceof TableRelation) {
+      //
+      relation.columns.forEach((col) => {
+        result.columns.push({ name: col.label, deep: deep });
+      });
     }
-
-    return (relation as QueryRelation).columns.map((q) => {
-      return {
-        label: q.label,
-        parent: parent,
-      };
-    });
+    if (relation instanceof TableRelation) {
+      if (relation.tablePrimary) {
+        result.tables.push({
+          name: relation.tablePrimary.tableName,
+          db: relation.tablePrimary.schemaName,
+          alias: relation.tablePrimary.alias,
+          deep: deep,
+        });
+        if (relation.tablePrimary.schemaName) {
+          result.databases.push({
+            name: relation.tablePrimary.schemaName,
+            deep: deep,
+          });
+        }
+      }
+    }
+    if (relation instanceof QueryRelation) {
+      relation.relations.forEach((sub_relation) => {
+        this.getDataFromRelation(sub_relation, result, deep++);
+      });
+    }
+    return result;
+    //
+    // if (relation.alias === ROOT_QUERY_NAME) {
+    //   parent = null;
+    // } else {
+    //   parent = relation.alias ?? 'NA_ERROR';
+    // }
   }
 
-  private getTableFromTableRelation(relation: TableRelation, parent = false): any {
-    return {
-      db: relation.tablePrimary.schemaName,
-      name: relation.tablePrimary.tableName,
-      alias: relation.tablePrimary.alias,
-      parent: parent,
+  public getStructureData(offset: number): ResultQueryStructure | undefined {
+    //
+    const rel = this.getRelation(offset);
+    if (!rel) return;
+    let result: ResultQueryStructure = {
+      columns: [] as Array<ResultQuery_Column>,
+      databases: [] as Array<ResultQuery_DataBase>,
+      tables: [] as Array<ResultQuery_Table>,
     };
+    this.log(`---------- relation # ` + (rel ?? 'null') + ` ------------------`);
+    this.log('Result QR:', rel);
+    result = this.getDataFromRelation(rel, result);
+    this.log('result getDataFromRelation:', result);
+    return result;
   }
 
-  public getRelation(offset: number): any {
+  public getRelation(offset: number): Relation | undefined {
     // Need find CaretScope , from tag?
-
-    // Array<QueryRelation> | undefined {
-    console.group('---------- getRelation ------------------');
-
-    console.log('---------- getRelation ------------------');
     const t = this.getToken(offset);
     if (!t) return;
 
-    console.log('token:', t.tokenIndex, t);
-    console.log('this.getRelations()', this.getRelations());
+    if (this.debug) {
+      console.group('---------- getRelation ------------------');
+      console.log('---------- getRelation ------------------');
+      console.log('token:', t.tokenIndex, t);
+      console.log('this.getRelations()', this.getRelations());
+    }
+
     let dist = 999999;
-    let qr: Relation | null = null;
+    let qr: Relation | undefined = undefined;
 
     this.getRelations().forEach((rel, id) => {
       if (
@@ -231,79 +260,30 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
       }
       const tokRange = rel.range?.stopTokenIndex - rel.range?.startTokenIndex;
       if (rel.range?.startTokenIndex <= t.tokenIndex && t.tokenIndex <= rel.range?.stopTokenIndex) {
-        console.log('Range:', tokRange, rel.range?.stopTokenIndex, rel.range?.startTokenIndex);
         if (dist > tokRange) {
           qr = rel;
           dist = tokRange;
         }
       }
     });
-    // console.log(`---------- relation # ` + ((qr ?? 'null') + ` ------------------`);
-    console.log('Result QR:', qr);
-
-    // 1. Достаем relations.<0 => TableRelation}>.value.tablePrimary.alias,tableName,schemaName - указывает какие таблицы
-    // 2. col
-
-    console.groupEnd();
-    const ret = {
-      columms: [] as Array<any>,
-      tables: [] as Array<any>,
-    };
-
-    // qr.relantion.<MAP >.columns - is sub comls & have alias: "ewp"
-    if (!qr) return;
-    // --- cols ----
-
-    const cols = this.getColumnsFromTableRelation(qr);
-    if (cols) {
-      ret.columms.push(cols);
-    }
-    //
-    // // --- tables --
-    // (qr as QueryRelation).relations.forEach((relation) => {
-    //   if (relation instanceof QueryRelation) {
-    //     const cols = this.getColumnsFromTableRelation(relation);
-    //     if (cols) {
-    //       ret.columms.push(cols);
-    //     }
-    //
-    //     relation.relations.forEach((sub_relation) => {
-    //       if (sub_relation instanceof TableRelation) {
-    //         sub_relation.tablePrimary &&
-    //           ret.tables.push(this.getTableFromTableRelation(sub_relation, true));
-    //       }
-    //     });
-    //   }
-    //   if (relation instanceof TableRelation) {
-    //     relation.tablePrimary && ret.tables.push(this.getTableFromTableRelation(relation, false));
-    //   }
-    // });
-
-    return ret;
+    return qr;
   }
 
-  public getTables(): Array<string> | undefined {
-    console.log('----x------------------');
-    // console.log(this.lastRelation);
-    console.log('----x------------------');
-    return;
-  }
-
-  public availableColumns(relation: QueryRelation): void {
-    const columns: { relation?: string; name: string; rrange?: Range; range?: Range }[] = [];
-
-    relation.relations.forEach((rel, name) => {
-      const relationName = name !== rel.id ? name : undefined;
-
-      rel.columns.forEach((col) => {
-        columns.push({
-          relation: relationName,
-          name: col.label,
-          range: col.range,
-          rrange: relation.range,
-        });
-      });
-    });
-    console.log('Cols:', columns);
-  }
+  // public availableColumns(relation: QueryRelation): void {
+  //   const columns: { relation?: string; name: string; rrange?: Range; range?: Range }[] = [];
+  //
+  //   relation.relations.forEach((rel, name) => {
+  //     const relationName = name !== rel.id ? name : undefined;
+  //
+  //     rel.columns.forEach((col) => {
+  //       columns.push({
+  //         relation: relationName,
+  //         name: col.label,
+  //         range: col.range,
+  //         rrange: relation.range,
+  //       });
+  //     });
+  //   });
+  //   console.log('Cols:', columns);
+  // }
 }

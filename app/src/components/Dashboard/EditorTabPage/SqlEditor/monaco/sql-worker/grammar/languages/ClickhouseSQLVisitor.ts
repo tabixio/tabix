@@ -116,40 +116,27 @@ export class ClickhouseSQLVisitor<Result>
     this.onRelation(relation, alias);
   }
 
+  /**
+   * Вход в JOIN секцию
+   * @param ctx
+   */
   visitJoinExprTable(ctx: JoinExprTableContext) {
-    // this.log(`visitJoinExprTable ->ENTER`);
-
     const result = this.visitChildren(ctx);
-
-    // this.log(`visitJoinExprTable ->pre exit`);
-
-    // isFinal = ctx.FINAL()?.text !== undefined
-    // ctx.sampleClause()
+    // ?? isFinal = ctx.FINAL()?.text !== undefined ctx.sampleClause()
 
     let tableId = ctx.tableExpr().tryGetChild(0, TableExprIdentifierContext)?.tableIdentifier();
-
     if (!tableId) {
       tableId = ctx.tableExpr().tryGetChild(0, TableIdentifierContext);
     }
-
     const aliasId = ctx.tryGetChild(0, TableExprAliasContext);
 
     // DatabaseIdentifierContext
     // IdentifierContext
-    // console.log(tableId);
     const tableName = tableId?.identifier()?.text;
     const databaseName = tableId?.databaseIdentifier()?.text;
     const alias = aliasId?.identifier()?.text ?? aliasId?.alias()?.text;
 
     this.log(`visitJoinExprTable->Find db: [${databaseName}]:[${tableName}] as [${alias}] `);
-
-    if (ctx.stop) {
-      // `DB:[${databaseName}]:[${tableName}] as [${alias}]`
-      const debud =
-        `Use database: ${databaseName}, Table = ${tableName}` +
-        (alias ? ',alias = ' + alias : ' no alias');
-      this.applyTokenContext(ctx.start, ctx.stop, debud);
-    }
 
     // catalogName?: string; schemaName?: string; tableName: string; alias?: string;
     if (!databaseName && !tableName && alias) {
@@ -251,6 +238,15 @@ export class ClickhouseSQLVisitor<Result>
         ` ]`,
       'color:#32a852'
     );
+    if (col.stop) {
+      this.applyToken(col.start, col.stop, {
+        context: 'column',
+        link: {
+          table: tableName,
+          alias: aliasText,
+        },
+      });
+    }
 
     // if (
     //   tableName === undefined &&
@@ -378,7 +374,7 @@ export class ClickhouseSQLVisitor<Result>
 
   visitColumnExprFunction(ctx: ColumnExprFunctionContext) {
     const re = this.visitChildren(ctx);
-    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, ClauseTokenType.function);
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, { clause: ClauseTokenType.function });
     return re;
   }
 
@@ -397,13 +393,17 @@ export class ClickhouseSQLVisitor<Result>
   //   return result;
   // }
 
+  // visitQuery(ctx: QueryContext) {
+  //   const result = this.visitChildren(ctx);
+  //   return result;
+  // }
+
   private processClause(clause: ClauseTokenType, ctx: ParserRuleContext): Result {
     // console.log('processClause : ', clause);
     this.currentRelation.currentClause = clause;
     const result = this.visitChildren(ctx);
     this.currentRelation.currentClause = undefined;
-    if (ctx.stop) this.applyTokenContext(ctx.start, ctx.stop, `IN:${clause}`);
-    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, clause);
+    if (ctx.stop) this.applyToken(ctx.start, ctx.stop, { clause: clause });
     return result;
   }
 
@@ -419,20 +419,6 @@ export class ClickhouseSQLVisitor<Result>
     };
   }
 
-  visitQuery(ctx: QueryContext) {
-    const result = this.visitChildren(ctx);
-    return result;
-  }
-
-  private reportTableReferences() {
-    for (const [alias, relation] of this.currentRelation.relations) {
-      if (relation instanceof TableRelation) {
-        // console.log('onRelation ', relation);
-        // this.onRelation(relation, alias !== relation.id ? alias : undefined);
-      }
-    }
-  }
-
   visitRegularQuerySpecification(ctx: RegularQuerySpecificationContext): Result {
     // process FROM first to capture all available relations
     let result = ctx.fromClause()?.accept(this) ?? this.defaultResult();
@@ -446,6 +432,10 @@ export class ClickhouseSQLVisitor<Result>
     return result;
   }
 
+  /**
+   * Запрос SELECT + UNION
+   * @param ctx
+   */
   visitSelectUnionStmt(ctx: SelectUnionStmtContext): Result {
     //queryStmt
     this.currentRelation = new QueryRelation(
@@ -498,9 +488,6 @@ export class ClickhouseSQLVisitor<Result>
     return this.processClause(ClauseTokenType.join, ctx);
   }
 
-  // {"JoinConstraintClauseContext" => 2}
-  // {"ColumnsExprColumnContext" => 16}
-  // {"ColumnExprIdentifierContext" => 18}
   visitHavingClause(ctx: HavingClauseContext): Result {
     return this.processClause(ClauseTokenType.having, ctx);
   }
