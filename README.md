@@ -10,23 +10,28 @@ Not need, open in browser http://dash.tabix.io/
 
 ```bash
 
-# git clone https://github.com/tabixio/tabix.git
+git clone https://github.com/tabixio/tabix.git
 cd tabix
 git checkout master
 
 # Install JS libs 
+rm -f .yarnrc.yml
+# echo 'nodeLinker: node-modules' > .yarnrc.yml
+
+
+# Yarn setup 
+
 yarn set version 3.1.1
 yarn -v
-echo "rm -Rf node_modules"
-rm -Rf node_modules/
-echo "yarn install"
+# echo "Drop node_modules";rm -Rf node_modules/
+
 yarn install
 
 # Run on http://0.0.0.0:9000/  
 yarn start
 
 # Build html+js to dir 
-yarn build:dev
+yarn build
 
 
 ```

@@ -1,5 +1,6 @@
 import { Recognizer, Token, ANTLRErrorListener, RecognitionException, Lexer } from 'antlr4ts';
 import { Interval } from 'antlr4ts/misc/Interval';
+import { ATNSimulator } from 'antlr4ts/atn/ATNSimulator';
 
 enum TypeError {
   LEXER = 'lexer',
@@ -27,6 +28,10 @@ export abstract class antlrErrorCollector implements ANTLRErrorListener<Token> {
     this._errors = [];
   }
 
+  public resetErrors(): void {
+    this._errors = [];
+  }
+
   public getErrors(): antlrErrorList[] {
     return this._errors;
   }
@@ -43,6 +48,8 @@ export abstract class antlrErrorCollector implements ANTLRErrorListener<Token> {
     if (offendingSymbol) {
       return;
     }
+
+    console.log('syntaxErrorsyntaxErrorsyntaxErrorsyntaxError');
 
     const input = this.lexer.inputStream;
     const interval = new Interval(this.lexer._tokenStartCharIndex, input.index);
@@ -136,6 +143,41 @@ export abstract class antlrErrorCollector implements ANTLRErrorListener<Token> {
 export class antlr4ErrorLexer extends antlrErrorCollector {
   constructor(lexer: Lexer) {
     super(TypeError.LEXER, lexer);
+  }
+}
+
+export class ParserErrorListener implements ANTLRErrorListener<Token> {
+  error: Array<string> | undefined;
+
+  public getErrors(): antlrErrorList[] {
+    return [];
+  }
+
+  syntaxError<T extends Token>(
+    recognizer: Recognizer<T, ATNSimulator>,
+    offendingToken: T | undefined,
+    line: number,
+    character: number,
+    message: string,
+    error: RecognitionException | undefined
+  ): void {
+    // offendingToken is only undefined for lexer error listeners, so its safe to return here
+    if (!offendingToken) {
+      return;
+    }
+
+    const expected = recognizer.atn.getExpectedTokens(recognizer.state, error?.context);
+
+    console.log('syntaxError', expected);
+    // const expectedTokens = intervalToArray(expected, recognizer.vocabulary)
+    // const errorMessage = getErrorMessage(error, message, expectedTokens, offendingToken)
+
+    // this.error = new ParserError(errorMessage, {
+    //   offendingToken: offendingToken ?? null,
+    //   expectedTokens,
+    //   character,
+    //   line
+    // })
   }
 }
 

@@ -1,4 +1,4 @@
-import { Lexer, Parser } from 'antlr4ts';
+import { ANTLRInputStream, Lexer, Parser } from 'antlr4ts';
 import * as monaco from 'monaco-editor';
 // import { QToken, ReferenceMap } from '../CommonSQL';
 // import { AbstractParseTreeVisitor } from 'antlr4ts/tree/AbstractParseTreeVisitor';
@@ -16,7 +16,7 @@ export default abstract class IBaseLanguage {
 
   abstract createParser(lexer: Lexer): Parser;
 
-  abstract createLexer(input: string): Lexer;
+  abstract createLexer(input: ANTLRInputStream): Lexer;
 
   abstract getVisitor(): AbstractSQLTreeVisitor<any>;
 

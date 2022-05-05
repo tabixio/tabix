@@ -1,13 +1,17 @@
-import { antlr4ErrorLexer, antlr4ErrorParser, antlrErrorList } from './antlr4ParserErrorCollector';
+import {
+  antlr4ErrorLexer,
+  antlr4ErrorParser,
+  antlrErrorList,
+  ParserErrorListener,
+} from './antlr4ParserErrorCollector';
 import { SupportLanguage } from '../supportLanguage';
 import { ClickhouseSQL } from './languages/ClickhouseSQL';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
-import { Token } from 'antlr4ts';
+import { ANTLRInputStream, Token, DefaultErrorStrategy, BailErrorStrategy } from 'antlr4ts';
 import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
-
-import { default as antlr } from 'libs/rhombic/antlr/index';
+import { PredictionMode } from 'antlr4ts/atn/PredictionMode';
 
 //
 export interface Range {
@@ -507,10 +511,11 @@ export default class CommonSQL {
    * @param input
    */
   public parseOneStatement(input: Statement, isDebug = false): any {
-    const lexer = this.baseAntlr4.createLexer(input.text + '\n');
+    const inputStream = new ANTLRInputStream(input.text);
+    const lexer = this.baseAntlr4.createLexer(inputStream);
     const parser = this.baseAntlr4.createParser(lexer);
     const tokensList: Array<QToken> = [];
-    const errP = new antlr4ErrorParser(lexer);
+    const errP = new ParserErrorListener();
     const errL = new antlr4ErrorLexer(lexer);
     // ------------------------------------------------------------------------------------------------
     parser.buildParseTree = true;
@@ -520,6 +525,9 @@ export default class CommonSQL {
     lexer.addErrorListener(errL);
     parser.addErrorListener(errP);
     //
+
+    parser.interpreter.setPredictionMode(PredictionMode.SLL);
+    parser.errorHandler = new BailErrorStrategy();
     const visitor = this.baseAntlr4.getVisitor();
     visitor.debug = isDebug;
     const tokens: Token[] = lexer.getAllTokens();
@@ -555,7 +563,20 @@ export default class CommonSQL {
       // GoTo visitor
       tree.accept(visitor);
     } catch (e) {
-      console.error(e);
+      try {
+        console.log('First error in parse,', e);
+        inputStream.reset();
+        errL.resetErrors();
+        // errP.resetErrors();
+        parser.errorHandler = new DefaultErrorStrategy();
+        parser.interpreter.setPredictionMode(PredictionMode.LL);
+        tree = parser[proc]();
+        tree.accept(visitor);
+        console.log('Parse 2', errL.getErrors(), errP.getErrors());
+      } catch (ee) {
+        console.error('Final ERROR in parser');
+        console.error(ee);
+      }
     }
     return { visitor: visitor, errors: [...errP.getErrors(), ...errL.getErrors()] };
   }
