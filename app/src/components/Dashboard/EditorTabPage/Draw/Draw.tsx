@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import DataDecorator from 'services/api/DataDecorator';
 import * as sizeSensor from 'size-sensor';
-import Plot from 'react-plotly.js';
+import ReactECharts from 'echarts-for-react';
 import { Flex, FlexProps } from 'reflexy';
 import { PlotlyCreator } from 'services';
 
@@ -43,7 +43,7 @@ export default class Draw extends React.Component<Props & FlexProps> {
     this.data = PlotlyCreator.create(this.props.data);
 
     // Resizer init
-    sizeSensor.bind(this.rootRef.current, el => {
+    sizeSensor.bind(this.rootRef.current, (el) => {
       // @ToDo: move to react-sizeme, react-resize-detector[useResizeDetector], use call onResizeGrid?
       // @ToDo: DataTable have to `sizeSensor`
       // Warn! Плохая реализация происходит перерисовка
@@ -114,5 +114,6 @@ export default class Draw extends React.Component<Props & FlexProps> {
       </Flex>
     );
   }
+
   //
 }
