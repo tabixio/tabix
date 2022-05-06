@@ -10,16 +10,23 @@ import {
   ResultQuery_DataBase,
   ResultQuery_Table,
   ResultQueryStructure,
+  Statement,
   TableRelation,
 } from '../CommonSQL';
 import { Token } from 'antlr4ts';
 
 export const ROOT_QUERY_NAME = '[ROOT_QUERY]';
+export const CURSOR_CHARS_VALUE = ' _CURSOR_ '; // ! whitespace char in start & end
 
 export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVisitor<Result> {
   protected relationSeq = 0;
   public debug = false;
+  public cursorOffsetInCurrent = -1;
   protected currentRelation = new QueryRelation(this.getNextRelationId());
+
+  public isHaveCursor(): boolean {
+    return this.cursorOffsetInCurrent > -1;
+  }
 
   getNextRelationId(): string {
     return `result_${this.relationSeq++}`;
@@ -35,8 +42,62 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
 
   // abstract getCurrentRelation(): void;
 
-  public setTokenList(tokensList: Array<QToken>): void {
-    this.tokensList = tokensList;
+  public applyTokenList(tokens: Array<Token>, input: Statement): void {
+    this.tokensList = [];
+
+    const _cursor_ = this.isHaveCursor() ? CURSOR_CHARS_VALUE.trim() : null;
+
+    let correctForCursor = 0;
+    tokens.forEach((tok: Token, index) => {
+      // Find _CURSOR_ token
+
+      let skip = false;
+
+      if (_cursor_) {
+        const next = tokens[index + 1];
+        const prew = index > 1 ? tokens[index - 1] : undefined;
+
+        // if next isCursor And current first space char
+        if (next?.text === _cursor_ && tok.text === ' ') {
+          skip = true;
+          correctForCursor++;
+        }
+
+        if (tok.text === _cursor_) {
+          correctForCursor += _cursor_.length;
+          skip = true;
+        }
+        // if prew _cusor_ and current end space char
+        if (prew?.text === _cursor_ && tok.text === ' ') {
+          skip = true;
+          correctForCursor++;
+        }
+      } // if _cursor_
+      if (skip) return;
+      const t: QToken = {
+        treeText: '',
+        counter: new Map(),
+        exception: [],
+        invokingState: new Map(),
+        ruleIndex: new Map(),
+        channel: tok.channel,
+        column: tok.line,
+        line: tok.line,
+        start: tok.startIndex + input.start - correctForCursor,
+        stop: tok.stopIndex + input.start - correctForCursor,
+        tokenIndex: index,
+        type: tok.type,
+        text: tok.text,
+        charPositionInLine: tok.charPositionInLine,
+        symbolic: '',
+        up: 0,
+        context: [],
+      };
+      // console.log(
+      //   `IStart = ${input.start} , Start = ${tok.startIndex}  , Correct = ${correctForCursor} , Stop = ${t.stop}        "${t.text}"`
+      // );
+      this.tokensList.push(t);
+    });
   }
 
   public getRelations(): Map<string, Relation> {
@@ -244,6 +305,7 @@ export abstract class AbstractSQLTreeVisitor<Result> extends AbstractParseTreeVi
       console.log('---------- getRelation ------------------');
       console.log('token:', t.tokenIndex, t);
       console.log('this.getRelations()', this.getRelations());
+      console.groupEnd();
     }
 
     let dist = 999999;

@@ -168,7 +168,7 @@ export class ParserErrorListener implements ANTLRErrorListener<Token> {
 
     const expected = recognizer.atn.getExpectedTokens(recognizer.state, error?.context);
 
-    console.log('syntaxError', expected);
+    // console.log('syntaxError', expected);
     // const expectedTokens = intervalToArray(expected, recognizer.vocabulary)
     // const errorMessage = getErrorMessage(error, message, expectedTokens, offendingToken)
 

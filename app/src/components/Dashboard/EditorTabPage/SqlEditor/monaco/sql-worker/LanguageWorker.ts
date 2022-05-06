@@ -50,7 +50,7 @@ export abstract class LanguageWorker {
     language: SupportLanguage,
     modelUri: string,
     query: string,
-    offset : number
+    offset: number
   ): void {
     const parser = LanguageWorker.getParser(language);
     if (!parser) {
@@ -59,9 +59,9 @@ export abstract class LanguageWorker {
     }
     // Get position cursor
     // position: monaco.Position,
-    
+
     // Fetch exists model by uri
-    LanguageWorker.getModel(modelUri).process(parser.parse(query,offset));
+    LanguageWorker.getModel(modelUri).process(parser.parse(query, offset));
   }
 
   public static tokinize(query: string): void {
@@ -192,13 +192,16 @@ export abstract class LanguageWorker {
       startColumn: word.startColumn,
       endColumn: word.endColumn,
     };
+    let sort = 0;
+    // --------- keywords
     if (this.keywordsLanguage.length) {
       this.keywordsLanguage.forEach((key) => {
+        sort++;
         completionItems.push({
           label: key.word,
           insertText: key.word,
           kind: key.type,
-          sortText: `000${key.word}`,
+          sortText: 'A' + sort,
           detail: `Keyword`,
           range,
         });
@@ -207,82 +210,91 @@ export abstract class LanguageWorker {
     if (this.serverStructure?.databases) {
       this.serverStructure?.databases.forEach((db: ServerStructure.Database) => {
         // Completion:dbName
+        sort++;
         completionItems.push({
           label: db.name,
           insertText: db.name,
           kind: monaco.languages.CompletionItemKind.Reference,
-          detail: `database`,
+          detail: `Database`,
+          sortText: 'B' + sort,
           range,
         });
         // Completion:Tables
         db.tables.forEach((table: ServerStructure.Table) => {
           // table
-          completionItems.push({
-            label: table.name,
-            insertText: `${table.insertName}`,
-            kind: monaco.languages.CompletionItemKind.Interface,
-            detail: `table:${table.engine}`,
-            documentation: table.id,
-            range,
-          });
-
+          // completionItems.push({
+          //   label: table.name,
+          //   insertText: `${table.insertName}`,
+          //   kind: monaco.languages.CompletionItemKind.Interface,
+          //   detail: `table:${table.engine}`,
+          //   documentation: table.id,
+          //   range,
+          // });
+          sort++;
           completionItems.push({
             label: `${table.database}.${table.insertName}`,
             insertText: `${table.database}.${table.insertName}`,
             kind: monaco.languages.CompletionItemKind.Interface,
-            detail: `table:${table.engine}`,
+            detail: `${table.engine}`,
             documentation: table.id,
+            sortText: 'C' + sort,
             range,
           });
         });
       });
     } // <-databases
     // push to completionItems: builtinFunctions & Dictionaries
+    const c = 0;
     if (this.serverStructure?.editorRules) {
       this.serverStructure.editorRules.builtinFunctions?.forEach((func: any) => {
+        // if (c > 5) return;
+        sort++;
         completionItems.push(
           // interface CompletionItem
           {
             //  {name: "isNotNull", isaggr: 0, score: 101, comb: false, origin: "isNotNull"}
             label: func.name,
             insertText: `${func.name}(`,
-            kind: monaco.languages.CompletionItemKind.Method,
-            sortText: `9999-${func.name}`,
+            kind: monaco.languages.CompletionItemKind.Function,
+            sortText: 'D' + sort,
             detail: `Function`,
             range,
           }
         );
       });
+
+      // @TODO: add insertTextRules,
+
       // ----- push to completionItems: Dictionaries
       this.serverStructure.editorRules.dictionaries?.forEach((dic: any) => {
+        sort++;
         completionItems.push({
           label: dic.title,
           insertText: `${dic.dic}`,
           kind: monaco.languages.CompletionItemKind.Snippet,
-          sortText: `dic  ${dic.dic}`,
+          sortText: 'F' + sort,
           detail: `dic ${dic.dic}`,
           range,
         });
       });
     } // <-editorRules
     // ---------------------------------------------------------------------------
-
     if (!this.serverStructure) {
       console.warn('Not init serverStructure');
       return { suggestions: completionItems };
     } else {
       const sug = LanguageWorker.getModel(modelUri).getSuggestions(offset, this.serverStructure);
+      sort++;
       sug.forEach((i) => {
         completionItems.push({
           label: i.label,
           insertText: i.label,
-          kind: monaco.languages.CompletionItemKind.Unit,
-          sortText: `000  ${i.label}`,
+          kind: monaco.languages.CompletionItemKind.Field,
+          sortText: '0' + sort,
           detail: i.detail,
           range,
         });
       });
-      console.log('getSuggestions', sug);
     }
     return { suggestions: completionItems };
   }

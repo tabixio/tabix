@@ -5,6 +5,7 @@ import { ClickhouseSQLMonaco } from './ClickhouseSQL.editor';
 import { ClickhouseSQLVisitor } from './ClickhouseSQLVisitor';
 import * as monaco from 'monaco-editor';
 import { AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
+import { CodePointCharStream } from 'antlr4ts/CodePointCharStream';
 
 // ------------------------------------------------------------------------
 export class ClickhouseSQL extends IBaseAntlr4 {
@@ -22,7 +23,7 @@ export class ClickhouseSQL extends IBaseAntlr4 {
    *
    * @param input String query
    */
-  public createLexer(input: ANTLRInputStream): ClickHouseLexer {
+  public createLexer(input: CodePointCharStream): ClickHouseLexer {
     // const chars = CharStreams.fromString(input); // Some Lexer only support uppercase token, So you need transform
     // return (<unknown>new ClickHouseLexer(chars)) as Lexer;
     return new ClickHouseLexer(input);

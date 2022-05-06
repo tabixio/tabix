@@ -1,5 +1,9 @@
 /*eslint max-len: ["error", { "code": 280 , "ignoreTrailingComments": true , "ignoreComments": true }]*/
-import { ROOT_QUERY_NAME, AbstractSQLTreeVisitor } from './AbstractSQLTreeVisitor';
+import {
+  ROOT_QUERY_NAME,
+  AbstractSQLTreeVisitor,
+  CURSOR_CHARS_VALUE,
+} from './AbstractSQLTreeVisitor';
 import { ClickHouseParserVisitor } from './CHSql';
 import {
   WhereClauseContext,
@@ -47,6 +51,7 @@ import { RuleNode } from 'antlr4ts/tree/RuleNode';
 import { Token, ParserRuleContext } from 'antlr4ts';
 // ------------------------------------------------------------------------------------------------------------------------------
 const ROOT_QUERY_ID = 'result_1';
+const CURSOR_VALUE = CURSOR_CHARS_VALUE.trim();
 
 export class ClickhouseSQLVisitor<Result>
   extends AbstractSQLTreeVisitor<Result>
@@ -133,10 +138,16 @@ export class ClickhouseSQLVisitor<Result>
     // DatabaseIdentifierContext
     // IdentifierContext
     const tableName = tableId?.identifier()?.text;
-    const databaseName = tableId?.databaseIdentifier()?.text;
-    const alias = aliasId?.identifier()?.text ?? aliasId?.alias()?.text;
+    let databaseName = tableId?.databaseIdentifier()?.text;
+    let alias = aliasId?.identifier()?.text ?? aliasId?.alias()?.text;
+    databaseName = this.filterCursorText(databaseName);
 
-    this.log(`visitJoinExprTable->Find db: [${databaseName}]:[${tableName}] as [${alias}] `);
+    alias = this.filterCursorText(alias);
+
+    this.log(
+      `DBTable -> -> %c[${databaseName}]:[${tableName}] as [${alias}] ${ctx.text}`,
+      'color:#fcdb03'
+    );
 
     // catalogName?: string; schemaName?: string; tableName: string; alias?: string;
     if (!databaseName && !tableName && alias) {
@@ -167,18 +178,25 @@ export class ClickhouseSQLVisitor<Result>
     );
     const keyAlias = alias ?? tableName;
     if (!keyAlias) {
-      console.warn('Can`t find alias for relation', relation, tablePrimary, aliasId);
+      console.warn(
+        'Can`t find alias for relation',
+        relation,
+        tablePrimary,
+        aliasId,
+        alias,
+        tableName
+      );
     }
     this.onRelation(relation);
     this.currentRelation.relations.set(keyAlias, relation);
-    this.log(
-      `relations.set [in visitJoinExprTable] add ${relation.id} to ${this.currentRelation.id}`,
-      keyAlias,
-      {
-        ...Object.assign({}, this.currentRelation),
-      }
-    );
-    this.log(`visitJoinExprTable ->Exit`, keyAlias);
+    // this.log(
+    //   `relations.set [in visitJoinExprTable] add ${relation.id} to ${this.currentRelation.id}`,
+    //   keyAlias,
+    //   {
+    //     ...Object.assign({}, this.currentRelation),
+    //   }
+    // );
+    // this.log(`visitJoinExprTable ->Exit`, keyAlias);
     //throw 'ERR';
     return this.defaultResult();
   }
@@ -187,6 +205,15 @@ export class ClickhouseSQLVisitor<Result>
     const result = this.visitChildren(ctx);
     this.log('visitTableExpr', ctx);
     return result;
+  }
+
+  private filterCursorText(txt: string | undefined): string | undefined {
+    if (!txt) return txt;
+    if (txt.includes(CURSOR_VALUE)) {
+      if (txt === CURSOR_VALUE) return undefined;
+      return txt.replace(CURSOR_VALUE, '');
+    }
+    return txt;
   }
 
   private extractColumn(col: ColumnExprContext | ColumnsExprAsteriskContext): void {
@@ -218,7 +245,7 @@ export class ClickhouseSQLVisitor<Result>
       aliasText = colAliasId
         ? colAliasId.alias()?.text ?? colAliasId.identifier()?.text
         : undefined;
-
+      aliasText = this.filterCursorText(aliasText);
       let colIdentifierId = undefined;
 
       if (colAliasId) {
@@ -233,7 +260,7 @@ export class ClickhouseSQLVisitor<Result>
     }
     // -------- result
     this.log(
-      `%cColumn -> -> -> '${col.text}' -> [ ` +
+      `Column -> -> %c'${col.text}' -> [ ` +
         (isAsterisk ? `Asterisk` : `${tableName} , ${columnName} , ${aliasText}`) +
         ` ]`,
       'color:#32a852'
@@ -422,13 +449,13 @@ export class ClickhouseSQLVisitor<Result>
   visitRegularQuerySpecification(ctx: RegularQuerySpecificationContext): Result {
     // process FROM first to capture all available relations
     let result = ctx.fromClause()?.accept(this) ?? this.defaultResult();
-    this.log('visitRegularQuerySpecification->ENTER');
+    // this.log('visitRegularQuerySpecification->ENTER');
     ctx.children?.forEach((c) => {
       if (!(c instanceof FromClauseContext)) {
         result = this.aggregateResult(result, c.accept(this));
       }
     });
-    this.log('visitRegularQuerySpecification->EXIT');
+    // this.log('visitRegularQuerySpecification->EXIT');
     return result;
   }
 
@@ -448,10 +475,10 @@ export class ClickhouseSQLVisitor<Result>
 
     this.lastRelation = this.currentRelation;
 
-    this.log(
-      `!!! SET this.lastRelation [currentRelation] ${this.currentRelation.id}`,
-      this.lastRelation
-    );
+    // this.log(
+    //   `!!! SET this.lastRelation [currentRelation] ${this.currentRelation.id}`,
+    //   this.lastRelation
+    // );
 
     this.onRelation(
       this.currentRelation,

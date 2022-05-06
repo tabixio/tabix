@@ -42,9 +42,6 @@ export class ModelOfEditor {
 
   public getDatabase(offset: number): string {
     return '';
-    //
-    //
-    //
   }
 
   public getTables(offset: number): Array<string> | undefined {
@@ -60,7 +57,7 @@ export class ModelOfEditor {
   ): Array<{ label: string; detail: string }> {
     if (!this.parsedQuery) return [];
     const $sd = this.getStructureData(offset);
-    console.info('$tables ', $sd);
+    console.info('$tables ', $sd?.tables, $sd?.columns);
     // ------------------------------------------------------------------------------------------------
     const result: Array<{ label: string; detail: string }> = [];
     const addedCols: Array<string> = [];
@@ -68,6 +65,7 @@ export class ModelOfEditor {
     structure.databases.forEach((db: ServerStructure.Database) => {
       const existsDb = $sd?.databases.find((d) => d.name === db.name);
       if (!existsDb) return;
+
       db.tables.forEach((table: ServerStructure.Table) => {
         const existsTb = $sd?.tables.find((d) => d.name === table.name);
         if (!existsTb) return;
@@ -78,24 +76,27 @@ export class ModelOfEditor {
             detail: `${col.type} in ${col.table}`,
           });
         });
+        // All fields by one table
+        result.push({
+          label: table.columns.map((d) => d.name).join(`,\n`) + `\n`,
+          detail: `All in ${table.name}`,
+        });
       });
     });
+    // ------------------------------------------------------------------------------------------------
+    console.log(addedCols);
     $sd?.columns.forEach((c) => {
-      if (addedCols && addedCols.indexOf(c.name)) {
+      if (addedCols && addedCols.indexOf(c.name) > -1) {
         return;
       }
+      addedCols.push(c.name);
       result.push({
         label: c.name,
         detail: `${c.name} in ${c.deep}`,
       });
     });
-
+    console.log(result);
     return result;
-  }
-
-  public getTokens(): Array<QToken> | undefined {
-    return;
-    //return this.parsedQuery?.getTokens();
   }
 
   public validate(): void {

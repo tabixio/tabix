@@ -9,8 +9,8 @@ import { ClickhouseSQL } from './languages/ClickhouseSQL';
 import IBaseAntlr4 from './languages/IBaseLanguage';
 import * as monaco from 'monaco-editor';
 import { ParsedQuery } from './ParsedQuery';
-import { ANTLRInputStream, Token, DefaultErrorStrategy, BailErrorStrategy } from 'antlr4ts';
-import { AbstractSQLTreeVisitor } from './languages/AbstractSQLTreeVisitor';
+import { CharStreams, Token, DefaultErrorStrategy, BailErrorStrategy } from 'antlr4ts';
+import { AbstractSQLTreeVisitor, CURSOR_CHARS_VALUE } from './languages/AbstractSQLTreeVisitor';
 import { PredictionMode } from 'antlr4ts/atn/PredictionMode';
 
 //
@@ -379,6 +379,8 @@ export interface Statement {
   refs?: ReferenceMap;
   visitor?: AbstractSQLTreeVisitor<any>;
   isDebug?: boolean;
+  cursorOffsetInCurrent?: number;
+  cursorOffset?: number;
 }
 
 function skipLeadingWhitespace(text: string, head: number, tail: number): number {
@@ -436,77 +438,71 @@ export interface QToken {
 export default class CommonSQL {
   private language: SupportLanguage;
   private baseAntlr4: IBaseAntlr4;
+  private debug = false;
 
   constructor(language: SupportLanguage) {
     if (language !== SupportLanguage.CLICKHOUSE) throw 'Language not support by parser';
     this.language = language;
-    // @TODO: Support other language
+    // add support other language
     this.baseAntlr4 = new ClickhouseSQL();
   }
 
-  public processSQL(i: string): void {
-    // console.log('-------------  --------- ------------   --------- ------------ ');
-    // console.log('%c-------------          ROMBIC           --------- ------------ ', 'color:red');
-    // const env = new Map<string, string[]>();
-    // env.set('test', ['column1', 'column2']);
-    // const metadataProvider = {
-    //   getCatalogs: () => {
-    //     return [];
-    //   },
-    //   getSchemas: (_arg?: { catalog: string }) => {
-    //     return [];
-    //   },
-    //   getTables: (_args?: { catalogOrSchema: string; schema?: string }) => {
-    //     return Array.from(env.keys()).map((n) => {
-    //       return { name: n };
-    //     });
-    //   },
-    //   getColumns: (args: { table: string; catalogOrSchema?: string; schema?: string }) => {
-    //     const cs = env.get(args.table);
-    //     return (
-    //       cs?.map((c) => {
-    //         return { name: c };
-    //       }) || []
-    //     );
-    //   },
-    // };
-    // const p = antlr.parse(i, { cursorPosition: { lineNumber: 0, column: 0 } });
-    // console.log('getUsedTables', p.getSuggestions(metadataProvider));
-    // console.log('-------------  --------- ------------   --------- ------------ ');
-  }
-
+  /**
+   * -
+   * -
+   * -
+   * User input text: `SELECT 1,| FROM sys.table ; select a,b,c from aa.bb`
+   * Split query by `;`
+   * Add special text ` _CURSOR_ ` where cursorOffset
+   * Convert text for antlr `SELECT 1, _CURSOR_  FROM sys.table ; select a,b,c from aa.bb`
+   * Then drop all with cursor text, and drop offsets token
+   * -
+   * -
+   * -
+   */
   /**
    * Parse one/many query
    *
    * @param input String query
-   * @param offset
+   * @param cursorOffset Position cursor
    */
-  public parse(input: string, offset : number = -1): ParsedQuery | null {
+  public parse(input: string, cursorOffset = -1): ParsedQuery | null {
     const isDebug = input.includes('tabix_debug');
     if (isDebug) {
+      this.debug = true;
       console.log('Debug sql mode');
     }
-    const states = this.splitStatements(input);
 
+    const states = this.splitStatements(input);
     if (!states.length) return null;
     states.forEach((st, index) => {
-      console.log(
-        `%c${st.text}`,
-        'font-family: monospace, "Gill Sans", sans-serif;font-size:120%;color:#1c42c9'
-      );
-      const result = this.parseOneStatement(st, isDebug);
-
-      states[index].visitor = result.visitor;
-      states[index].errors = result.errors;
-      states[index].isParsed = true;
-      states[index].isDebug = isDebug;
-      if (isDebug) {
-        console.log('\n-------- get Relations ---------\n', result.visitor?.getRelations());
-        console.log('\n-------- get Last Relation ---------\n', result.visitor?.getLastRelation());
+      // cursorOffset - offset by all query, need calc Offset by one query cursorOffsetInCurrent
+      if (st.start <= cursorOffset && cursorOffset <= st.stop) {
+        st.cursorOffset = cursorOffset;
+        st.cursorOffsetInCurrent = cursorOffset - st.start;
       }
-      console.log(offset);
+      // Overwrite statement ?
+      states[index] = this.parseOneStatement(st);
+      // Dump result`s
+      if (isDebug) {
+        // console.log('\n-------- get Relations ---------\n', states[index].visitor?.getRelations());
+        // console.log(
+        //   '\n-------- get Last Relation ---------\n',
+        //   states[index].visitor?.getLastRelation()
+        // );
+        // console.log(
+        //   '\n-------- get Structure Data ---------\n',
+        //   states[index].visitor?.getStructureData()
+        // );
+      }
     });
     return new ParsedQuery(states);
+  }
+
+  private static insertCursor(input: string, offset: number): string {
+    const prefix = input.slice(0, offset);
+    const suffix = input.slice(offset);
+    return `${prefix}${CURSOR_CHARS_VALUE}${suffix}`; // String+` _CURSOR_ `+String
   }
 
   /**
@@ -514,84 +510,74 @@ export default class CommonSQL {
    *
    * @param input
    */
-  public parseOneStatement(input: Statement, isDebug = false): any {
-    const inputStream = new ANTLRInputStream(input.text);
+  public parseOneStatement(input: Statement): Statement {
+    if (input.cursorOffsetInCurrent !== undefined && input.cursorOffsetInCurrent > -1) {
+      // Have cursor here
+      input.text = CommonSQL.insertCursor(input.text, input.cursorOffsetInCurrent);
+    }
+
+    console.log(
+      `%c${input.text}`,
+      'font-family: monospace, "Gill Sans", sans-serif;font-size:120%;color:#fc7303'
+    );
+    // Convert to Stream
+    const inputStream = CharStreams.fromString(input.text);
+    // Create lexer & parser
     const lexer = this.baseAntlr4.createLexer(inputStream);
     const parser = this.baseAntlr4.createParser(lexer);
-    const tokensList: Array<QToken> = [];
+    // Error handlers
     const errP = new ParserErrorListener();
     const errL = new antlr4ErrorLexer(lexer);
-    // ------------------------------------------------------------------------------------------------
+    // --------------------------------------------
     parser.buildParseTree = true;
     parser.removeErrorListeners();
     lexer.removeErrorListeners();
     //
     lexer.addErrorListener(errL);
     parser.addErrorListener(errP);
-    //
-
-    parser.interpreter.setPredictionMode(PredictionMode.SLL);
-    parser.errorHandler = new BailErrorStrategy();
+    // PredictionMode
+    // parser.interpreter.setPredictionMode(PredictionMode.SLL);
+    // parser.errorHandler = new BailErrorStrategy();
     const visitor = this.baseAntlr4.getVisitor();
-    visitor.debug = isDebug;
+    visitor.debug = this.debug;
+    visitor.cursorOffsetInCurrent = input.cursorOffsetInCurrent ?? -1;
+    // Fetch all token`s from lexer
     const tokens: Token[] = lexer.getAllTokens();
-    // ------ fetch QTok ---------------------------
-    tokens.forEach((tok: Token, index) => {
-      tokensList.push({
-        treeText: '',
-        counter: new Map(),
-        exception: [],
-        invokingState: new Map(),
-        ruleIndex: new Map(),
-        channel: tok.channel,
-        column: tok.line,
-        line: tok.line,
-        start: tok.startIndex + input.start,
-        stop: tok.stopIndex + input.start,
-        tokenIndex: index,
-        type: tok.type,
-        text: tok.text,
-        charPositionInLine: tok.charPositionInLine,
-        symbolic: '',
-        up: 0,
-        context: [],
-      });
-    });
-    visitor.setTokenList(tokensList);
     lexer.reset();
     // -------------------------------------------
+    // get top statement function name in G4 file
     const proc = this.baseAntlr4.configuration().topStatements;
     let tree: any;
+    let isParsed = false;
     try {
       tree = parser[proc]();
       // GoTo visitor
       tree.accept(visitor);
+      isParsed = true;
     } catch (e) {
-      try {
-        console.log('First error in parse,', e);
-        inputStream.reset();
-        errL.resetErrors();
-        // errP.resetErrors();
-        parser.errorHandler = new DefaultErrorStrategy();
-        parser.interpreter.setPredictionMode(PredictionMode.LL);
-        tree = parser[proc]();
-        console.log(tree);
-        tree.accept(visitor);
-        console.log('Parse 2', errL.getErrors(), errP.getErrors());
-      } catch (ee) {
-        console.error('Final ERROR in parser');
-        console.error(ee);
-      }
+      // try {
+      //   console.log('Parse 1 error');
+      //   // If error try other strategy
+      //   inputStream.seek(0);
+      //   errL.resetErrors();
+      //   // errP.resetErrors();
+      //   parser.errorHandler = new DefaultErrorStrategy();
+      //   parser.interpreter.setPredictionMode(PredictionMode.LL);
+      //   tree = parser[proc]();
+      //   tree.accept(visitor);
+      //   isParsed = true;
+      // } catch (ee) {
+      console.error('Final ERROR in parser', e);
+      // }
     }
-    return { visitor: visitor, errors: [...errP.getErrors(), ...errL.getErrors()] };
-  }
-
-  /**
-   * Result ParserRuleContext
-   *
-   */
-  public parseDefault(): ParsedQuery | null {
-      return null;
+    // ---- Convert Tokens to QToken
+    visitor.applyTokenList(tokens, input);
+    // result`s
+    input.visitor = visitor;
+    input.errors = [...errP.getErrors(), ...errL.getErrors()];
+    input.isParsed = isParsed;
+    input.isDebug = this.debug;
+    return input;
   }
 
   /**
