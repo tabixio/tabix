@@ -1,0 +1,65 @@
+@prefix: antv-s2-switcher-content;
+
+@large-span: 16px;
+@normal-span: 8px;
+
+@large-font-size: 14px;
+@normal-font-size: 12px;
+
+.@{prefix} {
+  &-header,
+  &-main {
+    margin-bottom: @large-span;
+  }
+
+  &-header {
+    font-size: @large-font-size;
+    font-weight: bold;
+  }
+
+  &-main {
+    display: grid;
+    grid-gap: @large-span;
+    grid-auto-flow: column;
+    font-size: @normal-font-size;
+  }
+
+  &-three-dimensions {
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &-one-dimension {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+  }
+
+  &-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-reset-button {
+      font-size: @large-font-size;
+      padding: 0;
+      display: inline-flex;
+      align-items: baseline;
+    }
+
+    &-actions {
+      .action-button + .action-button {
+        margin-left: @normal-span;
+      }
+    }
+  }
+
+  .ant-checkbox-inner {
+    height: @large-font-size;
+    width: @large-font-size;
+
+    &::after {
+      width: 4.8px;
+      height: 8px;
+    }
+  }
+}

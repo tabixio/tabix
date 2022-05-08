@@ -1,0 +1,71 @@
+@prefix: antv-s2-switcher-dimension;
+
+@normal-span: 8px;
+@font-size: 12px;
+
+@gray-color: rgba(0, 0, 0, 0.15);
+@highlight-gray-color: rgba(0, 0, 0, 0.25);
+
+.@{prefix} {
+  width: 185px;
+  background-color: transparent;
+
+  &.long-dimension {
+    grid-row: span 2;
+  }
+
+  &-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: @normal-span;
+    justify-content: space-between;
+    height: 18px;
+
+    .title {
+      span {
+        margin-left: @normal-span;
+      }
+
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .expand-option {
+      .description {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  &-items {
+    height: calc(100% - 22px);
+    min-height: 120px;
+    max-height: 160px;
+    padding: @normal-span;
+    border: 1px solid @gray-color;
+    border-radius: 3px;
+    overflow-y: auto;
+
+    &-highlight {
+      border: 1px solid #6b9cff;
+      box-shadow: 0 0 2px 1px rgba(46, 91, 217, 0.2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: @gray-color;
+
+      &:hover {
+        background-color: @highlight-gray-color;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+  }
+
+  &-long-items {
+    max-height: 358px;
+  }
+}

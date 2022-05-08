@@ -1,0 +1,96 @@
+@prefix: antv-s2-switcher;
+
+@normal-item-color: #d9eeff;
+@checkable-item-color: #d3f4e5;
+@checkable-child-color: #effbf6;
+
+@large-span: 12px;
+@normal-span: 4px;
+
+@border-radius: 3px;
+
+.@{prefix}-item {
+  height: 24px;
+  border-radius: @border-radius;
+  display: flex;
+
+  &-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &.normal-item {
+    padding: 0 @large-span;
+    background-color: @normal-item-color;
+    align-items: center;
+  }
+
+  &.checkable-item {
+    padding: 0 @normal-span;
+    background-color: @checkable-item-color;
+    align-items: baseline;
+
+    &.item-collapse {
+      transition: border-radius 0s 0.2s;
+      border-radius: @border-radius !important;
+    }
+
+    &.unchecked {
+      color: rgba(0, 0, 0, 0.25);
+    }
+
+    &:not(:last-child) {
+      border-radius: @border-radius @border-radius 0 0;
+    }
+
+    .ant-checkbox {
+      margin-right: @normal-span;
+    }
+  }
+}
+
+.@{prefix}-normal-list,
+.@{prefix}-checkable-list {
+  border-radius: @border-radius;
+
+  & + & {
+    margin-top: @normal-span;
+  }
+
+  &.dragging {
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  &.disable-dragging {
+    cursor: not-allowed;
+  }
+
+  .child-items {
+    transition: max-height 0.2s, opacity 0.4s;
+    overflow: hidden;
+    max-height: 1000px;
+
+    .checkable-item {
+      padding: 0 @large-span;
+      background-color: @checkable-child-color;
+      margin-top: 0;
+      border-radius: 0;
+
+      &:last-child {
+        border-radius: 0 0 @border-radius @border-radius;
+      }
+    }
+
+    &.item-hidden {
+      max-height: 0;
+      opacity: 0;
+    }
+  }
+}
+
+.@{prefix}-tooltip {
+  .ant-tooltip-inner {
+    max-width: 180px;
+  }
+}
