@@ -47,6 +47,13 @@ export const SwitcherHeader: FC<SwitcherHeaderProps> = ({ sheet, dataCfg, option
     if (hiddenColumnFields) {
       sheet.setOptions({ interaction: { hiddenColumnFields } });
     }
+
+    console.log('onSubmit - SwitcherResult Field', fields);
+
+    console.log('onSubmit - SwitcherResult Obj', { ...sheet.dataCfg.fields, ...fields });
+    console.log('onSubmit - SwitcherResult : hiddenColumnFields', hiddenColumnFields);
+    console.log('onSubmit - SwitcherResult : sheet.dataCfg', sheet.dataCfg);
+    console.log('onSubmit - SwitcherResult Option', sheet.options);
     sheet.render();
     setFields(
       generateSwitcherFieldsCfgFromResult(sheet, result, sheet.dataCfg?.meta, hiddenColumnFields)

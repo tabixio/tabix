@@ -37,7 +37,7 @@ export const Switcher: FC<SwitcherProps> = ({ title, popover, disabled, ...other
           disabled={disabled}
           icon={<SwitcherIcon />}
         >
-          Row & column switching
+          Row & col
         </Button>
       )}
     </Popover>

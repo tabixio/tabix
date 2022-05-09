@@ -1,0 +1,52 @@
+:global {
+.antv-s2-tooltip-operator,
+.antv-s2-tooltip-container,
+.antv-s2-tooltip-summary
+{
+  color: #12f4f9 !important;
+  background-color: #424242 !important;
+}
+  .ant-menu-item-active {
+    background-color: #0074D9;
+  }
+  .ant-menu-title-content {
+    color: #0074D9 !important; 
+  }
+  .antv-s2-switcher-item.checkable-item {
+    padding: 0 4px;
+    background-color: transparent !important;
+    align-items: baseline;
+  }
+  .antv-s2-advanced-sort-modal .antv-s2-advanced-sort-sider-layout.ant-layout-sider {
+    border-right: 1px solid #d9d9d9;
+    background: transparent !important;
+  }
+  .antv-s2-advanced-sort-modal .antv-s2-advanced-sort-content-layout {
+    background: transparent !important;
+  }
+  .antv-s2-advanced-sort-modal .antv-s2-advanced-sort-sider-layout .antv-s2-advanced-sort-dimension-item {
+    height: 32px;
+    padding: 8px 5px;
+    cursor: pointer;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  
+  .antv-s2-advanced-sort-modal .antv-s2-advanced-sort-content-layout .antv-s2-advanced-sort-field-prefix {
+    position: relative;
+    padding: 0 6px;
+    color: white;
+    font-weight: 400;
+    font-size: 12px;
+    text-align: center;
+    background: transparent !important;
+    border: 0px solid #d9d9d9;
+    border-radius: 2px 0 0 2px;
+    height: 24px;
+    display: inline-block;
+    line-height: 21px;
+    margin-left: 8px;
+  }
+}

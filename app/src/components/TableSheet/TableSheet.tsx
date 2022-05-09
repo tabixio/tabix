@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
 import { TableSheet as S2Table } from '@antv/s2-react';
 import '@antv/s2-react/dist/style.min.css';
+import './dark.css';
 import { Button } from 'antd';
 import DataDecorator from 'services/api/DataDecorator';
 
@@ -33,8 +34,17 @@ export default function TableSheet({ data }: TableSheetProps) {
     showSeriesNumber: true,
     interaction: {
       enableCopy: true,
+      hiddenColumnFields: ['cost'],
     },
-  };
+    style: {
+      cellCfg: {
+        height: 20,
+      },
+      //colCfg: {
+      //  height: 30,
+      //},
+    },
+  } as S2Options;
 
   const s2DataConfig = {
     fields: {
@@ -58,15 +68,15 @@ export default function TableSheet({ data }: TableSheetProps) {
     ],
     data: [
       {
-        province: '浙江',
-        city: '杭州',
-        type: '笔',
+        province: 'Moscow',
+        city: 'MSK',
+        type: 'City',
         price: 1,
       },
       {
-        province: '浙江',
-        city: '杭州',
-        type: '纸张',
+        province: 'Spb',
+        city: 'Питер',
+        type: 'Xshow 21',
         price: 2,
       },
     ],

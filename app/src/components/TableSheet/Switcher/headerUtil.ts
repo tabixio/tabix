@@ -48,7 +48,8 @@ export const generateSwitcherFields = (
 };
 
 export const generateSheetConfig = (sheet: SpreadSheet, result: SwitcherResult) => {
-  // 交叉表需要过滤掉被隐藏的字段，而明细表不需要，明细表需要将隐藏的字段通过hiddenColumnFields返回给options
+  // В кросс-таблице нужно отфильтровывать скрытые поля, а в подробной таблице это не нужно.
+  // В подробной таблице нужно вернуть скрытые поля в опции через hiddenColumnFields
   const isTableSheet = sheet instanceof TableSheet;
 
   const fields = SWITCHER_FIELDS.reduce((fields, fieldKey) => {

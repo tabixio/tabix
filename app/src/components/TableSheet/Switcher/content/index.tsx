@@ -19,7 +19,7 @@ import {
 // import './index.less';
 import { SheetType } from '@antv/s2-react';
 
-const CLASS_NAME_PREFIX = 'content';
+const CLASS_NAME_PREFIX = 'contents';
 
 export interface SwitcherContentRef {
   getResult: () => SwitcherResult;
@@ -113,42 +113,39 @@ export const SwitcherContent: React.FC<SwitcherContentProps> = ({
             getMainLayoutClassName(sheetType)
           )}
         >
-          {displayFieldItems.map((type) => (
-            <Dimension
-              {...defaultFields[type]}
-              key={type}
-              fieldType={type}
-              items={state[type] ?? undefined}
-              crossRows={shouldCrossRows(sheetType, type)}
-              droppableType={SWITCHER_CONFIG[type].droppableType}
-              draggingItemId={draggingItemId ?? null}
-              onVisibleItemChange={onVisibleItemChange}
-            />
-          ))}
+          {displayFieldItems.map((type) => {
+            const c = state[type];
+            if (c === undefined) return;
+            return (
+              <Dimension
+                {...defaultFields[type]}
+                key={type}
+                fieldType={type}
+                items={c}
+                crossRows={shouldCrossRows(sheetType, type)}
+                droppableType={SWITCHER_CONFIG[type].droppableType}
+                draggingItemId={draggingItemId ?? null}
+                onVisibleItemChange={onVisibleItemChange}
+              />
+            );
+          })}
         </main>
         <footer className={getSwitcherClassName(CLASS_NAME_PREFIX, 'footer')}>
-          <Button
-            type={'text'}
-            icon={<ReloadOutlined />}
-            className={getSwitcherClassName(CLASS_NAME_PREFIX, 'footer', 'reset-button')}
-            disabled={isNothingChanged}
-            onClick={onReset}
-          >
-            {resetText}
+          <Button icon={<ReloadOutlined />} disabled={isNothingChanged} onClick={onReset}>
+            Reset
           </Button>
-          <div className={getSwitcherClassName(CLASS_NAME_PREFIX, 'footer', 'actions')}>
-            <Button className="action-button" onClick={onToggleVisible}>
-              Cancel
-            </Button>
-            <Button
-              className="action-button"
-              type="primary"
-              disabled={isNothingChanged}
-              onClick={onConfirm}
-            >
-              Ok
-            </Button>
-          </div>
+
+          <Button className="action-button" onClick={onToggleVisible}>
+            Cancel
+          </Button>
+          <Button
+            className="action-button"
+            type="primary"
+            disabled={isNothingChanged}
+            onClick={onConfirm}
+          >
+            Ok
+          </Button>
         </footer>
       </div>
     </DragDropContext>
