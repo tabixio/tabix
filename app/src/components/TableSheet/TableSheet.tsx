@@ -5,7 +5,7 @@ import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
 import { TableSheet as S2Table } from '@antv/s2-react';
 import '@antv/s2-react/dist/style.min.css';
 import './dark.css';
-import { Button } from 'antd';
+import { Tooltip } from './Tooltip';
 import DataDecorator from 'services/api/DataDecorator';
 
 // import { ResultActionType } from '../DataTable/contextMenuItems';
@@ -23,8 +23,60 @@ interface State {
 }
 
 export default function TableSheet({ data }: TableSheetProps) {
-  const getSpreadSheet = (instance: any) => {
+  const getSpreadSheet = (instance: SpreadSheet) => {
     s2Ref.current = instance;
+    // instance.showTooltip = (tooltipOptions) => {
+    //   const { position, data = {}, options } = tooltipOptions;
+    //   const name = `${data.name} - Name`; // 只有单元格中文案被省略才显示
+    //   const infos = 'Hold Shift for multiple or box selection to view multiple data points';
+    //   const tips = 'Description: This is a description';
+    //   const customSummaries = (data.summaries || []).map((item) => {
+    //     return { ...item, name: `${item.name} - name` };
+    //   });
+    //   const { cols = [], rows = [] } = data.headInfo || {};
+    //   const customCols = cols.map((item) => {
+    //     return { ...item, value: `${item.value} - value` };
+    //   });
+    //   const customDetails = (data.details || []).map((item) => {
+    //     return {
+    //       name: `${item.name} - name`,
+    //       value: `${item.value} - value`,
+    //     };
+    //   });
+    //   const customOperator = {
+    //     onClick: ({ key }) => {
+    //       console.log('Нажмите на любой пункт меню', key);
+    //     },
+    //     menus: [
+    //       {
+    //         id: 'trend',
+    //         icon: 'trend',
+    //         text: 'Trend',
+    //         onClick: () => {
+    //           console.log('щелчок по текущему пункту меню');
+    //         },
+    //       },
+    //     ],
+    //   };
+    //   const customOptions = {
+    //     ...tooltipOptions,
+    //     position: { x: position.x + 1, y: position.y + 1 },
+    //     data: {
+    //       ...data,
+    //       name: data.name ? name : '',
+    //       infos,
+    //       tips,
+    //       summaries: customSummaries,
+    //       headInfo: { rows, cols: customCols },
+    //       details: customDetails,
+    //     },
+    //     options: {
+    //       ...options,
+    //       operator: customOperator,
+    //     },
+    //   };
+    //   instance.tooltip.show(customOptions);
+    // };
   };
   const s2Ref = React.useRef<SpreadSheet>();
 
@@ -36,6 +88,11 @@ export default function TableSheet({ data }: TableSheetProps) {
       enableCopy: true,
       hiddenColumnFields: ['cost'],
     },
+    tooltip: {
+      showTooltip: true,
+      renderTooltip: (spreadsheet) => new Tooltip(spreadsheet),
+    },
+    //
     style: {
       cellCfg: {
         height: 20,
@@ -80,31 +137,6 @@ export default function TableSheet({ data }: TableSheetProps) {
         price: 2,
       },
     ],
-  };
-
-  const header = {
-    // title: 'Title Table',
-    // description: 'Desprip ion',
-    exportCfg: {
-      open: true,
-      copyOriginalText: 'Copy Original text',
-      copyFormatText: 'Copy Format text',
-      downloadOriginalText: 'Download Original Text',
-      downloadFormatText: 'Download Format Text',
-      successText: 'Success',
-      errorText: 'Error',
-    },
-    advancedSortCfg: {
-      open: true,
-      text: 'Advanced sort',
-      ruleText: 'Sort by the following rules (low to high priority)',
-    },
-    switcherCfg: { open: true },
-    extra: (
-      <Button size={'small'} style={{ verticalAlign: 'top' }}>
-        Insert content
-      </Button>
-    ),
   };
 
   //
