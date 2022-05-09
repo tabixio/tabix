@@ -2,7 +2,7 @@ import { BaseTooltip, SpreadSheet } from '@antv/s2';
 import ReactDOM from 'react-dom';
 import React from 'react';
 import { S2CellType } from '@antv/s2/esm/common/interface';
-import { TooltipComponent, TooltipRenderProps } from './TooltipComponent';
+import { TooltipComponent, TooltipRenderProps } from './Tooltip/TooltipComponent';
 
 export class Tooltip extends BaseTooltip {
   constructor(spreadsheet: SpreadSheet) {

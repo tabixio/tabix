@@ -1,10 +1,11 @@
 import { Button, Popover, PopoverProps } from 'antd';
 import React, { FC, ReactNode, useState } from 'react';
-import { SwitcherIcon } from '../Sort/Icons';
+// import { SwitcherIcon } from '../Sort/Icons';
 import { SwitcherContent, SwitcherContentProps } from './content';
 import { getSwitcherClassName } from './util';
 
 // import './index.less';
+import { VerticalAlignMiddleOutlined } from '@ant-design/icons';
 
 export interface SwitcherProps extends Omit<SwitcherContentProps, 'onToggleVisible'> {
   title?: ReactNode;
@@ -33,9 +34,9 @@ export const Switcher: FC<SwitcherProps> = ({ title, popover, disabled, ...other
       {title || (
         <Button
           className={getSwitcherClassName('entry-button')}
-          size="small"
+          // size="small"
           disabled={disabled}
-          icon={<SwitcherIcon />}
+          icon={<VerticalAlignMiddleOutlined />}
         >
           Row & col
         </Button>

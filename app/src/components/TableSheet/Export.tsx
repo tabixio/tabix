@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Dropdown, message } from 'antd';
+import { Button, Menu, Dropdown, message } from 'antd';
 import cx from 'classnames';
 import {
   SpreadSheet,
@@ -9,6 +9,9 @@ import {
   S2_PREFIX_CLS,
 } from '@antv/s2';
 import { DotChartOutlined } from '@ant-design/icons';
+import { getSwitcherClassName } from './Switcher/util';
+import { SwitcherIcon } from './Sort/Icons';
+import { CopyOutlined } from '@ant-design/icons';
 
 export interface DataSet {
   icon?: React.ReactNode;
@@ -73,7 +76,12 @@ export const Export: React.FC<ExportProps> = React.memo(
         </Menu.Item>
       </Menu>
     );
-
+    // <Button
+    //   className={getSwitcherClassName('entry-button')}
+    //   size="small"
+    //   disabled={disabled}
+    //   icon={<SwitcherIcon />}
+    // >
     return (
       <Dropdown
         overlay={menu}
@@ -81,9 +89,15 @@ export const Export: React.FC<ExportProps> = React.memo(
         className={cx(PRE_CLASS, className)}
         {...restProps}
       >
-        <a className="ant-dropdown-link" key="export" onClick={(e) => e.preventDefault()}>
-          <DotChartOutlined />
-        </a>
+        <Button
+          // size="small"
+          className={getSwitcherClassName('entry-button')}
+          key="export"
+          onClick={(e) => e.preventDefault()}
+          icon={<CopyOutlined />}
+        >
+          Export
+        </Button>
       </Dropdown>
     );
   }

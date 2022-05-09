@@ -1,5 +1,5 @@
 import React, { FC, ReactNode } from 'react';
-// import { PageHeader, PageHeaderProps } from 'antd';
+import { PageHeader } from 'antd';
 // import cx from 'classnames';
 import { Export } from './Export';
 import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
@@ -43,11 +43,12 @@ export const Header: FC<HeaderProps> = ({
   // Todo : SwitcherHeader
   // Todo : AdvancedSort
   return (
-    <div>
-      <AdvancedSort sheet={sheet} />
-      <SwitcherHeader sheet={sheet} dataCfg={dataCfg} options={options} />
-      <Export key={'export'} sheet={sheet} />
-    </div>
+    <PageHeader
+      extra={[
+        <SwitcherHeader sheet={sheet} dataCfg={dataCfg} options={options} key="s" />,
+        <Export key={'export'} sheet={sheet} />,
+      ]}
+    ></PageHeader>
   );
 };
 //

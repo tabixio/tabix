@@ -87,12 +87,14 @@ export default function TableSheet({ data }: TableSheetProps) {
     interaction: {
       enableCopy: true,
       hiddenColumnFields: ['cost'],
+      // selectedCellsSpotlight: true,
+      // hoverHighlight: true,
     },
     tooltip: {
       showTooltip: true,
       renderTooltip: (spreadsheet) => new Tooltip(spreadsheet),
     },
-    //
+    // https://s2.antv.vision/en/examples/case/data-preview#index
     style: {
       cellCfg: {
         height: 20,
