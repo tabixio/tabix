@@ -1,6 +1,7 @@
 :global {
 .antv-s2-tooltip-operator,
 .antv-s2-tooltip-container,
+
 .antv-s2-tooltip-summary
 {
   color: #12f4f9 !important;
@@ -12,9 +13,10 @@
   .ant-menu-title-content {
     color: #0074D9 !important; 
   }
+  .antv-s2-switcher-item.normal-item,
   .antv-s2-switcher-item.checkable-item {
     padding: 0 4px;
-    background-color: transparent !important;
+    background-color: #525252 !important;
     align-items: baseline;
   }
   .antv-s2-advanced-sort-modal .antv-s2-advanced-sort-sider-layout.ant-layout-sider {

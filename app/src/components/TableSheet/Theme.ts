@@ -199,7 +199,7 @@ export const DarkTheme = {
       fontSize,
     },
     bolderText: {
-      fill: '#125212',
+      fill: '#ffffa0',
       opacity: 0.9,
       fontFamily,
       fontSize,

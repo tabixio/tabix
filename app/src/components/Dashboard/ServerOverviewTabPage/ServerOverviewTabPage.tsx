@@ -23,8 +23,6 @@ export default function ServerOverviewTabPage({ store }: Props) {
   }, [a]);
   return (
     <div>
-      ServerOverviewTabPage
-      <br />
       <TableSheet data={data} />
     </div>
   );

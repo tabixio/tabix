@@ -86,7 +86,11 @@ export default function TableSheet({ data }: TableSheetProps) {
     width: 600,
     height: 600,
     // showSeriesNumber: true,
-    hierarchyType: 'tree',
+    hierarchyType: 'tree', // grid
+    totals: {
+      rows: { showGrandTotals: true },
+      col: { showGrandTotals: true },
+    },
     interaction: {
       enableCopy: true,
       // hiddenColumnFields: ['cost'],
@@ -146,7 +150,6 @@ export default function TableSheet({ data }: TableSheetProps) {
   return (
     s2DataConfig && (
       <div>
-        H:{s2Ref.current ? 'Y' : 'N'}{' '}
         {s2Ref.current && (
           <Header
             dataCfg={s2DataConfig as S2DataConfig}
