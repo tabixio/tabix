@@ -14,7 +14,7 @@ export default function ServerOverviewTabPage({ store }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       // setLoad(true);
-      const sql = store.api.prepared().partsPerTable();
+      const sql = store.api.prepared().databasesListAndSize();
       store.api.query(sql).then((data) => {
         setData(data);
       });

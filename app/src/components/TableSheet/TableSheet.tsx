@@ -81,11 +81,12 @@ export default function TableSheet({ data }: TableSheetProps) {
   };
   const s2Ref = React.useRef<SpreadSheet>();
   const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
-  const [sheetType, setSheetType] = useState('table' as SheetType);
+  const [sheetType, setSheetType] = useState('strategy' as SheetType);
   const s2Options = {
     width: 600,
     height: 600,
     // showSeriesNumber: true,
+    hierarchyType: 'tree',
     interaction: {
       enableCopy: true,
       // hiddenColumnFields: ['cost'],
@@ -105,6 +106,13 @@ export default function TableSheet({ data }: TableSheetProps) {
   } as S2Options;
 
   useEffect(() => {
+    /**
+     *      database,
+     *     table,
+     *     count() "partitions",
+     *     sum(part_count) "parts",
+     *     max(part_count) "max_parts_per_partition"
+     */
     //   fields: {
     //     // rows: ['a', 'b'],
     //     columns: ['province', 'city', 'type', 'price', 'cost'],
@@ -118,7 +126,12 @@ export default function TableSheet({ data }: TableSheetProps) {
     if (!data?.error && data?.rows) {
       setData({
         data: data.rows,
-        fields: { columns: data.getColumns().map((o) => o.name) },
+        // fields: { columns: data.getColumns().map((o) => o.name) },
+        fields: {
+          values: ['tables', 'parts', 'partitions'],
+          rows: ['name', 'engine'],
+          columns: [],
+        },
         meta: data.getColumns().map((o) => {
           return { field: o.name, name: o.name };
         }),

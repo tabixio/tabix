@@ -1,5 +1,5 @@
 import { setLocale } from './Locale';
-import { ThemeCfg } from '@antv/s2';
+import { ThemeCfg, generatePalette, getPalette } from '@antv/s2';
 
 const BORDER_COLOR = '#636363';
 const BACK_COLOR = '#424242';
@@ -26,7 +26,7 @@ export const DarkTheme = {
     },
     text: {
       fill: '#fff',
-      fontSize: 14,
+      fontSize,
       fontFamily,
     },
     bolderText: {
@@ -45,20 +45,26 @@ export const DarkTheme = {
     showRightShadow: true,
     shadowWidth: 10,
     shadowColors: {
-      left: 'rgba(0,0,0,0.1)',
-      right: 'rgba(0,0,0,0)',
+      left: 'rgba(44,120,10,0.5)',
+      right: 'rgba(0,230,0,0.5)',
     },
   },
   rowCell: {
     text: {
-      fill: '#fff123',
-      opacity: 0.2,
+      fill: '#eb7134',
+      opacity: 0.8,
       fontSize,
       fontFamily,
+    },
+    bolderText: {
+      fontFamily,
+      fill: '#fff',
+      opacity: 0.6,
     },
     cell: {
       text: {
         fontFamily,
+        fill: '#aba134',
       },
       backgroundColor: HEADER_BACK_COLOR,
       padding: {
@@ -117,7 +123,7 @@ export const DarkTheme = {
       },
     },
     text: {
-      fill: 'red',
+      fill: '#b56943',
       fontSize,
       fontFamily,
     },
@@ -200,11 +206,14 @@ export const DarkTheme = {
     },
   },
 };
+const themeColor = '#Eee720';
+const palette = getPalette('colorful');
 //
-
+const newPalette = generatePalette({ ...palette, brandColor: themeColor });
 export const themeCfg: ThemeCfg = {
   name: 'gray',
   theme: DarkTheme,
+  palette: newPalette,
 };
 
 // Try translate
