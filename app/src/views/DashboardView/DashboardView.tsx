@@ -309,7 +309,7 @@ class DashboardView extends React.Component<RoutedProps> {
                     {isTabOfType<MetricsTabModel>(t, TabType.Metrics) && <MetricsTabPage />}
 
                     {isTabOfType<ServerOverviewTab>(t, TabType.ServerOverview) && (
-                      <ServerOverviewTabPage />
+                      <ServerOverviewTabPage store={tabsStore} />
                     )}
 
                     {isTabOfType<DbOverviewTab>(t, TabType.DbOverview) && <DbOverviewTabPage />}

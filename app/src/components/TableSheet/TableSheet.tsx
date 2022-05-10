@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { themeCfg } from './Theme';
 import { Header } from './Header';
 import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
@@ -7,11 +7,12 @@ import '@antv/s2-react/dist/style.min.css';
 import './dark.css';
 import { Tooltip } from './Tooltip';
 import DataDecorator from 'services/api/DataDecorator';
+import { SheetType } from '@antv/s2-react/esm/components/sheets/interface';
 
 // import { ResultActionType } from '../DataTable/contextMenuItems';
 
 export interface TableSheetProps {
-  data: DataDecorator;
+  data: DataDecorator | null;
   dataUpdate?: number;
   height?: number;
   // onAction?: (action: ResultActionType, data: any) => void;
@@ -79,14 +80,15 @@ export default function TableSheet({ data }: TableSheetProps) {
     // };
   };
   const s2Ref = React.useRef<SpreadSheet>();
-
+  const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
+  const [sheetType, setSheetType] = useState('table' as SheetType);
   const s2Options = {
     width: 600,
     height: 600,
-    showSeriesNumber: true,
+    // showSeriesNumber: true,
     interaction: {
       enableCopy: true,
-      hiddenColumnFields: ['cost'],
+      // hiddenColumnFields: ['cost'],
       // selectedCellsSpotlight: true,
       // hoverHighlight: true,
     },
@@ -99,69 +101,55 @@ export default function TableSheet({ data }: TableSheetProps) {
       cellCfg: {
         height: 20,
       },
-      //colCfg: {
-      //  height: 30,
-      //},
     },
   } as S2Options;
 
-  const s2DataConfig = {
-    fields: {
-      // rows: ['a', 'b'],
-      columns: ['province', 'city', 'type', 'price', 'cost'],
-      // valueInCols: true,
-    },
-    meta: [
-      {
-        field: 'province',
-        name: 'province',
-      },
-      {
-        field: 'city',
-        name: 'city',
-      },
-      {
-        field: 'type',
-        name: 'type',
-      },
-    ],
-    data: [
-      {
-        province: 'Moscow',
-        city: 'MSK',
-        type: 'City',
-        price: 1,
-      },
-      {
-        province: 'Spb',
-        city: 'Питер',
-        type: 'Xshow 21',
-        price: 2,
-      },
-    ],
-  };
+  useEffect(() => {
+    //   fields: {
+    //     // rows: ['a', 'b'],
+    //     columns: ['province', 'city', 'type', 'price', 'cost'],
+    //     // valueInCols: true,
+    //   },
+    //   meta: [
+    //     {  field: 'province',   name: 'province', },
+    //     {  field: 'city',       name: 'city',     },
+    //     {  field: 'type',       name: 'type',     },
+    //   ],
+    if (!data?.error && data?.rows) {
+      setData({
+        data: data.rows,
+        fields: { columns: data.getColumns().map((o) => o.name) },
+        meta: data.getColumns().map((o) => {
+          return { field: o.name, name: o.name };
+        }),
+      });
+    }
 
+    console.log('DATA LOAD', data);
+  }, [data?.dataUpdate]);
   //
   // data....
   //  sheetType = 'pivot' | 'table' | 'gridAnalysis' | 'strategy';
   return (
-    <div>
-      H:{s2Ref.current ? 'Y' : 'N'}{' '}
-      {s2Ref.current && (
-        <Header
-          dataCfg={s2DataConfig as S2DataConfig}
-          options={s2Options as S2Options}
-          sheet={s2Ref.current as SpreadSheet}
+    s2DataConfig && (
+      <div>
+        H:{s2Ref.current ? 'Y' : 'N'}{' '}
+        {s2Ref.current && (
+          <Header
+            dataCfg={s2DataConfig as S2DataConfig}
+            options={s2Options as S2Options}
+            sheet={s2Ref.current as SpreadSheet}
+          />
+        )}
+        <S2Table
+          getSpreadSheet={getSpreadSheet}
+          adaptive={true}
+          sheetType={sheetType}
+          dataCfg={s2DataConfig}
+          options={s2Options}
+          themeCfg={themeCfg}
         />
-      )}
-      <S2Table
-        getSpreadSheet={getSpreadSheet}
-        adaptive={true}
-        sheetType={'table'}
-        dataCfg={s2DataConfig}
-        options={s2Options}
-        themeCfg={themeCfg}
-      />
-    </div>
+      </div>
+    )
   );
 }
