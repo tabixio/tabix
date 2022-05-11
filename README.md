@@ -16,6 +16,7 @@ git checkout master
 
 # Install JS libs 
 rm -f .yarnrc.yml
+# For use directory /node-modules/ add line to .yarnrc.yml
 # echo 'nodeLinker: node-modules' > .yarnrc.yml
 
 
@@ -23,14 +24,16 @@ rm -f .yarnrc.yml
 
 yarn set version 3.1.1
 yarn -v
-# echo "Drop node_modules";rm -Rf node_modules/
+
+# For full clean,drop node_modules
+# rm -Rf node_modules/
 
 yarn install
 
 # Run on http://0.0.0.0:9000/  
 yarn start
 
-# Build html+js to dir 
+# Build html+js to /dist/ 
 yarn build
 
 
