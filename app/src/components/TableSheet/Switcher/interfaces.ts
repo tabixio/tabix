@@ -15,20 +15,20 @@ export interface SwitcherState {
   [FieldType.Values]?: SwitcherItem[];
 }
 
-export interface SwitcherField {
+export interface SwitcherFieldd {
   allowEmpty?: boolean;
   expandable?: boolean;
   expandText?: string;
   selectable?: boolean;
-  items: SwitcherItem[];
+  items: SwitcherItem[] | undefined;
 }
 
 //
 
 export interface SwitcherFields {
-  [FieldType.Rows]?: SwitcherField;
-  [FieldType.Cols]?: SwitcherField;
-  [FieldType.Values]?: SwitcherField;
+  [FieldType.Rows]?: SwitcherFieldd;
+  [FieldType.Cols]?: SwitcherFieldd;
+  [FieldType.Values]?: SwitcherFieldd;
 }
 
 export interface SwitcherResultItem {

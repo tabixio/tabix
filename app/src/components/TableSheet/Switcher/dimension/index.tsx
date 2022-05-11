@@ -4,13 +4,14 @@ import { Droppable } from 'react-beautiful-dnd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { Checkbox } from 'antd';
 import { DroppableType, SWITCHER_CONFIG } from '../constant';
-import { SwitcherField, SwitcherItem } from '../interface';
+import { SwitcherFieldd, SwitcherItem } from '../interfaces';
+//
 import { DimensionCommonProps, DimensionItem } from '../item';
 import { getSwitcherClassName } from '../util';
 // import './index.less';
 
 const CLASS_NAME_PREFIX = 'dimension';
-type DimensionProps = SwitcherField &
+type DimensionProps = SwitcherFieldd &
   DimensionCommonProps & {
     droppableType: DroppableType;
     crossRows?: boolean;
@@ -33,7 +34,7 @@ export const Dimension: FC<DimensionProps> = ({
   };
 
   // После включения Не допускать пустого, если есть и только один пункт, нужно отключить перетаскивание
-  const isDragDisabled = !allowEmpty && items.length === 1;
+  const isDragDisabled = !allowEmpty && items?.length === 1;
 
   const { text, icon: Icon } = SWITCHER_CONFIG[fieldType];
   return (
@@ -54,7 +55,7 @@ export const Dimension: FC<DimensionProps> = ({
         )}
       </div>
 
-      <Droppable droppableId={fieldType} type={droppableType}>
+      <Droppable droppableId={fieldType} type="type">
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
@@ -64,7 +65,7 @@ export const Dimension: FC<DimensionProps> = ({
               [getSwitcherClassName(CLASS_NAME_PREFIX, 'long-items')]: crossRows,
             })}
           >
-            {items.map((item: SwitcherItem, index: number) => (
+            {items?.map((item: SwitcherItem, index: number) => (
               <DimensionItem
                 key={item.id}
                 index={index}
@@ -86,7 +87,7 @@ export const Dimension: FC<DimensionProps> = ({
 
 Dimension.defaultProps = {
   allowEmpty: true,
-  crossRows: false,
+  crossRows: true,
   expandable: false,
   expandText: 'Expand',
   selectable: false,

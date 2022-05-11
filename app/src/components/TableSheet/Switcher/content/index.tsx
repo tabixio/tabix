@@ -6,7 +6,7 @@ import React from 'react';
 import { BeforeCapture, DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { FieldType, SWITCHER_CONFIG, SWITCHER_FIELDS } from '../constant';
 import { Dimension } from '../dimension';
-import { SwitcherFields, SwitcherResult, SwitcherState } from '../interface';
+import { SwitcherFields, SwitcherResult, SwitcherState } from '../interfaces';
 import {
   checkItem,
   generateSwitchResult,
@@ -16,7 +16,6 @@ import {
   moveItem,
   shouldCrossRows,
 } from '../util';
-// import './index.less';
 import { SheetType } from '@antv/s2-react';
 
 const CLASS_NAME_PREFIX = 'contents';
@@ -26,6 +25,7 @@ export interface SwitcherContentRef {
 }
 
 export interface SwitcherContentProps extends SwitcherFields {
+  currentSheetType: string;
   sheetType?: SheetType;
   contentTitleText?: string;
   resetText?: string;
@@ -35,6 +35,7 @@ export interface SwitcherContentProps extends SwitcherFields {
 }
 
 export const SwitcherContent: React.FC<SwitcherContentProps> = ({
+  currentSheetType,
   innerContentClassName,
   contentTitleText,
   resetText,
@@ -101,6 +102,7 @@ export const SwitcherContent: React.FC<SwitcherContentProps> = ({
   const displayFieldItems = SWITCHER_FIELDS.filter(
     (filed) => sheetType !== 'table' || filed === FieldType.Cols
   );
+  console.log('SwitcherContent -> render -> ', sheetType, currentSheetType);
   return (
     <DragDropContext onBeforeCapture={onBeforeDragStart} onDragEnd={onDragEnd}>
       <div className={cx(innerContentClassName, getSwitcherClassName(CLASS_NAME_PREFIX))}>
@@ -115,7 +117,7 @@ export const SwitcherContent: React.FC<SwitcherContentProps> = ({
         >
           {displayFieldItems.map((type) => {
             const c = state[type];
-            if (c === undefined) return;
+            // if (c === undefined) return;
             return (
               <Dimension
                 {...defaultFields[type]}

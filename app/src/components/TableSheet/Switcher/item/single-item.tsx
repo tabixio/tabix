@@ -3,14 +3,14 @@ import { Checkbox, Tooltip } from 'antd';
 import cx from 'classnames';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { DraggableProvided } from 'react-beautiful-dnd';
-import { SwitcherField, SwitcherItem } from '../interface';
+import { SwitcherFieldd, SwitcherItem } from '../interfaces';
 import { getSwitcherClassName } from '../util';
 import { DimensionCommonProps } from './index';
 
 const CLASS_NAME_PREFIX = 'item';
 
 type SingleItemProps = Omit<SwitcherItem, 'children'> &
-  Pick<SwitcherField, 'selectable'> &
+  Pick<SwitcherFieldd, 'selectable'> &
   DimensionCommonProps & {
     parentId?: string;
     disabled?: boolean;

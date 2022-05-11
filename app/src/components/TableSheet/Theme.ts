@@ -206,7 +206,7 @@ export const DarkTheme = {
     },
   },
 };
-const themeColor = '#Eee720';
+const themeColor = '#FF6020';
 const palette = getPalette('colorful');
 //
 const newPalette = generatePalette({ ...palette, brandColor: themeColor });

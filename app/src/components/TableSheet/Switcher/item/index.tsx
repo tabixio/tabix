@@ -3,13 +3,13 @@ import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { FieldType } from '../constant';
-import { SwitcherField, SwitcherItem } from '../interface';
+import { SwitcherFieldd, SwitcherItem } from '../interfaces';
 import { getSwitcherClassName } from '../util';
 import { SingleItem } from './single-item';
 // import './index.less';
 
 //
-export interface DimensionCommonProps extends Pick<SwitcherField, 'selectable' | 'expandable'> {
+export interface DimensionCommonProps extends Pick<SwitcherFieldd, 'selectable' | 'expandable'> {
   fieldType: FieldType;
   draggingItemId?: string | null;
   onVisibleItemChange: (

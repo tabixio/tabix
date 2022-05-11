@@ -9,7 +9,7 @@ import {
   SwitcherState,
   SwitcherFields,
   SwitcherResultItem,
-} from './interface';
+} from './interfaces';
 
 export const getSwitcherClassName = (...classNames: string[]) =>
   getClassNameWithPrefix(SWITCHER_PREFIX_CLS, ...classNames);

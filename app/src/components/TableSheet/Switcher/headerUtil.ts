@@ -2,7 +2,7 @@ import { PivotSheet, S2DataConfig, SpreadSheet, TableSheet, Fields, Meta } from 
 import { filter, find, isEmpty, map, reduce } from 'lodash';
 import { SheetType } from '@antv/s2-react';
 import { FieldType, SWITCHER_FIELDS } from './constant';
-import { SwitcherField, SwitcherFields, SwitcherResult } from './interface';
+import { SwitcherFieldd, SwitcherFields, SwitcherResult } from './interfaces';
 
 export const getSheetType = (sheet: SpreadSheet): SheetType => {
   return sheet instanceof TableSheet ? 'table' : 'pivot';
@@ -11,7 +11,7 @@ export const getSheetType = (sheet: SpreadSheet): SheetType => {
 const getSwitcherFieldCfg = (
   sheet: SpreadSheet,
   fieldType: FieldType
-): Pick<SwitcherField, 'expandable' | 'selectable'> => {
+): Pick<SwitcherFieldd, 'expandable' | 'selectable'> => {
   // 内置 header 只对交叉表和明细表做处理：
   // 交叉表只有 values 可被隐藏和展开（因为它包含可衍生值）
   // 明细表只有 cols 数据，且可被隐藏
