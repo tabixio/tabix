@@ -27,7 +27,7 @@ app/src/components/Handsontable/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
-
+.yarnrc.yml
 
 # Grammars 
 grammar/output
