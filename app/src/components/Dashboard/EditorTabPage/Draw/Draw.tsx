@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import DataDecorator from 'services/api/DataDecorator';
-import ResizeObserver from 'react-resize-detector';
 import ReactECharts from 'echarts-for-react';
 import { Flex, FlexProps } from 'reflexy';
 import { PlotlyCreator } from 'services';

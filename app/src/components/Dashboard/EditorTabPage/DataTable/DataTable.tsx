@@ -7,7 +7,6 @@ import 'handsontable/dist/handsontable.full.css';
 import './dark.css';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
-import ResizeObserver from 'react-resize-detector';
 import DataDecorator from 'services/api/DataDecorator';
 import getFormatForColumn from './utils';
 import {
