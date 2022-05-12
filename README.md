@@ -15,19 +15,17 @@ git clone https://github.com/tabixio/tabix.git
 cd tabix
 git checkout master
 
+# ----
+# For use directory /node-modules/ add line to .yarnrc.yml, Tabix now not support PnP / Yarn
+
+
+echo 'nodeLinker: node-modules' > .yarnrc.yml
+
 
 # Yarn setup 
-
 yarn set version 3.1.1
 yarn -v
 
-# ----
-# For use directory /node-modules/ add line to .yarnrc.yml
-# echo 'nodeLinker: node-modules' > .yarnrc.yml
-# ----
-# For full clean,drop node_modules
-# rm -Rf node_modules/
-# ----
 
 # Install js libs
 yarn install
