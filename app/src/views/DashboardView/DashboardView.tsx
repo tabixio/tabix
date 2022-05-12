@@ -280,6 +280,7 @@ class DashboardView extends React.Component<RoutedProps> {
             >
               {tabsStore.tabs.map((t) => (
                 <TabsTabPane
+                  style={{ overflowY: 'scroll' }}
                   key={t.id}
                   closable
                   tab={

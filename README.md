@@ -1,4 +1,4 @@
-![Tabix Logo](https://tabix.io/img/LogoTabix22Icon.png?utm_source=git)
+![Tabix Logo](https://tabix.io/img/tabixLogo-IconText-DB7315.png?utm_source=git)
 
 Open source simple business intelligence application and sql editor tool for Clickhouse.
 

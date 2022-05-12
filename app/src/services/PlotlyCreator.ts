@@ -21,8 +21,8 @@ export default class PlotlyCreator {
     } else {
       xAxisCol = dtCol;
     }
-    console.log('dtCol', dtCol);
-    console.log('xAxisCol', xAxisCol);
+    // console.log('dtCol', dtCol);
+    // console.log('xAxisCol', xAxisCol);
 
     // Exit?
     if (!xAxisCol) {

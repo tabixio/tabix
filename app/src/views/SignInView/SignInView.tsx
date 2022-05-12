@@ -94,7 +94,7 @@ class SignInView extends React.Component<RoutedProps> {
                   <a href="https://tabix.io/" target="_blank" rel="noreferrer">
                     <img
                       className={css.logoimg}
-                      src="https://tabix.io/img/LogoTabix22Icon.png?v=22.02&p=sign"
+                      src="https://tabix.io/img/tabixLogo-IconText-DB7315.png?v=22.04&p=sign"
                       alt="Tabix LOGO"
                     />
                   </a>

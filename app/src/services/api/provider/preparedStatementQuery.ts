@@ -288,26 +288,78 @@ export default class preparedStatementQuery extends TemplateQuery {
             FROM system.replicated_fetches`;
   }
 
-  public partsPerTable(limit = 140) {
-    return `
-      SELECT database,
-             table,
-             count()         "partitions",
-             sum(part_count) "parts",
-             max(part_count) "max_parts_per_partition"
-      FROM (
-             SELECT database,
-                    table,
-                    partition,
-                    count() "part_count"
-             FROM system.parts
-             WHERE active
-             GROUP BY database, table, partition
-             ) partitions
-      GROUP BY database, table
-      ORDER BY max_parts_per_partition DESC
-      LIMIT ${limit}
-    `;
+  public columnsPerOneTable(limit = 140, database?: string, table?: string) {
+    return this.template(
+      `
+
+        SELECT *
+        FROM system.columns
+        WHERE
+      ` +
+        '{% if table and database -%}' +
+        `
+          database = '{{ database }}'
+          AND table = '{{ table }}'
+            {% endif -%}
+        LIMIT ${limit}
+      `,
+
+      //
+      {
+        table: table?.toString() ?? '',
+        database: database?.toString() ?? '',
+      }
+    );
+  }
+
+  public partsPerOneTable(limit = 140, database?: string, table?: string) {
+    return this.template(
+      `
+
+        SELECT *
+        FROM system.parts
+        WHERE active {% if table and database -%}
+               AND database = '{{ database }}'
+                 AND table = '{{ table }}'
+                   {% endif -%}
+        LIMIT ${limit}
+      `,
+      {
+        table: table?.toString() ?? '',
+        database: database?.toString() ?? '',
+      }
+    );
+  }
+
+  public partsPerTable(limit = 140, database?: string, table?: string) {
+    return this.template(
+      `
+        SELECT database,
+               table,
+               count()         "partitions",
+               sum(part_count) "parts",
+               max(part_count) "max_parts_per_partition"
+        FROM (
+               SELECT database,
+                      table,
+                      partition,
+                      count() "part_count"
+               FROM system.parts
+               WHERE active {% if table and database -%}
+               AND database = '{{ database }}'
+                 AND table = '{{ table }}'
+                   {% endif -%}
+               GROUP BY database, table, partition
+               ) partitions
+        GROUP BY database, table
+        ORDER BY max_parts_per_partition DESC
+        LIMIT ${limit}
+      `,
+      {
+        table: table?.toString() ?? '',
+        database: database?.toString() ?? '',
+      }
+    );
   }
 
   public merges() {

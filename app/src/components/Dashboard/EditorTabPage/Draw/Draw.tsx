@@ -41,8 +41,7 @@ export default class Draw extends React.Component<Props & FlexProps> {
 
   componentDidMount() {
     // Process data
-    this.data = PlotlyCreator.create(this.props.data);
-
+    // this.data = PlotlyCreator.create(this.props.data);
     // // Resizer init
     // sizeSensor.bind(this.rootRef.current, (el) => {
     //   // @ToDo: move to react-sizeme, react-resize-detector[useResizeDetector], use call onResizeGrid?
@@ -71,9 +70,9 @@ export default class Draw extends React.Component<Props & FlexProps> {
     const { data, className, ...flexProps } = this.props;
     const myChartAdvisor = new ChartAdvisor();
     const ddata = data.rows;
-    console.log('Draw-> render data', ddata);
+    // console.log('Draw-> render data', ddata);
     const results = myChartAdvisor.advise({ data: ddata });
-    console.log('results', results);
+    // console.log('results', results);
 
     const myAdvisor = new Advisor();
     const advices = myAdvisor.advise({
@@ -81,9 +80,9 @@ export default class Draw extends React.Component<Props & FlexProps> {
       // fields: ['number', 'ss', 'cc'],
       options: { refine: true },
     });
-    console.log('advices', advices);
+    // console.log('advices', advices);
 
-    console.log('DATA', data.rows);
+    // console.log('DATA', data.rows);
     return (
       <Flex componentRef={this.rootRef} column {...flexProps}>
         <AutoChart

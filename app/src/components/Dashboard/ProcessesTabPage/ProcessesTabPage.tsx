@@ -8,6 +8,7 @@ import { TableSheet } from 'components/TableSheet';
 import { DataDecorator } from 'services';
 import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
 
+//
 interface InjectedProps {
   store: TabsStore;
 }
@@ -263,7 +264,7 @@ class ProcessesTabPage extends React.Component<Props> {
           </span>
           <Divider dashed={true} style={{ margin: ' 5px 0' }} />
         </Flex>
-        <Flex vfill={true} hfill={true} style={{ border: '1px solid #a88532' }}>
+        <Flex vfill={true} hfill={true}>
           <TableSheet dataUpdate={dataUpdate} data={this.data} fill />
         </Flex>
       </div>

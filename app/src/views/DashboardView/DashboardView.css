@@ -4,7 +4,8 @@
   overflow: auto;
   max-height: 100vh;
 }
+
 .baseContent {
-  border-left: 1px solid black;
-  border-bottom: 1px solid crimson;
+  /*border-left: 1px solid black;*/
+  /*border-bottom: 1px solid crimson;*/
 }

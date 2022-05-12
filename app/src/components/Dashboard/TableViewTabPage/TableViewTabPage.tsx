@@ -9,10 +9,12 @@ import SimpleEditor from '../EditorTabPage/SqlEditor/SimpleEditor';
 import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
 import { TableFilter } from './TableFilter';
 import { Flex } from 'reflexy';
+import { TableSheet } from 'components/TableSheet';
 
 import { Stores, TabsStore } from '../../../stores';
 
 const { TabPane } = Tabs;
+
 interface InjectedProps {
   store: TabsStore;
   serverStructure?: ServerStructure.Server;
@@ -23,37 +25,72 @@ type Props = InjectedProps;
 
 export class TableViewTabPage extends React.Component<Props> {
   state = {
+    dataTableUpdated: 0,
     dataUpdate: Date.now(),
     describe: '',
     visibleTableFilter: false,
   };
   private data: DataDecorator = new DataDecorator();
+  private dataTable: DataDecorator = new DataDecorator();
+  private COLS: DataDecorator = new DataDecorator();
+  private PARTS: DataDecorator = new DataDecorator();
 
+  /**
+   *
+   * @param tableName `db.tb` like `ads.block_views_sharded`
+   */
   private getPool = (tableName: string): RequestPool => {
     const { api } = this.props.store;
-    return {
+    // console.log('LOad ', tableName);
+    const [db, tb] = tableName.split('.');
+    const pool = {
       DESCRIBE: api.prepared().template('DESCRIBE TABLE ' + tableName),
       SHOWCREATE: api.prepared().template('SHOW CREATE TABLE ' + tableName),
     };
+
+    if (db.length && tb.length) {
+      pool['COLS'] = api.prepared().columnsPerOneTable(500, db, tb);
+      pool['PARTS'] = api.prepared().partsPerOneTable(500, db, tb);
+    }
+
+    return pool;
   };
+
   componentDidMount() {
     this.loadDescribe();
   }
-  onTab = (activeKey: string) => {
-    console.log('ON TAB Open', activeKey);
-  };
 
+  onTab = (activeKey: string) => {
+    // console.log('ON TAB Open', activeKey);
+  };
+  loadData = async () => {
+    // console.log('loadData->loadData');
+    const { api } = this.props.store;
+    const { model } = this.props;
+    const tableId = model.tableId;
+    return await api.query('SELECT * FROM ' + tableId + ' LIMIT 200').then((e) => {
+      this.dataTable = e;
+      this.setState({ dataTableUpdated: e.dataUpdate });
+    });
+  };
   private loadDescribe = () => {
     this.requestTableDescribe().then((e) => {
       // console.log('ON TAB', e);
       let describe = 'Error can`t fetch:SHOW CREATE TABLE';
 
-      if (!e['SHOWCREATE'].isError) {
-        const d = new DataDecorator(e['SHOWCREATE']);
+      if (!e.pool['SHOWCREATE'].isError) {
+        const d = new DataDecorator(e.pool['SHOWCREATE']);
         describe = d.getStatementResponse();
       }
-      if (!e['DESCRIBE'].isError) {
-        this.data = new DataDecorator(e['DESCRIBE']);
+      //
+      if (!e.pool['PARTS'].isError) {
+        this.PARTS = new DataDecorator(e.pool['PARTS']);
+      }
+      if (!e.pool['DESCRIBE'].isError) {
+        this.data = new DataDecorator(e.pool['DESCRIBE']);
+      }
+      if (!e.pool['COLS'].isError) {
+        this.COLS = new DataDecorator(e.pool['COLS']);
       }
 
       this.setState({ describe: describe, dataUpdate: Date.now() });
@@ -65,10 +102,11 @@ export class TableViewTabPage extends React.Component<Props> {
     const tableId = model.tableId;
     return await api.fetchPool(this.getPool(tableId));
   };
+
   render() {
     const { serverStructure, model } = this.props;
     const tableId = model.tableId;
-    const { describe, dataUpdate } = this.state;
+    const { describe, dataUpdate, dataTableUpdated } = this.state;
     const showTableFilter = () => {
       this.setState({ visibleTableFilter: true });
     };
@@ -94,7 +132,7 @@ export class TableViewTabPage extends React.Component<Props> {
 
         <Tabs
           type="card"
-          defaultActiveKey="3"
+          defaultActiveKey="1"
           onTabClick={this.onTab}
           onChange={this.onTab}
           style={{ height: '100%' }}
@@ -106,26 +144,29 @@ export class TableViewTabPage extends React.Component<Props> {
               </Flex>
 
               <Flex row hfill style={{ height: '60%' }}>
-                <DataTable dataUpdate={dataUpdate} data={this.data} />
+                <TableSheet dataUpdate={dataUpdate} data={this.data} title="DESCRIBE" />
               </Flex>
             </Row>
           </TabPane>
 
           <TabPane tab="Stats" key="2">
-            <Flex row fill={true} style={{ height: 'calc(50vh-40px)', border: '1px solid orange' }}>
-              calc(50vh-40px)
-            </Flex>
-
-            <Flex row style={{ border: '1px solid orange', height: 'calc(50vh-40px)' }}>
-              <DataTable dataUpdate={dataUpdate} data={this.data} />
-            </Flex>
+            <Row style={{ height: 'calc(50vh - 30px)' }}>
+              <TableSheet dataUpdate={dataUpdate} data={this.PARTS} title="System.parts" />
+            </Row>
+            <Row>
+              <Divider></Divider>
+              <TableSheet dataUpdate={dataUpdate} data={this.COLS} title="System.columns" />
+            </Row>
           </TabPane>
 
           <TabPane tab="Data" key="3">
-            <Row style={{ height: 'calc(90vh - 30px)', border: '1px solid orange' }}>
-              <Flex row hfill style={{ height: '30%', border: '1px solid orange' }}>
-                <Button type="primary" onClick={showTableFilter}>
-                  Open
+            <Row style={{ height: 'calc(50vh - 30px)' }}>
+              <Flex row hfill style={{ height: '30%' }}>
+                <Button type="dashed" onClick={showTableFilter}>
+                  Filter
+                </Button>
+                <Button type="primary" onClick={this.loadData}>
+                  Load data
                 </Button>
                 <Drawer
                   title="Select Filter"
@@ -138,8 +179,10 @@ export class TableViewTabPage extends React.Component<Props> {
                 </Drawer>
               </Flex>
 
-              <Flex row hfill style={{ border: '1px solid orange', height: '90%' }}>
-                <DataTable dataUpdate={dataUpdate} data={this.data} />
+              <Flex row hfill>
+                {dataTableUpdated > 0 && (
+                  <TableSheet dataUpdate={dataUpdate} data={this.dataTable} />
+                )}
               </Flex>
             </Row>
           </TabPane>

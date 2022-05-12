@@ -17,12 +17,14 @@ export interface TableSheetProps {
   defaultConfig?: S2DataConfig;
   defaultHeight?: number;
   defaultWidth?: number;
+  title?: string;
   //  onAction?: (action: ResultActionType, data: any) => void;
 }
 
 export default function TableSheet({
   data,
   defaultSheetType,
+  title,
   // defaultHeight = 600,
   // defaultWidth = 600,
   ...flexProps
@@ -73,7 +75,7 @@ export default function TableSheet({
     if (s2Ref?.current) {
       const hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
       // s2Options.hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
-      console.log('setOptions->hierarchyType');
+      // console.log('setOptions->hierarchyType');
       s2Ref.current.setOptions({ hierarchyType });
       setLoading(true);
       setTimeout(() => {
@@ -95,7 +97,7 @@ export default function TableSheet({
     //     {  field: 'type',       name: 'type',     },
     //   ],
     if (!data?.error && data?.rows) {
-      console.log('Set Data', data);
+      // console.log('Set Data', data);
       setData({
         data: data.rows,
         fields: { columns: data.getColumns().map((o) => o.name) },
@@ -113,13 +115,14 @@ export default function TableSheet({
   }, [data?.dataUpdate]);
   return (
     s2DataConfig && (
-      <Flex column fill {...flexProps} style={{ minHeight: 150, border: '1px solid green' }}>
+      <Flex column fill {...flexProps} style={{ minHeight: 150 /*, border: '1px solid green' */ }}>
         <Header
           dataCfg={s2DataConfig as S2DataConfig}
           options={s2Options as S2Options}
           sheetType={sheetType}
           sheet={s2Ref.current as SpreadSheet}
           setSheetType={setSheetType}
+          title={title}
         />
         <S2Table
           getSpreadSheet={getSpreadSheet}

@@ -27,6 +27,7 @@ export interface HeaderProps extends HeaderCfgProps {
   sheetType: string;
   sheet: SpreadSheet;
   setSheetType: React.Dispatch<any>;
+  title?: string;
 }
 
 export const Header: FC<HeaderProps> = ({
@@ -43,6 +44,7 @@ export const Header: FC<HeaderProps> = ({
   dataCfg,
   options,
   setSheetType,
+  title,
   ...restProps
 }) => {
   // Todo : SwitcherHeader
@@ -86,10 +88,11 @@ export const Header: FC<HeaderProps> = ({
       <Button icon={<VerticalAlignMiddleOutlined />}>Type</Button>
     </Dropdown>,
   ];
+
   return (
     <Row align={'middle'} justify={'end'}>
       <Col span={18} push={6}>
-        Table by {currentSheet}
+        {title}
       </Col>
       <Col span={6} pull={18}>
         <Popover content={pop} title="Table settings ...">
