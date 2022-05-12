@@ -171,7 +171,7 @@ export default class EditorTabPage extends React.Component<Props> {
     return (
       <React.Fragment>
         <FullScreener enter={this.state.enterFullScreen}>
-          <Splitter split="horizontal" minSize={100} defaultSize={350}>
+          <Splitter split="horizontal" minSize={100} defaultSize={300}>
             <SqlEditor
               content={model.content}
               onContentChange={this.onContentChange}
@@ -192,7 +192,7 @@ export default class EditorTabPage extends React.Component<Props> {
                 pinned={model.pinnedResult}
                 onAction={this.onResultTabAction}
               >
-                <TabsTabPane key="table" tab="Data / Table">
+                <TabsTabPane key="table" tab="Data / Table" style={{ overflowY: "auto"}}>
                   {!!store.uiStore.executingQueries.length && (
                     <Progress queries={store.uiStore.executingQueries} />
                   )}

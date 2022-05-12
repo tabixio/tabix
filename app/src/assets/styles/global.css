@@ -2,7 +2,7 @@
 @import './reset-defaults.css';
 body {
   font-size: 13px;
-  background: black;
+  background: #404040;
   /* line-height: 1.15; */
   /* color: font-color; */
   /* fill: font-color; */
