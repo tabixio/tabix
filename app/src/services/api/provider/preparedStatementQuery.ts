@@ -157,11 +157,19 @@ export default class preparedStatementQuery extends TemplateQuery {
     // Column keys in table system.dictionaries was replaced to columns key.names and key.types. Columns key.names, key.types, attribute.names, attribute.types from system.dictionaries table does not require dictionary to be loaded. #21884 (Maksim Kita).
     // Upated system.dictionaries table : https://github.com/ClickHouse/ClickHouse/commit/a53c90e509d0ab9596e73747f085cf0191284311?branch=a53c90e509d0ab9596e73747f085cf0191284311&diff=unified
     // SELECT * FROM system.dictionaries ARRAY JOIN attribute,key ORDER BY name,attribute.names
-    let s1 = `SELECT name, key.names as key, attribute.names, attribute.types
-              FROM (
-                    select name, \`key.names\`, \`key.types\`, attribute.names, attribute.types
-                    from system.dictionaries array join key, attribute
-                     )
+    let s1 = `SELECT namez.name    as name,
+                     keyz.key_name as key_name,
+                     keyz.key_type as key,
+                     attr_name     as \`attribute.names\`,
+                     attr_type     as \`attribute.types\`
+              FROM (SELECT name FROM system.dictionaries) as namez
+                     LEFT JOIN ( select name, \`key.names\` as key_name, \`key.types\` as key_type
+                                 FROM system.dictionaries
+                                        array join key ) as keyz ON (keyz.name = namez.name)
+                     LEFT JOIN ( select name, \`attribute.names\` as attr_name, \`attribute.types\` as attr_type
+                                 FROM system.dictionaries
+                                        array join attribute ) as attrs ON (attrs.name = namez.name)
+              ORDER BY namez.name, \`attribute.names\`
               LIMIT ${limitDics}
     `;
     if (this.versionCompare(this.version, '21.4.1') < 0) {

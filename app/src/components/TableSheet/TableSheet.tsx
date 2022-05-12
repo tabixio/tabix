@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { themeCfg } from './Theme';
 import { Header } from './Header';
 import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
@@ -8,7 +8,6 @@ import './dark.css';
 import { Tooltip } from './Tooltip';
 import DataDecorator from 'services/api/DataDecorator';
 import { SheetType } from '@antv/s2-react/esm/components/sheets/interface';
-import { useResizeDetector } from 'react-resize-detector';
 import { Flex, FlexProps } from 'reflexy';
 
 export interface TableSheetProps {
@@ -24,80 +23,14 @@ export interface TableSheetProps {
 export default function TableSheet({
   data,
   defaultSheetType,
-  defaultHeight = 600,
-  defaultWidth = 600,
+  // defaultHeight = 600,
+  // defaultWidth = 600,
   ...flexProps
 }: TableSheetProps & FlexProps) {
-  const onResize = React.useCallback(() => {
-    // on resize logic
-    console.log('On resize', width, height);
-    s2Ref?.current?.render();
-  }, []);
-
-  const { width, height, ref } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 500,
-    onResize,
-  });
-
   const getSpreadSheet = (instance: SpreadSheet) => {
     setLoading(true);
-    console.log('getSpreadSheet');
     setLoading(false);
     s2Ref.current = instance;
-    // instance.showTooltip = (tooltipOptions) => {
-    //   const { position, data = {}, options } = tooltipOptions;
-    //   const name = `${data.name} - Name`; // 只有单元格中文案被省略才显示
-    //   const infos = 'Hold Shift for multiple or box selection to view multiple data points';
-    //   const tips = 'Description: This is a description';
-    //   const customSummaries = (data.summaries || []).map((item) => {
-    //     return { ...item, name: `${item.name} - name` };
-    //   });
-    //   const { cols = [], rows = [] } = data.headInfo || {};
-    //   const customCols = cols.map((item) => {
-    //     return { ...item, value: `${item.value} - value` };
-    //   });
-    //   const customDetails = (data.details || []).map((item) => {
-    //     return {
-    //       name: `${item.name} - name`,
-    //       value: `${item.value} - value`,
-    //     };
-    //   });
-    //   const customOperator = {
-    //     onClick: ({ key }) => {
-    //       console.log('Нажмите на любой пункт меню', key);
-    //     },
-    //     menus: [
-    //       {
-    //         id: 'trend',
-    //         icon: 'trend',
-    //         text: 'Trend',
-    //         onClick: () => {
-    //           console.log('щелчок по текущему пункту меню');
-    //         },
-    //       },
-    //     ],
-    //   };
-    //   const customOptions = {
-    //     ...tooltipOptions,
-    //     position: { x: position.x + 1, y: position.y + 1 },
-    //     data: {
-    //       ...data,
-    //       name: data.name ? name : '',
-    //       infos,
-    //       tips,
-    //       summaries: customSummaries,
-    //       headInfo: { rows, cols: customCols },
-    //       details: customDetails,
-    //     },
-    //     options: {
-    //       ...options,
-    //       operator: customOperator,
-    //     },
-    //   };
-    //   instance.tooltip.show(customOptions);
-    // };
   };
   const s2Ref = React.useRef<SpreadSheet>();
   const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
@@ -105,8 +38,8 @@ export default function TableSheet({
   const [loading, setLoading] = useState(true);
   // ----------------------------------- Options
   const s2Options = {
-    width: defaultWidth,
-    height: defaultHeight,
+    // width: defaultWidth,
+    // height: defaultHeight,
     // showSeriesNumber: true,
     hierarchyType: 'grid', // tree
     // totals: {
@@ -162,7 +95,7 @@ export default function TableSheet({
     //     {  field: 'type',       name: 'type',     },
     //   ],
     if (!data?.error && data?.rows) {
-      console.log('Set data to table', data);
+      console.log('Set Data', data);
       setData({
         data: data.rows,
         fields: { columns: data.getColumns().map((o) => o.name) },
@@ -178,12 +111,9 @@ export default function TableSheet({
       setLoading(false);
     }
   }, [data?.dataUpdate]);
-  //
-  console.log(width, height);
   return (
     s2DataConfig && (
-      // <Flex column fill {...flexProps} >
-      <div ref={ref} style={{ minHeight: 150, border: '1px solid green' }}>
+      <Flex column fill {...flexProps} style={{ minHeight: 150, border: '1px solid green' }}>
         <Header
           dataCfg={s2DataConfig as S2DataConfig}
           options={s2Options as S2Options}
@@ -200,8 +130,7 @@ export default function TableSheet({
           themeCfg={themeCfg}
           loading={loading}
         />
-      </div>
-      // </Flex>
+      </Flex>
     )
   );
 }

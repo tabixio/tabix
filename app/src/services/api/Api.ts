@@ -2,6 +2,7 @@ import Connection, { isDirectConnection } from '../Connection';
 import CoreProvider, {
   QueryResponse,
   QueryResponseKey,
+  QueryResponsePool,
   RequestPool,
 } from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
@@ -35,9 +36,14 @@ export default class Api {
     if (!version) {
       throw new Error('Can`t fetch version server');
     }
-    console.log(`Connection - OK, version: ${version}`);
+    const api = new Api(provider, version);
 
-    return new Api(provider, version);
+    console.log(`Connection - OK, version: ${version}`);
+    console.log('CheckDatabaseStructure....');
+    await api.provider.checkDatabaseStructure();
+    console.log('Structure - OK, go work');
+    // if (pool.)
+    return api;
   }
 
   private constructor(
@@ -51,9 +57,11 @@ export default class Api {
   public prepared(): preparedStatementQuery {
     return this.provider.prepared();
   }
-  public async fetchPool(pool: RequestPool, concurrency = 4): Promise<QueryResponseKey> {
+
+  public async fetchPool(pool: RequestPool, concurrency = 4): Promise<QueryResponsePool> {
     return this.provider.fetchPool(pool, concurrency);
   }
+
   public query(sql: string): Promise<DataDecorator> {
     return this.provider.query(sql).then((r: QueryResponse) => {
       return new DataDecorator(r);
@@ -74,5 +82,5 @@ export default class Api {
   makeTableDescribe = async (database: string, tablename: string) =>
     this.provider.makeTableDescribe(database, tablename);
 
-  loadDatabaseStructure = async () => this.provider.getDatabaseStructure();
+  loadDatabaseStructure = async () => this.provider.getDatabaseStructure(5555);
 }

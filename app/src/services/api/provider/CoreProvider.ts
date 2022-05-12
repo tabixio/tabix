@@ -15,6 +15,12 @@ export interface QueryResponseKey {
   [key: string]: QueryResponse;
 }
 
+export interface QueryResponsePool {
+  pool: QueryResponseKey;
+  keys: string[];
+  isOk: boolean;
+}
+
 export interface RequestPool {
   [key: string]: Query | string;
 }
@@ -72,7 +78,9 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract fastGetVersion(): Promise<string>;
 
-  abstract getDatabaseStructure(): Promise<ServerStructure.Server>;
+  abstract getDatabaseStructure(limitRead: number): Promise<ServerStructure.Server>;
+
+  abstract checkDatabaseStructure(): Promise<ServerStructure.Server>;
 
   // refactor: use axios?
   // For what this method?
@@ -123,12 +131,17 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
    * @param pool
    * @param concurrency
    */
-  async fetchPool(pool: RequestPool, concurrency = 4): Promise<QueryResponseKey> {
+  async fetchPool(pool: RequestPool, concurrency = 4): Promise<QueryResponsePool> {
     // Exec
-    const r: QueryResponseKey = {};
-
+    const r: QueryResponsePool = {
+      pool: {},
+      keys: [],
+      isOk: false,
+    };
+    let haveErrors = false;
     const reqPool: Array<{ key: string; query: Query | string }> = [];
     for (const [key, v] of Object.entries(pool)) {
+      r.keys.push(key);
       reqPool.push({ key, query: v });
     }
 
@@ -138,12 +151,16 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
         if (typeof data.query === 'string') {
           const q = new Query(data.query, data.key);
           q.setJsonFormat();
-          r[data.key] = await this.query(q);
+          r.pool[data.key] = await this.query(q);
         } else {
           data.query.setId(data.key);
-          r[data.key] = await this.query(data.query);
+          r.pool[data.key] = await this.query(data.query);
+        }
+        if (r.pool[data.key].isError) {
+          haveErrors = true;
         }
       });
+    r.isOk = !haveErrors;
     return r;
   }
 }

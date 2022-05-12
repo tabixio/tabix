@@ -38,9 +38,13 @@ export default class SignInStore extends ApiRequestableStore {
     });
   }
 
+  getCurrentVersionTabix(): string {
+    return TabixUpdate.getTabixBuildVersion();
+  }
+
   @withRequest
   async checkVersionUpdateTabix() {
-    const currentVersion = TabixUpdate.getTabixBuildVersion();
+    const currentVersion = this.getCurrentVersionTabix();
     const v = await TabixUpdate.checkVersionUpdateTabix(undefined);
 
     runInAction(() => {

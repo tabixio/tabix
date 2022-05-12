@@ -23,6 +23,7 @@ import css from './SignInView.css';
 interface InjectedProps {
   store: SignInStore;
 }
+
 export type Props = InjectedProps;
 const { Title, Paragraph, Text, Link } = Typography;
 type RoutedProps = Props & RouteComponentProps<any>;
@@ -38,7 +39,6 @@ class SignInView extends React.Component<RoutedProps> {
     //   this.checkVersionUpdateTabix();
     // }
     store.loadConnections();
-    store.checkVersionUpdateTabix();
   }
 
   private onSelectConnection = (connection: Connection) => {
@@ -62,7 +62,7 @@ class SignInView extends React.Component<RoutedProps> {
     const { store } = this.props;
     return (
       <div style={{ textAlign: 'center' }}>
-        Tabix ©{new Date().getFullYear()} Version: {store.tbxUpdate.currentVersion}&nbsp;
+        Tabix ©{new Date().getFullYear()} Version: {store.getCurrentVersionTabix()}&nbsp;
         {store.tbxUpdate.needUpdate ? (
           <Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>
             ,
@@ -185,13 +185,13 @@ class SignInView extends React.Component<RoutedProps> {
                       &nbsp;&nbsp;
                       <StarOutlined />
                     </Timeline.Item>
-                    <Timeline.Item>
-                      <FontSizeOutlined />
-                      &nbsp;
-                      <a href="https://t.me/tabix_io" target="_blank" rel="noreferrer">
-                        Subscribe <b>telegram</b> chanel
-                      </a>
-                    </Timeline.Item>
+                    {/*<Timeline.Item>*/}
+                    {/*  <FontSizeOutlined />*/}
+                    {/*  &nbsp;*/}
+                    {/*  <a href="https://t.me/tabix_io" target="_blank" rel="noreferrer">*/}
+                    {/*    Subscribe <b>telegram</b> chanel*/}
+                    {/*  </a>*/}
+                    {/*</Timeline.Item>*/}
                     <Timeline.Item>
                       <TwitterOutlined />
                       &nbsp;&nbsp;

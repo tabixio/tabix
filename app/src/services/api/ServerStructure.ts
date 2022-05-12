@@ -260,7 +260,11 @@ namespace ServerStructure {
         idField = `${idField.toLowerCase()}_id`;
       }
 
-      const dic = `dictGet${item['attribute.types']}('${item.name}','${item['attribute.names']}',to${item.key}( ${idField} ) ) AS ${item['attribute.names']},`;
+      const dic = `dictGet${item['attribute.types']}('${item.name}','${
+        item['attribute.names']
+      }',to${item.key}( ${idField} ${
+        item['key_name'] ? '/*' + item['key_name'] + ' */' : ''
+      } ) ) AS ${item['attribute.names']},`;
       editorRules.dictionaries.push({
         dic,
         title: `dic_${item.name}.${item['attribute.names']}`,

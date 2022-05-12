@@ -1,3 +1,5 @@
+// Primary color : #db7315,#ffc45a
+
 export default {
   '@primary-color': '#1DA57A',
   '@link-color': '#1DA57A',
@@ -17,7 +19,7 @@ export default {
   '@text-color-secondary ': 'fade(#fff, 65%)',
   '@layout-header-background': '#404041',
   '@tree-directory-selected-bg': '#404041',
-  '@tree-directory-selected-color': '#362EC8',
+  '@tree-directory-selected-color': '#db7315',
   '@popover-bg': '#404040',
 };
 // @tabs-highlight-color: @primary-color;

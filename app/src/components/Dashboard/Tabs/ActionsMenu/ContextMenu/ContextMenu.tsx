@@ -13,12 +13,12 @@ export enum ActionType {
 export default function ContextMenu(props: MenuProps) {
   return (
     <Menu theme="dark" mode="vertical" {...props}>
-      <Menu.Item key={ActionType.Settings}>
+      <Menu.Item key={ActionType.Settings} disabled>
         <SettingOutlined />
         <span>Settings</span>
       </Menu.Item>
 
-      <Menu.Item key={ActionType.Help}>
+      <Menu.Item key={ActionType.Help} disabled>
         <QuestionCircleOutlined />
         <span>Help</span>
       </Menu.Item>

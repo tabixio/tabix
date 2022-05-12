@@ -5,7 +5,7 @@ import { Flex } from 'reflexy';
 import { typedInject } from 'module/mobx-utils';
 import { ServerStructure } from 'services';
 import { routePaths } from 'routes';
-import { Menu, Dropdown } from 'antd';
+import { Modal, Dropdown, Menu } from 'antd';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import { Stores, TabsStore, TreeStore } from 'stores';
 import {
@@ -23,10 +23,10 @@ import {
 
 import {
   CodeOutlined,
+  DatabaseOutlined,
   HddOutlined,
   LineChartOutlined,
   RadarChartOutlined,
-  DatabaseOutlined,
   TableOutlined,
 } from '@ant-design/icons';
 
@@ -183,6 +183,11 @@ class DashboardView extends React.Component<RoutedProps> {
         history.push(routePaths.signOut.path);
         break;
       }
+      case ActionType.Help: {
+        // Create Modal help
+        break;
+      }
+
       default:
         break;
     }

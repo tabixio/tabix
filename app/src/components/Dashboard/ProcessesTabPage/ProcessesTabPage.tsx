@@ -263,7 +263,7 @@ class ProcessesTabPage extends React.Component<Props> {
           </span>
           <Divider dashed={true} style={{ margin: ' 5px 0' }} />
         </Flex>
-        <Flex vfill={true} hfill={true}>
+        <Flex vfill={true} hfill={true} style={{ border: '1px solid #a88532' }}>
           <TableSheet dataUpdate={dataUpdate} data={this.data} fill />
         </Flex>
       </div>

@@ -87,8 +87,12 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     return url;
   }
 
-  async getDatabaseStructure(): Promise<ServerStructure.Server> {
-    const _LimitRead = 5000;
+  async checkDatabaseStructure(): Promise<ServerStructure.Server> {
+    return this.getDatabaseStructure(1);
+  }
+
+  async getDatabaseStructure(_LimitRead = 5000): Promise<ServerStructure.Server> {
+    // const _LimitRead = 5000;
 
     // Create pool of SQL-Query
     const pool: RequestPool = {
@@ -100,18 +104,44 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       columns: this.prepared().columnsList(_LimitRead * 10),
     };
     const data = await this.fetchPool(pool);
+
+    if (!data.isOk) {
+      const msg: Array<string> = ['Error in load DatabaseStructure'];
+
+      data.keys.forEach((key) => {
+        const err = data.pool[key].isError;
+        let line = `Fetch ${key}, result = ` + (err ? ' Error ' : 'Ok');
+        if (err) {
+          line = line + `Error ${data.pool[key].error} in ${data.pool[key].query.sql}`;
+          msg.push(line);
+          console.error(line);
+        }
+      });
+      throw Error(msg.join('\n'));
+    }
+
     const ConnectionName = this.connection.connectionName;
-    if ('columns' in data && 'tables' in data && 'databases' in data && 'functions' in data) {
+    if (
+      'columns' in data.pool &&
+      'tables' in data.pool &&
+      'databases' in data.pool &&
+      'functions' in data.pool
+    ) {
       // Create ServerStructure.Server
-      return ServerStructure.from(
-        data['columns'].response.data,
-        data['tables'].response.data,
-        data['databases'].response.data,
-        data['dictionaries'].response.data,
-        data['functions'].response.data,
-        data['clusters'].response.data,
-        ConnectionName
-      );
+      try {
+        return ServerStructure.from(
+          data.pool['columns'].response.data,
+          data.pool['tables'].response.data,
+          data.pool['databases'].response.data,
+          data.pool['dictionaries'].response.data,
+          data.pool['functions'].response.data,
+          data.pool['clusters'].response.data,
+          ConnectionName
+        );
+      } catch (e) {
+        console.error('Can`t create getDatabaseStructure error on parse', e);
+        throw new Error('Can`t create DatabaseStructure error on parse');
+      }
     } else {
       //
       console.error('Can`t create getDatabaseStructure', data);
