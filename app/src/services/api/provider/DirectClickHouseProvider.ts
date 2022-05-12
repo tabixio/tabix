@@ -101,7 +101,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     };
     const data = await this.fetchPool(pool);
     const ConnectionName = this.connection.connectionName;
-    if ('columns' in data && 'tables' in data && 'databases' in data) {
+    if ('columns' in data && 'tables' in data && 'databases' in data && 'functions' in data) {
       // Create ServerStructure.Server
       return ServerStructure.from(
         data['columns'].response.data,

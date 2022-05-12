@@ -89,29 +89,9 @@ export const Header: FC<HeaderProps> = ({
   return (
     <Row align={'middle'} justify={'end'}>
       <Col span={18} push={6}>
-        Table by global = {sheetType} , local = {currentSheet}
+        Table by {currentSheet}
       </Col>
       <Col span={6} pull={18}>
-        {/*<Button*/}
-        {/*  icon={<VerticalAlignMiddleOutlined />}*/}
-        {/*  onClick={() => {*/}
-        {/*    console.log('Current condif:', sheet.dataCfg);*/}
-        {/*    console.log('Current condif:', sheet.options);*/}
-        {/*    sheet.render(true, true);*/}
-        {/*    const fields = {*/}
-        {/*      rows: ['name', 'engine'],*/}
-        {/*      columns: ['tables'],*/}
-        {/*      values: ['disk_size', 'parts', 'partitions'],*/}
-        {/*    };*/}
-        {/*    sheet.setDataCfg({*/}
-        {/*      fields: { ...sheet.dataCfg.fields, ...fields },*/}
-        {/*    } as S2DataConfig);*/}
-        {/*    console.log('Render');*/}
-        {/*    sheet.render(true, true);*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  APPLY*/}
-        {/*</Button>*/}
         <Popover content={pop} title="Table settings ...">
           <Button type="primary" icon={<SettingOutlined />} size={'small'} />
         </Popover>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import DataDecorator from 'services/api/DataDecorator';
-import * as sizeSensor from 'size-sensor';
+import ResizeObserver from 'react-resize-detector';
 import ReactECharts from 'echarts-for-react';
 import { Flex, FlexProps } from 'reflexy';
 import { PlotlyCreator } from 'services';
@@ -44,21 +44,21 @@ export default class Draw extends React.Component<Props & FlexProps> {
     // Process data
     this.data = PlotlyCreator.create(this.props.data);
 
-    // Resizer init
-    sizeSensor.bind(this.rootRef.current, (el) => {
-      // @ToDo: move to react-sizeme, react-resize-detector[useResizeDetector], use call onResizeGrid?
-      // @ToDo: DataTable have to `sizeSensor`
-      // Warn! Плохая реализация происходит перерисовка
-      const width = el ? el.clientWidth : this.state.width;
-      if (width && width !== this.state.width) {
-        // For update Plotly when resizing
-        this.setState({ width });
-      }
-    });
+    // // Resizer init
+    // sizeSensor.bind(this.rootRef.current, (el) => {
+    //   // @ToDo: move to react-sizeme, react-resize-detector[useResizeDetector], use call onResizeGrid?
+    //   // @ToDo: DataTable have to `sizeSensor`
+    //   // Warn! Плохая реализация происходит перерисовка
+    //   const width = el ? el.clientWidth : this.state.width;
+    //   if (width && width !== this.state.width) {
+    //     // For update Plotly when resizing
+    //     this.setState({ width });
+    //   }
+    // });
   }
 
   componentWillUnmount() {
-    sizeSensor.clear(this.rootRef.current);
+    // sizeSensor.clear(this.rootRef.current);
   }
 
   onResize() {
@@ -72,47 +72,23 @@ export default class Draw extends React.Component<Props & FlexProps> {
     const { data, className, ...flexProps } = this.props;
     const myChartAdvisor = new ChartAdvisor();
     const ddata = data.rows;
-    console.log('DData', ddata);
+    console.log('Draw-> render data', ddata);
     const results = myChartAdvisor.advise({ data: ddata });
     console.log('results', results);
 
     const myAdvisor = new Advisor();
     const advices = myAdvisor.advise({
       data: ddata,
-      fields: ['number', 'ss', 'cc'],
+      // fields: ['number', 'ss', 'cc'],
       options: { refine: true },
     });
     console.log('advices', advices);
-    const options = {
-      grid: { top: 8, right: 8, bottom: 24, left: 36 },
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      },
-      yAxis: {
-        type: 'value',
-      },
-      series: [
-        {
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
-          type: 'line',
-          smooth: true,
-        },
-      ],
-      tooltip: {
-        trigger: 'axis',
-      },
-    };
-    const defaultData = [
-      { price: 100, type: 'A' },
-      { price: 120, type: 'B' },
-      { price: 150, type: 'C' },
-    ];
+
     console.log('DATA', data.rows);
     return (
       <Flex componentRef={this.rootRef} column {...flexProps}>
         <AutoChart
-          title="CASE 1"
+          title="Chart not work !"
           description="auto chart analysis"
           data={data.rows}
           purpose={'Comparison'}

@@ -13,11 +13,13 @@ import { TextInsertType } from './SqlEditor/types';
 import SaveModal from './SaveModal';
 import { Tabs, ResultTabActionType } from './Tabs';
 import DataItemsLayout from './DataItemsLayout';
-import DataTable, { ExportData, DataTableProps, ResultTableActionType } from './DataTable';
+// import DataTable, { ExportData, DataTableProps, ResultTableActionType } from './DataTable';
+import { TableSheet } from 'components/TableSheet';
 import Draw from './Draw';
 import Progress from './Progress';
 import { TabsTabPane } from './Tabs/Tabs';
 import FullScreener from './FullScreener';
+
 interface Props {
   store: TabsStore;
   serverStructure?: ServerStructure.Server;
@@ -78,22 +80,22 @@ export default class EditorTabPage extends React.Component<Props> {
         console.log('FULLSCREEN', this.state.enterFullScreen);
         break;
       }
-      case ResultTabActionType.Export: {
-        let counter = 0;
-        model.queriesResult.value?.list?.map((_) => {
-          if (
-            _.result.isSuccess() &&
-            !_.result.value.isResultText &&
-            !_.result.value.error &&
-            _.result.value.isHaveData
-          ) {
-            counter++;
-            const title = `ResultTable-${counter}-${model.title}`;
-            ExportData(_.result.value, subEvent, title);
-          }
-        });
-        break;
-      }
+      // case ResultTabActionType.Export: {
+      //   let counter = 0;
+      //   model.queriesResult.value?.list?.map((_) => {
+      //     if (
+      //       _.result.isSuccess() &&
+      //       !_.result.value.isResultText &&
+      //       !_.result.value.error &&
+      //       _.result.value.isHaveData
+      //     ) {
+      //       counter++;
+      //       const title = `ResultTable-${counter}-${model.title}`;
+      //       ExportData(_.result.value, subEvent, title);
+      //     }
+      //   });
+      //   break;
+      // }
       default:
         break;
     }
@@ -128,32 +130,31 @@ export default class EditorTabPage extends React.Component<Props> {
     return true;
   }
 
-  private onDataTableAction: DataTableProps['onAction'] = (action, data) => {
-    if (action === ResultTableActionType.Insert) {
-      // to insert result to editor ( where cursor )
-      console.log('insert result:');
-      console.info(`%c${data}`, 'color: #bada55');
-      const { model } = this.props;
-      model.codeEditor.forEach((editor) => editor.insertText(data, TextInsertType.Sql));
-    }
-    if (action === ResultTableActionType.Show) {
-      // to show result in elements
-      console.log('show result:');
-      console.info(`%c${data}`, 'color: #bada55');
-      const { onModelFieldChange } = this.props;
-      onModelFieldChange({ name: 'tableData', value: Option.of(data) });
-    }
-    if (action === ResultTableActionType.Clipboard) {
-      // to clipboard text
-      console.log('to Clipboard result:');
-      console.info(`%c${data}`, 'color: #bada55');
-      this.copyToClipboard(data);
-    }
-  };
+  //
+  // private onDataTableAction: DataTableProps['onAction'] = (action, data) => {
+  //   if (action === ResultTableActionType.Insert) {
+  //     // to insert result to editor ( where cursor )
+  //     console.log('insert result:');
+  //     console.info(`%c${data}`, 'color: #bada55');
+  //     const { model } = this.props;
+  //     model.codeEditor.forEach((editor) => editor.insertText(data, TextInsertType.Sql));
+  //   }
+  //   if (action === ResultTableActionType.Show) {
+  //     // to show result in elements
+  //     console.log('show result:');
+  //     console.info(`%c${data}`, 'color: #bada55');
+  //     const { onModelFieldChange } = this.props;
+  //     onModelFieldChange({ name: 'tableData', value: Option.of(data) });
+  //   }
+  //   if (action === ResultTableActionType.Clipboard) {
+  //     // to clipboard text
+  //     console.log('to Clipboard result:');
+  //     console.info(`%c${data}`, 'color: #bada55');
+  //     this.copyToClipboard(data);
+  //   }
+  // };
 
-  private renderTable = (data: DataDecorator) => (
-    <DataTable data={data} onAction={this.onDataTableAction} fill />
-  );
+  private renderTable = (data: DataDecorator) => <TableSheet data={data} />;
 
   private renderDraw = (data: DataDecorator) => <Draw data={data} fill />;
 

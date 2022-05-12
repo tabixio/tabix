@@ -9,15 +9,11 @@ Not need, open in browser http://dash.tabix.io/
 ### If need install
 
 ```bash
+# Install NodeJS > v17.X, npm, yarn 
 
 git clone https://github.com/tabixio/tabix.git
 cd tabix
 git checkout master
-
-# Install JS libs 
-rm -f .yarnrc.yml
-# For use directory /node-modules/ add line to .yarnrc.yml
-# echo 'nodeLinker: node-modules' > .yarnrc.yml
 
 
 # Yarn setup 
@@ -25,9 +21,15 @@ rm -f .yarnrc.yml
 yarn set version 3.1.1
 yarn -v
 
+# ----
+# For use directory /node-modules/ add line to .yarnrc.yml
+# echo 'nodeLinker: node-modules' > .yarnrc.yml
+# ----
 # For full clean,drop node_modules
 # rm -Rf node_modules/
+# ----
 
+# Install js libs
 yarn install
 
 # Run on http://0.0.0.0:9000/  
@@ -41,8 +43,10 @@ yarn build
 
 ## Requirements
 
-* Clickhouse server version up v1.1.54164
-* Not readonly Clickhouse user [note](https://tabix.io/doc/Requirements/#note)
+* Clickhouse server version up V19
+* No SSL Clickhouse port
+* Google Chrome
+* Not readonly Clickhouse user ( can readonly=2 ) [note](https://tabix.io/doc/Requirements/#note)
 
 ## License
 

@@ -8,16 +8,39 @@ import './dark.css';
 import { Tooltip } from './Tooltip';
 import DataDecorator from 'services/api/DataDecorator';
 import { SheetType } from '@antv/s2-react/esm/components/sheets/interface';
+import { useResizeDetector } from 'react-resize-detector';
+import { Flex, FlexProps } from 'reflexy';
 
 export interface TableSheetProps {
   data: DataDecorator | null;
   dataUpdate?: number;
+  defaultSheetType?: 'table' | 'pivot';
   defaultConfig?: S2DataConfig;
-  height?: number;
+  defaultHeight?: number;
+  defaultWidth?: number;
   //  onAction?: (action: ResultActionType, data: any) => void;
 }
 
-export default function TableSheet({ data }: TableSheetProps) {
+export default function TableSheet({
+  data,
+  defaultSheetType,
+  defaultHeight = 600,
+  defaultWidth = 600,
+  ...flexProps
+}: TableSheetProps & FlexProps) {
+  const onResize = React.useCallback(() => {
+    // on resize logic
+    console.log('On resize', width, height);
+    s2Ref?.current?.render();
+  }, []);
+
+  const { width, height, ref } = useResizeDetector({
+    handleHeight: false,
+    refreshMode: 'debounce',
+    refreshRate: 500,
+    onResize,
+  });
+
   const getSpreadSheet = (instance: SpreadSheet) => {
     setLoading(true);
     console.log('getSpreadSheet');
@@ -78,12 +101,12 @@ export default function TableSheet({ data }: TableSheetProps) {
   };
   const s2Ref = React.useRef<SpreadSheet>();
   const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
-  const [sheetType, setSheetType] = useState('pivot' as SheetType);
+  const [sheetType, setSheetType] = useState(defaultSheetType ?? ('table' as SheetType));
   const [loading, setLoading] = useState(true);
   // ----------------------------------- Options
   const s2Options = {
-    width: 600,
-    height: 600,
+    width: defaultWidth,
+    height: defaultHeight,
     // showSeriesNumber: true,
     hierarchyType: 'grid', // tree
     // totals: {
@@ -117,6 +140,7 @@ export default function TableSheet({ data }: TableSheetProps) {
     if (s2Ref?.current) {
       const hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
       // s2Options.hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
+      console.log('setOptions->hierarchyType');
       s2Ref.current.setOptions({ hierarchyType });
       setLoading(true);
       setTimeout(() => {
@@ -127,13 +151,6 @@ export default function TableSheet({ data }: TableSheetProps) {
     }
   }, [sheetType]);
   useEffect(() => {
-    /**
-     *      database,
-     *     table,
-     *     count() "partitions",
-     *     sum(part_count) "parts",
-     *     max(part_count) "max_parts_per_partition"
-     */
     //   fields: {
     //     // rows: ['a', 'b'],
     //     columns: ['province', 'city', 'type', 'price', 'cost'],
@@ -145,6 +162,7 @@ export default function TableSheet({ data }: TableSheetProps) {
     //     {  field: 'type',       name: 'type',     },
     //   ],
     if (!data?.error && data?.rows) {
+      console.log('Set data to table', data);
       setData({
         data: data.rows,
         fields: { columns: data.getColumns().map((o) => o.name) },
@@ -161,9 +179,11 @@ export default function TableSheet({ data }: TableSheetProps) {
     }
   }, [data?.dataUpdate]);
   //
+  console.log(width, height);
   return (
     s2DataConfig && (
-      <div>
+      // <Flex column fill {...flexProps} >
+      <div ref={ref} style={{ minHeight: 150, border: '1px solid green' }}>
         <Header
           dataCfg={s2DataConfig as S2DataConfig}
           options={s2Options as S2Options}
@@ -181,6 +201,7 @@ export default function TableSheet({ data }: TableSheetProps) {
           loading={loading}
         />
       </div>
+      // </Flex>
     )
   );
 }

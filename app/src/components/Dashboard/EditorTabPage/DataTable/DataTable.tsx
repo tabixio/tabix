@@ -7,7 +7,7 @@ import 'handsontable/dist/handsontable.full.css';
 import './dark.css';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
-import * as sizeSensor from 'size-sensor'; // Use size-sensor because it already used by echarts-for-react
+import ResizeObserver from 'react-resize-detector';
 import DataDecorator from 'services/api/DataDecorator';
 import getFormatForColumn from './utils';
 import {
@@ -80,41 +80,41 @@ export default class DataTable extends React.Component<DataTableProps & FlexProp
 
   componentDidMount() {
     // console.log('DataTableProps->componentDidMount');
-    sizeSensor.bind(this.rootRef.current, (el) => {
-      // Use callback only when parent resizing finished,
-      // so callback will called only when resize finished.
-      // Otherwise performance issue of hottable update.
-      let f = false;
-      const width = el ? el.clientWidth : this.state.width;
-      const height = el ? el.clientHeight : this.state.height;
-      if (width && width !== this.state.width) {
-        // For update hottable when resizing [ширина]
-        this.setState({ width });
-        f = true;
-      }
-      // height [высота]
-      if (height && height !== this.state.height) {
-        // For update hottable when resizing
-        this.setState({ height: height });
-        f = true;
-      }
-
-      if (f) {
-        this.tableRef?.current?.hotInstance.updateSettings(
-          {
-            height: height,
-            width: width,
-          },
-          false
-        );
-        this.tableRef?.current?.hotInstance.render();
-      }
-    });
+    // sizeSensor.bind(this.rootRef.current, (el) => {
+    //   // Use callback only when parent resizing finished,
+    //   // so callback will called only when resize finished.
+    //   // Otherwise performance issue of hottable update.
+    //   let f = false;
+    //   const width = el ? el.clientWidth : this.state.width;
+    //   const height = el ? el.clientHeight : this.state.height;
+    //   if (width && width !== this.state.width) {
+    //     // For update hottable when resizing [ширина]
+    //     this.setState({ width });
+    //     f = true;
+    //   }
+    //   // height [высота]
+    //   if (height && height !== this.state.height) {
+    //     // For update hottable when resizing
+    //     this.setState({ height: height });
+    //     f = true;
+    //   }
+    //
+    //   if (f) {
+    //     this.tableRef?.current?.hotInstance.updateSettings(
+    //       {
+    //         height: height,
+    //         width: width,
+    //       },
+    //       false
+    //     );
+    //     this.tableRef?.current?.hotInstance.render();
+    //   }
+    // });
   }
 
   componentWillUnmount() {
     // console.log('DataTableProps->componentWillUnmount');
-    sizeSensor.clear(this.rootRef.current);
+    // sizeSensor.clear(this.rootRef.current);
   }
 
   private onContextMenuItemClick = (

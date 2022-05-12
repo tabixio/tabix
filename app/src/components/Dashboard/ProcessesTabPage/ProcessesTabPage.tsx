@@ -4,18 +4,21 @@ import { typedInject } from 'module/mobx-utils';
 import { Stores, TabsStore } from 'stores';
 import { observer } from 'mobx-react';
 import { Flex } from 'reflexy';
-import { DataTable } from 'components/Dashboard';
+import { TableSheet } from 'components/TableSheet';
 import { DataDecorator } from 'services';
 import { CaretRightOutlined, PauseOutlined, CloseOutlined } from '@ant-design/icons';
+
 interface InjectedProps {
   store: TabsStore;
 }
+
 enum ListOptions {
   LOG = 'Log mode',
   CLUSTER = 'Talk Cluster',
   SELECT = 'Only Select',
   PROFILE = 'Detail Profile',
 }
+
 type Props = InjectedProps;
 
 const IOption = Select.Option;
@@ -41,6 +44,7 @@ class ProcessesTabPage extends React.Component<Props> {
     countError: 0,
     countSuccess: 0,
   };
+
   constructor(props: any) {
     super(props);
 
@@ -128,9 +132,11 @@ class ProcessesTabPage extends React.Component<Props> {
     // Set
     this.setState({ countError: error, countSuccess: ok });
   }
+
   private is(n: string): boolean {
     return this.state.settingsOptions.indexOf(n) !== -1;
   }
+
   private update = () => {
     const { store } = this.props;
     store
@@ -258,12 +264,13 @@ class ProcessesTabPage extends React.Component<Props> {
           <Divider dashed={true} style={{ margin: ' 5px 0' }} />
         </Flex>
         <Flex vfill={true} hfill={true}>
-          <DataTable dataUpdate={dataUpdate} data={this.data} fill />
+          <TableSheet dataUpdate={dataUpdate} data={this.data} fill />
         </Flex>
       </div>
     );
   }
 }
+
 export default typedInject<InjectedProps, Props, Stores>(({ store }) => ({
   store: store.tabsStore,
 }))(ProcessesTabPage);

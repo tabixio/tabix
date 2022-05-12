@@ -10,9 +10,11 @@ export interface QueryResponse {
   error: string | null;
   isError: boolean;
 }
+
 export interface QueryResponseKey {
   [key: string]: QueryResponse;
 }
+
 export interface RequestPool {
   [key: string]: Query | string;
 }
@@ -57,6 +59,7 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
     const init = this.getRequestInit(JSON.stringify(data));
     return this.request(url, init);
   }
+
   abstract getType(): ConnectionType;
 
   abstract query(query: Query | string): Promise<QueryResponse>;
@@ -131,9 +134,6 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
     await PromisePool.for(reqPool)
       .withConcurrency(concurrency)
-      // .handleError(async (error, item) => {
-      //   return errors.push({ error, item });
-      // })
       .process(async (data, index) => {
         if (typeof data.query === 'string') {
           const q = new Query(data.query, data.key);

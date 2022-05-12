@@ -3037,6 +3037,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/resize-observer-browser@npm:^0.1.6":
+  version: 0.1.7
+  resolution: "@types/resize-observer-browser@npm:0.1.7"
+  checksum: 0377eaac8bb7a17b983b49a156006032380b459bfebefc54a5aa2f7f8a9786d2b60723e8837c61ef733330b478f4f26293e9edbdc8006238e4f80c878c56c988
+  languageName: node
+  linkType: hard
+
 "@types/retry@npm:^0.12.0":
   version: 0.12.1
   resolution: "@types/retry@npm:0.12.1"
@@ -14818,6 +14825,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-resize-detector@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "react-resize-detector@npm:7.0.0"
+  dependencies:
+    "@types/resize-observer-browser": ^0.1.6
+    lodash: ^4.17.21
+  peerDependencies:
+    react: ^16.0.0 || ^17.0.0
+    react-dom: ^16.0.0 || ^17.0.0
+  checksum: 8525746a4841f020bc50b26166ef1f1951c64991f7117f4dafe423f29c4fefe8595b806881ac3ec81ebd0b29df3480e282a1db8bbe927df4a620282154c7ed1c
+  languageName: node
+  linkType: hard
+
 "react-router-dom@npm:5.2.0":
   version: 5.2.0
   resolution: "react-router-dom@npm:5.2.0"
@@ -16998,6 +17018,7 @@ __metadata:
     react-full-screen: ^1.1.0
     react-grid-layout: ^1.3.3
     react-hot-loader: ^4.13.0
+    react-resize-detector: ^7.0.0
     react-router: 5.2.0
     react-router-dom: 5.2.0
     react-split-pane: ^0.1.92
@@ -17005,7 +17026,6 @@ __metadata:
     react-virtualized-tree: 2.3.10
     reflexy: ^2.3.3
     rimraf: ^2.6.1
-    size-sensor: ^1.0.1
     sql-formatter: ^2.3.2
     style-loader: ^0.23.1
     stylelint: ^9.9.0
