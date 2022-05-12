@@ -16,9 +16,10 @@ cd tabix
 git checkout master
 
 # ----
-# For use directory /node-modules/ add line to .yarnrc.yml, Tabix now not support PnP / Yarn
+# For use directory /node-modules/ add line to .yarnrc.yml, 
+# ! Tabix now not support PnP / Yarn ! 
 
-
+# ! don't forget to add !  
 echo 'nodeLinker: node-modules' > .yarnrc.yml
 
 
