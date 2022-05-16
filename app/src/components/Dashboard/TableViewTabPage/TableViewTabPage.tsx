@@ -2,7 +2,6 @@ import React from 'react';
 import { DataDecorator, RequestPool, ServerStructure } from 'services';
 import { TableViewTabModel } from 'models';
 import { TableOutlined } from '@ant-design/icons';
-import { DataTable } from '../index';
 import { Row, Col, Button, Drawer, Select, Checkbox, Table, Tabs, Divider } from 'antd';
 import { typedInject } from '../../../module/mobx-utils';
 import SimpleEditor from '../EditorTabPage/SqlEditor/SimpleEditor';

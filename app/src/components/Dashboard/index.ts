@@ -9,4 +9,3 @@ export { default as ServerOverviewTabPage } from './ServerOverviewTabPage';
 export { default as DbOverviewTabPage } from './DbOverviewTabPage';
 export { default as SqlHistoryTabPage } from './SqlHistoryTabPage';
 export { default as TableViewTabPage } from './TableViewTabPage';
-export { default as DataTable } from './EditorTabPage/DataTable';

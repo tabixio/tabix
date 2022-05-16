@@ -15,7 +15,7 @@ import { Tabs, ResultTabActionType } from './Tabs';
 import DataItemsLayout from './DataItemsLayout';
 // import DataTable, { ExportData, DataTableProps, ResultTableActionType } from './DataTable';
 import { TableSheet } from 'components/TableSheet';
-import Draw from './Draw';
+import Draw from 'components/Draw';
 import Progress from './Progress';
 import { TabsTabPane } from './Tabs/Tabs';
 import FullScreener from './FullScreener';
@@ -192,7 +192,7 @@ export default class EditorTabPage extends React.Component<Props> {
                 pinned={model.pinnedResult}
                 onAction={this.onResultTabAction}
               >
-                <TabsTabPane key="table" tab="Data / Table" style={{ overflowY: "auto"}}>
+                <TabsTabPane key="table" tab="Data / Table" style={{ overflowY: 'auto' }}>
                   {!!store.uiStore.executingQueries.length && (
                     <Progress queries={store.uiStore.executingQueries} />
                   )}

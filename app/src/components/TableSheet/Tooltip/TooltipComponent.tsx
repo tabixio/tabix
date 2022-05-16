@@ -49,7 +49,7 @@ export const TooltipComponent: React.FC<TooltipRenderProps> = (props) => {
     if (operator && cell && onlyMenu) {
       return renderOperation(operator, true);
     }
-    return <div></div>;
+    return <div>qwe</div>;
   };
   return renderContent();
 };

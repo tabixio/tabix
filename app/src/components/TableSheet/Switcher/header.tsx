@@ -4,7 +4,6 @@ import {
   generateSheetConfig,
   generateSwitcherFields,
   generateSwitcherFieldsCfgFromResult,
-  getSheetType,
 } from './headerUtil';
 import { SwitcherResult } from './interfaces';
 import { Switcher, SwitcherProps } from '.';
@@ -52,9 +51,6 @@ export const SwitcherHeader: FC<SwitcherHeaderProps> = ({
   ]);
 
   const onSubmit = (result: SwitcherResult) => {
-    // console.log('onSubmit - SwitcherResult current state', currentSheetType);
-    // console.log('onSubmit - SwitcherResult getSheetType:', getSheetType(sheet));
-    // console.log('onSubmit - SwitcherResult before Obj', { ...sheet.dataCfg.fields });
     const { fields, hiddenColumnFields } = generateSheetConfig(sheet, result);
     sheet.setDataCfg({
       fields: { ...sheet.dataCfg.fields, ...fields },
@@ -63,25 +59,12 @@ export const SwitcherHeader: FC<SwitcherHeaderProps> = ({
     if (hiddenColumnFields) {
       sheet.setOptions({ interaction: { hiddenColumnFields } });
     }
-
-    // console.log('onSubmit - SwitcherResult Field', fields);
-    // console.log('onSubmit - SwitcherResult Obj', { ...sheet.dataCfg.fields, ...fields });
-    // console.log('onSubmit - SwitcherResult : hiddenColumnFields', hiddenColumnFields);
-    // console.log('onSubmit - SwitcherResult : sheet.dataCfg', sheet.dataCfg);
-    // console.log('onSubmit - SwitcherResult Option', sheet.options);
-    // console.log('sheet.render...');
     sheet.render();
 
     setFields(
       generateSwitcherFieldsCfgFromResult(sheet, result, sheet.dataCfg?.meta, hiddenColumnFields)
     );
   };
-  // console.log(
-  //   'SwitcherHeader -> render -> sheetType={}',
-  //   getSheetType(sheet),
-  //   ' currentSheetTypy= ',
-  //   currentSheetType
-  // );
   return (
     <Switcher
       currentSheetType={currentSheetType}

@@ -1,9 +1,18 @@
+## ToDo 2022.05
+
+### Grid
+
+[ ] Hint column name
+[ ] Hide / Show column
+[ ] HighLight
+[ ] Filter
+
 ### ToDo minimal for 22.01
 
 [ ] Определение таблицы в запросе и автокомлит - без scope
 [ ] Вкладка - процессы поправить cluster mode, и ускорить через уменьшение SQL
 [ ] Вкладка - метрики online
-[ ] Лого
+[x] Лого
 [ ] Чекер обновления
 
 Вкладки:
