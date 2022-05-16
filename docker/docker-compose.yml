@@ -10,7 +10,7 @@ services:
   ### react #####################################################
   react:
     build:
-      context: ./react
+      context: ./settings/react
     ports:
       - "3000:3000"
     container_name: react
@@ -27,7 +27,7 @@ services:
   ### NGINX Server #########################################
   nginx:
     build:
-      context: ./nginx
+      context: ./settings/nginx
       args:
         - CHANGE_SOURCE=${CHANGE_SOURCE}
         - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
@@ -43,11 +43,10 @@ services:
     ports:
       - "${NGINX_HOST_HTTP_PORT}:80"
       - "${NGINX_HOST_HTTPS_PORT}:443"
-      - "${VARNISH_BACKEND_PORT}:81"
     networks:
       - frontend
       - backend
-### ClickHouse #############################################
+  ### ClickHouse #############################################
   clickhouse19:
     build:
       context: ./settings/clickhouse
@@ -72,7 +71,7 @@ services:
         hard: 262144
     networks:
       - backend
-      
+  
   clickhouse209:
     build:
       context: ./settings/clickhouse
@@ -97,8 +96,8 @@ services:
         hard: 262144
     networks:
       - backend
-      
-      
+  
+  
   clickhouse21:
     build:
       context: ./settings/clickhouse
@@ -123,7 +122,7 @@ services:
         hard: 262144
     networks:
       - backend
-      
+  
   clickhouse22:
     build:
       context: ./settings/clickhouse
@@ -141,6 +140,32 @@ services:
       - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
     ports:
       - "12813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
+  
+  
+  clickhouse224:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=22.4.5.9
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/22.4.5:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "13813:8123"
     ulimits:
       nproc: 65535
       nofile:
