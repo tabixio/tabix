@@ -10471,6 +10471,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"markdown-to-jsx@npm:^7.1.7":
+  version: 7.1.7
+  resolution: "markdown-to-jsx@npm:7.1.7"
+  peerDependencies:
+    react: ">= 0.14.0"
+  checksum: b2c0ea7d0988fad0c709989b3b1b3a5600d1e80b60266f9618386f7afead4a6b5eba9ee1a3943df6a3dcb1599ea89e58467d1b17b6dd3af3c60984c60a85d06d
+  languageName: node
+  linkType: hard
+
 "material-icons@npm:^0.1.0":
   version: 0.1.0
   resolution: "material-icons@npm:0.1.0"
@@ -15722,6 +15731,7 @@ __metadata:
     less-loader: ^4.1.0
     lint-staged: ^12.1.4
     localforage: ^1.7.3
+    markdown-to-jsx: ^7.1.7
     mobx: ^5.8.0
     mobx-react: ^5.4.3
     mobx-utils: ^5.1.0

@@ -129,6 +129,7 @@
     "funfix-core": "^7.0.1",
     "history": "4.7.2",
     "localforage": "^1.7.3",
+    "markdown-to-jsx": "^7.1.7",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "mobx-utils": "^5.1.0",
