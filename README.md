@@ -42,10 +42,8 @@ yarn build
 
 ## Requirements
 
-* Clickhouse server version up V19
-* No SSL Clickhouse port
-* Google Chrome
-* Not readonly Clickhouse user ( can readonly=2 ) [note](https://tabix.io/doc/Requirements/#note)
+* Clickhouse server version up 19.x
+* Google Chrome ( other browser not tested )
 
 ## License
 
