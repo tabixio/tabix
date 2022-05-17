@@ -24,3 +24,17 @@ FROM (
 
 
 ```
+
+```sql
+SELECT event_time,
+       ProfileEvent_ReadBufferFromFileDescriptorRead,
+       ProfileEvent_IOBufferAllocs,
+       ProfileEvent_DiskReadElapsedMicroseconds,
+       CurrentMetric_PartsActive
+FROM system.metric_log
+ORDER BY event_time
+LIMIT 4000
+
+
+
+```
