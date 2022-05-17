@@ -8,6 +8,7 @@ export interface ActionButtonsProps {
   deleteEnabled?: boolean;
   onSignIn?: () => void;
   onDelete?: () => void;
+  onFinish?: (values: any) => void;
 }
 
 export default function ActionButtons({
@@ -16,15 +17,19 @@ export default function ActionButtons({
   onSignIn,
   onDelete,
 }: ActionButtonsProps) {
+  const drop = () => {
+    console.log('DELELELT', onDelete);
+    onDelete && onDelete();
+  };
   return (
     <Flex className={css.root}>
-      <Button type="primary" htmlType="submit" onClick={onSignIn} disabled={!signInEnabled}>
+      <Button type="primary" htmlType="submit" disabled={!signInEnabled}>
         SIGN IN
       </Button>
 
       <Popconfirm
         title="Are you sure delete this connection?"
-        onConfirm={onDelete}
+        onConfirm={drop}
         okText="Yes"
         cancelText="No"
       >

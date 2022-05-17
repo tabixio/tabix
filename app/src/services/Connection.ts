@@ -2,6 +2,7 @@ import { Omit } from 'typelevel-ts';
 import { ConnectionMode } from '../models';
 
 export interface ConnectionLike {
+  uuid?: string;
   connectionName: string;
   connectionUrl: string;
   username: string;

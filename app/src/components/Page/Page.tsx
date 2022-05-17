@@ -1,6 +1,6 @@
 import React from 'react';
-import { Layout, notification } from 'antd';
-
+import { Layout, Modal, notification } from 'antd';
+import Markdown from 'markdown-to-jsx';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { IReactionDisposer, reaction } from 'mobx';
@@ -9,6 +9,7 @@ import { NotificationType, UIStore } from 'module/mobx-utils';
 import { RootStore } from 'stores';
 import Loader from 'components/Loader';
 import css from './Page.css';
+
 interface Props extends FlexProps {
   uiStore?: UIStore<RootStore>;
   children?: React.ReactNode;
@@ -29,25 +30,34 @@ export default class Page extends React.Component<Props> {
       (list) =>
         list &&
         list.forEach((n) => {
-          notification.open({
-            key: n.id.toString(),
-            type: n.type,
-            message: n.text,
-            description: n.description,
-            style: {
-              width: 600,
-              marginLeft: 335 - 600,
-            },
-            // duration: 30,
-            onClose: () => {
-              const { uiStore } = this.props;
-              uiStore && uiStore.closeNotification(n.id);
-            },
-          });
+          if (n.showModal) {
+            // Show
+            Modal.error({
+              title: n.title,
+              content: <Markdown>{(n.description ?? 'NULL').toString()}</Markdown>,
+            });
+          } else {
+            notification.open({
+              key: n.id.toString(),
+              type: n.type,
+              message: n.text,
+              description: n.description,
+              style: {
+                width: 600,
+                marginLeft: 335 - 600,
+              },
+              // duration: 30,
+              onClose: () => {
+                const { uiStore } = this.props;
+                uiStore && uiStore.closeNotification(n.id);
+              },
+            });
+          }
         }),
       { fireImmediately: true }
     );
   }
+
   componentDidMount() {
     // Mount?
   }
@@ -55,6 +65,7 @@ export default class Page extends React.Component<Props> {
   componentWillUnmount() {
     this.notificationReaction();
   }
+
   renderPage() {
     const { uiStore, className, ...rest } = this.props;
     // hide page loader while showing app loader to avoid double loaders

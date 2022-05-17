@@ -1,5 +1,3 @@
-import { SelectHandler } from 'rc-select/lib/Select';
-
 /**
  * NameValue<Type> = { value: Type, name: string }
  * NameValue<Type, keyof Type> = { value: Type, name: keyof Type }
@@ -59,6 +57,12 @@ export default class Model<Entity extends object> implements ModelLike<Entity> {
 
   protected getFieldValue<K extends keyof Entity>(input: InputElementLike): Entity[K] {
     return input.type === 'number' ? (+input.value as any) : input.value;
+  }
+
+  setField(name: string, value: any) {
+    const prevValue: any = this.target[name];
+    this.target[name] = value;
+    // this.onModelChanged(name, prevValue);
   }
 
   changeField<K extends keyof Entity>(event: InputEventLike | NameValue<Entity, K>) {

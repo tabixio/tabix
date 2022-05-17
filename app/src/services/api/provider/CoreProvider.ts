@@ -76,6 +76,8 @@ export default abstract class CoreProvider<C extends ConnectionLike> {
 
   abstract makeTableDescribe(database: string, tablename: string): Promise<string | undefined>;
 
+  abstract fastCheckConnection(): any;
+
   abstract fastGetVersion(): Promise<string>;
 
   abstract getDatabaseStructure(limitRead: number): Promise<ServerStructure.Server>;

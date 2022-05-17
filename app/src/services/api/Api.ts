@@ -1,14 +1,15 @@
 import Connection, { isDirectConnection } from '../Connection';
 import CoreProvider, {
   QueryResponse,
-  QueryResponseKey,
   QueryResponsePool,
   RequestPool,
 } from './provider/CoreProvider';
 import DirectClickHouseProvider from './provider/DirectClickHouseProvider';
 import TabixServerProvider from './provider/TabixServerProvider';
+import connectGetErrorMessage from './provider/connectGetErrorMessage';
 import DataDecorator from './DataDecorator';
 import { Query } from './Query';
+import { DescriptionError } from 'module/mobx-utils';
 import preparedStatementQuery from './provider/preparedStatementQuery';
 
 export default class Api {
@@ -23,16 +24,18 @@ export default class Api {
     try {
       version = await provider.fastGetVersion();
       console.log('Version CH', version);
+
+      // throw new Error('Cants');
     } catch (e) {
-      let msg = 'Can`t fetch version server,check connection URL/DNS/Host:PORT,';
+      let typeError = '';
       if (e.name == 'AbortError') {
-        msg = ' Can`t fetch version server,timeout connection URL/DNS/Host:PORT,';
+        typeError = 'AbortError';
       }
-      throw new Error(
-        msg +
-          ' open in browser:' +
-          `http://${provider.connection.connectionUrl.replace('http://', '')}`
-      );
+      throw {
+        title: 'Error connection to ClickHouse.',
+        description: connectGetErrorMessage(connection, typeError),
+        error: new Error('Error on connection'),
+      } as DescriptionError;
     }
     if (!version) {
       throw new Error('Can`t fetch version server');

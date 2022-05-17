@@ -91,6 +91,7 @@ export default class SignInStore extends ApiRequestableStore {
   @withRequest.bound
   @action
   async deleteSelectedConnection() {
+    console.log('deleteSelectedConnection', this.selectedConnection);
     this.connectionList = this.connectionList.filter(
       (c) => c.connectionName !== this.selectedConnection.connectionName
     );

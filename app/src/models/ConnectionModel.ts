@@ -45,6 +45,8 @@ export class DirectConnectionModel
   extends BaseConnectionModel<DirectConnection>
   implements DirectConnection
 {
+  uuid = '';
+
   type: ConnectionType.Direct = ConnectionType.Direct;
 
   @observable
@@ -62,6 +64,7 @@ export class DirectConnectionModel
     params,
   }: Partial<DirectConnection>) {
     super({
+      uuid: { error: None },
       type: { error: None },
       connectionName: { error: None },
       connectionUrl: { error: None },
@@ -85,6 +88,10 @@ export class DirectConnectionModel
     this.params = params;
   }
 
+  setConnectionName(name: string) {
+    this.connectionName = name;
+  }
+
   toJSON(): JSONModel<DirectConnection> {
     return {
       type: this.type,
@@ -103,6 +110,8 @@ export class ServerConnectionModel
   extends BaseConnectionModel<ServerConnection>
   implements ServerConnection
 {
+  uuid = '';
+
   type: ConnectionType.Server = ConnectionType.Server;
 
   @observable
@@ -116,6 +125,7 @@ export class ServerConnectionModel
     configKey,
   }: Partial<ServerConnection>) {
     super({
+      uuid: { error: None },
       type: { error: None },
       connectionName: { error: None },
       connectionUrl: { error: None },

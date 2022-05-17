@@ -1,6 +1,7 @@
 import { Option, None } from 'funfix-core';
 import appStorage from './appStorage';
 import Connection from './Connection';
+import { v4 as UUIDv4 } from 'uuid';
 
 const key = 'connections';
 const lastActiveKey = `${key}.lastActive`;
@@ -13,6 +14,8 @@ export async function get(): Promise<Connection[]> {
       (value, index, self) =>
         index === self.findIndex((t) => t.connectionName === value.connectionName)
     );
+
+    list.map((d) => (d.uuid = UUIDv4()));
     return list || [];
   } catch (e) {
     console.error(e);
@@ -22,7 +25,7 @@ export async function get(): Promise<Connection[]> {
 
 export async function saveConnections(connections: ReadonlyArray<Connection>) {
   try {
-    // console.log('Set->saveConnections', connections);
+    console.log('appStorage->saveConnections', connections);
     await appStorage.setItem(key, connections);
   } catch (e) {
     console.error(e);

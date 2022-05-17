@@ -14,5 +14,7 @@ export default interface Notification {
   type: NotificationType | keyof typeof NotificationType;
   text: string;
   description?: React.ReactNode | string;
+  title?: string;
   timeout?: number;
+  showModal?: boolean;
 }

@@ -26,11 +26,12 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
     await connectionsStorage.saveLastActiveConnection(connection);
 
     // Fetch list from storage
-    const connections = await connectionsStorage.get();
-
+    let connections = await connectionsStorage.get();
+    // console.log('connectionsStorage.fetsh ', connections);
     // If connection not find, add (concat), and save
+    // if (!connections.length) connections.push(connection);
     if (!connections.find((c) => c.connectionName === connection.connectionName)) {
-      connections.concat(connection);
+      connections = connections.concat(connection);
     } else {
       // Update connection`s params
       connections.forEach((c, i) => {
@@ -39,6 +40,8 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
         }
       });
     }
+    // console.log('connectionsStorage.saveConnections', connections);
+    // console.log('connectionsStorage.connection ', connection);
     await connectionsStorage.saveConnections(connections);
   }
 

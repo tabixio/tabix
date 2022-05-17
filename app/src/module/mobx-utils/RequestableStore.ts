@@ -10,9 +10,15 @@ export interface ResponseLike {
   statusText?: string;
 }
 
+export interface DescriptionError {
+  title: string;
+  description: string;
+  error: Error;
+}
+
 export interface ResponseErrorLike {
   config: any;
-  response: any;
+  response: ResponseLike;
 }
 
 export interface AsyncAction<T> {
@@ -23,9 +29,16 @@ export function isResponseError(error: ResponseErrorLike | Throwable): error is 
   return (error as ResponseErrorLike).config !== undefined;
 }
 
-export default class RequestableStore<RS extends object, UIS extends UIStore<RS>> extends BaseStore<
-  RS
-> {
+export function isDescriptionError(
+  error: ResponseErrorLike | DescriptionError | Throwable
+): error is DescriptionError {
+  return (error as DescriptionError).description !== undefined;
+}
+
+export default class RequestableStore<
+  RS extends object,
+  UIS extends UIStore<RS>
+> extends BaseStore<RS> {
   constructor(rootStore: RS, public uiStore: UIS) {
     super(rootStore);
     this.request = this.request.bind(this) as any;
@@ -69,18 +82,28 @@ export default class RequestableStore<RS extends object, UIS extends UIStore<RS>
     return response.data || response.statusText;
   }
 
-  protected getErrorMessage(error: ResponseErrorLike | Throwable): string {
+  protected getErrorMessage(error: ResponseErrorLike | DescriptionError | Throwable): string {
     return isResponseError(error) && error.response
       ? this.getResponseErrorMessage(error.response)
       : error.toString();
   }
 
-  protected onRequestError(error: ResponseErrorLike | Throwable) {
-    console.error(error);
+  protected onRequestError(error: ResponseErrorLike | DescriptionError | Throwable) {
+    let description = undefined;
+    let showModal = false;
+    let title = undefined;
+    if (isDescriptionError(error)) {
+      description = error.description;
+      title = error.title;
+      showModal = true;
+    }
 
     this.uiStore.addNotification({
       type: NotificationType.error,
       text: this.getErrorMessage(error),
+      description,
+      showModal,
+      title,
     });
   }
 }

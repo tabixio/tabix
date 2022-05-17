@@ -65,6 +65,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     // this.connection.connectionUrl.indexOf('/') > 0
 
     let url = `${httpProto}${this.connection.connectionUrl}`;
+
     // if need only checkers
     if (onlyUrlCheck) return url;
     // add /?
@@ -172,6 +173,46 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       });
   }
 
+  fastCheckConnection(): any {
+    throw new Error('Method not implemented.');
+  }
+
+  //
+  // private async fastQuery(query: string): Promise<Response> {
+  //   const url = this.getRequestUrl(null, true);
+  //   console.log('Send to ', url);
+  //   const controller = new AbortController();
+  //   const timeoutId = setTimeout(() => controller.abort(), 200); // 5 second timeout:
+  //   return fetch(`${url}?query=${query}`, { method: 'GET', signal: controller.signal });
+  // }
+  //
+  // private _getVersion(): Promise<string> {
+  //   return this.fastQuery('SELECT version() as version')
+  //     .then((f) => {
+  //       return f.text();
+  //     })
+  //     .catch((f) => {
+  //       return 'false';
+  //     });
+  // }
+  //
+  // private _getSettingsUser(): Promise<any> {
+  //   return this.fastQuery('select name,value,changed from system.settings FORMAT JSON')
+  //     .then((f) => {
+  //       return f.json();
+  //     })
+  //     .catch((f) => {
+  //       return 'false';
+  //     });
+  // }
+  //
+  // async fastCheckConnection(): Promise<any> {
+  //   const version = await this._getVersion();
+  //   const settings = await this._getSettingsUser();
+  //   const e = { version: version.trim(), settings };
+  //   return e;
+  // }
+
   fastGetVersion(): Promise<string> {
     const url = this.getRequestUrl();
     const controller = new AbortController();
@@ -179,8 +220,9 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout:
 
     const query = 'SELECT version() as version';
-    return fetch(`${url}&query=${query}`, { method: 'GET', signal: controller.signal }).then((r) =>
-      r.text()
+    return fetch(`${url}&query=${query}`, { method: 'GET', signal: controller.signal }).then(
+      (r) => r.text()
+      //-- select name,value,changed from system.settings SETTINGS add_http_cors_header = 1
     );
   }
 

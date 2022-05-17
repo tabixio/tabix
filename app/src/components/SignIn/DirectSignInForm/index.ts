@@ -1,1 +1,1 @@
-export { default } from './DirectSignInForm';
+export { DirectSignInForm } from './DirectSignInForm';

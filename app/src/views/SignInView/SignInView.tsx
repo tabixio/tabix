@@ -3,10 +3,10 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Flex } from 'reflexy';
 import { Button, Layout, Typography, Tabs, Row, Col, Divider, Timeline, Badge } from 'antd';
 import { observer } from 'mobx-react';
-import { NotificationType, typedInject } from 'module/mobx-utils';
+import { typedInject } from 'module/mobx-utils';
 import { SignInStore, Stores } from 'stores';
 import { Connection, ConnectionType, isDirectConnection } from 'services';
-import { ConnectionModel } from 'models';
+import { ConnectionModel, DirectConnectionModel } from 'models';
 import Page from 'components/Page';
 import Splitter from 'components/Splitter';
 import { ConnectionList, DirectSignInForm } from 'components/SignIn';
@@ -19,13 +19,14 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 import css from './SignInView.css';
+import { observable } from 'mobx';
 
 interface InjectedProps {
   store: SignInStore;
 }
 
 export type Props = InjectedProps;
-const { Title, Paragraph, Text, Link } = Typography;
+// const { Title, Paragraph, Text, Link } = Typography;
 type RoutedProps = Props & RouteComponentProps<any>;
 
 @observer
@@ -55,6 +56,7 @@ class SignInView extends React.Component<RoutedProps> {
 
   private signIn = () => {
     const { store, history } = this.props;
+
     store.signIn(history);
   };
 
@@ -76,6 +78,19 @@ class SignInView extends React.Component<RoutedProps> {
       </div>
     );
   }
+
+  @observable
+  private onFinishForm = (values: keyof DirectConnectionModel): void => {
+    const { selectedConnection } = this.props.store;
+    // Fackig mobx drop naxui
+    // Update data
+    // @ts-ignore
+    selectedConnection.changeField({ name: 'connectionName', value: values['connectionName'] });
+    Object.entries(values).forEach(([key, value]) => {
+      if (key !== 'connectionName') selectedConnection.setField(key, value);
+    });
+    this.signIn();
+  };
 
   render() {
     const { store } = this.props;
@@ -147,6 +162,7 @@ class SignInView extends React.Component<RoutedProps> {
                           model={store.selectedConnection}
                           onDelete={store.deleteSelectedConnection}
                           onSignIn={this.signIn}
+                          onFinish={this.onFinishForm}
                           deleteEnabled={!!store.selectedConnection.connectionName}
                         />
                       )}
