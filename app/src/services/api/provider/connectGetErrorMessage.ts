@@ -21,7 +21,7 @@ Your input:
 
 1. Check host & port, open, must see OK:  \`${proto}://${url.host}\`
 
-2. Check login & password, open, see version:\`${proto}://${url.host}?user=demo&password=demo&query=SELECT%20version()%20as%20version%20FORMAT%20JSON\`
+2. Check login & password, open, see version:\`${proto}://${url.host}?user=${connection.username}&password=${connection.password}&query=SELECT%20version()%20as%20version%20FORMAT%20JSON\`
 
 3. Check can apply settings, open, see version:\`${proto}://${url.host}?add_http_cors_header=1&user=${connection.username}&password=${connection.password}&query=SELECT%20version()%20as%20version%20FORMAT%20JSON\`
 
