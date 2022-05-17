@@ -25,7 +25,7 @@ export async function get(): Promise<Connection[]> {
 
 export async function saveConnections(connections: ReadonlyArray<Connection>) {
   try {
-    console.log('appStorage->saveConnections', connections);
+    // console.log('appStorage->saveConnections', connections);
     await appStorage.setItem(key, connections);
   } catch (e) {
     console.error(e);

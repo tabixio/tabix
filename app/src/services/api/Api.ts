@@ -24,10 +24,10 @@ export default class Api {
     try {
       version = await provider.fastGetVersion();
       console.log('Version CH', version);
-
-      // throw new Error('Cants');
+      //throw new Error('Cants');
     } catch (e) {
       let typeError = '';
+      console.log(e.name);
       if (e.name == 'AbortError') {
         typeError = 'AbortError';
       }
@@ -38,7 +38,11 @@ export default class Api {
       } as DescriptionError;
     }
     if (!version) {
-      throw new Error('Can`t fetch version server');
+      throw {
+        title: 'Can`t fetch version server',
+        description: connectGetErrorMessage(connection, 'version'),
+        error: new Error('Error on connection'),
+      } as DescriptionError;
     }
     const api = new Api(provider, version);
 
@@ -46,7 +50,6 @@ export default class Api {
     console.log('CheckDatabaseStructure....');
     await api.provider.checkDatabaseStructure();
     console.log('Structure - OK, go work');
-    // if (pool.)
     return api;
   }
 

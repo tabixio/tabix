@@ -5,7 +5,7 @@ import { Button, Layout, Typography, Tabs, Row, Col, Divider, Timeline, Badge } 
 import { observer } from 'mobx-react';
 import { typedInject } from 'module/mobx-utils';
 import { SignInStore, Stores } from 'stores';
-import { Connection, ConnectionType, isDirectConnection } from 'services';
+import { Connection, ConnectionLike, ConnectionType, isDirectConnection } from 'services';
 import { ConnectionModel, DirectConnectionModel } from 'models';
 import Page from 'components/Page';
 import Splitter from 'components/Splitter';
@@ -80,8 +80,15 @@ class SignInView extends React.Component<RoutedProps> {
   }
 
   @observable
-  private onFinishForm = (values: keyof DirectConnectionModel): void => {
+  private onFinishForm = (values: ConnectionLike): void => {
     const { selectedConnection } = this.props.store;
+
+    // validate url
+    const u = new URL(values.connectionUrl);
+
+    console.log(`Connect to: ${u.host} : ${u.port} , ${u.protocol}`);
+
+    // -----------------------------------
     // Fackig mobx drop naxui
     // Update data
     // @ts-ignore

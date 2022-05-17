@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, Modal, notification } from 'antd';
 import Markdown from 'markdown-to-jsx';
+import remarkGfm from 'remark-gfm';
 import { Flex, FlexProps } from 'reflexy';
 import classNames from 'classnames';
 import { IReactionDisposer, reaction } from 'mobx';
@@ -34,7 +35,11 @@ export default class Page extends React.Component<Props> {
             // Show
             Modal.error({
               title: n.title,
-              content: <Markdown>{(n.description ?? 'NULL').toString()}</Markdown>,
+              content: (
+                <Markdown remarkPlugins={[remarkGfm]}>
+                  {(n.description ?? 'NULL').toString()}
+                </Markdown>
+              ),
             });
           } else {
             notification.open({

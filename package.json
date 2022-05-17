@@ -148,6 +148,7 @@
     "react-virtualized": "^9.22.3",
     "react-virtualized-tree": "2.3.10",
     "reflexy": "^2.3.3",
+    "remark-gfm": "^3.0.1",
     "sql-formatter": "^2.3.2",
     "typelevel-ts": "^0.3.5",
     "uuid": "8.3.2",
