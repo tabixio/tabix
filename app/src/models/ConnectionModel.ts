@@ -12,40 +12,53 @@ import {
   ConnectionInit,
 } from 'services';
 
-export abstract class BaseConnectionModel<T extends Connection> extends ValidableStoreModel<T>
-  implements ConnectionLike, SerializableModel<T> {
+export enum ConnectionMode {
+  'normal' = 'normal',
+  'readOnly' = 'readOnly',
+}
+
+export abstract class BaseConnectionModel<T extends Connection>
+  extends ValidableStoreModel<T>
+  implements ConnectionLike, SerializableModel<T>
+{
   @required()
   @observable
-  connectionName: string = '';
+  connectionName = '';
 
   @required()
   @observable
-  connectionUrl: string = '';
+  connectionUrl = '';
 
   @required()
   @observable
-  username: string = '';
+  username = '';
 
   @observable
-  password: string = '';
+  password = '';
 
-  version: string = '';
+  version = '';
 
   abstract toJSON(): JSONModel<T>;
 }
 
-export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
-  implements DirectConnection {
+export class DirectConnectionModel
+  extends BaseConnectionModel<DirectConnection>
+  implements DirectConnection
+{
   type: ConnectionType.Direct = ConnectionType.Direct;
 
   @observable
   params?: string;
+
+  @observable
+  mode?: ConnectionMode;
 
   constructor({
     connectionName = '',
     connectionUrl = '',
     username = '',
     password = '',
+    mode = ConnectionMode.normal,
     params,
   }: Partial<DirectConnection>) {
     super({
@@ -54,14 +67,21 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
       connectionUrl: { error: None },
       username: { error: None },
       password: { error: None },
+      mode: { error: None },
       params: { error: None },
       version: { error: None },
     });
-
     this.connectionName = connectionName;
     this.connectionUrl = connectionUrl;
     this.username = username;
     this.password = password;
+    //
+    this.mode =
+      mode === undefined
+        ? ConnectionMode.normal
+        : mode !== ConnectionMode.readOnly
+        ? ConnectionMode.normal
+        : ConnectionMode.readOnly;
     this.params = params;
   }
 
@@ -73,13 +93,16 @@ export class DirectConnectionModel extends BaseConnectionModel<DirectConnection>
       username: this.username,
       password: this.password,
       params: this.params,
+      mode: this.mode,
       version: this.version,
     };
   }
 }
 
-export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
-  implements ServerConnection {
+export class ServerConnectionModel
+  extends BaseConnectionModel<ServerConnection>
+  implements ServerConnection
+{
   type: ConnectionType.Server = ConnectionType.Server;
 
   @observable
@@ -98,6 +121,7 @@ export class ServerConnectionModel extends BaseConnectionModel<ServerConnection>
       connectionUrl: { error: None },
       username: { error: None },
       password: { error: None },
+      mode: { error: None },
       configKey: { error: None },
       version: { error: None },
     });
@@ -132,6 +156,7 @@ const ConnectionModel = {
       return connection as ConnectionModel;
     }
     // Ds
+
     return isDirectConnection(connection)
       ? new DirectConnectionModel(connection)
       : new ServerConnectionModel(connection);

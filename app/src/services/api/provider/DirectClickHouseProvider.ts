@@ -27,6 +27,9 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       max_result_rows: 90000,
       max_result_bytes: 10000000,
 
+      // output_format_json_named_tuples_as_objects : 1
+      // output_format_json_escape_forward_slashes: 1
+
       // max_block_size:200,
       // send_progress_in_http_headers:1,
       // http_headers_progress_interval_ms:500
@@ -67,7 +70,10 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
     // add /?
     url = `${url}/?`;
 
-    const settings: object = this.getPresetSettings(extendSettings, this.connection.params);
+    const settings: object =
+      this.connection.mode === 'readOnly'
+        ? { add_http_cors_header: 1 }
+        : this.getPresetSettings(extendSettings, this.connection.params);
 
     url += Object.entries(settings)
       .map(([key, val]) => `${key}=${val}`)
@@ -169,6 +175,7 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
   fastGetVersion(): Promise<string> {
     const url = this.getRequestUrl();
     const controller = new AbortController();
+    // todo: add timer ?
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout:
 
     const query = 'SELECT version() as version';

@@ -1,9 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { Form, Input } from 'antd';
-import { DirectConnectionModel } from 'models';
+import { Form, Select, Input } from 'antd';
+import { DirectConnectionModel, ConnectionMode } from 'models';
 import { error2status } from 'components/utils';
 import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
+import css from './Form.css';
+import classNames from 'classnames';
+
+const { Option } = Select;
 
 export interface Props extends ActionButtonsProps {
   model: DirectConnectionModel;
@@ -17,12 +21,21 @@ export default class DirectSignInForm extends React.Component<Props> {
       model: { changeField, errors },
       ...rest
     } = this.props;
+    const changeReadOnlyField = (v: ConnectionMode) => {
+      changeField({ name: 'mode', value: v });
+    };
 
     return (
-      <Form layout="vertical">
+      <Form
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        className={classNames(css['main-container'])}
+      >
         <Form.Item
+          label="Title"
           help="For example: dev"
           validateStatus={error2status(errors.connectionName.error.nonEmpty())}
+          tooltip={'Title / Name service connection'}
         >
           <Input
             name="connectionName"
@@ -31,9 +44,9 @@ export default class DirectSignInForm extends React.Component<Props> {
             onChange={changeField}
           />
         </Form.Item>
-
         <Form.Item
-          help="http://<host>:<port>"
+          label="URL"
+          help="http[s]://<host>:<port>"
           validateStatus={error2status(errors.connectionUrl.error.nonEmpty())}
         >
           <Input
@@ -43,8 +56,7 @@ export default class DirectSignInForm extends React.Component<Props> {
             onChange={changeField}
           />
         </Form.Item>
-
-        <Form.Item validateStatus={error2status(errors.username.error.nonEmpty())}>
+        <Form.Item label={'User'} validateStatus={error2status(errors.username.error.nonEmpty())}>
           <Input
             name="username"
             placeholder="Login"
@@ -52,8 +64,7 @@ export default class DirectSignInForm extends React.Component<Props> {
             onChange={changeField}
           />
         </Form.Item>
-
-        <Form.Item>
+        <Form.Item label={'Password'}>
           <Input
             name="password"
             type="password"
@@ -62,19 +73,23 @@ export default class DirectSignInForm extends React.Component<Props> {
             onChange={changeField}
           />
         </Form.Item>
-
-        <Form.Item
-          help="key1=value&key2=value"
-          validateStatus={error2status(errors.params.error.nonEmpty())}
-        >
-          <Input
-            name="params"
-            placeholder="Extend params query"
-            value={model.params}
-            onChange={changeField}
-          />
+        <Form.Item label={'Mode'}>
+          <Select
+            value={model.mode}
+            defaultValue={ConnectionMode.normal}
+            onChange={changeReadOnlyField}
+          >
+            <Option value={ConnectionMode.normal}>Normal mode</Option>
+            <Option value={ConnectionMode.readOnly}>Use readOnly user,not recommended</Option>
+          </Select>
+          {/*  <Input*/}
+          {/*    name="params"*/}
+          {/*    placeholder="Extend params query"*/}
+          {/*    readOnly={true}*/}
+          {/*    value={model.params}*/}
+          {/*    onChange={changeField}*/}
+          {/*  />*/}
         </Form.Item>
-
         <Form.Item>
           <ActionButtons {...rest} />
         </Form.Item>

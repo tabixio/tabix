@@ -19,13 +19,27 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
   isLogIn = () => {
     return this.isLoggedIn;
   };
+
   private async saveConnection(api: Api) {
     const { connection } = api.provider;
+    // Set active connection
     await connectionsStorage.saveLastActiveConnection(connection);
+
+    // Fetch list from storage
     const connections = await connectionsStorage.get();
+
+    // If connection not find, add (concat), and save
     if (!connections.find((c) => c.connectionName === connection.connectionName)) {
-      await connectionsStorage.saveConnections(connections.concat(connection));
+      connections.concat(connection);
+    } else {
+      // Update connection`s params
+      connections.forEach((c, i) => {
+        if (c.connectionName === connection.connectionName) {
+          connections[i] = connection;
+        }
+      });
     }
+    await connectionsStorage.saveConnections(connections);
   }
 
   private async clearAuth() {
@@ -35,6 +49,7 @@ export default class AppStore extends RequestableStore<RootStore, UIStore<RootSt
 
   @action
   async updateApi(api: Option<Api>) {
+    // Call on 'sign in'
     if (this.api.equals(api)) return;
     runInAction(async () => {
       //

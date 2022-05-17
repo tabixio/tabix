@@ -7,7 +7,12 @@ const lastActiveKey = `${key}.lastActive`;
 
 export async function get(): Promise<Connection[]> {
   try {
-    const list = await appStorage.getItem<Connection[]>(key);
+    let list = await appStorage.getItem<Connection[]>(key);
+    // filter for dublicate by connectionName
+    list = list.filter(
+      (value, index, self) =>
+        index === self.findIndex((t) => t.connectionName === value.connectionName)
+    );
     return list || [];
   } catch (e) {
     console.error(e);
@@ -17,6 +22,7 @@ export async function get(): Promise<Connection[]> {
 
 export async function saveConnections(connections: ReadonlyArray<Connection>) {
   try {
+    // console.log('Set->saveConnections', connections);
     await appStorage.setItem(key, connections);
   } catch (e) {
     console.error(e);
@@ -27,7 +33,7 @@ export async function getLastActiveConnection(): Promise<Option<Connection>> {
   try {
     const name = await appStorage.getItem<string | null>(lastActiveKey);
     if (!name) return None;
-    const lastConnection = (await get()).find(c => c.connectionName === name);
+    const lastConnection = (await get()).find((c) => c.connectionName === name);
     return Option.of(lastConnection);
   } catch (e) {
     console.error(e);

@@ -1,3 +1,5 @@
+import { SelectHandler } from 'rc-select/lib/Select';
+
 /**
  * NameValue<Type> = { value: Type, name: string }
  * NameValue<Type, keyof Type> = { value: Type, name: keyof Type }
@@ -62,7 +64,6 @@ export default class Model<Entity extends object> implements ModelLike<Entity> {
   changeField<K extends keyof Entity>(event: InputEventLike | NameValue<Entity, K>) {
     let prevValue: Entity[K];
     let name: K;
-
     // change store's field immediately for performance purpose
     if (isInputEventLike(event)) {
       event.preventDefault && event.preventDefault();

@@ -94,18 +94,21 @@ class SignInView extends React.Component<RoutedProps> {
                   <a href="https://tabix.io/" target="_blank" rel="noreferrer">
                     <img
                       className={css.logoimg}
-                      src="https://tabix.io/img/tabixLogo-IconText-DB7315.png?v=22.04&p=sign"
+                      src="https://tabix.io/img/tabixLogo-IconText-DB7315.png?v=22.05&p=sign"
                       alt="Tabix LOGO"
                     />
                   </a>
                   <Divider />
                 </Row>
+
                 <Row style={{ paddingLeft: '20px' }}>Select connection or create:</Row>
+                <Divider />
                 <ConnectionList
                   selectedConnection={store.selectedConnection}
                   connections={store.connectionList}
                   onSelect={this.onSelectConnection}
                 />
+                <Divider />
                 <Flex center>
                   <Button
                     type="primary"
@@ -123,15 +126,6 @@ class SignInView extends React.Component<RoutedProps> {
           <Flex shrink={false} center fill>
             <Flex column>
               <Col>
-                {/*<Row style={{ minHeight: '300px' }} align="middle" justify="center">*/}
-                {/*  <div className={css.logo}>*/}
-                {/*    <img*/}
-                {/*      className={css.logoimg}*/}
-                {/*      src="https://tabix.io/img/logotabix.png?v=22"*/}
-                {/*      alt="Tabix LOGO"*/}
-                {/*    />*/}
-                {/*  </div>*/}
-                {/*</Row>*/}
                 <Row>
                   <Tabs
                     type="line"
@@ -143,7 +137,11 @@ class SignInView extends React.Component<RoutedProps> {
                     onChange={this.onChangeTab}
                     className={css.form}
                   >
-                    <Tabs.TabPane tab="DIRECT CH" key={ConnectionType.Direct}>
+                    <Tabs.TabPane
+                      tab="DIRECT CH"
+                      key={ConnectionType.Direct}
+                      style={{ minWidth: '490px' }}
+                    >
                       {isDirectConnection(store.selectedConnection) && (
                         <DirectSignInForm
                           model={store.selectedConnection}

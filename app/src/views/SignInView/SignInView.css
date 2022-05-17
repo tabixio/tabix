@@ -4,18 +4,19 @@
 }
 
 .form {
-  width: 350px;
+  min-width: 350px;
 }
 
 .layout-connection-list {
   overflow-x: hidden;
-  
+
 }
+
 .logo {
   float: left;
 }
 
 .logoimg {
   width: 270px;
-  height: 110px; 
+  height: 110px;
 }

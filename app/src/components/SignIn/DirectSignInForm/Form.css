@@ -1,0 +1,18 @@
+.main-container {
+  border-left: 1px solid #DB7315;
+
+:global {
+  & .ant-form-item {
+    margin: 14px;
+    padding: 5px;
+  }
+    
+  & .ant-form-item-label > label .ant-form-item-tooltip {
+    
+      padding-left: 5px;
+  padding-right: 5px;
+    }  
+    
+  }
+
+}

@@ -1,4 +1,5 @@
 import { Omit } from 'typelevel-ts';
+import { ConnectionMode } from '../models';
 
 export interface ConnectionLike {
   connectionName: string;
@@ -6,6 +7,7 @@ export interface ConnectionLike {
   username: string;
   password: string;
   version: string;
+  mode?: ConnectionMode;
 }
 
 export enum ConnectionType {

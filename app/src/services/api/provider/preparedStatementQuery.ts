@@ -29,7 +29,6 @@ export default class preparedStatementQuery extends TemplateQuery {
         formatReadableSize(toUInt64(read_bytes)+toUInt64(written_bytes)) as bytes,
         toUInt64(toUInt64(read_rows) + toUInt64(written_rows)) as rows,
         formatReadableSize(peak_memory_usage) AS "peak memory",
-             -- formatReadableSize(memory_usage) as "memory usage",
         formatReadableSize(read_bytes) as "read bytes",
         formatReadableSize(written_bytes) as "written bytes",
         formatReadableSize(memory_usage) AS "memory usage",

@@ -17,6 +17,7 @@ export default class Api {
       ? new DirectClickHouseProvider(connection)
       : new TabixServerProvider(connection);
     // -----
+    // connection.readonly = true; // check
     console.log('Try connect to clickhouse');
     let version = '';
     try {
