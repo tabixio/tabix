@@ -111,7 +111,8 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       columns: this.prepared().columnsList(_LimitRead * 10),
     };
     const data = await this.fetchPool(pool);
-
+    let canSkipError = false;
+    const errorMaps: Array<string> = [];
     if (!data.isOk) {
       const msg: Array<string> = ['Error in load DatabaseStructure'];
 
@@ -119,12 +120,25 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
         const err = data.pool[key].isError;
         let line = `Fetch ${key}, result = ` + (err ? ' Error ' : 'Ok');
         if (err) {
+          errorMaps.push(key);
           line = line + `Error ${data.pool[key].error} in ${data.pool[key].query.sql}`;
           msg.push(line);
           console.error(line);
         }
       });
-      throw Error(msg.join('\n'));
+
+      // check real need structure
+      if (errorMaps.includes('tables') || errorMaps.includes('databases')) {
+        canSkipError = false;
+      } else {
+        canSkipError = true;
+      }
+      //
+      console.log('Error in load DatabaseStructure, in keys = ', errorMaps);
+      //
+      if (!canSkipError) {
+        throw Error(msg.join('\n'));
+      }
     }
 
     const ConnectionName = this.connection.connectionName;
@@ -137,13 +151,13 @@ export default class DirectClickHouseProvider extends CoreProvider<DirectConnect
       // Create ServerStructure.Server
       try {
         return ServerStructure.from(
-          data.pool['columns'].response.data,
           data.pool['tables'].response.data,
           data.pool['databases'].response.data,
-          data.pool['dictionaries'].response.data,
-          data.pool['functions'].response.data,
-          data.pool['clusters'].response.data,
-          ConnectionName
+          ConnectionName,
+          data.pool['columns'].isError ? undefined : data.pool['columns'].response.data,
+          data.pool['dictionaries'].isError ? undefined : data.pool['dictionaries'].response.data,
+          data.pool['functions'].isError ? undefined : data.pool['functions'].response.data,
+          data.pool['clusters'].isError ? undefined : data.pool['clusters'].response.data
         );
       } catch (e) {
         console.error('Can`t create getDatabaseStructure error on parse', e);

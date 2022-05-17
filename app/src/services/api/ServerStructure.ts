@@ -109,39 +109,40 @@ namespace ServerStructure {
   // export const EMPTY: Server = new Server('root', 'Clickhouse Server', [], [], [], [], {});
 
   export function from(
-    columnsRaw: any[],
     tables: ReadonlyArray<Table>,
     databases: ReadonlyArray<Database>,
-    dictionaries: any[],
-    functions: any[],
-    clusters: any[],
-    connectionName: string
+    connectionName: string,
+    columnsRaw?: any[],
+    dictionaries?: any[],
+    functions?: any[],
+    clusters?: any[]
   ) {
-    // const columns: Array<Column> = [];
-    const columns: Array<Column> = columnsRaw.map((c: any) => {
-      /* eslint-disable camelcase */
-      const {
-        data_compressed_bytes,
-        data_uncompressed_bytes,
-        default_expression,
-        default_kind,
-        default_type,
-        marks_bytes,
-        ...rest
-      } = c;
+    let columns: Array<Column> = [];
+    if (columnsRaw) {
+      columns = columnsRaw.map((c: any) => {
+        /* eslint-disable camelcase */
+        const {
+          data_compressed_bytes,
+          data_uncompressed_bytes,
+          default_expression,
+          default_kind,
+          default_type,
+          marks_bytes,
+          ...rest
+        } = c;
 
-      return {
-        ...rest,
-        dataCompressedBytes: +data_compressed_bytes,
-        dataUncompressedBytes: +data_uncompressed_bytes,
-        defaultExpression: default_expression,
-        defaultKind: default_kind,
-        defaultType: default_type || '',
-        marksBytes: +marks_bytes,
-      } as ServerStructure.Column;
-      /* eslint-enable */
-    });
-
+        return {
+          ...rest,
+          dataCompressedBytes: +data_compressed_bytes,
+          dataUncompressedBytes: +data_uncompressed_bytes,
+          defaultExpression: default_expression,
+          defaultKind: default_kind,
+          defaultType: default_type || '',
+          marksBytes: +marks_bytes,
+        } as ServerStructure.Column;
+        /* eslint-enable */
+      });
+    }
     const dbTableColumns = columns.reduce((acc, col) => {
       const pcol = col;
       if (col.type) {
@@ -198,80 +199,90 @@ namespace ServerStructure {
     };
 
     // ------------------------------- builtinFunctions -----------------------------------
-    functions.forEach((item) => {
-      editorRules.builtinFunctions.push({
-        name: item.name,
-        isaggr: item.is_aggregate,
-        score: 101,
-        comb: false,
-        origin: item.name,
+
+    if (functions) {
+      functions.forEach((item) => {
+        editorRules.builtinFunctions.push({
+          name: item.name,
+          isaggr: item.is_aggregate,
+          score: 101,
+          comb: false,
+          origin: item.name,
+        });
+        if (item.is_aggregate) {
+          // Комбинатор -If. Условные агрегатные функции
+          let p = {
+            name: `${item.name}If`,
+            isaggr: item.is_aggregate,
+            score: 3,
+            comb: 'If',
+            origin: item.name,
+          };
+          editorRules.builtinFunctions.push(p);
+
+          // Комбинатор -Array. Агрегатные функции для аргументов-массивов
+          p = {
+            name: `${item.name}Array`,
+            isaggr: item.is_aggregate,
+            score: 2,
+            comb: 'Array',
+            origin: item.name,
+          };
+          editorRules.builtinFunctions.push(p);
+
+          // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
+          p = {
+            name: `${item.name}State`,
+            isaggr: item.is_aggregate,
+            score: 1,
+            comb: 'State',
+            origin: item.name,
+          };
+          editorRules.builtinFunctions.push(p);
+        }
       });
-      if (item.is_aggregate) {
-        // Комбинатор -If. Условные агрегатные функции
-        let p = {
-          name: `${item.name}If`,
-          isaggr: item.is_aggregate,
-          score: 3,
-          comb: 'If',
-          origin: item.name,
-        };
-        editorRules.builtinFunctions.push(p);
-
-        // Комбинатор -Array. Агрегатные функции для аргументов-массивов
-        p = {
-          name: `${item.name}Array`,
-          isaggr: item.is_aggregate,
-          score: 2,
-          comb: 'Array',
-          origin: item.name,
-        };
-        editorRules.builtinFunctions.push(p);
-
-        // Комбинатор -State. агрегатная функция возвращает промежуточное состояние агрегации
-        p = {
-          name: `${item.name}State`,
-          isaggr: item.is_aggregate,
-          score: 1,
-          comb: 'State',
-          origin: item.name,
-        };
-        editorRules.builtinFunctions.push(p);
-      }
-    });
+    }
 
     // -------------------------------- dictionaries ---------------------------------------------------
-    dictionaries.forEach((item) => {
-      let idField = item.name;
+    if (dictionaries) {
+      dictionaries.forEach((item) => {
+        let idField = item.name;
 
-      // Определяем id_field из item.name
-      // Если id_field содержит точку вырезать все что до точки
-      // Если в конце `s` вырезать
-      // подставить _id и все в нижний регистр
+        // Определяем id_field из item.name
+        // Если id_field содержит точку вырезать все что до точки
+        // Если в конце `s` вырезать
+        // подставить _id и все в нижний регистр
 
-      idField = idField.replace(/^.*\./gm, '');
+        idField = idField.replace(/^.*\./gm, '');
 
-      if (idField !== 'news') {
-        idField = idField.replace(/s$/gm, '');
-      }
+        if (idField !== 'news') {
+          idField = idField.replace(/s$/gm, '');
+        }
 
-      if (!idField) {
-        idField = 'ID';
-      } else {
-        idField = `${idField.toLowerCase()}_id`;
-      }
+        if (!idField) {
+          idField = 'ID';
+        } else {
+          idField = `${idField.toLowerCase()}_id`;
+        }
 
-      const dic = `dictGet${item['attribute.types']}('${item.name}','${
-        item['attribute.names']
-      }',to${item.key}( ${idField} ${
-        item['key_name'] ? '/*' + item['key_name'] + ' */' : ''
-      } ) ) AS ${item['attribute.names']},`;
-      editorRules.dictionaries.push({
-        dic,
-        title: `dic_${item.name}.${item['attribute.names']}`,
+        const dic = `dictGet${item['attribute.types']}('${item.name}','${
+          item['attribute.names']
+        }',to${item.key}( ${idField} ${
+          item['key_name'] ? '/*' + item['key_name'] + ' */' : ''
+        } ) ) AS ${item['attribute.names']},`;
+        editorRules.dictionaries.push({
+          dic,
+          title: `dic_${item.name}.${item['attribute.names']}`,
+        });
       });
-    });
-
+    }
     editorRules.tables = dbTables;
+
+    //
+
+    if (!clusters) clusters = [];
+    if (!functions) functions = [];
+    if (!dictionaries) dictionaries = [];
     return new Server(
       'root',
       connectionName,
