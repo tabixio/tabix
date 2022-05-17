@@ -5,6 +5,10 @@ import ReactECharts from 'echarts-for-react';
 import { Flex, FlexProps } from 'reflexy';
 import { TableSheetProps } from '../TableSheet/TableSheet';
 import { SpreadSheet } from '@antv/s2';
+import { Button, Col, Dropdown, Menu, Popover, Row } from 'antd';
+import { SettingOutlined, VerticalAlignMiddleOutlined } from '@ant-design/icons';
+import { SwitcherHeader } from '../TableSheet/Switcher/header';
+import { Export } from '../TableSheet/Export';
 
 interface DrawProps {
   data: DataDecorator | null;
@@ -155,18 +159,49 @@ export default function Draw({
     },
   };
 
+  const menu = (
+    <Menu
+      selectable
+      // defaultSelectedKeys={[currentSheet]}
+      onSelect={(value) => {
+        // Update setSheetType
+        // console.log('Header -> SetSheetType:', value.key);
+        // setSheetType(value.key);
+        // setSheetTypeLocal(value.key);
+      }}
+    >
+      {['Line', 'Bar'].map((i) => (
+        <Menu.Item key={i} itemID={i}>
+          {i}
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+  const pop = [
+    <Dropdown overlay={menu} placement="topLeft" arrow key="settingZ">
+      <Button icon={<VerticalAlignMiddleOutlined />}>Type chart</Button>
+    </Dropdown>,
+  ];
+
   return (
-    <ReactECharts
-      // ref={chartRef}
-      theme={'dark'}
-      option={options2}
-      // notMerge={true}
-      // lazyUpdate={true}
-      // theme={'dark'}
-      // onChartReady={this.onChartReadyCallback}
-      // onEvents={EventsDict}
-      style={{ width: '100%', height: '100%' }}
-    />
+    <div style={{ width: '100%', height: '100%', alignContent: 'end' }}>
+      <Popover content={pop} title="chart settings ...">
+        <Button icon={<SettingOutlined />} size={'small'}>
+          Setting chart
+        </Button>
+      </Popover>
+      <ReactECharts
+        // ref={chartRef}
+        theme={'dark'}
+        option={options2}
+        // notMerge={true}
+        // lazyUpdate={true}
+        // theme={'dark'}
+        // onChartReady={this.onChartReadyCallback}
+        // onEvents={EventsDict}
+        style={{ width: '100%', height: '100%' }}
+      />
+    </div>
   );
 }
 

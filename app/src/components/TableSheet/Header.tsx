@@ -96,7 +96,7 @@ export const Header: FC<HeaderProps> = ({
       </Col>
       <Col span={6} pull={18}>
         <Popover content={pop} title="Table settings ...">
-          <Button type="primary" icon={<SettingOutlined />} size={'small'}>
+          <Button icon={<SettingOutlined />} size={'small'}>
             Setting table
           </Button>
         </Popover>

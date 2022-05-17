@@ -25,6 +25,7 @@ export default function TableSheet({
   data,
   defaultSheetType,
   title,
+  dataUpdate,
   // defaultHeight = 600,
   // defaultWidth = 600,
   ...flexProps
