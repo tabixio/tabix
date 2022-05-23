@@ -57,7 +57,7 @@ export default function TableSheet({
     },
     tooltip: {
       showTooltip: true,
-      renderTooltip: (spreadsheet) => new Tooltip(spreadsheet),
+      renderTooltip: (spreadsheet) => new Tooltip(spreadsheet, data),
     },
     // https://s2.antv.vision/en/examples/case/data-preview#index
     style: {
@@ -66,6 +66,13 @@ export default function TableSheet({
       },
     },
   } as S2Options;
+  // -----
+
+  const getDataInfo = (cellName: string) => {
+    console.log('getCellInfo', cellName);
+    return 'OK!';
+  };
+
   // ----------------------------------- Update Sheet Type
   useEffect(() => {
     //  sheetType = 'pivot' | 'table' | 'gridAnalysis' | 'strategy';
@@ -98,7 +105,6 @@ export default function TableSheet({
     //     {  field: 'type',       name: 'type',     },
     //   ],
     if (!data?.error && data?.rows) {
-      // console.log('Set Data', data);
       setData({
         data: data.rows,
         fields: { columns: data.getColumns().map((o) => o.name) },
@@ -108,7 +114,17 @@ export default function TableSheet({
         //   columns: [],
         // },
         meta: data.getColumns().map((o) => {
-          return { field: o.name, name: o.name };
+          return {
+            field: o.name,
+            name: o.name,
+            // @ts-ignore
+            formatter: (v: unknown) => {
+              if (v instanceof String || typeof v === 'string') {
+                return v.replace('\n', '\u23CE');
+              }
+              return v as string;
+            }, //v.split('\n')?.[0],
+          };
         }),
       });
       setLoading(false);

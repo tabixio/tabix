@@ -9,6 +9,7 @@ interface Props {
 
 export default function ServerOverviewTabPage({ store }: Props) {
   const [data, setData] = useState(null as DataDecorator | null);
+  const [data2, setData2] = useState(null as DataDecorator | null);
   // const [load, setLoad] = useState(false);
   const { current: a } = useRef(['a']);
   useEffect(() => {
@@ -18,11 +19,16 @@ export default function ServerOverviewTabPage({ store }: Props) {
       store.api.query(sql).then((data) => {
         setData(data);
       });
+      const sql2 = store.api.prepared().queryLogFast(500);
+      store.api.query(sql2).then((data) => {
+        setData2(data);
+      });
     }; // fetch
     fetchData();
   }, [a]);
   return (
     <div>
+      <TableSheet data={data2} />
       <TableSheet data={data} />
     </div>
   );

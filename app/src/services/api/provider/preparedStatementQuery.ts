@@ -205,6 +205,24 @@ export default class preparedStatementQuery extends TemplateQuery {
   // Create by Alex-Burmak ?https://github.com/ClickHouse/ClickHouse/commit/465a9bf615e1b233606460f956c09f71931c99a2
   // https://github.com/ClickHouse/ClickHouse/blob/master/utils/clickhouse-diagnostics/clickhouse-diagnostics
 
+  public queryLogFast(limit = 100) {
+    return (
+      `select event_date,
+              event_time,
+              query_duration_ms,
+              read_rows,
+              read_bytes,
+              memory_usage,
+              query
+
+       from system.query_log
+       where event_date = today()
+         and read_bytes > 0
+       order by event_date desc
+       LIMIT ` + limit
+    );
+  }
+
   public databasesListAndSize(limit = 100) {
     return this.template(`SELECT name,
                                  engine,

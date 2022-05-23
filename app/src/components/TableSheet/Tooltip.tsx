@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import { S2CellType } from '@antv/s2/esm/common/interface';
 import { TooltipComponent, TooltipRenderProps } from './Tooltip/TooltipComponent';
+import DataDecorator from '../../services/api/DataDecorator';
 
 export class Tooltip extends BaseTooltip {
-  constructor(spreadsheet: SpreadSheet) {
+  private data: DataDecorator | null = null;
+
+  constructor(spreadsheet: SpreadSheet, data: DataDecorator | null) {
     super(spreadsheet);
+    this.data = data;
   }
 
   renderContent() {
@@ -16,6 +20,7 @@ export class Tooltip extends BaseTooltip {
       cell = this.spreadsheet.getCell(showOptions.event.target);
     }
     const tooltipProps: TooltipRenderProps = {
+      dataDecorator: this.data,
       ...showOptions,
       cell,
     };

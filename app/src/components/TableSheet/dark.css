@@ -1,18 +1,45 @@
+@value font-size,font-family,bg-color-dd from '~assets/styles/vars.css';
+
 :global {
 .antv-s2-tooltip-operator,
 .antv-s2-tooltip-container,
-
 .antv-s2-tooltip-summary
 {
-  color: #12f4f9 !important;
+  color: #f9f9f9 !important;
   background-color: #424242 !important;
+
+    .cell-hint textarea{
+      font-family: font-family;
+      font-size: font-size;
+      background-color: bg-color-dd;
+      max-width: 200px;
+      min-width: 100px;
+      max-height: 200px;
+      height: 200px;
+      weight: 200px;
+       
+      overflow: auto;
+  }
 }
+
+/*.cell-hint {*/
+/*  background-color: black;*/
+/*  border: #C21F39 solid 3px;*/
+/*}*/
+
+/*antv-s2-tooltip-container .cell-hint textarea{*/
+/*  background-color: black;*/
+/*  border: #C21F39 solid 3px;*/
+/*}*/
   /*.ant-menu-item-active {*/
   /*  background-color: #ffff5a;*/
   /*}*/
   /*.ant-menu-title-content {*/
   /*  color: #ffc45a !important; */
   /*}*/
+  .s2-tooltip-container textarea {
+    background-color: black;
+  }
   .antv-s2-switcher-item.normal-item,
   .antv-s2-switcher-item.checkable-item {
     padding: 0 4px;

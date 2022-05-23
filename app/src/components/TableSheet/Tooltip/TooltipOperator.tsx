@@ -2,6 +2,7 @@ import { Menu, Dropdown, MenuProps } from 'antd';
 import { isEmpty, map } from 'lodash';
 import React from 'react';
 import { TooltipOperatorMenu, S2CellType } from '@antv/s2';
+import { Icon } from '../Icons';
 
 interface TooltipOperatorProps {
   onlyMenu: boolean;
@@ -16,15 +17,13 @@ export const TooltipOperator = (props: TooltipOperatorProps) => {
   const renderTitle = (menu: TooltipOperatorMenu) => {
     return (
       <span onClick={() => menu.onClick?.(cell)}>
-        {/*<Icon*/}
-        {/*  icon={menu.icon}*/}
-        {/*  className={`${TOOLTIP_PREFIX_CLS}-operator-icon`}*/}
-        {/*/>*/}
+        {/*className={`${TOOLTIP_PREFIX_CLS}-operator-icon`}*/}
+        {menu.icon && <Icon icon={menu.icon} />}
         {menu.text}
       </span>
     );
   };
-
+  //
   const renderMenu = (menu: TooltipOperatorMenu) => {
     const { key, text, children, onClick } = menu;
 
@@ -63,12 +62,12 @@ export const TooltipOperator = (props: TooltipOperatorProps) => {
       );
 
       return (
-        <Dropdown key={key} overlay={menuRender}>
+        <Dropdown key={key} overlay={menuRender} arrow>
           {renderTitle(menu)}
         </Dropdown>
       );
     });
   };
-
-  return <div>{renderMenus()}</div>;
+  console.log('menus', menus);
+  return <div>reew {renderMenus()}</div>;
 };
