@@ -184,7 +184,7 @@ export default function Draw({
   ];
 
   return (
-    <div style={{ width: '100%', height: '100%', alignContent: 'end' }}>
+    <div style={{ width: '100%', height: '100%', alignContent: 'end', minHeight: '200px' }}>
       <Popover content={pop} title="chart settings ...">
         <Button icon={<SettingOutlined />} size={'small'}>
           Setting chart

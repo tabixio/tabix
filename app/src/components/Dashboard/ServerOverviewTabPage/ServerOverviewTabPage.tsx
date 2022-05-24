@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { TableSheet } from 'components/TableSheet';
 import DataDecorator from 'services/api/DataDecorator';
 import { TabsStore } from '../../../stores';
+import Draw from 'components/Draw';
 
 interface Props {
   store: TabsStore;
@@ -15,7 +16,21 @@ export default function ServerOverviewTabPage({ store }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       // setLoad(true);
-      const sql = store.api.prepared().databasesListAndSize();
+      const sql =
+        'SELECT toStartOfFifteenMinutes(event_time) as dt,\n' +
+        '       median(ProfileEvent_ReadBufferFromFileDescriptorRead) as FileDescriptorRead,\n' +
+        '       median(ProfileEvent_IOBufferAllocs) as IOBufferAllocs,\n' +
+        '       median(ProfileEvent_DiskReadElapsedMicroseconds) as DiskReadElapsed,\n' +
+        '       median(CurrentMetric_PartsActive) as PartsActive,\n' +
+        '       median(ProfileEvent_InsertedBytes) as InsertedBytes,\n' +
+        '       median(ProfileEvent_InsertedRows) as InsertedRows,\n' +
+        '       median(ProfileEvent_SelectedBytes) as electedBytes,\n' +
+        '       median(ProfileEvent_Query) as Query\n' +
+        'FROM system.metric_log\n' +
+        'WHERE event_date = today()    \n' +
+        'group by dt\n' +
+        'ORDER BY dt \n' +
+        'LIMIT 4000';
       store.api.query(sql).then((data) => {
         setData(data);
       });
@@ -29,6 +44,7 @@ export default function ServerOverviewTabPage({ store }: Props) {
   return (
     <div>
       <TableSheet data={data2} />
+      <Draw data={data2} fill />
       <TableSheet data={data} />
     </div>
   );

@@ -38,3 +38,26 @@ LIMIT 4000
 
 
 ```
+
+```
+
+DataDecorator - 1 query, and result  
+DataLayer - 1...More [DataDecorator]
+DataLayer - return all exists items with props for render Table,Draw. DataItemsLayout - render DataLayer, getItems()...
+[ Header, Footer ] , getItems().map()=> renderItemByType()
+
+
+Pool|Array<[SQL -> DataDecorator]> -> DataLayer -> DataRender? >->? DataItemsLayout -> Header+GridLayout -> Table|Draw
+
+
+DataLay - должен содержать 
+<MarkDown>
+<SQL Editor>
+<Table>
+<Draw>
+<Rows|Cols|Collapse>
+
+```
+
+----
+
