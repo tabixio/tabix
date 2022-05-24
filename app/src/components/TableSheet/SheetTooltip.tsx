@@ -5,7 +5,7 @@ import { S2CellType } from '@antv/s2/esm/common/interface';
 import { TooltipComponent, TooltipRenderProps } from './Tooltip/TooltipComponent';
 import DataDecorator from '../../services/api/DataDecorator';
 
-export class Tooltip extends BaseTooltip {
+export class SheetTooltip extends BaseTooltip {
   private data: DataDecorator | null = null;
 
   constructor(spreadsheet: SpreadSheet, data: DataDecorator | null) {

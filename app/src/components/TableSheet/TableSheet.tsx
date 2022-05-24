@@ -1,11 +1,20 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { themeCfg } from './Theme';
 import { Header } from './Header';
-import { S2DataConfig, S2Options, SpreadSheet } from '@antv/s2';
+import {
+  DataCell,
+  InterceptType,
+  S2DataConfig,
+  S2Event,
+  S2Options,
+  SpreadSheet,
+  TargetCellInfo,
+} from '@antv/s2';
+import { Event as CanvasEvent } from '@antv/g-canvas';
 import { SheetComponent as S2Table } from '@antv/s2-react';
 import '@antv/s2-react/dist/style.min.css';
 import './dark.css';
-import { Tooltip } from './Tooltip';
+import { SheetTooltip } from './SheetTooltip';
 import DataDecorator from 'services/api/DataDecorator';
 import { SheetType } from '@antv/s2-react/esm/components/sheets/interface';
 import { Flex, FlexProps } from 'reflexy';
@@ -30,15 +39,25 @@ export default function TableSheet({
   // defaultWidth = 600,
   ...flexProps
 }: TableSheetProps & FlexProps) {
+  //
+  const toolTip: SheetTooltip | null = null;
+
   const getSpreadSheet = (instance: SpreadSheet) => {
     setLoading(true);
     setLoading(false);
     s2Ref.current = instance;
+
+    // tooltip: {
+    //
+    //     renderTooltip: (spreadsheet) => toolTip,
+    // },
+    // const toolTip = new Tooltip(instance, data);
   };
   const s2Ref = React.useRef<SpreadSheet>();
   const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
   const [sheetType, setSheetType] = useState(defaultSheetType ?? ('table' as SheetType));
   const [loading, setLoading] = useState(true);
+
   // ----------------------------------- Options
   const s2Options = {
     // width: defaultWidth,
@@ -49,15 +68,24 @@ export default function TableSheet({
     //   rows: { showGrandTotals: true },
     //   col: { showGrandTotals: true },
     // },
+    // frozenRowCount: 1,
+    showDefaultHeaderActionIcon: true,
+    frozenColCount: 1,
+    // frozenTrailingRowCount: 1,
+    // frozenTrailingColCount: 1,
     interaction: {
       enableCopy: true,
       // hiddenColumnFields: ['cost'],
       // selectedCellsSpotlight: true,
-      // hoverHighlight: true,
+      hoverHighlight: true,
+      hoverFocus: true,
+      multiSelection: true,
+      selectedCellMove: true,
     },
     tooltip: {
       showTooltip: true,
-      renderTooltip: (spreadsheet) => new Tooltip(spreadsheet, data),
+      // @ts-ignore
+      renderTooltip: (spreadsheet) => new SheetTooltip(spreadsheet, data),
     },
     // https://s2.antv.vision/en/examples/case/data-preview#index
     style: {
@@ -91,6 +119,9 @@ export default function TableSheet({
       });
       // Rerender
       s2Ref.current.render();
+      s2Ref.current.on(S2Event.GLOBAL_CONTEXT_MENU, (event) => {
+        console.log('EVENTX', event);
+      });
     }
   }, [sheetType]);
   useEffect(() => {
@@ -130,6 +161,36 @@ export default function TableSheet({
       setLoading(false);
     }
   }, [data?.dataUpdate]);
+
+  const onDataCellDoubleClick = (cell: TargetCellInfo) => {
+    console.log('onDataCellDoubleClick - mmed', cell);
+    return true;
+  };
+  const onContextMenu = (event: CanvasEvent) => {
+    console.log('onContextMenu - CALL');
+
+    if (!s2Ref.current) return;
+    // -- go
+    event.preventDefault();
+    const { interaction } = s2Ref.current;
+    const cell: DataCell = s2Ref.current.getCell(event.target);
+    const meta = cell.getMeta();
+
+    if (!meta) {
+      return;
+    }
+    interaction.addIntercepts([InterceptType.HOVER]);
+    if (interaction.isSelectedCell(cell)) {
+      interaction.reset();
+      return;
+    }
+    // s2Ref?.current.emit(S2Event.DATA_CELL_CLICK, event);
+    s2Ref?.current.showTooltip({
+      event: event,
+      position: { x: event.clientX, y: event.clientY },
+    });
+    return true;
+  };
   return (
     s2DataConfig && (
       <Flex column fill {...flexProps} style={{ minHeight: 150 /*, border: '1px solid green' */ }}>
@@ -142,6 +203,8 @@ export default function TableSheet({
           title={title}
         />
         <S2Table
+          onContextMenu={onContextMenu}
+          onDataCellDoubleClick={onDataCellDoubleClick}
           getSpreadSheet={getSpreadSheet}
           adaptive={true}
           sheetType={sheetType}

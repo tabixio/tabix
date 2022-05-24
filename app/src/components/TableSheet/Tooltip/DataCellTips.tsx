@@ -14,6 +14,11 @@ export const DataCellTips = (props: TooltipSimple) => {
     if (!cell) throw 'Not set cell';
     const value = cell.getMeta().fieldValue;
     console.log('value', value);
+    if (typeof value === 'string') {
+      if (!(value.includes('\n') || value.length > 200)) return <></>;
+    } else {
+      return <></>;
+    }
     // /ERe
     return (
       <div className={'cell-hint'}>

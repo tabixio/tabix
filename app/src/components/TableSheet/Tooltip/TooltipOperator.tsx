@@ -69,5 +69,5 @@ export const TooltipOperator = (props: TooltipOperatorProps) => {
     });
   };
   console.log('menus', menus);
-  return <div>reew {renderMenus()}</div>;
+  return <div>{renderMenus()}</div>;
 };

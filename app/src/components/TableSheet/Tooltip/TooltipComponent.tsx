@@ -31,14 +31,20 @@ export const TooltipComponent: React.FC<TooltipRenderProps> = (props) => {
   // TableDataCell , TableColCell
   // DataCell | HeaderCell | ColCell | CornerCell | RowCell | MergedCell | BaseCell
   const cellType = cell?.constructor.name;
-  const isClick = event && event.type.match('/mouseup|click/g'); //: "mouseup" | "mousemove" | "click"
+  const isClick = event && event.type.match(/mouseup|click|contextmenu/g) !== null; //: contextmenu | mouseup | "mousemove" | "click"
   // const isTargetTotalCell = cell?.isTotals;
   const isTargetColCell = cell?.cellType === CellTypes.COL_CELL;
   const isTargetRowCell = cell?.cellType === CellTypes.ROW_CELL;
+  const isTargetDataCell = cell?.cellType === CellTypes.DATA_CELL;
   //
   // const isDataCell = cellType && cellType.includes('DataCell');
   // const isColCell = cellType && cellType.includes('ColCell');
   // ------------------------------------------------------------------------------------------
+  /*
+   @TODO :
+   1. Как скрыть (hide) выбранной колонки 
+   2. Как выбрать sort ASC/DES     
+   */
   // ------------------------------------------------------------------------------------------
   const renderDivider = () => {
     return <Divider />;
@@ -100,7 +106,7 @@ export const TooltipComponent: React.FC<TooltipRenderProps> = (props) => {
     const nameTip = { name, tips };
     //
 
-    console.log('------------', cellType);
+    console.log('------------', cellType, event?.type, 'isClick = ', isClick);
     console.log('Data', data);
     console.log('interpretation', interpretation);
     console.log('content', content);
@@ -120,7 +126,7 @@ export const TooltipComponent: React.FC<TooltipRenderProps> = (props) => {
     const DefaultContent = (
       <>
         {
-          cell && isClick && isTargetColCell && (
+          cell && isClick && isTargetDataCell && (
             <DataCellTips cell={cell} event={event} />
           ) /* Содержимое ячейки */
         }
