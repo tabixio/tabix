@@ -209,21 +209,21 @@ export default class EditorTabPage extends React.Component<Props> {
                   />
                 </TabsTabPane>
 
-                <TabsTabPane key="draw" tab="Chart / Draw">
-                  {!!store.uiStore.executingQueries.length && (
-                    <Progress queries={store.uiStore.executingQueries} />
-                  )}
+                {/*<TabsTabPane key="draw" tab="Chart / Draw">*/}
+                {/*  {!!store.uiStore.executingQueries.length && (*/}
+                {/*    <Progress queries={store.uiStore.executingQueries} />*/}
+                {/*  )}*/}
 
-                  <DataItemsLayout
-                    onResize={this.onResizeGrid}
-                    cols={4}
-                    itemWidth={4}
-                    itemHeight={6}
-                    items={resultList}
-                    width={width}
-                    renderItem={this.renderDraw}
-                  />
-                </TabsTabPane>
+                {/*  <DataItemsLayout*/}
+                {/*    onResize={this.onResizeGrid}*/}
+                {/*    cols={4}*/}
+                {/*    itemWidth={4}*/}
+                {/*    itemHeight={6}*/}
+                {/*    items={resultList}*/}
+                {/*    width={width}*/}
+                {/*    renderItem={this.renderDraw}*/}
+                {/*  />*/}
+                {/*</TabsTabPane>*/}
               </Tabs>
             </div>
           </Splitter>

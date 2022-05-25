@@ -1,6 +1,6 @@
 {
   "name": "tabix",
-  "version": "22.05.18",
+  "version": "22.05.25",
   "description": "Tabix preview release",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
