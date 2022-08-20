@@ -1,0 +1,23 @@
+version: '3.5'
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+services:
+  ### react #####################################################
+  app:
+    profiles: ["dev"]
+    build:
+      context: ./settings/react
+    ports:
+      - "3000:3000"
+    container_name: tabix
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - frontend
+    volumes:
+      - ../:/usr/src/app/tabix
+      - /usr/src/app/tabix/node_modules
+  

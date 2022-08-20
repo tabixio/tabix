@@ -8,7 +8,7 @@ networks:
     driver: ${NETWORKS_DRIVER}
 services:
   ### react #####################################################
-  react:
+  app:
     build:
       context: ./settings/react
     ports:
@@ -21,8 +21,8 @@ services:
       - frontend
       - backend
     volumes:
-      - ./react:/usr/src/app/react
-      - /usr/src/app/react/node_modules
+      - ../:/usr/src/app/tabix
+      - /usr/src/app/tabix/node_modules
   
   ### NGINX Server #########################################
   nginx:
