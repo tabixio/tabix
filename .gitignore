@@ -16,7 +16,7 @@ node_modules/
 .history/
 
 # Remove after prepare project
-app/src/components/Handsontable/
+front/app/src/components/Handsontable/
 
 # Yarn
 .yarn/*

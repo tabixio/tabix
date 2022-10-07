@@ -1,15 +1,15 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Flex } from 'reflexy';
-import { Button, Layout, Typography, Tabs, Row, Col, Divider, Timeline, Badge } from 'antd';
-import { observer } from 'mobx-react';
-import { typedInject } from 'module/mobx-utils';
-import { SignInStore, Stores } from 'stores';
-import { Connection, ConnectionLike, ConnectionType, isDirectConnection } from 'services';
-import { ConnectionModel, DirectConnectionModel } from 'models';
+import {RouteComponentProps, withRouter} from 'react-router';
+import {Flex} from 'reflexy';
+import {Button, Layout, Typography, Tabs, Row, Col, Divider, Timeline, Badge} from 'antd';
+import {observer} from 'mobx-react';
+import {typedInject} from 'module/mobx-utils';
+import {SignInStore, Stores} from 'stores';
+import {Connection, ConnectionLike, ConnectionType, isDirectConnection} from 'services';
+import {ConnectionModel, DirectConnectionModel} from 'models';
 import Page from 'components/Page';
 import Splitter from 'components/Splitter';
-import { ConnectionList, DirectSignInForm } from 'components/SignIn';
+import {ConnectionList, DirectSignInForm} from 'components/SignIn';
 import {
   SmileOutlined,
   StarOutlined,
@@ -19,7 +19,7 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 import css from './SignInView.css';
-import { observable } from 'mobx';
+import {observable} from 'mobx';
 
 interface InjectedProps {
   store: SignInStore;
@@ -32,7 +32,7 @@ type RoutedProps = Props & RouteComponentProps<any>;
 @observer
 class SignInView extends React.Component<RoutedProps> {
   componentDidMount() {
-    const { store } = this.props;
+    const {store} = this.props;
     // i`m
     // if (!this.imCheck) {
     //   this.imCheck = true;
@@ -43,30 +43,30 @@ class SignInView extends React.Component<RoutedProps> {
   }
 
   private onSelectConnection = (connection: Connection) => {
-    const { store } = this.props;
+    const {store} = this.props;
     store.setSelectedConnection(connection);
   };
 
   private onChangeTab = (key: string) => {
     const con =
       key === ConnectionType.Direct ? ConnectionModel.DirectEmpty : ConnectionModel.ServerEmpty;
-    const { store } = this.props;
+    const {store} = this.props;
     store.setSelectedConnection(con);
   };
 
   private signIn = () => {
-    const { store, history } = this.props;
+    const {store, history} = this.props;
 
     store.signIn(history);
   };
 
   renderFooter() {
-    const { store } = this.props;
+    const {store} = this.props;
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{textAlign: 'center'}}>
         Tabix ©{new Date().getFullYear()} Version: {store.getCurrentVersionTabix()}&nbsp;
         {store.tbxUpdate.needUpdate ? (
-          <Badge count={<ClockCircleOutlined style={{ color: '#f5222d' }} />}>
+          <Badge count={<ClockCircleOutlined style={{color: '#f5222d'}}/>}>
             ,
             <a target="_blank" href={store.tbxUpdate.link} rel="noreferrer">
               Update new version {store.tbxUpdate.newVersion}
@@ -81,7 +81,7 @@ class SignInView extends React.Component<RoutedProps> {
 
   @observable
   private onFinishForm = (values: ConnectionLike): void => {
-    const { selectedConnection } = this.props.store;
+    const {selectedConnection} = this.props.store;
 
     // validate url
     const u = new URL(values.connectionUrl);
@@ -92,7 +92,7 @@ class SignInView extends React.Component<RoutedProps> {
     // Fackig mobx drop naxui
     // Update data
     // @ts-ignore
-    selectedConnection.changeField({ name: 'connectionName', value: values['connectionName'] });
+    selectedConnection.changeField({name: 'connectionName', value: values['connectionName']});
     Object.entries(values).forEach(([key, value]) => {
       if (key !== 'connectionName') selectedConnection.setField(key, value);
     });
@@ -100,7 +100,7 @@ class SignInView extends React.Component<RoutedProps> {
   };
 
   render() {
-    const { store } = this.props;
+    const {store} = this.props;
     //pass:checkVersionUpdateTabix123
     return (
       <Page column={false} uiStore={store.uiStore}>
@@ -109,32 +109,32 @@ class SignInView extends React.Component<RoutedProps> {
             <Layout>
               <Layout.Sider width="100%">
                 <Row
-                  style={{ minHeight: '150px', marginTop: '10px' }}
+                  style={{minHeight: '150px', marginTop: '10px'}}
                   align="middle"
                   justify="center"
                 >
-                  <a href="https://tabix.io/" target="_blank" rel="noreferrer">
+                  <a href="views/SignInView/SignInView" target="_blank" rel="noreferrer">
                     <img
                       className={css.logoimg}
                       src="https://tabix.io/img/tabixLogo-IconText-DB7315.png?v=22.05&p=sign"
                       alt="Tabix LOGO"
                     />
                   </a>
-                  <Divider />
+                  <Divider/>
                 </Row>
 
-                <Row style={{ paddingLeft: '20px' }}>Select connection or create:</Row>
-                <Divider />
+                <Row style={{paddingLeft: '20px'}}>Select connection or create:</Row>
+                <Divider/>
                 <ConnectionList
                   selectedConnection={store.selectedConnection}
                   connections={store.connectionList}
                   onSelect={this.onSelectConnection}
                 />
-                <Divider />
+                <Divider/>
                 <Flex center>
                   <Button
                     type="primary"
-                    style={{ float: 'left' }}
+                    style={{float: 'left'}}
                     className={css['add-connection-btn']}
                     onClick={store.addNewConnection}
                   >
@@ -162,7 +162,7 @@ class SignInView extends React.Component<RoutedProps> {
                     <Tabs.TabPane
                       tab="DIRECT CH"
                       key={ConnectionType.Direct}
-                      style={{ minWidth: '490px' }}
+                      style={{minWidth: '490px'}}
                     >
                       {isDirectConnection(store.selectedConnection) && (
                         <DirectSignInForm
@@ -187,24 +187,24 @@ class SignInView extends React.Component<RoutedProps> {
                   </Tabs>
                 </Row>
                 <Row>
-                  <Divider />
+                  <Divider/>
 
                   <Timeline>
                     <Timeline.Item>
-                      <SmileOutlined />
+                      <SmileOutlined/>
                       &nbsp;&nbsp;
-                      <a href="https://tabix.io/doc/Connection/" target="_blank" rel="noreferrer">
+                      <a href="views/SignInView/SignInView" target="_blank" rel="noreferrer">
                         Docs & <b>Help</b> connection
                       </a>
                     </Timeline.Item>
                     <Timeline.Item>
-                      <GithubOutlined />
+                      <GithubOutlined/>
                       &nbsp;&nbsp;
                       <a href="https://github.com/tabixio/tabix" target="_blank" rel="noreferrer">
                         Make <b>star</b> on GitHub
                       </a>
                       &nbsp;&nbsp;
-                      <StarOutlined />
+                      <StarOutlined/>
                     </Timeline.Item>
                     {/*<Timeline.Item>*/}
                     {/*  <FontSizeOutlined />*/}
@@ -214,7 +214,7 @@ class SignInView extends React.Component<RoutedProps> {
                     {/*  </a>*/}
                     {/*</Timeline.Item>*/}
                     <Timeline.Item>
-                      <TwitterOutlined />
+                      <TwitterOutlined/>
                       &nbsp;&nbsp;
                       <a href="https://twitter.com/tabix_io" target="_blank" rel="noreferrer">
                         Subscribe in <b>twitter</b>
@@ -223,7 +223,7 @@ class SignInView extends React.Component<RoutedProps> {
                   </Timeline>
                 </Row>
                 <Row>
-                  <Divider />
+                  <Divider/>
                   {this.renderFooter()}
                 </Row>
               </Col>
@@ -236,7 +236,7 @@ class SignInView extends React.Component<RoutedProps> {
 }
 
 export default withRouter(
-  typedInject<InjectedProps, RoutedProps, Stores>(({ store }) => ({ store: store.signInStore }))(
+  typedInject<InjectedProps, RoutedProps, Stores>(({store}) => ({store: store.signInStore}))(
     SignInView
   )
 );

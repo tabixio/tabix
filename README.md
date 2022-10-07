@@ -29,7 +29,7 @@ yarn -v
 
 
 # Install js libs
-yarn install
+yarn install --frozen-lockfile
 
 # Run on http://0.0.0.0:9000/  
 yarn start
@@ -38,6 +38,17 @@ yarn start
 yarn build
 
 
+```
+
+### If docker
+
+```shell
+
+docker-compose build app
+docker-compose up app
+
+
+# Run on http://0.0.0.0:9000/  
 ```
 
 ## Requirements

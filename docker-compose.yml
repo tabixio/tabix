@@ -6,18 +6,20 @@ networks:
 services:
   ### react #####################################################
   app:
-    profiles: ["dev"]
+    profiles: [ "dev" ]
     build:
-      context: ./settings/react
+      context: .
+      dockerfile: Dockerfile_app_dev
     ports:
-      - "3000:3000"
+      - "9000:9000"
     container_name: tabix
-    stdin_open: true
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     environment:
       - CHOKIDAR_USEPOLLING=true
     networks:
       - frontend
     volumes:
-      - ../:/usr/src/app/tabix
-      - /usr/src/app/tabix/node_modules
+      - ./front:/tabix
+      - /tabix/node_modules
   

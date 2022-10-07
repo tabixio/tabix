@@ -1,10 +1,10 @@
 import React from 'react';
-import { Form, Input } from 'antd';
-import { observer } from 'mobx-react';
-import { ServerConnectionModel } from 'models';
-import { error2status } from 'components/utils';
-import ActionButtons, { ActionButtonsProps } from '../ActionButtons';
-import { RouteComponentProps } from 'react-router';
+import {Form, Input} from 'antd';
+import {observer} from 'mobx-react';
+import {ServerConnectionModel} from 'front/app/src/models';
+import {error2status} from 'front/app/src/components/utils';
+import ActionButtons, {ActionButtonsProps} from '../ActionButtons';
+import {RouteComponentProps} from 'react-router';
 
 export interface InjectedProps extends ActionButtonsProps {
   model: ServerConnectionModel;
@@ -28,7 +28,7 @@ export default class ServerSignInForm extends React.Component<RoutedProps> {
   render() {
     const {
       model,
-      model: { changeField, errors },
+      model: {changeField, errors},
       ...rest
     } = this.props;
 

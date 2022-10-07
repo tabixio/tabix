@@ -1,5 +1,5 @@
 @import 'normalize.css';
-@import './reset-defaults.css';
+@import 'reset-defaults.css';
 
 body {
   font-size: 13px;

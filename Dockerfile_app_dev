@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+WORKDIR /tabix
+
+RUN npm install --global yarn --force
+#
+#
+ENV PATH /tabix/node_modules/.bin:$PATH
+#
+#
+# COPY front/package*.json ./
+# COPY front/yarn.lock ./
+#
+#
+RUN npm install --global webpack
+RUN rm -f .yarnrc.yml && echo 'nodeLinker: node-modules' > .yarnrc.yml
+RUN yarn set version 3.1.1
+#RUN yarn -v
+RUN yarn install
+EXPOSE 3000
+#
+CMD ["yarn", "start"]

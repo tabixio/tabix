@@ -15,7 +15,7 @@
     "start": "yarn run clean && cross-env NODE_ENV=development && cross-env NODE_OPTIONS=--max-old-space-size=4096 webpack serve --mode development --color --progress --config webpack.config.babel.js",
     "profile": "yarn run clean && cross-env NODE_ENV=production webpack --profile --json --config webpack.config.babel.js > ./dist/profile.json && webpack-bundle-analyzer ./dist/profile.json",
     "build": "yarn run clean && cross-env NODE_ENV=production && webpack --mode production --color --progress --config webpack.config.babel.js",
-    "lint:fix": "eslint --fix --ignore-path .gitignore . --ext ts --ext tsx --ext js --ext jsx",
+    "lint:fix": "eslint --fix --ignore-path ../.gitignore . --ext ts --ext tsx --ext js --ext jsx",
     "test": "jest",
     "test:watch": "jest --watch"
   },

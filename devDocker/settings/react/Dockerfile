@@ -4,8 +4,10 @@ WORKDIR /usr/src/app/tabix
 
 ENV PATH /usr/src/app/tabix/node_modules/.bin:$PATH
 
-RUN ls -la ./
-COPY  ../yarn.lock ./
+
+COPY ../../package.json ./
+COPY ../../package-lock.json ./
+COPY ../../yarn.lock ./
 
 
 RUN npm install --global rimraf cross-env node-sass webpack
