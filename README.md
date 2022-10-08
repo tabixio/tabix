@@ -19,9 +19,11 @@ git checkout master
 # For use directory /node-modules/ add line to .yarnrc.yml, 
 # ! Tabix now not support PnP / Yarn ! 
 
+
+cd front 
+
 # ! don't forget to add !  
 echo 'nodeLinker: node-modules' > .yarnrc.yml
-
 
 # Yarn setup 
 yarn set version 3.1.1
@@ -47,7 +49,9 @@ yarn build
 docker-compose build app
 docker-compose up app
 
-
+# Dev
+docker-compose build app --no-cache
+ 
 # Run on http://0.0.0.0:9000/  
 ```
 

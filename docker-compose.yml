@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: Dockerfile_app_dev
     ports:
-      - "9000:9000"
+      - "3000:3000"
     container_name: tabix
     stdin_open: true # docker run -i
     tty: true        # docker run -t
