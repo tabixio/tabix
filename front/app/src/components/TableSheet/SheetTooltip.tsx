@@ -1,7 +1,7 @@
 import { BaseTooltip, SpreadSheet } from '@antv/s2';
 import ReactDOM from 'react-dom';
 import React from 'react';
-import { S2CellType } from '@antv/s2/esm/common/interface';
+import { S2CellType } from '@antv/s2';
 import { TooltipComponent, TooltipRenderProps } from './Tooltip/TooltipComponent';
 import DataDecorator from '../../services/api/DataDecorator';
 

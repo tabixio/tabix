@@ -11,12 +11,12 @@ import {
   TargetCellInfo,
 } from '@antv/s2';
 import { Event as CanvasEvent } from '@antv/g-canvas';
-import { SheetComponent as S2Table } from '@antv/s2-react';
+import { SheetComponentOptions, SheetComponent as S2Table } from '@antv/s2-react';
 import '@antv/s2-react/dist/style.min.css';
 import './dark.css';
 import { SheetTooltip } from './SheetTooltip';
 import DataDecorator from 'services/api/DataDecorator';
-import { SheetType } from '@antv/s2-react/esm/components/sheets/interface';
+import { SheetType } from './SheetType';
 import { Flex, FlexProps } from 'reflexy';
 
 export interface TableSheetProps {
@@ -59,7 +59,7 @@ export default function TableSheet({
   const [loading, setLoading] = useState(true);
 
   // ----------------------------------- Options
-  const s2Options = {
+  const s2Options: SheetComponentOptions = {
     // width: defaultWidth,
     // height: defaultHeight,
     // showSeriesNumber: true,
@@ -73,6 +73,12 @@ export default function TableSheet({
     frozenColCount: 1,
     // frozenTrailingRowCount: 1,
     // frozenTrailingColCount: 1,
+    // tooltip: {
+    //   corner: {},
+    //   // row: {},
+    //   col: {},
+    //   data: {},
+    // },
     interaction: {
       enableCopy: true,
       // hiddenColumnFields: ['cost'],
@@ -83,9 +89,13 @@ export default function TableSheet({
       selectedCellMove: true,
     },
     tooltip: {
-      showTooltip: true,
-      // @ts-ignore
-      renderTooltip: (spreadsheet) => new SheetTooltip(spreadsheet, data),
+      row: {
+        showTooltip: true,
+      },
+      data: {
+        showTooltip: true,
+        renderTooltip: (spreadsheet) => new SheetTooltip(spreadsheet, data),
+      },
     },
     // https://s2.antv.vision/en/examples/case/data-preview#index
     style: {
@@ -93,13 +103,8 @@ export default function TableSheet({
         height: 20,
       },
     },
-  } as S2Options;
+  } as SheetComponentOptions;
   // -----
-
-  const getDataInfo = (cellName: string) => {
-    console.log('getCellInfo', cellName);
-    return 'OK!';
-  };
 
   // ----------------------------------- Update Sheet Type
   useEffect(() => {
@@ -209,7 +214,7 @@ export default function TableSheet({
           adaptive={true}
           sheetType={sheetType}
           dataCfg={s2DataConfig}
-          options={s2Options}
+          options={s2Options as SheetComponentOptions}
           themeCfg={themeCfg}
           loading={loading}
         />

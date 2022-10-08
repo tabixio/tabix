@@ -16,7 +16,7 @@ import {
   moveItem,
   shouldCrossRows,
 } from '../util';
-import { SheetType } from '@antv/s2-react';
+import { SheetType } from '../../SheetType';
 
 const CLASS_NAME_PREFIX = 'contents';
 

@@ -111,8 +111,8 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@antv/data-wizard": "^2.0.3",
-    "@antv/s2": "^1.17.0",
-    "@antv/s2-react": "^1.15.1",
+    "@antv/s2": "1.31.0",
+    "@antv/s2-react": "^1.28.0",
     "@monaco-editor/react": "4.3.1",
     "@supercharge/promise-pool": "^2.1.0",
     "@types/lodash": "^4.14.182",

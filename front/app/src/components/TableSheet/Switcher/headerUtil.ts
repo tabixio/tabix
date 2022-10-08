@@ -1,6 +1,6 @@
 import { PivotSheet, S2DataConfig, SpreadSheet, TableSheet, Fields, Meta } from '@antv/s2';
 import { filter, find, isEmpty, map, reduce } from 'lodash';
-import { SheetType } from '@antv/s2-react';
+import { SheetType } from '../SheetType';
 import { FieldType, SWITCHER_FIELDS } from './constant';
 import { SwitcherFieldd, SwitcherFields, SwitcherResult } from './interfaces';
 

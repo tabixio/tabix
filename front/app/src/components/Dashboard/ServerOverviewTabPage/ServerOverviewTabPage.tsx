@@ -1,21 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { TableSheet } from 'components/TableSheet';
+import React, {useState, useRef, useEffect} from 'react';
+import {TableSheet} from 'components/TableSheet';
 import DataDecorator from 'services/api/DataDecorator';
-import { TabsStore } from '../../../stores';
+import {TabsStore} from '../../../stores';
 import Draw from 'components/Draw';
-import { PageGridLayer } from 'components/PageGridLayer';
-import { PageModel } from '../../PageGridLayer/PageGridLayer';
+import {PageGridLayer} from 'components/PageGridLayer';
+import {PageModel} from '../../PageGridLayer/PageGridLayer';
 
 // PageGridLayer
 interface Props {
   store: TabsStore;
 }
 
-export default function ServerOverviewTabPage({ store }: Props) {
+export default function ServerOverviewTabPage({store}: Props) {
   const [data, setData] = useState(null as DataDecorator | null);
   const [data2, setData2] = useState(null as DataDecorator | null);
   // const [load, setLoad] = useState(false);
-  const { current: a } = useRef(['a']);
+  const {current: a} = useRef(['a']);
   // useEffect(() => {
   //   const fetchData = async () => {
   //     // setLoad(true);
@@ -48,66 +48,66 @@ export default function ServerOverviewTabPage({ store }: Props) {
   // }, [a]);
 
   //
-  const dash = new PageModel({ id: 'ServerOverview' });
+  const dash = new PageModel({id: 'ServerOverview'});
 
-  const source1_id = dash.addSource('SELECT * FROM system.metric_log');
-  const source2_id = dash.addSource(store.api.prepared().queryLogFast(500));
-
-  /**
-   * in json
-   * {
-   *
-   * obp=>[
-   *     'Input' => {time:'timeInput'},
-   *     'Graph' => {'source':'source1_id'....}
-   *     'Graph' => {'source':'source2_id'....}
-   *   ]
-   * }
-   *
-   *
-   *
-   */
-
-  dash.addInput({ time: 'timeInput' });
-  dash.addGraph(
-    {
-      source: source1_id,
-      title: 'xt1',
-      w: 'fill', // ширину заполнить
-      h: 2, // высота 2
-    },
-    {
-      type: 'line',
-      edit: false,
-      x: 'dt',
-      y: ['FileDescriptorRead', 'PartsActive'],
-    }
-  );
-  dash.addGraph(
-    {
-      source: source1_id,
-      title: null, // auto title
-      fitH: true,
-    },
-    {
-      type: 'bar',
-      edit: false,
-      x: 'dt',
-      y: ['InsertedRows', 'electedBytes'],
-    }
-  );
-  dash.addTable(
-    {
-      source: source2_id,
-      title: null, // auto title
-      fitH: true,
-    },
-    {
-      //cols:
-      //rows:
-    }
-  );
+  // const source1_id = dash.addSource('SELECT * FROM system.metric_log');
+  // const source2_id = dash.addSource(store.api.prepared().queryLogFast(500));
+  //
+  // /**
+  //  * in json
+  //  * {
+  //  *
+  //  * obp=>[
+  //  *     'Input' => {time:'timeInput'},
+  //  *     'Graph' => {'source':'source1_id'....}
+  //  *     'Graph' => {'source':'source2_id'....}
+  //  *   ]
+  //  * }
+  //  *
+  //  *
+  //  *
+  //  */
+  //
+  // dash.addInput({ time: 'timeInput' });
+  // dash.addGraph(
+  //   {
+  //     source: source1_id,
+  //     title: 'xt1',
+  //     w: 'fill', // ширину заполнить
+  //     h: 2, // высота 2
+  //   },
+  //   {
+  //     type: 'line',
+  //     edit: false,
+  //     x: 'dt',
+  //     y: ['FileDescriptorRead', 'PartsActive'],
+  //   }
+  // );
+  // dash.addGraph(
+  //   {
+  //     source: source1_id,
+  //     title: null, // auto title
+  //     fitH: true,
+  //   },
+  //   {
+  //     type: 'bar',
+  //     edit: false,
+  //     x: 'dt',
+  //     y: ['InsertedRows', 'electedBytes'],
+  //   }
+  // );
+  // dash.addTable(
+  //   {
+  //     source: source2_id,
+  //     title: null, // auto title
+  //     fitH: true,
+  //   },
+  //   {
+  //     //cols:
+  //     //rows:
+  //   }
+  // );
 
   console.log('ServerOverviewTabPage->Render');
-  return <PageGridLayer />;
+  return <PageGridLayer/>;
 }

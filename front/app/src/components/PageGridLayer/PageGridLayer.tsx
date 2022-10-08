@@ -10,7 +10,7 @@ import { TableSheet } from '../TableSheet';
 import { AutoSizer } from 'react-virtualized';
 import PageGridLayout, { GridLayout } from './PageGridLayout';
 import { Layout } from 'antd';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 //
 // getLayouts({ dashboard }) {
@@ -30,9 +30,11 @@ import uuid from 'uuid';
 // }
 class PageCard {
   public id = '';
+
   constructor(id = '') {
-    this.id = id || uuid.v4();
+    this.id = id || uuid();
   }
+
   public getGridLayout(): GridLayout {
     const initialSize = { width: 4, height: 4 };
     const minSize = initialSize; //visualization.minSize || DEFAULT_CARD_SIZE;
@@ -49,14 +51,17 @@ class PageCard {
     };
   }
 }
+
 export interface PageMeta {
   id?: string;
 }
+
 export class PageModel {
   private id = '';
   private cards: Array<PageCard> = [];
+
   constructor(data: PageMeta) {
-    this.id = data.id || uuid.v4();
+    this.id = data.id || uuid();
   }
 
   public addCard() {
