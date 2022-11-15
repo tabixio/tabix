@@ -28,6 +28,16 @@ import { v4 as uuid } from 'uuid';
 //   });
 //   return { desktop, mobile };
 // }
+class PageSource {
+  public id = '';
+  public q = '';
+
+  constructor(q: string, id = '') {
+    this.q = q;
+    this.id = id || uuid();
+  }
+}
+
 class PageCard {
   public id = '';
 
@@ -59,9 +69,23 @@ export interface PageMeta {
 export class PageModel {
   private id = '';
   private cards: Array<PageCard> = [];
+  private source: Array<PageSource> = [];
 
   constructor(data: PageMeta) {
     this.id = data.id || uuid();
+  }
+
+  public addSource(q: string): string {
+    const i = new PageSource(q);
+    this.source.push(i);
+    return i.id;
+  }
+
+  public addRowGraph(
+    s: { source: string; title?: string; w?: number | string; h?: number | string },
+    p: Array<{ type: string; edit: boolean; x: Array<string> | string; y: Array<string> | string }>
+  ) {
+    //
   }
 
   public addCard() {
@@ -158,31 +182,3 @@ export default function PageGridLayer({
     </div>
   );
 }
-/**
- * - https://github.com/ylacaute/ez-Dashing
- * - https://github.com/metabase/metabase/blob/master/frontend/src/metabase/dashboard/components/grid/GridLayout.jsx
- *
- *
- *
- * Уровень данных, Q1,Q2,L1 - названия DataSource
- * DataSource : [Q1:<DataDecorator|SQL>,Q2:<DataDecorator|SQL>,L1:<...>]
- *
- * Описание сетки:
- * Grid:
- *
- * 1 row - [type: text] - текстовый элемент
- * 2 row - [type: inputs , elements: xxx] - какие элементы `inputs`
- * 3 row - [type: draws , col1: draw,col2 : draw]
- *
- *
- *
- *
- *
- *
- * -----
- *
- * DashboardGrid.tsx
- *
- *
- *
- */

@@ -42,16 +42,12 @@ yarn build
 
 ```
 
-### If docker
+### If docker dev
 
 ```shell
-
-docker-compose build app
-docker-compose up app
-
-# Dev
+# Dev build
 docker-compose build app --no-cache
- 
+docker-compose up app
 # Run on http://0.0.0.0:9000/  
 ```
 

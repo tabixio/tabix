@@ -79,6 +79,7 @@ export default function TableSheet({
     //   col: {},
     //   data: {},
     // },
+    hdAdapter: true,
     interaction: {
       enableCopy: true,
       // hiddenColumnFields: ['cost'],

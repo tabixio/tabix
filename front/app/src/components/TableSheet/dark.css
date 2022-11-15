@@ -1,6 +1,8 @@
 @value font-size,font-family,bg-color-dd from '~assets/styles/vars.css';
 
 :global {
+.antv-s2-tooltip-tips,
+.antv-s2-tooltip-name,
 .antv-s2-tooltip-operator,
 .antv-s2-tooltip-container,
 .antv-s2-tooltip-summary
