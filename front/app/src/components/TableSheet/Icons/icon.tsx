@@ -1,5 +1,5 @@
 import React from 'react';
-import { S2_PREFIX_CLS, TooltipIconProps, getIcon, TooltipContentType } from '@antv/s2';
+import { S2_PREFIX_CLS,  getIcon, TooltipContentType } from '@antv/s2';
 import { HtmlIcon, HtmlIconProps } from './html-icon';
 import cx from 'classnames';
 
@@ -17,7 +17,6 @@ interface Props {
   style?: any;
   className?: string;
 }
-
 class ReactElement extends React.PureComponent<Props> {
   render() {
     const { style = {}, className, content } = this.props;
@@ -36,8 +35,9 @@ class ReactElement extends React.PureComponent<Props> {
     );
   }
 }
-
-export const Icon = (props: TooltipIconProps) => {
+//
+//
+export const Icon = (props: any) => {
   const { icon, ...attrs } = props;
 
   if (!icon) {
@@ -49,5 +49,6 @@ export const Icon = (props: TooltipIconProps) => {
 
     return <HtmlIcon name={name} {...TOOLTIP_DEFAULT_ICON_PROPS} {...attrs} />;
   }
+ 
   return <ReactElement content={icon} {...TOOLTIP_DEFAULT_ICON_PROPS} {...attrs} />;
 };

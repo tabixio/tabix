@@ -26,14 +26,15 @@ const getSwitcherFieldCfg = (
 export const generateSwitcherFields = (
   sheet: SpreadSheet,
   { fields = {}, meta = [] } = {} as Pick<S2DataConfig, 'fields' | 'meta'>,
-  hiddenColumnFields: string[] = []
+  hiddenColumnFields: string[] = [],
 ) => {
   return SWITCHER_FIELDS.reduce((config, fieldKey) => {
     const values = fields[fieldKey];
     if (isEmpty(values)) {
       return config;
     }
-    const items = map(values, (id) => {
+    const items = map(values, (item) => {
+      const id = typeof item === 'string' ? item : item.key;
       const target = find(meta, ['field', id]);
       return {
         id,

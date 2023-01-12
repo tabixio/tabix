@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 
 import { Icon } from '../Icons';
 import {
-  ListItem,
+  TooltipDetailListItem,
   TooltipOperatorOptions,
   TooltipSummaryOptions,
   TooltipNameTipsOptions,
@@ -86,9 +86,9 @@ export const TooltipComponent: React.FC<TooltipRenderProps> = (props) => {
         <>
           {renderDivider()}
           <div className={`${TOOLTIP_PREFIX_CLS}-head-info-list`}>
-            {cols.map((item: ListItem) => item.value)?.join('/')}
+            {cols.map((item: TooltipDetailListItem) => item.value)?.join('/')}
             {cols.length > 0 && rows.length > 0 && '，'}
-            {rows.map((item: ListItem) => item.value)?.join('/')}
+            {rows.map((item: TooltipDetailListItem) => item.value)?.join('/')}
           </div>
         </>
       )

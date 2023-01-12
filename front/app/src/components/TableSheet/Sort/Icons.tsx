@@ -37,7 +37,6 @@ export const TextIcon: FC = () => (
     ></path>
   </svg>
 );
-
 export const LocationIcon: FC = () => (
   <svg
     className={ICON_CLS}

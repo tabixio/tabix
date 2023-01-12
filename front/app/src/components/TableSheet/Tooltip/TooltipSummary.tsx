@@ -1,10 +1,10 @@
 import React from 'react';
 import { size, reduce } from 'lodash';
-import { SummaryProps, TOOLTIP_PREFIX_CLS } from '@antv/s2';
+import { TOOLTIP_PREFIX_CLS, TooltipSummaryProps  } from '@antv/s2';
 import cls from 'classnames';
 // import { DataFrame } from '@antv/data-wizard';
 
-export const TooltipSummary: React.FC<SummaryProps> = React.memo((props) => {
+export const TooltipSummary: React.FC<TooltipSummaryProps> = React.memo((props) => {
   const { summaries = [] } = props;
 
   const renderSelected = () => {
@@ -33,7 +33,7 @@ export const TooltipSummary: React.FC<SummaryProps> = React.memo((props) => {
     // ------------------------------------
     */
     console.log('summaries', summaries);
-    return summaries?.map((item) => {
+    return summaries?.map((item:any) => {
       const { name = '', value } = item || {};
       if (!name && !value) {
         return;

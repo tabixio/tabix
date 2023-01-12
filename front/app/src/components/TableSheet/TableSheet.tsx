@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { RefObject,useEffect, useState } from 'react';
 import { themeCfg } from './Theme';
 import { Header } from './Header';
 import {
@@ -42,21 +42,11 @@ export default function TableSheet({
   //
   const toolTip: SheetTooltip | null = null;
 
-  const getSpreadSheet = (instance: SpreadSheet) => {
-    setLoading(true);
-    setLoading(false);
-    s2Ref.current = instance;
-
-    // tooltip: {
-    //
-    //     renderTooltip: (spreadsheet) => toolTip,
-    // },
-    // const toolTip = new Tooltip(instance, data);
-  };
-  const s2Ref = React.useRef<SpreadSheet>();
+  const s2Ref = React.useRef() as RefObject<SpreadSheet>;
   const [s2DataConfig, setData] = useState(null as S2DataConfig | null);
   const [sheetType, setSheetType] = useState(defaultSheetType ?? ('table' as SheetType));
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // ----------------------------------- Options
   const s2Options: SheetComponentOptions = {
@@ -117,7 +107,7 @@ export default function TableSheet({
     if (s2Ref?.current) {
       const hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
       // s2Options.hierarchyType = sheetType === 'pivot' ? 'tree' : 'grid';
-      // console.log('setOptions->hierarchyType');
+      
       s2Ref.current.setOptions({ hierarchyType });
       setLoading(true);
       setTimeout(() => {
@@ -130,6 +120,9 @@ export default function TableSheet({
       });
     }
   }, [sheetType]);
+
+  // ----------------------------------- Update data.dataUpdate
+  
   useEffect(() => {
     //   fields: {
     //     // rows: ['a', 'b'],
@@ -168,10 +161,18 @@ export default function TableSheet({
     }
   }, [data?.dataUpdate]);
 
+  // ----------------------------------- Mount, setted ref
+  const onMounted = () => {
+    // s2Ref.current setted
+    setMounted(true);
+  }
+  
   const onDataCellDoubleClick = (cell: TargetCellInfo) => {
     console.log('onDataCellDoubleClick - mmed', cell);
     return true;
   };
+  
+  
   const onContextMenu = (event: CanvasEvent) => {
     console.log('onContextMenu - CALL');
 
@@ -197,22 +198,26 @@ export default function TableSheet({
     });
     return true;
   };
+  
+  
   return (
     s2DataConfig && (
       <Flex column fill {...flexProps} style={{ minHeight: 150 /*, border: '1px solid green' */ }}>
-        <Header
-          dataCfg={s2DataConfig as S2DataConfig}
-          options={s2Options as S2Options}
-          sheetType={sheetType}
-          sheet={s2Ref.current as SpreadSheet}
-          setSheetType={setSheetType}
-          title={title}
-        />
+        {mounted && (
+          <Header
+            dataCfg={s2DataConfig as S2DataConfig}
+            options={s2Options as S2Options}
+            sheetType={sheetType}
+            sheet={s2Ref.current as SpreadSheet}
+            setSheetType={setSheetType}
+            title={title}
+          /> ) }
         <S2Table
           onContextMenu={onContextMenu}
           onDataCellDoubleClick={onDataCellDoubleClick}
-          getSpreadSheet={getSpreadSheet}
+          onMounted={onMounted}
           adaptive={true}
+          ref={s2Ref}
           sheetType={sheetType}
           dataCfg={s2DataConfig}
           options={s2Options as SheetComponentOptions}

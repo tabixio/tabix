@@ -22,6 +22,7 @@ export interface DataSet {
 }
 
 export interface ExportCfgProps {
+  currentSheetType:string;
   className?: string;
   fileName?: string;
   syncCopy?: boolean;
@@ -33,12 +34,15 @@ export interface ExportProps extends ExportCfgProps {
 
 export const Export: React.FC<ExportProps> = React.memo(
   ({ className, syncCopy = false, sheet, fileName = 'sheet', ...restProps }) => {
+    console.log("sheet,",sheet);
     const PRE_CLASS = `${S2_PREFIX_CLS}-export`;
     // @todo : copyAsMarkdown -> GitHub Markdown,Create Table ...,Redmine Markdown
     // @todo : copyAsSQLWhere, copyAsSQLColumns
     const copyData = (isFormat: boolean) => {
-      const data = getSheetData(sheet, '\t', isFormat);
 
+      console.log('Init getSheetData',sheet);
+      const data = getSheetData(sheet, '\t', isFormat);
+      console.log('Done getSheetData');
       copyToClipboard(data, syncCopy)
         .then(() => {
           message.success('Success copy');
@@ -102,3 +106,10 @@ export const Export: React.FC<ExportProps> = React.memo(
     );
   }
 );
+
+
+Export.displayName = 'Export';
+Export.defaultProps = {
+  syncCopy: false,
+  fileName: 'sheet',
+};

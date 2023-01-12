@@ -3,7 +3,7 @@ import { Modal, Button, Layout, Select, Radio, Form, Cascader } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { isEqual, keys, map, includes, toUpper, forEach, filter, find, uniq } from 'lodash';
 import cx from 'classnames';
-import { SpreadSheet, SortParam, SortMethod, TOTAL_VALUE } from '@antv/s2';
+import { ColumnNode,SpreadSheet, SortParam, SortMethod, TOTAL_VALUE } from '@antv/s2';
 import { SortIcon } from './Icons';
 import { CustomSort } from './CustomSort';
 import { SORT_METHOD, RULE_OPTIONS, ADVANCED_PRE_CLS } from './ConstantSort';
@@ -71,6 +71,9 @@ export const AdvancedSort: React.FC<AdvancedSortProps> = ({
   const [currentDimension, setCurrentDimension] = useState<Dimension>();
   const [form] = Form.useForm();
 
+  // const SORT_RULE_OPTIONS = React.useMemo(getSortRuleOptions, []);
+  // const SORT_METHOD = React.useMemo(getSortMethod, []);
+
   const handleModal = () => {
     setIsModalVisible(!isSortVisible);
   };
@@ -104,7 +107,7 @@ export const AdvancedSort: React.FC<AdvancedSortProps> = ({
   //
   const customSort = () => {
     handleCustom();
-
+    //  const currentFieldValue = form.getFieldsValue([currentDimension?.field]);
     const currentFieldValue = form.getFieldsValue([
       currentDimension ? currentDimension?.field : 'NULL',
     ]);
@@ -166,7 +169,7 @@ export const AdvancedSort: React.FC<AdvancedSortProps> = ({
     handleModal();
   };
   const getDimensionList = (list: Array<Dimension>): Array<Dimension> => {
-    return filter(list, (item) => !find(sortParams, (i) => i.sortFieldId === item.field));
+    return filter(list, (item) => !find(sortParams, (i) => i.sortFieldId === item.field),);
   };
   const getManualDimensionList = () => {
     if (dimensions) {
@@ -174,14 +177,18 @@ export const AdvancedSort: React.FC<AdvancedSortProps> = ({
     }
     const { fields = {} } = sheet.dataCfg || {};
     const { rows = [], columns = [] } = fields;
-    return map([...rows, ...columns], (item) => {
+    // @ts-ignore
+    return map([...rows, ...columns], (item:string | ColumnNode) => {
+      const name = typeof item === 'string' ? item : item.key;
       return {
         field: item,
-        name: sheet.dataSet.getFieldName(item),
-        list: sheet.dataSet.getDimensionValues(item),
-      };
+        name: sheet.dataSet.getFieldName(name),
+        list: sheet.dataSet.getDimensionValues(name),
+      } as Dimension;
     });
   };
+  // ---
+  // ---
   const getRuleOptions = (): Array<any> => {
     if (ruleOptions) {
       return ruleOptions;
@@ -320,7 +327,7 @@ export const AdvancedSort: React.FC<AdvancedSortProps> = ({
       setRules(initRuleOptions);
     }
   }, [isSortVisible]);
-  //
+
   return (
     <div className={cx(ADVANCED_PRE_CLS, className)}>
       <Button

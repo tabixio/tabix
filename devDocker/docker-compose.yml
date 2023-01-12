@@ -173,3 +173,28 @@ services:
         hard: 262144
     networks:
       - backend
+
+  clickhouse22-12-35:
+    build:
+      context: ./settings/clickhouse
+      args:
+        - CLICKHOUSE_VERSION=22.12.3.5
+        - CLICKHOUSE_GOSU_VERSION=${CLICKHOUSE_GOSU_VERSION}
+    environment:
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/clickhouse/22.12.3.5:/var/lib/clickhouse
+      - ${CLICKHOUSE_CUSTOM_CONFIG}:/etc/clickhouse-server/config.xml
+      - ${CLICKHOUSE_USERS_CUSTOM_CONFIG}:/etc/clickhouse-server/users.xml
+      - ${CLICKHOUSE_HOST_LOG_PATH}:/var/log/clickhouse
+      - ${CLICKHOUSE_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+    ports:
+      - "13813:8123"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    networks:
+      - backend
