@@ -31,14 +31,7 @@ module.exports = {
   //   "node_modules"
   // ],
 
-  // moduleFileExtensions: [
-  //   "js",
-  //   "json",
-  //   "jsx",
-  //   "ts",
-  //   "tsx",
-  //   "node"
-  // ],
+  setupFilesAfterEnv: ['./app/__tests__/setup.js'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   // moduleNameMapper: {},
   // modulePathIgnorePatterns: [],
@@ -66,6 +59,7 @@ module.exports = {
   //   "**/__tests__/**/*.[jt]s?(x)",
   //   "**/?(*.)+(spec|test).[tj]s?(x)"
   // ],
+  testRegex: '/__tests__/*.*(-|\\.)test\\.(tsx|ts)?$',
   testPathIgnorePatterns: ['/node_modules/'],
   // testRegex: [],
   // testResultsProcessor: null,

@@ -26,32 +26,17 @@ export interface ActionsProps {
 export default function Actions({ pinned, onAction }: ActionsProps) {
   const onTogglePin = useCallback(() => onAction(ActionType.TogglePin), [onAction]);
   const onToggleFullScreen = useCallback(() => onAction(ActionType.Fullscreen), [onAction]);
-  const onClickExportMenu = useCallback(
-    ({ key }: MenuInfo) => onAction(ActionType.Export, key),
-    [onAction]
-  );
+
   // Pin
   let pinIcon = <PushpinOutlined onClick={onTogglePin} />;
   if (pinned) {
     pinIcon = <PushpinFilled onClick={onTogglePin} />;
   }
 
-  const exportMenu = (
-    <Menu onClick={onClickExportMenu}>
-      <Menu.Item key="CSVHeaders">CSV with headers</Menu.Item>
-      <Menu.Item key="CSV">CSV without headers</Menu.Item>
-      <Menu.Item key="TSVHeaders">TSV with headers</Menu.Item>
-      <Menu.Item key="TSV">TSV without headers</Menu.Item>
-    </Menu>
-  );
-
   return (
     <Flex grow hfill alignItems="center" justifyContent="flex-end" className={css.root}>
       <Space direction="vertical">
         <Space wrap>
-          <Dropdown overlay={exportMenu}>
-            <DownloadOutlined />
-          </Dropdown>
           {pinIcon}
 
           <FullscreenOutlined onClick={onToggleFullScreen}></FullscreenOutlined>

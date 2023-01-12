@@ -1,17 +1,11 @@
 import React from 'react';
-import { Button, Menu, Dropdown, message } from 'antd';
+import { Button, Menu, Dropdown, message, MenuProps } from 'antd';
 import cx from 'classnames';
-import {
-  SpreadSheet,
-  copyData as getSheetData,
-  copyToClipboard,
-  download,
-  S2_PREFIX_CLS,
-} from '@antv/s2';
-import { DotChartOutlined } from '@ant-design/icons';
+import { SpreadSheet, S2_PREFIX_CLS } from '@antv/s2';
+
+import { Formats, extractSheetData, copyToClipboard, download } from './ExportUtils';
 import { getSwitcherClassName } from './Switcher/util';
-import { SwitcherIcon } from './Sort/Icons';
-import { CopyOutlined } from '@ant-design/icons';
+import { FileExcelOutlined, CopyOutlined } from '@ant-design/icons';
 
 export interface DataSet {
   icon?: React.ReactNode;
@@ -22,7 +16,7 @@ export interface DataSet {
 }
 
 export interface ExportCfgProps {
-  currentSheetType:string;
+  currentSheetType: string;
   className?: string;
   fileName?: string;
   syncCopy?: boolean;
@@ -34,58 +28,71 @@ export interface ExportProps extends ExportCfgProps {
 
 export const Export: React.FC<ExportProps> = React.memo(
   ({ className, syncCopy = false, sheet, fileName = 'sheet', ...restProps }) => {
-    console.log("sheet,",sheet);
     const PRE_CLASS = `${S2_PREFIX_CLS}-export`;
     // @todo : copyAsMarkdown -> GitHub Markdown,Create Table ...,Redmine Markdown
     // @todo : copyAsSQLWhere, copyAsSQLColumns
-    const copyData = (isFormat: boolean) => {
 
-      console.log('Init getSheetData',sheet);
-      const data = getSheetData(sheet, '\t', isFormat);
-      console.log('Done getSheetData');
-      copyToClipboard(data, syncCopy)
-        .then(() => {
-          message.success('Success copy');
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.log('copy failed: ', error);
-          message.error('Error on copyToClipboard');
-        });
-    };
+    // - Transpose full table
+    // - Calc Avg & Sum & Median
+    const onClickMenu: MenuProps['onClick'] = (e) => {
+      const key = e.key;
+      const action = key.match(/copy_.*/) ? 'copy' : key.match(/download_.*/) ? 'download' : ''; // download|copy
+      const format: Formats = key.match(/Markdown.*/)
+        ? Formats.MARKDOWN
+        : key.match(/Original.*/)
+        ? Formats.ORIGINAL
+        : key.match(/TSV.*/)
+        ? Formats.TSV
+        : Formats.CSV;
 
-    const downloadData = (isFormat: boolean) => {
-      const data = getSheetData(sheet, ',', isFormat);
-      try {
-        download(data, fileName);
-        message.success('Success download');
-      } catch (err) {
-        message.error('Error download');
+      const headers = !!key.match(/headers.*/);
+
+      const data = extractSheetData(sheet, format, headers);
+
+      if (action === 'copy') {
+        copyToClipboard(data, syncCopy)
+          .then(() => {
+            message.success('Success copy');
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.log('copy failed: ', error);
+            message.error('Error on copyToClipboard');
+          });
+      }
+      if (action === 'download') {
+        try {
+          download(data, fileName, format);
+          message.success('Success download');
+        } catch (err) {
+          message.error('Error download');
+        }
       }
     };
 
+    // @TODO: Fix export in pivot
     const menu = (
-      <Menu>
-        <Menu.Item key="copyOriginal" onClick={() => copyData(false)}>
-          Copy original text
-        </Menu.Item>
-        <Menu.Item key="copyFormat" onClick={() => copyData(true)}>
-          Copy format text
-        </Menu.Item>
-        <Menu.Item key="downloadOriginal" onClick={() => downloadData(false)}>
-          Download original Text
-        </Menu.Item>
-        <Menu.Item key="downloadFormat" onClick={() => downloadData(true)}>
-          Download format Text
-        </Menu.Item>
+      <Menu onClick={onClickMenu}>
+        <Menu.SubMenu key="Copy" icon={<CopyOutlined />} title="Copy to clipboard">
+          <Menu.Item key="copy_Original_headers">Copy original text</Menu.Item>
+          <Menu.Item key="copy_Markdown_headers">Markdown</Menu.Item>
+          {/*<Menu.Item key="copy_WHERE">WHERE col1 IN (val,val),col2 IN ...</Menu.Item>*/}
+          {/*<Menu.Item key="copy_CREATE">Create TABLE...</Menu.Item>*/}
+          <Menu.Item key="copy_TSV_headers">TSV with headers</Menu.Item>
+          <Menu.Item key="copy_TSV">TSV without headers</Menu.Item>
+          <Menu.Item key="copy_CSV_headers">CSV with headers</Menu.Item>
+          <Menu.Item key="copy_CSV">CSV without headers</Menu.Item>
+        </Menu.SubMenu>
+        <Menu.SubMenu key="Down" icon={<FileExcelOutlined />} title="Download">
+          <Menu.Item key="download_Original_headers">Original Text</Menu.Item>
+          <Menu.Item key="download_TSV_headers">TSV with headers</Menu.Item>
+          <Menu.Item key="download_TSV">TSV without headers</Menu.Item>
+          <Menu.Item key="download_CSV_headers">CSV with headers</Menu.Item>
+          <Menu.Item key="download_CSV">CSV without headers</Menu.Item>
+        </Menu.SubMenu>
       </Menu>
     );
-    // <Button
-    //   className={getSwitcherClassName('entry-button')}
-    //   size="small"
-    //   disabled={disabled}
-    //   icon={<SwitcherIcon />}
-    // >
+
     return (
       <Dropdown
         overlay={menu}
@@ -106,10 +113,3 @@ export const Export: React.FC<ExportProps> = React.memo(
     );
   }
 );
-
-
-Export.displayName = 'Export';
-Export.defaultProps = {
-  syncCopy: false,
-  fileName: 'sheet',
-};

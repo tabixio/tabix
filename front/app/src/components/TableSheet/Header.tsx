@@ -52,7 +52,6 @@ export const Header: FC<HeaderProps> = ({
   function titleCase(string: string) {
     return string[0].toUpperCase() + string.substr(1).toLowerCase();
   }
-console.log("Header:Sheet",sheet);
   // const sheetType = getSheetType(sheet).toString();
   const [currentSheet, setSheetTypeLocal] = useState(sheetType);
 
