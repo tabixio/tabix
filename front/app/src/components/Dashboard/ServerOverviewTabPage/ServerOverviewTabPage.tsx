@@ -48,9 +48,7 @@ export default function ServerOverviewTabPage({ store }: Props) {
   // }, [a]);
 
   //
-  const dash = new PageModel({ id: 'ServerOverview' });
-  const source1_id = dash.addSource('SELECT * FROM system.metric_log');
-  const source2_id = dash.addSource(store.api.prepared().queryLogFast(500));
+
   //
   // /**
   //  * in json
@@ -69,28 +67,6 @@ export default function ServerOverviewTabPage({ store }: Props) {
   //
   // dash.addInput({ time: 'timeInput' });
 
-  dash.addRowGraph(
-    {
-      source: source1_id,
-      title: 'xt1',
-      w: 'fill', // ширину заполнить
-      h: 2, // высота 2
-    },
-    [
-      {
-        type: 'line',
-        edit: false,
-        x: 'dt',
-        y: ['FileDescriptorRead', 'PartsActive'],
-      },
-      {
-        type: 'line',
-        edit: false,
-        x: 'dt',
-        y: ['ProfileEvent_PerfBranchMisses', 'ProfileEvent_SelectedBytes'],
-      },
-    ]
-  );
   // dash.addGraph(
   //   {
   //     source: source1_id,
